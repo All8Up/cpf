@@ -87,5 +87,5 @@ MakeUnitTests( LIBRARY Collections GROUP Core
 		UnitTest/Test_All.hpp
 		UnitTest/Test_HandlePool.hpp
 		UnitTest/Test_PacketStream.cpp
-		../../UnitTesting/Source/Main.cpp
+		../Test/UnitTestMain.cpp
 )

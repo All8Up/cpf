@@ -61,7 +61,7 @@ install( EXPORT CoreConfiguration DESTINATION CMake )
 MakeUnitTest( LIBRARY Configuration GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Configuration
 )

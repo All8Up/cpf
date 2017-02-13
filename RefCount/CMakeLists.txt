@@ -66,5 +66,5 @@ install( EXPORT RefCountConfig DESTINATION CMake )
 MakeUnitTests( LIBRARY RefCount GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../Test/UnitTestMain.cpp
 )

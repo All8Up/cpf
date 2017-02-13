@@ -139,7 +139,7 @@ MakeUnitTest( LIBRARY s_Simd GROUP Core
 		UnitTest/Test_Int8x16.hpp
 		UnitTest/Test_Float32x4.hpp
 		UnitTest/Test_Float32x8.hpp
-		../../UnitTesting/Source/Main.cpp
+		../Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Configuration
 )
