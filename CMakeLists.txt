@@ -17,7 +17,7 @@ include( CMake/Setup.cmake )
 set (EXTERNAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/External)
 if (EXISTS "${EXTERNAL_DIR}" AND IS_DIRECTORY "${EXTERNAL_DIR}")
 	# The external directory has been copied into the project.
-	add_subdirectory (${EXTERNAL_DIR}/cmake)
+	add_subdirectory (${EXTERNAL_DIR})
 else ()
 	message ("No external libraries found.")
 endif ()
