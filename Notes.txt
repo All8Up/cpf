@@ -1,0 +1,82 @@
+---------------------------
+Current TODO's:
+	Move simd setup out of configuration to simd library.
+
+
+---------------------------
+Namespace Outline
+
+Cpf
+{
+	"cpfFoundation"
+	Memory
+	StdC (Groups similar to: https://msdn.microsoft.com/en-us/library/aa272890(v=vs.60).aspx)
+	Simd
+	Atomic
+	Vector
+	Set
+	Map
+	etc.
+
+
+	"cpfPlatform"
+	Events
+	Hash
+	RefCount
+	Time
+	Threading
+	{
+		Mutex
+		Semaphore
+		ConditionVariable
+		etc
+	}
+	Math
+	{
+		Vector3
+		Matrix44
+		etc
+	}
+	IO
+	{
+		Path
+		Directory
+		File
+		Net
+		{
+			EndPoint
+			Socket
+			etc
+		}
+	}
+	Application
+	{}
+
+
+	"cpfTesting"
+	UnitTesting
+
+
+	"cpfDiagnostic"
+	Performance
+	Debugging
+	Logging
+
+
+	"cpfConcurrency"
+	Concurrency
+	{
+		Vector
+		Map
+		UnorderedMap
+		etc.
+
+		ThreadTeam
+		ThreadPool
+		Dispatch - For ThreadTeam
+		{
+			Vector
+			Set
+		}
+	}
+}
