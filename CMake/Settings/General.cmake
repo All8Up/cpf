@@ -1,0 +1,2 @@
+#
+include (CMake/Settings/Detail/${CPF_COMPILER_NAME}_General_${CPF_COMPILER_VERSION_MAJOR}-${CPF_COMPILER_VERSION_MINOR}.cmake)

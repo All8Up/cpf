@@ -1,0 +1,25 @@
+# ###############################################
+set( CPF_BUILD_INFO "" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nSdk Version      : ${CPF_VERSION}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nSdk Architecture : ${CPF_TARGET_CPU_SIZE} bit")
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nSdk CMake Files  : ${CPF_CMAKE_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nSdk Includes     : ${CPF_INCLUDES_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nSdk Examples     : ${CPF_EXAMPLE_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nSdk Unit Tests   : ${CPF_UNIT_TEST_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nStatic Libraries : ${CPF_STATIC_LIB_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nShared Libraries : ${CPF_SHARED_LIB_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nExecutables      : ${CPF_EXECUTABLE_DIR}" )
+
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\n" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nPlatform Includes: ${CPF_PLATFORM_INCLUDE_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nCompiler Includes: ${CPF_COMPILER_INCLUDE_DIR}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nCompiler         : ${CPF_COMPILER_NAME}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nCompiler Version : ${CPF_COMPILER_VERSION}" )
+
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\n" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget OS        : ${CPF_TARGET_OS}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget Cpu       : ${CPF_TARGET_CPU}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget Cpu Size  : ${CPF_TARGET_CPU_SIZE}" )
+set( CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget Cpu Dir   : ${CPF_TARGET_CPU_DIR}" )
+
+message( STATUS ${CPF_BUILD_INFO} )
