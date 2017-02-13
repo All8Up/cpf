@@ -1,0 +1,4 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+#define CPF_EXPORT __attribute__((visibility("default")))
+#define CPF_IMPORT

@@ -1,0 +1,13 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+#include "Configuration/Configuration.hpp"
+#include "EASTL/vector.h"
+
+
+//////////////////////////////////////////////////////////////////////////
+namespace Cpf
+{
+	// Just alias in std::vector for the moment.
+	template<typename T>
+	using Vector = eastl::vector<T>;
+}
