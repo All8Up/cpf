@@ -8,7 +8,7 @@ function( MakeUnitTest )
 
 		add_executable( Test_${MakeUnitTest_LIBRARY} ${MakeUnitTest_TEST_FILES} )
 		add_test( NAME Test_${MakeUnitTest_LIBRARY} COMMAND Test_${MakeUnitTest_LIBRARY} )
-		target_link_libraries( Test_${MakeUnitTest_LIBRARY} gmock s_Std ${MakeUnitTest_LIBRARY} ${MakeUnitTest_LINK_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+		target_link_libraries( Test_${MakeUnitTest_LIBRARY} gmock ${CPF_USE_SPDLOG} s_Std ${MakeUnitTest_LIBRARY} ${MakeUnitTest_LINK_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 		target_include_directories( Test_${MakeUnitTest_LIBRARY} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/UnitTest> )
 		if (MakeUnitTest_GROUP)
 			set_property( TARGET Test_${MakeUnitTest_LIBRARY} PROPERTY FOLDER UnitTests/${MakeUnitTest_GROUP} )

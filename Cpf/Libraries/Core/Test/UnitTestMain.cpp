@@ -7,7 +7,9 @@
 @cond CPF_INTERNAL
 */
 #include "Test_All.hpp"
-#include <spdlog/common.h>
+#ifdef CPF_HAVE_SPDLOG
+#	include <spdlog/common.h>
+#endif
 /**
 @endcond
 */
