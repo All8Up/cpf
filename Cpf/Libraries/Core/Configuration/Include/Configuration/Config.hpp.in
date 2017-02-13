@@ -1,0 +1,78 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+
+
+//////////////////////////////////////////////////////////////////////////
+#define CPF_TARGET_PLATFORM "@CPF_TARGET_PLATFORM@"
+#define CPF_TARGET_WINDOWS @CPF_TARGET_WINDOWS@
+#define CPF_TARGET_DARWIN @CPF_TARGET_DARWIN@
+#define CPF_TARGET_LINUX @CPF_TARGET_LINUX@
+#define CPF_TARGET_IOS @CPF_TARGET_IOS@
+#define CPF_TARGET_ANDROID @CPF_TARGET_ANDROID@
+
+//////////////////////////////////////////////////////////////////////////
+#define CPF_COMPILER_NAME "@CPF_COMPILER_NAME@"
+#define CPF_COMPILER_VERSION "@CPF_COMPILER_VERSION@"
+#define CPF_COMPILER_VERSION_MAJOR @CPF_COMPILER_VERSION_MAJOR@
+#define CPF_COMPILER_VERSION_MINOR @CPF_COMPILER_VERSION_MINOR@
+#define CPF_COMPILER_VERSION_PATCH @CPF_COMPILER_VERSION_PATCH@
+
+#cmakedefine CPF_COMPILER_HAS_ALIGNAS
+
+
+//////////////////////////////////////////////////////////////////////////
+#define CPF_TARGET_CPU "@CPF_TARGET_CPU@"
+#define CPF_TARGET_CPU_SIZE @CPF_TARGET_CPU_SIZE@
+#define CPF_TARGET_CPU_32 (CPF_TARGET_CPU_SIZE==32)
+#define CPF_TARGET_CPU_64 (CPF_TARGET_CPU_SIZE==64)
+
+
+//////////////////////////////////////////////////////////////////////////
+#cmakedefine CPF_TYPEDEF_CHAR16_T @CPF_TYPEDEF_CHAR16_T@
+#ifdef CPF_TYPEDEF_CHAR16_T
+#	define char16_t @CPF_TYPEDEF_CHAR16_T@
+#endif
+
+
+//////////////////////////////////////////////////////////////////////////
+#define CPF_SIMD_INSTRUCTION_SET_@CPF_SIMD_INSTRUCTION_SET@ 1
+#define CPF_SIMD_INSTRUCTION_LEVEL_@CPF_SIMD_INSTRUCTION_LEVEL@ 1
+#define CPF_SIMD_LEVEL @CPF_SIMD_INSTRUCTION_LEVEL@
+
+// Intel SSE extentions.
+#if CPF_SIMD_INSTRUCTION_SET_SSE
+#	define CPF_SIMD_AVX2 @CPF_SIMD_AVX2@
+#	define CPF_SIMD_AVX @CPF_SIMD_AVX@
+#	define CPF_SIMD_SSE4a @CPF_SIMD_SSE4a@
+#	define CPF_SIMD_SSE4_2 @CPF_SIMD_SSE4_2@
+#	define CPF_SIMD_SSE4_1 @CPF_SIMD_SSE4_1@
+#	define CPF_SIMD_SSE3 @CPF_SIMD_SSE3@
+#	define CPF_SIMD_SSE2 @CPF_SIMD_SSE2@
+#	define CPF_SIMD_SSE1 @CPF_SIMD_SSE1@
+
+#	if CPF_SIMD_INSTRUCTION_LEVEL_Avx2
+#		include <immintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Avx
+#		include <immintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse4a
+#		include <nmmintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse4_2
+#		include <nmmintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse4_1
+#		include <smmintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse3
+#		include <pmmintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse2
+#		include <emmintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse1
+#		include <xmmintrin.h>
+#	elif CPF_SIMD_INSTRUCTION_LEVEL_Reference
+#	endif
+#endif
+
+#ifndef NDEBUG
+#	define CPF_DEBUG
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+#cmakedefine CPF_VTUNE @CPF_VTUNE@
