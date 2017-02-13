@@ -28,10 +28,12 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Cpf")
 	add_subdirectory( Cpf )
 
 	# ###############################################
-	install( EXPORT Cpf DESTINATION CMake )
-	install( FILES Sdk/CMakeLists.txt
-		DESTINATION ./
-	)
+	if (TARGET Cpf)
+		install( EXPORT Cpf DESTINATION CMake )
+		install( FILES Sdk/CMakeLists.txt
+			DESTINATION ./
+		)
+	endif ()
 else ()
 	message ("No CPF library sources found.")
 endif ()
