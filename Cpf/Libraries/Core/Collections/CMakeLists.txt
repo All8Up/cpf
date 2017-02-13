@@ -31,7 +31,6 @@ set( INCLUDE_FILES
 	Include/StringUtils.hpp
 	Include/HandlePool.hpp
 	Include/Tuple.hpp
-	Include/PacketStream.hpp
 	Include/BitSet.hpp
 )
 set( SOURCE_FILES
@@ -96,6 +95,5 @@ MakeUnitTests( LIBRARY Collections GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_HandlePool.hpp
-		UnitTest/Test_PacketStream.cpp
 		../Test/UnitTestMain.cpp
 )
