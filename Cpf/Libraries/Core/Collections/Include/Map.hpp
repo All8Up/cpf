@@ -1,12 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration/Configuration.hpp"
-#include "EASTL/map.h"
-
+#ifdef CPF_USE_EASTL
+#	include "EASTL/map.h"
+#else
+#	include <map>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename K, typename V>
-	using Map = eastl::map<K, V>;
+	using Map = CPF_STL_NAMESPACE::map<K, V>;
 }

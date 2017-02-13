@@ -1,16 +1,16 @@
 #
-configure_file (Include/Configuration/Config.hpp.in
-	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Config.hpp )
+configure_file (Include/Configuration/Setup.hpp.in
+	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Setup.hpp )
 
 
 #
 set (INCLUDE_FILES
-	Include/Configuration/Config.hpp.in
+	Include/Configuration/Setup.hpp.in
 	Include/Configuration/Configuration.hpp
 	Include/Configuration/Assert.hpp
 )
 set (INCLUDE_FILES_PLATFORM
-	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Config.hpp
+	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Setup.hpp
 	Include/${CPF_TARGET_PLATFORM}/Configuration/Platform/DebugBreak.hpp
 	Include/${CPF_TARGET_PLATFORM}/Configuration/Platform/OSSetup.hpp
 )

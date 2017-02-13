@@ -1,12 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration/Configuration.hpp"
-#include "EASTL/stack.h"
-
+#ifdef CPF_USE_EASTL
+#	include "EASTL/stack.h"
+#else
+#	include <stack>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename T>
-	using Stack = eastl::stack<T>;
+	using Stack = CPF_STL_NAMESPACE::stack<T>;
 }

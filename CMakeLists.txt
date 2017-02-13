@@ -26,14 +26,6 @@ endif ()
 # ###############################################
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Cpf")
 	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Cpf" )
-
-	# ###############################################
-	if (TARGET Cpf)
-		install( EXPORT Cpf DESTINATION CMake )
-		install( FILES Sdk/CMakeLists.txt
-			DESTINATION ./
-		)
-	endif ()
 else ()
 	message ("No CPF library sources found.")
 endif ()

@@ -1,12 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration/Configuration.hpp"
-#include "EASTL/list.h"
-
+#ifdef CPF_USE_EASTL
+#	include "EASTL/list.h"
+#else
+#	include <list>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename T>
-	using List = eastl::list<T>;
+	using List = CPF_STL_NAMESPACE::list<T>;
 }

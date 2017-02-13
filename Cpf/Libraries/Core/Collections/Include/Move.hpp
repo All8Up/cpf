@@ -1,15 +1,19 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration/Configuration.hpp"
-#include "EASTL/algorithm.h"
+#ifdef CPF_USE_EASTL
+#	include "EASTL/algorithm.h"
+#else
+#	include <algorithm>
+#endif
 
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename T>
-	inline typename eastl::remove_reference<T>::type&& Move(T&& v)
+	typename CPF_STL_NAMESPACE::remove_reference<T>::type&& Move(T&& v)
 	{
-		return eastl::move(v);
+		return CPF_STL_NAMESPACE::move(v);
 	}
 }
