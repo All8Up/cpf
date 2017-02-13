@@ -1,0 +1,5 @@
+#
+set (CPF_CPP_DIALECT "c++11" CACHE STRING "C++ Dialect Setting")
+set_property (CACHE CPF_CPP_DIALECT PROPERTY STRINGS c++11 c++14)
+
+include ("CMake/Settings/Detail/${CPF_COMPILER_NAME}_Dialect_${CPF_COMPILER_VERSION_MAJOR}-${CPF_COMPILER_VERSION_MINOR}.cmake")

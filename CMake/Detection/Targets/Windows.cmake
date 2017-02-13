@@ -1,0 +1,16 @@
+# ###############################################
+set( CPF_TARGET_OS "Windows" )
+set( CPF_TARGET_OS_WINDOWS 1 )
+
+set( CPF_TARGET_CPU "Intel" )
+set( CPF_TARGET_CPU_SIZE "${CPF_ARCHITECTURE_SIZE}" )
+set( CPF_TARGET_CPU_DIR "x${CPF_ARCHITECTURE_SIZE}" )
+
+
+# TODO: Flesh this out.
+set (CPF_TARGET_PLATFORM "Windows")
+set (CPF_TARGET_WINDOWS 1)
+
+if (CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "AMD64")
+	set (CPF_TARGET_ARCHITECTURE "x86_64")
+endif ()
