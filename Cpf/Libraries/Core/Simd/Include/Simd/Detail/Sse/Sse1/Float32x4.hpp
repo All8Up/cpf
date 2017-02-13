@@ -24,7 +24,7 @@ namespace Cpf
 
 				//////////////////////////////////////////////////////////////////////////
 				static ValueType Load(const float* const data);
-				static ValueType Create(float v0, float v1, float v2, float v3);
+				static constexpr ValueType Create(float v0, float v1, float v2, float v3);
 				static ValueType LoadUnaligned(const float* const data);
 				static float GetLane(ConstRef a, int idx);
 				static ValueType SetLane(float v, ConstRef a, int idx);
@@ -81,10 +81,9 @@ namespace Cpf
 				return _mm_load_ps(data);
 			}
 
-			inline Float32x4::ValueType Float32x4::Create(float v0, float v1, float v2, float v3)
+			constexpr Float32x4::ValueType Float32x4::Create(float v0, float v1, float v2, float v3)
 			{
-				ValueType result = { v0, v1, v2, v3 };
-				return result;
+				return ValueType { v0, v1, v2, v3 };
 			}
 
 			inline Float32x4::ValueType Float32x4::LoadUnaligned(const float* const data)

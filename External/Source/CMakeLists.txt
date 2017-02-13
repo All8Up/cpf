@@ -14,7 +14,7 @@ if (NOT EXTERN_INLINE_SPDLOG)
 else ()
 	if (IS_DIRECTORY "${SPDLOG_SRC_DIR}")
 		set (CPF_HAVE_SPDLOG 1 PARENT_SCOPE)
-		set (CPF_USE_SPDLOG spdlog PARENT_SCOPE)
+		set (CPF_SPDLOG_LIBRARY spdlog PARENT_SCOPE)
 		add_library (spdlog INTERFACE)
 		target_include_directories (spdlog
 			INTERFACE

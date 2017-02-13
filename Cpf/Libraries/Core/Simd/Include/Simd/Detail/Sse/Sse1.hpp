@@ -3,7 +3,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #if CPF_SIMD_SSE1==1
-#	include <Configuration/Configuration.hpp>
+#	include "Configuration.hpp"
 #	include <xmmintrin.h>
 #	include <Simd/Detail/Sse/Sse1/Float32x4.hpp>
 #	include <Simd/Detail/Sse/Sse1/Float32x8.hpp>

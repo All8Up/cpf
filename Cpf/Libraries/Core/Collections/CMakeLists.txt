@@ -56,7 +56,7 @@ source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
 target_link_libraries( Collections Configuration ${STL_LIB} Atomic )
-target_link_libraries( s_Collections Configuration ${STL_LIB} s_Atomic )
+target_link_libraries( s_Collections Configuration ${STL_LIB} Atomic )
 
 target_include_directories( Collections PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -96,4 +96,6 @@ MakeUnitTests( LIBRARY Collections GROUP Core
 		UnitTest/Test_All.hpp
 		UnitTest/Test_HandlePool.hpp
 		../Test/UnitTestMain.cpp
+	LINK_LIBRARIES
+		Atomic:interface
 )
