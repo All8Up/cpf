@@ -1,8 +1,0 @@
-//////////////////////////////////////////////////////////////////////////
-#pragma once
-
-
-/**
- *	@brief Set an Os specific break point.
-*/
-#define CPF_DEBUG_BREAK __builtin_trap()
