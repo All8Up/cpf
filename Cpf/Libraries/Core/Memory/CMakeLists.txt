@@ -70,5 +70,5 @@ install( EXPORT MemoryConfig DESTINATION CMake )
 MakeUnitTests( LIBRARY Memory GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../Test/UnitTestMain.cpp
 )

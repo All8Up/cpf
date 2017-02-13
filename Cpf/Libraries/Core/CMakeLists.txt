@@ -1,3 +1,5 @@
+message ("Found core libraries.")
+
 # Cpf Core Libraries.
 add_subdirectory (Configuration)
 add_subdirectory (Std)

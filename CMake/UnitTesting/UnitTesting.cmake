@@ -15,7 +15,7 @@ function( MakeUnitTest )
 		set_property( TARGET Test_${MakeUnitTest_LIBRARY} PROPERTY FOLDER UnitTests )
 	endif ()
 	source_group( Headers REGULAR_EXPRESSION UnitTest/.* )
-	source_group( Sources REGULAR_EXPRESSION ../UnitTesting/Source/Main.cpp )
+	source_group( Sources REGULAR_EXPRESSION ../Core/Test/UnitTestMain.cpp )
 	install( TARGETS Test_${MakeUnitTest_LIBRARY} DESTINATION UnitTests EXPORT Cpf CONFIGURATIONS Release )
 endfunction()
 

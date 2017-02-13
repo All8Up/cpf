@@ -25,7 +25,7 @@ endif ()
 
 # ###############################################
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Cpf")
-	add_subdirectory( Cpf )
+	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Cpf" )
 
 	# ###############################################
 	if (TARGET Cpf)

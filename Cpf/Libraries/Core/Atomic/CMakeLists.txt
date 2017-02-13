@@ -82,5 +82,5 @@ install( EXPORT AtomicConfig DESTINATION CMake )
 MakeUnitTests( LIBRARY Atomic GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../Test/UnitTestMain.cpp
 )
