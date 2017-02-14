@@ -1,5 +1,5 @@
 # ###############################################
-set( CPF_SIMD_LEVEL "Simd Level" CACHE STRING "Simd level supported." )
+set( CPF_SIMD_LEVEL "Sse2" CACHE STRING "Simd level supported." )
 set_property( CACHE CPF_SIMD_LEVEL PROPERTY STRINGS Reference Sse1 Sse2 Sse3 Sse4.1 Sse4.2 Sse4a Avx Avx2 )
 
 
