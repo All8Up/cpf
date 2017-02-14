@@ -23,7 +23,7 @@ target_include_directories (VTune
 target_link_libraries (VTune INTERFACE Configuration ${vtune_libs})
 
 add_custom_target (VTune_IDE SOURCES ${INCLUDE_FILES} )
-set_property (TARGET VTune_IDE PROPERTY FOLDER Libraries/Static/Diagnostics)
+set_property (TARGET VTune_IDE PROPERTY FOLDER Libraries/Interface/Diagnostics)
 source_group (Include FILES ${INCLUDE_FILES})
 
 
@@ -48,7 +48,7 @@ install( EXPORT VTuneConfiguration DESTINATION CMake )
 MakeUnitTest( LIBRARY VTune GROUP Diagnostics
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		VTune Configuration Threading Time
 )
