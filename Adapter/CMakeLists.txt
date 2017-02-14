@@ -77,8 +77,8 @@ add_library (s_GraphicsDriver STATIC
 
 # ###############################################
 target_compile_definitions (s_GraphicsDriver
-	PUBLIC CPF_STATIC_GRAPHICS_ADAPTER
-	PRIVATE CPF_BUILD_GRAPHICS_ADAPTER
+	PUBLIC CPF_STATIC_GRAPHICS_DRIVER
+	PRIVATE CPF_BUILD_GRAPHICS_DRIVER
 )
 target_include_directories (s_GraphicsDriver
 	PUBLIC
@@ -87,7 +87,7 @@ target_include_directories (s_GraphicsDriver
 )
 target_link_libraries (s_GraphicsDriver
 	LINK_PUBLIC
-		Configuration s_RefCount s_Math s_IO Logging
+		Configuration RefCount s_Math s_IO Logging
 )
 
 # ###############################################
@@ -103,6 +103,7 @@ source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
 source_group (Sources\\Graphics\\Descriptors FILES ${SOURCE_GRAPHICS_DESCRIPTORS})
 
 # ###############################################
+#[[
 install (TARGETS s_GraphicsDriver
 	EXPORT GraphicsDriverConfig
 	CONFIGURATIONS Debug Release
@@ -110,6 +111,6 @@ install (TARGETS s_GraphicsDriver
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 
-
 # ###############################################
 install (EXPORT GraphicsDriverConfig DESTINATION CMake)
+#]]
