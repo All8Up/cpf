@@ -13,7 +13,7 @@ target_include_directories (Logging
 target_link_libraries( Logging INTERFACE Configuration spdlog )
 
 add_custom_target (Logging_IDE SOURCES ${INCLUDE_FILES} )
-set_property (TARGET Logging_IDE PROPERTY FOLDER Libraries/Static/Diagnostics)
+set_property (TARGET Logging_IDE PROPERTY FOLDER Libraries/Interface/Diagnostics)
 source_group (Include FILES ${INCLUDE_FILES})
 
 
@@ -23,7 +23,7 @@ install (DIRECTORY Include/Logging
 	PATTERN *
 )
 
-
+#[[
 install( TARGETS Logging
 	EXPORT LoggingConfiguration
 	CONFIGURATIONS Debug Release
@@ -32,13 +32,13 @@ install( TARGETS Logging
 )
 
 install( EXPORT LoggingConfiguration DESTINATION CMake )
-
+]]#
 
 # ###############################################
 MakeUnitTest( LIBRARY Logging GROUP Diagnostics
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Logging Configuration
 )
