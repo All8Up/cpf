@@ -1,0 +1,95 @@
+The concurrency pipeline will be configured via json as follows:
+
+// Frame.json
+"Frame" :
+{
+	"Init" : [],
+	"Description" : "A generic service which provides a root for other services to hang on.",
+	"Stages" :
+	[
+		{"Name" : "Begin"},
+		{"Name" : "Update", "Depends" : [{"After" : "Begin"}]},
+		{"Name" : "End", "Depends" : [{"After" : "Update"}]}
+	]
+}
+
+// Timer.json
+"Timer" :
+{
+	"Init" : [],
+	"Description" : "Maintains a timer every iteration.",
+	"Stages" :
+	[
+		{"Stage" : "Update"}
+	]
+}
+
+// ObjectManager.json
+"ObjectManager" :
+{
+	"Init" : ["Timer"],
+	"Description" : "The object management service.",
+	"Stages" :
+	[
+		// Must update after the given timer.
+		{"Stage" : "Begin", "Depends" : [{"After" : "Timer"}]},
+		{"Stage" : "Update", "Depends" : [{After" : "Begin"}]},
+		{"Stage" : "End", "Depends" : [{"After" : "Update"}]}
+	]
+}
+
+// Renderer.json
+"Renderer" :
+{
+	"Init" : ["ObjectManager"],
+	"Description" : "The render system.",
+	"Stages" :
+	[
+		{"Stage" : "Begin"},
+		{"Stage" : "Cull", "Depends" : [{"After" : "Begin"}]},
+		{"Stage" : "Submit", "Depends" : [{"After" : "Cull"}]},
+		{"Stage" : "End", "Depends" : [{"After" : "Submit"}]}
+	]
+}
+
+// Pipeline.json
+"Pipeline" :
+{
+	// List of services to expect.  I.e. which service descriptors do we load up.
+	"Services" :
+	[
+		"Frame",
+		"Timer",
+		"Input",
+		"ObjectManager",
+		"Renderer"
+	],
+	"Instances" :
+	{
+		{"mainFrame" : "Frame"},
+		{"gameTime" : "Timer"},
+		{"globalTime" : "Timer"},
+		{"input" : "Input", "Init" : ["globalTime"]},
+		{"objectManager" : "ObjectManager", "Init" : ["gameTime"]},
+		{"renderer" : "Renderer", "Init" : ["objectManager"]}
+	},
+	"Dependencies" :
+	{
+		// There is only one service which has no dependencies, the root stage
+		// which allows every other stage to be defined.
+		{"mainFrame" : "Begin"},
+		// Don't need to specify "Update" or "End" as they are implicitly
+		// inserted via the frame descriptor.  If needed, you can specify
+		// additional dependencies if desired.
+
+		{"gameTime" : "Update", "During" : {"mainFrame" : "Begin"}},
+		{"globalTime" : "Update", "During" : {"mainFrame" : "Begin"}},
+		{"input" : "Update", "After" : {"mainFrame" : "Begin"}},
+
+		{"objectManager" : "Begin", "During" : {"mainFrame" : "Update"}},
+
+		{"renderer" : "Begin", "During" : {"objectManager" : "Begin"}},
+		{"renderer" : "Cull", "After" : {"objectManager" : "Update"}},
+		{"renderer" : "End", "After" : {"mainFrame" : "End"}}
+	}
+}
