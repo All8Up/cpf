@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/Output.hpp"
-#include "Adapters/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/Output.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Vector.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////

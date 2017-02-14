@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/Adapter.hpp"
-#include "Adapters/D3D12/SwapChain.hpp"
+#include "Adapter/D3D12/Adapter.hpp"
+#include "Adapter/D3D12/SwapChain.hpp"
+#include "Adapter/D3D12/Output.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
-#include "Adapters/D3D12/Output.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;

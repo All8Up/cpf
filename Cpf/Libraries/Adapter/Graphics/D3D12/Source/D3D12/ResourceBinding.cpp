@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/ResourceBinding.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/ResourceBinding.hpp"
+#include "Adapter/D3D12/Device.hpp"
 #include "Graphics/Descriptors/ResourceBindingDesc.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 ResourceBinding::ResourceBinding(Device* device, const Graphics::ResourceBindingDesc* desc)

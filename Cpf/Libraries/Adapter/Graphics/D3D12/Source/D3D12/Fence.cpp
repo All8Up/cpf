@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/Fence.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/Fence.hpp"
+#include "Adapter/D3D12/Device.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;

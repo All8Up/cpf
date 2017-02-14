@@ -4,7 +4,7 @@
 #include "Vector.hpp"
 #include "Algorithm.hpp"
 #include "Cpf/Platform.hpp"
-#include "Adapters/FileSystem.hpp"
+#include "Adapter/FileSystem.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////

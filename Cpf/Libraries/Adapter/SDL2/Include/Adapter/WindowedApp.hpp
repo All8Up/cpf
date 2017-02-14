@@ -7,7 +7,7 @@
 
 namespace Cpf
 {
-	namespace Adapters
+	namespace Adapter
 	{
 		class WindowedApp : public WindowedApplication
 		{

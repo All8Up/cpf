@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/VertexBuffer.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/VertexBuffer.hpp"
+#include "Adapter/D3D12/Device.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 VertexBuffer::VertexBuffer(Device* device, Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData)

@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/IndexBuffer.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/IndexBuffer.hpp"
+#include "Adapter/D3D12/Device.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData)

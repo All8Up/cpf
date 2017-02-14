@@ -1,6 +1,6 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/Adapters/FileSystem.hpp
+	Include/Adapter/FileSystem.hpp
 )
 set (SOURCE_FILES
 	Source/FileSystem.cpp
@@ -62,11 +62,12 @@ target_include_directories (ANSI_C_FileSystem
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
 
-set_property (TARGET s_ANSI_C_FileSystem PROPERTY FOLDER Libraries/Static/Adapters)
-#set_property (TARGET ANSI_C_FileSystem PROPERTY FOLDER Libraries/Shared/Adapters)
+set_property (TARGET s_ANSI_C_FileSystem PROPERTY FOLDER Libraries/Static/Adapter)
+#set_property (TARGET ANSI_C_FileSystem PROPERTY FOLDER Libraries/Shared/Adapter)
 
-install (DIRECTORY Include/Adapters
-	DESTINATION Include/Adapters
+#[[
+install (DIRECTORY Include/Adapter
+	DESTINATION Include/Adapter
 	PATTERN *
 )
 
@@ -76,22 +77,22 @@ install (TARGETS s_ANSI_C_FileSystem
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-#[[
+
 install (TARGETS ANSI_C_FileSystem
 	EXPORT ANSI_CFileSystemConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-#]]
-install (EXPORT ANSI_CFileSystemConfig DESTINATION CMake)
 
+install (EXPORT ANSI_CFileSystemConfig DESTINATION CMake)
+#]]
 
 # ###############################################
-MakeUnitTests (LIBRARY ANSI_C_FileSystem:static GROUP Adapters
+MakeUnitTests (LIBRARY ANSI_C_FileSystem:static GROUP Adapter
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		PlatformLib:static
 )

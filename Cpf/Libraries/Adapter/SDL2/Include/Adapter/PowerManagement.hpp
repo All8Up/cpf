@@ -8,7 +8,7 @@
 
 namespace Cpf
 {
-	namespace Adapters
+	namespace Adapter
 	{
 		//////////////////////////////////////////////////////////////////////////
 		class PowerManagementEvents

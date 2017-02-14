@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/Pipeline.hpp"
-#include "Adapters/D3D12/Shader.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/Pipeline.hpp"
+#include "Adapter/D3D12/Shader.hpp"
+#include "Adapter/D3D12/Device.hpp"
 #include "Graphics/Descriptors/PipelineStateDesc.hpp"
-#include "Adapters/D3D12/ResourceBinding.hpp"
+#include "Adapter/D3D12/ResourceBinding.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 

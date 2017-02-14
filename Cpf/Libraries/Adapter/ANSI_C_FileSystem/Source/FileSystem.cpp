@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/FileSystem.hpp"
+#include "Adapter/FileSystem.hpp"
 #include "Logging/Logging.hpp"
 #include "IO/Stream.hpp"
 #include "IO/Path.hpp"
@@ -7,7 +7,7 @@
 #include "Std/IO.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 
 namespace Cpf
 {

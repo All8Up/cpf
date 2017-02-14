@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #ifdef CPF_USE_EASTL
 #	include "EASTL/unique_ptr.h"
 #	include "EASTL/shared_ptr.h"

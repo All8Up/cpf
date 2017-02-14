@@ -1,25 +1,25 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/Device.hpp"
-#include "Adapters/D3D12/Adapter.hpp"
-#include "Adapters/D3D12/Instance.hpp"
-#include "Adapters/D3D12/CommandPool.hpp"
-#include "Adapters/D3D12/CommandBuffer.hpp"
-#include "Adapters/D3D12/Fence.hpp"
-#include "Adapters/D3D12/SwapChain.hpp"
-#include "Adapters/D3D12/Image.hpp"
-#include "Adapters/D3D12/Shader.hpp"
-#include "Adapters/D3D12/Pipeline.hpp"
-#include "Adapters/D3D12/ResourceBinding.hpp"
+#include "Adapter/D3D12/Device.hpp"
+#include "Adapter/D3D12/Adapter.hpp"
+#include "Adapter/D3D12/Instance.hpp"
+#include "Adapter/D3D12/CommandPool.hpp"
+#include "Adapter/D3D12/CommandBuffer.hpp"
+#include "Adapter/D3D12/Fence.hpp"
+#include "Adapter/D3D12/SwapChain.hpp"
+#include "Adapter/D3D12/Image.hpp"
+#include "Adapter/D3D12/Shader.hpp"
+#include "Adapter/D3D12/Pipeline.hpp"
+#include "Adapter/D3D12/ResourceBinding.hpp"
+#include "Adapter/D3D12/Resource.hpp"
+#include "Adapter/D3D12/ConstantBuffer.hpp"
+#include "Adapter/D3D12/IndexBuffer.hpp"
+#include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Graphics/BinaryBlob.hpp"
 #include "Logging/Logging.hpp"
 #include "String.hpp"
-#include "Adapters/D3D12/Resource.hpp"
-#include "Adapters/D3D12/ConstantBuffer.hpp"
-#include "Adapters/D3D12/IndexBuffer.hpp"
-#include "Adapters/D3D12/VertexBuffer.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 

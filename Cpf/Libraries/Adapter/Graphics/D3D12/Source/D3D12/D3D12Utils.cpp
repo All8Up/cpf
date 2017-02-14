@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Graphics/Format.hpp"
 #include "Graphics/Interfaces/iOutput.hpp"
 #include "Graphics/Descriptors/ResourceBindingDesc.hpp"
 #include <dxgi1_2.h>
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace Graphics;
 
 UINT D3D12::Convert(SubResource sr)

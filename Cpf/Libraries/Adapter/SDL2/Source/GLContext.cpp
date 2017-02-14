@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/GLContext.hpp"
+#include "Adapter/Window.hpp"
+#include "Adapter/GLContext.hpp"
 #include "Application/Application.hpp"
 #include "sdl2/SDL.h"
-#include "Adapters/Window.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace Platform;
 
 //////////////////////////////////////////////////////////////////////////

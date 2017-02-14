@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/SwapChain.hpp"
-#include "Adapters/D3D12/Instance.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/SwapChain.hpp"
+#include "Adapter/D3D12/Instance.hpp"
+#include "Adapter/D3D12/Device.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/Image.hpp"
 #include "Application/Application.hpp"
-#include "Adapters/D3D12/D3D12Utils.hpp"
 #include "Logging/Logging.hpp"
 #include "Move.hpp"
-#include "Adapters/D3D12/Image.hpp"
 
 using namespace Cpf;
 using namespace Adapters;
