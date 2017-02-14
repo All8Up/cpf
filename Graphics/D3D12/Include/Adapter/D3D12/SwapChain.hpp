@@ -18,7 +18,7 @@ namespace Cpf
 		class iDevice;
 	}
 
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{

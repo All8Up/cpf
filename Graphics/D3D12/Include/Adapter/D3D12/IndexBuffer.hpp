@@ -2,13 +2,13 @@
 #pragma once
 #include "Graphics/Interfaces/iIndexBuffer.hpp"
 #include "Graphics/BufferUsage.hpp"
-#include "Adapters/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 
 
 namespace Cpf
 {
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{

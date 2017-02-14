@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "IntrusivePtr.hpp"
-#include "Adapters/D3D12.hpp"
-#include "Adapters/D3D12/DescriptorManager.hpp"
+#include "Adapter/D3D12.hpp"
+#include "Adapter/D3D12/DescriptorManager.hpp"
 #include "Graphics/Driver.hpp"
 #include <d3d12.h>
 #include "String.hpp"
@@ -24,14 +24,14 @@ namespace Cpf
 		class iResourceBinding;
 		class iPipeline;
 	}
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{
 			class IndexBuffer;
 			class VertexBuffer;
 
-			CPF_EXPORT_ADAPTERS_D3D12 class Device : public tRefCounted<Graphics::iDevice>
+			CPF_EXPORT_ADAPTER_D3D12 class Device : public tRefCounted<Graphics::iDevice>
 			{
 			public:
 				Device(Graphics::iAdapter* dev);

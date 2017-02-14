@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/IndexBuffer.hpp"
-#include "Adapters/D3D12/Device.hpp"
+#include "Adapter/D3D12/IndexBuffer.hpp"
+#include "Adapter/D3D12/Device.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData)
@@ -29,6 +29,10 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
 		switch (usage)
 		{
+		case Graphics::BufferUsage::eDefault:
+		case Graphics::BufferUsage::eDynamic:
+		case Graphics::BufferUsage::eImmutable:
+		case Graphics::BufferUsage::eReadback:
 		default:
 			flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 		}

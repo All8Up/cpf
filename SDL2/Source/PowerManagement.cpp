@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/PowerManagement.hpp"
+#include "Adapter/PowerManagement.hpp"
 #include "Logging/Logging.hpp"
-#include "sdl2/SDL_syswm.h"
+#include "SDL_syswm.h"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 
 void PowerManagementEvents::Suspending() { Emitter.Emit<OnSuspend>(); }
 void PowerManagementEvents::Resuming() { Emitter.Emit<OnResume>(); }

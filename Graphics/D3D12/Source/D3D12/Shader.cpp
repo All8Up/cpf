@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/Shader.hpp"
+#include "Adapter/D3D12/Shader.hpp"
 #include "Graphics/BinaryBlob.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////

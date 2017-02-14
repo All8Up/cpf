@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/Interfaces/iShader.hpp"
-#include "Adapters/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 
 
@@ -11,7 +11,7 @@ namespace Cpf
 	{
 		class iDevice;
 	}
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{

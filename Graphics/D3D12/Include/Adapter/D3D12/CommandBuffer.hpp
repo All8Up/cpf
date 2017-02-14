@@ -27,7 +27,7 @@ namespace Cpf
 		struct ResourceData;
 	}
 
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{

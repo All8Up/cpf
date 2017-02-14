@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "IO/FileSystem.hpp"
 #include "Move.hpp"
 
@@ -23,7 +23,7 @@
 
 namespace Cpf
 {
-	namespace Adapters
+	namespace Adapter
 	{
 		class ANSI_C_FileSystem : public Platform::IO::iFileSystem
 		{

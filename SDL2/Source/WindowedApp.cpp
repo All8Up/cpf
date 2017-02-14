@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/WindowedApp.hpp"
-#include "Adapters/Window.hpp"
+#include "Adapter/WindowedApp.hpp"
+#include "Adapter/Window.hpp"
 #include "Logging/Logging.hpp"
-#include "sdl2/SDL_syswm.h"
+#include "SDL_syswm.h"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
 int32_t WindowFlags(int32_t flags)

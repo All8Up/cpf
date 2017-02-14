@@ -1,14 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Platform/iGLContext.hpp"
-#include <sdl2/SDL.h>
+#include <SDL.h>
 
 
 namespace Cpf
 {
 	class iWindow;
 
-	namespace Adapters
+	namespace Adapter
 	{
 		class GLContext : public Platform::iGLContext
 		{

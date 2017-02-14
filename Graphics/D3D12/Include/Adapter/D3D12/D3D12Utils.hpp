@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <d3dcommon.h>
 #include <D3Dcompiler.h>
 #include <d3d12sdklayers.h>
-#include "Adapters/D3D12/d3dx12.h"
+#include "Adapter/D3D12/d3dx12.h"
 #include "Graphics/Format.hpp"
 #include "Graphics/Interfaces/iOutput.hpp"
 #include "Graphics/Interfaces/iSwapChain.hpp"
@@ -21,7 +21,7 @@ namespace Cpf
 	{
 		class ResourceBindingDesc;
 	}
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{

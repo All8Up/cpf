@@ -1,11 +1,11 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/Adapters/SDL2.hpp
-	Include/Adapters/ConsoleApp.hpp
-	Include/Adapters/WindowedApp.hpp
-	Include/Adapters/PowerManagement.hpp
-	Include/Adapters/Window.hpp
-	Include/Adapters/GLContext.hpp
+	Include/Adapter/SDL2.hpp
+	Include/Adapter/ConsoleApp.hpp
+	Include/Adapter/WindowedApp.hpp
+	Include/Adapter/PowerManagement.hpp
+	Include/Adapter/Window.hpp
+	Include/Adapter/GLContext.hpp
 )
 set (SOURCE_FILES
 	Source/SDL2.cpp
@@ -36,7 +36,7 @@ target_link_libraries (s_SDL2
 	s_Math
 	s_Time
 	s_Threading
-	sdl2
+	SDL2-static
 )
 
 target_include_directories (s_SDL2
@@ -50,8 +50,9 @@ target_include_directories (s_SDL2
 		$<INSTALL_INTERFACE:Include>
 )
 
-set_property (TARGET s_SDL2 PROPERTY FOLDER Libraries/Static/Adapters)
+set_property (TARGET s_SDL2 PROPERTY FOLDER Libraries/Static/Adapter)
 
+#[[
 install (DIRECTORY Include/SDL2
 	DESTINATION Include/SDL2
 	PATTERN *
@@ -64,13 +65,13 @@ install (TARGETS s_SDL2
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT SDL2Config DESTINATION CMake)
-
+]]#
 
 # ###############################################
-MakeUnitTest (LIBRARY s_SDL2 GROUP Adapters
+MakeUnitTest (LIBRARY s_SDL2 GROUP Adapter
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Configuration
 )

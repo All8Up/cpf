@@ -13,7 +13,7 @@ namespace Cpf
 		class iPipeline;
 	}
 
-	namespace Adapters
+	namespace Adapter
 	{
 		namespace D3D12
 		{

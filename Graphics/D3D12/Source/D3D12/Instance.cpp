@@ -1,14 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/D3D12/D3D12Utils.hpp"
-#include "Adapters/D3D12/Instance.hpp"
-#include "Adapters/D3D12/Adapter.hpp"
-#include "Adapters/D3D12/Device.hpp"
-#include "Adapters/D3D12/SwapChain.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/Instance.hpp"
+#include "Adapter/D3D12/Adapter.hpp"
+#include "Adapter/D3D12/Device.hpp"
+#include "Adapter/D3D12/SwapChain.hpp"
 #include "IntrusivePtr.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 }
 
 
-bool Instance::CreateDevice(Adapter::iAdapter* adapter, Graphics::iDevice** device)
+bool Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
 {
 	Graphics::iDevice* result = new Device(adapter);
 	if (result && result->Initialize())
