@@ -1,9 +1,15 @@
 file (GLOB_RECURSE DataFiles Experimental/*)
 
 set (HEADER_FILES
+	Include/ExperimentalD3D12.hpp
 )
 set (SOURCE_FILES
-	Source/Main.cpp
+	Source/ExperimentalD3D12.cpp
+	Source/Window.cpp
+	Source/WorkerData.cpp
+	Source/Rendering.cpp
+	Source/Device.cpp
+	Source/Resources.cpp
 )
 
 if (WIN32)
