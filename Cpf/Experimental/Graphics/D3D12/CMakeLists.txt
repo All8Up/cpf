@@ -21,14 +21,13 @@ if (WIN32)
 		s_SDL2
 		Logging
 		s_ANSI_C_FileSystem
-		s_GraphicsDriver
-		s_GraphicsFactory
 		s_Resources
-		s_AdaptersD3D12
+		s_GraphicsDriver
+		s_AdapterD3D12
 	)
 	target_compile_definitions (ExperimentalD3D12 PUBLIC -DGFX_ADAPTER=D3D12 )
 
-	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapters)
+	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)
 # WIN32
 endif ()
 

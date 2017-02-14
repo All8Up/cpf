@@ -1,10 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/WindowedApp.hpp"
+#include "Adapter/WindowedApp.hpp"
 #include "Logging/Logging.hpp"
 
 #include "IntrusivePtr.hpp"
-#include "Graphics/Factory.hpp"
-#include "Resources/Configuration.hpp"
+//#include "Resources/Configuration.hpp"
 #include "Threading/Threading.hpp"
 #include "Time/Time.hpp"
 
@@ -19,6 +18,7 @@
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Constants.hpp"
 #include <math.h>
+#include "IO/IO.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -28,13 +28,13 @@ using namespace Threading;
 using namespace Concurrency;
 
 #define GFX_INITIALIZER CPF_CONCAT(GFX_ADAPTER, Initializer)
-#define INCLUDE_GFX Adapters/## CPF_CONCAT(GFX_ADAPTER, .hpp)
+#define INCLUDE_GFX Adapter/## CPF_CONCAT(GFX_ADAPTER, .hpp)
 #include CPF_STRINGIZE(INCLUDE_GFX)
 #define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
 
 namespace Cpf
 {
-	class ExperimentalD3D12 : public Adapters::WindowedApp
+	class ExperimentalD3D12 : public Adapter::WindowedApp
 	{
 	public:
 		ExperimentalD3D12()
@@ -351,8 +351,8 @@ namespace Cpf
 			ScopedInitializer<TimeInitializer> timeInit;
 			ScopedInitializer<ThreadingInitializer> threadingInit;
 			ScopedInitializer<IOInitializer> ioInit;
-			ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-			ScopedInitializer<Adapters::GFX_INITIALIZER> gfxInit;
+//			ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
+			ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
 
 			mViewportSize = 1.0f;
 			mFOV = kDegToRad * 33.0f;
@@ -361,12 +361,13 @@ namespace Cpf
 			mAspectRatio = 1.0f;
 
 			// Create the virtual file system locator.
+#if 0
 			IntrusivePtr<Resources::Locator> resourceLocator(Resources::Configuration("./Experimental/resource_config.json").GetLocator());
 			if (!resourceLocator)
 			{
 				// Do something with configuration error.
 			}
-
+#endif
 			{
 				//////////////////////////////////////////////////////////////////////////
 				// Create the window.
@@ -391,7 +392,7 @@ namespace Cpf
 				// Get an instance of the installed device from the graphics factory.
 				{
 					IntrusivePtr<iInstance> gfxInstance;
-					Graphics::Create(1, gfxInstance.AsVoidPP());
+//					Graphics::Create(1, gfxInstance.AsVoidPP());
 					if (gfxInstance)
 					{
 						{
