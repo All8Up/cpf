@@ -26,7 +26,7 @@ source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
 target_link_libraries( SharedLibrary Configuration RefCount Collections Logging )
-target_link_libraries( s_SharedLibrary Configuration s_RefCount s_Collections Logging )
+target_link_libraries( s_SharedLibrary Configuration RefCount s_Collections Logging )
 
 target_include_directories( SharedLibrary PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -47,7 +47,7 @@ install( DIRECTORY Include/SharedLibrary
 	PATTERN *
 )
 
-
+#[[
 install( TARGETS SharedLibrary
 	EXPORT SharedLibraryConfig
 	CONFIGURATIONS Debug Release
@@ -61,11 +61,11 @@ install( TARGETS s_SharedLibrary
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install( EXPORT SharedLibraryConfig DESTINATION CMake )
-
+]]#
 
 # ###############################################
 MakeUnitTests( LIBRARY SharedLibrary GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

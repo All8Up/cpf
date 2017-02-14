@@ -39,16 +39,16 @@ namespace Cpf
 
 					result.erase(
 						result.begin(),
-						eastl::find_if(
+						CPF_STL_NAMESPACE::find_if(
 							result.begin(),
 							result.end(),
-							not1(eastl::ptr_fun<int, int>(Std::IsSpace)))
+							not1(CPF_STL_NAMESPACE::ptr_fun<int, int>(Std::IsSpace)))
 					);
 					result.erase(
-						eastl::find_if(
+						CPF_STL_NAMESPACE::find_if(
 							result.rbegin(),
 							result.rend(),
-							not1(eastl::ptr_fun<int, int>(Std::IsSpace))).base(),
+							not1(CPF_STL_NAMESPACE::ptr_fun<int, int>(Std::IsSpace))).base(),
 						result.end());
 
 					Cpf::Replace(

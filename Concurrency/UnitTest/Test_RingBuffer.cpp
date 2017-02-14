@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "gmock/gmock.h"
 #include "Concurrency/Collections/RingBuffer.hpp"
 

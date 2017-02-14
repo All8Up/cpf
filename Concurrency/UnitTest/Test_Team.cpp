@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Concurrency/Scheduler.hpp"
 #include "Concurrency/Team.hpp"
 #include "Threading/Thread.hpp"

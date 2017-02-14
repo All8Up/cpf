@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Hash/Detail/Crc16Table.hpp"
 #include "Hash/Detail/Crc32Table.hpp"
 #include "Hash/Detail/Crc64Table.hpp"

@@ -51,7 +51,7 @@ source_group (Sources\\Dispatch FILES ${DISPATCH_SOURCE})
 source_group (Headers\\Collections FILES ${COLLECTIONS_INCLUDE})
 source_group (Sources\\Collections FILES ${COLLECTIONS_SOURCE})
 
-target_link_libraries (s_Concurrency Configuration s_Atomic s_Threading Logging VTune)
+target_link_libraries (s_Concurrency Configuration Atomic s_Threading Logging VTune)
 
 target_include_directories (s_Concurrency PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -60,6 +60,7 @@ target_include_directories (s_Concurrency PUBLIC
 
 set_property (TARGET s_Concurrency PROPERTY FOLDER Libraries/Static/Platform)
 
+#[[
 install (DIRECTORY Include/Concurrency
 	DESTINATION Include/Concurrency
 	PATTERN *
@@ -73,7 +74,7 @@ install (TARGETS s_Concurrency
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT ConcurrencyConfig DESTINATION CMake)
-
+]]#
 
 # ###############################################
 MakeUnitTest (LIBRARY s_Concurrency GROUP Platform
@@ -94,9 +95,9 @@ MakeUnitTest (LIBRARY s_Concurrency GROUP Platform
 		UnitTest/Test_Scheduler_Opcode_SharedDataRegister.cpp
 		UnitTest/Test_Scheduler_Opcode_SharedAddressRegister.cpp
 		UnitTest/Test_Team.cpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Configuration s_Atomic s_Threading VTune
+		Configuration Atomic s_Threading VTune
 )
 
 

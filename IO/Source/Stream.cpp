@@ -8,7 +8,7 @@ Cpf::Vector<char> CPF_EXPORT_IO Cpf::Platform::IO::ReadText(Stream* stream)
 	Vector<char> result;
 	int64_t streamLen = stream->GetLength();
 	result.resize(streamLen);
-	stream->Read(result.begin(), streamLen);
+	stream->Read(result.data(), streamLen);
 	result.push_back(0);
 	return result;
 }

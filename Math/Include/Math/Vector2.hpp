@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Math/Math.hpp"
 #include "Math/Detail/Swizzle2.hpp"
 #include "Math/Detail/Swizzle3.hpp"
