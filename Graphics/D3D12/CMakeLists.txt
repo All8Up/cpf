@@ -1,9 +1,15 @@
 file (GLOB_RECURSE DataFiles Experimental/*)
 
 set (HEADER_FILES
+	Include/ExperimentalD3D12.hpp
 )
 set (SOURCE_FILES
-	Source/Main.cpp
+	Source/ExperimentalD3D12.cpp
+	Source/Window.cpp
+	Source/WorkerData.cpp
+	Source/Rendering.cpp
+	Source/Device.cpp
+	Source/Resources.cpp
 )
 
 if (WIN32)
@@ -16,19 +22,17 @@ if (WIN32)
 		PUBLIC Include
 	)
 	target_link_libraries (ExperimentalD3D12
-		s_PlatformLib
 		s_Concurrency
 		s_SDL2
 		Logging
 		s_ANSI_C_FileSystem
-		s_GraphicsDriver
-		s_GraphicsFactory
 		s_Resources
-		s_AdaptersD3D12
+		s_GraphicsDriver
+		s_AdapterD3D12
 	)
 	target_compile_definitions (ExperimentalD3D12 PUBLIC -DGFX_ADAPTER=D3D12 )
 
-	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapters)
+	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)
 # WIN32
 endif ()
 
@@ -60,7 +64,7 @@ endif ()
 
 
 if(MSVC)
-	set (targetPath /Cpf/Experimental/Graphics/Factory)
+	set (targetPath /Cpf/Experimental/Graphics/D3D12)
 else()
 	set (targetPath /)
 endif()
@@ -78,8 +82,10 @@ foreach (file ${DataFiles})
 endforeach ()
 source_group (Data FILES ${DataFiles})
 
+#[[
 if (WIN32)
 	add_custom_command (TARGET ExperimentalD3D12 POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL_DIR}/bin/windows/lib64/nvToolsExt64_1.dll ${CMAKE_BINARY_DIR}/bin/$<CONFIG>
 	)
 endif ()
+]]#
