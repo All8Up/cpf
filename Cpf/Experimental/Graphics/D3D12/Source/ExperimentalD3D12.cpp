@@ -232,7 +232,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					mQueue.Submit(frameSemaphore);
 
 					// And submit all the work to the thread system for processing.
-					mQueue.Submit(Scheduler::Queue::SubmissionType::eNormal);
+					mQueue.Execute(Scheduler::Queue::SubmissionType::eNormal);
 				}
 
 				// Guarantee last frame is complete.

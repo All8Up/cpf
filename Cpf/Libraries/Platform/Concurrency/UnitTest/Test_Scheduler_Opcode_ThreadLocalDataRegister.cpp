@@ -13,6 +13,7 @@ TEST(Concurrency, Set_ThreadLocalDataRegister)
 	Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
 	Scheduler* scheduler = new Scheduler;
 	scheduler->Initialize(std::move(threads));
+	Scheduler::Semaphore sync;
 	{
 		Scheduler::Queue queue = scheduler->CreateQueue();
 
@@ -25,6 +26,8 @@ TEST(Concurrency, Set_ThreadLocalDataRegister)
 			EXPECT_EQ(ival, threadContext.TLD(ival));
 		}, (void*)intptr_t(i));
 
-		queue.BlockingSubmit();
+		queue.Submit(sync);
+		queue.Execute();
+		sync.Acquire();
 	}
 }

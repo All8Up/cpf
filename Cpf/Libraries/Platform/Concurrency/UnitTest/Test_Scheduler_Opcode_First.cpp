@@ -17,6 +17,7 @@ TEST(Concurrency, First_Opcode)
 		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
 		Scheduler* scheduler = new Scheduler;
 		scheduler->Initialize(std::move(threads));
+		Scheduler::Semaphore sync;
 		{
 			Scheduler::Queue queue = scheduler->CreateQueue();
 
@@ -41,7 +42,9 @@ TEST(Concurrency, First_Opcode)
 				&firstThreadArrived);
 
 			// Wait for completion.
-			queue.BlockingSubmit();
+			queue.Submit(sync);
+			queue.Execute();
+			sync.Acquire();
 			EXPECT_EQ(1, firstThreadArrived);
 		}
 		scheduler->Shutdown();

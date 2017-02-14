@@ -18,6 +18,7 @@ TEST(Concurrency, Basics)
 		Scheduler* scheduler = new Scheduler;
 
 		scheduler->Initialize(Move(threads));
+		Scheduler::Semaphore sync;
 		{
 			static const auto loopCount = 25000;
 			int valid[loopCount] = { 0 };
@@ -36,7 +37,9 @@ TEST(Concurrency, Basics)
 			}
 
 			// Wait for completion.
-			queue.BlockingSubmit();
+			queue.Submit(sync);
+			queue.Execute();
+			sync.Acquire();
 			for (auto i = 0; i < loopCount; ++i)
 				EXPECT_EQ(1, valid[i]);
 		}

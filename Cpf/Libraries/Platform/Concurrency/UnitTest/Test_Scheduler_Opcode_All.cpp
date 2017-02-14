@@ -25,7 +25,8 @@ TEST(Concurrency, All_Opcode)
 		EXPECT_TRUE(scheduler->ThreadCount() >= 4);
 
 		Scheduler::Queue queue = scheduler->CreateQueue();
-		scheduler->CreateQueue().ActiveThreads(4).Submit();
+		Scheduler::Semaphore sync;
+		scheduler->CreateQueue().ActiveThreads(4).Execute();
 		{
 			//////////////////////////////////////////////////////////////////////////
 			int hitCount = 0;
@@ -37,7 +38,9 @@ TEST(Concurrency, All_Opcode)
 				},
 					&hitCount);
 			}
-			queue.BlockingSubmit();
+			queue.Submit(sync);
+			queue.Execute();
+			sync.Acquire();
 			EXPECT_EQ(4 * 25, hitCount);
 		}
 		scheduler->Shutdown();

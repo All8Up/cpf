@@ -38,7 +38,7 @@ TEST(Concurrency, ActiveChange)
 		for (auto threads = 1; threads < scheduler->ThreadCount(); ++threads)
 		{
 			testData->HitCount = 0;
-			scheduler->CreateQueue().ActiveThreads(threads).Submit();
+			scheduler->CreateQueue().ActiveThreads(threads).Execute();
 
 			for (auto i = 0; i < loopCount*threads; ++i)
 			{
@@ -62,14 +62,14 @@ TEST(Concurrency, ActiveChange)
 			},
 				testData);
 
-			queue.Submit();
+			queue.Execute();
 			testData->Complete.Acquire();
 			EXPECT_EQ(loopCount*threads, Cpf::Atomic::Load(testData->HitCount));
 		}
 		for (auto threads = scheduler->ThreadCount(); threads > 0; --threads)
 		{
 			testData->HitCount = 0;
-			scheduler->CreateQueue().ActiveThreads(threads).Submit();
+			scheduler->CreateQueue().ActiveThreads(threads).Execute();
 
 			for (auto i = 0; i < loopCount*threads; ++i)
 			{
@@ -93,7 +93,7 @@ TEST(Concurrency, ActiveChange)
 			},
 				testData);
 
-			queue.Submit();
+			queue.Execute();
 			testData->Complete.Acquire();
 			EXPECT_EQ(loopCount*threads, Atomic::Load(testData->HitCount));
 		}
@@ -104,7 +104,7 @@ TEST(Concurrency, ActiveChange)
 			threadCount = threadCount <= 0 ? 1 : threadCount > scheduler->ThreadCount() ? scheduler->ThreadCount() : threadCount;
 
 			testData->HitCount = 0;
-			scheduler->CreateQueue().ActiveThreads(threadCount).Submit();
+			scheduler->CreateQueue().ActiveThreads(threadCount).Execute();
 
 			for (auto i = 0; i < loopCount*threadCount; ++i)
 			{
@@ -128,7 +128,7 @@ TEST(Concurrency, ActiveChange)
 			},
 				testData);
 
-			queue.Submit();
+			queue.Execute();
 			testData->Complete.Acquire();
 			EXPECT_EQ(loopCount*threadCount, Cpf::Atomic::Load(testData->HitCount));
 		}

@@ -15,6 +15,7 @@ TEST(Concurrency, FirstFenced_Opcode)
 	for (auto i = 0; i < 10; ++i)
 	{
 		Scheduler* scheduler = new Scheduler;
+		Scheduler::Semaphore sync;
 		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
 		scheduler->Initialize(std::move(threads));
 		{
@@ -33,7 +34,10 @@ TEST(Concurrency, FirstFenced_Opcode)
 				&firstThreadArrived);
 
 			// Wait for completion.
-			queue.BlockingSubmit();
+			queue.Submit(sync);
+			queue.Execute();
+			sync.Acquire();
+
 			EXPECT_EQ(1, firstThreadArrived);
 		}
 		scheduler->Shutdown();

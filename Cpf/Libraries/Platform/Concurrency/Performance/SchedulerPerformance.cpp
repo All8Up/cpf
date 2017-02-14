@@ -130,11 +130,16 @@ int64_t SchedulerPerformance::_InstructionRate(int threadCount)
 		(void)context;
 	}, testData);
 
-	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Submit();
+	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Execute();
+	Scheduler::Semaphore sync;
 	auto start = Platform::Time::Value::Now();
 	{
 		for (int i = 0; i < loopCount; ++i)
-			instructions.BlockingSubmit(Scheduler::Queue::SubmissionType::eNoClear);
+		{
+			instructions.Submit(sync);
+			instructions.Execute(Scheduler::Queue::SubmissionType::eNoClear);
+			sync.Acquire();
+		}
 	}
 	auto end = Platform::Time::Value::Now();
 	auto delta = Platform::Time::Seconds(end - start);
@@ -178,16 +183,18 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 		}
 	}, testData);
 
-	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Submit();
-
+	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Execute();
+	Scheduler::Semaphore sync;
 	auto start = Platform::Time::Value::Now();
 	{
 		Semaphore wait;
 		for (int i = 0; i < loopCount; ++i)
 		{
-			instructions.Submit(Scheduler::Queue::SubmissionType::eNoClear);
+			instructions.Execute(Scheduler::Queue::SubmissionType::eNoClear);
 		}
-		m_Scheduler.CreateQueue().BlockingSubmit();
+		instructions.Submit(sync);
+		instructions.Execute();
+		sync.Acquire();
 	}
 	auto end = Platform::Time::Value::Now();
 	auto delta = Platform::Time::Seconds(end - start);
@@ -204,7 +211,7 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 int64_t SchedulerPerformance::_InstructionRateAlternatePassWait(int threadCount)
 {
 	auto start = Platform::Time::Value::Now();
-	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Submit();
+	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Execute();
 	{
 
 	}

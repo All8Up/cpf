@@ -150,7 +150,7 @@ namespace Cpf
 		class Scheduler::Semaphore
 		{
 		public:
-			Semaphore(int32_t value);
+			Semaphore(int32_t value=0);
 			void Acquire();
 			void Release();
 

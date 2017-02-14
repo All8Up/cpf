@@ -27,7 +27,12 @@ TEST(Concurrency, AllFenced_Opcode)
 		EXPECT_TRUE(scheduler->ThreadCount() >= 4);
 
 		const int threadCount = 8 > hardwareThreads ? hardwareThreads : 8;
-		scheduler->CreateQueue().ActiveThreads(threadCount).BlockingSubmit();
+		Scheduler::Semaphore sync;
+		auto activeQueue = scheduler->CreateQueue();
+		activeQueue.ActiveThreads(threadCount);
+		activeQueue.Submit(sync);
+		activeQueue.Execute();
+		sync.Acquire();
 		{
 			static const int testCount = 100;
 			static const int loopCount = 200;
@@ -63,7 +68,9 @@ TEST(Concurrency, AllFenced_Opcode)
 					},
 						&testData[j]);
 				}
-				queue.BlockingSubmit();
+				queue.Submit(sync);
+				queue.Execute();
+				sync.Acquire();
 				EXPECT_EQ(threadCount * loopCount, hitCount);
 			}
 		}

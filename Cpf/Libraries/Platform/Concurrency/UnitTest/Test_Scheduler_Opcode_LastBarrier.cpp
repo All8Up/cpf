@@ -17,7 +17,8 @@ TEST(Concurrency, LastFenced_Opcode)
 		Scheduler* scheduler = new Scheduler;
 		scheduler->Initialize(std::move(threads));
 		EXPECT_TRUE(scheduler->ThreadCount() >= 4);
-		scheduler->CreateQueue().ActiveThreads(4).Submit();
+		Scheduler::Semaphore sync;
+		scheduler->CreateQueue().ActiveThreads(4).Execute();
 		{
 			auto hitCount = 0;
 
@@ -48,7 +49,9 @@ TEST(Concurrency, LastFenced_Opcode)
 				&hitCount);
 
 			// Wait for completion.
-			queue.BlockingSubmit();
+			queue.Submit(sync);
+			queue.Execute();
+			sync.Acquire();
 			EXPECT_EQ(8, hitCount);
 		}
 		scheduler->Shutdown();

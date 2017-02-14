@@ -215,29 +215,11 @@ void Scheduler::Queue::SA(int index, void* value)
  * @brief Submit the instruction queue to the scheduler.
  * @param type If the submission should clear this queue or not.
  */
-Scheduler::Queue& Scheduler::Queue::Submit(SubmissionType type)
+Scheduler::Queue& Scheduler::Queue::Execute(SubmissionType type)
 {
 	(*mpScheduler)(*this);
 	if (type==SubmissionType::eNormal)
 		Clear();
-
-	return *this;
-}
-
-/**
- * @brief Submit the queue and block until it completes.
- * @param type If the submission should clear this queue or not.
- */
-Scheduler::Queue& Scheduler::Queue::BlockingSubmit(SubmissionType type)
-{
-	(*mpScheduler)(*this);
-	mpScheduler->_Emit(Detail::Opcodes::LastOneBarrier, [](ThreadContext&, void* context)
-	{
-		reinterpret_cast<Platform::Threading::Semaphore*>(context)->Release();
-	}, &mBarrier);
-	if (type == SubmissionType::eNormal)
-		Clear();
-	mBarrier.Acquire();
 
 	return *this;
 }

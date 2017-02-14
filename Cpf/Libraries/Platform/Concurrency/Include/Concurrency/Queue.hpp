@@ -51,8 +51,7 @@ namespace Cpf
 			void SA(int index, void* value);
 
 			// Submission.
-			Queue& Submit(SubmissionType type=SubmissionType::eNormal);
-			Queue& BlockingSubmit(SubmissionType type = SubmissionType::eNormal);
+			Queue& Execute(SubmissionType type=SubmissionType::eNormal);
 
 		private:
 			//  The queue is only created by the scheduler.
