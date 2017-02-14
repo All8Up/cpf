@@ -99,9 +99,10 @@ namespace Cpf
 		struct Instance
 		{
 			Vector3f mTranslation;
-//				Vector3f mOrientation0;
-//				Vector3f mOrientation1;
-//				Vector3f mOrientation2;
+			Vector3f mScale;
+			Vector3f mOrientation0;
+			Vector3f mOrientation1;
+			Vector3f mOrientation2;
 		};
 
 		void _InitThreadsForRendering(ThreadContext& tc)
@@ -210,6 +211,10 @@ namespace Cpf
 					int yc = (i / count) % count;
 					int zc = (i / (count * count)) % count;
 					instances[i].mTranslation = Vector3f((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
+					instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
+					instances[i].mOrientation0 = Vector3f(1.0f, 0.0f, 0.0f);
+					instances[i].mOrientation1 = Vector3f(0.0f, 1.0f, 0.0f);
+					instances[i].mOrientation2 = Vector3f(0.0f, 0.0f, 1.0f);
 
 					float magnitude = Magnitude(instances[i].mTranslation + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
 					magnitude *= magnitude;
@@ -559,10 +564,11 @@ namespace Cpf
 							.InputLayout({
 								ElementDesc("POSITION", Format::eRGB32f),
 								ElementDesc("COLOR", Format::eRGBA32f),
-								ElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1) /*,
+								ElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+								ElementDesc("SCALE", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
 								ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
 								ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-								ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1) */
+								ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1)
 							})
 							.RenderTargets({ Format::eRGBA8un })
 							.DepthStencilFormat(Format::eD32f)
