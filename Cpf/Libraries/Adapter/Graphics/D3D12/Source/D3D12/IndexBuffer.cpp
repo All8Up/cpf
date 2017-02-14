@@ -29,6 +29,10 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE;
 		switch (usage)
 		{
+		case Graphics::BufferUsage::eDefault:
+		case Graphics::BufferUsage::eDynamic:
+		case Graphics::BufferUsage::eImmutable:
+		case Graphics::BufferUsage::eReadback:
 		default:
 			flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 		}

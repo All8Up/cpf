@@ -17,6 +17,7 @@ namespace
 // TODO: This is just a temporary factory to get things running.
 CPF_EXPORT_ADAPTER_D3D12 bool Cpf::Graphics::Create(int64_t id, Graphics::iInstance** instance)
 {
+	(void)id;
 	*instance = reinterpret_cast<Graphics::iInstance*>(D3D12::Instance::Create());
 	return true;
 }

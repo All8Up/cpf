@@ -112,6 +112,7 @@ MakeUnitTests( LIBRARY Threading GROUP Platform
 	LINK_LIBRARIES
 		Collections Time Simd:static Math:static
 )
+
 option( CPF_THREADING_PROFILE_BUILD "" OFF )
 if (CPF_THREADING_PROFILE_BUILD)
 	set(PROFILE_ON 1)
