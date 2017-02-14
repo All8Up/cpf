@@ -1,2 +1,6 @@
 build/
 External/Source/
+External/bin/
+External/cmake/
+External/include/
+External/lib64/
