@@ -1,0 +1,17 @@
+{
+  "Mounts": [
+    {
+      "VolumeType": "FileSystem",
+      "MountPoint": "shaders",
+      "Descriptor": {
+        "Directory": "./Experimental/shaders"
+      }
+    }
+  ],
+  "Caches": [
+    {
+      "CacheType": "Default",
+      "Name": "default"
+    }
+  ]
+}
