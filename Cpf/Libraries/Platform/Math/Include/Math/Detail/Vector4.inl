@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Math/Vector4.hpp"
 #include <cmath>
 

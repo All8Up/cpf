@@ -26,7 +26,7 @@ target_compile_definitions( s_Application
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( s_Application Configuration s_Memory s_Collections s_Math s_Events s_RefCount tclap )
+target_link_libraries( s_Application Configuration s_Memory s_Collections s_Math s_Events RefCount )
 
 target_include_directories( s_Application PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

@@ -1,10 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #ifdef CPF_USE_EASTL
 #	include "EASTL/algorithm.h"
 #else
 #	include <algorithm>
+#	include <functional>
 #endif
 
 

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 
 
 #ifdef CPF_TARGET_WINDOWS

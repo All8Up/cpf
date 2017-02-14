@@ -56,7 +56,7 @@ source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
 #target_link_libraries( IO Configuration Collections RefCount )
-target_link_libraries( s_IO Configuration s_Std s_Collections s_RefCount )
+target_link_libraries( s_IO Configuration s_Std s_Collections RefCount )
 
 #[[
 target_include_directories( IO

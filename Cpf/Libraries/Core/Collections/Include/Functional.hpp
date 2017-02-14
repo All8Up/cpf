@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include <functional>
 // No EASTL support as it misses too many features at this time.
 

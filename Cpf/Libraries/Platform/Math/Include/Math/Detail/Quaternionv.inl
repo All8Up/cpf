@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Math/Quaternionv.hpp"
 #include "Math/Vector3v.hpp"
 #include <cmath>

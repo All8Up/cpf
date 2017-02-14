@@ -53,7 +53,7 @@ source_group( Headers FILES ${THREADING_INCLUDE_FILES} ${THREADING_PLATFORM_INCL
 source_group( Source FILES ${THREADING_SOURCE_FILES} )
 
 target_link_libraries( Threading Configuration Collections Time Atomic Logging )
-target_link_libraries( s_Threading Configuration s_Collections s_Time s_Atomic Logging )
+target_link_libraries( s_Threading Configuration s_Collections s_Time Atomic Logging )
 
 target_include_directories( Threading PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

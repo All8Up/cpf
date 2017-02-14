@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Application/Arguments.hpp"
 #include "Platform/iGLContext.hpp"
 #include "Events/Emitter.hpp"

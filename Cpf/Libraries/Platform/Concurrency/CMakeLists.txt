@@ -51,7 +51,7 @@ source_group (Sources\\Dispatch FILES ${DISPATCH_SOURCE})
 source_group (Headers\\Collections FILES ${COLLECTIONS_INCLUDE})
 source_group (Sources\\Collections FILES ${COLLECTIONS_SOURCE})
 
-target_link_libraries (s_Concurrency Configuration s_Atomic s_Threading Logging VTune)
+target_link_libraries (s_Concurrency Configuration Atomic s_Threading Logging VTune)
 
 target_include_directories (s_Concurrency PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -97,7 +97,7 @@ MakeUnitTest (LIBRARY s_Concurrency GROUP Platform
 		UnitTest/Test_Team.cpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Configuration s_Atomic s_Threading VTune
+		Configuration Atomic s_Threading VTune
 )
 
 

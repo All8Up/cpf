@@ -3,7 +3,7 @@
  */
 #pragma once
 #include "IO/IO.hpp"
-#include "IntrusivePtr.hpp"
+#include "RefCount.hpp"
 #include "Functional.hpp"
 #include "Vector.hpp"
 

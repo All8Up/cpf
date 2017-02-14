@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "Simd/Simd.hpp"
 #include "Math/Detail/SwizzleMacros.hpp"
 

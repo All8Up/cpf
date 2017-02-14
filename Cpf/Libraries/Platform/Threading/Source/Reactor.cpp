@@ -126,7 +126,7 @@ void Reactor::WorkQueue::Initialize(Reactor* reactor)
 void Reactor::WorkQueue::operator ()(WorkFunction& func) const
 {
 	mpReactor->mLock.Acquire();
-	mpReactor->mQueue.emplace_back(Move(func));
+	mpReactor->mQueue.push(Move(func));
 	mpReactor->mLock.Release();
 	mpReactor->mCondition.ReleaseAll();
 }
@@ -139,7 +139,7 @@ void Reactor::WorkQueue::operator ()(WorkFunction& func) const
 void Reactor::WorkQueue::operator ()(WorkFunction&& func) const
 {
 	mpReactor->mLock.Acquire();
-	mpReactor->mQueue.emplace_back(func);
+	mpReactor->mQueue.push(func);
 	mpReactor->mLock.Release();
 	mpReactor->mCondition.ReleaseAll();
 }

@@ -10,6 +10,7 @@ extern Cpf::Application::ApplicationCreate gs_ApplicationCreate;
 
 int main(int argc, char** argv)
 {
+	(void)argc; (void)argv;
 	auto app = gs_ApplicationCreate();
 //	app->GetCommandLine().parse(argc, argv);
 	auto result = app->Start(app->GetCommandLine());

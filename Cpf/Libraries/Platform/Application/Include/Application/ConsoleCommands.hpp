@@ -1,8 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "String.hpp"
 #include "Map.hpp"
+#include "Functional.hpp"
 
 
 namespace Cpf
@@ -32,7 +33,7 @@ namespace Cpf
 			String mName;
 		};
 
-		using CommandFunction = eastl::function<void (const Arguments&)>;
+		using CommandFunction = CPF_STL_NAMESPACE::function<void (const Arguments&)>;
 		Builder CreateCommand(const String& name, CommandFunction func) {return Builder(this, name);}
 		void Add(const String& name)
 		{

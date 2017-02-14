@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 #include "String.hpp"
-#include "IntrusivePtr.hpp"
+#include "RefCount.hpp"
 #include "Platform/SharedLibrary.hpp"
 
 
