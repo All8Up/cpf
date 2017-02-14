@@ -46,5 +46,5 @@ MakeUnitTests (LIBRARY Attributes:static GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_Attributes.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

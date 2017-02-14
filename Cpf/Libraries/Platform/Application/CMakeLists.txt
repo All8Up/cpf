@@ -61,5 +61,5 @@ install( EXPORT ApplicationConfig DESTINATION CMake )
 MakeUnitTests( LIBRARY Application:static GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

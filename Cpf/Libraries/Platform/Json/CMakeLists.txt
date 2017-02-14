@@ -65,5 +65,5 @@ install( EXPORT JsonConfig DESTINATION CMake )
 MakeUnitTests( LIBRARY Json GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

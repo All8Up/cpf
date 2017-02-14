@@ -79,5 +79,5 @@ MakeUnitTests( LIBRARY Time GROUP Platform
 		UnitTest/Test_Value.hpp
 		UnitTest/Test_Unit_Us.hpp
 		UnitTest/Test_Different_Unit_Comparison.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

@@ -71,5 +71,5 @@ MakeUnitTests( LIBRARY Events GROUP Platform
 		UnitTest/Test_All.hpp
 		UnitTest/Test_Emitter.hpp
 		UnitTest/Test_DeferredEmitter.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

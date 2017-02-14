@@ -96,7 +96,7 @@ MakeUnitTest( LIBRARY s_Math GROUP Platform
 		UnitTest/Test_Mat33Mat44Quat.cpp
 		UnitTest/Test_LargeVector3f.cpp
 		UnitTest/Test_Utilities.cpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Configuration s_Simd
 )

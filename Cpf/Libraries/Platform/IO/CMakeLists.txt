@@ -110,7 +110,7 @@ MakeUnitTests( LIBRARY IO:static GROUP Platform
 		UnitTest/Test_TextWriter.hpp
 		UnitTest/Test_Archive.hpp
 		UnitTest/Test_Serializer.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		PlatformLib
 		ANSI_C_FileSystem:static

@@ -69,5 +69,5 @@ MakeUnitTests( LIBRARY Hash GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_Crc.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 )

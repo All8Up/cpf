@@ -71,6 +71,7 @@ target_include_directories( s_Threading PUBLIC
 set_property( TARGET s_Threading PROPERTY FOLDER Libraries/Static/Platform )
 set_property( TARGET Threading PROPERTY FOLDER Libraries/Shared/Platform )
 
+#[[
 install( DIRECTORY Include/Threading
 	DESTINATION Include/Threading
 	PATTERN *
@@ -94,7 +95,7 @@ install( TARGETS s_Threading
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install( EXPORT ThreadingConfig DESTINATION CMake )
-
+]]#
 
 # ###############################################
 MakeUnitTests( LIBRARY Threading GROUP Platform
@@ -107,7 +108,7 @@ MakeUnitTests( LIBRARY Threading GROUP Platform
 		UnitTest/Test_Thread.hpp
 		UnitTest/Test_ThreadLocal.hpp
 		UnitTest/Test_Reactor.hpp
-		../../UnitTesting/Source/Main.cpp
+		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Collections Time Simd:static Math:static
 )

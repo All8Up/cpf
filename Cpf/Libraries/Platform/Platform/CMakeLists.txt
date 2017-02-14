@@ -78,6 +78,7 @@ set_property (TARGET s_PlatformLib PROPERTY FOLDER Libraries/Static)
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
 
+#[[
 install (DIRECTORY Include/Cpf
 	DESTINATION Include/Cpf
 	PATTERN *
@@ -96,3 +97,4 @@ install (TARGETS PlatformLib
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT PlatformConfig DESTINATION CMake)
+]]#
