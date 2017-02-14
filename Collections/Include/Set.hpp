@@ -1,12 +1,16 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
-#include "EASTL/set.h"
+#include "Configuration.hpp"
+#ifdef CPF_USE_EASTL
+#	include "EASTL/set.h"
+#else
+#	include <set>
+#endif
 
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	template<typename T, typename C = eastl::less<T>>
-	using Set = eastl::set<T, C>;
+	template<typename T, typename C = CPF_STL_NAMESPACE::less<T>>
+	using Set = CPF_STL_NAMESPACE::set<T, C>;
 }

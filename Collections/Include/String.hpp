@@ -1,20 +1,24 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
-#include "EASTL/string.h"
-#include <ostream>
-
+#include "Configuration.hpp"
+#ifdef CPF_USE_EASTL
+#	include "EASTL/string.h"
+#	include <ostream>
+#else
+#	include <string>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename CHAR_TYPE>
-	using BasicString = eastl::basic_string<CHAR_TYPE>;
-	using String = eastl::string8;
-	using WString = eastl::wstring;
+	using BasicString = CPF_STL_NAMESPACE::basic_string<CHAR_TYPE>;
+	using String = CPF_STL_NAMESPACE::string;
+	using WString = CPF_STL_NAMESPACE::wstring;
 }
 
 
+#ifdef CPF_USE_EASTL
 namespace eastl {
 	inline
 	std::ostream &operator<<(std::ostream &os, const Cpf::String &val) {
@@ -29,3 +33,4 @@ namespace eastl {
 		return os;
 	}
 }
+#endif

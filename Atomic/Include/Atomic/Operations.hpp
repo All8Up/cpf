@@ -1,8 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
-#include "Platform/Atomic/MemoryOrder.hpp"
-
 
 namespace Cpf
 {
@@ -186,7 +184,3 @@ namespace Cpf
 		};
 	}
 }
-
-
-//////////////////////////////////////////////////////////////////////////
-#include <Platform/Atomic/Operations.hpp>

@@ -6,14 +6,14 @@
 
 namespace Cpf
 {
-	class CPF_EXPORT_REFCOUNT iRefCounted
+	class iRefCounted
 	{
 	public:
 		virtual int32_t AddRef() = 0;
 		virtual int32_t Release() = 0;
 
 	protected:
-		virtual ~iRefCounted() = 0;
+		virtual ~iRefCounted() {};
 	};
 
 	inline int32_t SafeAddRef(iRefCounted* rc)

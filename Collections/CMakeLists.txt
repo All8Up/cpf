@@ -1,3 +1,13 @@
+if (TARGET eastl)
+	message ("Using eastl.")
+	set (CPF_USE_EASTL )
+	set (STL_LIB "eastl")
+else ()
+	message ("Using compiler supplied STL.")
+
+	set (STL_LIB "")
+endif ()
+
 # ###############################################
 set( INCLUDE_FILES
 	Include/Algorithm.hpp
@@ -21,7 +31,6 @@ set( INCLUDE_FILES
 	Include/StringUtils.hpp
 	Include/HandlePool.hpp
 	Include/Tuple.hpp
-	Include/PacketStream.hpp
 	Include/BitSet.hpp
 )
 set( SOURCE_FILES
@@ -46,8 +55,8 @@ target_compile_definitions( Collections
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( Collections Configuration eastl Atomic )
-target_link_libraries( s_Collections Configuration eastl s_Atomic )
+target_link_libraries( Collections Configuration ${STL_LIB} Atomic )
+target_link_libraries( s_Collections Configuration ${STL_LIB} Atomic )
 
 target_include_directories( Collections PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -86,6 +95,7 @@ MakeUnitTests( LIBRARY Collections GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_HandlePool.hpp
-		UnitTest/Test_PacketStream.cpp
 		../Test/UnitTestMain.cpp
+	LINK_LIBRARIES
+		Atomic:interface
 )

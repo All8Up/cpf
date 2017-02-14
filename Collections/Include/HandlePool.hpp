@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
-#include "Atomic/Atomic.hpp"
+#include "Configuration.hpp"
+#include "Atomic.hpp"
 
 
 #if CPF_TARGET_WINDOWS

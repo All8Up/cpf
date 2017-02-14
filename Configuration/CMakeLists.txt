@@ -1,16 +1,16 @@
 #
-configure_file (Include/Configuration/Config.hpp.in
-	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Config.hpp )
+configure_file (Include/Configuration/Setup.hpp.in
+	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Setup.hpp )
 
 
 #
 set (INCLUDE_FILES
-	Include/Configuration/Config.hpp.in
-	Include/Configuration/Configuration.hpp
+	Include/Configuration.hpp
+	Include/Configuration/Setup.hpp.in
 	Include/Configuration/Assert.hpp
 )
 set (INCLUDE_FILES_PLATFORM
-	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Config.hpp
+	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Setup.hpp
 	Include/${CPF_TARGET_PLATFORM}/Configuration/Platform/DebugBreak.hpp
 	Include/${CPF_TARGET_PLATFORM}/Configuration/Platform/OSSetup.hpp
 )
@@ -30,10 +30,10 @@ target_include_directories (Configuration
 )
 
 add_custom_target (Configuration_IDE SOURCES ${INCLUDE_FILES} ${INCLUDE_FILES_PLATFORM} ${INCLUDE_FILES_COMPILER})
-set_property (TARGET Configuration_IDE PROPERTY FOLDER Libraries/Static/Core)
-source_group (Include FILES ${INCLUDE_FILES})
-source_group (Include\\Platform FILES ${INCLUDE_FILES_PLATFORM})
-source_group (Include\\Compiler FILES ${INCLUDE_FILES_COMPILER})
+set_property (TARGET Configuration_IDE PROPERTY FOLDER Libraries/Interface/Core)
+source_group (Interface FILES ${INCLUDE_FILES})
+source_group (Interface\\Platform FILES ${INCLUDE_FILES_PLATFORM})
+source_group (Interface\\Compiler FILES ${INCLUDE_FILES_COMPILER})
 
 
 # Installation setup.
@@ -58,10 +58,8 @@ install( EXPORT CoreConfiguration DESTINATION CMake )
 
 
 # ###############################################
-MakeUnitTest( LIBRARY Configuration GROUP Core
+MakeUnitTest (LIBRARY Configuration GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		../Test/UnitTestMain.cpp
-	LINK_LIBRARIES
-		Configuration
 )

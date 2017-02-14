@@ -1,12 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
-#include "EASTL/deque.h"
-
+#include "Configuration.hpp"
+#ifdef CPF_USE_EASTL
+#	include "EASTL/deque.h"
+#else
+#	include <deque>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename T>
-	using Deque = eastl::deque<T>;
+	using Deque = CPF_STL_NAMESPACE::deque<T>;
 }

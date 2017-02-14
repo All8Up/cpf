@@ -1,16 +1,19 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
-#include "EASTL/tuple.h"
-
+#include "Configuration.hpp"
+#ifdef CPF_USE_EASTL
+#	include "EASTL/tuple.h"
+#else
+#	include <tuple>
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	template<typename... T>
-	using Tuple = eastl::tuple<T...>;
+	using Tuple = CPF_STL_NAMESPACE::tuple<T...>;
 	template <size_t I, typename T>
-	using TupleElement = eastl::tuple_element<I, T>;
+	using TupleElement = CPF_STL_NAMESPACE::tuple_element<I, T>;
 	template <typename T>
-	using TupleSize = eastl::tuple_size<T>;
+	using TupleSize = CPF_STL_NAMESPACE::tuple_size<T>;
 }

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <Configuration/Platform/OSSetup.hpp>
-#include <Configuration/Config.hpp>
+#include <Configuration/Setup.hpp>
 #include <Configuration/Assert.hpp>
 #include <Configuration/Compiler/ImportExport.hpp>
 #include <Configuration/Compiler/Alignment.hpp>

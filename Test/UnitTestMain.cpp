@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include <Configuration/Configuration.hpp>
+#include "Configuration.hpp"
 #include "gmock/gmock.h"
 #include "Std/String.hpp"
 
@@ -7,7 +7,6 @@
 @cond CPF_INTERNAL
 */
 #include "Test_All.hpp"
-#include <spdlog/common.h>
 /**
 @endcond
 */
