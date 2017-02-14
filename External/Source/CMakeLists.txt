@@ -36,3 +36,13 @@ else ()
 		set_property (TARGET uninstall PROPERTY FOLDER External/SDL2)
 	endif ()
 endif ()
+
+# Rapidjson
+if (NOT EXTERN_INLINE_RAPIDJSON)
+else ()
+	if (IS_DIRECTORY "${RAPIDJSON_SRC_DIR}")
+#		add_subdirectory (${RAPIDJSON_SRC_DIR})
+		add_library (rapidjson INTERFACE)
+		target_include_directories (rapidjson INTERFACE $<BUILD_INTERFACE:${RAPIDJSON_SRC_DIR}/include/>)
+	endif ()
+endif ()

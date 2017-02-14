@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Resources.hpp"
-#include "Resources/Configuration.hpp"
+#include "Resources/ResourceConfig.hpp"
 #include "Resources/Volumes/FileSystem.hpp"
 #include "Resources/Caches/Default.hpp"
 #include "Logging/Logging.hpp"

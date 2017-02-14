@@ -16,7 +16,6 @@ if (WIN32)
 		PUBLIC Include
 	)
 	target_link_libraries (ExperimentalD3D12
-		s_PlatformLib
 		s_Concurrency
 		s_SDL2
 		Logging
@@ -77,8 +76,10 @@ foreach (file ${DataFiles})
 endforeach ()
 source_group (Data FILES ${DataFiles})
 
+#[[
 if (WIN32)
 	add_custom_command (TARGET ExperimentalD3D12 POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL_DIR}/bin/windows/lib64/nvToolsExt64_1.dll ${CMAKE_BINARY_DIR}/bin/$<CONFIG>
 	)
 endif ()
+]]#

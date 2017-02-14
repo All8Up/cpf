@@ -13,6 +13,7 @@ CPF_EXPORT_RESOURCES Monitor* FileSystem::Create()
 
 bool FileSystem::Touch(ID id)
 {
+	(void)id;
 	return false;
 }
 

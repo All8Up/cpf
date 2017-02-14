@@ -13,5 +13,9 @@ set (SPDLOG_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/spdlog")
 option (EXTERN_INLINE_SDL2 "Include the source project for sdl2." OFF)
 set (SDL2_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/SDL2-2.0.5")
 
+# Rapidjson
+option (EXTERN_INLINE_RAPIDJSON "Include the source project for rapidjson." OFF)
+set (RAPIDJSON_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/rapidjson-1.1.0")
+
 # ################################
 include ("Source/CMakeLists.txt")

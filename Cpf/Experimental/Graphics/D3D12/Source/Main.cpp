@@ -3,7 +3,7 @@
 #include "Logging/Logging.hpp"
 
 #include "IntrusivePtr.hpp"
-//#include "Resources/Configuration.hpp"
+#include "Resources/ResourceConfig.hpp"
 #include "Threading/Threading.hpp"
 #include "Time/Time.hpp"
 
@@ -361,13 +361,12 @@ namespace Cpf
 			mAspectRatio = 1.0f;
 
 			// Create the virtual file system locator.
-#if 0
 			IntrusivePtr<Resources::Locator> resourceLocator(Resources::Configuration("./Experimental/resource_config.json").GetLocator());
 			if (!resourceLocator)
 			{
 				// Do something with configuration error.
 			}
-#endif
+
 			{
 				//////////////////////////////////////////////////////////////////////////
 				// Create the window.

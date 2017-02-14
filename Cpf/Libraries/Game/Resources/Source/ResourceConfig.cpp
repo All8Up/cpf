@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Resources/Configuration.hpp"
+#include "Resources/ResourceConfig.hpp"
 #include "IO/File.hpp"
 #include "rapidjson/document.h"
 #include "Logging/Logging.hpp"

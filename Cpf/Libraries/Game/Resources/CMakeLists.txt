@@ -8,7 +8,7 @@ set (INCLUDE_FILES
 	Include/Resources/Resource.hpp
 	Include/Resources/Resources.hpp
 	Include/Resources/Volume.hpp
-	Include/Resources/Configuration.hpp
+	Include/Resources/ResourceConfig.hpp
 )
 set (CACHE_INCLUDE_FILES
 	Include/Resources/Caches/Default.hpp
@@ -29,7 +29,7 @@ set (SOURCE_FILES
 	Source/Resource.cpp
 	Source/Resources.cpp
 	Source/Volume.cpp
-	Source/Configuration.cpp
+	Source/ResourceConfig.cpp
 )
 set (CACHE_SOURCE_FILES
 	Source/Caches/Default.cpp
@@ -63,7 +63,7 @@ target_include_directories (s_Resources
 )
 target_link_libraries (s_Resources
 	LINK_PUBLIC
-		Configuration s_Collections s_RefCount s_IO Logging s_Events s_Hash rapidjson
+		Configuration s_Collections RefCount s_IO Logging s_Events s_Hash rapidjson
 )
 set_property (TARGET s_Resources PROPERTY FOLDER Libraries/Static/Game)
 
@@ -80,6 +80,7 @@ source_group (Sources\\Loaders FILES ${LOADER_SOURCE_FILES})
 source_group (Sources\\Monitors FILES ${MONITOR_SOURCE_FILES})
 
 # ###############################################
+#[[
 install (TARGETS s_Resources
 	EXPORT ResourcesSystemConfig
 	CONFIGURATIONS Debug Release
@@ -87,3 +88,4 @@ install (TARGETS s_Resources
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT ResourcesSystemConfig DESTINATION CMake)
+]]#
