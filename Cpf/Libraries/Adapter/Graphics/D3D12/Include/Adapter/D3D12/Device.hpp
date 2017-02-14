@@ -31,7 +31,7 @@ namespace Cpf
 			class IndexBuffer;
 			class VertexBuffer;
 
-			CPF_EXPORT_ADAPTERS_D3D12 class Device : public tRefCounted<Graphics::iDevice>
+			CPF_EXPORT_ADAPTER_D3D12 class Device : public tRefCounted<Graphics::iDevice>
 			{
 			public:
 				Device(Graphics::iAdapter* dev);

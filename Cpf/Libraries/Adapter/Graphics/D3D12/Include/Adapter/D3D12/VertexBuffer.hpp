@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/Interfaces/iVertexBuffer.hpp"
 #include "Graphics/BufferUsage.hpp"
-#include "Adapters/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 
 

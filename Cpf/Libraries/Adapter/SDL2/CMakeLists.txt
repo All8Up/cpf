@@ -36,7 +36,7 @@ target_link_libraries (s_SDL2
 	s_Math
 	s_Time
 	s_Threading
-	sdl2
+	SDL2-static
 )
 
 target_include_directories (s_SDL2

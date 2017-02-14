@@ -4,7 +4,7 @@
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 Fence::Fence(Device* device, int64_t initValue)

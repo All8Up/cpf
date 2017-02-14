@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Application/Application.hpp"
-#include "sdl2/SDL.h"
+#include "SDL.h"
 #include "Pair.hpp"
 
 

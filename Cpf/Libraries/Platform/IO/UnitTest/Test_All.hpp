@@ -3,6 +3,10 @@
 #include "String.hpp"
 #include "Vector.hpp"
 #include "Algorithm.hpp"
+
+#if 0
+// TODO: Move to the adapter project.
+
 #include "Cpf/Platform.hpp"
 #include "Adapter/FileSystem.hpp"
 
@@ -89,3 +93,4 @@ public:
 #include "Test_TextWriter.hpp"
 #include "Test_Archive.hpp"
 #include "Test_Serializer.hpp"
+#endif

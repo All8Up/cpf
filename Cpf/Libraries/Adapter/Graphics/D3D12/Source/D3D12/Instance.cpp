@@ -83,7 +83,7 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 }
 
 
-bool Instance::CreateDevice(Adapter::iAdapter* adapter, Graphics::iDevice** device)
+bool Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
 {
 	Graphics::iDevice* result = new Device(adapter);
 	if (result && result->Initialize())

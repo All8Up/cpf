@@ -33,14 +33,14 @@ const BindingParameter::ConstantBuffer& BindingParameter::GetConstantBuffer() co
 }
 
 //////////////////////////////////////////////////////////////////////////
-CPF_EXPORT_GRAPHICS_ADAPTER BindingParameter Graphics::ParamConstants(int32_t index, int32_t count, int32_t visibility)
+CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstants(int32_t index, int32_t count, int32_t visibility)
 {
 	BindingParameter result(BindingType::eConstants);
 	result.SetConstants(index, count, visibility);
 	return result;
 }
 
-CPF_EXPORT_GRAPHICS_ADAPTER BindingParameter Graphics::ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags)
+CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags)
 {
 	BindingParameter result(BindingType::eConstantBuffer);
 	result.SetConstantBuffer(index, flags, visibility);

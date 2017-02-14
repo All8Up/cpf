@@ -8,6 +8,10 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Core")
 			add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Diagnostic")
 		endif ()
 
+		if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Graphics")
+			add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Graphics")
+		endif ()
+
 		if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Adapter")
 			add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Adapter")
 		endif ()

@@ -112,6 +112,5 @@ MakeUnitTests( LIBRARY IO:static GROUP Platform
 		UnitTest/Test_Serializer.hpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		PlatformLib
 		ANSI_C_FileSystem:static
 )

@@ -4,7 +4,7 @@
 #include "Threading/Thread.hpp"
 #include "Time/Value.hpp"
 #include "Functional.hpp"
-#include "sdl2/SDL.h"
+#include "SDL.h"
 
 namespace Cpf
 {

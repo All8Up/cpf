@@ -2,7 +2,7 @@
 #include "Adapter/Window.hpp"
 #include "Adapter/GLContext.hpp"
 #include "Application/Application.hpp"
-#include "sdl2/SDL.h"
+#include "SDL.h"
 
 using namespace Cpf;
 using namespace Adapter;

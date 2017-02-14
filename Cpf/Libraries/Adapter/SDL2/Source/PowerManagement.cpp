@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/PowerManagement.hpp"
 #include "Logging/Logging.hpp"
-#include "sdl2/SDL_syswm.h"
+#include "SDL_syswm.h"
 
 using namespace Cpf;
 using namespace Adapter;

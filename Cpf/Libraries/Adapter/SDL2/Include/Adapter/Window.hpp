@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "sdl2/SDL.h"
+#include "SDL.h"
 #include "WindowedApp.hpp"
 
 
 namespace Cpf
 {
-	namespace Adapters
+	namespace Adapter
 	{
 		class Window : public iWindow
 		{

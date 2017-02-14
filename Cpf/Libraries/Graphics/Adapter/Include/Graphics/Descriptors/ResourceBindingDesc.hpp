@@ -42,7 +42,7 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		// An entry in the resource binding.
-		class CPF_EXPORT_GRAPHICS_ADAPTER BindingParameter
+		class CPF_EXPORT_GRAPHICS_DRIVER BindingParameter
 		{
 		public:
 			BindingParameter(BindingType type) : mType(type) {}
@@ -79,8 +79,8 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		// Utilities to build parameter descriptors.
-		CPF_EXPORT_GRAPHICS_ADAPTER BindingParameter ParamConstants(int32_t index, int32_t count, int32_t visibility);
-		CPF_EXPORT_GRAPHICS_ADAPTER BindingParameter ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags = ParamFlags::eStatic);
+		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstants(int32_t index, int32_t count, int32_t visibility);
+		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags = ParamFlags::eStatic);
 
 		//////////////////////////////////////////////////////////////////////////
 		class ResourceBindingDesc

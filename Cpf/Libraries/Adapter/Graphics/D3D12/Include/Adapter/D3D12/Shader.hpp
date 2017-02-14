@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/Interfaces/iShader.hpp"
-#include "Adapters/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 
 

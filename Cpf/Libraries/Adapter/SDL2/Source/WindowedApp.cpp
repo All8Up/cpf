@@ -2,7 +2,7 @@
 #include "Adapter/WindowedApp.hpp"
 #include "Adapter/Window.hpp"
 #include "Logging/Logging.hpp"
-#include "sdl2/SDL_syswm.h"
+#include "SDL_syswm.h"
 
 using namespace Cpf;
 using namespace Adapter;

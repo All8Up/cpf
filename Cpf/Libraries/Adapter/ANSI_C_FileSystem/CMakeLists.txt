@@ -93,6 +93,4 @@ MakeUnitTests (LIBRARY ANSI_C_FileSystem:static GROUP Adapter
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		../../Core/Test/UnitTestMain.cpp
-	LINK_LIBRARIES
-		PlatformLib:static
 )

@@ -9,7 +9,7 @@
 #include "Move.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
+using namespace Adapter;
 using namespace D3D12;
 
 SwapChain::SwapChain(Instance* instance, Graphics::iDevice* device, iWindow* window, const Graphics::SwapChainDesc* desc)

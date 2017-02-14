@@ -7,11 +7,10 @@
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace Adapters;
-using namespace D3D12;
+using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-Adapter::Adapter(IDXGIAdapter2* adapter)
+D3D12::Adapter::Adapter(IDXGIAdapter2* adapter)
 	: mpAdapter(adapter)
 {
 	mpAdapter->AddRef();
@@ -24,42 +23,42 @@ Adapter::Adapter(IDXGIAdapter2* adapter)
 	CPF_LOG(D3D12, Info) << "Created adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
 }
 
-Adapter::~Adapter()
+D3D12::Adapter::~Adapter()
 {
 	CPF_LOG(D3D12, Info) << "Destroyed adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
 }
 
-const char* Adapter::GetDescription() const
+const char* D3D12::Adapter::GetDescription() const
 {
 	return mDescription;
 }
 
-size_t Adapter::GetVideoMemory() const
+size_t D3D12::Adapter::GetVideoMemory() const
 {
 	return mDesc.DedicatedVideoMemory;
 }
 
-size_t Adapter::GetSystemMemory() const
+size_t D3D12::Adapter::GetSystemMemory() const
 {
 	return mDesc.DedicatedSystemMemory;
 }
 
-size_t Adapter::GetSharedMemory() const
+size_t D3D12::Adapter::GetSharedMemory() const
 {
 	return mDesc.SharedSystemMemory;
 }
 
-bool Adapter::IsSoftware() const
+bool D3D12::Adapter::IsSoftware() const
 {
 	return (mDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0;
 }
 
-bool Adapter::IsRemote() const
+bool D3D12::Adapter::IsRemote() const
 {
 	return (mDesc.Flags & DXGI_ADAPTER_FLAG_REMOTE) != 0;
 }
 
-bool Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
+bool D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
 {
 	if (outputs && count != 0)
 	{
