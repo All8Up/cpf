@@ -58,7 +58,7 @@ endif ()
 
 
 if(MSVC)
-	set (targetPath /Cpf/Experimental/Graphics/Factory)
+	set (targetPath /Cpf/Experimental/Graphics/D3D12)
 else()
 	set (targetPath /)
 endif()

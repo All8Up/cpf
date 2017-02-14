@@ -37,19 +37,28 @@ namespace Cpf
 				{
 					STRING_TYPE result = path;
 
-					result.erase(
-						result.begin(),
-						CPF_STL_NAMESPACE::find_if(
-							result.begin(),
-							result.end(),
-							not1(CPF_STL_NAMESPACE::ptr_fun<int, int>(Std::IsSpace)))
-					);
-					result.erase(
-						CPF_STL_NAMESPACE::find_if(
-							result.rbegin(),
-							result.rend(),
-							not1(CPF_STL_NAMESPACE::ptr_fun<int, int>(Std::IsSpace))).base(),
-						result.end());
+					for (auto ibegin = result.begin(), iend = result.end(); ibegin != iend; ++ibegin)
+					{
+						if (Std::IsSpace(*ibegin))
+							continue;
+						else
+						{
+							if (ibegin != result.begin())
+								result.erase(result.begin(), ibegin);
+							break;
+						}
+					}
+					for (auto ibegin = result.rbegin(), iend = result.rend(); ibegin != iend; ++ibegin)
+					{
+						if (Std::IsSpace(*ibegin))
+							continue;
+						else
+						{
+							if (ibegin != result.rbegin())
+								result.erase(ibegin.base(), result.end());
+							break;
+						}
+					}
 
 					Cpf::Replace(
 						result.begin(),
@@ -153,8 +162,11 @@ namespace Cpf
 							return STRING_TYPE(tl + rl);
 						else
 						{
-							if (rl.front() == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
-								return STRING_TYPE(tl + rl);
+							if (!rl.empty())
+							{
+								if (rl.front() == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+									return STRING_TYPE(tl + rl);
+							}
 							return tl + PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator + rl;
 						}
 					}

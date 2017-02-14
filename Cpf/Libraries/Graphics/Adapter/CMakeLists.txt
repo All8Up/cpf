@@ -1,5 +1,6 @@
 # ###############################################
 set (INCLUDE_GRAPHICS_FILES
+	Include/Graphics.hpp
 	Include/Graphics/BinaryBlob.hpp
 	Include/Graphics/BlendFunc.hpp
 	Include/Graphics/BlendOp.hpp

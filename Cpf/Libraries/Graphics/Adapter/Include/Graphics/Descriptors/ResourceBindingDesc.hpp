@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Driver.hpp"
+#include "Graphics.hpp"
 #include <initializer_list>
 #include "Vector.hpp"
 

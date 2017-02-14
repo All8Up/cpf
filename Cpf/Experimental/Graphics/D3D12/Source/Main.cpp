@@ -351,7 +351,7 @@ namespace Cpf
 			ScopedInitializer<TimeInitializer> timeInit;
 			ScopedInitializer<ThreadingInitializer> threadingInit;
 			ScopedInitializer<IOInitializer> ioInit;
-//			ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
+			ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 			ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
 
 			mViewportSize = 1.0f;
@@ -391,7 +391,7 @@ namespace Cpf
 				// Get an instance of the installed device from the graphics factory.
 				{
 					IntrusivePtr<iInstance> gfxInstance;
-//					Graphics::Create(1, gfxInstance.AsVoidPP());
+					Graphics::Create(1, gfxInstance.AsTypePP());
 					if (gfxInstance)
 					{
 						{

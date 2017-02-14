@@ -1,1 +1,1 @@
-#include "Adapters/SDL2.hpp"
+#include "Adapter/SDL2.hpp"
