@@ -38,5 +38,3 @@ namespace Cpf
 		}
 	}
 }
-
-CPF_DECLARE_RTTI(Cpf::Adapters::Metal::Instance);

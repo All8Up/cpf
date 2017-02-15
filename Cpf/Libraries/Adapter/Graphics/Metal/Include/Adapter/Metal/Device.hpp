@@ -34,6 +34,3 @@ namespace Cpf
 		}
 	}
 }
-
-
-CPF_DECLARE_RTTI(Cpf::Adapters::Metal::Device, Cpf::Graphics::Driver::iDevice);

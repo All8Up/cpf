@@ -10,6 +10,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		/** @brief Write mask for render targets. */
 		struct WriteMask
 		{
 			enum : uint8_t
@@ -22,6 +23,7 @@ namespace Cpf
 			};
 		};
 
+		/** @brief Single render target blend states. */
 		struct RenderTargetBlendStateDesc
 		{
 			RenderTargetBlendStateDesc();
@@ -41,6 +43,7 @@ namespace Cpf
 			uint8_t mWriteMask;
 		};
 
+		/** @brief Helper to make RenderTargetBlendStateDesc's easier to build. */
 		struct RenderTargetBlendStateDesc::Builder
 		{
 			operator RenderTargetBlendStateDesc() const;
@@ -60,6 +63,7 @@ namespace Cpf
 			RenderTargetBlendStateDesc mBlend;
 		};
 
+		/** @brief Full multi-target blend state. */
 		struct BlendState
 		{
 			BlendState();

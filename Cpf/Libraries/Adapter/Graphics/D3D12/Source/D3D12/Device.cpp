@@ -42,10 +42,15 @@ Device::Device(Graphics::iAdapter* adapter)
 		D3D_FEATURE_LEVEL_12_1,
 		D3D_FEATURE_LEVEL_12_0,
 		D3D_FEATURE_LEVEL_11_1,
-		D3D_FEATURE_LEVEL_11_0
+		D3D_FEATURE_LEVEL_11_0,
+		D3D_FEATURE_LEVEL_10_1,
+		D3D_FEATURE_LEVEL_10_0,
+		D3D_FEATURE_LEVEL_9_3,
+		D3D_FEATURE_LEVEL_9_2,
+		D3D_FEATURE_LEVEL_9_1
 	};
 	const int levelCount = sizeof(levels) / sizeof(D3D_FEATURE_LEVEL);
-	D3D_FEATURE_LEVEL highestLevel = D3D_FEATURE_LEVEL_9_1;
+	D3D_FEATURE_LEVEL highestLevel = D3D_FEATURE_LEVEL(0);
 
 	for (int i = 0; i < levelCount; ++i)
 	{
@@ -56,7 +61,7 @@ Device::Device(Graphics::iAdapter* adapter)
 		}
 	}
 
-	if (highestLevel != D3D_FEATURE_LEVEL_9_1)
+	if (highestLevel != D3D_FEATURE_LEVEL(0))
 	{
 		ID3D12Device* d3dDevice = nullptr;
 		if (SUCCEEDED(D3D12CreateDevice(d3dAdapter->GetD3DAdapter(), highestLevel, IID_PPV_ARGS(&d3dDevice))))
