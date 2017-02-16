@@ -1,27 +1,29 @@
 # ###############################################
 set( INCLUDE_FILES
-	Include/Math/Math.hpp
+	Include/Math/Ballistics.hpp
 	Include/Math/Bits.hpp
 	Include/Math/Color.hpp
 	Include/Math/Constants.hpp
+	Include/Math/Easing.hpp
+	Include/Math/Half.hpp
+	Include/Math/LargeVector3f.hpp
+	Include/Math/Math.hpp
+	Include/Math/Matrix33v.hpp
+	Include/Math/Matrix44v.hpp
+	Include/Math/Matrix44v_Operations.hpp
 	Include/Math/Morton.hpp
+	Include/Math/Quaternionv.hpp
+	Include/Math/Rectangle.hpp
+	Include/Math/Transform.hpp
+	Include/Math/Utilities.hpp
 	Include/Math/Vector2.hpp
 	Include/Math/Vector3.hpp
 	Include/Math/Vector3v.hpp
 	Include/Math/Vector4.hpp
 	Include/Math/Vector4v.hpp
-	Include/Math/Matrix33v.hpp
-	Include/Math/Matrix44v.hpp
-	Include/Math/Half.hpp
-	Include/Math/Rectangle.hpp
-	Include/Math/Ballistics.hpp
-	Include/Math/Easing.hpp
-	Include/Math/Matrix44v_Operations.hpp
-	Include/Math/LargeVector3f.hpp
-	Include/Math/Quaternionv.hpp
-	Include/Math/Utilities.hpp
 )
 set (INCLUDE_DETAIL_FILES
+	Include/Math/Detail/Quaternionv.inl
 	Include/Math/Detail/Swizzle2.hpp
 	Include/Math/Detail/Swizzle2.inl
 	Include/Math/Detail/Swizzle3.hpp
@@ -34,11 +36,11 @@ set (INCLUDE_DETAIL_FILES
 	Include/Math/Detail/Vector3v.inl
 	Include/Math/Detail/Vector4.inl
 	Include/Math/Detail/Vector4v.inl
-	Include/Math/Detail/Quaternionv.inl
 )
 set( SOURCE_FILES
 	Source/Math.cpp
 	Source/LargeVector3f.cpp
+	Source/Transform.cpp
 	Source/Utilities.cpp
 )
 
@@ -86,16 +88,17 @@ install( EXPORT MathConfig DESTINATION CMake )
 MakeUnitTest( LIBRARY s_Math GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
+		UnitTest/Test_Bits.cpp
+		UnitTest/Test_LargeVector3f.cpp
+		UnitTest/Test_Mat33Mat44Quat.cpp
+		UnitTest/Test_Matrix33v.cpp
+		UnitTest/Test_Matrix44v.cpp
+		UnitTest/Test_Morton.cpp
+		UnitTest/Test_Transform.cpp		
+		UnitTest/Test_Utilities.cpp
 		UnitTest/Test_Vector2.cpp
 		UnitTest/Test_Vector3.cpp
 		UnitTest/Test_Vector4.cpp
-		UnitTest/Test_Matrix33v.cpp
-		UnitTest/Test_Matrix44v.cpp
-		UnitTest/Test_Bits.cpp
-		UnitTest/Test_Morton.cpp
-		UnitTest/Test_Mat33Mat44Quat.cpp
-		UnitTest/Test_LargeVector3f.cpp
-		UnitTest/Test_Utilities.cpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Configuration s_Simd

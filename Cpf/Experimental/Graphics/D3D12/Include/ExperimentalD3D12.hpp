@@ -4,9 +4,8 @@
 #include "Graphics.hpp"
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Vector3.hpp"
-#include "Math/Vector3v.hpp"
-#include "Math/Matrix33v.hpp"
 #include "Resources/Locator.hpp"
+#include "GO/Service.hpp"
 
 
 namespace Cpf
@@ -108,9 +107,12 @@ namespace Cpf
 		{
 			Math::Vector3f mTranslation;
 			Math::Vector3f mScale;
+			// TODO: Resurrect the Matrix33f non-simd class for this.
 			Math::Vector3f mOrientation0;
 			Math::Vector3f mOrientation1;
 			Math::Vector3f mOrientation2;
 		};
+
+		GO::Service mGOService;
 	};
 }

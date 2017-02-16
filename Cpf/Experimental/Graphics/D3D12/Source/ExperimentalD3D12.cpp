@@ -10,17 +10,18 @@
 #include "Time/Time.hpp"
 
 #include "Graphics/Driver.hpp"
-#include "Graphics/Descriptors/PipelineStateDesc.hpp"
 
 #include "Math/Vector3.hpp"
 #include "Math/Vector4.hpp"
-#include "Math/Matrix33v.hpp"
-#include "Math/Matrix44v.hpp"
 
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Constants.hpp"
 #include <math.h>
 #include "IO/IO.hpp"
+
+#include "GO/Object.hpp"
+#include "GO/Components/TransformComponent.hpp"
+
 
 using namespace Cpf;
 using namespace Math;
@@ -98,6 +99,21 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	float halfFov = tan(mFOV / 2.0f);
 	mViewportSize = halfFov;
 	mAspectRatio = 1.0f;
+
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Setup the object system.
+	IntrusivePtr<GO::Object> object(mGOService.CreateObject());
+	GO::TransformComponent* transform = object->AddComponent(new GO::TransformComponent);
+	transform->GetTransform().SetTranslation(Vector3fv(5.0f, 0.0f, 0.0f));
+
+	IntrusivePtr<GO::Object> childObject(mGOService.CreateObject());
+	GO::TransformComponent* childTransform = object->AddComponent(new GO::TransformComponent);
+	childTransform->GetTransform().SetTranslation(Vector3fv(5.0f, 0.0f, 0.0f));
+	childTransform->SetParent(transform);
+
+	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 
 	// Create the virtual file system locator.
 	mpLocator.Adopt(Resources::Configuration("./Experimental/resource_config.json").GetLocator());
