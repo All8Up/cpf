@@ -20,6 +20,7 @@
 #include "IO/IO.hpp"
 
 #include "GO/Object.hpp"
+#include "GO/System.hpp"
 #include "GO/Components/TransformComponent.hpp"
 
 
@@ -30,6 +31,108 @@ using namespace Platform;
 using namespace Threading;
 using namespace Concurrency;
 
+//////////////////////////////////////////////////////////////////////////
+// Some temporary work to get the system/service organization stood up at
+// least somewhat correctly.
+class GameTime : public GO::System
+{
+public:
+	// No components exposed.
+	// Stages.
+	GameTime()
+	{
+		mTime = Time::Now();
+		mStart = mTime;
+		mStages.emplace("Update", new GO::Stage);
+		// HACK HACK HACK...
+		mStages.begin()->second->AddUpdate(reinterpret_cast<GO::Object*>(this), &GameTime::Update);
+	}
+
+	StageMap& GetStages() override
+	{
+		return mStages;
+	}
+
+	Time::Value GetTime() const { return mTime - mStart; }
+
+private:
+	static void Update(GO::Object* object)
+	{
+		GameTime* timer = reinterpret_cast<GameTime*>(object);
+		timer->mTime = Time::Now();
+	}
+
+	StageMap mStages;
+	Time::Value mTime;
+	Time::Value mStart;
+};
+
+class MoverSystem : public GO::System
+{
+public:
+	// Component(s) supplied.
+	class MoverComponent;
+
+	MoverSystem()
+	{
+		mStages.emplace("Move", new GO::Stage);
+	}
+
+	StageMap& GetStages() override
+	{
+		return mStages;
+	}
+
+private:
+	StageMap mStages;
+};
+
+class MoverSystem::MoverComponent : public GO::Component
+{
+public:
+	static const GO::ComponentID kID = "Mover Component"_crc64;
+
+	GO::ComponentID GetID() const override { return kID; }
+
+	MoverComponent(MoverSystem* mover) : mpMover(mover) {}
+
+	void Activate() override
+	{
+		mpMover->GetStages()["Move"]->AddUpdate(GetObject(), &MoverComponent::_Update);
+	}
+
+	void Deactivate() override
+	{
+		mpMover->GetStages()["Move"]->RemoveUpdate(GetObject(), &MoverComponent::_Update);
+	}
+
+private:
+	static void _Update(GO::Object* object)
+	{
+		GameTime* timer = object->GetSystem<GameTime>("Game Time");
+
+		int i = int(object->GetID());
+		int count = ExperimentalD3D12::kInstancesPerDimension;
+		int xc = (i % count);
+		int yc = (i / count) % count;
+		int zc = (i / (count * count)) % count;
+
+		Vector3fv pos((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
+		float magnitude = Magnitude(pos + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
+		magnitude *= magnitude;
+		float time = float(Time::Seconds(timer->GetTime()));
+		float angle = sinf(0.25f * time);
+		pos.x = sinf(angle * magnitude) * pos.x - cosf(angle * magnitude) * pos.z;
+		pos.y = (sinf(angle) + 0.5f) * pos.y * magnitude;
+		pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
+		object->GetComponent<GO::TransformComponent>()->GetTransform().SetTranslation(pos);
+	}
+
+	MoverSystem* mpMover;
+};
+
+
+//////////////////////////////////////////////////////////////////////////
 #define GFX_INITIALIZER CPF_CONCAT(GFX_ADAPTER, Initializer)
 #define INCLUDE_GFX Adapter/## CPF_CONCAT(GFX_ADAPTER, .hpp)
 #include CPF_STRINGIZE(INCLUDE_GFX)
@@ -54,26 +157,16 @@ void ExperimentalD3D12::_ObjectUpdate(ThreadContext& tc)
 	Instance* instances = nullptr;
 	if (mpInstanceBuffer[mCurrentBackbuffer]->Map(0, 0, reinterpret_cast<void**>(&instances)))
 	{
-		for (int i = start; i < end; ++i)
+		int i = 0;
+		mGOService.IterateObjects([&](GO::Object* object)
 		{
-			int count = kInstancesPerDimension;
-			int xc = (i % count);
-			int yc = (i / count) % count;
-			int zc = (i / (count * count)) % count;
-			instances[i].mTranslation = Vector3f((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
+			GO::TransformComponent* transform = object->GetComponent<GO::TransformComponent>();
 			instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
 			instances[i].mOrientation0 = Vector3f(1.0f, 0.0f, 0.0f);
 			instances[i].mOrientation1 = Vector3f(0.0f, 1.0f, 0.0f);
 			instances[i].mOrientation2 = Vector3f(0.0f, 0.0f, 1.0f);
-
-			float magnitude = Magnitude(instances[i].mTranslation + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
-			magnitude *= magnitude;
-			float time = float(Time::Seconds(mCurrentTime));
-			float angle = sinf(0.25f * time);
-			instances[i].mTranslation.x = sinf(angle * magnitude) * instances[i].mTranslation.x - cosf(angle * magnitude) * instances[i].mTranslation.z;
-			instances[i].mTranslation.y = (sinf(angle) + 0.5f) * instances[i].mTranslation.y * magnitude;
-			instances[i].mTranslation.z = cosf(angle * magnitude) * instances[i].mTranslation.x + sinf(angle * magnitude) * instances[i].mTranslation.z;
-		}
+			instances[i++].mTranslation = Vector3f(transform->GetTransform().GetTranslation().xyz);
+		});
 	}
 	mpInstanceBuffer[mCurrentBackbuffer]->Unmap();
 }
@@ -103,14 +196,33 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	// Setup the object system.
-	IntrusivePtr<GO::Object> object(mGOService.CreateObject());
-	GO::TransformComponent* transform = object->AddComponent(new GO::TransformComponent);
-	transform->GetTransform().SetTranslation(Vector3fv(5.0f, 0.0f, 0.0f));
+	mGOService.Install("Game Time", new GameTime());
 
-	IntrusivePtr<GO::Object> childObject(mGOService.CreateObject());
-	GO::TransformComponent* childTransform = object->AddComponent(new GO::TransformComponent);
-	childTransform->GetTransform().SetTranslation(Vector3fv(5.0f, 0.0f, 0.0f));
-	childTransform->SetParent(transform);
+	mGOService.Install("Mover", new MoverSystem());
+
+	for (int i = 0; i<kInstanceCount; ++i)
+	{
+		IntrusivePtr<GO::Object> object(mGOService.CreateObject());
+		GO::TransformComponent* transform = object->AddComponent(new GO::TransformComponent);
+		transform->GetTransform().SetTranslation(Vector3fv(5.0f, 0.0f, 0.0f));
+		object->AddComponent(new MoverSystem::MoverComponent(mGOService.GetSystem<MoverSystem>("Mover")));
+
+		int count = kInstancesPerDimension;
+		int xc = (i % count);
+		int yc = (i / count) % count;
+		int zc = (i / (count * count)) % count;
+
+		Vector3fv position((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
+		float magnitude = Magnitude(position + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
+		magnitude *= magnitude;
+		float time = 1.0f;
+		float angle = sinf(0.25f * time);
+		position.x = sinf(angle * magnitude) * position.x - cosf(angle * magnitude) * position.z;
+		position.y = (sinf(angle) + 0.5f) * position.y * magnitude;
+		position.z = cosf(angle * magnitude) * position.x + sinf(angle * magnitude) * position.z;
+
+		transform->GetTransform().SetTranslation(position);
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
@@ -231,6 +343,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					//////////////////////////////////////////////////////////////////////////
 					// The threaded execution loop.
 					mQueue.FirstOneBarrier(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
+					// Update the GO::Service.
+					mGOService.Submit(mQueue);
 					// Update the instance buffer.
 					mQueue.AllBarrier(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_ObjectUpdate), this);
 					// The following build command buffers in parallel.

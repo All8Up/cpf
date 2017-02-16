@@ -7,25 +7,6 @@ using namespace Cpf;
 using namespace GO;
 
 //////////////////////////////////////////////////////////////////////////
-int32_t Object::AddRef()
-{
-	return ++mRefCount;
-}
-
-int32_t Object::Release()
-{
-	CPF_ASSERT(mRefCount > -1);
-	if (--mRefCount == 1)
-	{
-		mpOwner->Remove(this);
-		CPF_ASSERT(mRefCount == 0);
-		delete this;
-		return 0;
-	}
-	return mRefCount;
-}
-
-//////////////////////////////////////////////////////////////////////////
 bool Object::Create(int64_t id, Object** outObject)
 {
 	CPF_ASSERT(outObject != nullptr);
@@ -43,9 +24,9 @@ bool Object::Create(int64_t id, Object** outObject)
 
 //////////////////////////////////////////////////////////////////////////
 Object::Object()
-	: mRefCount(1)
-	, mpOwner(nullptr)
+	: mpOwner(nullptr)
 	, mID(kInvalidObjectID)
+	, mActive(false)
 {}
 
 Object::~Object()
@@ -68,10 +49,16 @@ void Object::Shutdown()
 
 void Object::Activate()
 {
+	mActive = true;
+	for (auto it : mComponents)
+		it.second->Activate();
 }
 
 void Object::Deactivate()
 {
+	for (auto it : mComponents)
+		it.second->Deactivate();
+	mActive = false;
 }
 
 ObjectID Object::GetID() const
@@ -81,7 +68,10 @@ ObjectID Object::GetID() const
 
 void Object::AddComponent(ComponentID id, Component* component)
 {
+	component->SetObject(this);
 	mComponents.insert(ComponentEntry(id, component));
+	if (mActive)
+		component->Activate();
 }
 
 Component* Object::GetComponent(ComponentID id)
@@ -98,4 +88,14 @@ const Component* Object::GetComponent(ComponentID id) const
 	if (it != mComponents.end())
 		return it->second;
 	return nullptr;
+}
+
+Object::ComponentRange Object::GetComponents(ComponentID id)
+{
+	return mComponents.equal_range(id);
+}
+
+System* Object::GetSystem(const String& name) const
+{
+	return mpOwner->GetSystem(name);
 }

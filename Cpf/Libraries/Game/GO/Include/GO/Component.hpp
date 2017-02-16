@@ -12,9 +12,12 @@ namespace Cpf
 		class Component : public tRefCounted<iRefCounted>
 		{
 		public:
+			Component() : mpObject(nullptr) {}
 			virtual ~Component() {}
 
 			// Component interface.
+			Object* GetObject() const { return mpObject; }
+
 			virtual ComponentID GetID() const = 0;
 
 			virtual void Initialize() {}
@@ -22,6 +25,12 @@ namespace Cpf
 
 			virtual void Activate() {}
 			virtual void Deactivate() {}
+
+		private:
+			friend class Object;
+			void SetObject(Object* object) { mpObject = object; }
+
+			Object* mpObject;
 		};
 	}
 }

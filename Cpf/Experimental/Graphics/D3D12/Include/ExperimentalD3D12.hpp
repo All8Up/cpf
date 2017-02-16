@@ -20,6 +20,9 @@ namespace Cpf
 
 		int Start(const CommandLine&) override;
 
+		static const int32_t kInstancesPerDimension = 25;
+		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
+
 	private:
 		bool _CreateWindow();
 		void _CreateWorkerData(Concurrency::ThreadContext& tc);
@@ -43,8 +46,6 @@ namespace Cpf
 		IntrusivePtr<Resources::Locator> mpLocator;
 
 		static const int32_t mBackBufferCount = 3;
-		static const int32_t kInstancesPerDimension = 50;
-		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
 
 		IntrusivePtr<iWindow> mpWindow;
 		IntrusivePtr<Graphics::iDevice> mpDevice;

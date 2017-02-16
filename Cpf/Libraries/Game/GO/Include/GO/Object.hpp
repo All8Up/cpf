@@ -5,22 +5,19 @@
 #include "GO/Types.hpp"
 #include "UnorderedMap.hpp"
 #include "Pair.hpp"
+#include "String.hpp"
 
 
 namespace Cpf
 {
 	namespace GO
 	{
-		class Object : public iRefCounted
+		class Object : public tRefCounted<iRefCounted>
 		{
 		public:
 			using ComponentMap = UnorderedMultiMap<ComponentID, IntrusivePtr<Component>>;
 			using ComponentEntry = ComponentMap::value_type;
 			using ComponentRange = Pair<ComponentMap::const_iterator, ComponentMap::const_iterator>;
-
-			// iRefCounted.
-			int32_t AddRef() override;
-			int32_t Release() override;
 
 			// Object interface.
 			static bool Create(int64_t id, Object**);
@@ -38,6 +35,8 @@ namespace Cpf
 			const Component* GetComponent(ComponentID id) const;
 			ComponentRange GetComponents(ComponentID id);
 		
+			System* GetSystem(const String& name) const;
+
 			// Utilities.
 			template <typename TYPE>
 			TYPE* AddComponent(TYPE* component);
@@ -45,6 +44,11 @@ namespace Cpf
 			TYPE* GetComponent();
 			template <typename TYPE>
 			const TYPE* GetComponent() const;
+			template <typename TYPE>
+			TYPE* GetSystem(const String& name) const
+			{
+				return static_cast<TYPE*>(GetSystem(name));
+			}
 
 		private:
 			// Not intended for direct creation.
@@ -52,10 +56,10 @@ namespace Cpf
 			~Object();
 
 			// Implementation data.
-			int32_t mRefCount;
 			Service* mpOwner;
 			ObjectID mID;
 			ComponentMap mComponents;
+			bool mActive;
 		};
 
 
