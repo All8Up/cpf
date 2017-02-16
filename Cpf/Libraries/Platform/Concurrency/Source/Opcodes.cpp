@@ -2,8 +2,8 @@
 #include "Concurrency/Opcodes.hpp"
 #include "Concurrency/Backoff.hpp"
 
-
-using namespace Cpf::Concurrency;
+using namespace Cpf;
+using namespace Concurrency;
 
 
 /**
@@ -25,7 +25,7 @@ void Detail::Opcodes::Wait(Scheduler &vm, int64_t index)
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::FirstOne(Scheduler &vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::FirstOne(Scheduler &vm, ThreadContext& tc, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count<1000);
@@ -45,7 +45,7 @@ void Detail::Opcodes::FirstOne(Scheduler &vm, Scheduler::ThreadContext& tc, int6
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= -Atomic::Load(vm.mActiveCount) && count<1000);
@@ -68,7 +68,7 @@ void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, Scheduler::ThreadContext& t
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::LastOne(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::LastOne(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count<1000);
@@ -87,7 +87,7 @@ void Detail::Opcodes::LastOne(Scheduler& vm, Scheduler::ThreadContext& tc, int64
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::LastOneBarrier(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::LastOneBarrier(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count<1000);
@@ -109,7 +109,7 @@ void Detail::Opcodes::LastOneBarrier(Scheduler& vm, Scheduler::ThreadContext& tc
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::All(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::All(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	// First/Last, who cares, execute!
 	CPF_ASSERT(Atomic::Load(vm.mPredicateRing[index]) == Atomic::Load(vm.mActiveCount));
@@ -123,7 +123,7 @@ void Detail::Opcodes::All(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t i
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::AllBarrier(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::AllBarrier(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	// All threads execute.
 	(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
@@ -146,7 +146,7 @@ void Detail::Opcodes::AllBarrier(Scheduler& vm, Scheduler::ThreadContext& tc, in
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::Barrier(Scheduler &vm, Scheduler::ThreadContext&, int64_t index)
+void Detail::Opcodes::Barrier(Scheduler &vm, ThreadContext&, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count < 1000);
@@ -167,7 +167,7 @@ void Detail::Opcodes::Barrier(Scheduler &vm, Scheduler::ThreadContext&, int64_t 
  * @param [in,out] tc The thread context of who is running this.
  * @param index The instruction index, not wrapped to ring buffer size.
  */
-void Detail::Opcodes::TLD(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::TLD(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count < 1000);
@@ -181,7 +181,7 @@ void Detail::Opcodes::TLD(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t i
 			vm._TLD(i, int(iidx)) = int32_t(ival);
 	}
 
-	vm._TLD(tc.ThreadId(), int(iidx)) = int32_t(ival);
+	vm._TLD(tc.GetThreadIndex(), int(iidx)) = int32_t(ival);
 }
 
 /**
@@ -190,7 +190,7 @@ void Detail::Opcodes::TLD(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t i
  * @param [in,out] tc The thread context of who is running this.
  * @param index The instruction index, not wrapped to ring buffer size.
  */
-void Detail::Opcodes::TLA(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::TLA(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count < 1000);
@@ -204,7 +204,7 @@ void Detail::Opcodes::TLA(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t i
 			vm._TLA(i, int(iidx)) = ival;
 	}
 
-	vm._TLA(tc.ThreadId(), int(iidx)) = ival;
+	vm._TLA(tc.GetThreadIndex(), int(iidx)) = ival;
 }
 
 /**
@@ -213,7 +213,7 @@ void Detail::Opcodes::TLA(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t i
  * @param [in,out] tc The thread context of who is running this.
  * @param index The instruction index, not wrapped to ring buffer size.
  */
-void Detail::Opcodes::SD(Scheduler& vm, Scheduler::ThreadContext&, int64_t index)
+void Detail::Opcodes::SD(Scheduler& vm, ThreadContext&, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count < 1000);
@@ -236,7 +236,7 @@ void Detail::Opcodes::SD(Scheduler& vm, Scheduler::ThreadContext&, int64_t index
  * @param [in,out] tc The thread context of who is running this.
  * @param index The instruction index, not wrapped to ring buffer size.
  */
-void Detail::Opcodes::SA(Scheduler& vm, Scheduler::ThreadContext&, int64_t index)
+void Detail::Opcodes::SA(Scheduler& vm, ThreadContext&, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 	CPF_ASSERT(count >= 0 && count < 1000);
@@ -260,7 +260,7 @@ void Detail::Opcodes::SA(Scheduler& vm, Scheduler::ThreadContext&, int64_t index
 * @param [in,out] tc The thread context of who is running this.
 * @param index The instruction index, not wrapped to ring buffer size.
 */
-void Detail::Opcodes::ActiveThreads(Scheduler& vm, Scheduler::ThreadContext& tc, int64_t index)
+void Detail::Opcodes::ActiveThreads(Scheduler& vm, ThreadContext& tc, int64_t index)
 {
 	// NOTE: Only one of these instructions can be in flight at any give time.
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
@@ -304,7 +304,7 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, Scheduler::ThreadContext& tc,
 	for (;;)
 	{
 		vm.mActiveLock.Acquire();
-		if (tc.ThreadId() >= Atomic::Load(vm.mActiveCount))
+		if (tc.GetThreadIndex() >= Atomic::Load(vm.mActiveCount))
 		{
 			vm.mActiveCondition.Acquire(vm.mActiveLock);
 			vm.mActiveLock.Release();
@@ -324,7 +324,7 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, Scheduler::ThreadContext& tc,
 * @param context Thread context information.
 * @param index Threads current instruction index.
 */
-void Detail::Opcodes::HeadMinimize(Scheduler &vm, Scheduler::ThreadContext&, int64_t index)
+void Detail::Opcodes::HeadMinimize(Scheduler &vm, ThreadContext&, int64_t index)
 {
 	auto count = Atomic::Dec(vm.mPredicateRing[index]);
 

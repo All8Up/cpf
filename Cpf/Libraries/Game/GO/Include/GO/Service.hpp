@@ -6,6 +6,7 @@
 #include "UnorderedMap.hpp"
 #include "String.hpp"
 #include "Vector.hpp"
+#include "Functional.hpp"
 
 
 namespace Cpf

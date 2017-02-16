@@ -15,9 +15,8 @@ namespace Cpf
 		class Object : public tRefCounted<iRefCounted>
 		{
 		public:
-			using ComponentMap = UnorderedMultiMap<ComponentID, IntrusivePtr<Component>>;
-			using ComponentEntry = ComponentMap::value_type;
-			using ComponentRange = Pair<ComponentMap::const_iterator, ComponentMap::const_iterator>;
+			static constexpr int kMaxComponents = 32;
+			using ComponentPair = Pair<ComponentID, IntrusivePtr<Component>>;
 
 			// Object interface.
 			static bool Create(int64_t id, Object**);
@@ -30,16 +29,14 @@ namespace Cpf
 
 			ObjectID GetID() const;
 
-			void AddComponent(ComponentID id, Component* component);
 			Component* GetComponent(ComponentID id);
 			const Component* GetComponent(ComponentID id) const;
-			ComponentRange GetComponents(ComponentID id);
 		
 			System* GetSystem(const String& name) const;
 
 			// Utilities.
-			template <typename TYPE>
-			TYPE* AddComponent(TYPE* component);
+			template <typename TYPE, typename... ARGS>
+			TYPE* CreateComponent(ARGS...);
 			template <typename TYPE>
 			TYPE* GetComponent();
 			template <typename TYPE>
@@ -55,10 +52,17 @@ namespace Cpf
 			Object();
 			~Object();
 
+			//
+			void AddComponent(ComponentID id, Component* component);
+			template <typename TYPE>
+			TYPE* AddComponent(TYPE* component);
+			int _GetComponentIndex(ComponentID id) const;
+
 			// Implementation data.
 			Service* mpOwner;
 			ObjectID mID;
-			ComponentMap mComponents;
+			int mComponentCount;
+			ComponentPair mComponents[kMaxComponents];
 			bool mActive;
 		};
 
@@ -69,6 +73,16 @@ namespace Cpf
 			AddComponent(TYPE::kID, component);
 			return component;
 		}
+
+		template <typename TYPE, typename... ARGS>
+		TYPE* Object::CreateComponent(ARGS... args)
+		{
+			// TODO: This is for future factory based components.
+			TYPE* result = new TYPE(args...);
+			AddComponent<TYPE>(result);
+			return result;
+		}
+
 
 		template <typename TYPE>
 		TYPE* Object::GetComponent()

@@ -55,7 +55,7 @@ void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
 
 void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 {
-	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc.UserData());
+	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc.GetUserData());
 
 	// Start issuing commands.
 	threadData.mpCommandPool[mCurrentBackbuffer]->Reset();

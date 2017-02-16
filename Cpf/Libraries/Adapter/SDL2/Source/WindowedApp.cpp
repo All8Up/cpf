@@ -173,6 +173,10 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 		case SDL_BUTTON_RIGHT: id = ButtonID::eRight; break;
 		case SDL_BUTTON_X1: id = ButtonID::eX1; break;
 		case SDL_BUTTON_X2: id = ButtonID::eX2; break;
+		default:
+			id = ButtonID::eLeft;
+			CPF_ASSERT_ALWAYS;
+			break;
 		}
 		window->GetEmitter().Emit<iWindow::OnButtonUp>(id, event.button.x, event.button.y);
 

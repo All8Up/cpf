@@ -7,6 +7,8 @@
 #include "Threading/Mutex.hpp"
 #include "Threading/ScopedLock.hpp"
 #include "Concurrency/ThreadContext.hpp"
+#include "Tuple.hpp"
+
 
 namespace Cpf
 {
@@ -14,6 +16,7 @@ namespace Cpf
 	{
 		using ObjectID = int64_t;
 		constexpr ObjectID kInvalidObjectID = int64_t(-1);
+		constexpr ObjectID kTransientID = int64_t(0x0800000000000000);
 
 		using ComponentID = int64_t;
 		constexpr ComponentID kInvalidComponentID = int64_t(-1);
@@ -34,20 +37,22 @@ namespace Cpf
 		class Stage : public tRefCounted<iRefCounted>
 		{
 		public:
-			using FuncType_t = void(*)(Object*);
+			using FuncType_t = void(*)(System*, Object*);
 
-			void AddUpdate(Object* o, FuncType_t f)
+			Stage(System* system) : mpSystem(system) {}
+
+			void AddUpdate(System* s, Object* o, FuncType_t f)
 			{
 				Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mLock);
-				mUpdates.push_back({ f, o });
+				mUpdates.push_back({ s, o, f });
 			}
-			void RemoveUpdate(Object* o, FuncType_t f)
+			void RemoveUpdate(System* s, Object* o)
 			{
 				Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mLock);
-				UpdatePair_t p(f, o);
 				for (auto ibegin = mUpdates.begin(), iend = mUpdates.end(); ibegin!=iend; ++ibegin)
 				{
-					if (*ibegin == p)
+					if (CPF_STL_NAMESPACE::get<0>(*ibegin) == s &&
+						CPF_STL_NAMESPACE::get<1>(*ibegin) == o)
 					{
 						mUpdates.erase(ibegin);
 						return;
@@ -61,8 +66,8 @@ namespace Cpf
 			{
 				Stage& self = *reinterpret_cast<Stage*>(context);
 
-				int32_t threadIndex = tc.ThreadId();
-				int32_t threadCount = tc.ThreadCount();
+				int32_t threadIndex = tc.GetThreadIndex();
+				int32_t threadCount = tc.GetThreadCount();
 				int32_t workCount = int32_t(self.mUpdates.size());
 				int32_t partitionSize = int32_t(workCount) / threadCount;
 				int32_t start = threadIndex * partitionSize;
@@ -73,14 +78,18 @@ namespace Cpf
 
 				for (int i = start; i < end; ++i)
 				{
-					const UpdatePair_t& up = self.mUpdates[i];
-					(*up.first)(up.second);
+					const UpdateTuple_t& up = self.mUpdates[i];
+					(*std::get<2>(up))(std::get<0>(up), std::get<1>(up));
 				}
 			}
 
+			System* GetSystem() const { return mpSystem; }
+			virtual bool ResolveDependencies(GO::Service*, GO::System*) { return true; }
+
 		private:
-			using UpdatePair_t = Pair<FuncType_t, Object*>;
-			Vector<UpdatePair_t> mUpdates;
+			System* mpSystem;
+			using UpdateTuple_t = Tuple<System*, Object*, FuncType_t>;
+			Vector<UpdateTuple_t> mUpdates;
 			Platform::Threading::Mutex mLock;
 		};
 	}

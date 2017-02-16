@@ -13,26 +13,27 @@ namespace Cpf
 			struct Opcodes
 			{
 			private:
-				friend class Cpf::Concurrency::Scheduler;
+				friend class Scheduler;
+				using ThreadContext = Scheduler::ThreadContext;
 
 				static void Wait(Scheduler &vm, int64_t index);
 
-				static void FirstOne(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void FirstOneBarrier(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void LastOne(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void LastOneBarrier(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void All(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void AllBarrier(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void Barrier(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
+				static void FirstOne(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void FirstOneBarrier(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void LastOne(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void LastOneBarrier(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void All(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void AllBarrier(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void Barrier(Scheduler &vm, ThreadContext& context, int64_t index);
 
-				static void TLD(Scheduler&, Scheduler::ThreadContext&, int64_t);
-				static void TLA(Scheduler&, Scheduler::ThreadContext&, int64_t);
-				static void SD(Scheduler&, Scheduler::ThreadContext&, int64_t);
-				static void SA(Scheduler&, Scheduler::ThreadContext&, int64_t);
+				static void TLD(Scheduler&, ThreadContext&, int64_t);
+				static void TLA(Scheduler&, ThreadContext&, int64_t);
+				static void SD(Scheduler&, ThreadContext&, int64_t);
+				static void SA(Scheduler&, ThreadContext&, int64_t);
 
 
-				static void ActiveThreads(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
-				static void HeadMinimize(Scheduler &vm, Scheduler::ThreadContext& context, int64_t index);
+				static void ActiveThreads(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void HeadMinimize(Scheduler &vm, ThreadContext& context, int64_t index);
 			};
 		}
 	}

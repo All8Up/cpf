@@ -23,12 +23,12 @@ TEST(Concurrency, Team_SetupTeardown)
 		[](Scheduler::ThreadContext& threadContext, void* context)
 		{
 			EXPECT_EQ(1234, ((TotalContext*)context)->testValue);
-			threadContext.UserData(new TestData);
+			threadContext.SetUserData(new TestData);
 		},
 		[](Scheduler::ThreadContext& threadContext, void* context)
 		{
 			EXPECT_EQ(1234, ((TotalContext*)context)->testValue);
-			delete (TestData*)threadContext.UserData();
+			delete (TestData*)threadContext.GetUserData();
 		},
 		&totalContext
 	);

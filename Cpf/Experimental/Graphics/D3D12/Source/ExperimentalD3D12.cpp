@@ -23,7 +23,6 @@
 #include "GO/System.hpp"
 #include "GO/Components/TransformComponent.hpp"
 
-
 using namespace Cpf;
 using namespace Math;
 using namespace Graphics;
@@ -34,6 +33,19 @@ using namespace Concurrency;
 //////////////////////////////////////////////////////////////////////////
 // Some temporary work to get the system/service organization stood up at
 // least somewhat correctly.
+
+/*
+Stage notes:
+	Stages should likely just be a container for a dispatch method which
+	handles appropriate multicore dispatch.  General types would be:
+		Stage<Single> = Single thread of execution.
+		Stage<EvenPartions> = Partitioned multicore.  Simple divide and conquer approach.
+		Stage<SmallPartitions> = Each thread takes small slices until all work is complete.
+				Balances better than Partitioning but with a bit more overhead.
+	Question: should stages include information about barriers?  Probably leave that
+		up to the container, i.e. System.
+*/
+
 class GameTime : public GO::System
 {
 public:
@@ -43,9 +55,8 @@ public:
 	{
 		mTime = Time::Now();
 		mStart = mTime;
-		mStages.emplace("Update", new GO::Stage);
-		// HACK HACK HACK...
-		mStages.begin()->second->AddUpdate(reinterpret_cast<GO::Object*>(this), &GameTime::Update);
+		mStages.emplace("Update", new GO::Stage(this));
+		mStages.begin()->second->AddUpdate(this, nullptr, &GameTime::Update);
 	}
 
 	StageMap& GetStages() override
@@ -56,9 +67,9 @@ public:
 	Time::Value GetTime() const { return mTime - mStart; }
 
 private:
-	static void Update(GO::Object* object)
+	static void Update(System* s, GO::Object*)
 	{
-		GameTime* timer = reinterpret_cast<GameTime*>(object);
+		GameTime* timer = reinterpret_cast<GameTime*>(s);
 		timer->mTime = Time::Now();
 	}
 
@@ -67,15 +78,89 @@ private:
 	Time::Value mStart;
 };
 
+// NOTE: TODO: The start and end will be a single system with two stages
+// when the stage sort is functional.
+class InstanceStartSystem : public GO::System
+{
+public:
+	InstanceStartSystem(ExperimentalD3D12* app)
+		: mpApp(app)
+		, mpInstances(nullptr)
+	{
+		mStages.emplace("Update", new GO::Stage(this));
+		mStages.begin()->second->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
+	}
+	StageMap& GetStages() override
+	{
+		return mStages;
+	}
+
+	ExperimentalD3D12::Instance* GetInstances() const { return mpInstances; }
+
+private:
+	static void Update(System* s, GO::Object*)
+	{
+		InstanceStartSystem* system = static_cast<InstanceStartSystem*>(s);
+		system->mpApp->GetCurrentInstanceBuffer()->Map(0, 0, reinterpret_cast<void**>(&system->mpInstances));
+	}
+
+	StageMap mStages;
+	ExperimentalD3D12* mpApp;
+	ExperimentalD3D12::Instance* mpInstances;
+};
+
+class InstanceEndSystem : public GO::System
+{
+public:
+	InstanceEndSystem(ExperimentalD3D12* app)
+		: mpApp(app)
+	{
+		mStages.emplace("Update", new GO::Stage(this));
+		mStages.begin()->second->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
+	}
+	StageMap& GetStages() override
+	{
+		return mStages;
+	}
+
+private:
+	static void Update(System* s, GO::Object*)
+	{
+		InstanceEndSystem* system = static_cast<InstanceEndSystem*>(s);
+		system->mpApp->GetCurrentInstanceBuffer()->Unmap();
+	}
+
+	StageMap mStages;
+	ExperimentalD3D12* mpApp;
+};
+
 class MoverSystem : public GO::System
 {
 public:
 	// Component(s) supplied.
 	class MoverComponent;
 
-	MoverSystem()
+	// Stages.
+	class MoverStage : public GO::Stage
 	{
-		mStages.emplace("Move", new GO::Stage);
+	public:
+		MoverStage(System* s) : Stage(s) {}
+
+		bool ResolveDependencies(GO::Service* service, System* system) override
+		{
+			MoverSystem* mover = static_cast<MoverSystem*>(system);
+			mover->mpTime = service->GetSystem<GameTime>("Game Time");
+			mover->mpInstances = service->GetSystem<InstanceStartSystem>("Start Instancing");
+			return mover->mpTime != nullptr;
+		}
+	};
+
+	MoverSystem(ExperimentalD3D12* app)
+		: mpApp(app)
+		, mpInstances(nullptr)
+		, mpTime (nullptr)
+	{
+		mStages.emplace("Move", new MoverStage(this));
 	}
 
 	StageMap& GetStages() override
@@ -83,8 +168,16 @@ public:
 		return mStages;
 	}
 
+	InstanceStartSystem* GetInstanceSystem() const { return mpInstances; }
+
 private:
 	StageMap mStages;
+
+	ExperimentalD3D12* mpApp;
+
+	// system interdependencies.
+	InstanceStartSystem* mpInstances;
+	const GameTime* mpTime;	// The clock this mover is attached to.
 };
 
 class MoverSystem::MoverComponent : public GO::Component
@@ -98,18 +191,19 @@ public:
 
 	void Activate() override
 	{
-		mpMover->GetStages()["Move"]->AddUpdate(GetObject(), &MoverComponent::_Update);
+		mpMover->GetStages()["Move"]->AddUpdate(mpMover, GetObject(), &MoverComponent::_Update);
 	}
 
 	void Deactivate() override
 	{
-		mpMover->GetStages()["Move"]->RemoveUpdate(GetObject(), &MoverComponent::_Update);
+		mpMover->GetStages()["Move"]->RemoveUpdate(mpMover, GetObject());
 	}
 
 private:
-	static void _Update(GO::Object* object)
+	static void _Update(System* system, GO::Object* object)
 	{
-		GameTime* timer = object->GetSystem<GameTime>("Game Time");
+		MoverSystem* mover = static_cast<MoverSystem*>(system);
+		const GameTime* timer = mover->mpTime;
 
 		int i = int(object->GetID());
 		int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -126,6 +220,13 @@ private:
 		pos.y = (sinf(angle) + 0.5f) * pos.y * magnitude;
 		pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 		object->GetComponent<GO::TransformComponent>()->GetTransform().SetTranslation(pos);
+
+		ExperimentalD3D12::Instance* instances = mover->GetInstanceSystem()->GetInstances();
+		instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
+		instances[i].mOrientation0 = Vector3f(1.0f, 0.0f, 0.0f);
+		instances[i].mOrientation1 = Vector3f(0.0f, 1.0f, 0.0f);
+		instances[i].mOrientation2 = Vector3f(0.0f, 0.0f, 1.0f);
+		instances[i].mTranslation = Vector3f(pos.xyz);
 	}
 
 	MoverSystem* mpMover;
@@ -137,40 +238,6 @@ private:
 #define INCLUDE_GFX Adapter/## CPF_CONCAT(GFX_ADAPTER, .hpp)
 #include CPF_STRINGIZE(INCLUDE_GFX)
 #define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
-
-
-void ExperimentalD3D12::_ObjectUpdate(ThreadContext& tc)
-{
-	// Quick do nothing version.
-	int32_t threadIndex = tc.ThreadId();
-	int32_t threadCount = tc.ThreadCount();
-	int32_t partitionSize = kInstanceCount / threadCount;
-	int32_t start = threadIndex * partitionSize;
-	int32_t end = start + partitionSize;
-
-	if (threadIndex == threadCount - 1)
-	{
-		int32_t rollover = kInstanceCount - (threadCount * partitionSize);
-		end += rollover;
-	}
-
-	Instance* instances = nullptr;
-	if (mpInstanceBuffer[mCurrentBackbuffer]->Map(0, 0, reinterpret_cast<void**>(&instances)))
-	{
-		int i = 0;
-		mGOService.IterateObjects([&](GO::Object* object)
-		{
-			GO::TransformComponent* transform = object->GetComponent<GO::TransformComponent>();
-			instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
-			instances[i].mOrientation0 = Vector3f(1.0f, 0.0f, 0.0f);
-			instances[i].mOrientation1 = Vector3f(0.0f, 1.0f, 0.0f);
-			instances[i].mOrientation2 = Vector3f(0.0f, 0.0f, 1.0f);
-			instances[i++].mTranslation = Vector3f(transform->GetTransform().GetTranslation().xyz);
-		});
-	}
-	mpInstanceBuffer[mCurrentBackbuffer]->Unmap();
-}
-
 
 
 int ExperimentalD3D12::Start(const CommandLine&)
@@ -196,32 +263,45 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	//////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////
 	// Setup the object system.
-	mGOService.Install("Game Time", new GameTime());
+	/* Eventual interface.
+	// GenericFrame simply supplies a base set of starting stages to hang other things off of.
+	// The stages are named: "Begin", "Update" and "End" each expecting a barrier between.
+	mGOService.CreateSystem<GenericFrame>("Frame");
 
-	mGOService.Install("Mover", new MoverSystem());
+	// The two game times are such that the UI can continue functioning even if the game is paused.
+	// They are attached to the Begin stage of the Frame with no special barrier requirements.
+	mGOService.CreateSystem<GameTime>("UITime", "Frame", "Begin");
+	mGOService.CreateSystem<GameTime>("GameTime", "Frame", "Begin");
+
+	// The instancing system handles preparing a buffer(s) for instanced rendering.
+	// This system has a "Begin" & "End" stage, each with different bindings.
+	// Begin is bound to the Frame::Begin while end is bound to the Frame::End.
+	// NOTE: Internal to the InstanceSystem a dependency is created between the "Begin" and "End"
+	// stages which it supplies to make sure there is at least one barrier between the two.
+	mGOService.CreateSystem<InstanceSystem>("Instancing", {
+		{"Begin", "Frame", "Begin"},
+		{"End", "Frame", "End"}
+	}, this);
+
+	// The movement system is part of update which by nature will have barriers on either side
+	// but just in case there were a reason to move the time or instancing into update it
+	// defines it's dependencies.
+	mGOService.CreateSystem<MoverSystem>("Mover", {
+		{"Move", "Instancing", "Begin", Order::eAfter},
+		{"Move", "Instancing", "End", Order::eBefore}
+	}, this);
+	*/
+
+	mGOService.Install("Game Time", new GameTime());
+	mGOService.Install("Start Instancing", new InstanceStartSystem(this));
+	mGOService.Install("Mover", new MoverSystem(this));
+	mGOService.Install("End Instancing", new InstanceEndSystem(this));
 
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<GO::Object> object(mGOService.CreateObject());
-		GO::TransformComponent* transform = object->AddComponent(new GO::TransformComponent);
-		transform->GetTransform().SetTranslation(Vector3fv(5.0f, 0.0f, 0.0f));
-		object->AddComponent(new MoverSystem::MoverComponent(mGOService.GetSystem<MoverSystem>("Mover")));
-
-		int count = kInstancesPerDimension;
-		int xc = (i % count);
-		int yc = (i / count) % count;
-		int zc = (i / (count * count)) % count;
-
-		Vector3fv position((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
-		float magnitude = Magnitude(position + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
-		magnitude *= magnitude;
-		float time = 1.0f;
-		float angle = sinf(0.25f * time);
-		position.x = sinf(angle * magnitude) * position.x - cosf(angle * magnitude) * position.z;
-		position.y = (sinf(angle) + 0.5f) * position.y * magnitude;
-		position.z = cosf(angle * magnitude) * position.x + sinf(angle * magnitude) * position.z;
-
-		transform->GetTransform().SetTranslation(position);
+		object->CreateComponent<GO::TransformComponent>();
+		object->CreateComponent<MoverSystem::MoverComponent>(mGOService.GetSystem<MoverSystem>("Mover"));
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -285,8 +365,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 				// Allocates a command pool and buffer per thread.
 				Thread::Group workerThreads(Thread::GetHardwareThreadCount());
 				mScheduler.Initialize(Move(workerThreads),
-					SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_CreateWorkerData),
-					SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
+					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_CreateWorkerData),
+					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
 					this
 				);
 				mQueue = Move(mScheduler.CreateQueue());
@@ -317,6 +397,10 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					// to flush the pipeline.
 					Poll();
 
+					// Handle any issued work from the threaded side.
+					for (; mReactor.RunOne();)
+						;
+
 					Atomic::Inc(mFrameIndex);
 					Atomic::Store(mSubmissionIndex, Atomic::Load(mFrameIndex) * 3);
 					Atomic::Store(mCurrentScheduledBuffer, 1);
@@ -328,9 +412,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					static int count = 0;
 					static Time::Value accumulation;
 					accumulation += mDeltaTime;
-					if (++count % 1000 == 0)
+					if (++count % 100 == 0)
 					{
-						float avg = float(Time::Seconds(accumulation / 1000));
+						float avg = float(Time::Seconds(accumulation / 100));
 						CPF_LOG(Experimental, Info) << "Avg: " << avg << " FPS avg: " << 1.0f / avg;
 						CPF_LOG(Experimental, Info) << " Poll: "
 							<< float(Time::Seconds(pollingTime)) / float(Time::Seconds(accumulation)) << " - "
@@ -342,20 +426,18 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 					//////////////////////////////////////////////////////////////////////////
 					// The threaded execution loop.
-					mQueue.FirstOneBarrier(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
+					mQueue.FirstOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
 					// Update the GO::Service.
 					mGOService.Submit(mQueue);
-					// Update the instance buffer.
-					mQueue.AllBarrier(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_ObjectUpdate), this);
 					// The following build command buffers in parallel.
-					mQueue.FirstOne(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
+					mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
 					// Draw everything.  This would be an All instruction but right now everything is a single instanced draw call.
-					mQueue.FirstOne(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
-					mQueue.FirstOne(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
+					mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
+					mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
 					// Issue the command buffers in proper order.
 					// Because the last thread to enter the instruction performs the work and the other threads wait till completion,
 					// this guarantee's everything above is complete and no other works is being performed.
-					mQueue.LastOneBarrier(SCHEDULEDCALL(ExperimentalD3D12, &ExperimentalD3D12::_EndFrame), this);
+					mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_EndFrame), this);
 
 					//////////////////////////////////////////////////////////////////////////
 					// Notify that the frame of processing is complete.  TODO: Should find a better name for this or the next call.

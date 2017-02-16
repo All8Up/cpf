@@ -144,7 +144,7 @@ namespace Cpf
 			};
 			return &Caller::Call;
 		}
-#define SCHEDULEDCALL(t, f) ThreadedCall<t, __COUNTER__>(f)
+#define SCHEDULED_CALL(t, f) ThreadedCall<t, __COUNTER__>(f)
 
 
 		class Scheduler::Semaphore

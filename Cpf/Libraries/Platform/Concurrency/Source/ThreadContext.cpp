@@ -6,7 +6,7 @@ using namespace Cpf::Concurrency;
 
 
 
-ThreadContext::ThreadContext(Cpf::Concurrency::Scheduler& scheduler, int threadId, void* userData)
+ThreadContext::ThreadContext(Scheduler& scheduler, int threadId, void* userData)
 	: mScheduler(scheduler)
 	, mThreadId(threadId)
 	, mpUserData(userData)
@@ -15,23 +15,23 @@ ThreadContext::ThreadContext(Cpf::Concurrency::Scheduler& scheduler, int threadI
 }
 
 
-Cpf::Concurrency::Scheduler& ThreadContext::Scheduler() const
+Scheduler& ThreadContext::GetScheduler() const
 {
 	return mScheduler;
 }
 
 
-int ThreadContext::ThreadId() const
+int ThreadContext::GetThreadIndex() const
 {
 	return mThreadId;
 }
 
-int ThreadContext::ThreadCount() const
+int ThreadContext::GetThreadCount() const
 {
 	return mScheduler.mActiveCount;
 }
 
-void ThreadContext::UserData(void* data)
+void ThreadContext::SetUserData(void* data)
 {
 	CPF_ASSERT(mpUserData == nullptr);
 	mpUserData = data;

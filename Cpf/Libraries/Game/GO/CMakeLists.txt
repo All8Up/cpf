@@ -46,7 +46,7 @@ target_include_directories (s_GO
 )
 target_link_libraries (s_GO
 	LINK_PUBLIC
-		Configuration s_Collections RefCount Logging s_Hash s_Math s_Concurrency
+		Configuration s_Collections RefCount Logging s_Hash s_Math s_MultiCore
 )
 set_property (TARGET s_GO PROPERTY FOLDER Libraries/Static/Game)
 

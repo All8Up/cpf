@@ -6,6 +6,7 @@
 #include "Math/Vector3.hpp"
 #include "Resources/Locator.hpp"
 #include "GO/Service.hpp"
+#include "Threading/Reactor.hpp"
 
 
 namespace Cpf
@@ -20,8 +21,20 @@ namespace Cpf
 
 		int Start(const CommandLine&) override;
 
-		static const int32_t kInstancesPerDimension = 25;
+		static const int32_t kInstancesPerDimension = 50;
 		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
+
+		struct Instance
+		{
+			Math::Vector3f mTranslation;
+			Math::Vector3f mScale;
+			// TODO: Resurrect the Matrix33f non-simd class for this.
+			Math::Vector3f mOrientation0;
+			Math::Vector3f mOrientation1;
+			Math::Vector3f mOrientation2;
+		};
+
+		Graphics::iVertexBuffer* GetCurrentInstanceBuffer() const { return mpInstanceBuffer[mCurrentBackbuffer]; }
 
 	private:
 		bool _CreateWindow();
@@ -37,7 +50,6 @@ namespace Cpf
 
 		void _BeginFrame(Concurrency::ThreadContext&);
 		void _ClearBuffers(Concurrency::ThreadContext&);
-		void _ObjectUpdate(Concurrency::ThreadContext& tc);
 		void _Draw(Concurrency::ThreadContext& tc);
 		void _PreparePresent(Concurrency::ThreadContext&);
 		void _EndFrame(Concurrency::ThreadContext&);
@@ -104,16 +116,10 @@ namespace Cpf
 		IntrusivePtr<Graphics::iConstantBuffer> mpModelTransform;
 		*/
 
-		struct Instance
-		{
-			Math::Vector3f mTranslation;
-			Math::Vector3f mScale;
-			// TODO: Resurrect the Matrix33f non-simd class for this.
-			Math::Vector3f mOrientation0;
-			Math::Vector3f mOrientation1;
-			Math::Vector3f mOrientation2;
-		};
-
+		Platform::Threading::Reactor mReactor;
+		// If the multi-core side of things needs anything run on the main thread,
+		// feed it in this queue.
+		Platform::Threading::Reactor::WorkQueue mReactorQueue;
 		GO::Service mGOService;
 	};
 }

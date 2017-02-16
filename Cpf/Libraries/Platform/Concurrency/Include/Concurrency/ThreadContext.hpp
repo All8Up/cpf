@@ -10,14 +10,14 @@ namespace Cpf
 		class ThreadContext
 		{
 		public:
-			ThreadContext(Cpf::Concurrency::Scheduler&, int, void* userData=nullptr);
+			ThreadContext(Scheduler&, int, void* userData=nullptr);
 
-			Cpf::Concurrency::Scheduler& Scheduler() const;
-			int ThreadId() const;
-			int ThreadCount() const;
-			void UserData(void*);
+			Scheduler& GetScheduler() const;
+			int GetThreadIndex() const;
+			int GetThreadCount() const;
+			void SetUserData(void*);
 			template<typename TYPE=void>
-			TYPE* UserData() const;
+			TYPE* GetUserData() const;
 
 			// Register access.
 			int32_t& TLD(int index) const;
@@ -26,14 +26,14 @@ namespace Cpf
 			void*& SA(int index) const;
 
 		private:
-			Cpf::Concurrency::Scheduler& mScheduler;
+			Concurrency::Scheduler& mScheduler;
 			int mThreadId;
 			void* mpUserData;
 		};
 
 
 		template<typename TYPE>
-		inline TYPE* Scheduler::ThreadContext::UserData() const
+		TYPE* Scheduler::ThreadContext::GetUserData() const
 		{
 			return reinterpret_cast<TYPE*>(mpUserData);
 		}
