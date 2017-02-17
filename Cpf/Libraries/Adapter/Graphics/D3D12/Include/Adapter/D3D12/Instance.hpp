@@ -3,6 +3,8 @@
 #include "Graphics/Interfaces/iInstance.hpp"
 #include "IntrusivePtr.hpp"
 #include "D3D12Utils.hpp"
+// Used for IDXGIFactory2.  Not all systems have dxgi1_4.h yet so this seems more compatible.
+#include <d3d11_1.h>
 
 namespace Cpf
 {
