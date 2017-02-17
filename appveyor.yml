@@ -10,7 +10,6 @@ configuration: Release
 clone_folder: c:\cpf
 before_build:
   - echo Downloading dependencies.
-  - mkdir c:\cpf\External\Source
   - set CPF_DEPS_URL="https://github.com/All8Up/cpf/releases/download/dependencies/cpf_deps.7z"
   - appveyor DownloadFile %CPF_DEPS_URL% -FileName cpf_deps.7z
   - echo Decompressing dependencies.
