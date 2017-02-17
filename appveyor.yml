@@ -16,4 +16,6 @@ before_build:
   - 7z x cpf_deps.7z -oc:\cpf\External\Source
   - echo Running cmake...
   - cd c:\cpf
-  - cmake -G "Visual Studio 14 2015 Win64" -DEXTERN_INLINE_GMOCK=ON -DEXTERN_INLINE_RAPIDJSON=ON -DEXTERN_INLINE_SDL2=ON -DEXTERN_INLINE_SPDLOG=ON
+  - mkdir build
+  - cd build
+  - cmake -G "Visual Studio 14 2015 Win64" -DEXTERN_INLINE_GMOCK=ON -DEXTERN_INLINE_RAPIDJSON=ON -DEXTERN_INLINE_SDL2=ON -DEXTERN_INLINE_SPDLOG=ON ./..
