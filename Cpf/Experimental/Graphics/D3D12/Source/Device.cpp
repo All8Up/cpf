@@ -120,7 +120,7 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 	};
 	for (int i = 0; i < desc.mBackBufferCount; ++i)
 	{
-		mpDevice->CreateImage2D(&depthBufferDesc, mpDepthBufferImages[i].AsTypePP());
+		mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBufferImages[i].AsTypePP());
 		mpDevice->CreateDepthStencilView(mpDepthBufferImages[i], nullptr, mpDepthBufferImageViews[i].AsTypePP());
 	}
 

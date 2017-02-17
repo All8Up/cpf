@@ -391,6 +391,22 @@ bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 				D3D12_SHADER_VISIBILITY(cb.mVisibility));
 		}
 		break;
+
+		case BindingType::eSampler:
+		{
+			const auto& sb = param.GetSamplerBinding();
+			CD3DX12_DESCRIPTOR_RANGE range(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, sb.mRegisterIndex);
+			parameters[i++].InitAsDescriptorTable(1, &range);
+		}
+		break;
+
+		case BindingType::eTexture:
+		{
+			const auto& tb = param.GetTextureBinding();
+			CD3DX12_DESCRIPTOR_RANGE range(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, tb.mRegisterIndex);
+			parameters[i++].InitAsDescriptorTable(1, &range);
+		}
+		break;
 		default:
 			CPF_ASSERT_ALWAYS;// Type not implemented.
 		}
@@ -400,8 +416,7 @@ bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 	CD3DX12_ROOT_SIGNATURE_DESC signature;
 	signature.Init(UINT(desc.GetParameters().size()), parameters, 0, nullptr, rootSignatureFlags);
 

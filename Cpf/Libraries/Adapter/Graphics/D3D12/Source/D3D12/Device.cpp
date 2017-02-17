@@ -14,6 +14,7 @@
 #include "Adapter/D3D12/ConstantBuffer.hpp"
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/VertexBuffer.hpp"
+#include "Adapter/D3D12/Sampler.hpp"
 #include "Graphics/BinaryBlob.hpp"
 #include "Logging/Logging.hpp"
 #include "String.hpp"
@@ -185,9 +186,9 @@ bool Device::CreateFence(int64_t initValue, Graphics::iFence** fence)
 	return false;
 }
 
-bool Device::CreateImage2D(const Graphics::ImageDesc* desc, Graphics::iImage** image)
+bool Device::CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** image)
 {
-	Image* result = new Image(this, desc);
+	Image* result = new Image(this, initData, desc);
 	if (result)
 	{
 		*image = result;
@@ -242,6 +243,18 @@ bool Device::CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResou
 	{
 		result->AddRef();
 		*resource = result;
+		return true;
+	}
+	return false;
+}
+
+bool Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler)
+{
+	IntrusivePtr<Sampler> result(new Sampler(this, desc));
+	if (result)
+	{
+		result->AddRef();
+		*sampler = result;
 		return true;
 	}
 	return false;

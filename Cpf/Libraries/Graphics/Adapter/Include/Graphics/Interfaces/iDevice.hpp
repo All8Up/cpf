@@ -5,8 +5,12 @@
 
 namespace Cpf
 {
+	class iWindow;
+
 	namespace Graphics
 	{
+		struct SamplerDesc;
+		enum class Format;
 		enum class BufferUsage : int32_t;
 		class iIndexBuffer;
 		class iVertexBuffer;
@@ -20,6 +24,7 @@ namespace Cpf
 		class iSwapChain;
 		struct ImageDesc;
 		class iShader;
+		class iSampler;
 		class iCommandPool;
 		class iCommandBuffer;
 		class BinaryBlob;
@@ -47,11 +52,12 @@ namespace Cpf
 			virtual bool CreateCommandPool(iCommandPool**) = 0;
 			virtual bool CreateCommandBuffer(iCommandPool*, iCommandBuffer**) = 0;
 			virtual bool CreateFence(int64_t initValue, iFence**) = 0;
-			virtual bool CreateImage2D(const ImageDesc* desc, iImage**) = 0;
+			virtual bool CreateImage2D(const ImageDesc* desc, const void* initData, iImage**) = 0;
 			virtual bool CreateShader(BinaryBlob* blob, iShader**) = 0;
 			virtual bool CreateResourceBinding(const ResourceBindingDesc*, iResourceBinding**) = 0;
 			virtual bool CreatePipeline(const PipelineStateDesc* desc, iResourceBinding*, iPipeline**) = 0;
 			virtual bool CreateResource(const ResourceDesc* desc, iResource**) = 0;
+			virtual bool CreateSampler(const SamplerDesc* desc, iSampler**) = 0;
 
 			virtual bool CreateIndexBuffer(Format format, BufferUsage usage, size_t byteSize, const void* initData, iIndexBuffer** indexBuffer) = 0;
 			virtual bool CreateVertexBuffer(BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, iVertexBuffer** indexBuffer) = 0;

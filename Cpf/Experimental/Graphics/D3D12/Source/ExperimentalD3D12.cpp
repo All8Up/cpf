@@ -10,6 +10,7 @@
 #include "Time/Time.hpp"
 
 #include "Graphics/Driver.hpp"
+#include "Graphics/DebugUI.hpp"
 
 #include "Math/Vector3.hpp"
 #include "Math/Vector4.hpp"
@@ -382,73 +383,85 @@ int ExperimentalD3D12::Start(const CommandLine&)
 				// Create a graphics fence to track back buffers.
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
-				while (IsRunning())
+#ifdef CPF_DEBUG
 				{
-					pollingTime += Time::Now() - mCurrentTime;
-
-					//////////////////////////////////////////////////////////////////////////
-					// Wait for the last frame of processing.
-					frameSemaphore.Acquire();
-					renderingTime += Time::Now() - mCurrentTime;
-
-					// Poll the application OS events.
-					// TODO: this is done in between frames so resize doesn't conflict.
-					// This will need to be overlap aware and that means that resize will need the ability
-					// to flush the pipeline.
-					Poll();
-
-					// Handle any issued work from the threaded side.
-					for (; mReactor.RunOne();)
-						;
-
-					Atomic::Inc(mFrameIndex);
-					Atomic::Store(mSubmissionIndex, Atomic::Load(mFrameIndex) * 3);
-					Atomic::Store(mCurrentScheduledBuffer, 1);
-					Atomic::Store(mCurrentBackbuffer, mpSwapChain->GetCurrentIndex());
-					auto now = Time::Now() - mStartTime;
-					mDeltaTime = now - mCurrentTime;
-					mCurrentTime = now;
-
-					static int count = 0;
-					static Time::Value accumulation;
-					accumulation += mDeltaTime;
-					if (++count % 100 == 0)
+					DebugUI debugUI;
+					if (!debugUI.Initialize(mpDevice, mpLocator))
 					{
-						float avg = float(Time::Seconds(accumulation / 100));
-						CPF_LOG(Experimental, Info) << "Avg: " << avg << " FPS avg: " << 1.0f / avg;
-						CPF_LOG(Experimental, Info) << " Poll: "
-							<< float(Time::Seconds(pollingTime)) / float(Time::Seconds(accumulation)) << " - "
-							<< float(Time::Seconds(renderingTime)) / float(Time::Seconds(accumulation));
-						accumulation = Time::Seconds(0);
-						pollingTime = Time::Seconds(0);
-						renderingTime = Time::Seconds(0);
+						CPF_LOG(Experimental, Info) << "Failed to initialize the debug UI.";
+					}
+#endif
+
+					while (IsRunning())
+					{
+						pollingTime += Time::Now() - mCurrentTime;
+
+						//////////////////////////////////////////////////////////////////////////
+						// Wait for the last frame of processing.
+						frameSemaphore.Acquire();
+						renderingTime += Time::Now() - mCurrentTime;
+
+						// Poll the application OS events.
+						// TODO: this is done in between frames so resize doesn't conflict.
+						// This will need to be overlap aware and that means that resize will need the ability
+						// to flush the pipeline.
+						Poll();
+
+						// Handle any issued work from the threaded side.
+						for (; mReactor.RunOne();)
+							;
+
+						Atomic::Inc(mFrameIndex);
+						Atomic::Store(mSubmissionIndex, Atomic::Load(mFrameIndex) * 3);
+						Atomic::Store(mCurrentScheduledBuffer, 1);
+						Atomic::Store(mCurrentBackbuffer, mpSwapChain->GetCurrentIndex());
+						auto now = Time::Now() - mStartTime;
+						mDeltaTime = now - mCurrentTime;
+						mCurrentTime = now;
+
+						static int count = 0;
+						static Time::Value accumulation;
+						accumulation += mDeltaTime;
+						if (++count % 100 == 0)
+						{
+							float avg = float(Time::Seconds(accumulation / 100));
+							CPF_LOG(Experimental, Info) << "Avg: " << avg << " FPS avg: " << 1.0f / avg;
+							CPF_LOG(Experimental, Info) << " Poll: "
+								<< float(Time::Seconds(pollingTime)) / float(Time::Seconds(accumulation)) << " - "
+								<< float(Time::Seconds(renderingTime)) / float(Time::Seconds(accumulation));
+							accumulation = Time::Seconds(0);
+							pollingTime = Time::Seconds(0);
+							renderingTime = Time::Seconds(0);
+						}
+
+						//////////////////////////////////////////////////////////////////////////
+						// The threaded execution loop.
+						mQueue.FirstOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
+						// Update the GO::Service.
+						mGOService.Submit(mQueue);
+						// The following build command buffers in parallel.
+						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
+						// Draw everything.  This would be an All instruction but right now everything is a single instanced draw call.
+						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
+						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
+						// Issue the command buffers in proper order.
+						// Because the last thread to enter the instruction performs the work and the other threads wait till completion,
+						// this guarantee's everything above is complete and no other work is being performed.
+						mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_EndFrame), this);
+
+						//////////////////////////////////////////////////////////////////////////
+						// Notify that the frame of processing is complete.
+						mQueue.Submit(frameSemaphore);
+
+						// And tell the scheduler to execute this work queue.
+						mQueue.Execute(Scheduler::Queue::SubmissionType::eNormal);
 					}
 
-					//////////////////////////////////////////////////////////////////////////
-					// The threaded execution loop.
-					mQueue.FirstOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
-					// Update the GO::Service.
-					mGOService.Submit(mQueue);
-					// The following build command buffers in parallel.
-					mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
-					// Draw everything.  This would be an All instruction but right now everything is a single instanced draw call.
-					mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
-					mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
-					// Issue the command buffers in proper order.
-					// Because the last thread to enter the instruction performs the work and the other threads wait till completion,
-					// this guarantee's everything above is complete and no other works is being performed.
-					mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_EndFrame), this);
-
-					//////////////////////////////////////////////////////////////////////////
-					// Notify that the frame of processing is complete.  TODO: Should find a better name for this or the next call.
-					mQueue.Submit(frameSemaphore);
-
-					// And submit all the work to the thread system for processing.
-					mQueue.Execute(Scheduler::Queue::SubmissionType::eNormal);
+					// Guarantee last frame is complete before we tear everything down.
+					frameSemaphore.Acquire();
+#ifdef CPF_DEBUG
 				}
-
-				// Guarantee last frame is complete.
-				frameSemaphore.Acquire();
+#endif
 
 				// Destroy all the resources.
 				_DestroyResources();

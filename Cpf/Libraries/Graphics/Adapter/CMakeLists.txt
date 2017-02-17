@@ -1,6 +1,5 @@
 # ###############################################
 set (INCLUDE_GRAPHICS_FILES
-	Include/Graphics.hpp
 	Include/Graphics/BinaryBlob.hpp
 	Include/Graphics/BlendFunc.hpp
 	Include/Graphics/BlendOp.hpp
@@ -18,6 +17,7 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/StencilOp.hpp
 	Include/Graphics/WindingOrder.hpp
 	Include/Graphics/BufferUsage.hpp
+	Include/Graphics/DebugUI.hpp
 )
 set (INCLUDE_GRAPHICS_DESCRIPTORS
 	Include/Graphics/Descriptors/BlendStateDesc.hpp
@@ -55,6 +55,20 @@ set (SOURCE_GRAPHICS_FILES
 	Source/Driver.cpp
 	Source/Format.cpp
 	Source/Ratio.cpp
+	Source/DebugUI.cpp
+)
+set (SOURCE_IMGUI_FILES
+	Source/imgui/imconfig.h
+	Source/imgui/imgui.cpp
+	Source/imgui/imgui.h
+	Source/imgui/imgui_demo.cpp
+	Source/imgui/imgui_draw.cpp
+	Source/imgui/imgui_internal.h
+	Source/imgui/stb_image.h
+	Source/imgui/stb_image.cpp
+	Source/imgui/stb_textedit.h
+	Source/imgui/stb_truetype.h
+	Source/imgui/stb_rect_pack.h
 )
 set (SOURCE_GRAPHICS_DESCRIPTORS
 	Source/Descriptors/BlendStateDesc.cpp
@@ -69,11 +83,13 @@ set (SOURCE_GRAPHICS_DESCRIPTORS
 
 # ###############################################
 add_library (s_GraphicsDriver STATIC
+	Include/Graphics.hpp
 	${INCLUDE_GRAPHICS_FILES}
 	${INCLUDE_GRAPHICS_DESCRIPTORS}
 	${INCLUDE_GRAPHICS_INTERFACES}
 	${SOURCE_GRAPHICS_FILES}
 	${SOURCE_GRAPHICS_DESCRIPTORS}
+	${SOURCE_IMGUI_FILES}
 )
 
 # ###############################################
@@ -88,7 +104,7 @@ target_include_directories (s_GraphicsDriver
 )
 target_link_libraries (s_GraphicsDriver
 	LINK_PUBLIC
-		Configuration RefCount s_Math s_IO Logging
+		Configuration RefCount s_Math s_IO s_Resources Logging
 )
 
 # ###############################################
@@ -97,11 +113,13 @@ set_property (TARGET s_GraphicsDriver
 )
 
 # ###############################################
+source_group (Headers FILES Include/Graphics.hpp)
 source_group (Headers\\Graphics FILES ${INCLUDE_GRAPHICS_FILES})
 source_group (Headers\\Graphics\\Descriptors FILES ${INCLUDE_GRAPHICS_DESCRIPTORS})
 source_group (Headers\\Graphics\\Interfaces FILES ${INCLUDE_GRAPHICS_INTERFACES})
 source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
 source_group (Sources\\Graphics\\Descriptors FILES ${SOURCE_GRAPHICS_DESCRIPTORS})
+source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})
 
 # ###############################################
 #[[

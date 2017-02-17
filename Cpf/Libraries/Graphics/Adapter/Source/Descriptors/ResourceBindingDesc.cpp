@@ -21,6 +21,19 @@ void BindingParameter::SetConstantBuffer(int32_t regidx, int32_t flags, int32_t 
 	mData.mConstantBuffer.mVisibility = visibility;
 }
 
+void BindingParameter::SetSamplerBinding(int32_t regidx)
+{
+	CPF_ASSERT(mType == BindingType::eSampler);
+	mData.mSamplerBinding.mRegisterIndex = regidx;
+}
+
+void BindingParameter::SetTextureBinding(int32_t regidx)
+{
+	CPF_ASSERT(mType == BindingType::eTexture);
+	mData.mTextureBinding.mRegisterIndex = regidx;
+}
+
+
 const BindingParameter::Constants& BindingParameter::GetConstants() const
 {
 	CPF_ASSERT(mType == BindingType::eConstants);
@@ -30,6 +43,18 @@ const BindingParameter::ConstantBuffer& BindingParameter::GetConstantBuffer() co
 {
 	CPF_ASSERT(mType == BindingType::eConstantBuffer);
 	return mData.mConstantBuffer;
+}
+
+const BindingParameter::SamplerBinding& BindingParameter::GetSamplerBinding() const
+{
+	CPF_ASSERT(mType == BindingType::eSampler);
+	return mData.mSamplerBinding;
+}
+
+const BindingParameter::TextureBinding& BindingParameter::GetTextureBinding() const
+{
+	CPF_ASSERT(mType == BindingType::eTexture);
+	return mData.mTextureBinding;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -47,6 +72,19 @@ CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstantBuffer(int32_
 	return result;
 };
 
+CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamSampler(int32_t index)
+{
+	BindingParameter result(BindingType::eSampler);
+	result.SetSamplerBinding(index);
+	return result;
+}
+
+CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamTexture(int32_t index)
+{
+	BindingParameter result(BindingType::eTexture);
+	result.SetTextureBinding(index);
+	return result;
+}
 
 //////////////////////////////////////////////////////////////////////////
 

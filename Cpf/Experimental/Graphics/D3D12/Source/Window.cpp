@@ -60,7 +60,7 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 		};
 		for (int i = 0; i < mBackBufferCount; ++i)
 		{
-			mpDevice->CreateImage2D(&depthBufferDesc, mpDepthBufferImages[i].AsTypePP());
+			mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBufferImages[i].AsTypePP());
 			mpDevice->CreateDepthStencilView(mpDepthBufferImages[i], nullptr, mpDepthBufferImageViews[i].AsTypePP());
 		}
 	}

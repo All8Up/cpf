@@ -15,6 +15,8 @@ namespace Cpf
 			eResourceBuffer,
 			eUnorderedBuffer,
 			eRange,
+			eSampler,
+			eTexture
 		};
 
 		struct ParamVisibility
@@ -59,13 +61,25 @@ namespace Cpf
 				int32_t mFlags;
 				int32_t mVisibility;
 			};
+			struct SamplerBinding
+			{
+				int32_t mRegisterIndex;
+			};
+			struct TextureBinding
+			{
+				int32_t mRegisterIndex;
+			};
 
 			BindingType GetType() const;
 			void SetConstants(int32_t regidx, int32_t count, int32_t visibility);
 			void SetConstantBuffer(int32_t regidx, int32_t flags, int32_t visibility);
+			void SetSamplerBinding(int32_t regidx);
+			void SetTextureBinding(int32_t regidx);
 
 			const Constants& GetConstants() const;
 			const ConstantBuffer& GetConstantBuffer() const;
+			const SamplerBinding& GetSamplerBinding() const;
+			const TextureBinding& GetTextureBinding() const;
 
 		private:
 			friend class ResourceBindingDesc;
@@ -74,6 +88,8 @@ namespace Cpf
 			{
 				Constants mConstants;
 				ConstantBuffer mConstantBuffer;
+				SamplerBinding mSamplerBinding;
+				TextureBinding mTextureBinding;
 			} mData;
 		};
 
@@ -81,6 +97,8 @@ namespace Cpf
 		// Utilities to build parameter descriptors.
 		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstants(int32_t index, int32_t count, int32_t visibility);
 		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags = ParamFlags::eStatic);
+		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamSampler(int32_t index);
+		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamTexture(int32_t index);
 
 		//////////////////////////////////////////////////////////////////////////
 		class ResourceBindingDesc

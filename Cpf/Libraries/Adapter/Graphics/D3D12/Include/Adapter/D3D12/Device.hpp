@@ -48,12 +48,13 @@ namespace Cpf
 				bool CreateCommandPool(Graphics::iCommandPool**) override;
 				bool CreateCommandBuffer(Graphics::iCommandPool*, Graphics::iCommandBuffer**) override;
 				bool CreateFence(int64_t initValue, Graphics::iFence**) override;
-				bool CreateImage2D(const Graphics::ImageDesc* desc, Graphics::iImage**) override;
+				bool CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
 				bool CreateShader(Graphics::BinaryBlob* blob, Graphics::iShader**) override;
 				bool CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
 				bool CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;
 				bool CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource) override;
-				
+				bool CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler) override;
+
 				bool CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer) override;
 				bool CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer) override;
 				bool CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer**) override;

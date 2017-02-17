@@ -10,6 +10,7 @@
 #include "Graphics/Interfaces/iImageView.hpp"
 #include "Graphics/Interfaces/iFence.hpp"
 #include "Graphics/Interfaces/iShader.hpp"
+#include "Graphics/Interfaces/iSampler.hpp"
 #include "Graphics/Interfaces/iPipeline.hpp"
 #include "Graphics/Interfaces/iResourceBinding.hpp"
 #include "Graphics/Interfaces/iResource.hpp"
@@ -86,4 +87,8 @@ iVertexBuffer::~iVertexBuffer()
 
 //////////////////////////////////////////////////////////////////////////
 iConstantBuffer::~iConstantBuffer()
+{}
+
+//////////////////////////////////////////////////////////////////////////
+iSampler::~iSampler()
 {}
