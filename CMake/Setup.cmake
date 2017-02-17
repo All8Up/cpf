@@ -40,3 +40,7 @@ include (CMake/Settings/Settings.cmake)
 # ###############################################
 # Setup extra tools.
 include (CMake/Tools/FindFlexBison.cmake)
+
+# ###############################################
+# Check for needed headers.
+include (CMake/Checks/${CMAKE_SYSTEM_NAME}.cmake)

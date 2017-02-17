@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
-#include <dxgi1_4.h>
 #include <d3d12.h>
 #include <d3dcommon.h>
 #include <D3Dcompiler.h>

@@ -3,14 +3,16 @@
 cmake_minimum_required( VERSION 3.5.1 )
 cmake_policy(SET CMP0054 NEW)
 
-
 # ###############################################
 project( Cpf C CXX )
-
 
 # ###############################################
 include( CMake/Setup.cmake )
 
+# ###############################################
+set (CPF_USE_DXGI1_2 ${HAVE_DXGI1_2})
+set (CPF_USE_DXGI1_3 ${HAVE_DXGI1_3})
+set (CPF_USE_DXGI1_4 ${HAVE_DXGI1_4})
 
 # ###############################################
 # Find the external directory.
@@ -21,7 +23,6 @@ if (EXISTS "${EXTERNAL_DIR}" AND IS_DIRECTORY "${EXTERNAL_DIR}")
 else ()
 	message ("No external libraries found.")
 endif ()
-
 
 # ###############################################
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Cpf")
