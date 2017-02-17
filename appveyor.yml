@@ -4,6 +4,7 @@ shallow_clone: true
 build:
   parallel: true
   verbosity: minimal
+  project: c:\cpf\build\Cpf.sln
 
 platform: x64
 configuration: Release
