@@ -9,7 +9,12 @@ platform: x64
 configuration: Release
 clone_folder: c:\cpf
 before_build:
+  - echo Downloading dependencies.
+  - mkdir c:\cpf\External\Source
+  - set CPF_DEPS_URL="https://github.com/All8Up/cpf/releases/download/dependencies/cpf_deps.7z"
+  - appveyor DownloadFile %CPF_DEPS_URL% -FileName cpf_deps.7z
+  - echo Decompressing dependencies.
+  - 7z x cpf_deps.7z -oc:\cpf\External\Source
   - echo Running cmake...
   - cd c:\cpf
-  - cmake -G "Visual Studio 14 2015 Win64"
-
+  - cmake -G "Visual Studio 14 2015 Win64" -DEXTERN_INLINE_GMOCK=ON -DEXTERN_INLINE_RAPIDJSON=ON -DEXTERN_INLINE_SDL2=ON -DEXTERN_INLINE_SPDLOG=ON
