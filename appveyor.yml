@@ -4,3 +4,12 @@ shallow_clone: true
 build:
   parallel: true
   verbosity: minimal
+
+platform: x64
+configuration: Release
+clone_folder: c:\cpf
+before_build:
+  - echo Running cmake...
+  - cd c:\cpf
+  - cmake -G "Visual Studio 14 2015 Win64"
+
