@@ -20,7 +20,7 @@ void* Instance::Create()
 Instance::Instance()
 {
 	UINT flags = 0;
-#if _DEBUG
+#ifdef CPF_USE_D3D12_DEBUG_LAYER
 	flags = DXGI_CREATE_FACTORY_DEBUG;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(mpDebugController.AsTypePP()))))
 	{

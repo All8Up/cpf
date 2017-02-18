@@ -2,6 +2,7 @@
 #pragma once
 #include "Configuration.hpp"
 #include <d3d12.h>
+#include <dxgi1_5.h>
 #include <d3dcommon.h>
 #include <D3Dcompiler.h>
 #include <d3d12sdklayers.h>

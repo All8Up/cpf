@@ -370,6 +370,7 @@ bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 	return false;
 #else
 	CD3DX12_ROOT_PARAMETER* parameters = new CD3DX12_ROOT_PARAMETER[desc.GetParameters().size()];
+	CD3DX12_DESCRIPTOR_RANGE* ranges = new CD3DX12_DESCRIPTOR_RANGE[desc.GetParameters().size()];
 
 	int32_t i = 0;
 	for (const auto& param : desc.GetParameters())
@@ -395,16 +396,18 @@ bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 		case BindingType::eSampler:
 		{
 			const auto& sb = param.GetSamplerBinding();
-			CD3DX12_DESCRIPTOR_RANGE range(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, sb.mRegisterIndex);
-			parameters[i++].InitAsDescriptorTable(1, &range);
+			ranges[i].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER, 1, sb.mRegisterIndex);
+			parameters[i].InitAsDescriptorTable(1, &ranges[i]);
+			++i;
 		}
 		break;
 
 		case BindingType::eTexture:
 		{
 			const auto& tb = param.GetTextureBinding();
-			CD3DX12_DESCRIPTOR_RANGE range(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, tb.mRegisterIndex);
-			parameters[i++].InitAsDescriptorTable(1, &range);
+			ranges[i].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, tb.mRegisterIndex);
+			parameters[i].InitAsDescriptorTable(1, &ranges[i]);
+			++i;
 		}
 		break;
 		default:
@@ -429,12 +432,14 @@ bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 			errorBlob->Release();
 		*result = signatureBlob;
 		delete[] parameters;
+		delete[] ranges;
 		return true;
 	}
 	if (signatureBlob)
 		signatureBlob->Release();
 	*result = errorBlob;
 	delete[] parameters;
+	delete[] ranges;
 	return false;
 #endif
 }

@@ -3,8 +3,11 @@
 #include "Graphics/Interfaces/iInstance.hpp"
 #include "IntrusivePtr.hpp"
 #include "D3D12Utils.hpp"
-// Used for IDXGIFactory2.  Not all systems have dxgi1_4.h yet so this seems more compatible.
-#include <d3d11_1.h>
+
+#define CPF_D3D12_DEBUG_LAYER 1
+#if defined(CPF_DEBUG) || CPF_D3D12_DEBUG_LAYER
+#	define CPF_USE_D3D12_DEBUG_LAYER
+#endif
 
 namespace Cpf
 {
@@ -38,7 +41,7 @@ namespace Cpf
 
 				IntrusivePtr<IDXGIFactory2> mpDXGIFactory2;
 
-#ifdef CPF_DEBUG
+#ifdef CPF_USE_D3D12_DEBUG_LAYER
 				IntrusivePtr<ID3D12Debug> mpDebugController;
 #endif
 			};

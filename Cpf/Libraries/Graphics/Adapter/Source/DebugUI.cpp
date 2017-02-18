@@ -126,48 +126,47 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 		});
 		mpDevice->CreateResourceBinding(&bindingState, mpResourceBinding.AsTypePP());
 
-		//////////////////////////////////////////////////////////////////////////
-		ImGuiIO& io = ImGui::GetIO();
-		io.KeyMap[ImGuiKey_Tab] = SDLK_TAB;                     // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
-		io.KeyMap[ImGuiKey_LeftArrow] = SDL_SCANCODE_LEFT;
-		io.KeyMap[ImGuiKey_RightArrow] = SDL_SCANCODE_RIGHT;
-		io.KeyMap[ImGuiKey_UpArrow] = SDL_SCANCODE_UP;
-		io.KeyMap[ImGuiKey_DownArrow] = SDL_SCANCODE_DOWN;
-		io.KeyMap[ImGuiKey_PageUp] = SDL_SCANCODE_PAGEUP;
-		io.KeyMap[ImGuiKey_PageDown] = SDL_SCANCODE_PAGEDOWN;
-		io.KeyMap[ImGuiKey_Home] = SDL_SCANCODE_HOME;
-		io.KeyMap[ImGuiKey_End] = SDL_SCANCODE_END;
-		io.KeyMap[ImGuiKey_Delete] = SDLK_DELETE;
-		io.KeyMap[ImGuiKey_Backspace] = SDLK_BACKSPACE;
-		io.KeyMap[ImGuiKey_Enter] = SDLK_RETURN;
-		io.KeyMap[ImGuiKey_Escape] = SDLK_ESCAPE;
-		io.KeyMap[ImGuiKey_A] = SDLK_a;
-		io.KeyMap[ImGuiKey_C] = SDLK_c;
-		io.KeyMap[ImGuiKey_V] = SDLK_v;
-		io.KeyMap[ImGuiKey_X] = SDLK_x;
-		io.KeyMap[ImGuiKey_Y] = SDLK_y;
-		io.KeyMap[ImGuiKey_Z] = SDLK_z;
-
-		io.RenderDrawListsFn = nullptr;
-		io.SetClipboardTextFn = &DebugUI::_SetClipboardText;
-		io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
-
-#ifdef _WIN32
-		OSWindowData osData = window->GetOSWindowData();
-		io.ImeWindowHandle = osData.mHwnd;
-#else
-		(void)window;
-#endif
-
 		// Create the actual pipeline object.
 		mpDevice->CreatePipeline(&pipelineDesc, mpResourceBinding, mpPipeline.AsTypePP());
 	}
 	if (!mpResourceBinding || !mpPipeline)
 		return false;
 
+	//////////////////////////////////////////////////////////////////////////
+	ImGuiIO& io = ImGui::GetIO();
+	io.KeyMap[ImGuiKey_Tab] = SDLK_TAB;
+	io.KeyMap[ImGuiKey_LeftArrow] = SDL_SCANCODE_LEFT;
+	io.KeyMap[ImGuiKey_RightArrow] = SDL_SCANCODE_RIGHT;
+	io.KeyMap[ImGuiKey_UpArrow] = SDL_SCANCODE_UP;
+	io.KeyMap[ImGuiKey_DownArrow] = SDL_SCANCODE_DOWN;
+	io.KeyMap[ImGuiKey_PageUp] = SDL_SCANCODE_PAGEUP;
+	io.KeyMap[ImGuiKey_PageDown] = SDL_SCANCODE_PAGEDOWN;
+	io.KeyMap[ImGuiKey_Home] = SDL_SCANCODE_HOME;
+	io.KeyMap[ImGuiKey_End] = SDL_SCANCODE_END;
+	io.KeyMap[ImGuiKey_Delete] = SDLK_DELETE;
+	io.KeyMap[ImGuiKey_Backspace] = SDLK_BACKSPACE;
+	io.KeyMap[ImGuiKey_Enter] = SDLK_RETURN;
+	io.KeyMap[ImGuiKey_Escape] = SDLK_ESCAPE;
+	io.KeyMap[ImGuiKey_A] = SDLK_a;
+	io.KeyMap[ImGuiKey_C] = SDLK_c;
+	io.KeyMap[ImGuiKey_V] = SDLK_v;
+	io.KeyMap[ImGuiKey_X] = SDLK_x;
+	io.KeyMap[ImGuiKey_Y] = SDLK_y;
+	io.KeyMap[ImGuiKey_Z] = SDLK_z;
+
+	io.RenderDrawListsFn = nullptr;
+	io.SetClipboardTextFn = &DebugUI::_SetClipboardText;
+	io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
+
+#ifdef _WIN32
+	OSWindowData osData = window->GetOSWindowData();
+	io.ImeWindowHandle = osData.mHwnd;
+#else
+	(void)window;
+#endif
+
 	// Build the imgui font atlas.
 	{
-		ImGuiIO& io = ImGui::GetIO();
 		unsigned char* pixels;
 		int width, height;
 		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
@@ -247,9 +246,6 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 
 	// Start the frame
 	ImGui::NewFrame();
-
-	// TODO: Testing...
-	ImGui::ShowMetricsWindow();
 }
 
 void DebugUI::EndFrame(iCommandBuffer* commands)
@@ -317,6 +313,45 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 	}
 }
 
+void DebugUI::Begin(const char* name, bool* isOpen, uint32_t flags)
+{
+	ImGui::Begin(name, isOpen, flags);
+}
+
+void DebugUI::End()
+{
+	ImGui::End();
+}
+
+void DebugUI::Text(const char* fmt, ...)
+{
+	va_list vargs;
+	va_start(vargs, fmt);
+	ImGui::TextV(fmt, vargs);
+	va_end(vargs);
+}
+
+void DebugUI::TextColored(const Math::Color4f& color, const char* fmt, ...)
+{
+	va_list vargs;
+	va_start(vargs, fmt);
+	ImVec4 c(color.R(), color.G(), color.B(), color.A());
+	ImGui::TextColoredV(c, fmt, vargs);
+	va_end(vargs);
+}
+
+bool DebugUI::CheckBox(const char* label, bool* flag)
+{
+	return ImGui::Checkbox(label, flag);
+}
+
+bool DebugUI::Slider(const char* label, int32_t* value, int vmin, int vmax, const char* fmt)
+{
+	int v = *value;
+	bool result = ImGui::SliderInt(label, &v, vmin, vmax, fmt);
+	*value = v;
+	return result;
+}
 void DebugUI::SetWindowSize(int32_t width, int32_t height)
 {
 	mWidth = width;

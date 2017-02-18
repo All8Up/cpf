@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCounted.hpp"
+#include "Math/Color.hpp"
 
 namespace Cpf
 {
@@ -34,6 +35,18 @@ namespace Cpf
 			void Shutdown();
 			void BeginFrame(iCommandBuffer* commands, float deltaTime);
 			void EndFrame(iCommandBuffer* commands);
+
+			// Window
+			void Begin(const char* name, bool* isOpen = nullptr, uint32_t flags = 0);
+			void End();
+
+			// Text
+			void Text(const char* fmt, ...);
+			void TextColored(const Math::Color4f& color, const char* fmt, ...);
+			bool CheckBox(const char* label, bool* flag);
+
+			// Sliders
+			bool Slider(const char* label, int32_t* value, int vmin, int vmax, const char* fmt = "%.0f");
 
 			// Rendering information.
 			void SetWindowSize(int32_t width, int32_t height);

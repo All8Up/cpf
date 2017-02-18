@@ -370,20 +370,19 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
 					this
 				);
+				mThreadCountChanged = false;
+				mThreadCount = mScheduler.ThreadCount();
 				mQueue = Move(mScheduler.CreateQueue());
 
 				//////////////////////////////////////////////////////////////////////////
 				mStartTime = Time::Now();
 				mCurrentTime = Time::Now() - mStartTime;
-				Time::Value pollingTime = Time::Seconds(0);
-				Time::Value renderingTime = Time::Seconds(0);
 
 				// Currently only a single frame.  Will Eventually match the number of back buffers and other resources.
 				Scheduler::Semaphore frameSemaphore(1);
 				// Create a graphics fence to track back buffers.
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
-#ifdef CPF_DEBUG
 				{
 					if (!mDebugUI.Initialize(mpDevice, mpWindow, mpLocator))
 					{
@@ -391,16 +390,18 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					}
 					mDebugUI.SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
 					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
-#endif
 
 					while (IsRunning())
 					{
-						pollingTime += Time::Now() - mCurrentTime;
-
 						//////////////////////////////////////////////////////////////////////////
 						// Wait for the last frame of processing.
 						frameSemaphore.Acquire();
-						renderingTime += Time::Now() - mCurrentTime;
+
+						if (mThreadCountChanged)
+						{
+							mThreadCountChanged = false;
+							mQueue.ActiveThreads(mThreadCount);
+						}
 
 						// Poll the application OS events.
 						// TODO: this is done in between frames so resize doesn't conflict.
@@ -420,21 +421,6 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						mDeltaTime = now - mCurrentTime;
 						mCurrentTime = now;
 
-						static int count = 0;
-						static Time::Value accumulation;
-						accumulation += mDeltaTime;
-						if (++count % 100 == 0)
-						{
-							float avg = float(Time::Seconds(accumulation / 100));
-							CPF_LOG(Experimental, Info) << "Avg: " << avg << " FPS avg: " << 1.0f / avg;
-							CPF_LOG(Experimental, Info) << " Poll: "
-								<< float(Time::Seconds(pollingTime)) / float(Time::Seconds(accumulation)) << " - "
-								<< float(Time::Seconds(renderingTime)) / float(Time::Seconds(accumulation));
-							accumulation = Time::Seconds(0);
-							pollingTime = Time::Seconds(0);
-							renderingTime = Time::Seconds(0);
-						}
-
 						//////////////////////////////////////////////////////////////////////////
 						// The threaded execution loop.
 						mQueue.FirstOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
@@ -444,10 +430,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
 						// Draw everything.  This would be an All instruction but right now everything is a single instanced draw call.
 						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
-#ifdef CPF_DEBUG
 						// Single threaded debug GUI rendering.
 						mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DebugUI), this);
-#endif
 						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
 						// Issue the command buffers in proper order.
 						// Because the last thread to enter the instruction performs the work and the other threads wait till completion,
@@ -464,10 +448,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 					// Guarantee last frame is complete before we tear everything down.
 					frameSemaphore.Acquire();
-#ifdef CPF_DEBUG
 					mDebugUI.Shutdown();
 				}
-#endif
 
 				// Destroy all the resources.
 				_DestroyResources();

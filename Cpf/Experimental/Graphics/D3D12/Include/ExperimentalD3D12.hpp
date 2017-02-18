@@ -105,10 +105,8 @@ namespace Cpf
 		{
 			IntrusivePtr<Graphics::iCommandPool> mpCommandPool[mBackBufferCount];
 			IntrusivePtr<Graphics::iCommandBuffer> mpCommandBuffer[mBackBufferCount];
-#ifdef CPF_DEBUG
 			IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[mBackBufferCount];
 			IntrusivePtr<Graphics::iCommandBuffer> mpDebugUIBuffer[mBackBufferCount];
-#endif
 		};
 		ThreadData mWorkerData[Concurrency::Scheduler::kMaxThreads];
 
@@ -128,8 +126,9 @@ namespace Cpf
 		Platform::Threading::Reactor::WorkQueue mReactorQueue;
 		GO::Service mGOService;
 
-#ifdef CPF_DEBUG
 		Graphics::DebugUI mDebugUI;
-#endif
+
+		bool mThreadCountChanged;
+		int32_t mThreadCount;
 	};
 }
