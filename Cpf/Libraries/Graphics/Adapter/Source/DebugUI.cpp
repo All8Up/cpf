@@ -108,9 +108,9 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 				.Op(BlendOp::eAdd)
 				.OpAlpha(BlendOp::eAdd)
 				.Src(BlendFunc::eSrcAlpha)
-				.SrcAlpha(BlendFunc::eInvSrcAlpha)
-				.Dst(BlendFunc::eOne)
-				.DstAlpha(BlendFunc::eZero)
+				.SrcAlpha(BlendFunc::eOne)
+				.Dst(BlendFunc::eInvSrcAlpha)
+				.DstAlpha(BlendFunc::eInvSrcAlpha)
 			)
 			.RenderTargets({ Format::eRGBA8un })
 			.DepthStencilFormat(Format::eD32f)
@@ -123,6 +123,39 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 			ParamTexture(0)
 		});
 		mpDevice->CreateResourceBinding(&bindingState, mpResourceBinding.AsTypePP());
+
+		//////////////////////////////////////////////////////////////////////////
+		ImGuiIO& io = ImGui::GetIO();
+		io.KeyMap[ImGuiKey_Tab] = SDLK_TAB;                     // Keyboard mapping. ImGui will use those indices to peek into the io.KeyDown[] array.
+		io.KeyMap[ImGuiKey_LeftArrow] = SDL_SCANCODE_LEFT;
+		io.KeyMap[ImGuiKey_RightArrow] = SDL_SCANCODE_RIGHT;
+		io.KeyMap[ImGuiKey_UpArrow] = SDL_SCANCODE_UP;
+		io.KeyMap[ImGuiKey_DownArrow] = SDL_SCANCODE_DOWN;
+		io.KeyMap[ImGuiKey_PageUp] = SDL_SCANCODE_PAGEUP;
+		io.KeyMap[ImGuiKey_PageDown] = SDL_SCANCODE_PAGEDOWN;
+		io.KeyMap[ImGuiKey_Home] = SDL_SCANCODE_HOME;
+		io.KeyMap[ImGuiKey_End] = SDL_SCANCODE_END;
+		io.KeyMap[ImGuiKey_Delete] = SDLK_DELETE;
+		io.KeyMap[ImGuiKey_Backspace] = SDLK_BACKSPACE;
+		io.KeyMap[ImGuiKey_Enter] = SDLK_RETURN;
+		io.KeyMap[ImGuiKey_Escape] = SDLK_ESCAPE;
+		io.KeyMap[ImGuiKey_A] = SDLK_a;
+		io.KeyMap[ImGuiKey_C] = SDLK_c;
+		io.KeyMap[ImGuiKey_V] = SDLK_v;
+		io.KeyMap[ImGuiKey_X] = SDLK_x;
+		io.KeyMap[ImGuiKey_Y] = SDLK_y;
+		io.KeyMap[ImGuiKey_Z] = SDLK_z;
+
+		io.RenderDrawListsFn = nullptr;
+		io.SetClipboardTextFn = &DebugUI::_SetClipboardText;
+		io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
+
+#ifdef _WIN32
+		OSWindowData osData = window->GetOSWindowData();
+		io.ImeWindowHandle = osData.mHwnd;
+#else
+		(void)window;
+#endif
 
 		// Create the actual pipeline object.
 		mpDevice->CreatePipeline(&pipelineDesc, mpResourceBinding, mpPipeline.AsTypePP());
@@ -221,10 +254,11 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 //	commands->SetTexture(0, mpUIAtlas);
 //	commands->SetSampler(0, mpSampler);
 
+	size_t indexOffset = 0;
+	size_t vertexOffset = 0;
 	for (int n = 0; n < drawData->CmdListsCount; n++)
 	{
 		const ImDrawList* cmd_list = drawData->CmdLists[n];
-		size_t idx_buffer_offset = 0;
 
 		ImDrawVert* vertices = nullptr;
 		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(0, cmd_list->VtxBuffer.size() * sizeof(ImDrawVert), reinterpret_cast<void**>(&vertices)));
@@ -247,15 +281,16 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 				Math::Rectanglei scissor
 				{
 					(int)pcmd->ClipRect.x,
-					(int)(pcmd->ClipRect.x + pcmd->ClipRect.z - pcmd->ClipRect.x),
-					(int)(io.DisplaySize.y - pcmd->ClipRect.w),
-					(int)(io.DisplaySize.y - pcmd->ClipRect.w + pcmd->ClipRect.w - pcmd->ClipRect.y)
+					(int)pcmd->ClipRect.z,
+					(int)pcmd->ClipRect.y,
+					(int)pcmd->ClipRect.w
 				};
 				commands->SetScissorRects(1, &scissor);
-				commands->DrawIndexedInstanced(pcmd->ElemCount, 1, idx_buffer_offset, 0, 0);
+				commands->DrawIndexedInstanced(pcmd->ElemCount, 1, indexOffset, vertexOffset, 0);
 			}
-			idx_buffer_offset += pcmd->ElemCount;
+			indexOffset += pcmd->ElemCount;
 		}
+		vertexOffset += cmd_list->VtxBuffer.Size;
 	}
 }
 
