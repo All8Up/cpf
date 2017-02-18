@@ -385,11 +385,12 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 #ifdef CPF_DEBUG
 				{
-					if (!mDebugUI.Initialize(mpDevice, mpLocator))
+					if (!mDebugUI.Initialize(mpDevice, mpWindow, mpLocator))
 					{
 						CPF_LOG(Experimental, Info) << "Failed to initialize the debug UI.";
 					}
 					mDebugUI.SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
+					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
 #endif
 
 					while (IsRunning())

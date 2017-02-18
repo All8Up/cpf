@@ -7,12 +7,14 @@
 #include "Graphics/Interfaces/iPipeline.hpp"
 #include "Graphics/Descriptors/PipelineStateDesc.hpp"
 #include "Graphics/Descriptors/ResourceBindingDesc.hpp"
+#include "Application/Application.hpp"
 #include "imgui/imgui.h"
 #include "IO/Stream.hpp"
 #include "Resources/ID.hpp"
 #include "Resources/Locator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
+#include "SDL.h"
 
 using namespace Cpf;
 using namespace Graphics;
@@ -29,7 +31,7 @@ DebugUI::~DebugUI()
 {
 }
 
-bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
+bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* locator)
 {
 	CPF_ASSERT(device != nullptr);
 	CPF_ASSERT(locator != nullptr);
@@ -185,11 +187,17 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 	if (!mpUIAtlas)
 		return false;
 
+	window->GetEmitter().On<iWindow::OnMouseMove>(Bind(&DebugUI::_OnMouseMoved, this, Placeholders::_1, Placeholders::_2));
+
 	// Create large buffers.
 	mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, 1024*200, sizeof(ImDrawVert), nullptr, mpVertexBuffer.AsTypePP());
 	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDynamic, 1024*50, nullptr, mpIndexBuffer.AsTypePP());
 
 	return true;
+}
+
+void DebugUI::_OnMouseMoved(int32_t x, int32_t y)
+{
 }
 
 void DebugUI::Shutdown()
@@ -222,11 +230,26 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	);
 	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
 
+	//
+	int mx, my;
+	Uint32 mouseMask = SDL_GetMouseState(&mx, &my);
+	io.MousePos = ImVec2((float)mx, (float)my);
+	io.MouseDown[0] = mMousePressed[0] || (mouseMask & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0;
+	io.MouseDown[1] = mMousePressed[1] || (mouseMask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;
+	io.MouseDown[2] = mMousePressed[2] || (mouseMask & SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0;
+	mMousePressed[0] = mMousePressed[1] = mMousePressed[2] = false;
+
+	io.MouseWheel = mMouseWheel;
+	mMouseWheel = 0.0f;
+
+	// Hide OS mouse cursor if ImGui is drawing it
+	SDL_ShowCursor(io.MouseDrawCursor ? 0 : 1);
+
 	// Start the frame
 	ImGui::NewFrame();
 
 	// TODO: Testing...
-	ImGui::ShowTestWindow();
+	ImGui::ShowMetricsWindow();
 }
 
 void DebugUI::EndFrame(iCommandBuffer* commands)
@@ -298,4 +321,61 @@ void DebugUI::SetWindowSize(int32_t width, int32_t height)
 {
 	mWidth = width;
 	mHeight = height;
+}
+
+bool DebugUI::HandleRawInput(void* context, const void* data)
+{
+	return reinterpret_cast<DebugUI*>(context)->_HandleRawInput(data);
+}
+
+bool DebugUI::_HandleRawInput(const void* rawEvent)
+{
+	const SDL_Event* event = reinterpret_cast<const SDL_Event*>(rawEvent);
+	ImGuiIO& io = ImGui::GetIO();
+
+	switch (event->type)
+	{
+	case SDL_MOUSEWHEEL:
+	{
+		if (event->wheel.y > 0)
+			mMouseWheel = 1;
+		if (event->wheel.y < 0)
+			mMouseWheel = -1;
+		return io.WantCaptureMouse;
+	}
+	case SDL_MOUSEBUTTONDOWN:
+	{
+		if (event->button.button == SDL_BUTTON_LEFT) mMousePressed[0] = true;
+		if (event->button.button == SDL_BUTTON_RIGHT) mMousePressed[1] = true;
+		if (event->button.button == SDL_BUTTON_MIDDLE) mMousePressed[2] = true;
+		return io.WantCaptureMouse;
+	}
+	case SDL_TEXTINPUT:
+	{
+		io.AddInputCharactersUTF8(event->text.text);
+		return io.WantTextInput;
+	}
+	case SDL_KEYDOWN:
+	case SDL_KEYUP:
+	{
+		int key = event->key.keysym.sym & ~SDLK_SCANCODE_MASK;
+		io.KeysDown[key] = (event->type == SDL_KEYDOWN);
+		io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
+		io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
+		io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
+		io.KeySuper = ((SDL_GetModState() & KMOD_GUI) != 0);
+		return io.WantCaptureKeyboard;
+	}
+	}
+	return false;
+}
+
+const char* DebugUI::_GetClipboardText()
+{
+	return SDL_GetClipboardText();
+}
+
+void DebugUI::_SetClipboardText(const char* text)
+{
+	SDL_SetClipboardText(text);
 }

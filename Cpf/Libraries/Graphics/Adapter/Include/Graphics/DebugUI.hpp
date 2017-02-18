@@ -4,6 +4,8 @@
 
 namespace Cpf
 {
+	class iWindow;
+
 	namespace Resources
 	{
 		class Locator;
@@ -28,7 +30,7 @@ namespace Cpf
 			DebugUI();
 			~DebugUI() override;
 
-			bool Initialize(iDevice*, Resources::Locator*);
+			bool Initialize(iDevice*, iWindow* window, Resources::Locator*);
 			void Shutdown();
 			void BeginFrame(iCommandBuffer* commands, float deltaTime);
 			void EndFrame(iCommandBuffer* commands);
@@ -36,7 +38,19 @@ namespace Cpf
 			// Rendering information.
 			void SetWindowSize(int32_t width, int32_t height);
 
+			static bool HandleRawInput(void* context, const void* data);
+
 		private:
+			bool DebugUI::_HandleRawInput(const void* rawEvent);
+			static const char* _GetClipboardText();
+			static void _SetClipboardText(const char* text);
+
+			void _OnMouseMoved(int32_t x, int32_t y);
+
+			bool mMousePressed[3];
+			float mMouseWheel;
+
+			//////////////////////////////////////////////////////////////////////////
 			iDevice* mpDevice;
 			Resources::Locator* mpLocator;
 			IntrusivePtr<iShader> mpVertexShader;
