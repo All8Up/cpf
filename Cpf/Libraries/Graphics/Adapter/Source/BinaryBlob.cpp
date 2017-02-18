@@ -5,7 +5,7 @@ using namespace Cpf;
 using namespace Graphics;
 
 
-BinaryBlob::BinaryBlob(size_t size, void* data)
+BinaryBlob::BinaryBlob(size_t size, const void* data)
 	: mData(reinterpret_cast<const uint8_t*>(data), reinterpret_cast<const uint8_t*>(data) + size)
 {
 }
@@ -13,7 +13,7 @@ BinaryBlob::BinaryBlob(size_t size, void* data)
 BinaryBlob::~BinaryBlob()
 {}
 
-bool BinaryBlob::Create(size_t size, void* data, BinaryBlob** blob)
+bool BinaryBlob::Create(size_t size, const void* data, BinaryBlob** blob)
 {
 	BinaryBlob* result = new BinaryBlob(size, data);
 	if (result)

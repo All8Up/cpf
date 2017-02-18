@@ -4,6 +4,7 @@
 #include "Adapter/D3D12.hpp"
 #include "Adapter/D3D12/DescriptorManager.hpp"
 #include "Graphics/Driver.hpp"
+#include "Graphics/BinaryBlob.hpp"
 #include <d3d12.h>
 #include "String.hpp"
 
@@ -68,6 +69,7 @@ namespace Cpf
 
 				//////////////////////////////////////////////////////////////////////////
 				void QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
+				void QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::BinaryBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
 
 				ID3D12Device* GetD3DDevice() const { return mpDevice; }
 				ID3D12CommandQueue* GetD3DQueue() const { return mpQueue; }
@@ -94,7 +96,8 @@ namespace Cpf
 
 				enum class WorkType : int32_t
 				{
-					eUploadVertexBuffer
+					eUploadVertexBuffer,
+					eUpdateSubResource
 				};
 				struct WorkEntry
 				{
@@ -108,6 +111,15 @@ namespace Cpf
 							D3D12_RESOURCE_STATES mDstStartState;
 							D3D12_RESOURCE_STATES mDstEndState;
 						} UploadVertexBuffer;
+						struct _UpdateSubResource
+						{
+							ID3D12Resource* mpSource;
+							ID3D12Resource* mpDestination;
+							Graphics::BinaryBlob* mpBlob;
+							D3D12_SUBRESOURCE_DATA mData;
+							D3D12_RESOURCE_STATES mDstStartState;
+							D3D12_RESOURCE_STATES mDstEndState;
+						} UpdateSubResource;
 					};
 				};
 

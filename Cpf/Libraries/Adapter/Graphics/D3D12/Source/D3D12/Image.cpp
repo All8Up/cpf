@@ -72,6 +72,18 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 			nullptr,
 			IID_PPV_ARGS(&upload));
 
+		Graphics::BinaryBlob* blob = nullptr;
+		Graphics::BinaryBlob::Create(mDesc.mWidth * mDesc.mHeight * 4, initData, &blob);
+
+		D3D12_SUBRESOURCE_DATA textureData = {};
+		textureData.pData = blob->GetData();
+		textureData.RowPitch = desc->mWidth * 4;
+		textureData.SlicePitch = textureData.RowPitch * desc->mHeight;
+
+		mpResource->AddRef();
+		device->QueueUpdateSubResource(
+			upload, mpResource, textureData, blob,
+			D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON);
 	}
 }
 

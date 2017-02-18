@@ -10,13 +10,13 @@ namespace Cpf
 		class BinaryBlob : public tRefCounted<iRefCounted>
 		{
 		public:
-			static bool Create(size_t size, void* data, BinaryBlob**);
+			static bool Create(size_t size, const void* data, BinaryBlob**);
 
 			const void* GetData() const;
 			size_t GetSize() const;
 
 		private:
-			BinaryBlob(size_t size, void* data);
+			BinaryBlob(size_t size, const void* data);
 			~BinaryBlob();
 
 			Vector<uint8_t> mData;

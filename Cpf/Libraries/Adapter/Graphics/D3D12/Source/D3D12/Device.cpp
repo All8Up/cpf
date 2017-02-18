@@ -122,6 +122,19 @@ void Device::BeginFrame(Graphics::iCommandBuffer* cmds)
 				mReleaseQueue.push_back(work.mpSource);
 			}
 			break;
+
+		case WorkType::eUpdateSubResource:
+			{
+				auto& work = item.UpdateSubResource;
+
+				UpdateSubresources(commands->mpCommandList,
+					work.mpDestination, work.mpSource,
+					0, 0, 1, &work.mData);
+				commands->mpCommandList->ResourceBarrier(1,
+					&CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState));
+				// TODO: Have to clean up the buffer and blob.
+			}
+			break;
 		}
 	}
 	mUploadQueue.clear();
@@ -400,5 +413,18 @@ void Device::QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURC
 	entry.UploadVertexBuffer.mpDestination = dst;
 	entry.UploadVertexBuffer.mDstStartState = dstStartState;
 	entry.UploadVertexBuffer.mDstEndState = dstEndState;
+	mUploadQueue.push_back(entry);
+}
+
+void Device::QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::BinaryBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState)
+{
+	WorkEntry entry;
+	entry.mType = WorkType::eUpdateSubResource;
+	entry.UpdateSubResource.mpSource = src;
+	entry.UpdateSubResource.mpDestination = dst;
+	entry.UpdateSubResource.mpBlob = blob;
+	entry.UpdateSubResource.mData = data;
+	entry.UpdateSubResource.mDstStartState = dstStartState;
+	entry.UpdateSubResource.mDstEndState = dstEndState;
 	mUploadQueue.push_back(entry);
 }
