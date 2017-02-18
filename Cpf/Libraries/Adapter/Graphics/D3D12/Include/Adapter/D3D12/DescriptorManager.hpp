@@ -24,6 +24,7 @@ namespace Cpf
 
 				Descriptor& operator =(Descriptor&& rhs);
 				operator D3D12_CPU_DESCRIPTOR_HANDLE () const;
+				operator D3D12_GPU_DESCRIPTOR_HANDLE () const;
 
 			private:
 				DescriptorManager* mpManager;

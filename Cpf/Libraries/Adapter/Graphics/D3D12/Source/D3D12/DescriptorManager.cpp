@@ -49,6 +49,12 @@ Descriptor::operator D3D12_CPU_DESCRIPTOR_HANDLE () const
 	return result;
 }
 
+Descriptor::operator D3D12_GPU_DESCRIPTOR_HANDLE () const
+{
+	D3D12_GPU_DESCRIPTOR_HANDLE result = mpManager->GetHeap()->GetGPUDescriptorHandleForHeapStart();
+	result.ptr += mIndex * mpManager->GetIncrement();
+	return result;
+}
 
 //////////////////////////////////////////////////////////////////////////
 DescriptorManager::DescriptorManager()
@@ -106,7 +112,6 @@ size_t DescriptorManager::_Alloc()
 	size_t index = mNextFree;
 	if (index != kInvalid)
 	{
-		CPF_LOG(D3D12, Info) << "Allocating index: " << index;
 		mNextFree = mFreeList[index];
 		return index;
 	}
@@ -118,5 +123,4 @@ void DescriptorManager::_Free(size_t index)
 	CPF_ASSERT(index != DescriptorManager::kInvalid);
 	mFreeList[index] = mNextFree;
 	mNextFree = size_t(index);
-	CPF_LOG(D3D12, Info) << "Returned index " << index << " to the descriptor pool.";
 }

@@ -109,13 +109,13 @@ void ExperimentalD3D12::_PreparePresent(Concurrency::ThreadContext&)
 
 	// Let the device take care of any final needed work, read backs for instance.
 	mpDevice->EndFrame(mpPostCommandBuffer[mCurrentBackbuffer]);
-
-	// End the command buffer prior to submission.
-	mpPostCommandBuffer[mCurrentBackbuffer]->End();
 }
 
 void ExperimentalD3D12::_EndFrame(Concurrency::ThreadContext&)
 {
+	// End the command buffer prior to submission.
+	mpPostCommandBuffer[mCurrentBackbuffer]->End();
+
 	// Pick up and add the transition for present.
 	int32_t commandBufferCount = Atomic::Inc(mCurrentScheduledBuffer);
 	mpScheduledBuffers[commandBufferCount - 1] = mpPostCommandBuffer[mCurrentBackbuffer];

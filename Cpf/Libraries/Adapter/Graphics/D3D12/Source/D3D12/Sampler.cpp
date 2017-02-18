@@ -24,7 +24,7 @@ Sampler::Sampler(Device* device, const Graphics::SamplerDesc* desc)
 	d3dDesc.BorderColor[3] = 0.0f;
 	d3dDesc.MinLOD = desc->mLodMin;
 	d3dDesc.MaxLOD = desc->mLodMax;
-	d3dDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS; // TODO: Expose this.
+	d3dDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; // TODO: Expose this.
 
 	device->GetD3DDevice()->CreateSampler(&d3dDesc, mDescriptor);
 }

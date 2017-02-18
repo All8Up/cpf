@@ -14,6 +14,7 @@
 #include "Adapter/D3D12/ConstantBuffer.hpp"
 #include "Math/Color.hpp"
 #include "Logging/Logging.hpp"
+#include "Adapter/D3D12/Sampler.hpp"
 
 using namespace Cpf;
 using namespace Adapter;
@@ -199,4 +200,29 @@ void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, uint32_t f
 		count,
 		reinterpret_cast<const D3D12_RECT*>(rects)
 	);
+}
+
+// TODO: This is temporary while details for porting are worked out.
+void CommandBuffer::TempPorting(Graphics::iImage* i, Graphics::iSampler* s)
+{
+	Image* image = static_cast<Image*>(i);
+	Sampler* sampler = static_cast<Sampler*>(s);
+
+	ID3D12DescriptorHeap* heaps[2] =
+	{
+		mpDevice->GetShaderResourceDescriptors().GetHeap(),
+		mpDevice->GetSamplerDescriptors().GetHeap()
+	};
+
+	Descriptor tempShader = mpDevice->GetShaderResourceDescriptors().Alloc();
+	D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
+	desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	desc.Format = Convert(image->GetDesc().mFormat);
+	desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	desc.Texture2D.MipLevels = 1;
+	mpDevice->GetD3DDevice()->CreateShaderResourceView(image->GetResource(), &desc, tempShader);
+
+	mpCommandList->SetDescriptorHeaps(2, heaps);
+	mpCommandList->SetGraphicsRootDescriptorTable(1, sampler->GetDescriptor());
+	mpCommandList->SetGraphicsRootDescriptorTable(2, tempShader);
 }

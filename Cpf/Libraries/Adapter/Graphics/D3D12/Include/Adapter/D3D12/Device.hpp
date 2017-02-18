@@ -74,8 +74,8 @@ namespace Cpf
 				ID3D12Device* GetD3DDevice() const { return mpDevice; }
 				ID3D12CommandQueue* GetD3DQueue() const { return mpQueue; }
 
-				static constexpr size_t kConstantDescriptors = 1024;
-				DescriptorManager& GetConstantDescriptors();
+				static constexpr size_t kShaderResourceDescriptors = 1024;
+				DescriptorManager& GetShaderResourceDescriptors();
 				static constexpr size_t kSamplerDescriptors = 64;
 				DescriptorManager& GetSamplerDescriptors();
 				static constexpr size_t kRenderTargetDescriptors = 1024;
@@ -89,7 +89,7 @@ namespace Cpf
 				// TODO: Should probably be it's own class?
 				IntrusivePtr<ID3D12CommandQueue> mpQueue;
 
-				DescriptorManager mConstantDescriptors;
+				DescriptorManager mShaderResourceDescriptors;
 				DescriptorManager mSamplerDescriptors;
 				DescriptorManager mRenderTargetDescriptors;
 				DescriptorManager mDepthStencilDescriptors;

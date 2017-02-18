@@ -14,6 +14,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
+		class iSampler;
 		class iConstantBuffer;
 		class iPipeline;
 		class iVertexBufferView;
@@ -63,6 +64,8 @@ namespace Cpf
 
 				void ClearRenderTargetView(Graphics::iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects) override;
 				void ClearDepthStencilView(Graphics::iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
+
+				void TempPorting(Graphics::iImage*, Graphics::iSampler*) override;
 
 				ID3D12GraphicsCommandList* GetCommandList() { return mpCommandList.Cast<ID3D12GraphicsCommandList>(); }
 

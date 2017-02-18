@@ -87,7 +87,7 @@ Device::~Device()
 bool Device::Initialize()
 {
 	return (
-		mConstantDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, kConstantDescriptors) &&
+		mShaderResourceDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, kShaderResourceDescriptors) &&
 		mSamplerDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, kSamplerDescriptors) &&
 		mRenderTargetDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, kRenderTargetDescriptors) &&
 		mDepthStencilDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, kDepthStencilDescriptors)
@@ -97,7 +97,7 @@ bool Device::Initialize()
 bool Device::Shutdown()
 {
 	return (
-		mConstantDescriptors.Shutdown() &&
+		mShaderResourceDescriptors.Shutdown() &&
 		mSamplerDescriptors.Shutdown() &&
 		mRenderTargetDescriptors.Shutdown() &&
 		mDepthStencilDescriptors.Shutdown()
@@ -385,9 +385,9 @@ void Device::Submit(int32_t count, Graphics::iCommandBuffer** buffers)
 	mpQueue->ExecuteCommandLists(count, commands);
 }
 
-DescriptorManager& Device::GetConstantDescriptors()
+DescriptorManager& Device::GetShaderResourceDescriptors()
 {
-	return mConstantDescriptors;
+	return mShaderResourceDescriptors;
 }
 
 DescriptorManager& Device::GetSamplerDescriptors()

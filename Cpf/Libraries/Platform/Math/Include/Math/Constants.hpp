@@ -54,6 +54,8 @@ namespace Cpf
 		static constexpr double kDegToRad_d = kPI_d / 180.0;
 		static constexpr double kRadToDeg_d = 180.0 / kPI_d;
 
+		static constexpr float kFloatMax = 3.402823466e+38f;
+
 		//////////////////////////////////////////////////////////////////////////
 		// Wrappers for template usage.
 		template<typename T> struct Constants;

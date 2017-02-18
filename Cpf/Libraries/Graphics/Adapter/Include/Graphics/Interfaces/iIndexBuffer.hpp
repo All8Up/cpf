@@ -10,6 +10,9 @@ namespace Cpf
 		{
 		public:
 			virtual ~iIndexBuffer() = 0;
+
+			virtual bool Map(int32_t start, int32_t end, void**) = 0;
+			virtual bool Unmap() = 0;
 		};
 	}
 }

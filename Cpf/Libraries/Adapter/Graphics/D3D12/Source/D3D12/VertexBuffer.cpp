@@ -36,7 +36,7 @@ VertexBuffer::VertexBuffer(Device* device, Graphics::BufferUsage usage, size_t b
 		{
 		case Graphics::BufferUsage::eDefault:
 		default:
-			flags |= D3D12_RESOURCE_FLAG_NONE; // D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+			flags |= D3D12_RESOURCE_FLAG_NONE;
 		}
 		D3D12_RESOURCE_DESC resourceDesc
 		{

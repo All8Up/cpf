@@ -34,7 +34,7 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 		case Graphics::BufferUsage::eImmutable:
 		case Graphics::BufferUsage::eReadback:
 		default:
-			flags |= D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+			flags |= (initData ? D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS : D3D12_RESOURCE_FLAGS(0));
 		}
 		D3D12_RESOURCE_DESC resourceDesc
 		{
@@ -53,7 +53,7 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 			&heapProps,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,
-			D3D12_RESOURCE_STATE_COPY_DEST,
+			initData ? D3D12_RESOURCE_STATE_COPY_DEST : D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(mpResource.AsTypePP())
 		);
@@ -110,12 +110,28 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 	mView.Format = Convert(format);
 	mView.SizeInBytes = UINT(byteSize);
 
+	if (usage == Graphics::BufferUsage::eDynamic)
+	{
+		mpResource->Map(0, nullptr, &mpMapping);
+	}
+
 	CPF_LOG(D3D12, Info) << "Created resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }
 
 IndexBuffer::~IndexBuffer()
 {
+}
 
+bool IndexBuffer::Map(int32_t start, int32_t end, void** mapping)
+{
+	(void)start; (void)end;
+	*mapping = mpMapping;
+	return mpMapping != nullptr;
+}
+
+bool IndexBuffer::Unmap()
+{
+	return mpMapping != nullptr;
 }
 
 ID3D12Resource* IndexBuffer::GetResource() const

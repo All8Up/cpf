@@ -10,6 +10,7 @@ set (SOURCE_FILES
 	Source/Rendering.cpp
 	Source/Device.cpp
 	Source/Resources.cpp
+	Source/DebugUI.cpp
 )
 
 if (WIN32)

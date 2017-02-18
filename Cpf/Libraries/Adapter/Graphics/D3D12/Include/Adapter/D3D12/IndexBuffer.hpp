@@ -14,12 +14,14 @@ namespace Cpf
 		{
 			class Device;
 
-
 			class IndexBuffer : public tRefCounted<Graphics::iIndexBuffer>
 			{
 			public:
 				IndexBuffer(Device* device, Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData);
 				~IndexBuffer() override;
+
+				bool Map(int32_t start, int32_t end, void**) override;
+				bool Unmap() override;
 
 				ID3D12Resource* GetResource() const;
 				const D3D12_INDEX_BUFFER_VIEW* GetView() const;
@@ -28,6 +30,7 @@ namespace Cpf
 				IntrusivePtr<ID3D12Resource> mpResource;
 				D3D12_INDEX_BUFFER_VIEW mView;
 				size_t mSize;
+				void* mpMapping;
 			};
 		}
 	}

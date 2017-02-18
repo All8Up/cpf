@@ -385,11 +385,11 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 #ifdef CPF_DEBUG
 				{
-					DebugUI debugUI;
-					if (!debugUI.Initialize(mpDevice, mpLocator))
+					if (!mDebugUI.Initialize(mpDevice, mpLocator))
 					{
 						CPF_LOG(Experimental, Info) << "Failed to initialize the debug UI.";
 					}
+					mDebugUI.SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
 #endif
 
 					while (IsRunning())
@@ -443,6 +443,10 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
 						// Draw everything.  This would be an All instruction but right now everything is a single instanced draw call.
 						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
+#ifdef CPF_DEBUG
+						// Single threaded debug GUI rendering.
+						mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DebugUI), this);
+#endif
 						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
 						// Issue the command buffers in proper order.
 						// Because the last thread to enter the instruction performs the work and the other threads wait till completion,
@@ -460,6 +464,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					// Guarantee last frame is complete before we tear everything down.
 					frameSemaphore.Acquire();
 #ifdef CPF_DEBUG
+					mDebugUI.Shutdown();
 				}
 #endif
 

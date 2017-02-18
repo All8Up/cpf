@@ -14,6 +14,7 @@ namespace Cpf
 		class iSwapChain;
 		class iCommandPool;
 		class iImage;
+		class iSampler;
 		class iImageView;
 		class iResource;
 		class iResourceBinding;
@@ -99,6 +100,8 @@ namespace Cpf
 			virtual void SetRenderTargets(int32_t imageCount, iImageView** images, iImageView* depthView) = 0;
 			virtual void ClearRenderTargetView(iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects) = 0;
 			virtual void ClearDepthStencilView(iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
+
+			virtual void TempPorting(iImage*, iSampler*) = 0;
 		};
 	}
 }

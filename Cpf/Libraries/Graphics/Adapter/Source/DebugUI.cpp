@@ -11,6 +11,8 @@
 #include "IO/Stream.hpp"
 #include "Resources/ID.hpp"
 #include "Resources/Locator.hpp"
+#include "Math/Matrix44v.hpp"
+#include "Math/Constants.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
@@ -24,7 +26,8 @@ DebugUI::DebugUI()
 }
 
 DebugUI::~DebugUI()
-{}
+{
+}
 
 bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 {
@@ -60,17 +63,20 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 	if (!mpVertexShader || !mpPixelShader)
 		return false;
 
+	// Create the projection matrix constant buffer.
+	mpDevice->CreateConstantBuffer(sizeof(Math::Matrix44fv), nullptr, mpProjectionMatrix.AsTypePP());
+
 	// Create the atlas sampler.
 	SamplerDesc samplerDesc
 	{
-		FilterMode::eLinear,
-		FilterMode::eLinear,
-		FilterMode::eLinear,
-		WrapMode::eClamp,
-		WrapMode::eClamp,
-		WrapMode::eClamp,
+		FilterMode::ePoint,
+		FilterMode::ePoint,
+		FilterMode::ePoint,
+		WrapMode::eBorder,
+		WrapMode::eBorder,
+		WrapMode::eBorder,
 		0.0f,
-		0.0f,
+		Math::kFloatMax,
 		0.0f
 	};
 	mpDevice->CreateSampler(&samplerDesc, mpSampler.AsTypePP());
@@ -94,8 +100,8 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 			.InputLayout(
 			{
 				ElementDesc("POSITION", Format::eRG32f),
-				ElementDesc("COLOR", Format::eRGBA8u),
-				ElementDesc("TEXCOORD", Format::eRG32f)
+				ElementDesc("TEXCOORD", Format::eRG32f),
+				ElementDesc("COLOR", Format::eRGBA8un)
 			})
 			.TargetBlend(0, RenderTargetBlendStateDesc::Build()
 				.Blending(true)
@@ -107,6 +113,7 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 				.DstAlpha(BlendFunc::eZero)
 			)
 			.RenderTargets({ Format::eRGBA8un })
+			.DepthStencilFormat(Format::eD32f)
 			;
 
 		// Create the binding.
@@ -133,7 +140,7 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 			return false;
 
 		ImageDesc atlasDesc;
-		atlasDesc.mFormat = Format::eRGBA8u;
+		atlasDesc.mFormat = Format::eRGBA8un;
 		atlasDesc.mWidth = width;
 		atlasDesc.mHeight = height;
 		atlasDesc.mDepth = 1;
@@ -142,6 +149,118 @@ bool DebugUI::Initialize(iDevice* device, Resources::Locator* locator)
 		atlasDesc.mFlags = 0;
 		mpDevice->CreateImage2D(&atlasDesc, pixels, mpUIAtlas.AsTypePP());
 	}
+	if (!mpUIAtlas)
+		return false;
 
-	return false;
+	// Create large buffers.
+	mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, 1024*200, sizeof(ImDrawVert), nullptr, mpVertexBuffer.AsTypePP());
+	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDynamic, 1024*50, nullptr, mpIndexBuffer.AsTypePP());
+
+	return true;
+}
+
+void DebugUI::Shutdown()
+{
+	mpVertexShader.Assign(nullptr);
+	mpPixelShader.Assign(nullptr);
+	mpResourceBinding.Assign(nullptr);
+	mpPipeline.Assign(nullptr);
+	mpUIAtlas.Assign(nullptr);
+	mpSampler.Assign(nullptr);
+	mpVertexBuffer.Assign(nullptr);
+	mpIndexBuffer.Assign(nullptr);
+	mpProjectionMatrix.Assign(nullptr);
+}
+
+void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
+{
+	(void)commands;
+	ImGuiIO& io = ImGui::GetIO();
+
+	io.DisplaySize = ImVec2(float(mWidth), float(mHeight));
+	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
+	io.DeltaTime = deltaTime;
+
+	Math::Matrix44fv projection = Math::Matrix44fv(
+		{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
+		{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
+		{ 0.0f,						0.0f,						 0.5f,	0.0f },
+		{-1.0f,						1.0f,						 0.5f,	1.0f }
+	);
+	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
+
+	// Start the frame
+	ImGui::NewFrame();
+
+	// TODO: Testing...
+	ImGui::ShowTestWindow();
+}
+
+void DebugUI::EndFrame(iCommandBuffer* commands)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui::Render();
+	ImDrawData* drawData = ImGui::GetDrawData();
+
+	Viewport viewport{
+		0.0f, 0.0f,
+		float(mWidth), float(mHeight),
+		0.0f, 1.0f
+	};
+	commands->SetViewports(1, &viewport);
+
+	drawData->ScaleClipRects(io.DisplayFramebufferScale);
+
+	commands->SetResourceBinding(mpResourceBinding);
+	commands->SetPipeline(mpPipeline);
+	commands->SetVertexBuffers(0, 1, mpVertexBuffer.AsTypePP());
+	commands->SetIndexBuffer(mpIndexBuffer);
+	commands->SetTopology(PrimitiveTopology::eTriangleList);
+	commands->SetConstantBuffer(0, mpProjectionMatrix);
+	commands->TempPorting(mpUIAtlas, mpSampler);
+//	commands->SetTexture(0, mpUIAtlas);
+//	commands->SetSampler(0, mpSampler);
+
+	for (int n = 0; n < drawData->CmdListsCount; n++)
+	{
+		const ImDrawList* cmd_list = drawData->CmdLists[n];
+		size_t idx_buffer_offset = 0;
+
+		ImDrawVert* vertices = nullptr;
+		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(0, cmd_list->VtxBuffer.size() * sizeof(ImDrawVert), reinterpret_cast<void**>(&vertices)));
+		::memcpy(vertices, &cmd_list->VtxBuffer.front(), cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
+		mpVertexBuffer->Unmap();
+
+		ImDrawIdx* indices = nullptr;
+		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(0, cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx), reinterpret_cast<void**>(&indices)));
+		::memcpy(indices, &cmd_list->IdxBuffer.front(), cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
+		mpIndexBuffer->Unmap();
+
+		for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++)
+		{
+			if (pcmd->UserCallback)
+			{
+				pcmd->UserCallback(cmd_list, pcmd);
+			}
+			else
+			{
+				Math::Rectanglei scissor
+				{
+					(int)pcmd->ClipRect.x,
+					(int)(pcmd->ClipRect.x + pcmd->ClipRect.z - pcmd->ClipRect.x),
+					(int)(io.DisplaySize.y - pcmd->ClipRect.w),
+					(int)(io.DisplaySize.y - pcmd->ClipRect.w + pcmd->ClipRect.w - pcmd->ClipRect.y)
+				};
+				commands->SetScissorRects(1, &scissor);
+				commands->DrawIndexedInstanced(pcmd->ElemCount, 1, idx_buffer_offset, 0, 0);
+			}
+			idx_buffer_offset += pcmd->ElemCount;
+		}
+	}
+}
+
+void DebugUI::SetWindowSize(int32_t width, int32_t height)
+{
+	mWidth = width;
+	mHeight = height;
 }

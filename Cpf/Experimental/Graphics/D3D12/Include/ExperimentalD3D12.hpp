@@ -7,6 +7,7 @@
 #include "Resources/Locator.hpp"
 #include "GO/Service.hpp"
 #include "Threading/Reactor.hpp"
+#include "Graphics/DebugUI.hpp"
 
 
 namespace Cpf
@@ -51,6 +52,7 @@ namespace Cpf
 		void _BeginFrame(Concurrency::ThreadContext&);
 		void _ClearBuffers(Concurrency::ThreadContext&);
 		void _Draw(Concurrency::ThreadContext& tc);
+		void _DebugUI(Concurrency::ThreadContext& tc);
 		void _PreparePresent(Concurrency::ThreadContext&);
 		void _EndFrame(Concurrency::ThreadContext&);
 		void _Resize(int32_t x, int32_t y);
@@ -103,6 +105,10 @@ namespace Cpf
 		{
 			IntrusivePtr<Graphics::iCommandPool> mpCommandPool[mBackBufferCount];
 			IntrusivePtr<Graphics::iCommandBuffer> mpCommandBuffer[mBackBufferCount];
+#ifdef CPF_DEBUG
+			IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[mBackBufferCount];
+			IntrusivePtr<Graphics::iCommandBuffer> mpDebugUIBuffer[mBackBufferCount];
+#endif
 		};
 		ThreadData mWorkerData[Concurrency::Scheduler::kMaxThreads];
 
@@ -121,5 +127,9 @@ namespace Cpf
 		// feed it in this queue.
 		Platform::Threading::Reactor::WorkQueue mReactorQueue;
 		GO::Service mGOService;
+
+#ifdef CPF_DEBUG
+		Graphics::DebugUI mDebugUI;
+#endif
 	};
 }

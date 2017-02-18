@@ -39,14 +39,16 @@ ConstantBuffer::ConstantBuffer(Device* device, size_t size, const void* initData
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = mpResource->GetGPUVirtualAddress();
 	cbvDesc.SizeInBytes = (sizeof(size) + 255) & ~255;	// CB size is required to be 256-byte aligned.
-	mDescriptor = device->GetConstantDescriptors().Alloc();
+	mDescriptor = device->GetShaderResourceDescriptors().Alloc();
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = mDescriptor;
 	device->GetD3DDevice()->CreateConstantBufferView(&cbvDesc, handle);
 
 	// Keeping this mapped permanently is valid, see: https://msdn.microsoft.com/en-us/library/windows/desktop/dn788712.aspx#Advanced_Usage_Models
 	CD3DX12_RANGE readRange(0, 0);
 	mpResource->Map(0, &readRange, reinterpret_cast<void**>(&mpBuffer));
-	memcpy(mpBuffer, initData, size);
+
+	if (initData)
+		memcpy(mpBuffer, initData, size);
 
 	CPF_LOG(D3D12, Info) << "Created constant buffer: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr()) << " - " << intptr_t(mpBuffer);
 }
