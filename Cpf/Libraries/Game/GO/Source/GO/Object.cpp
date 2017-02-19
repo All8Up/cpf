@@ -126,7 +126,7 @@ const Component* Object::GetComponent(ComponentID id) const
 	return index == -1 ? nullptr : static_cast<const Component*>(mComponents[index].second);
 }
 
-System* Object::GetSystem(const String& name) const
+System* Object::GetSystem(SystemID id) const
 {
-	return mpOwner->GetSystem(name);
+	return mpOwner->GetSystem(id);
 }

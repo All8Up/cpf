@@ -25,7 +25,7 @@ namespace Cpf
 
 			void Submit(Concurrency::Scheduler::Queue& q) override;
 			System* GetSystem() const;
-			virtual bool ResolveDependencies(GO::Service*, GO::System*);
+			virtual bool ResolveDependencies(Service*, System*);
 
 		private:
 			using UpdateTuple_t = Tuple<System*, Object*, FuncType_t>;

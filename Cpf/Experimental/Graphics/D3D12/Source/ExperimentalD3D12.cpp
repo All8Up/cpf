@@ -112,8 +112,8 @@ public:
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{
 			MoverSystem* mover = static_cast<MoverSystem*>(system);
-			mover->mpTime = service->GetSystem<GO::Timer>("Game Time");
-			mover->mpInstances = service->GetSystem<InstanceStartSystem>("Start Instancing");
+			mover->mpTime = service->GetSystem<GO::Timer>("Game Time"_crc64);
+			mover->mpInstances = service->GetSystem<InstanceStartSystem>("Start Instancing"_crc64);
 			return mover->mpTime != nullptr;
 		}
 	};
@@ -224,16 +224,16 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
-	mGOService.Install("Game Time", new GO::Timer(&mGOService));
-	mGOService.Install("Start Instancing", new InstanceStartSystem(this, &mGOService));
-	mGOService.Install("Mover", new MoverSystem(this, &mGOService));
-	mGOService.Install("End Instancing", new InstanceEndSystem(this, &mGOService));
+	mGOService.Install("Game Time"_crc64, new GO::Timer(&mGOService));
+	mGOService.Install("Start Instancing"_crc64, new InstanceStartSystem(this, &mGOService));
+	mGOService.Install("Mover"_crc64, new MoverSystem(this, &mGOService));
+	mGOService.Install("End Instancing"_crc64, new InstanceEndSystem(this, &mGOService));
 
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<GO::Object> object(mGOService.CreateObject());
 		object->CreateComponent<GO::TransformComponent>();
-		object->CreateComponent<MoverSystem::MoverComponent>(mGOService.GetSystem<MoverSystem>("Mover"));
+		object->CreateComponent<MoverSystem::MoverComponent>(mGOService.GetSystem<MoverSystem>("Mover"_crc64));
 	}
 
 	//////////////////////////////////////////////////////////////////////////

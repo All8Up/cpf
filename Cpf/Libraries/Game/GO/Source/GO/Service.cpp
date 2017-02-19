@@ -7,8 +7,10 @@
 using namespace Cpf;
 using namespace GO;
 
+//////////////////////////////////////////////////////////////////////////
 int64_t Service::mNextID = 0;
 
+//////////////////////////////////////////////////////////////////////////
 Service::Service()
 	: MultiCore::Service(0)
 {}
@@ -67,20 +69,20 @@ void Service::IterateObjects(Function<void(Object*)> cb)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool Service::Install(const String& name, System* system)
+bool Service::Install(SystemID id, System* system)
 {
-	if (mSystemMap.find(name)==mSystemMap.end())
+	if (mSystemMap.find(id)==mSystemMap.end())
 	{
-		mSystemMap[name].Adopt(system);
+		mSystemMap[id].Adopt(system);
 		system->AddRef();
 		return true;
 	}
 	return false;
 }
 
-bool Service::Remove(const String& name)
+bool Service::Remove(SystemID id)
 {
-	auto it = mSystemMap.find(name);
+	auto it = mSystemMap.find(id);
 	if (it != mSystemMap.end())
 	{
 		mSystemMap.erase(it);
@@ -89,9 +91,9 @@ bool Service::Remove(const String& name)
 	return false;
 }
 
-System* Service::GetSystem(const String& name) const
+System* Service::GetSystem(SystemID id) const
 {
-	auto it = mSystemMap.find(name);
+	auto it = mSystemMap.find(id);
 	if (it == mSystemMap.end())
 		return nullptr;
 	return it->second;

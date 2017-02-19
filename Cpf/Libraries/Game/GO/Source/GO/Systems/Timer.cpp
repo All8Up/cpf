@@ -5,6 +5,7 @@
 using namespace Cpf;
 using namespace GO;
 
+//////////////////////////////////////////////////////////////////////////
 Timer::Timer(Service* service)
 	: System(service)
 	, mpUpdate(nullptr)
@@ -15,7 +16,7 @@ Timer::Timer(Service* service)
 
 Timer::~Timer()
 {
-	delete mpUpdate;
+	mpUpdate->Release();
 }
 
 void Timer::Activate()

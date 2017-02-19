@@ -32,7 +32,7 @@ namespace Cpf
 			Component* GetComponent(ComponentID id);
 			const Component* GetComponent(ComponentID id) const;
 		
-			System* GetSystem(const String& name) const;
+			System* GetSystem(SystemID id) const;
 
 			// Utilities.
 			template <typename TYPE, typename... ARGS>
@@ -42,9 +42,9 @@ namespace Cpf
 			template <typename TYPE>
 			const TYPE* GetComponent() const;
 			template <typename TYPE>
-			TYPE* GetSystem(const String& name) const
+			TYPE* GetSystem(SystemID id) const
 			{
-				return static_cast<TYPE*>(GetSystem(name));
+				return static_cast<TYPE*>(GetSystem(id));
 			}
 
 		private:

@@ -35,11 +35,11 @@ namespace Cpf
 			void IterateObjects(Function<void (Object*)> cb);
 
 			// System management.
-			bool Install(const String& name, System* system);
-			bool Remove(const String& name);
-			System* GetSystem(const String& name) const;
+			bool Install(SystemID, System* system);
+			bool Remove(SystemID);
+			System* GetSystem(SystemID) const;
 			template <typename TYPE>
-			TYPE* GetSystem(const String& name) const { return static_cast<TYPE*>(GetSystem(name)); }
+			TYPE* GetSystem(SystemID id) const { return static_cast<TYPE*>(GetSystem(id)); }
 
 			// Integrate into scheduler.
 			void Submit(Concurrency::Scheduler::Queue& q);
@@ -52,7 +52,7 @@ namespace Cpf
 			static ObjectID mNextID;
 			ObjectIDMap mObjectIDMap;
 
-			using SystemMap = UnorderedMap<String, IntrusivePtr<System>>;
+			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<System>>;
 			SystemMap mSystemMap;
 
 			//
