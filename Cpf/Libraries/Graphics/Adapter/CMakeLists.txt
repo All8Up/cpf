@@ -41,6 +41,7 @@ set (INCLUDE_GRAPHICS_INTERFACES
 	Include/Graphics/Interfaces/iSwapChain.hpp
 	Include/Graphics/Interfaces/iOutput.hpp
 	Include/Graphics/Interfaces/iFence.hpp
+	Include/Graphics/Interfaces/iRenderPass.hpp
 	Include/Graphics/Interfaces/iShader.hpp
 	Include/Graphics/Interfaces/iPipeline.hpp
 	Include/Graphics/Interfaces/iResourceBinding.hpp

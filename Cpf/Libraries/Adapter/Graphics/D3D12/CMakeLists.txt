@@ -26,7 +26,6 @@ set (INCLUDE_ADAPTER_D3D12_FILES
 	Include/Adapter/D3D12/IndexBuffer.hpp
 	Include/Adapter/D3D12/VertexBuffer.hpp
 	Include/Adapter/D3D12/ConstantBuffer.hpp
-	Include/Adapter/D3D12/DescriptorPool.hpp
 	Include/Adapter/D3D12/Sampler.hpp
 )
 set (SOURCE_ADAPTER_D3D12_FILES
