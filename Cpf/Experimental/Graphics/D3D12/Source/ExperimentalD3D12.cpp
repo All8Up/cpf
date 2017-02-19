@@ -197,7 +197,7 @@ public:
 
 	void Deactivate() override
 	{
-		mpMover->GetStages()["Move"]->RemoveUpdate(mpMover, GetObject());
+		mpMover->GetStages()["Move"]->RemoveUpdate(mpMover, GetObject(), &MoverComponent::_Update);
 	}
 
 private:

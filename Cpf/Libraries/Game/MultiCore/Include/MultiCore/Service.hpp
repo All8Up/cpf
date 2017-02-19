@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Export.hpp"
+#include "MultiCore/Types.hpp"
 #include "RefCounted.hpp"
 
 
@@ -16,8 +17,13 @@ namespace Cpf
 		class Service : public tRefCounted<iRefCounted>
 		{
 		public:
-			Service();
+			Service(ServiceID id);
 			virtual ~Service();
+
+			ServiceID GetID() const;
+
+		private:
+			ServiceID mID;
 		};
 	}
 }

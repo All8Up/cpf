@@ -7,6 +7,8 @@
 #include "Threading/Mutex.hpp"
 #include "Threading/ScopedLock.hpp"
 #include "Concurrency/ThreadContext.hpp"
+#include "MultiCore/Container.hpp"
+#include "MultiCore/Partitioning.hpp"
 #include "Tuple.hpp"
 #include "String.hpp"
 
@@ -52,44 +54,21 @@ namespace Cpf
 
 			void AddUpdate(System* s, Object* o, FuncType_t f)
 			{
-				Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mLock);
-				mUpdates.push_back({ s, o, f });
+				mWork.Acquire();
+				mWork.Add({s, o, f});
+				mWork.Release();
 			}
-			void RemoveUpdate(System* s, Object* o)
+			void RemoveUpdate(System* s, Object* o, FuncType_t f)
 			{
-				Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mLock);
-				for (auto ibegin = mUpdates.begin(), iend = mUpdates.end(); ibegin!=iend; ++ibegin)
-				{
-					if (CPF_STL_NAMESPACE::get<0>(*ibegin) == s &&
-						CPF_STL_NAMESPACE::get<1>(*ibegin) == o)
-					{
-						mUpdates.erase(ibegin);
-						return;
-					}
-				}
-				// Should be in the list.
-				CPF_ASSERT_ALWAYS;
+				mWork.Acquire();
+				mWork.Remove({s, o, f});
+				mWork.Release();
 			}
 
 			static void Update(Concurrency::ThreadContext& tc, void* context)
 			{
 				Stage& self = *reinterpret_cast<Stage*>(context);
-
-				int32_t threadIndex = tc.GetThreadIndex();
-				int32_t threadCount = tc.GetThreadCount();
-				int32_t workCount = int32_t(self.mUpdates.size());
-				int32_t partitionSize = int32_t(workCount) / threadCount;
-				int32_t start = threadIndex * partitionSize;
-				int32_t end = start + partitionSize;
-				int32_t overflow = workCount - (threadCount*partitionSize);
-				if (overflow > 0 && threadIndex == 0)
-					end += overflow;
-
-				for (int i = start; i < end; ++i)
-				{
-					const UpdateTuple_t& up = self.mUpdates[i];
-					(*std::get<2>(up))(std::get<0>(up), std::get<1>(up));
-				}
+				MultiCore::EqualPartitions<MultiCore::VectorContainer<UpdateTuple_t>, Caller>::Execute(self.mWork, tc, &self.mCaller);
 			}
 
 			System* GetSystem() const { return mpSystem; }
@@ -98,8 +77,14 @@ namespace Cpf
 		private:
 			System* mpSystem;
 			using UpdateTuple_t = Tuple<System*, Object*, FuncType_t>;
-			Vector<UpdateTuple_t> mUpdates;
-			Platform::Threading::Mutex mLock;
+			MultiCore::VectorContainer<UpdateTuple_t> mWork;
+			struct Caller
+			{
+				void Execute(const UpdateTuple_t& work)
+				{
+					(*std::get<2>(work))(std::get<0>(work), std::get<1>(work));
+				}
+			} mCaller;
 		};
 	}
 }
