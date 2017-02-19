@@ -14,7 +14,6 @@ set (INCLUDE_ADAPTER_D3D12_FILES
 	Include/Adapter/D3D12/Device.hpp
 	Include/Adapter/D3D12/SwapChain.hpp
 	Include/Adapter/D3D12/CommandBuffer.hpp
-	Include/Adapter/D3D12/CommandPool.hpp
 	Include/Adapter/D3D12/Output.hpp
 	Include/Adapter/D3D12/D3D12Utils.hpp
 	Include/Adapter/D3D12/DescriptorManager.hpp
@@ -49,7 +48,6 @@ set (SOURCE_ADAPTER_D3D12_FILES
 	Source/D3D12/IndexBuffer.cpp
 	Source/D3D12/VertexBuffer.cpp
 	Source/D3D12/ConstantBuffer.cpp
-	Source/D3D12/DescriptorPool.cpp
 	Source/D3D12/Sampler.cpp
 )
 

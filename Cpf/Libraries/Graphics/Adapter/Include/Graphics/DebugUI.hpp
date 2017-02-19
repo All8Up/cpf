@@ -2,6 +2,9 @@
 #pragma once
 #include "RefCounted.hpp"
 #include "Math/Color.hpp"
+#include "Math/Vector2.hpp"
+#include "Math/Constants.hpp"
+
 
 namespace Cpf
 {
@@ -45,8 +48,17 @@ namespace Cpf
 			void TextColored(const Math::Color4f& color, const char* fmt, ...);
 			bool CheckBox(const char* label, bool* flag);
 
+			// Buttons.
+			bool Button(const char* label, const Math::Vector2i = Math::Vector2i(0));
+			bool SmallButton(const char* label);
+
 			// Sliders
 			bool Slider(const char* label, int32_t* value, int vmin, int vmax, const char* fmt = "%.0f");
+
+			// Histograms
+			void Histogram(const char* label, const float* values, int32_t count,
+				int32_t offset = 0, const char* overlay = nullptr, float scaleMin = Math::kFloatMax, float scaleMax = Math::kFloatMax,
+				const Math::Vector2i = Math::Vector2i(0), int32_t stride = sizeof(float));
 
 			// Rendering information.
 			void SetWindowSize(int32_t width, int32_t height);
@@ -58,10 +70,11 @@ namespace Cpf
 			static const char* _GetClipboardText();
 			static void _SetClipboardText(const char* text);
 
-			void _OnMouseMoved(int32_t x, int32_t y);
-
 			bool mMousePressed[3];
 			float mMouseWheel;
+
+			static const size_t kVertexBufferSize = 1024 * 512;
+			static const size_t kIndexBufferSize = 1024 * 64;
 
 			//////////////////////////////////////////////////////////////////////////
 			iDevice* mpDevice;

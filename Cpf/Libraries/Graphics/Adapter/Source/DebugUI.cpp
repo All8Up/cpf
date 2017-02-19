@@ -186,17 +186,11 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 	if (!mpUIAtlas)
 		return false;
 
-	window->GetEmitter().On<iWindow::OnMouseMove>(Bind(&DebugUI::_OnMouseMoved, this, Placeholders::_1, Placeholders::_2));
-
 	// Create large buffers.
-	mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, 1024*200, sizeof(ImDrawVert), nullptr, mpVertexBuffer.AsTypePP());
-	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDynamic, 1024*50, nullptr, mpIndexBuffer.AsTypePP());
+	mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, kVertexBufferSize, sizeof(ImDrawVert), nullptr, mpVertexBuffer.AsTypePP());
+	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDynamic, kIndexBufferSize, nullptr, mpIndexBuffer.AsTypePP());
 
 	return true;
-}
-
-void DebugUI::_OnMouseMoved(int32_t x, int32_t y)
-{
 }
 
 void DebugUI::Shutdown()
@@ -280,12 +274,14 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 
 		ImDrawVert* vertices = nullptr;
 		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(0, cmd_list->VtxBuffer.size() * sizeof(ImDrawVert), reinterpret_cast<void**>(&vertices)));
+		CPF_ASSERT(cmd_list->VtxBuffer.size() <= kVertexBufferSize);
 		::memcpy(vertices, &cmd_list->VtxBuffer.front(), cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
 		mpVertexBuffer->Unmap();
 
 		ImDrawIdx* indices = nullptr;
 		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(0, cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx), reinterpret_cast<void**>(&indices)));
 		::memcpy(indices, &cmd_list->IdxBuffer.front(), cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
+		CPF_ASSERT(cmd_list->IdxBuffer.size() <= kIndexBufferSize);
 		mpIndexBuffer->Unmap();
 
 		for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++)
@@ -304,7 +300,7 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 					(int)pcmd->ClipRect.w
 				};
 				commands->SetScissorRects(1, &scissor);
-				commands->DrawIndexedInstanced(pcmd->ElemCount, 1, indexOffset, vertexOffset, 0);
+				commands->DrawIndexedInstanced(pcmd->ElemCount, 1, int32_t(indexOffset), int32_t(vertexOffset), 0);
 			}
 			indexOffset += pcmd->ElemCount;
 		}
@@ -344,6 +340,17 @@ bool DebugUI::CheckBox(const char* label, bool* flag)
 	return ImGui::Checkbox(label, flag);
 }
 
+bool DebugUI::Button(const char* label, const Math::Vector2i size)
+{
+	ImVec2 imSize(float(size.x), float(size.y));
+	return ImGui::Button(label, imSize);
+}
+
+bool DebugUI::SmallButton(const char* label)
+{
+	return ImGui::SmallButton(label);
+}
+
 bool DebugUI::Slider(const char* label, int32_t* value, int vmin, int vmax, const char* fmt)
 {
 	int v = *value;
@@ -351,6 +358,13 @@ bool DebugUI::Slider(const char* label, int32_t* value, int vmin, int vmax, cons
 	*value = v;
 	return result;
 }
+
+void DebugUI::Histogram(const char* label, const float* values, int32_t count, int32_t offset, const char* overlay, float scaleMin, float scaleMax, const Math::Vector2i size, int32_t stride)
+{
+	ImVec2 imSize(float(size.x), float(size.y));
+	ImGui::PlotHistogram(label, values, count, offset, overlay, scaleMin, scaleMax, imSize, stride);
+}
+
 void DebugUI::SetWindowSize(int32_t width, int32_t height)
 {
 	mWidth = width;
