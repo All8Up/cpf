@@ -7,7 +7,6 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Types.hpp
 	Include/MultiCore/Service.hpp
 	Include/MultiCore/Stage.hpp
-	Include/MultiCore/Distributor.hpp
 	Include/MultiCore/Container.hpp
 	Include/MultiCore/Partitioning.hpp
 )
@@ -18,7 +17,6 @@ set (SOURCE_FILES
 set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Service.cpp
 	Source/MultiCore/Stage.cpp
-	Source/MultiCore/Distributor.cpp
 )
 
 add_library (s_MultiCore STATIC

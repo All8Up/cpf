@@ -16,10 +16,13 @@ namespace Cpf
 		class Stage : public MultiCore::Stage
 		{
 		public:
+			// Interface definitions.
 			using FuncType_t = void(*)(System*, Object*);
 
+			// Construction.
 			Stage(MultiCore::Service* service, System* system, MultiCore::StageID id);
 
+			// Interface.
 			void AddUpdate(System* s, Object* o, FuncType_t f);
 			void RemoveUpdate(System* s, Object* o, FuncType_t f);
 
@@ -28,19 +31,18 @@ namespace Cpf
 			virtual bool ResolveDependencies(Service*, System*);
 
 		private:
+			// Implementation definitions.
 			using UpdateTuple_t = Tuple<System*, Object*, FuncType_t>;
 			MultiCore::VectorContainer<UpdateTuple_t> mWork;
 			struct Caller
 			{
-				void Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work)
-				{
-					(*std::get<2>(work))(std::get<0>(work), std::get<1>(work));
-				}
-			} mCaller;
+				void Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work);
+			};
 
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 
 			System* mpSystem;
+			Caller mCaller;
 		};
 	}
 }

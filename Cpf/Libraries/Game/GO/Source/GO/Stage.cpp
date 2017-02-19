@@ -44,3 +44,8 @@ void Stage::_Update(Concurrency::ThreadContext& tc, void* context)
 	Stage& self = *reinterpret_cast<Stage*>(context);
 	MultiCore::EqualPartitions<MultiCore::VectorContainer<UpdateTuple_t>, Caller>::Execute(self.mWork, tc, &self.mCaller);
 }
+
+void Stage::Caller::Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work)
+{
+	(*std::get<2>(work))(std::get<0>(work), std::get<1>(work));
+}

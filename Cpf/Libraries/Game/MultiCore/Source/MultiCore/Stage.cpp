@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Service.hpp"
-#include "MultiCore/Distributor.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
