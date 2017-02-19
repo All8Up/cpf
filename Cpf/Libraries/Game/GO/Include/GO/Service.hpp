@@ -1,12 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
-#include "Types.hpp"
-#include "IntrusivePtr.hpp"
-#include "UnorderedMap.hpp"
 #include "String.hpp"
-#include "Vector.hpp"
-#include "Functional.hpp"
+#include "GO/Types.hpp"
+#include "MultiCore/Service.hpp"
+#include "UnorderedMap.hpp"
 
 
 namespace Cpf
@@ -18,14 +15,19 @@ namespace Cpf
 		// This is the overall GO service which integrates with the concurrency scheduler.
 		// The similar "System" is intended only for items owned by this service.  So
 		// the AwarenessSystem manages awareness for the GO::Service and objects can use it.
-		class Service /* : public Cpf::Service */
+		class Service : public MultiCore::Service
 		{
 		public:
 			using ObjectIDMap = UnorderedMap<ObjectID, IntrusivePtr<Object>>;
 			using ObjectIDValue = ObjectIDMap::value_type;
 
+			//
 			Service();
-			~Service();
+			~Service() override;
+
+			//
+			void Activate();
+			void Deactivate();
 
 			// Service interface.
 			Object* CreateObject(ObjectID id = kInvalidObjectID);

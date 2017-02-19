@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
-#include "Time/Time.hpp"
+#include "Std/Std.hpp"
 
 using namespace Cpf;
 using namespace Platform;
@@ -30,16 +30,22 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		accumulation += 1.0f / float(Time::Seconds(mDeltaTime));
 		if (historyIndex >= kHistorySize)
 			historyIndex = 0;
+		float lowFPS = 1000000, highFPS = 0;
+		for (auto fps : history)
+		{
+			lowFPS = Min(lowFPS, fps);
+			highFPS = Max(highFPS, fps);
+		}
 
 		float averageTicks = accumulation / float(kHistorySize);
 		float average = float(Time::Seconds(averageTicks));
 
 		static bool sShowPerformance = true;
 		mDebugUI.Begin("Performance", &sShowPerformance);
-		mDebugUI.Text("FPS: %f", average);
+		mDebugUI.Text("FPS: %d LOW: %d HIGH: %d", int(average), int(lowFPS), int(highFPS));
 		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.ThreadCount()))
 			mThreadCountChanged = true;
-		mDebugUI.Histogram("FPS Histogram", history, kHistorySize);
+		mDebugUI.Histogram("FPS Histogram", history, kHistorySize, 0, nullptr, lowFPS, highFPS);
 		mDebugUI.End();
 	}
 	mDebugUI.EndFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer]);

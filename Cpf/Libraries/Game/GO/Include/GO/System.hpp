@@ -1,7 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Types.hpp"
+#include "String.hpp"
 #include "RefCount.hpp"
+#include "UnorderedMap.hpp"
 
 namespace Cpf
 {
@@ -18,8 +20,25 @@ namespace Cpf
 		class System : public tRefCounted<iRefCounted>
 		{
 		public:
-			using StageMap = UnorderedMap<String, IntrusivePtr<Stage>>;
-			virtual StageMap& GetStages() = 0;
+			//////////////////////////////////////////////////////////////////////////
+			System(Service* service);
+
+			Service* GetService() const;
+
+			virtual const StageVector& GetStages() const;
+
+			virtual void Activate();
+			virtual void Deactivate();
+
+		protected:
+			//////////////////////////////////////////////////////////////////////////
+			void Add(Stage*);
+			void Remove(Stage*);
+
+		private:
+			//////////////////////////////////////////////////////////////////////////
+			Service* mpService;
+			StageVector mStages;
 		};
 	}
 }

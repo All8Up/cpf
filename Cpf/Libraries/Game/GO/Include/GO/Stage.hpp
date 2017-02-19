@@ -1,46 +1,33 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Tuple.hpp"
 #include "GO/Types.hpp"
 #include "MultiCore/Stage.hpp"
+#include "MultiCore/Container.hpp"
 
 namespace Cpf
 {
 	namespace GO
 	{
-		// GO::Stage adds the concept of game 'systems' to the mix.
+		// A GO specific stage adds the concepts of game systems which support
+		// game components to the multicore handling.  The components get a pointer
+		// a systems so it is possible to setup the pipeline with unique interdependencies
+		// at a finer grain than intended in the general purpose multicore handling.
 		class Stage : public MultiCore::Stage
 		{
 		public:
 			using FuncType_t = void(*)(System*, Object*);
 
-			Stage(MultiCore::Service* service, System* system, MultiCore::StageID id)
-				: MultiCore::Stage(service, id)
-				, mpSystem(system)
-			{}
+			Stage(MultiCore::Service* service, System* system, MultiCore::StageID id);
 
-			void AddUpdate(System* s, Object* o, FuncType_t f)
-			{
-				mWork.Acquire();
-				mWork.Add({ s, o, f });
-				mWork.Release();
-			}
-			void RemoveUpdate(System* s, Object* o, FuncType_t f)
-			{
-				mWork.Acquire();
-				mWork.Remove({ s, o, f });
-				mWork.Release();
-			}
+			void AddUpdate(System* s, Object* o, FuncType_t f);
+			void RemoveUpdate(System* s, Object* o, FuncType_t f);
 
-			void Submit(Concurrency::Scheduler::Queue& q) override
-			{
-				q.All(&Stage::_Update, this);
-			}
-
-			System* GetSystem() const { return mpSystem; }
-			virtual bool ResolveDependencies(GO::Service*, GO::System*) { return true; }
+			void Submit(Concurrency::Scheduler::Queue& q) override;
+			System* GetSystem() const;
+			virtual bool ResolveDependencies(GO::Service*, GO::System*);
 
 		private:
-			System* mpSystem;
 			using UpdateTuple_t = Tuple<System*, Object*, FuncType_t>;
 			MultiCore::VectorContainer<UpdateTuple_t> mWork;
 			struct Caller
@@ -51,11 +38,9 @@ namespace Cpf
 				}
 			} mCaller;
 
-			static void _Update(Concurrency::ThreadContext& tc, void* context)
-			{
-				Stage& self = *reinterpret_cast<Stage*>(context);
-				MultiCore::EqualPartitions<MultiCore::VectorContainer<UpdateTuple_t>, Caller>::Execute(self.mWork, tc, &self.mCaller);
-			}
+			static void _Update(Concurrency::ThreadContext& tc, void* context);
+
+			System* mpSystem;
 		};
 	}
 }

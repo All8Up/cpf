@@ -22,6 +22,7 @@
 
 #include "GO.hpp"
 #include "GO/Components/TransformComponent.hpp"
+#include "GO/Systems/Timer.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -46,53 +47,19 @@ Stage notes:
 		up to the container, i.e. System.
 */
 
-class GameTime : public GO::System
-{
-public:
-	// No components exposed.
-	// Stages.
-	GameTime()
-	{
-		mTime = Time::Now();
-		mStart = mTime;
-		mStages.emplace("Update", new GO::Stage(nullptr, this, 0));
-		mStages.begin()->second->AddUpdate(this, nullptr, &GameTime::Update);
-	}
-
-	StageMap& GetStages() override
-	{
-		return mStages;
-	}
-
-	Time::Value GetTime() const { return mTime - mStart; }
-
-private:
-	static void Update(System* s, GO::Object*)
-	{
-		GameTime* timer = reinterpret_cast<GameTime*>(s);
-		timer->mTime = Time::Now();
-	}
-
-	StageMap mStages;
-	Time::Value mTime;
-	Time::Value mStart;
-};
-
 // NOTE: TODO: The start and end will be a single system with two stages
 // when the stage sort is functional.
 class InstanceStartSystem : public GO::System
 {
 public:
-	InstanceStartSystem(ExperimentalD3D12* app)
-		: mpApp(app)
+	InstanceStartSystem(ExperimentalD3D12* app, GO::Service* service)
+		: System(service)
+		, mpApp(app)
 		, mpInstances(nullptr)
 	{
-		mStages.emplace("Update", new GO::Stage(nullptr, this, 0));
-		mStages.begin()->second->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
-	}
-	StageMap& GetStages() override
-	{
-		return mStages;
+		GO::Stage* stage = new GO::Stage(nullptr, this, 0);
+		stage->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
+		Add(stage);
 	}
 
 	ExperimentalD3D12::Instance* GetInstances() const { return mpInstances; }
@@ -104,7 +71,6 @@ private:
 		system->mpApp->GetCurrentInstanceBuffer()->Map(0, 0, reinterpret_cast<void**>(&system->mpInstances));
 	}
 
-	StageMap mStages;
 	ExperimentalD3D12* mpApp;
 	ExperimentalD3D12::Instance* mpInstances;
 };
@@ -112,15 +78,13 @@ private:
 class InstanceEndSystem : public GO::System
 {
 public:
-	InstanceEndSystem(ExperimentalD3D12* app)
-		: mpApp(app)
+	InstanceEndSystem(ExperimentalD3D12* app, GO::Service* service)
+		: System(service)
+		, mpApp(app)
 	{
-		mStages.emplace("Update", new GO::Stage(nullptr, this, 0));
-		mStages.begin()->second->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
-	}
-	StageMap& GetStages() override
-	{
-		return mStages;
+		GO::Stage* stage = new GO::Stage(nullptr, this, 0);
+		stage->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
+		Add(stage);
 	}
 
 private:
@@ -130,7 +94,6 @@ private:
 		system->mpApp->GetCurrentInstanceBuffer()->Unmap();
 	}
 
-	StageMap mStages;
 	ExperimentalD3D12* mpApp;
 };
 
@@ -149,35 +112,33 @@ public:
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{
 			MoverSystem* mover = static_cast<MoverSystem*>(system);
-			mover->mpTime = service->GetSystem<GameTime>("Game Time");
+			mover->mpTime = service->GetSystem<GO::Timer>("Game Time");
 			mover->mpInstances = service->GetSystem<InstanceStartSystem>("Start Instancing");
 			return mover->mpTime != nullptr;
 		}
 	};
 
-	MoverSystem(ExperimentalD3D12* app)
-		: mpApp(app)
+	MoverSystem(ExperimentalD3D12* app, GO::Service* service)
+		: System(service)
+		, mpApp(app)
 		, mpInstances(nullptr)
 		, mpTime (nullptr)
 	{
-		mStages.emplace("Move", new MoverStage(this));
-	}
-
-	StageMap& GetStages() override
-	{
-		return mStages;
+		mpMover = new MoverStage(this);
+		Add(mpMover);
 	}
 
 	InstanceStartSystem* GetInstanceSystem() const { return mpInstances; }
 
-private:
-	StageMap mStages;
+	MoverStage* GetMoverStage() const { return mpMover; }
 
+private:
 	ExperimentalD3D12* mpApp;
 
 	// system interdependencies.
 	InstanceStartSystem* mpInstances;
-	const GameTime* mpTime;	// The clock this mover is attached to.
+	const GO::Timer* mpTime;	// The clock this mover is attached to.
+	MoverStage* mpMover;
 };
 
 class MoverSystem::MoverComponent : public GO::Component
@@ -187,23 +148,25 @@ public:
 
 	GO::ComponentID GetID() const override { return kID; }
 
-	MoverComponent(MoverSystem* mover) : mpMover(mover) {}
+	MoverComponent(MoverSystem* mover)
+		: mpMover(mover)
+	{}
 
 	void Activate() override
 	{
-		mpMover->GetStages()["Move"]->AddUpdate(mpMover, GetObject(), &MoverComponent::_Update);
+		mpMover->GetMoverStage()->AddUpdate(mpMover, GetObject(), &MoverComponent::_Update);
 	}
 
 	void Deactivate() override
 	{
-		mpMover->GetStages()["Move"]->RemoveUpdate(mpMover, GetObject(), &MoverComponent::_Update);
+		mpMover->GetMoverStage()->RemoveUpdate(mpMover, GetObject(), &MoverComponent::_Update);
 	}
 
 private:
 	static void _Update(System* system, GO::Object* object)
 	{
 		MoverSystem* mover = static_cast<MoverSystem*>(system);
-		const GameTime* timer = mover->mpTime;
+		const GO::Timer* timer = mover->mpTime;
 
 		int i = int(object->GetID());
 		int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -261,41 +224,10 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	// Setup the object system.
-	/* Eventual interface.
-	// GenericFrame simply supplies a base set of starting stages to hang other things off of.
-	// The stages are named: "Begin", "Update" and "End" each expecting a barrier between.
-	mGOService.CreateSystem<GenericFrame>("Frame");
-
-	// The two game times are such that the UI can continue functioning even if the game is paused.
-	// They are attached to the Begin stage of the Frame with no special barrier requirements.
-	mGOService.CreateSystem<GameTime>("UITime", "Frame", "Begin");
-	mGOService.CreateSystem<GameTime>("GameTime", "Frame", "Begin");
-
-	// The instancing system handles preparing a buffer(s) for instanced rendering.
-	// This system has a "Begin" & "End" stage, each with different bindings.
-	// Begin is bound to the Frame::Begin while end is bound to the Frame::End.
-	// NOTE: Internal to the InstanceSystem a dependency is created between the "Begin" and "End"
-	// stages which it supplies to make sure there is at least one barrier between the two.
-	mGOService.CreateSystem<InstanceSystem>("Instancing", {
-		{"Begin", "Frame", "Begin"},
-		{"End", "Frame", "End"}
-	}, this);
-
-	// The movement system is part of update which by nature will have barriers on either side
-	// but just in case there were a reason to move the time or instancing into update it
-	// defines it's dependencies.
-	mGOService.CreateSystem<MoverSystem>("Mover", {
-		{"Move", "Instancing", "Begin", Order::eAfter},
-		{"Move", "Instancing", "End", Order::eBefore}
-	}, this);
-	*/
-
-	mGOService.Install("Game Time", new GameTime());
-	mGOService.Install("Start Instancing", new InstanceStartSystem(this));
-	mGOService.Install("Mover", new MoverSystem(this));
-	mGOService.Install("End Instancing", new InstanceEndSystem(this));
+	mGOService.Install("Game Time", new GO::Timer(&mGOService));
+	mGOService.Install("Start Instancing", new InstanceStartSystem(this, &mGOService));
+	mGOService.Install("Mover", new MoverSystem(this, &mGOService));
+	mGOService.Install("End Instancing", new InstanceEndSystem(this, &mGOService));
 
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
@@ -390,6 +322,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					mDebugUI.SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
 					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
 
+					//
+					mGOService.Activate();
+
 					while (IsRunning())
 					{
 						//////////////////////////////////////////////////////////////////////////
@@ -448,6 +383,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					// Guarantee last frame is complete before we tear everything down.
 					frameSemaphore.Acquire();
 					mDebugUI.Shutdown();
+
+					mGOService.Deactivate();
 				}
 
 				// Destroy all the resources.

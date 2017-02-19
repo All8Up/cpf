@@ -22,6 +22,9 @@ namespace Cpf
 
 			ServiceID GetID() const;
 
+			virtual void Activate() {}
+			virtual void Deactivate() {}
+
 		private:
 			ServiceID mID;
 		};

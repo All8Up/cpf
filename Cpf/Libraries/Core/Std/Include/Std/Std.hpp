@@ -35,4 +35,17 @@ namespace Cpf
 		StdInitializer() = delete;
 		~StdInitializer() = delete;
 	};
+
+	//////////////////////////////////////////////////////////////////////////
+	template <typename LHS, typename RHS>
+	LHS Min(LHS a, RHS b)
+	{
+		return LHS((a < b) ? a : b);
+	}
+
+	template <typename LHS, typename RHS>
+	LHS Max(LHS a, RHS b)
+	{
+		return LHS((a > b) ? a : b);
+	}
 }

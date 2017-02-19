@@ -14,6 +14,9 @@ set (INCLUDE_GO_FILES
 set (INCLUDE_GO_COMPONENT_FILES
 	Include/GO/Components/TransformComponent.hpp
 )
+set (INCLUDE_GO_SYSTEMS_FILES
+	Include/GO/Systems/Timer.hpp
+)
 
 set (SOURCE_FILES
 	Source/GO.cpp
@@ -28,14 +31,19 @@ set (SOURCE_GO_FILES
 set (SOURCE_GO_COMPONENT_FILES
 	Source/GO/Components/TransformComponent.cpp
 )
+set (SOURCE_GO_SYSTEMS_FILES
+	Source/GO/Systems/Timer.cpp
+)
 
 add_library (s_GO STATIC
 	${INCLUDE_FILES}
 	${INCLUDE_GO_FILES}
 	${INCLUDE_GO_COMPONENT_FILES}
+	${INCLUDE_GO_SYSTEMS_FILES}
 	${SOURCE_FILES}
 	${SOURCE_GO_FILES}
 	${SOURCE_GO_COMPONENT_FILES}
+	${SOURCE_GO_SYSTEMS_FILES}
 )
 target_compile_definitions (s_GO
 	PUBLIC CPF_STATIC_GO
@@ -59,3 +67,5 @@ source_group (Headers\\GO FILES ${INCLUDE_GO_FILES})
 source_group (Sources\\GO FILES ${SOURCE_GO_FILES})
 source_group (Headers\\GO\\Components FILES ${INCLUDE_GO_COMPONENT_FILES})
 source_group (Sources\\GO\\Components FILES ${SOURCE_GO_COMPONENT_FILES})
+source_group (Headers\\GO\\Systems FILES ${INCLUDE_GO_SYSTEMS_FILES})
+source_group (Sources\\GO\\Systems FILES ${SOURCE_GO_SYSTEMS_FILES})

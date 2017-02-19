@@ -10,10 +10,26 @@ using namespace GO;
 int64_t Service::mNextID = 0;
 
 Service::Service()
+	: MultiCore::Service(0)
 {}
 
 Service::~Service()
 {}
+
+void Service::Activate()
+{
+	for (auto it : mSystemMap)
+	{
+		it.second->Activate();
+		_InstallStages(it.second);
+	}
+}
+
+void Service::Deactivate()
+{
+	for (auto it : mSystemMap)
+		it.second->Deactivate();
+}
 
 Object* Service::CreateObject(ObjectID id)
 {
@@ -57,7 +73,6 @@ bool Service::Install(const String& name, System* system)
 	{
 		mSystemMap[name].Adopt(system);
 		system->AddRef();
-		_InstallStages(system);
 		return true;
 	}
 	return false;
@@ -87,7 +102,7 @@ bool Service::_InstallStages(System* system)
 {
 	// TODO: This will need to perform the insertion sort eventually based on system dependencies.
 	for (auto it : system->GetStages())
-		mStageArray.emplace_back(it.second);
+		mStageArray.emplace_back(it);
 	// Resolve inter system dependencies.
 	for (auto it : mStageArray)
 	{
