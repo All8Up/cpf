@@ -8,6 +8,7 @@
 #include "Threading/ScopedLock.hpp"
 #include "Concurrency/ThreadContext.hpp"
 #include "Tuple.hpp"
+#include "String.hpp"
 
 
 namespace Cpf
@@ -37,6 +38,14 @@ namespace Cpf
 		class Stage : public tRefCounted<iRefCounted>
 		{
 		public:
+			enum class Type : int32_t
+			{
+				eConcurrent,	// Can work with other stages.
+				eIsolate		// Must run in isolation from other stages.
+			};
+
+			using Dependency = Pair<String, String>;	// Owning system name, Stage name.
+			using Dependencies = Vector<Dependency>;
 			using FuncType_t = void(*)(System*, Object*);
 
 			Stage(System* system) : mpSystem(system) {}

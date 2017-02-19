@@ -17,6 +17,7 @@
 #include "Graphics/Interfaces/iIndexBuffer.hpp"
 #include "Graphics/Interfaces/iVertexBuffer.hpp"
 #include "Graphics/Interfaces/iConstantBuffer.hpp"
+#include "Graphics/Interfaces/iRenderPass.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
@@ -91,4 +92,8 @@ iConstantBuffer::~iConstantBuffer()
 
 //////////////////////////////////////////////////////////////////////////
 iSampler::~iSampler()
+{}
+
+//////////////////////////////////////////////////////////////////////////
+iRenderPass::~iRenderPass()
 {}
