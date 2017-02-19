@@ -20,8 +20,7 @@
 #include <math.h>
 #include "IO/IO.hpp"
 
-#include "GO/Object.hpp"
-#include "GO/System.hpp"
+#include "GO.hpp"
 #include "GO/Components/TransformComponent.hpp"
 
 using namespace Cpf;
@@ -56,7 +55,7 @@ public:
 	{
 		mTime = Time::Now();
 		mStart = mTime;
-		mStages.emplace("Update", new GO::Stage(this));
+		mStages.emplace("Update", new GO::Stage(nullptr, this, 0));
 		mStages.begin()->second->AddUpdate(this, nullptr, &GameTime::Update);
 	}
 
@@ -88,7 +87,7 @@ public:
 		: mpApp(app)
 		, mpInstances(nullptr)
 	{
-		mStages.emplace("Update", new GO::Stage(this));
+		mStages.emplace("Update", new GO::Stage(nullptr, this, 0));
 		mStages.begin()->second->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
 	}
 	StageMap& GetStages() override
@@ -116,7 +115,7 @@ public:
 	InstanceEndSystem(ExperimentalD3D12* app)
 		: mpApp(app)
 	{
-		mStages.emplace("Update", new GO::Stage(this));
+		mStages.emplace("Update", new GO::Stage(nullptr, this, 0));
 		mStages.begin()->second->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
 	}
 	StageMap& GetStages() override
@@ -145,7 +144,7 @@ public:
 	class MoverStage : public GO::Stage
 	{
 	public:
-		MoverStage(System* s) : Stage(s) {}
+		MoverStage(System* s) : Stage(nullptr, s, 0) {}
 
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{

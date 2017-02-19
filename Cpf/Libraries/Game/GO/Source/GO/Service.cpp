@@ -2,6 +2,7 @@
 #include "GO/Service.hpp"
 #include "GO/Object.hpp"
 #include "GO/System.hpp"
+#include "GO/Stage.hpp"
 
 using namespace Cpf;
 using namespace GO;
@@ -98,9 +99,10 @@ bool Service::_InstallStages(System* system)
 
 void Service::Submit(Concurrency::Scheduler::Queue& q)
 {
-	// TODO: This is wrong but functional for the moment.
+	// TODO: This is currently inserting a barrier which should not be done here.
 	for (auto& it : mStageArray)
 	{
-		q.AllBarrier(&Stage::Update, (Stage*)it);
+		it->Submit(q);
+		q.Barrier();
 	}
 }

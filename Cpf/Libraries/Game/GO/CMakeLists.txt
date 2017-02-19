@@ -9,6 +9,7 @@ set (INCLUDE_GO_FILES
 	Include/GO/Service.hpp
 	Include/GO/System.hpp
 	Include/GO/Types.hpp
+	Include/GO/Stage.hpp
 )
 set (INCLUDE_GO_COMPONENT_FILES
 	Include/GO/Components/TransformComponent.hpp
@@ -22,6 +23,7 @@ set (SOURCE_GO_FILES
 	Source/GO/Object.cpp
 	Source/GO/Service.cpp
 	Source/GO/System.cpp
+	Source/GO/Stage.cpp
 )
 set (SOURCE_GO_COMPONENT_FILES
 	Source/GO/Components/TransformComponent.cpp

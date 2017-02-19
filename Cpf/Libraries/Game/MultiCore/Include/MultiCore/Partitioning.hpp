@@ -25,7 +25,7 @@ namespace Cpf
 				for (int i = start; i < end; ++i)
 				{
 					const auto& work = container[i];
-					caller->Execute(work);
+					caller->Execute(tc, work);
 				}
 			}
 		};

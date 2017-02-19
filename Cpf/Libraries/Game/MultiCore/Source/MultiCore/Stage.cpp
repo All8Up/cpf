@@ -6,11 +6,10 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-Stage::Stage(Service* service, StageID id, DistributorBase* distributor, const Dependencies& dependencies)
+Stage::Stage(Service* service, StageID id, const Dependencies& dependencies)
 	: mpService(service)
 	, mID(id)
 	, mDependencies(dependencies)
-	, mpDistributor(distributor)
 {
 	
 }
