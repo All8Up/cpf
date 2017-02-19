@@ -30,6 +30,11 @@ Descriptor::~Descriptor()
 		mpManager->_Free(mIndex);
 }
 
+DescriptorManager* Descriptor::GetManager() const
+{
+	return mpManager;
+}
+
 Descriptor& Descriptor::operator =(Descriptor&& rhs)
 {
 	if (mIndex != DescriptorManager::kInvalid)

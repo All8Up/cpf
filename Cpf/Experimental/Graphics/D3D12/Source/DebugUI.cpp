@@ -31,7 +31,8 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		if (historyIndex >= kHistorySize)
 			historyIndex = 0;
 
-		float average = float(Time::Seconds(accumulation / kHistorySize));
+		Time::Value averageTicks = accumulation / float(kHistorySize);
+		float average = float(Time::Seconds(averageTicks));
 
 		static bool sShowPerformance = true;
 		mDebugUI.Begin("Performance", &sShowPerformance);

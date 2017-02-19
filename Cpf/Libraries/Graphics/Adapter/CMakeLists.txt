@@ -48,7 +48,6 @@ set (INCLUDE_GRAPHICS_INTERFACES
 	Include/Graphics/Interfaces/iIndexBuffer.hpp
 	Include/Graphics/Interfaces/iVertexBuffer.hpp
 	Include/Graphics/Interfaces/iConstantBuffer.hpp
-	Include/Graphics/Interfaces/iDescriptorPool.hpp
 )
 set (SOURCE_GRAPHICS_FILES
 	Source/BinaryBlob.cpp

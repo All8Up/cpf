@@ -22,10 +22,14 @@ namespace Cpf
 				const Graphics::ImageDesc& GetDesc() const override;
 
 				ID3D12Resource* GetResource();
+				const D3D12_SHADER_RESOURCE_VIEW_DESC* GetResourceViewDesc() const { return &mResourceView; }
+				const Descriptor& GetDescriptor() const { return mDescriptor; }
 
 			private:
 				IntrusivePtr<ID3D12Resource> mpResource;
 				Graphics::ImageDesc mDesc;
+				Descriptor mDescriptor;
+				D3D12_SHADER_RESOURCE_VIEW_DESC mResourceView;
 			};
 
 			class ImageView : public tRefCounted<Graphics::iImageView>

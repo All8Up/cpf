@@ -93,6 +93,8 @@ namespace Cpf
 			virtual void SetIndexBuffer(iIndexBuffer*) = 0;
 			virtual void SetConstantBuffer(int32_t index, iConstantBuffer*) = 0;
 			virtual void SetConstants(int32_t index, int32_t count, const void*, int32_t offset = 0) = 0;
+			virtual void SetSampler(int32_t index, iSampler*) = 0;
+			virtual void SetImage(int32_t index, iImage*) = 0;
 
 			virtual void DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) = 0;
 			virtual void DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) = 0;
@@ -100,8 +102,6 @@ namespace Cpf
 			virtual void SetRenderTargets(int32_t imageCount, iImageView** images, iImageView* depthView) = 0;
 			virtual void ClearRenderTargetView(iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects) = 0;
 			virtual void ClearDepthStencilView(iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
-
-			virtual void TempPorting(iImage*, iSampler*) = 0;
 		};
 	}
 }

@@ -22,6 +22,7 @@ using namespace D3D12;
 
 CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* pool)
 	: mpDevice(static_cast<Device*>(device))
+	, mHeapsDirty(false)
 {
 	Device* d3dDevice = static_cast<Device*>(device);
 	CommandPool* d3dPool = static_cast<CommandPool*>(pool);
@@ -54,6 +55,7 @@ void CommandBuffer::Reset(Graphics::iCommandPool* pool)
 	// TODO: Consider if the pipeline can/should be passed in.  Probably would not work in Vulkan and/or Metal though.
 	CommandPool* d3dPool = static_cast<CommandPool*>(pool);
 	mpCommandList->Reset(d3dPool->GetCommandAllocator(), nullptr);
+	mHeaps.clear();
 }
 
 void CommandBuffer::UpdateSubResource(Graphics::iResource* src, Graphics::iResource* dst, const Graphics::ResourceData* data)
@@ -150,6 +152,32 @@ void CommandBuffer::SetConstants(int32_t index, int32_t count, const void* data,
 	mpCommandList->SetGraphicsRoot32BitConstants(UINT(index), UINT(count), data, UINT(offset));
 }
 
+void CommandBuffer::SetSampler(int32_t index, Graphics::iSampler* sampler)
+{
+	Sampler* d3d12Sampler = static_cast<Sampler*>(sampler);
+	if (mHeaps.find(d3d12Sampler->GetDescriptor().GetManager()->GetHeap()) == mHeaps.end())
+		mHeaps.insert(d3d12Sampler->GetDescriptor().GetManager()->GetHeap());
+	ID3D12DescriptorHeap* heaps[8];
+	int i = 0;
+	for (auto heap : mHeaps)
+		heaps[i++] = heap;
+	mpCommandList->SetDescriptorHeaps(i, heaps);
+	mpCommandList->SetGraphicsRootDescriptorTable(index, d3d12Sampler->GetDescriptor());
+}
+
+void CommandBuffer::SetImage(int32_t index, Graphics::iImage* image)
+{
+	Image* d3d12Image = static_cast<Image*>(image);
+	if (mHeaps.find(d3d12Image->GetDescriptor().GetManager()->GetHeap()) == mHeaps.end())
+		mHeaps.insert(d3d12Image->GetDescriptor().GetManager()->GetHeap());
+	ID3D12DescriptorHeap* heaps[8];
+	int i = 0;
+	for (auto heap : mHeaps)
+		heaps[i++] = heap;
+	mpCommandList->SetDescriptorHeaps(i, heaps);
+	mpCommandList->SetGraphicsRootDescriptorTable(index, d3d12Image->GetDescriptor());
+}
+
 void CommandBuffer::DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance)
 {
 	mpCommandList->DrawInstanced(UINT(vertsPerInstance), UINT(instances), UINT(startVert), UINT(startInstance));
@@ -200,29 +228,4 @@ void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, uint32_t f
 		count,
 		reinterpret_cast<const D3D12_RECT*>(rects)
 	);
-}
-
-// TODO: This is temporary while details for porting are worked out.
-void CommandBuffer::TempPorting(Graphics::iImage* i, Graphics::iSampler* s)
-{
-	Image* image = static_cast<Image*>(i);
-	Sampler* sampler = static_cast<Sampler*>(s);
-
-	ID3D12DescriptorHeap* heaps[2] =
-	{
-		mpDevice->GetShaderResourceDescriptors().GetHeap(),
-		mpDevice->GetSamplerDescriptors().GetHeap()
-	};
-
-	Descriptor tempShader = mpDevice->GetShaderResourceDescriptors().Alloc();
-	D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
-	desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	desc.Format = Convert(image->GetDesc().mFormat);
-	desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	desc.Texture2D.MipLevels = 1;
-	mpDevice->GetD3DDevice()->CreateShaderResourceView(image->GetResource(), &desc, tempShader);
-
-	mpCommandList->SetDescriptorHeaps(2, heaps);
-	mpCommandList->SetGraphicsRootDescriptorTable(1, sampler->GetDescriptor());
-	mpCommandList->SetGraphicsRootDescriptorTable(2, tempShader);
 }

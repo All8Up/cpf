@@ -64,10 +64,12 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 	if (initData)
 	{
 		ID3D12Resource* upload = nullptr;
+		CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_UPLOAD);
+		CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(mDesc.mWidth * mDesc.mHeight * 4);
 		device->GetD3DDevice()->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			&heapProperties,
 			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(mDesc.mWidth * mDesc.mHeight * 4),
+			&resourceDesc,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			IID_PPV_ARGS(&upload));
@@ -84,6 +86,18 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 		device->QueueUpdateSubResource(
 			upload, mpResource, textureData, blob,
 			D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON);
+	}
+
+	if (!mDesc.mFlags)
+	{
+		::memset(&mResourceView, 0, sizeof(mResourceView));
+		mResourceView.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		mResourceView.Format = Convert(mDesc.mFormat);
+		mResourceView.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		mResourceView.Texture2D.MipLevels = 1;
+
+		mDescriptor = device->GetShaderResourceDescriptors().Alloc();
+		device->GetD3DDevice()->CreateShaderResourceView(GetResource(), &mResourceView, mDescriptor);
 	}
 }
 

@@ -127,11 +127,11 @@ void Device::BeginFrame(Graphics::iCommandBuffer* cmds)
 			{
 				auto& work = item.UpdateSubResource;
 
+				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
 				UpdateSubresources(commands->mpCommandList,
 					work.mpDestination, work.mpSource,
 					0, 0, 1, &work.mData);
-				commands->mpCommandList->ResourceBarrier(1,
-					&CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState));
+				commands->mpCommandList->ResourceBarrier(1, &barrier);
 				// TODO: Have to clean up the buffer and blob.
 			}
 			break;

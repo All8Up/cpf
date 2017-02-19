@@ -4,6 +4,7 @@
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
 #include "Math/Rectangle.hpp"
+#include "UnorderedSet.hpp"
 
 
 namespace Cpf
@@ -56,6 +57,8 @@ namespace Cpf
 				void SetIndexBuffer(Graphics::iIndexBuffer*) override;
 				void SetConstantBuffer(int32_t index, Graphics::iConstantBuffer*) override;
 				void SetConstants(int32_t index, int32_t count, const void*, int32_t offset = 0) override;
+				void SetSampler(int32_t index, Graphics::iSampler*) override;
+				void SetImage(int32_t index, Graphics::iImage*) override;
 
 				void DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) override;
 				void DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) override;
@@ -65,20 +68,17 @@ namespace Cpf
 				void ClearRenderTargetView(Graphics::iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects) override;
 				void ClearDepthStencilView(Graphics::iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
 
-				void TempPorting(Graphics::iImage*, Graphics::iSampler*) override;
-
 				ID3D12GraphicsCommandList* GetCommandList() { return mpCommandList.Cast<ID3D12GraphicsCommandList>(); }
 
 			private:
 				friend class Device;
-
-				// TEMP HACK
-				friend class ConstantBuffer;
-
 				IntrusivePtr<ID3D12GraphicsCommandList> mpCommandList;
 
 				// Temporary.
 				Device* mpDevice;
+
+				bool mHeapsDirty;
+				UnorderedSet<ID3D12DescriptorHeap*> mHeaps;
 			};
 		}
 	}

@@ -269,9 +269,8 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 	commands->SetIndexBuffer(mpIndexBuffer);
 	commands->SetTopology(PrimitiveTopology::eTriangleList);
 	commands->SetConstantBuffer(0, mpProjectionMatrix);
-	commands->TempPorting(mpUIAtlas, mpSampler);
-//	commands->SetTexture(0, mpUIAtlas);
-//	commands->SetSampler(0, mpSampler);
+	commands->SetSampler(1, mpSampler);
+	commands->SetImage(2, mpUIAtlas);
 
 	size_t indexOffset = 0;
 	size_t vertexOffset = 0;
