@@ -21,7 +21,7 @@ namespace Cpf
 			// Object interface.
 			static bool Create(int64_t id, Object**);
 
-			void Initialize(Service* owner);
+			void Initialize(Manager* owner);
 			void Shutdown();
 
 			void Activate();
@@ -32,7 +32,7 @@ namespace Cpf
 			Component* GetComponent(ComponentID id);
 			const Component* GetComponent(ComponentID id) const;
 		
-			System* GetSystem(SystemID id) const;
+//			System* GetSystem(SystemID id) const;
 
 			// Utilities.
 			template <typename TYPE, typename... ARGS>
@@ -59,7 +59,7 @@ namespace Cpf
 			int _GetComponentIndex(ComponentID id) const;
 
 			// Implementation data.
-			Service* mpOwner;
+			Manager* mpOwner;
 			ObjectID mID;
 			int mComponentCount;
 			ComponentPair mComponents[kMaxComponents];

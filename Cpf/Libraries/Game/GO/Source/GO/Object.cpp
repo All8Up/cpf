@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "GO/Object.hpp"
 #include "GO/Component.hpp"
-#include "GO/Service.hpp"
+#include "GO/Manager.hpp"
+#include "Move.hpp"
 
 using namespace Cpf;
 using namespace GO;
@@ -33,7 +34,7 @@ Object::Object()
 Object::~Object()
 {}
 
-void Object::Initialize(Service* owner)
+void Object::Initialize(Manager* owner)
 {
 	CPF_ASSERT(mpOwner == nullptr);
 	mpOwner = owner;
@@ -126,7 +127,9 @@ const Component* Object::GetComponent(ComponentID id) const
 	return index == -1 ? nullptr : static_cast<const Component*>(mComponents[index].second);
 }
 
+/*
 System* Object::GetSystem(SystemID id) const
 {
 	return mpOwner->GetSystem(id);
 }
+*/

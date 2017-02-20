@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "GO/Service.hpp"
+#include "GO/Manager.hpp"
 #include "GO/Object.hpp"
 #include "GO/System.hpp"
 #include "GO/Stage.hpp"
@@ -9,18 +9,17 @@ using namespace Cpf;
 using namespace GO;
 
 //////////////////////////////////////////////////////////////////////////
-int64_t Service::mNextID = 0;
+int64_t Manager::mNextID = 0;
 
 //////////////////////////////////////////////////////////////////////////
-Service::Service()
-	: MultiCore::Service(0)
-	, mStagesChanged(false)
+Manager::Manager()
 {}
 
-Service::~Service()
+Manager::~Manager()
 {}
 
-void Service::Activate()
+#if 0
+void Manager::Activate()
 {
 	for (auto it : mSystemMap)
 	{
@@ -30,19 +29,20 @@ void Service::Activate()
 	_ResolveOutstanding();
 }
 
-void Service::Deactivate()
+void Manager::Deactivate()
 {
 	for (auto it : mSystemMap)
 		it.second->Deactivate();
 	mStageArray.clear();
 }
 
-bool Service::GetStagesChanged() const
+bool Manager::GetStagesChanged() const
 {
 	return mStagesChanged;
 }
+#endif
 
-Object* Service::CreateObject(ObjectID id)
+Object* Manager::CreateObject(ObjectID id)
 {
 	ObjectID realID = id;
 	if (id == kInvalidObjectID)
@@ -61,7 +61,7 @@ Object* Service::CreateObject(ObjectID id)
 	return nullptr;
 }
 
-void Service::Remove(Object* object)
+void Manager::Remove(Object* object)
 {
 	auto it = mObjectIDMap.find(object->GetID());
 	CPF_ASSERT(it != mObjectIDMap.end());
@@ -69,7 +69,7 @@ void Service::Remove(Object* object)
 	mObjectIDMap.erase(it);
 }
 
-void Service::IterateObjects(Function<void(Object*)> cb)
+void Manager::IterateObjects(Function<void(Object*)> cb)
 {
 	for (auto& it : mObjectIDMap)
 	{
@@ -78,7 +78,8 @@ void Service::IterateObjects(Function<void(Object*)> cb)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool Service::Install(System* system)
+#if 0
+bool Manager::Install(System* system)
 {
 	if (mSystemMap.find(system->GetID())==mSystemMap.end())
 	{
@@ -89,7 +90,7 @@ bool Service::Install(System* system)
 	return false;
 }
 
-bool Service::Remove(SystemID id)
+bool Manager::Remove(SystemID id)
 {
 	auto it = mSystemMap.find(id);
 	if (it != mSystemMap.end())
@@ -100,7 +101,7 @@ bool Service::Remove(SystemID id)
 	return false;
 }
 
-System* Service::GetSystem(SystemID id) const
+System* Manager::GetSystem(SystemID id) const
 {
 	auto it = mSystemMap.find(id);
 	if (it == mSystemMap.end())
@@ -109,7 +110,7 @@ System* Service::GetSystem(SystemID id) const
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool Service::_InstallStages(System* system)
+bool Manager::_InstallStages(System* system)
 {
 	// TODO: This will need to perform the insertion sort eventually based on system dependencies.
 	for (auto it : system->GetStages())
@@ -125,15 +126,15 @@ Stage::Dependencies::const_iterator FindDependency(const Stage& stage, const Sta
 {
 	for (int i=0; i<deps.size(); ++i)
 	{
-		if (stage.GetSystem()->GetID() != deps[i].first)
+		if (stage.GetSystem()->GetID() != CPF_STL_NAMESPACE::get<1>(deps[i]))
 			continue;
-		if (stage.GetID() == deps[i].second)
+		if (stage.GetID() == CPF_STL_NAMESPACE::get<2>(deps[i]))
 			return deps.begin() + i;
 	}
 	return deps.end();
 }
 
-bool Service::_ResolveOutstanding()
+bool Manager::_ResolveOutstanding()
 {
 	// Run through and insert all non-dependency stages.
 	for (int i=0; i<mOutstanding.size();)
@@ -231,7 +232,7 @@ bool Service::_ResolveOutstanding()
 	return mOutstanding.empty();
 }
 
-void Service::Submit(Concurrency::Scheduler::Queue& q)
+void Manager::Submit(Concurrency::Scheduler::Queue& q)
 {
 	// TODO: This is currently inserting a barrier which should not be done here.
 	for (auto& it : mStageArray)
@@ -243,3 +244,4 @@ void Service::Submit(Concurrency::Scheduler::Queue& q)
 	}
 	mStagesChanged = false;
 }
+#endif

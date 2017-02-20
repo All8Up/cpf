@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Vector.hpp"
-#include "MultiCore/Stage.hpp"
+#include "Configuration.hpp"
 
 namespace Cpf
 {
@@ -19,10 +18,6 @@ namespace Cpf
 
 		class Object;
 		class Component;
-		class Service;
-		class System;
-		class Stage;
-
-		using StageVector = Vector<IntrusivePtr<Stage>>;
+		class Manager;
 	}
 }

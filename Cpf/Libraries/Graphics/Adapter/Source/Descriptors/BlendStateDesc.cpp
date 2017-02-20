@@ -79,7 +79,7 @@ RenderTargetBlendStateDesc::Builder& RenderTargetBlendStateDesc::Builder::DstAlp
 
 RenderTargetBlendStateDesc::Builder& RenderTargetBlendStateDesc::Builder::OpAlpha(BlendOp op)
 {
-	mBlend.mBlendOp = op;
+	mBlend.mBlendOpAlpha = op;
 	return *this;
 }
 

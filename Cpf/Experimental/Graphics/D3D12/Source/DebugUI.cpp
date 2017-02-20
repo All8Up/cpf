@@ -47,7 +47,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 			mThreadCountChanged = true;
 		mDebugUI.Histogram("FPS Histogram", history, kHistorySize, 0, nullptr, lowFPS, highFPS);
 
-		if (mGOService.GetStagesChanged())
+//		if (mGOService.GetStagesChanged())
 		{}
 		mDebugUI.ListBox("Stages", &mSelectedStage, const_cast<const char**>(mpStageList), mStageListCount);
 

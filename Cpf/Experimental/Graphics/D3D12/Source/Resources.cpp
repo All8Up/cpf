@@ -51,17 +51,17 @@ bool ExperimentalD3D12::_CreateResources()
 			.DepthClipping(false)
 		)
 		.DepthStencil(DepthStencilStateDesc::Build()
-			.DepthTest(true)
+			.DepthTest(false)
 			.DepthWriteMask(DepthWriteMask::eAll)
 		)
 		.TargetBlend(0, RenderTargetBlendStateDesc::Build()
 			.Blending(true)
-			.Op(BlendOp::eAdd)
-			.OpAlpha(BlendOp::eAdd)
 			.Src(BlendFunc::eSrcAlpha)
+			.Dst(BlendFunc::eOne)
+			.Op(BlendOp::eAdd)
 			.SrcAlpha(BlendFunc::eOne)
-			.Dst(BlendFunc::eInvSrcAlpha)
-			.DstAlpha(BlendFunc::eInvSrcAlpha)
+			.DstAlpha(BlendFunc::eZero)
+			.OpAlpha(BlendOp::eAdd)
 		)
 		.InputLayout(
 		{
@@ -101,10 +101,10 @@ bool ExperimentalD3D12::_CreateResources()
 #define P5 { +SS, -SS, +SS }
 #define P6 { +SS, +SS, +SS }
 #define P7 { -SS, +SS, +SS }
-#define CC0 { 0.7f, 0.5f, 0.5f, 0.25f }
-#define CC1 { 0.5f, 0.7f, 0.5f, 0.25f }
-#define CC2 { 0.5f, 0.5f, 0.7f, 0.25f }
-#define CC3 { 0.7f, 0.5f, 0.7f, 0.25f }
+#define CC0 { 0.2f, 0.5f, 0.2f, 0.03f }
+#define CC1 { 0.2f, 0.2f, 0.5f, 0.03f }
+#define CC2 { 0.2f, 0.2f, 0.5f, 0.03f }
+#define CC3 { 0.5f, 0.5f, 0.2f, 0.03f }
 	PosColor vbData[] =
 	{
 		// Front face. 0-3  +Z

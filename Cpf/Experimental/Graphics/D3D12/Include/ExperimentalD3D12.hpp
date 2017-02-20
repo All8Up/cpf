@@ -5,9 +5,10 @@
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Vector3.hpp"
 #include "Resources/Locator.hpp"
-#include "GO/Service.hpp"
+#include "GO/Manager.hpp"
 #include "Threading/Reactor.hpp"
 #include "Graphics/DebugUI.hpp"
+#include "MultiCore/Pipeline.hpp"
 
 
 namespace Cpf
@@ -105,6 +106,9 @@ namespace Cpf
 		float mViewportSize;
 		float mAspectRatio;
 
+		//
+		IntrusivePtr<MultiCore::Pipeline> mpMultiCore;
+
 		// Per thread data.
 		struct ThreadData
 		{
@@ -129,7 +133,7 @@ namespace Cpf
 		// If the multi-core side of things needs anything run on the main thread,
 		// feed it in this queue.
 		Platform::Threading::Reactor::WorkQueue mReactorQueue;
-		GO::Service mGOService;
+		GO::Manager mGOService;
 
 		Graphics::DebugUI mDebugUI;
 

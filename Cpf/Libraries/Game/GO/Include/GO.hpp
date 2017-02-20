@@ -2,6 +2,5 @@
 #pragma once
 #include "GO/Object.hpp"
 #include "GO/Component.hpp"
-#include "GO/Service.hpp"
-#include "GO/System.hpp"
-#include "GO/Stage.hpp"
+#include "GO/Manager.hpp"
+#include "GO/ObjectStage.hpp"

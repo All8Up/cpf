@@ -1,35 +1,44 @@
 //////////////////////////////////////////////////////////////////////////
 #include "GO/Systems/Timer.hpp"
-#include "GO/Service.hpp"
+#include "GO/Manager.hpp"
+#include "GO/ObjectStage.hpp"
+#include "MultiCore/Stage.hpp"
 
 using namespace Cpf;
 using namespace GO;
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(Service* service, const String& name)
-	: System(service, name)
+bool Timer::Install()
+{
+	return System::Install(kID, &Timer::Creator);
+}
+
+bool Timer::Remove()
+{
+	return System::Remove(kID);
+}
+
+MultiCore::System* Timer::Creator(MultiCore::Pipeline* owner, const String& name)
+{
+	return new Timer(owner, name);
+}
+
+//////////////////////////////////////////////////////////////////////////
+Timer::Timer(MultiCore::Pipeline* owner, const String& name)
+	: System(owner, name)
 	, mpUpdate(nullptr)
-{
-	mpUpdate = new Stage(service, this, "Timer");
-	mpUpdate->AddUpdate(this, nullptr, &Timer::_Update);
-}
-
-Timer::~Timer()
-{
-	mpUpdate->Release();
-}
-
-void Timer::Activate()
 {
 	mStart = Platform::Time::Now();
 	mTime = mStart;
 
-	Add(mpUpdate);
-	mpUpdate->AddRef();
+	mpUpdate.Adopt(MultiCore::Stage::Create<ObjectStage>(this, String("Timer Update")));
+	mpUpdate->AddUpdate(this, nullptr, &Timer::_Update);
+	AddStage(mpUpdate);
 }
 
-void Timer::Deactivate()
+Timer::~Timer()
 {
+	RemoveStage(mpUpdate);
 }
 
 Platform::Time::Value Timer::GetTime() const

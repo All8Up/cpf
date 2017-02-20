@@ -6,10 +6,9 @@ set (INCLUDE_GO_FILES
 	Include/GO/Component.hpp
 	Include/GO/Export.hpp
 	Include/GO/Object.hpp
-	Include/GO/Service.hpp
-	Include/GO/System.hpp
+	Include/GO/Manager.hpp
 	Include/GO/Types.hpp
-	Include/GO/Stage.hpp
+	Include/GO/ObjectStage.hpp
 )
 set (INCLUDE_GO_COMPONENT_FILES
 	Include/GO/Components/TransformComponent.hpp
@@ -26,9 +25,8 @@ set (SOURCE_FILES
 set (SOURCE_GO_FILES
 	Source/GO/Component.cpp
 	Source/GO/Object.cpp
-	Source/GO/Service.cpp
-	Source/GO/System.cpp
-	Source/GO/Stage.cpp
+	Source/GO/Manager.cpp
+	Source/GO/ObjectStage.cpp
 )
 set (SOURCE_GO_COMPONENT_FILES
 	Source/GO/Components/TransformComponent.cpp
