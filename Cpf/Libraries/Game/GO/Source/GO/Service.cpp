@@ -3,6 +3,7 @@
 #include "GO/Object.hpp"
 #include "GO/System.hpp"
 #include "GO/Stage.hpp"
+#include "Logging/Logging.hpp"
 
 using namespace Cpf;
 using namespace GO;
@@ -26,6 +27,7 @@ void Service::Activate()
 		it.second->Activate();
 		_InstallStages(it.second);
 	}
+	_ResolveOutstanding();
 }
 
 void Service::Deactivate()
@@ -111,13 +113,75 @@ bool Service::_InstallStages(System* system)
 	// TODO: This will need to perform the insertion sort eventually based on system dependencies.
 	for (auto it : system->GetStages())
 	{
-		mStageArray.emplace_back(it);
+		mOutstanding.emplace_back(it);
+	}
 
-		// Sort everything forward as far as possible.
-		if (mStageArray.size() > 1)
+	mStagesChanged = true;
+	return true;
+}
+
+Stage::Dependencies::const_iterator FindDependency(const Stage& stage, const Stage::Dependencies& deps)
+{
+	for (int i=0; i<deps.size(); ++i)
+	{
+		if (stage.GetID() == deps[i].second)
+			return deps.begin() + i;
+	}
+	return deps.end();
+}
+
+bool Service::_ResolveOutstanding()
+{
+	// Run through and insert all non-dependency stages.
+	for (int i=0; i<mOutstanding.size();)
+	{
+		if (mOutstanding[i]->GetDependencies().empty())
 		{
-			
+			mStageArray.emplace_back(mOutstanding[i]);
+			mOutstanding.erase(mOutstanding.begin() + i);
+			continue;
 		}
+		++i;
+	}
+
+	// Now insert sort the dependency based stages.
+	while (!mOutstanding.empty())
+	{
+		bool resolved = false;
+		StageVector remaining = mOutstanding;
+
+		for (int i=0; i<remaining.size(); ++i)
+		{
+			Stage::Dependencies deps = remaining[i]->GetDependencies();
+
+			for (int j=0; j<mStageArray.size(); ++j)
+			{
+				const Stage& comp = *mStageArray[j];
+				auto it = FindDependency(comp, deps);
+				if (it != deps.end())
+				{
+					deps.erase(it);
+					if (deps.empty())
+					{
+						mStageArray.emplace(mStageArray.begin() + j + 1, remaining[i]);
+						remaining.erase(remaining.begin() + i);
+						resolved = true;
+						goto goagain;
+					}
+				}
+			}
+		}
+
+	goagain:
+		if (!resolved)
+			break;	// Failed to resolve all dependencies.
+		mOutstanding = remaining;
+	}
+
+	CPF_LOG(Experimental, Info) << "---------------";
+	for (auto& i : mStageArray)
+	{
+		CPF_LOG(Experimental, Info) << "Stage: " << i->GetName();
 	}
 
 	// Resolve inter system dependencies.
@@ -127,8 +191,7 @@ bool Service::_InstallStages(System* system)
 			return false;
 	}
 
-	mStagesChanged = true;
-	return true;
+	return mOutstanding.empty();
 }
 
 void Service::Submit(Concurrency::Scheduler::Queue& q)

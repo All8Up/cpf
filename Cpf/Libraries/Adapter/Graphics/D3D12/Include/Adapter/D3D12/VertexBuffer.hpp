@@ -21,8 +21,8 @@ namespace Cpf
 				VertexBuffer(Device* device, Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData);
 				~VertexBuffer() override;
 
-				bool Map(int32_t start, int32_t end, void**) override;
-				bool Unmap() override;
+				bool Map(void**, const Graphics::Range*) override;
+				void Unmap(const Graphics::Range*) override;
 
 				ID3D12Resource* GetResource() const;
 				const D3D12_VERTEX_BUFFER_VIEW* GetView() const;
@@ -32,7 +32,6 @@ namespace Cpf
 				D3D12_VERTEX_BUFFER_VIEW mView;
 				size_t mSize;
 				size_t mStride;
-				void* mpMapping;
 			};
 		}
 	}

@@ -33,6 +33,11 @@ const String& Stage::GetName() const
 	return mName;
 }
 
+const Stage::Dependencies& Stage::GetDependencies() const
+{
+	return mDependencies;
+}
+
 bool Stage::operator == (const Stage& rhs) const
 {
 	return (mpService == rhs.mpService && mID == rhs.mID);
@@ -49,7 +54,7 @@ bool Stage::operator > (const Stage& rhs) const
 	for (int i=0; i<mDependencies.size(); ++i)
 	{
 		const auto& dependency = mDependencies[i];
-		if (dependency.first == rhs.mpService->GetID() && dependency.second == rhs.mID)
+		if (/*dependency.first == rhs.mpService->GetID() &&*/ dependency.second == rhs.mID)
 			return true;
 	}
 	return false;
@@ -61,7 +66,7 @@ bool Stage::operator < (const Stage& rhs) const
 	for (int i = 0; i < mDependencies.size(); ++i)
 	{
 		const auto& dependency = mDependencies[i];
-		if (dependency.first == rhs.mpService->GetID() && dependency.second == rhs.mID)
+		if (/*dependency.first == rhs.mpService->GetID() &&*/ dependency.second == rhs.mID)
 			return false;
 	}
 	return true;

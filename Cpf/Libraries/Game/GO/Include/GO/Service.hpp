@@ -51,6 +51,7 @@ namespace Cpf
 		private:
 			//
 			bool _InstallStages(System* system);
+			bool _ResolveOutstanding();
 
 			//
 			static ObjectID mNextID;
@@ -62,6 +63,9 @@ namespace Cpf
 			//
 			StageVector mStageArray;
 			bool mStagesChanged;
+
+			//
+			StageVector mOutstanding;
 		};
 	}
 }

@@ -2,6 +2,7 @@
 #pragma once
 
 //////////////////////////////////////////////////////////////////////////
+#include "Graphics/Range.hpp"
 #include "Graphics/BinaryBlob.hpp"
 #include "Graphics/BufferUsage.hpp"
 

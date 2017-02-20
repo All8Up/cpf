@@ -18,6 +18,7 @@ namespace Cpf
 		ExperimentalD3D12()
 			: mScheduler(this)
 			, mFenceTarget(1)
+			, mSelectedStage(0)
 			, mpStageList(nullptr)
 			, mStageListCount(0)
 		{}
@@ -132,6 +133,7 @@ namespace Cpf
 
 		Graphics::DebugUI mDebugUI;
 
+		int mSelectedStage;
 		char** mpStageList;
 		int mStageListCount;
 

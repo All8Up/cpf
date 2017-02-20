@@ -104,30 +104,39 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 	mView.Format = Convert(format);
 	mView.SizeInBytes = UINT(byteSize);
 
-	if (usage == Graphics::BufferUsage::eDynamic)
-	{
-		mpResource->Map(0, nullptr, &mpMapping);
-	}
-
 	CPF_LOG(D3D12, Info) << "Created resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }
 
 IndexBuffer::~IndexBuffer()
 {
-	if (mpMapping)
-		mpResource->Unmap(0, nullptr);
 }
 
-bool IndexBuffer::Map(int32_t start, int32_t end, void** mapping)
+bool IndexBuffer::Map(void** mapping, Graphics::Range* range)
 {
-	(void)start; (void)end;
-	*mapping = mpMapping;
-	return mpMapping != nullptr;
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	if (SUCCEEDED(mpResource->Map(0, prange, mapping)))
+		return true;
+	return false;
 }
 
-bool IndexBuffer::Unmap()
+void IndexBuffer::Unmap(Graphics::Range* range)
 {
-	return mpMapping != nullptr;
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	mpResource->Unmap(0, prange);
 }
 
 ID3D12Resource* IndexBuffer::GetResource() const

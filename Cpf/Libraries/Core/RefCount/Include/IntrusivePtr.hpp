@@ -70,7 +70,7 @@ namespace Cpf
 
 		TARGET* Cast() const;
 
-		void* mpTarget;
+		TARGET* mpTarget;
 	};
 
 
@@ -82,7 +82,7 @@ namespace Cpf
 
 	template<typename TARGET>
 	IntrusivePtr<TARGET>::IntrusivePtr(TARGET* rhs)
-		: mpTarget(reinterpret_cast<iRefCounted*>(rhs))
+		: mpTarget(rhs)
 	{
 	}
 

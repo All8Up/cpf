@@ -49,8 +49,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 
 		if (mGOService.GetStagesChanged())
 		{}
-		int32_t listItem = 0;
-		mDebugUI.ListBox("Stages", &listItem, const_cast<const char**>(mpStageList), mStageListCount);
+		mDebugUI.ListBox("Stages", &mSelectedStage, const_cast<const char**>(mpStageList), mStageListCount);
 
 		mDebugUI.End();
 	}

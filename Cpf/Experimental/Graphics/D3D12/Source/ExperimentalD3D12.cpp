@@ -23,6 +23,7 @@
 #include "GO.hpp"
 #include "GO/Components/TransformComponent.hpp"
 #include "GO/Systems/Timer.hpp"
+#include "Adapter/D3D12/Instance.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -68,7 +69,7 @@ private:
 	static void Update(System* s, GO::Object*)
 	{
 		InstanceStartSystem* system = static_cast<InstanceStartSystem*>(s);
-		system->mpApp->GetCurrentInstanceBuffer()->Map(0, 0, reinterpret_cast<void**>(&system->mpInstances));
+		system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances));
 	}
 
 	ExperimentalD3D12* mpApp;
@@ -82,7 +83,9 @@ public:
 		: System(service)
 		, mpApp(app)
 	{
-		GO::Stage* stage = new GO::Stage(service, this, "Instances End");
+		MultiCore::Stage::Dependency dependency(""_crc64, "Instances Begin"_crc64);
+
+		GO::Stage* stage = new GO::Stage(service, this, "Instances End", {dependency});
 		stage->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
 		Add(stage);
 	}
@@ -107,7 +110,7 @@ public:
 	class MoverStage : public GO::Stage
 	{
 	public:
-		MoverStage(GO::Service* serv, System* s) : Stage(serv, s, "Mover") {}
+		MoverStage(GO::Service* serv, System* s, Dependencies&& dependencies) : Stage(serv, s, "Mover", dependencies) {}
 
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{
@@ -124,7 +127,10 @@ public:
 		, mpInstances(nullptr)
 		, mpTime (nullptr)
 	{
-		mpMover = new MoverStage(service, this);
+		MultiCore::Stage::Dependency timeDep(""_crc64, "Timer"_crc64);
+		MultiCore::Stage::Dependency dependency(""_crc64, "Instances Begin"_crc64);
+
+		mpMover = new MoverStage(service, this, {timeDep, dependency});
 		Add(mpMover);
 	}
 

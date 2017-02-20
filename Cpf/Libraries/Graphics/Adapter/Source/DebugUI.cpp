@@ -269,10 +269,13 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 	commands->SetImage(2, mpUIAtlas);
 
 	{
+		Range vertRange{ 0, 0 };
 		ImDrawVert* vertices = nullptr;
-		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(0, kVertexBufferSize, reinterpret_cast<void**>(&vertices)));
+		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(reinterpret_cast<void**>(&vertices)));
+
+		Range indexRange{ 0, 0 };
 		ImDrawIdx* indices = nullptr;
-		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(0, kIndexBufferSize, reinterpret_cast<void**>(&indices)));
+		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(reinterpret_cast<void**>(&indices)));
 
 		for (int n = 0; n < drawData->CmdListsCount; ++n)
 		{
@@ -282,11 +285,13 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 			::memcpy(indices, &cmd_list->IdxBuffer.front(), cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
 
 			vertices += cmd_list->VtxBuffer.Size;
+			vertRange.mEnd += cmd_list->VtxBuffer.Size * sizeof(ImDrawVert);
 			indices += cmd_list->IdxBuffer.Size;
+			indexRange.mEnd += cmd_list->IdxBuffer.Size * sizeof(ImDrawIdx);
 		}
 
-		mpVertexBuffer->Unmap();
-		mpIndexBuffer->Unmap();
+		mpVertexBuffer->Unmap(&vertRange);
+		mpIndexBuffer->Unmap(&indexRange);
 	}
 
 	size_t indexOffset = 0;

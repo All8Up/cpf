@@ -18,6 +18,7 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/WindingOrder.hpp
 	Include/Graphics/BufferUsage.hpp
 	Include/Graphics/DebugUI.hpp
+	Include/Graphics/Range.hpp
 )
 set (INCLUDE_GRAPHICS_DESCRIPTORS
 	Include/Graphics/Descriptors/BlendStateDesc.hpp

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/Device.hpp"
+#include "Graphics/Range.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -10,7 +11,6 @@ using namespace D3D12;
 VertexBuffer::VertexBuffer(Device* device, Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData)
 	: mSize(byteSize)
 	, mStride(byteStride)
-	, mpMapping(nullptr)
 {
 	{
 		D3D12_RESOURCE_STATES startState = D3D12_RESOURCE_STATE_COMMON;
@@ -106,30 +106,39 @@ VertexBuffer::VertexBuffer(Device* device, Graphics::BufferUsage usage, size_t b
 	mView.SizeInBytes = UINT(byteSize);
 	mView.StrideInBytes = UINT(byteStride);
 
-	if (usage == Graphics::BufferUsage::eDynamic)
-	{
-		mpResource->Map(0, nullptr, &mpMapping);
-	}
-
 	CPF_LOG(D3D12, Info) << "Created resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }
 
 VertexBuffer::~VertexBuffer()
 {
-	if (mpMapping)
-		mpResource->Unmap(0, nullptr);
 }
 
-bool VertexBuffer::Map(int32_t start, int32_t end, void** mapping)
+bool VertexBuffer::Map(void** mapping, const Graphics::Range* range)
 {
-	(void)start; (void)end;
-	*mapping = mpMapping;
-	return mpMapping!=nullptr;
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	if (SUCCEEDED(mpResource->Map(0, prange, mapping)))
+		return true;
+	return false;
 }
 
-bool VertexBuffer::Unmap()
+void VertexBuffer::Unmap(const Graphics::Range* range)
 {
-	return mpMapping!=nullptr;
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	mpResource->Unmap(0, prange);
 }
 
 ID3D12Resource* VertexBuffer::GetResource() const
