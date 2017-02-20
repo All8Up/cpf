@@ -29,6 +29,10 @@ namespace Cpf
 			void Activate();
 			void Deactivate();
 
+			//
+			bool GetStagesChanged() const;
+			const StageVector& GetStages() const { return mStageArray; }
+
 			// Service interface.
 			Object* CreateObject(ObjectID id = kInvalidObjectID);
 			void Remove(Object*);
@@ -56,8 +60,8 @@ namespace Cpf
 			SystemMap mSystemMap;
 
 			//
-			using StageArray = Vector<IntrusivePtr<Stage>>;
-			StageArray mStageArray;
+			StageVector mStageArray;
+			bool mStagesChanged;
 		};
 	}
 }

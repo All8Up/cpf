@@ -240,6 +240,8 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 
 	// Start the frame
 	ImGui::NewFrame();
+
+//	ImGui::ShowTestWindow();
 }
 
 void DebugUI::EndFrame(iCommandBuffer* commands)
@@ -266,24 +268,32 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 	commands->SetSampler(1, mpSampler);
 	commands->SetImage(2, mpUIAtlas);
 
+	{
+		ImDrawVert* vertices = nullptr;
+		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(0, kVertexBufferSize, reinterpret_cast<void**>(&vertices)));
+		ImDrawIdx* indices = nullptr;
+		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(0, kIndexBufferSize, reinterpret_cast<void**>(&indices)));
+
+		for (int n = 0; n < drawData->CmdListsCount; ++n)
+		{
+			const ImDrawList* cmd_list = drawData->CmdLists[n];
+
+			::memcpy(vertices, &cmd_list->VtxBuffer.front(), cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
+			::memcpy(indices, &cmd_list->IdxBuffer.front(), cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
+
+			vertices += cmd_list->VtxBuffer.Size;
+			indices += cmd_list->IdxBuffer.Size;
+		}
+
+		mpVertexBuffer->Unmap();
+		mpIndexBuffer->Unmap();
+	}
+
 	size_t indexOffset = 0;
 	size_t vertexOffset = 0;
-	for (int n = 0; n < drawData->CmdListsCount; n++)
+	for (int n = 0; n < drawData->CmdListsCount; ++n)
 	{
 		const ImDrawList* cmd_list = drawData->CmdLists[n];
-
-		ImDrawVert* vertices = nullptr;
-		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(0, cmd_list->VtxBuffer.size() * sizeof(ImDrawVert), reinterpret_cast<void**>(&vertices)));
-		CPF_ASSERT(cmd_list->VtxBuffer.size() <= kVertexBufferSize);
-		::memcpy(vertices, &cmd_list->VtxBuffer.front(), cmd_list->VtxBuffer.size() * sizeof(ImDrawVert));
-		mpVertexBuffer->Unmap();
-
-		ImDrawIdx* indices = nullptr;
-		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(0, cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx), reinterpret_cast<void**>(&indices)));
-		::memcpy(indices, &cmd_list->IdxBuffer.front(), cmd_list->IdxBuffer.size() * sizeof(ImDrawIdx));
-		CPF_ASSERT(cmd_list->IdxBuffer.size() <= kIndexBufferSize);
-		mpIndexBuffer->Unmap();
-
 		for (const ImDrawCmd* pcmd = cmd_list->CmdBuffer.begin(); pcmd != cmd_list->CmdBuffer.end(); pcmd++)
 		{
 			if (pcmd->UserCallback)
@@ -363,6 +373,11 @@ void DebugUI::Histogram(const char* label, const float* values, int32_t count, i
 {
 	ImVec2 imSize(float(size.x), float(size.y));
 	ImGui::PlotHistogram(label, values, count, offset, overlay, scaleMin, scaleMax, imSize, stride);
+}
+
+void DebugUI::ListBox(const char* label, int32_t* selectedItem, const char** items, int32_t itemCount, int32_t itemHeight)
+{
+	ImGui::ListBox(label, selectedItem, items, itemCount, itemHeight);
 }
 
 void DebugUI::SetWindowSize(int32_t width, int32_t height)

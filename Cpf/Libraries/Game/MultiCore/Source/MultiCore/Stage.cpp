@@ -1,13 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Service.hpp"
+#include "Hash/Crc.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
-Stage::Stage(Service* service, StageID id, const Dependencies& dependencies)
+Stage::Stage(Service* service, const String& name, const Dependencies& dependencies)
 	: mpService(service)
-	, mID(id)
+	, mName(name)
+	, mID(Platform::Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)))
 	, mDependencies(dependencies)
 {
 	
@@ -24,6 +26,11 @@ Service* Stage::GetService() const
 StageID Stage::GetID() const
 {
 	return mID;
+}
+
+const String& Stage::GetName() const
+{
+	return mName;
 }
 
 bool Stage::operator == (const Stage& rhs) const

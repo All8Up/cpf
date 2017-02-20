@@ -13,6 +13,7 @@ int64_t Service::mNextID = 0;
 //////////////////////////////////////////////////////////////////////////
 Service::Service()
 	: MultiCore::Service(0)
+	, mStagesChanged(false)
 {}
 
 Service::~Service()
@@ -31,6 +32,11 @@ void Service::Deactivate()
 {
 	for (auto it : mSystemMap)
 		it.second->Deactivate();
+}
+
+bool Service::GetStagesChanged() const
+{
+	return mStagesChanged;
 }
 
 Object* Service::CreateObject(ObjectID id)
@@ -120,6 +126,8 @@ bool Service::_InstallStages(System* system)
 		if (!it->ResolveDependencies(this, it->GetSystem()))
 			return false;
 	}
+
+	mStagesChanged = true;
 	return true;
 }
 
@@ -131,4 +139,5 @@ void Service::Submit(Concurrency::Scheduler::Queue& q)
 		it->Submit(q);
 		q.Barrier();
 	}
+	mStagesChanged = false;
 }

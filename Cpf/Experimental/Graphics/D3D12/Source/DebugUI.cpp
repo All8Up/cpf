@@ -46,6 +46,12 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.ThreadCount()))
 			mThreadCountChanged = true;
 		mDebugUI.Histogram("FPS Histogram", history, kHistorySize, 0, nullptr, lowFPS, highFPS);
+
+		if (mGOService.GetStagesChanged())
+		{}
+		int32_t listItem = 0;
+		mDebugUI.ListBox("Stages", &listItem, const_cast<const char**>(mpStageList), mStageListCount);
+
 		mDebugUI.End();
 	}
 	mDebugUI.EndFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer]);

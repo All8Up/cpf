@@ -60,6 +60,9 @@ namespace Cpf
 				int32_t offset = 0, const char* overlay = nullptr, float scaleMin = Math::kFloatMax, float scaleMax = Math::kFloatMax,
 				const Math::Vector2i = Math::Vector2i(0), int32_t stride = sizeof(float));
 
+			// List boxes.
+			void ListBox(const char* label, int32_t* selectedItem, const char** items, int32_t itemCount, int32_t itemHeight=-1);
+
 			// Rendering information.
 			void SetWindowSize(int32_t width, int32_t height);
 

@@ -13,9 +13,11 @@ set (INCLUDE_GO_FILES
 )
 set (INCLUDE_GO_COMPONENT_FILES
 	Include/GO/Components/TransformComponent.hpp
+	Include/GO/Components/AwarenessComponent.hpp
 )
 set (INCLUDE_GO_SYSTEMS_FILES
 	Include/GO/Systems/Timer.hpp
+	Include/GO/Systems/Awareness.hpp
 )
 
 set (SOURCE_FILES
@@ -30,9 +32,11 @@ set (SOURCE_GO_FILES
 )
 set (SOURCE_GO_COMPONENT_FILES
 	Source/GO/Components/TransformComponent.cpp
+	Source/GO/Components/AwarenessComponent.cpp
 )
 set (SOURCE_GO_SYSTEMS_FILES
 	Source/GO/Systems/Timer.cpp
+	Source/GO/Systems/Awareness.cpp
 )
 
 add_library (s_GO STATIC

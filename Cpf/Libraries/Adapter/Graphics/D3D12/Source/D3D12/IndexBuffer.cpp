@@ -99,12 +99,6 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 		device->QueueUpload(upload, mpResource, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER);
 	}
 
-	/*
-	// If Immutable:
-	//	Queue an upload to the buffer on the device.
-	//	Queue a transition to common state on the device.
-	*/
-
 	// Create the view.
 	mView.BufferLocation = mpResource->GetGPUVirtualAddress();
 	mView.Format = Convert(format);
@@ -120,6 +114,8 @@ IndexBuffer::IndexBuffer(Device* device, Graphics::Format format, Graphics::Buff
 
 IndexBuffer::~IndexBuffer()
 {
+	if (mpMapping)
+		mpResource->Unmap(0, nullptr);
 }
 
 bool IndexBuffer::Map(int32_t start, int32_t end, void** mapping)

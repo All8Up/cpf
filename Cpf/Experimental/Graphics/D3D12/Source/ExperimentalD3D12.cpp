@@ -57,7 +57,7 @@ public:
 		, mpApp(app)
 		, mpInstances(nullptr)
 	{
-		GO::Stage* stage = new GO::Stage(service, this, "Instances Begin"_crc64);
+		GO::Stage* stage = new GO::Stage(service, this, "Instances Begin");
 		stage->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
 		Add(stage);
 	}
@@ -82,7 +82,7 @@ public:
 		: System(service)
 		, mpApp(app)
 	{
-		GO::Stage* stage = new GO::Stage(service, this, "Instances End"_crc64);
+		GO::Stage* stage = new GO::Stage(service, this, "Instances End");
 		stage->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
 		Add(stage);
 	}
@@ -107,7 +107,7 @@ public:
 	class MoverStage : public GO::Stage
 	{
 	public:
-		MoverStage(GO::Service* serv, System* s) : Stage(serv, s, 0) {}
+		MoverStage(GO::Service* serv, System* s) : Stage(serv, s, "Mover") {}
 
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{
@@ -205,6 +205,27 @@ private:
 #include CPF_STRINGIZE(INCLUDE_GFX)
 #define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
 
+
+void ExperimentalD3D12::_UpdateStageList()
+{
+	if (mpStageList)
+	{
+		for (int i=0; i<mStageListCount; ++i)
+		{
+			delete[] mpStageList[i];
+		}
+		delete[] mpStageList;
+	}
+
+	mStageListCount = int(mGOService.GetStages().size());
+	mpStageList = new char*[mStageListCount];
+	int i = 0;
+	for (auto& stage : mGOService.GetStages())
+	{
+		mpStageList[i] = new char[stage->GetName().size() + 1];
+		strcpy(mpStageList[i++], stage->GetName().c_str());
+	}
+}
 
 int ExperimentalD3D12::Start(const CommandLine&)
 {
@@ -327,6 +348,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 					//
 					mGOService.Activate();
+					_UpdateStageList();
 
 					while (IsRunning())
 					{

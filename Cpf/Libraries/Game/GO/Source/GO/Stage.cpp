@@ -5,8 +5,8 @@
 using namespace Cpf;
 using namespace GO;
 
-Stage::Stage(MultiCore::Service* service, System* system, MultiCore::StageID id, const Dependencies& dependencies)
-	: MultiCore::Stage(service, id, dependencies)
+Stage::Stage(MultiCore::Service* service, System* system, const String& name, const Dependencies& dependencies)
+	: MultiCore::Stage(service, name, dependencies)
 	, mpSystem(system)
 {}
 

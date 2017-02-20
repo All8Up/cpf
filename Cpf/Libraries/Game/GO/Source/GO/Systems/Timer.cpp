@@ -10,7 +10,7 @@ Timer::Timer(Service* service)
 	: System(service)
 	, mpUpdate(nullptr)
 {
-	mpUpdate = new Stage(service, this, 0);
+	mpUpdate = new Stage(service, this, "Timer");
 	mpUpdate->AddUpdate(this, nullptr, &Timer::_Update);
 }
 

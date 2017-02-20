@@ -4,6 +4,7 @@
 #include "GO/Types.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Container.hpp"
+#include "String.hpp"
 
 namespace Cpf
 {
@@ -20,7 +21,7 @@ namespace Cpf
 			using FuncType_t = void(*)(System*, Object*);
 
 			// Construction.
-			Stage(MultiCore::Service* service, System* system, MultiCore::StageID id, const Dependencies& dependencies = Dependencies());
+			Stage(MultiCore::Service* service, System* system, const String& name, const Dependencies& dependencies = Dependencies());
 
 			// Interface.
 			void AddUpdate(System* s, Object* o, FuncType_t f);

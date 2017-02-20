@@ -18,6 +18,8 @@ namespace Cpf
 		ExperimentalD3D12()
 			: mScheduler(this)
 			, mFenceTarget(1)
+			, mpStageList(nullptr)
+			, mStageListCount(0)
 		{}
 
 		int Start(const CommandLine&) override;
@@ -56,6 +58,8 @@ namespace Cpf
 		void _PreparePresent(Concurrency::ThreadContext&);
 		void _EndFrame(Concurrency::ThreadContext&);
 		void _Resize(int32_t x, int32_t y);
+
+		void _UpdateStageList();
 
 		IntrusivePtr<Resources::Locator> mpLocator;
 
@@ -127,6 +131,9 @@ namespace Cpf
 		GO::Service mGOService;
 
 		Graphics::DebugUI mDebugUI;
+
+		char** mpStageList;
+		int mStageListCount;
 
 		bool mThreadCountChanged;
 		int32_t mThreadCount;
