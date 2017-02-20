@@ -148,6 +148,7 @@ bool Service::_ResolveOutstanding()
 	}
 
 	// Now insert sort the dependency based stages.
+	IntrusivePtr<Stage> barrier;
 	while (!mOutstanding.empty())
 	{
 		bool resolved = false;
@@ -159,17 +160,42 @@ bool Service::_ResolveOutstanding()
 
 			for (int j=0; j<mStageArray.size(); ++j)
 			{
-				const Stage& comp = *mStageArray[j];
-				auto it = FindDependency(comp, deps);
-				if (it != deps.end())
+				if (mStageArray[j])
 				{
-					deps.erase(it);
-					if (deps.empty())
+					const Stage& comp = *mStageArray[j];
+					auto it = FindDependency(comp, deps);
+					if (it != deps.end())
 					{
-						mStageArray.emplace(mStageArray.begin() + j + 1, remaining[i]);
-						remaining.erase(remaining.begin() + i);
-						resolved = true;
-						goto goagain;
+						deps.erase(it);
+						if (deps.empty())
+						{
+							// Check for an existing barrier.
+							auto target = mStageArray.begin() + j + 1;
+							if (target == mStageArray.end())
+							{
+								// At the end, just insert both.
+								mStageArray.emplace_back(barrier);
+								mStageArray.emplace_back(remaining[i]);
+							}
+							else
+							{
+								if (*target)
+								{
+									// Have a live stage, need to insert a barrier.
+									mStageArray.emplace(mStageArray.begin() + j + 1, barrier);
+									mStageArray.emplace(mStageArray.begin() + j + 2, remaining[i]);
+								}
+								else
+								{
+									// Have a barrier, insert after it.
+									mStageArray.emplace(mStageArray.begin() + j + 2, remaining[i]);
+								}
+							}
+
+							remaining.erase(remaining.begin() + i);
+							resolved = true;
+							goto goagain;
+						}
 					}
 				}
 			}
@@ -184,14 +210,22 @@ bool Service::_ResolveOutstanding()
 	CPF_LOG(Experimental, Info) << "---------------";
 	for (auto& i : mStageArray)
 	{
-		CPF_LOG(Experimental, Info) << "Stage: " << i->GetName();
+		if (i)
+		{
+			CPF_LOG(Experimental, Info) << "Stage: " << i->GetName();
+		}
+		else
+		{
+			CPF_LOG(Experimental, Info) << "-- Barrier --";
+		}
 	}
 
 	// Resolve inter system dependencies.
 	for (auto it : mStageArray)
 	{
-		if (!it->ResolveDependencies(this, it->GetSystem()))
-			return false;
+		if (it)
+			if (!it->ResolveDependencies(this, it->GetSystem()))
+				return false;
 	}
 
 	return mOutstanding.empty();
@@ -202,8 +236,10 @@ void Service::Submit(Concurrency::Scheduler::Queue& q)
 	// TODO: This is currently inserting a barrier which should not be done here.
 	for (auto& it : mStageArray)
 	{
-		it->Submit(q);
-		q.Barrier();
+		if (it)
+			it->Submit(q);
+		else
+			q.Barrier();
 	}
 	mStagesChanged = false;
 }

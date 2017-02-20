@@ -219,8 +219,17 @@ void ExperimentalD3D12::_UpdateStageList()
 	int i = 0;
 	for (auto& stage : mGOService.GetStages())
 	{
-		mpStageList[i] = new char[stage->GetName().size() + 1];
-		strcpy(mpStageList[i++], stage->GetName().c_str());
+		if (stage)
+		{
+			mpStageList[i] = new char[stage->GetName().size() + 1];
+			strcpy(mpStageList[i++], stage->GetName().c_str());
+		}
+		else
+		{
+			static const String barrier("-- barrier --");
+			mpStageList[i] = new char[barrier.size() + 1];
+			strcpy(mpStageList[i++], barrier.c_str());
+		}
 	}
 }
 
