@@ -48,56 +48,43 @@ Stage notes:
 		up to the container, i.e. System.
 */
 
-// NOTE: TODO: The start and end will be a single system with two stages
-// when the stage sort is functional.
-class InstanceStartSystem : public GO::System
+class InstanceSystem : public GO::System
 {
 public:
-	InstanceStartSystem(ExperimentalD3D12* app, GO::Service* service)
+	InstanceSystem(ExperimentalD3D12* app, GO::Service* service)
 		: System(service)
 		, mpApp(app)
 		, mpInstances(nullptr)
 	{
-		GO::Stage* stage = new GO::Stage(service, this, "Instances Begin");
-		stage->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
-		Add(stage);
+		{
+			GO::Stage* stage = new GO::Stage(service, this, "Instances Begin");
+			stage->AddUpdate(this, nullptr, &InstanceSystem::Start);
+			Add(stage);
+		}
+		{
+			MultiCore::Stage::Dependency dependency(""_crc64, "Instances Begin"_crc64);
+			GO::Stage* stage = new GO::Stage(service, this, "Instances End", { dependency });
+			stage->AddUpdate(this, nullptr, &InstanceSystem::End);
+			Add(stage);
+		}
 	}
 
 	ExperimentalD3D12::Instance* GetInstances() const { return mpInstances; }
 
 private:
-	static void Update(System* s, GO::Object*)
+	static void Start(System* s, GO::Object*)
 	{
-		InstanceStartSystem* system = static_cast<InstanceStartSystem*>(s);
+		InstanceSystem* system = static_cast<InstanceSystem*>(s);
 		system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances));
 	}
-
-	ExperimentalD3D12* mpApp;
-	ExperimentalD3D12::Instance* mpInstances;
-};
-
-class InstanceEndSystem : public GO::System
-{
-public:
-	InstanceEndSystem(ExperimentalD3D12* app, GO::Service* service)
-		: System(service)
-		, mpApp(app)
+	static void End(System* s, GO::Object*)
 	{
-		MultiCore::Stage::Dependency dependency(""_crc64, "Instances Begin"_crc64);
-
-		GO::Stage* stage = new GO::Stage(service, this, "Instances End", {dependency});
-		stage->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
-		Add(stage);
-	}
-
-private:
-	static void Update(System* s, GO::Object*)
-	{
-		InstanceEndSystem* system = static_cast<InstanceEndSystem*>(s);
+		InstanceSystem* system = static_cast<InstanceSystem*>(s);
 		system->mpApp->GetCurrentInstanceBuffer()->Unmap();
 	}
 
 	ExperimentalD3D12* mpApp;
+	ExperimentalD3D12::Instance* mpInstances;
 };
 
 class MoverSystem : public GO::System
@@ -116,7 +103,7 @@ public:
 		{
 			MoverSystem* mover = static_cast<MoverSystem*>(system);
 			mover->mpTime = service->GetSystem<GO::Timer>("Game Time"_crc64);
-			mover->mpInstances = service->GetSystem<InstanceStartSystem>("Start Instancing"_crc64);
+			mover->mpInstances = service->GetSystem<InstanceSystem>("Instancing System"_crc64);
 			return mover->mpTime != nullptr;
 		}
 	};
@@ -134,7 +121,7 @@ public:
 		Add(mpMover);
 	}
 
-	InstanceStartSystem* GetInstanceSystem() const { return mpInstances; }
+	InstanceSystem* GetInstanceSystem() const { return mpInstances; }
 
 	MoverStage* GetMoverStage() const { return mpMover; }
 
@@ -142,7 +129,7 @@ private:
 	ExperimentalD3D12* mpApp;
 
 	// system interdependencies.
-	InstanceStartSystem* mpInstances;
+	InstanceSystem* mpInstances;
 	const GO::Timer* mpTime;	// The clock this mover is attached to.
 	MoverStage* mpMover;
 };
@@ -255,9 +242,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 	//////////////////////////////////////////////////////////////////////////
 	mGOService.Install("Game Time"_crc64, new GO::Timer(&mGOService));
-	mGOService.Install("Start Instancing"_crc64, new InstanceStartSystem(this, &mGOService));
+	mGOService.Install("Instancing System"_crc64, new InstanceSystem(this, &mGOService));
 	mGOService.Install("Mover"_crc64, new MoverSystem(this, &mGOService));
-	mGOService.Install("End Instancing"_crc64, new InstanceEndSystem(this, &mGOService));
 
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
