@@ -51,8 +51,8 @@ Stage notes:
 class InstanceSystem : public GO::System
 {
 public:
-	InstanceSystem(ExperimentalD3D12* app, GO::Service* service)
-		: System(service)
+	InstanceSystem(ExperimentalD3D12* app, GO::Service* service, const String& name)
+		: System(service, name)
 		, mpApp(app)
 		, mpInstances(nullptr)
 	{
@@ -108,8 +108,8 @@ public:
 		}
 	};
 
-	MoverSystem(ExperimentalD3D12* app, GO::Service* service)
-		: System(service)
+	MoverSystem(ExperimentalD3D12* app, GO::Service* service, const String& name)
+		: System(service, name)
 		, mpApp(app)
 		, mpInstances(nullptr)
 		, mpTime (nullptr)
@@ -241,15 +241,15 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
-	mGOService.Install("Game Time"_crc64, new GO::Timer(&mGOService));
-	mGOService.Install("Instancing System"_crc64, new InstanceSystem(this, &mGOService));
-	mGOService.Install("Mover"_crc64, new MoverSystem(this, &mGOService));
+	mGOService.Install(new GO::Timer(&mGOService, "Game Time"));
+	mGOService.Install(new InstanceSystem(this, &mGOService, "Instancing System"));
+	mGOService.Install(new MoverSystem(this, &mGOService, "Mover System"));
 
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<GO::Object> object(mGOService.CreateObject());
 		object->CreateComponent<GO::TransformComponent>();
-		object->CreateComponent<MoverSystem::MoverComponent>(mGOService.GetSystem<MoverSystem>("Mover"_crc64));
+		object->CreateComponent<MoverSystem::MoverComponent>(mGOService.GetSystem<MoverSystem>("Mover System"_crc64));
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -360,7 +360,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						// to flush the pipeline.
 						Poll();
 
-						// Handle any issued work from the threaded side.
+						// Handle any issued work from the scheduler side which needs to run in the main thread.
 						for (; mReactor.RunOne();)
 							;
 

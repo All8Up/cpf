@@ -77,11 +77,11 @@ void Service::IterateObjects(Function<void(Object*)> cb)
 }
 
 //////////////////////////////////////////////////////////////////////////
-bool Service::Install(SystemID id, System* system)
+bool Service::Install(System* system)
 {
-	if (mSystemMap.find(id)==mSystemMap.end())
+	if (mSystemMap.find(system->GetID())==mSystemMap.end())
 	{
-		mSystemMap[id].Adopt(system);
+		mSystemMap[system->GetID()].Adopt(system);
 		system->AddRef();
 		return true;
 	}
@@ -124,6 +124,8 @@ Stage::Dependencies::const_iterator FindDependency(const Stage& stage, const Sta
 {
 	for (int i=0; i<deps.size(); ++i)
 	{
+//		if (stage.GetSystem()->GetID() != deps[i].first)
+//			continue;
 		if (stage.GetID() == deps[i].second)
 			return deps.begin() + i;
 	}

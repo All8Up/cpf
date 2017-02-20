@@ -21,9 +21,12 @@ namespace Cpf
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			System(Service* service);
+			System(Service* service, const String& name);
 
 			Service* GetService() const;
+
+			SystemID GetID() const;
+			const String& GetName() const;
 
 			virtual const StageVector& GetStages() const;
 
@@ -38,6 +41,8 @@ namespace Cpf
 		private:
 			//////////////////////////////////////////////////////////////////////////
 			Service* mpService;
+			String mName;
+			SystemID mID;
 			StageVector mStages;
 		};
 	}

@@ -6,8 +6,8 @@ using namespace Cpf;
 using namespace GO;
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(Service* service)
-	: System(service)
+Timer::Timer(Service* service, const String& name)
+	: System(service, name)
 	, mpUpdate(nullptr)
 {
 	mpUpdate = new Stage(service, this, "Timer");

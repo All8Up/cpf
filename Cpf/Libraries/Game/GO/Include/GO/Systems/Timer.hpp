@@ -11,7 +11,7 @@ namespace Cpf
 		{
 		public:
 			// Construction/Destruction.
-			Timer(Service* service);
+			Timer(Service* service, const String& name);
 			~Timer() override;
 
 			// System overrides.

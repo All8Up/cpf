@@ -30,12 +30,6 @@ namespace Cpf
 			const String& GetName() const;
 			const Dependencies& GetDependencies() const;
 
-			// Comparisons.
-			virtual bool operator == (const Stage& rhs) const;
-			virtual bool operator != (const Stage& rhs) const;
-			virtual bool operator > (const Stage& rhs) const;
-			virtual bool operator < (const Stage& rhs) const;
-
 			// Submission to the scheduler queue.
 			virtual void Submit(Concurrency::Scheduler::Queue&) {}
 

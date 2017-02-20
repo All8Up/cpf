@@ -39,7 +39,7 @@ namespace Cpf
 			void IterateObjects(Function<void (Object*)> cb);
 
 			// System management.
-			bool Install(SystemID, System* system);
+			bool Install(System* system);
 			bool Remove(SystemID);
 			System* GetSystem(SystemID) const;
 			template <typename TYPE>
