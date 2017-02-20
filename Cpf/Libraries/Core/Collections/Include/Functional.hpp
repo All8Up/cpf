@@ -35,4 +35,9 @@ namespace Cpf
 		using std::placeholders::_8;
 		using std::placeholders::_9;
 	}
+
+	template<typename TYPE>
+	using Less = std::less<TYPE>;
+	template<typename TYPE>
+	using Greater = std::greater<TYPE>;
 }

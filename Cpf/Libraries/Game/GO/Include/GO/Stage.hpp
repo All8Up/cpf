@@ -33,7 +33,14 @@ namespace Cpf
 		private:
 			// Implementation definitions.
 			using UpdateTuple_t = Tuple<System*, Object*, FuncType_t>;
-			MultiCore::VectorContainer<UpdateTuple_t> mWork;
+			struct Compare
+			{
+				bool operator ()(const UpdateTuple_t& lhs, const UpdateTuple_t& rhs) const
+				{
+					return CPF_STL_NAMESPACE::get<1>(lhs) < CPF_STL_NAMESPACE::get<1>(rhs);
+				}
+			};
+			MultiCore::SortedVectorContainer<UpdateTuple_t, Compare> mWork;
 			struct Caller
 			{
 				void Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work);
