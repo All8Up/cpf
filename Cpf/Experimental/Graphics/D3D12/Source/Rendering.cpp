@@ -87,7 +87,7 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetVertexBuffers(0, 2, vbs);
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetIndexBuffer(mpIndexBuffer);
 
-	threadData.mpCommandBuffer[mCurrentBackbuffer]->DrawIndexedInstanced(3, kInstanceCount, 0, 0, 0);
+	threadData.mpCommandBuffer[mCurrentBackbuffer]->DrawIndexedInstanced(36, kInstanceCount, 0, 0, 0);
 
 	// End the command buffer prior to submission.
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->End();

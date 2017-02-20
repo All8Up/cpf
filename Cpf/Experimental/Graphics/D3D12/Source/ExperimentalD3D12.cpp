@@ -17,6 +17,7 @@
 
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Constants.hpp"
+#include "Math/Matrix33v.hpp"
 #include <math.h>
 #include "IO/IO.hpp"
 
@@ -184,11 +185,13 @@ private:
 		pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 		object->GetComponent<GO::TransformComponent>()->GetTransform().SetTranslation(pos);
 
+		Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time);
+
 		ExperimentalD3D12::Instance* instances = mover->GetInstanceSystem()->GetInstances();
 		instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
-		instances[i].mOrientation0 = Vector3f(1.0f, 0.0f, 0.0f);
-		instances[i].mOrientation1 = Vector3f(0.0f, 1.0f, 0.0f);
-		instances[i].mOrientation2 = Vector3f(0.0f, 0.0f, 1.0f);
+		instances[i].mOrientation0 = orientation[0].xyz;
+		instances[i].mOrientation1 = orientation[1].xyz;
+		instances[i].mOrientation2 = orientation[2].xyz;
 		instances[i].mTranslation = Vector3f(pos.xyz);
 	}
 

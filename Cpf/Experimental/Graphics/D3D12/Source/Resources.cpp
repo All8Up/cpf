@@ -54,19 +54,28 @@ bool ExperimentalD3D12::_CreateResources()
 			.DepthTest(true)
 			.DepthWriteMask(DepthWriteMask::eAll)
 		)
+		.TargetBlend(0, RenderTargetBlendStateDesc::Build()
+			.Blending(true)
+			.Op(BlendOp::eAdd)
+			.OpAlpha(BlendOp::eAdd)
+			.Src(BlendFunc::eSrcAlpha)
+			.SrcAlpha(BlendFunc::eOne)
+			.Dst(BlendFunc::eInvSrcAlpha)
+			.DstAlpha(BlendFunc::eInvSrcAlpha)
+		)
 		.InputLayout(
-			{
-				ElementDesc("POSITION", Format::eRGB32f),
-				ElementDesc("COLOR", Format::eRGBA32f),
-				ElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-				ElementDesc("SCALE", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-				ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-				ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-				ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1)
-			})
-			.RenderTargets({ Format::eRGBA8un })
-			.DepthStencilFormat(Format::eD32f)
-			;
+		{
+			ElementDesc("POSITION", Format::eRGB32f),
+			ElementDesc("COLOR", Format::eRGBA32f),
+			ElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			ElementDesc("SCALE", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1)
+		})
+		.RenderTargets({ Format::eRGBA8un })
+		.DepthStencilFormat(Format::eD32f)
+		;
 
 	//////////////////////////////////////////////////////////////////////////
 	ResourceBindingDesc bindingState({
@@ -83,16 +92,65 @@ bool ExperimentalD3D12::_CreateResources()
 	};
 
 	// Create the test data.
-	const float triSize = 1.0f;
+#define SS 1.0f
+#define P0 { -SS, -SS, -SS }
+#define P1 { +SS, -SS, -SS }
+#define P2 { +SS, +SS, -SS }
+#define P3 { -SS, +SS, -SS }
+#define P4 { -SS, -SS, +SS }
+#define P5 { +SS, -SS, +SS }
+#define P6 { +SS, +SS, +SS }
+#define P7 { -SS, +SS, +SS }
+#define CC0 { 0.7f, 0.5f, 0.5f, 0.25f }
+#define CC1 { 0.5f, 0.7f, 0.5f, 0.25f }
+#define CC2 { 0.5f, 0.5f, 0.7f, 0.25f }
+#define CC3 { 0.7f, 0.5f, 0.7f, 0.25f }
 	PosColor vbData[] =
 	{
-		{ { +0.0f, +triSize, 0.0f },{ 1.0f, 0.0f, 0.0f, 1.0f } },
-		{ { +triSize, -triSize, 0.0f },{ 0.0f, 1.0f, 0.0f, 1.0f } },
-		{ { -triSize, -triSize, 0.0f },{ 0.0f, 0.0f, 1.0f, 1.0f } }
+		// Front face. 0-3  +Z
+		{ P7,CC0 },
+		{ P6,CC1 },
+		{ P5,CC2 },
+		{ P4,CC3 },
+
+		// Back face. 4-7  -Z
+		{ P0,CC0 },
+		{ P1,CC1 },
+		{ P2,CC2 },
+		{ P3,CC3 },
+
+		// Left face. 8-11  -X
+		{ P7,CC0 },
+		{ P3,CC1 },
+		{ P0,CC2 },
+		{ P4,CC3 },
+
+		// Right face. 12-15  +X
+		{ P2,CC0 },
+		{ P6,CC1 },
+		{ P5,CC2 },
+		{ P1,CC3 },
+
+		// Top face. 16-19  +Y
+		{ P6,CC0 },
+		{ P2,CC1 },
+		{ P3,CC2 },
+		{ P7,CC3 },
+
+		// Bottom face. 20-23  -Y
+		{ P1,CC0 },
+		{ P5,CC1 },
+		{ P4,CC2 },
+		{ P0,CC3 },
 	};
 	uint32_t ibData[] =
 	{
-		0, 1, 2
+		0, 2, 1, 0, 3, 2,
+		4, 7, 6, 4, 6, 5,
+		8, 9, 10, 8, 10, 11,
+		12, 13, 14, 12, 14, 15,
+		16, 17, 18, 16, 18, 19,
+		20, 21, 22, 20, 22, 23
 	};
 
 	// Create a vertex buffer.
