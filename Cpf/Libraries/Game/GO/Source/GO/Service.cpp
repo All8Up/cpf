@@ -104,7 +104,16 @@ bool Service::_InstallStages(System* system)
 {
 	// TODO: This will need to perform the insertion sort eventually based on system dependencies.
 	for (auto it : system->GetStages())
+	{
 		mStageArray.emplace_back(it);
+
+		// Sort everything forward as far as possible.
+		if (mStageArray.size() > 1)
+		{
+			
+		}
+	}
+
 	// Resolve inter system dependencies.
 	for (auto it : mStageArray)
 	{

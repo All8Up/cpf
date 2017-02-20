@@ -57,7 +57,7 @@ public:
 		, mpApp(app)
 		, mpInstances(nullptr)
 	{
-		GO::Stage* stage = new GO::Stage(nullptr, this, 0);
+		GO::Stage* stage = new GO::Stage(service, this, "Instances Begin"_crc64);
 		stage->AddUpdate(this, nullptr, &InstanceStartSystem::Update);
 		Add(stage);
 	}
@@ -82,7 +82,7 @@ public:
 		: System(service)
 		, mpApp(app)
 	{
-		GO::Stage* stage = new GO::Stage(nullptr, this, 0);
+		GO::Stage* stage = new GO::Stage(service, this, "Instances End"_crc64);
 		stage->AddUpdate(this, nullptr, &InstanceEndSystem::Update);
 		Add(stage);
 	}
@@ -107,7 +107,7 @@ public:
 	class MoverStage : public GO::Stage
 	{
 	public:
-		MoverStage(System* s) : Stage(nullptr, s, 0) {}
+		MoverStage(GO::Service* serv, System* s) : Stage(serv, s, 0) {}
 
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{
@@ -124,7 +124,7 @@ public:
 		, mpInstances(nullptr)
 		, mpTime (nullptr)
 	{
-		mpMover = new MoverStage(this);
+		mpMover = new MoverStage(service, this);
 		Add(mpMover);
 	}
 
@@ -144,13 +144,16 @@ private:
 class MoverSystem::MoverComponent : public GO::Component
 {
 public:
+	//////////////////////////////////////////////////////////////////////////
 	static const GO::ComponentID kID = "Mover Component"_crc64;
 
-	GO::ComponentID GetID() const override { return kID; }
-
+	//////////////////////////////////////////////////////////////////////////
 	MoverComponent(MoverSystem* mover)
 		: mpMover(mover)
 	{}
+
+	//////////////////////////////////////////////////////////////////////////
+	GO::ComponentID GetID() const override { return kID; }
 
 	void Activate() override
 	{

@@ -20,7 +20,7 @@ namespace Cpf
 			using FuncType_t = void(*)(System*, Object*);
 
 			// Construction.
-			Stage(MultiCore::Service* service, System* system, MultiCore::StageID id);
+			Stage(MultiCore::Service* service, System* system, MultiCore::StageID id, const Dependencies& dependencies = Dependencies());
 
 			// Interface.
 			void AddUpdate(System* s, Object* o, FuncType_t f);
