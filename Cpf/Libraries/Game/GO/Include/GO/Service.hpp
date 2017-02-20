@@ -4,6 +4,7 @@
 #include "GO/Types.hpp"
 #include "MultiCore/Service.hpp"
 #include "UnorderedMap.hpp"
+#include "Hash/Crc.hpp"
 
 
 namespace Cpf
@@ -42,6 +43,7 @@ namespace Cpf
 			bool Install(System* system);
 			bool Remove(SystemID);
 			System* GetSystem(SystemID) const;
+			System* GetSystem(const String& name) const { return GetSystem(Platform::Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1))); }
 			template <typename TYPE>
 			TYPE* GetSystem(SystemID id) const { return static_cast<TYPE*>(GetSystem(id)); }
 

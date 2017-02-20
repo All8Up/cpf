@@ -34,6 +34,7 @@ void Service::Deactivate()
 {
 	for (auto it : mSystemMap)
 		it.second->Deactivate();
+	mStageArray.clear();
 }
 
 bool Service::GetStagesChanged() const
@@ -124,8 +125,8 @@ Stage::Dependencies::const_iterator FindDependency(const Stage& stage, const Sta
 {
 	for (int i=0; i<deps.size(); ++i)
 	{
-//		if (stage.GetSystem()->GetID() != deps[i].first)
-//			continue;
+		if (stage.GetSystem()->GetID() != deps[i].first)
+			continue;
 		if (stage.GetID() == deps[i].second)
 			return deps.begin() + i;
 	}

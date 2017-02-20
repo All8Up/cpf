@@ -62,7 +62,7 @@ public:
 			Add(stage);
 		}
 		{
-			MultiCore::Stage::Dependency dependency(""_crc64, "Instances Begin"_crc64);
+			MultiCore::Stage::Dependency dependency(GetID(), "Instances Begin"_crc64);
 			GO::Stage* stage = new GO::Stage(service, this, "Instances End", { dependency });
 			stage->AddUpdate(this, nullptr, &InstanceSystem::End);
 			Add(stage);
@@ -102,20 +102,22 @@ public:
 		bool ResolveDependencies(GO::Service* service, System* system) override
 		{
 			MoverSystem* mover = static_cast<MoverSystem*>(system);
-			mover->mpTime = service->GetSystem<GO::Timer>("Game Time"_crc64);
-			mover->mpInstances = service->GetSystem<InstanceSystem>("Instancing System"_crc64);
+			mover->mpTime = service->GetSystem<GO::Timer>(mover->mClockID);
+			mover->mpInstances = service->GetSystem<InstanceSystem>(mover->mInstanceID);
 			return mover->mpTime != nullptr;
 		}
 	};
 
-	MoverSystem(ExperimentalD3D12* app, GO::Service* service, const String& name)
+	MoverSystem(ExperimentalD3D12* app, GO::Service* service, const String& name, const String& clockService, const String& instanceService)
 		: System(service, name)
 		, mpApp(app)
 		, mpInstances(nullptr)
 		, mpTime (nullptr)
+		, mClockID(Hash::ComputeCrc64(clockService.c_str(), clockService.size(), uint64_t(-1)))
+		, mInstanceID(Hash::ComputeCrc64(instanceService.c_str(), instanceService.size(), uint64_t(-1)))
 	{
-		MultiCore::Stage::Dependency timeDep(""_crc64, "Timer"_crc64);
-		MultiCore::Stage::Dependency dependency(""_crc64, "Instances Begin"_crc64);
+		MultiCore::Stage::Dependency timeDep(mClockID, "Timer"_crc64);
+		MultiCore::Stage::Dependency dependency(mInstanceID, "Instances Begin"_crc64);
 
 		mpMover = new MoverStage(service, this, {timeDep, dependency});
 		Add(mpMover);
@@ -132,6 +134,8 @@ private:
 	InstanceSystem* mpInstances;
 	const GO::Timer* mpTime;	// The clock this mover is attached to.
 	MoverStage* mpMover;
+	GO::SystemID mClockID;
+	GO::SystemID mInstanceID;
 };
 
 class MoverSystem::MoverComponent : public GO::Component
@@ -243,7 +247,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	//////////////////////////////////////////////////////////////////////////
 	mGOService.Install(new GO::Timer(&mGOService, "Game Time"));
 	mGOService.Install(new InstanceSystem(this, &mGOService, "Instancing System"));
-	mGOService.Install(new MoverSystem(this, &mGOService, "Mover System"));
+	mGOService.Install(new MoverSystem(this, &mGOService, "Mover System", "Game Time", "Instancing System"));
 
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
