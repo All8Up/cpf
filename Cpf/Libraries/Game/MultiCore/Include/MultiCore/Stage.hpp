@@ -72,7 +72,7 @@ namespace Cpf
 
 			void Emit(Concurrency::Scheduler::Queue&) override;
 
-			void SetUpdate(Function<void(void*)> func, void* context);
+			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier = false, bool first = true);
 
 		private:
 			SingleUpdateStage(System* owner, const String& name);
@@ -80,7 +80,9 @@ namespace Cpf
 			static Stage* _Creator(System*, const String& name);
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 
-			Function<void(void*)> mpUpdate;
+			bool mWithBarrier;
+			bool mFirst;
+			Function<void(Concurrency::ThreadContext&, void*)> mpUpdate;
 			void* mpContext;
 		};
 	}

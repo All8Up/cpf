@@ -42,6 +42,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 
 		static bool sShowPerformance = true;
 		mDebugUI.Begin("Performance", &sShowPerformance);
+		mDebugUI.Text("Instance Count: %d", kInstanceCount);
 		mDebugUI.Text("FPS: %d LOW: %d HIGH: %d", int(average), int(lowFPS), int(highFPS));
 		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.ThreadCount()))
 			mThreadCountChanged = true;
@@ -50,6 +51,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 //		if (mGOService.GetStagesChanged())
 		{}
 		mDebugUI.ListBox("Stages", &mSelectedStage, const_cast<const char**>(mpStageList), mStageListCount);
+		mDebugUI.ListBox("Instructions", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
 
 		mDebugUI.End();
 	}

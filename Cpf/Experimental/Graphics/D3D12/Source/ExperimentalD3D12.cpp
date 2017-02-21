@@ -48,11 +48,6 @@ public:
 		, mpInstances(nullptr)
 	{
 		{
-			MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance Begin");
-			stage->SetUpdate(&InstanceSystem::_Begin, this);
-			AddStage(stage);
-		}
-		{
 			MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance End");
 			stage->SetUpdate(&InstanceSystem::_End, this);
 			stage->SetDependencies({ { GetID(), kBeginID } });
@@ -60,6 +55,17 @@ public:
 		}
 	}
 
+	// Need a better way to handle variable initializations.
+	void SetRenderSystem(const String& name)
+	{
+		mRenderID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1));
+		{
+			MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance Begin");
+			stage->SetUpdate(&InstanceSystem::_Begin, this);
+			stage->SetDependencies({ { mRenderID, "Begin Frame"_crc64 } });
+			AddStage(stage);
+		}
+	}
 	void SetApplication(ExperimentalD3D12* app) { mpApp = app; }
 	ExperimentalD3D12::Instance* GetInstances() const { return mpInstances; }
 
@@ -78,18 +84,19 @@ private:
 		return new InstanceSystem(pipeline, name);
 	}
 
-	static void _Begin(void* context)
+	static void _Begin(Concurrency::ThreadContext&, void* context)
 	{
 		InstanceSystem* system = static_cast<InstanceSystem*>(context);
 		system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances));
 	}
-	static void _End(void* context)
+	static void _End(Concurrency::ThreadContext&, void* context)
 	{
 		InstanceSystem* system = static_cast<InstanceSystem*>(context);
 		system->mpApp->GetCurrentInstanceBuffer()->Unmap();
 	}
 
 	ExperimentalD3D12* mpApp;
+	uint64_t mRenderID;
 	ExperimentalD3D12::Instance* mpInstances;
 };
 
@@ -110,13 +117,17 @@ public:
 		, mClockID(-1)
 		, mInstanceID(-1)
 	{
-		mpMoverStage = MultiCore::Stage::Create<GO::ObjectStage>(this, "Mover");
-		AddStage(mpMoverStage);
 	}
 
 	InstanceSystem* GetInstanceSystem() const { return mpInstances; }
 	void SetTimer(const String& name) { mClockID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)); }
-	void SetInstancing(const String& name) { mInstanceID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)); }
+	void SetInstancing(const String& name)
+	{
+		mInstanceID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1));
+		mpMoverStage = MultiCore::Stage::Create<GO::ObjectStage>(this, "Mover");
+		mpMoverStage->SetDependencies({ { mInstanceID, InstanceSystem::kBeginID } });
+		AddStage(mpMoverStage);
+	}
 
 	bool Configure() override
 	{
@@ -210,6 +221,127 @@ private:
 	MoverSystem* mpMover;
 };
 
+class RenderSystem : public MultiCore::System
+{
+public:
+	//
+	static constexpr int64_t kID = "Render System"_crc64;
+
+	// Registration.
+	static bool Install()
+	{
+		return System::Install(kID, &RenderSystem::Creator);
+	}
+	static bool Remove()
+	{
+		return System::Remove(kID);
+	}
+
+	void SetApplication(ExperimentalD3D12* app)
+	{
+		mpApp = app;
+	}
+
+private:
+	// Construction/Destruction.
+	RenderSystem(MultiCore::Pipeline* owner, const String& name)
+		: System(owner, name)
+		, mpApp(nullptr)
+	{
+		{
+			IntrusivePtr<MultiCore::SingleUpdateStage>
+				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Begin Frame")));
+			ptr->SetUpdate(&RenderSystem::_BeginFrame, this);
+			AddStage(ptr);
+		}
+		{
+			IntrusivePtr<MultiCore::SingleUpdateStage>
+				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Clear Buffers")));
+			ptr->SetUpdate(&RenderSystem::_Clear, this);
+			ptr->SetDependencies({ {GetID(), "Begin Frame"_crc64} });
+			AddStage(ptr);
+		}
+		{
+			IntrusivePtr<MultiCore::SingleUpdateStage>
+				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Draw Instances")));
+			ptr->SetUpdate(&RenderSystem::_Draw, this);
+			ptr->SetDependencies({ { GetID(), "Begin Frame"_crc64 } });
+			AddStage(ptr);
+		}
+		{
+			IntrusivePtr<MultiCore::SingleUpdateStage>
+				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Debug UI")));
+			ptr->SetUpdate(&RenderSystem::_DebugUI, this, true, false);
+			ptr->SetDependencies({
+				{ GetID(), "Begin Frame"_crc64 },
+				{ GetID(), "Clear Buffers"_crc64 },
+				{ GetID(), "Draw Instances"_crc64 }
+			});
+			AddStage(ptr);
+		}
+		{
+			IntrusivePtr<MultiCore::SingleUpdateStage>
+				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Prepare Present")));
+			ptr->SetUpdate(&RenderSystem::_PreparePresent, this);
+			ptr->SetDependencies({
+				{ GetID(), "Debug UI"_crc64 }
+			});
+			AddStage(ptr);
+		}
+		{
+			IntrusivePtr<MultiCore::SingleUpdateStage>
+				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("End Frame")));
+			ptr->SetUpdate(&RenderSystem::_EndFrame, this, true, false);
+			ptr->SetDependencies({
+				{ GetID(), "Clear Buffers"_crc64 },
+				{ GetID(), "Prepare Present"_crc64 }
+			});
+			AddStage(ptr);
+		}
+	}
+	~RenderSystem() override
+	{}
+
+	static void _BeginFrame(ThreadContext& tc, void* context)
+	{
+		RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
+		self->mpApp->_BeginFrame(tc);
+	}
+	static void _Clear(ThreadContext& tc, void* context)
+	{
+		RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
+		self->mpApp->_ClearBuffers(tc);
+	}
+	static void _Draw(ThreadContext& tc, void* context)
+	{
+		RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
+		self->mpApp->_Draw(tc);
+	}
+	static void _DebugUI(ThreadContext& tc, void* context)
+	{
+		RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
+		self->mpApp->_DebugUI(tc);
+	}
+	static void _PreparePresent(ThreadContext& tc, void* context)
+	{
+		RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
+		self->mpApp->_PreparePresent(tc);
+	}
+	static void _EndFrame(ThreadContext& tc, void* context)
+	{
+		RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
+		self->mpApp->_EndFrame(tc);
+	}
+
+	//
+	static System* Creator(MultiCore::Pipeline* owner, const String& name)
+	{
+		return new RenderSystem(owner, name);
+	}
+
+	ExperimentalD3D12* mpApp;
+};
+
 
 //////////////////////////////////////////////////////////////////////////
 #define GFX_INITIALIZER CPF_CONCAT(GFX_ADAPTER, Initializer)
@@ -220,34 +352,59 @@ private:
 
 void ExperimentalD3D12::_UpdateStageList()
 {
-	if (mpStageList)
 	{
-		for (int i=0; i<mStageListCount; ++i)
+		if (mpStageList)
 		{
-			delete[] mpStageList[i];
+			for (int i = 0; i < mStageListCount; ++i)
+			{
+				delete[] mpStageList[i];
+			}
+			delete[] mpStageList;
 		}
-		delete[] mpStageList;
+
+		mStageListCount = int(mpMultiCore->GetStages().size());
+		mpStageList = new char*[mStageListCount];
+		int i = 0;
+		for (auto& stage : mpMultiCore->GetStages())
+		{
+			if (stage)
+			{
+				mpStageList[i] = new char[stage->GetName().size() + 1];
+				strcpy(mpStageList[i++], stage->GetName().c_str());
+			}
+			else
+			{
+				static const String barrier("-- barrier --");
+				mpStageList[i] = new char[barrier.size() + 1];
+				strcpy(mpStageList[i++], barrier.c_str());
+			}
+		}
 	}
 
-	/*
-	mStageListCount = int(mGOService.GetStages().size());
-	mpStageList = new char*[mStageListCount];
-	int i = 0;
-	for (auto& stage : mGOService.GetStages())
+	//////////////////////////////////////////////////////////////////////////
 	{
-		if (stage)
+		if (mpInstructionList)
 		{
-			mpStageList[i] = new char[stage->GetName().size() + 1];
-			strcpy(mpStageList[i++], stage->GetName().c_str());
+			for (int i = 0; i < mInstructionCount; ++i)
+			{
+				delete[] mpInstructionList[i];
+			}
+			delete[] mpInstructionList;
 		}
-		else
+
+		auto instructions = mQueue.Dissassemble();
+		mInstructionCount = int(instructions.size());
+
+		mpInstructionList = new char*[mInstructionCount];
+		int i = 0;
+		for (auto& instruction : instructions)
 		{
-			static const String barrier("-- barrier --");
-			mpStageList[i] = new char[barrier.size() + 1];
-			strcpy(mpStageList[i++], barrier.c_str());
+			String description = mQueue.GetOpName(instruction.mOp);
+			description += " : " + std::to_string(intptr_t(instruction.mpPayload)) + " : " + std::to_string(intptr_t(instruction.mpContext));
+			mpInstructionList[i] = new char[description.size() + 1];
+			strcpy(mpInstructionList[i++], description.c_str());
 		}
 	}
-	*/
 }
 
 int ExperimentalD3D12::Start(const CommandLine&)
@@ -278,14 +435,25 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	MultiCore::SingleUpdateStage::Install();
 
 	// Install the systems this will use.
+	RenderSystem::Install();
 	GO::Timer::Install();
 	InstanceSystem::Install();
 	MoverSystem::Install();
 
+	// TODO: Setting dependencies currently sucks..
 	// Create the systems.
-	mpMultiCore->Install(MultiCore::System::Create<GO::Timer>(mpMultiCore, "Game Time"));
+	{
+		IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(mpMultiCore, "Render System"));
+		renderSystem->SetApplication(this);
+		mpMultiCore->Install(renderSystem);
+	}
+	{
+		IntrusivePtr<GO::Timer> timer(MultiCore::System::Create<GO::Timer>(mpMultiCore, "Game Time"));
+		mpMultiCore->Install(timer);
+	}
 	{
 		IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(mpMultiCore, "Instance System"));
+		instanceSystem->SetRenderSystem("Render System");
 		instanceSystem->SetApplication(this);
 		mpMultiCore->Install(instanceSystem);
 	}
@@ -391,7 +559,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
 
 					//
+					(*mpMultiCore)(mQueue);
 					_UpdateStageList();
+					mQueue.Discard();
 
 					while (IsRunning())
 					{
@@ -424,21 +594,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						mCurrentTime = now;
 
 						//////////////////////////////////////////////////////////////////////////
-						// The threaded execution loop.
-						mQueue.FirstOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_BeginFrame), this);
-						// Update the GO::Service.
+						// Issue all the stages.
 						(*mpMultiCore)(mQueue);
-						// The following build command buffers in parallel.
-						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_ClearBuffers), this);
-						// Draw everything.  This would be an All instruction but right now everything is a single instanced draw call.
-						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_Draw), this);
-						// Single threaded debug GUI rendering.
-						mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DebugUI), this);
-						mQueue.FirstOne(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_PreparePresent), this);
-						// Issue the command buffers in proper order.
-						// Because the last thread to enter the instruction performs the work and the other threads wait till completion,
-						// this guarantee's everything above is complete and no other work is being performed.
-						mQueue.LastOneBarrier(SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_EndFrame), this);
 
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.

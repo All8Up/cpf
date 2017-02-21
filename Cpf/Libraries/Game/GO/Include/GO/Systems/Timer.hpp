@@ -30,14 +30,14 @@ namespace Cpf
 			static System* Creator(MultiCore::Pipeline* owner, const String& name);
 
 			// Internal update function.
-			static void _Update(System*, Object*);
+			static void _Update(Concurrency::ThreadContext&, void*);
 
 			// Implementation data.
 			Platform::Time::Value mTime;
 			Platform::Time::Value mStart;
 
 			// The internal update stage.
-			IntrusivePtr<ObjectStage> mpUpdate;
+			IntrusivePtr<MultiCore::SingleUpdateStage> mpUpdate;
 		};
 	}
 }

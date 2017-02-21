@@ -22,11 +22,14 @@ namespace Cpf
 			, mSelectedStage(0)
 			, mpStageList(nullptr)
 			, mStageListCount(0)
+			, mSelectedInstruction(0)
+			, mpInstructionList(nullptr)
+			, mInstructionCount(0)
 		{}
 
 		int Start(const CommandLine&) override;
 
-		static const int32_t kInstancesPerDimension = 50;
+		static const int32_t kInstancesPerDimension = 75;
 		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
 
 		struct Instance
@@ -41,6 +44,14 @@ namespace Cpf
 
 		Graphics::iVertexBuffer* GetCurrentInstanceBuffer() const { return mpInstanceBuffer[mCurrentBackbuffer]; }
 
+		// Moving to a render system.
+		void _BeginFrame(Concurrency::ThreadContext&);
+		void _ClearBuffers(Concurrency::ThreadContext&);
+		void _Draw(Concurrency::ThreadContext& tc);
+		void _DebugUI(Concurrency::ThreadContext& tc);
+		void _PreparePresent(Concurrency::ThreadContext&);
+		void _EndFrame(Concurrency::ThreadContext&);
+
 	private:
 		bool _CreateWindow();
 		void _CreateWorkerData(Concurrency::ThreadContext& tc);
@@ -53,12 +64,6 @@ namespace Cpf
 		bool _CreateResources();
 		void _DestroyResources();
 
-		void _BeginFrame(Concurrency::ThreadContext&);
-		void _ClearBuffers(Concurrency::ThreadContext&);
-		void _Draw(Concurrency::ThreadContext& tc);
-		void _DebugUI(Concurrency::ThreadContext& tc);
-		void _PreparePresent(Concurrency::ThreadContext&);
-		void _EndFrame(Concurrency::ThreadContext&);
 		void _Resize(int32_t x, int32_t y);
 
 		void _UpdateStageList();
@@ -140,6 +145,10 @@ namespace Cpf
 		int mSelectedStage;
 		char** mpStageList;
 		int mStageListCount;
+
+		int mSelectedInstruction;
+		char** mpInstructionList;
+		int mInstructionCount;
 
 		bool mThreadCountChanged;
 		int32_t mThreadCount;

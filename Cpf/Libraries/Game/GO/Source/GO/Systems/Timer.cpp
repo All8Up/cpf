@@ -31,8 +31,8 @@ Timer::Timer(MultiCore::Pipeline* owner, const String& name)
 	mStart = Platform::Time::Now();
 	mTime = mStart;
 
-	mpUpdate.Adopt(MultiCore::Stage::Create<ObjectStage>(this, String("Timer Update")));
-	mpUpdate->AddUpdate(this, nullptr, &Timer::_Update);
+	mpUpdate.Adopt(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Timer Update")));
+	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);
 }
 
@@ -51,7 +51,7 @@ float Timer::GetDeltaTime() const
 	return float(Platform::Time::Seconds(mTime - mStart));
 }
 
-void Timer::_Update(System* s, Object*)
+void Timer::_Update(Concurrency::ThreadContext&, void* context)
 {
-	reinterpret_cast<Timer*>(s)->mTime = Platform::Time::Now();
+	reinterpret_cast<Timer*>(context)->mTime = Platform::Time::Now();
 }

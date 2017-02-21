@@ -3,6 +3,7 @@
 #include "Vector.hpp"
 #include "Concurrency/Scheduler.hpp"
 
+#define CPF_SCHEDULER_DISASSEMBLER 1
 
 namespace Cpf
 {
@@ -50,8 +51,33 @@ namespace Cpf
 			void SD(int index, int32_t value);
 			void SA(int index, void* value);
 
+			//
+			void Discard();
+
 			// Submission.
 			Queue& Execute(SubmissionType type=SubmissionType::eNormal);
+
+#if CPF_SCHEDULER_DISASSEMBLER
+			enum class Op : int32_t
+			{
+				eFirstOne = 0,
+				eFirstOneBarrier,
+				eLastOne,
+				eLastOneBarrier,
+				eAll,
+				eAllBarrier,
+				eBarrier
+			};
+			struct Dissassem
+			{
+				Op mOp;
+				PayloadFunc_t mpPayload;
+				void* mpContext;
+			};
+			using DisVector = Vector<Dissassem>;
+			DisVector Dissassemble() const;
+			static const char* GetOpName(Op op);
+#endif
 
 		private:
 			//  The queue is only created by the scheduler.

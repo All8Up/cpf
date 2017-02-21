@@ -88,17 +88,35 @@ bool SingleUpdateStage::Remove()
 
 void SingleUpdateStage::Emit(Concurrency::Scheduler::Queue& q)
 {
-	q.FirstOne(&SingleUpdateStage::_Update, this);
+	if (mFirst)
+	{
+		if (mWithBarrier)
+			q.FirstOneBarrier(&SingleUpdateStage::_Update, this);
+		else
+			q.FirstOne(&SingleUpdateStage::_Update, this);
+	}
+	else
+	{
+		if (mWithBarrier)
+			q.LastOneBarrier(&SingleUpdateStage::_Update, this);
+		else
+			q.LastOne(&SingleUpdateStage::_Update, this);
+	}
 }
 
-void SingleUpdateStage::SetUpdate(Function<void(void*)> func, void* context)
+void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier, bool first)
 {
+	mWithBarrier = withBarrier;
+	mFirst = first;
 	mpUpdate = func;
 	mpContext = context;
 }
 
 SingleUpdateStage::SingleUpdateStage(System* owner, const String& name)
 	: Stage(owner, name)
+	, mWithBarrier(false)
+	, mFirst(true)
+	, mpUpdate(nullptr)
 	, mpContext(nullptr)
 {}
 
@@ -106,9 +124,9 @@ Stage* SingleUpdateStage::_Creator(System* owner, const String& name)
 {
 	return new SingleUpdateStage(owner, name);
 }
-void SingleUpdateStage::_Update(Concurrency::ThreadContext&, void* context)
+void SingleUpdateStage::_Update(Concurrency::ThreadContext& tc, void* context)
 {
 	SingleUpdateStage* self = reinterpret_cast<SingleUpdateStage*>(context);
 	if (self->mpUpdate)
-		self->mpUpdate(self->mpContext);
+		self->mpUpdate(tc, self->mpContext);
 }

@@ -2,6 +2,7 @@
 #include "MultiCore/Pipeline.hpp"
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
+#include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
 
 using namespace Cpf;
@@ -136,18 +137,46 @@ bool Pipeline::Configure()
 							goto goagain;
 						}
 					}
+#ifdef CPF_DEBUG
+					if (deps.size()>0)
+					{
+						CPF_LOG(Experimental, Info) << "---- Dependencies failed:";
+						for (auto& dep : deps)
+						{
+							System* system = GetSystem(dep.first);
+							Stage* stage = GetStage(dep.first, dep.second);
+							CPF_LOG(Experimental, Info) << (system ? system->GetName() : "<missing>") << " - "
+								<< (stage ? stage->GetName() : "<missing>");
+						}
+					}
+#endif
 				}
 			}
 		}
 
 	goagain:
 		if (!resolved)
+		{
+			CPF_LOG(Experimental, Info) << "!!!!! Dependencies failed !!!!!";
 			break;	// Failed to resolve all dependencies.
+		}
 		stages = remaining;
 	}
 
 	// Let the systems configure to the new pipeline.
 	_ConfigureSystems();
+
+#ifdef CPF_DEBUG
+	CPF_LOG(Experimental, Info) << "---------------- Stage Order ---------------------------";
+	for (const auto& stage : mStages)
+	{
+		if (stage)
+			CPF_LOG(Experimental, Info) << " " << stage->GetName();
+		else
+			CPF_LOG(Experimental, Info) << " <barrier>";
+	}
+	CPF_LOG(Experimental, Info) << "---------------- Stage Order ---------------------------";
+#endif
 
 #ifdef CPF_DEBUG
 	mChanged = false;
@@ -203,7 +232,12 @@ Stage* Pipeline::GetStage(const String& systemName, const String& stageName)
 	return nullptr;
 }
 
-bool Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
+const StageVector& Pipeline::GetStages() const
+{
+	return mStages;
+}
+
+void Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
 {
 #ifdef CPF_DEBUG
 	// Asserts can be enabled in release mode.
@@ -217,6 +251,4 @@ bool Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
 		else
 			q.Barrier();
 	}
-
-	return false;
 }

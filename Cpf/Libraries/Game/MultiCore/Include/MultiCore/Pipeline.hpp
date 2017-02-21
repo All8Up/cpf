@@ -31,7 +31,9 @@ namespace Cpf
 			Stage* GetStage(SystemID systemID, StageID stageID);
 			Stage* GetStage(const String& systemName, const String& stageName);
 
-			bool operator ()(Concurrency::Scheduler::Queue&);
+			const StageVector& GetStages() const;
+
+			void operator ()(Concurrency::Scheduler::Queue&);
 
 		private:
 			Pipeline();

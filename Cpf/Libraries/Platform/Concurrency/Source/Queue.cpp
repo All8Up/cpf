@@ -211,6 +211,11 @@ void Scheduler::Queue::SA(int index, void* value)
 	mpScheduler->_Emit(Detail::Opcodes::SA, Payload(idxVal), value);
 }
 
+void Scheduler::Queue::Discard()
+{
+	mQueue.clear();
+}
+
 /**
  * @brief Submit the instruction queue to the scheduler.
  * @param type If the submission should clear this queue or not.
@@ -223,6 +228,49 @@ Scheduler::Queue& Scheduler::Queue::Execute(SubmissionType type)
 
 	return *this;
 }
+
+#if CPF_SCHEDULER_DISASSEMBLER
+#include <UnorderedMap.hpp>
+#include <String.hpp>
+Scheduler::Queue::DisVector Scheduler::Queue::Dissassemble() const
+{
+	using OpMap = UnorderedMap<OpcodeFunc_t, Op>;
+	static OpMap sOpMap{
+		{&Detail::Opcodes::FirstOne, Op::eFirstOne},
+		{&Detail::Opcodes::FirstOneBarrier, Op::eFirstOneBarrier},
+		{&Detail::Opcodes::LastOne, Op::eLastOne},
+		{&Detail::Opcodes::LastOneBarrier, Op::eLastOneBarrier},
+		{&Detail::Opcodes::All, Op::eAll},
+		{&Detail::Opcodes::AllBarrier, Op::eAllBarrier},
+		{&Detail::Opcodes::Barrier, Op::eBarrier}
+	};
+
+	DisVector result;
+	for (auto ibegin = mQueue.begin(), iend=mQueue.end(); ibegin!=iend; ++ibegin)
+	{
+		const auto& instr = *ibegin;
+		Op op = sOpMap[instr.mpHandler];
+		result.push_back({ op, instr.mpFunction, instr.mpContext });
+	}
+
+	return result;
+}
+
+const char* Scheduler::Queue::GetOpName(Op op)
+{
+	static Vector<String> sNames{
+		"FirstOne",
+		"FirstOneBarrier",
+		"LastOne",
+		"LastOneBarrier",
+		"All",
+		"AllBarrier",
+		"Barrier"
+	};
+	return sNames[int(op)].c_str();
+}
+
+#endif
 
 /**
  * @brief Returns an iterator to the beginning of the queue.
