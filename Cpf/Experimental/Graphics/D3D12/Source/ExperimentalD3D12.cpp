@@ -34,6 +34,41 @@ using namespace Threading;
 using namespace Concurrency;
 
 //////////////////////////////////////////////////////////////////////////
+/*
+ * I want to expose stages and required interconnection data for the systems
+ * in a manner which covers the following:
+ * Stages:
+ *	Must maintain internally required dependencies.  I.e. End Frame depends on Begin Frame.
+ *	Should preferably force a compile time error and not wait till runtime to complain if requirements are not met.
+ *	Should, at a minimum, show up in intelisense, preferably it would be semi-self documenting.
+ *	Both string and ID should be available.
+ *	The ID's used everywhere should become more type safe.
+ *	Should remain constexpr if possible to prevent runtime overhead.
+ * System data dependencies:
+ *	Perhaps a tuple which must be passed in to initialize the object?
+ */
+
+struct StageDesc
+{
+	const char* mName;
+	uint64_t mID;
+};
+
+constexpr StageDesc operator "" _stage(const char* name, size_t idx)
+{
+	return StageDesc
+	{
+		name,
+		Hash::ComputeCrc64(name, idx, uint64_t(-1))
+	};
+}
+
+class TestStageDesc : public MultiCore::System
+{
+public:
+	static constexpr auto kBegin = "Instance Begin"_stage;
+};
+
 
 class InstanceSystem : public MultiCore::System
 {

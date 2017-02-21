@@ -1,6 +1,7 @@
 # ###############################################
 set( INCLUDE_FILES
 	Include/Hash/Hash.hpp
+	Include/Hash/HashID.hpp
 	Include/Hash/Crc.hpp
 	Include/Hash/Detail/Crc16Table.hpp
 	Include/Hash/Detail/Crc32Table.hpp
