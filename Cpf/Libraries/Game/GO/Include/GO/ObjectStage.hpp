@@ -14,7 +14,7 @@ namespace Cpf
 		class ObjectStage : public MultiCore::Stage
 		{
 		public:
-			static constexpr MultiCore::StageID kID = "Object Stage"_crc64;
+			static constexpr auto kID = MultiCore::StageID("Object Stage"_crc64);
 
 			using UpdateFunc = void(*)(MultiCore::System*, Object*);
 

@@ -12,18 +12,22 @@ namespace Cpf
 		class System : public tRefCounted<iRefCounted>
 		{
 		public:
-			using Creator = System* (*)(Pipeline*, const String&);
+			// Empty base class for system descriptors.
+			struct Desc
+			{};
+
+			using Creator = System* (*)(const String&, const Desc*);
 
 			// System factory.
 			template <typename TYPE>
-			static TYPE* Create(Pipeline*, const String&);
+			static TYPE* Create(const String&, const Desc* = nullptr);
 			static bool Install(SystemID id, Creator);
 			static bool Remove(SystemID id);
 
 			// System interface.
 			Pipeline* GetOwner() const { return mpOwner; }
+			void SetOwner(Pipeline* pipeline) { mpOwner = pipeline; }
 			Stage* GetStage(StageID id) const;
-			Stage* GetStage(const String& name) const;
 
 			const String& GetName() const;
 			SystemID GetID() const;
@@ -34,7 +38,7 @@ namespace Cpf
 
 		protected:
 			// Implementation interface.
-			System(Pipeline* owner, const String& name);
+			System(const String& name);
 			virtual ~System();
 
 			bool AddStage(Stage*);
@@ -42,7 +46,7 @@ namespace Cpf
 
 		private:
 			// Untyped factory interface.
-			static System* _Create(SystemID, Pipeline*, const String&);
+			static System* _Create(SystemID, const String&, const Desc* desc);
 
 			// Implementation data.
 			Pipeline* mpOwner;
@@ -53,9 +57,9 @@ namespace Cpf
 
 		// Typed system factory.
 		template <typename TYPE>
-		TYPE* System::Create(Pipeline* pipeline, const String& name)
+		TYPE* System::Create(const String& name, const Desc* desc)
 		{
-			return static_cast<TYPE*>(_Create(TYPE::kID, pipeline, name));
+			return static_cast<TYPE*>(_Create(TYPE::kID, name, desc));
 		}
 	}
 }

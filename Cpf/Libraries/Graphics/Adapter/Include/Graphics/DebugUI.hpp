@@ -46,11 +46,14 @@ namespace Cpf
 			// Text
 			void Text(const char* fmt, ...);
 			void TextColored(const Math::Color4f& color, const char* fmt, ...);
-			bool CheckBox(const char* label, bool* flag);
 
 			// Buttons.
 			bool Button(const char* label, const Math::Vector2i = Math::Vector2i(0));
 			bool SmallButton(const char* label);
+
+			// Check box.
+			bool CheckBox(const char* label, bool* v);
+			bool CheckBoxFlags(const char* label, uint32_t* flags, uint32_t flags_value);
 
 			// Sliders
 			bool Slider(const char* label, int32_t* value, int vmin, int vmax, const char* fmt = "%.0f");

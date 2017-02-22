@@ -8,7 +8,7 @@ using namespace Cpf;
 using namespace GO;
 
 //////////////////////////////////////////////////////////////////////////
-bool Object::Create(int64_t id, Object** outObject)
+bool Object::Create(ObjectID id, Object** outObject)
 {
 	CPF_ASSERT(outObject != nullptr);
 	Object* result = new Object();
@@ -63,7 +63,7 @@ void Object::Deactivate()
 	mActive = false;
 }
 
-ObjectID Object::GetID() const
+const ObjectID& Object::GetID() const
 {
 	return mID;
 }
@@ -126,10 +126,3 @@ const Component* Object::GetComponent(ComponentID id) const
 	int index = _GetComponentIndex(id);
 	return index == -1 ? nullptr : static_cast<const Component*>(mComponents[index].second);
 }
-
-/*
-System* Object::GetSystem(SystemID id) const
-{
-	return mpOwner->GetSystem(id);
-}
-*/

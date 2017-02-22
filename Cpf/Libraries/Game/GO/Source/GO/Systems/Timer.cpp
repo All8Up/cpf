@@ -18,14 +18,14 @@ bool Timer::Remove()
 	return System::Remove(kID);
 }
 
-MultiCore::System* Timer::Creator(MultiCore::Pipeline* owner, const String& name)
+MultiCore::System* Timer::Creator(const String& name, const Desc*)
 {
-	return new Timer(owner, name);
+	return new Timer(name);
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(MultiCore::Pipeline* owner, const String& name)
-	: System(owner, name)
+Timer::Timer(const String& name)
+	: System(name)
 	, mpUpdate(nullptr)
 {
 	mStart = Platform::Time::Now();
@@ -38,7 +38,7 @@ Timer::Timer(MultiCore::Pipeline* owner, const String& name)
 
 Timer::~Timer()
 {
-	RemoveStage(mpUpdate);
+	RemoveStage(mpUpdate->GetID());
 }
 
 Platform::Time::Value Timer::GetTime() const

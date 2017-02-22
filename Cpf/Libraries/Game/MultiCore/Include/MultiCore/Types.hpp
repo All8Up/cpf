@@ -3,6 +3,7 @@
 #include "Configuration.hpp"
 #include "Vector.hpp"
 #include "IntrusivePtr.hpp"
+#include "Hash/HashID.hpp"
 
 namespace Cpf
 {
@@ -10,10 +11,10 @@ namespace Cpf
 	{
 		class Pipeline;
 
-		using SystemID = int64_t;
+		using SystemID = Hash::HashID<uint64_t, 1>;
 		class System;
 
-		using StageID = int64_t;
+		using StageID = Hash::HashID<uint64_t, 2>;
 		class Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
 	}

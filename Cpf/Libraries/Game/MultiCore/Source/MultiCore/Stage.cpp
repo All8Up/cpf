@@ -9,7 +9,8 @@ using namespace MultiCore;
 Stage::Stage(System* service, const String& name)
 	: mpSystem(service)
 	, mName(name)
-	, mID(Platform::Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)))
+	, mID(Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)))
+	, mEnabled(true)
 {
 	
 }
@@ -71,6 +72,16 @@ Stage* Stage::_Create(StageID type, System* owner, const String& name)
 		return (*s_StageMap[type])(owner, name);
 	}
 	return nullptr;
+}
+
+bool Stage::IsEnabled() const
+{
+	return mEnabled;
+}
+
+void Stage::SetEnabled(bool flag)
+{
+	mEnabled = flag;
 }
 
 

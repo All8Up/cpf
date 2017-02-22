@@ -4,7 +4,6 @@
 #include "Hash/Hash.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 
 namespace
 {

@@ -7,7 +7,7 @@ using namespace Cpf;
 using namespace GO;
 
 //////////////////////////////////////////////////////////////////////////
-int64_t Manager::mNextID = 0;
+ObjectID Manager::mNextID = ObjectID(0);
 
 //////////////////////////////////////////////////////////////////////////
 Manager::Manager()
@@ -25,7 +25,7 @@ Object* Manager::CreateObject(ObjectID id)
 	Object* result;
 	if (Object::Create(realID, &result))
 	{
-		++mNextID;
+		mNextID = ObjectID(mNextID.GetID()+1);
 		result->Initialize(this);
 		result->AddRef();
 		mObjectIDMap.emplace(realID, IntrusivePtr<Object>(result));

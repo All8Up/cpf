@@ -13,7 +13,7 @@ using namespace Concurrency;
 */
 void Detail::Opcodes::Wait(Scheduler &vm, int64_t index)
 {
-	Backoff<256, 0> backoff;
+	Backoff<4096, 0> backoff;
 	for (; Atomic::Load(vm.mPredicateRing[index]) >= 0;)
 		backoff();
 }

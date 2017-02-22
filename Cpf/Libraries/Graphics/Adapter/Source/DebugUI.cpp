@@ -350,11 +350,6 @@ void DebugUI::TextColored(const Math::Color4f& color, const char* fmt, ...)
 	va_end(vargs);
 }
 
-bool DebugUI::CheckBox(const char* label, bool* flag)
-{
-	return ImGui::Checkbox(label, flag);
-}
-
 bool DebugUI::Button(const char* label, const Math::Vector2i size)
 {
 	ImVec2 imSize(float(size.x), float(size.y));
@@ -364,6 +359,16 @@ bool DebugUI::Button(const char* label, const Math::Vector2i size)
 bool DebugUI::SmallButton(const char* label)
 {
 	return ImGui::SmallButton(label);
+}
+
+bool DebugUI::CheckBox(const char* label, bool* flag)
+{
+	return ImGui::Checkbox(label, flag);
+}
+
+bool CheckBoxFlags(const char* label, uint32_t* flags, uint32_t flags_value)
+{
+	return ImGui::CheckboxFlags(label, flags, flags_value);
 }
 
 bool DebugUI::Slider(const char* label, int32_t* value, int vmin, int vmax, const char* fmt)

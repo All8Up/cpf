@@ -2,6 +2,7 @@
 set( INCLUDE_FILES
 	Include/Hash/Hash.hpp
 	Include/Hash/HashID.hpp
+	Include/Hash/HashString.hpp
 	Include/Hash/Crc.hpp
 	Include/Hash/Detail/Crc16Table.hpp
 	Include/Hash/Detail/Crc32Table.hpp
@@ -29,8 +30,8 @@ target_compile_definitions( Hash
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( Hash Configuration )
-target_link_libraries( s_Hash Configuration )
+target_link_libraries( Hash Configuration Collections )
+target_link_libraries( s_Hash Configuration s_Collections )
 
 target_include_directories( Hash PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -70,5 +71,7 @@ MakeUnitTests( LIBRARY Hash GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_Crc.hpp
+		UnitTest/Test_HashID.hpp
+		UnitTest/Test_HashString.hpp
 		../../Core/Test/UnitTestMain.cpp
 )

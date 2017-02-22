@@ -12,7 +12,7 @@ namespace Cpf
 		class TransformComponent : public Component
 		{
 		public:
-			static constexpr ComponentID kID = "Transform Component"_crc64;
+			static constexpr ComponentID kID = ComponentID("Transform Component"_crc64);
 
 			TransformComponent();
 			~TransformComponent() override;

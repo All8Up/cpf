@@ -47,41 +47,33 @@ using namespace Concurrency;
  * System data dependencies:
  *	Perhaps a tuple which must be passed in to initialize the object?
  */
-
-struct StageDesc
-{
-	const char* mName;
-	uint64_t mID;
-};
-
-constexpr StageDesc operator "" _stage(const char* name, size_t idx)
-{
-	return StageDesc
-	{
-		name,
-		Hash::ComputeCrc64(name, idx, uint64_t(-1))
-	};
-}
-
-class TestStageDesc : public MultiCore::System
-{
-public:
-	static constexpr auto kBegin = "Instance Begin"_stage;
-};
-
-
 class InstanceSystem : public MultiCore::System
 {
 public:
-	static constexpr int64_t kID = "Instance Manager"_crc64;
-	static constexpr int64_t kBeginID = "Instance Begin"_crc64;
-	static constexpr int64_t kEndID = ""_crc64;
+	static constexpr auto kID = MultiCore::SystemID("Instance Manager"_crc64);
 
-	InstanceSystem(MultiCore::Pipeline* pipeline, const String& name)
-		: System(pipeline, name)
-		, mpApp(nullptr)
+	static constexpr auto kBeginID = MultiCore::StageID("Instance Begin"_crc64);
+	static constexpr auto kEndID = MultiCore::StageID("Instance End"_crc64);
+
+	struct Desc : System::Desc
+	{
+		MultiCore::SystemID mRenderSystemID;
+		ExperimentalD3D12* mpApplication;
+	};
+
+	InstanceSystem(const String& name, const Desc* desc)
+		: System(name)
+		, mpApp(desc->mpApplication)
+		, mRenderID(desc->mRenderSystemID)
 		, mpInstances(nullptr)
 	{
+//		MultiCore::SingleUpdateStage::Desc
+		{
+			MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance Begin");
+			stage->SetUpdate(&InstanceSystem::_Begin, this);
+			stage->SetDependencies({ { mRenderID, MultiCore::StageID("Begin Frame"_crc64) } });
+			AddStage(stage);
+		}
 		{
 			MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance End");
 			stage->SetUpdate(&InstanceSystem::_End, this);
@@ -90,18 +82,6 @@ public:
 		}
 	}
 
-	// Need a better way to handle variable initializations.
-	void SetRenderSystem(const String& name)
-	{
-		mRenderID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1));
-		{
-			MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance Begin");
-			stage->SetUpdate(&InstanceSystem::_Begin, this);
-			stage->SetDependencies({ { mRenderID, "Begin Frame"_crc64 } });
-			AddStage(stage);
-		}
-	}
-	void SetApplication(ExperimentalD3D12* app) { mpApp = app; }
 	ExperimentalD3D12::Instance* GetInstances() const { return mpInstances; }
 
 	static bool Install()
@@ -114,94 +94,77 @@ public:
 	}
 
 private:
-	static System* _Creator(MultiCore::Pipeline* pipeline, const String& name)
+	static System* _Creator(const String& name, const System::Desc* desc)
 	{
-		return new InstanceSystem(pipeline, name);
+		return new InstanceSystem(name, static_cast<const Desc*>(desc));
 	}
 
-	static void _Begin(Concurrency::ThreadContext&, void* context)
+	static void _Begin(ThreadContext&, void* context)
 	{
 		InstanceSystem* system = static_cast<InstanceSystem*>(context);
 		system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances));
 	}
-	static void _End(Concurrency::ThreadContext&, void* context)
+	static void _End(ThreadContext&, void* context)
 	{
 		InstanceSystem* system = static_cast<InstanceSystem*>(context);
 		system->mpApp->GetCurrentInstanceBuffer()->Unmap();
 	}
 
 	ExperimentalD3D12* mpApp;
-	uint64_t mRenderID;
+	MultiCore::SystemID mRenderID;
 	ExperimentalD3D12::Instance* mpInstances;
 };
 
-class MoverSystem : public MultiCore::System
+
+MoverSystem::MoverSystem(const String& name, const Desc* desc)
+	: System(name)
+	, mpApp(nullptr)
+	, mpInstances(nullptr)
+	, mpTime (nullptr)
+	, mClockID(desc->mTimerID)
+	, mInstanceID(desc->mInstanceID)
 {
-public:
-	static constexpr int64_t kID = "Mover System"_crc64;
+	mpMoverStage = MultiCore::Stage::Create<GO::ObjectStage>(this, "Mover");
+	mpMoverStage->SetDependencies({ { mInstanceID, ::InstanceSystem::kBeginID } });
+	AddStage(mpMoverStage);
+}
 
-	// Component(s) supplied.
-	class MoverComponent;
+::InstanceSystem* MoverSystem::GetInstanceSystem() const { return mpInstances; }
+
+bool MoverSystem::Configure()
+{
+	mpTime = static_cast<GO::Timer*>(GetOwner()->GetSystem(mClockID));
+	mpInstances = static_cast<InstanceSystem*>(GetOwner()->GetSystem(mInstanceID));
+
+	return mpTime && mpInstances;
+}
+
+bool MoverSystem::Install()
+{
+	return System::Install(kID, &MoverSystem::_Creator);
+}
+bool MoverSystem::Remove()
+{
+	return System::Remove(kID);
+}
+
+void MoverSystem::EnableMovement(bool flag) const
+{
+	mpMoverStage->SetEnabled(flag);
+}
+
+MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc)
+{
+	return new MoverSystem(name, static_cast<const Desc*>(desc));
+}
 
 
-	MoverSystem(MultiCore::Pipeline* pipeline, const String& name)
-		: System(pipeline, name)
-		, mpApp(nullptr)
-		, mpInstances(nullptr)
-		, mpTime (nullptr)
-		, mClockID(-1)
-		, mInstanceID(-1)
-	{
-	}
-
-	InstanceSystem* GetInstanceSystem() const { return mpInstances; }
-	void SetTimer(const String& name) { mClockID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)); }
-	void SetInstancing(const String& name)
-	{
-		mInstanceID = Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1));
-		mpMoverStage = MultiCore::Stage::Create<GO::ObjectStage>(this, "Mover");
-		mpMoverStage->SetDependencies({ { mInstanceID, InstanceSystem::kBeginID } });
-		AddStage(mpMoverStage);
-	}
-
-	bool Configure() override
-	{
-		mpTime = static_cast<GO::Timer*>(GetOwner()->GetSystem(mClockID));
-		mpInstances = static_cast<InstanceSystem*>(GetOwner()->GetSystem(mInstanceID));
-
-		return mpTime && mpInstances;
-	}
-
-	static bool Install()
-	{
-		return System::Install(kID, &MoverSystem::_Creator);
-	}
-	static bool Remove()
-	{
-		return System::Remove(kID);
-	}
-
-private:
-	static System* _Creator(MultiCore::Pipeline* pipeline, const String& name)
-	{
-		return new MoverSystem(pipeline, name);
-	}
-
-	ExperimentalD3D12* mpApp;
-
-	// system interdependencies.
-	InstanceSystem* mpInstances;
-	const GO::Timer* mpTime;	// The clock this mover is attached to.
-	GO::ObjectStage* mpMoverStage;
-	GO::SystemID mClockID;
-	GO::SystemID mInstanceID;
-};
-
+//////////////////////////////////////////////////////////////////////////
 class MoverSystem::MoverComponent : public GO::Component
 {
 public:
 	//////////////////////////////////////////////////////////////////////////
-	static const GO::ComponentID kID = "Mover Component"_crc64;
+	static constexpr GO::ComponentID kID = GO::ComponentID("Mover Component"_crc64);
 
 	//////////////////////////////////////////////////////////////////////////
 	MoverComponent(MoverSystem* mover)
@@ -227,7 +190,7 @@ private:
 		MoverSystem* mover = static_cast<MoverSystem*>(system);
 		const GO::Timer* timer = mover->mpTime;
 
-		int i = int(object->GetID());
+		int i = int(object->GetID().GetID());
 		int count = ExperimentalD3D12::kInstancesPerDimension;
 		int xc = (i % count);
 		int yc = (i / count) % count;
@@ -260,7 +223,8 @@ class RenderSystem : public MultiCore::System
 {
 public:
 	//
-	static constexpr int64_t kID = "Render System"_crc64;
+	static constexpr auto kID = MultiCore::SystemID("Render System"_crc64);
+	static constexpr auto BeginFrame = MultiCore::StageID("Begin Frame"_crc64);
 
 	// Registration.
 	static bool Install()
@@ -272,16 +236,17 @@ public:
 		return System::Remove(kID);
 	}
 
-	void SetApplication(ExperimentalD3D12* app)
+	struct Desc : System::Desc
 	{
-		mpApp = app;
-	}
+		MultiCore::SystemID mTimerID;
+		ExperimentalD3D12* mpApplication;
+	};
 
 private:
 	// Construction/Destruction.
-	RenderSystem(MultiCore::Pipeline* owner, const String& name)
-		: System(owner, name)
-		, mpApp(nullptr)
+	RenderSystem(const String& name, const Desc* desc)
+		: System(name)
+		, mpApp(desc->mpApplication)
 	{
 		{
 			IntrusivePtr<MultiCore::SingleUpdateStage>
@@ -293,14 +258,14 @@ private:
 			IntrusivePtr<MultiCore::SingleUpdateStage>
 				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Clear Buffers")));
 			ptr->SetUpdate(&RenderSystem::_Clear, this);
-			ptr->SetDependencies({ {GetID(), "Begin Frame"_crc64} });
+			ptr->SetDependencies({ {GetID(), MultiCore::StageID("Begin Frame"_crc64) } });
 			AddStage(ptr);
 		}
 		{
 			IntrusivePtr<MultiCore::SingleUpdateStage>
 				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Draw Instances")));
 			ptr->SetUpdate(&RenderSystem::_Draw, this);
-			ptr->SetDependencies({ { GetID(), "Begin Frame"_crc64 } });
+			ptr->SetDependencies({ { GetID(), MultiCore::StageID("Begin Frame"_crc64) } });
 			AddStage(ptr);
 		}
 		{
@@ -308,9 +273,9 @@ private:
 				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Debug UI")));
 			ptr->SetUpdate(&RenderSystem::_DebugUI, this, true, false);
 			ptr->SetDependencies({
-				{ GetID(), "Begin Frame"_crc64 },
-				{ GetID(), "Clear Buffers"_crc64 },
-				{ GetID(), "Draw Instances"_crc64 }
+				{ GetID(), MultiCore::StageID("Begin Frame"_crc64) },
+				{ GetID(), MultiCore::StageID("Clear Buffers"_crc64) },
+				{ GetID(), MultiCore::StageID("Draw Instances"_crc64) }
 			});
 			AddStage(ptr);
 		}
@@ -319,7 +284,7 @@ private:
 				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Prepare Present")));
 			ptr->SetUpdate(&RenderSystem::_PreparePresent, this);
 			ptr->SetDependencies({
-				{ GetID(), "Debug UI"_crc64 }
+				{ GetID(), MultiCore::StageID("Debug UI"_crc64) }
 			});
 			AddStage(ptr);
 		}
@@ -328,8 +293,8 @@ private:
 				ptr(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("End Frame")));
 			ptr->SetUpdate(&RenderSystem::_EndFrame, this, true, false);
 			ptr->SetDependencies({
-				{ GetID(), "Clear Buffers"_crc64 },
-				{ GetID(), "Prepare Present"_crc64 }
+				{ GetID(), MultiCore::StageID("Clear Buffers"_crc64) },
+				{ GetID(), MultiCore::StageID("Prepare Present"_crc64) }
 			});
 			AddStage(ptr);
 		}
@@ -369,9 +334,9 @@ private:
 	}
 
 	//
-	static System* Creator(MultiCore::Pipeline* owner, const String& name)
+	static System* Creator(const String& name, const System::Desc* desc)
 	{
-		return new RenderSystem(owner, name);
+		return new RenderSystem(name, static_cast<const Desc*>(desc));
 	}
 
 	ExperimentalD3D12* mpApp;
@@ -475,31 +440,35 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	InstanceSystem::Install();
 	MoverSystem::Install();
 
-	// TODO: Setting dependencies currently sucks..
-	// Create the systems.
-	{
-		IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(mpMultiCore, "Render System"));
-		renderSystem->SetApplication(this);
-		mpMultiCore->Install(renderSystem);
-	}
-	{
-		IntrusivePtr<GO::Timer> timer(MultiCore::System::Create<GO::Timer>(mpMultiCore, "Game Time"));
-		mpMultiCore->Install(timer);
-	}
-	{
-		IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(mpMultiCore, "Instance System"));
-		instanceSystem->SetRenderSystem("Render System");
-		instanceSystem->SetApplication(this);
-		mpMultiCore->Install(instanceSystem);
-	}
-	{
-		IntrusivePtr<MoverSystem> moverSystem(MultiCore::System::Create<MoverSystem>(mpMultiCore, "Mover"));
-		moverSystem->SetTimer("Game Time");
-		moverSystem->SetInstancing("Instance System");
-		mpMultiCore->Install(moverSystem);
-	}
+	// Create the primary game timer.
+	IntrusivePtr<GO::Timer> gameTime(MultiCore::System::Create<GO::Timer>("Game Time"));
+	mpMultiCore->Install(gameTime);
+
+	// Create the render system.
+	RenderSystem::Desc renderDesc;
+	renderDesc.mTimerID = gameTime->GetID();
+	renderDesc.mpApplication = this;
+	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>("Render System", &renderDesc));
+	mpMultiCore->Install(renderSystem);
+
+	// Create the instance management system.
+	InstanceSystem::Desc instanceDesc;
+	instanceDesc.mRenderSystemID = renderSystem->GetID();
+	instanceDesc.mpApplication = this;
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc));
+	mpMultiCore->Install(instanceSystem);
+
+	// Create the mover system.
+	MoverSystem::Desc moverDesc;
+	moverDesc.mTimerID = gameTime->GetID();
+	moverDesc.mInstanceID = instanceSystem->GetID();
+	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc));
+	mpMultiCore->Install(mpMoverSystem);
+
+	// Everything is installed in the pipeline, configure it.
 	mpMultiCore->Configure();
 
+	// Create test objects.
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<GO::Object> object(mGOService.CreateObject());

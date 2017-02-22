@@ -7,10 +7,10 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(Pipeline* owner, const String& name)
-	: mpOwner(owner)
+System::System(const String& name)
+	: mpOwner(nullptr)
 	, mName(name)
-	, mID(Platform::Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)))
+	, mID(Hash::Crc64(name.c_str(), name.size()))
 {}
 
 System::~System()
@@ -27,12 +27,6 @@ Stage* System::GetStage(StageID id) const
 		}
 	}
 	return nullptr;
-}
-
-Stage* System::GetStage(const String& name) const
-{
-	StageID id = Platform::Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1));
-	return GetStage(id);
 }
 
 bool System::AddStage(Stage* stage)
@@ -81,11 +75,11 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(SystemID id, Pipeline* pipeline, const String& name)
+System* System::_Create(SystemID id, const String& name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
-		return (*it->second)(pipeline, name);
+		return (*it->second)(name, desc);
 	return nullptr;
 }
 

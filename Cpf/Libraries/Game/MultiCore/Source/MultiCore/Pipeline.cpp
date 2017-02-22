@@ -30,7 +30,7 @@ bool Pipeline::Create(Pipeline** pipeline)
 	return false;
 }
 
-bool Pipeline::Install(System* system)
+System* Pipeline::Install(System* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -40,9 +40,10 @@ bool Pipeline::Install(System* system)
 #endif
 		system->AddRef();
 		mSystemMap.emplace(id, system);
-		return true;
+		system->SetOwner(this);
+		return system;
 	}
-	return false;
+	return nullptr;
 }
 
 bool Pipeline::Remove(System* system)
@@ -54,6 +55,7 @@ bool Pipeline::Remove(System* system)
 	mChanged = true;
 #endif
 	mSystemMap.erase(id);
+	system->SetOwner(nullptr);
 	return true;
 }
 
@@ -213,7 +215,7 @@ System* Pipeline::GetSystem(SystemID id) const
 
 System* Pipeline::GetSystem(const String& name) const
 {
-	return GetSystem(Platform::Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)));
+	return GetSystem(SystemID(Hash::Crc64(name.c_str(), name.size())));
 }
 
 Stage* Pipeline::GetStage(SystemID systemID, StageID stageID)
@@ -221,14 +223,6 @@ Stage* Pipeline::GetStage(SystemID systemID, StageID stageID)
 	System* system = GetSystem(systemID);
 	if (system)
 		return system->GetStage(stageID);
-	return nullptr;
-}
-
-Stage* Pipeline::GetStage(const String& systemName, const String& stageName)
-{
-	System* system = GetSystem(systemName);
-	if (system)
-		return system->GetStage(stageName);
 	return nullptr;
 }
 
@@ -247,7 +241,10 @@ void Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
 	for (auto stage : mStages)
 	{
 		if (stage)
-			stage->Emit(q);
+		{
+			if (stage->IsEnabled())
+				stage->Emit(q);
+		}
 		else
 			q.Barrier();
 	}

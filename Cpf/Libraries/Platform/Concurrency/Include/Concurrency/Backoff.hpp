@@ -14,7 +14,7 @@ namespace Cpf
 		 * @tparam MAX_SPIN Max number of pause calls before switching to sleep.
 		 * @tparam SLEEP_MS Length of the OS level sleep to perform at max backoff.
 		 */
-		template<const int MAX_SPIN = 256, const int SLEEP_MS = 1>
+		template<const int MAX_SPIN = 1024, const int SLEEP_MS = 1>
 		class Backoff
 		{
 		public:

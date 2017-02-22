@@ -25,17 +25,14 @@
 
 namespace Cpf
 {
-	namespace Platform
+	//////////////////////////////////////////////////////////////////////////
+	struct HashInitializer
 	{
-		//////////////////////////////////////////////////////////////////////////
-		struct HashInitializer
-		{
-			CPF_EXPORT_HASH static int Install();
-			CPF_EXPORT_HASH static int Remove();
+		CPF_EXPORT_HASH static int Install();
+		CPF_EXPORT_HASH static int Remove();
 
-		private:
-			HashInitializer() = delete;
-			~HashInitializer() = delete;
-		};
-	}
+	private:
+		HashInitializer() = delete;
+		~HashInitializer() = delete;
+	};
 }

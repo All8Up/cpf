@@ -18,7 +18,7 @@ namespace Cpf
 		public:
 			static bool Create(Pipeline**);
 
-			bool Install(System*);
+			System* Install(System*);
 			bool Remove(System*);
 
 			bool Configure();
@@ -29,7 +29,6 @@ namespace Cpf
 			TYPE* GetSystem(const String& name) const;
 
 			Stage* GetStage(SystemID systemID, StageID stageID);
-			Stage* GetStage(const String& systemName, const String& stageName);
 
 			const StageVector& GetStages() const;
 

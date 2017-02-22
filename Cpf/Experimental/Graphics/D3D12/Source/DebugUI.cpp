@@ -53,6 +53,12 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		mDebugUI.ListBox("Stages", &mSelectedStage, const_cast<const char**>(mpStageList), mStageListCount);
 		mDebugUI.ListBox("Instructions", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
 
+		static bool movementEnabled = true;
+		if (mDebugUI.CheckBox("Enable Movement", &movementEnabled))
+		{
+			mpMoverSystem->EnableMovement(movementEnabled);
+		}
+
 		mDebugUI.End();
 	}
 	mDebugUI.EndFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer]);

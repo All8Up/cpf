@@ -35,6 +35,10 @@ namespace Cpf
 			const Dependencies& GetDependencies() const;
 			void SetDependencies(Dependencies&& deps) { mDependencies = Move(deps); }
 
+			//
+			bool IsEnabled() const;
+			void SetEnabled(bool flag);
+
 			// Submission to the scheduler queue.
 			virtual void Emit(Concurrency::Scheduler::Queue&) = 0;
 
@@ -51,6 +55,7 @@ namespace Cpf
 			String mName;
 			StageID mID;
 			Dependencies mDependencies;
+			bool mEnabled;
 		};
 
 		//
@@ -65,7 +70,7 @@ namespace Cpf
 		class SingleUpdateStage : public Stage
 		{
 		public:
-			static constexpr StageID kID = "Single Update Stage"_crc64;
+			static constexpr auto kID = StageID("Single Update Stage"_crc64);
 
 			static bool Install();
 			static bool Remove();

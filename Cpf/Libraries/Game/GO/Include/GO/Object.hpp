@@ -6,6 +6,7 @@
 #include "UnorderedMap.hpp"
 #include "Pair.hpp"
 #include "String.hpp"
+#include "MultiCore/System.hpp"
 
 
 namespace Cpf
@@ -19,7 +20,7 @@ namespace Cpf
 			using ComponentPair = Pair<ComponentID, IntrusivePtr<Component>>;
 
 			// Object interface.
-			static bool Create(int64_t id, Object**);
+			static bool Create(ObjectID id, Object**);
 
 			void Initialize(Manager* owner);
 			void Shutdown();
@@ -27,13 +28,11 @@ namespace Cpf
 			void Activate();
 			void Deactivate();
 
-			ObjectID GetID() const;
+			const ObjectID& GetID() const;
 
 			Component* GetComponent(ComponentID id);
 			const Component* GetComponent(ComponentID id) const;
 		
-//			System* GetSystem(SystemID id) const;
-
 			// Utilities.
 			template <typename TYPE, typename... ARGS>
 			TYPE* CreateComponent(ARGS...);
@@ -42,7 +41,7 @@ namespace Cpf
 			template <typename TYPE>
 			const TYPE* GetComponent() const;
 			template <typename TYPE>
-			TYPE* GetSystem(SystemID id) const
+			TYPE* GetSystem(MultiCore::SystemID id) const
 			{
 				return static_cast<TYPE*>(GetSystem(id));
 			}
