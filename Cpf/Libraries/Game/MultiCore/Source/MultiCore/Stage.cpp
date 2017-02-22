@@ -9,7 +9,7 @@ using namespace MultiCore;
 Stage::Stage(System* service, const String& name)
 	: mpSystem(service)
 	, mName(name)
-	, mID(Hash::ComputeCrc64(name.c_str(), name.size(), uint64_t(-1)))
+	, mID(Hash::Crc64(name.c_str(), name.size()))
 	, mEnabled(true)
 {
 	

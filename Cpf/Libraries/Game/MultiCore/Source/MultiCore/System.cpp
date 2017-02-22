@@ -75,11 +75,11 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(SystemID id, const String& name, const Desc* desc)
+System* System::_Create(SystemID id, const String& name, const Desc* desc, const Dependencies& deps)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
-		return (*it->second)(name, desc);
+		return (*it->second)(name, desc, deps);
 	return nullptr;
 }
 

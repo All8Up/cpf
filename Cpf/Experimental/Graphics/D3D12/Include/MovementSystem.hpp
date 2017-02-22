@@ -3,6 +3,7 @@
 #include "MultiCore/System.hpp"
 #include "GO/Systems/Timer.hpp"
 #include "GO/Component.hpp"
+#include "Hash/HashString.hpp"
 #include "InstanceSystem.hpp"
 
 namespace Cpf
@@ -13,8 +14,9 @@ namespace Cpf
 	{
 	public:
 		static constexpr auto kID = MultiCore::SystemID("Mover System"_crc64);
+		static constexpr auto kMoverStage = "Mover Stage"_stringHash;
 
-		struct Desc : MultiCore::System::Desc
+		struct Desc : System::Desc
 		{
 			MultiCore::SystemID mTimerID;
 			MultiCore::SystemID mInstanceID;
@@ -31,7 +33,7 @@ namespace Cpf
 		void EnableMovement(bool flag) const;
 
 	private:
-		static MultiCore::System* _Creator(const String& name, const MultiCore::System::Desc* desc);
+		static System* _Creator(const String& name, const System::Desc* desc, const Dependencies& deps);
 
 		ExperimentalD3D12* mpApp;
 

@@ -27,7 +27,7 @@ namespace Cpf
 			~Timer() override;
 
 			//
-			static System* Creator(const String& name, const Desc*);
+			static System* Creator(const String& name, const Desc*, const Dependencies& deps);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

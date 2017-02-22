@@ -34,22 +34,6 @@ using namespace Threading;
 using namespace Concurrency;
 
 //////////////////////////////////////////////////////////////////////////
-/*
- * I want to expose stages and required interconnection data for the systems
- * in a manner which covers the following:
- * Stages:
- *	Must maintain internally required dependencies.  I.e. End Frame depends on Begin Frame.
- *	Should preferably force a compile time error and not wait till runtime to complain if requirements are not met.
- *	Should, at a minimum, show up in intelisense, preferably it would be semi-self documenting.
- *	Both string and ID should be available.
- *	The ID's used everywhere should become more type safe.
- *	Should remain constexpr if possible to prevent runtime overhead.
- * System data dependencies:
- *	Perhaps a tuple which must be passed in to initialize the object?
- */
-
-
-//////////////////////////////////////////////////////////////////////////
 #define GFX_INITIALIZER CPF_CONCAT(GFX_ADAPTER, Initializer)
 #define INCLUDE_GFX Adapter/## CPF_CONCAT(GFX_ADAPTER, .hpp)
 #include CPF_STRINGIZE(INCLUDE_GFX)
@@ -89,6 +73,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	InstanceSystem::Install();
 	MoverSystem::Install();
 
+	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
 	IntrusivePtr<GO::Timer> gameTime(MultiCore::System::Create<GO::Timer>("Game Time"));
 	mpMultiCore->Install(gameTime);
@@ -104,16 +89,22 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc));
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc, {
+		// Add a dependency from this systems begin stage to the render systems begin frame stage.  It can run concurrently with the begin frame stage.
+		{MultiCore::ExecutionMode::eConcurrent, MultiCore::StageID(InstanceSystem::kBegin.ID), renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.ID) }
+	}));
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
 	MoverSystem::Desc moverDesc;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc));
+	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc, {
+		{MultiCore::ExecutionMode::eSequencial, MultiCore::StageID(MoverSystem::kMoverStage.ID), instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.ID)}
+	}));
 	mpMultiCore->Install(mpMoverSystem);
 
+	//////////////////////////////////////////////////////////////////////////
 	// Everything is installed in the pipeline, configure it.
 	mpMultiCore->Configure();
 
@@ -126,8 +117,6 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-
 	// Create the virtual file system locator.
 	mpLocator.Adopt(Resources::Configuration("./Experimental/resource_config.json").GetLocator());
 	if (!mpLocator)

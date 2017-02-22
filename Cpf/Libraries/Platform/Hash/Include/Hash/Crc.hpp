@@ -54,7 +54,7 @@ namespace Cpf
 		/**
 		 * @brief Finalizes the crc.
 		 */
-		inline uint16_t FinalizeCrc16(uint16_t crc)
+		constexpr uint16_t FinalizeCrc16(uint16_t crc)
 		{
 			return crc ^ -1;
 		}
@@ -63,10 +63,9 @@ namespace Cpf
 		/**
 		 * @brief Compute a 32 bit crc from the given data.
 		 */
-		inline uint16_t Crc16(const void* const data, size_t length)
+		constexpr uint16_t Crc16(const void* const data, size_t length)
 		{
-			const uint8_t* current = reinterpret_cast<const uint8_t*>(data);
-			return FinalizeCrc16(UpdateCrc16(uint16_t(-1), current, length));
+			return ComputeCrc16(reinterpret_cast<const char*>(data), length, uint16_t(-1));
 		}
 
 
@@ -84,7 +83,7 @@ namespace Cpf
 		/**
 		 * @brief Finalizes the crc.
 		 */
-		inline uint32_t FinalizeCrc32(uint32_t crc)
+		constexpr uint32_t FinalizeCrc32(uint32_t crc)
 		{
 			return crc ^ -1;
 		}
@@ -93,10 +92,9 @@ namespace Cpf
 		/**
 		 * @brief Compute a 32 bit crc from the given data.
 		 */
-		inline uint32_t Crc32(const void* const data, size_t length)
+		constexpr uint32_t Crc32(const void* const data, size_t length)
 		{
-			const uint8_t* current = reinterpret_cast<const uint8_t*>(data);
-			return FinalizeCrc32(UpdateCrc32(uint32_t(-1), current, length));
+			return ComputeCrc32(reinterpret_cast<const char*>(data), length, uint32_t(-1));
 		}
 
 
@@ -114,7 +112,7 @@ namespace Cpf
 		/**
 		* @brief Finalizes the crc.
 		*/
-		inline uint64_t FinalizeCrc64(uint64_t crc)
+		constexpr uint64_t FinalizeCrc64(uint64_t crc)
 		{
 			return crc ^ -1;
 		}
@@ -123,10 +121,9 @@ namespace Cpf
 		/**
 		* @brief Compute a 64 bit crc from the given data.
 		*/
-		inline uint64_t Crc64(const void* const data, size_t length)
+		constexpr uint64_t Crc64(const void* const data, size_t length)
 		{
-			const uint8_t* current = reinterpret_cast<const uint8_t*>(data);
-			return FinalizeCrc64(UpdateCrc64(uint64_t(-1), current, length));
+			return ComputeCrc64(reinterpret_cast<const char*>(data), length, uint64_t(-1));
 		}
 	}
 }

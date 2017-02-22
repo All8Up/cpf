@@ -22,7 +22,7 @@ MoverSystem::MoverSystem(const String& name, const Desc* desc)
 	, mInstanceID(desc->mInstanceID)
 {
 	mpMoverStage = MultiCore::Stage::Create<GO::ObjectStage>(this, "Mover");
-	mpMoverStage->SetDependencies({ { mInstanceID, InstanceSystem::kBeginID } });
+	mpMoverStage->SetDependencies({ { mInstanceID, StageID(InstanceSystem::kBegin.ID) } });
 	AddStage(mpMoverStage);
 }
 
@@ -53,7 +53,7 @@ void MoverSystem::EnableMovement(bool flag) const
 	mpMoverStage->SetEnabled(flag);
 }
 
-MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc)
+MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
 {
 	return new MoverSystem(name, static_cast<const Desc*>(desc));
 }

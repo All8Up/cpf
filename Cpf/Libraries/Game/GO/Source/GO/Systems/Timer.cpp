@@ -18,7 +18,7 @@ bool Timer::Remove()
 	return System::Remove(kID);
 }
 
-MultiCore::System* Timer::Creator(const String& name, const Desc*)
+MultiCore::System* Timer::Creator(const String& name, const Desc*, const Dependencies& deps)
 {
 	return new Timer(name);
 }

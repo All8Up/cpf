@@ -105,7 +105,7 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::System* RenderSystem::Creator(const String& name, const System::Desc* desc)
+MultiCore::System* RenderSystem::Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
 {
 	return new RenderSystem(name, static_cast<const Desc*>(desc));
 }

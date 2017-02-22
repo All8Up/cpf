@@ -3,6 +3,7 @@
 #include "Instance.hpp"
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
+#include "Hash/HashString.hpp"
 
 namespace Cpf
 {
@@ -13,8 +14,7 @@ namespace Cpf
 	public:
 		static constexpr auto kID = MultiCore::SystemID("Instance Manager"_crc64);
 
-		static constexpr auto kBeginID = MultiCore::StageID("Instance Begin"_crc64);
-		static constexpr auto kEndID = MultiCore::StageID("Instance End"_crc64);
+		static constexpr Hash::StringHash kBegin = "Instance Begin"_stringHash;
 
 		struct Desc : System::Desc
 		{
@@ -28,17 +28,21 @@ namespace Cpf
 			, mRenderID(desc->mRenderSystemID)
 			, mpInstances(nullptr)
 		{
-			//		MultiCore::SingleUpdateStage::Desc
 			{
 				MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance Begin");
 				stage->SetUpdate(&InstanceSystem::_Begin, this);
-				stage->SetDependencies({ { mRenderID, MultiCore::StageID("Begin Frame"_crc64) } });
+				stage->SetDependencies({ { mRenderID, StageID("Begin Frame"_crc64) } });
 				AddStage(stage);
 			}
+			/*
+			MultiCore::SingleUpdateStage::Desc {
+				{ GetID(), kBegin.ID }
+			};
+			*/
 			{
 				MultiCore::SingleUpdateStage* stage = MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, "Instance End");
 				stage->SetUpdate(&InstanceSystem::_End, this);
-				stage->SetDependencies({ { GetID(), kBeginID } });
+				stage->SetDependencies({ { GetID(), MultiCore::StageID(kBegin.ID) } });
 				AddStage(stage);
 			}
 		}
@@ -55,7 +59,7 @@ namespace Cpf
 		}
 
 	private:
-		static System* _Creator(const String& name, const System::Desc* desc)
+		static System* _Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
 		{
 			return new InstanceSystem(name, static_cast<const Desc*>(desc));
 		}

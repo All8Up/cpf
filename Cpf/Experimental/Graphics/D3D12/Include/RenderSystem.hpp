@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/System.hpp"
+#include "Hash/HashString.hpp"
 
 namespace Cpf
 {
@@ -15,7 +16,7 @@ namespace Cpf
 	public:
 		//
 		static constexpr auto kID = MultiCore::SystemID("Render System"_crc64);
-		static constexpr auto BeginFrame = MultiCore::StageID("Begin Frame"_crc64);
+		static constexpr Hash::StringHash kBeginFrame = "Begin Frame"_stringHash;
 
 		// Registration.
 		static bool Install();
@@ -40,7 +41,7 @@ namespace Cpf
 		static void _EndFrame(Concurrency::ThreadContext& tc, void* context);
 
 		//
-		static System* Creator(const String& name, const System::Desc* desc);
+		static System* Creator(const String& name, const System::Desc* desc, const Dependencies& deps);
 
 		ExperimentalD3D12* mpApp;
 	};

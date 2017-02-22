@@ -17,5 +17,11 @@ namespace Cpf
 		using StageID = Hash::HashID<uint64_t, 2>;
 		class Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
+
+		enum class ExecutionMode
+		{
+			eSequencial = 0,
+			eConcurrent = 1
+		};
 	}
 }
