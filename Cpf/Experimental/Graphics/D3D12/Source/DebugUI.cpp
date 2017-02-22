@@ -5,6 +5,63 @@
 using namespace Cpf;
 using namespace Platform;
 
+void ExperimentalD3D12::_UpdateStageList()
+{
+	{
+		if (mpStageList)
+		{
+			for (int i = 0; i < mStageListCount; ++i)
+			{
+				delete[] mpStageList[i];
+			}
+			delete[] mpStageList;
+		}
+
+		mStageListCount = int(mpMultiCore->GetStages().size());
+		mpStageList = new char*[mStageListCount];
+		int i = 0;
+		for (auto& stage : mpMultiCore->GetStages())
+		{
+			if (stage)
+			{
+				mpStageList[i] = new char[stage->GetName().size() + 1];
+				strcpy(mpStageList[i++], stage->GetName().c_str());
+			}
+			else
+			{
+				static const String barrier("-- barrier --");
+				mpStageList[i] = new char[barrier.size() + 1];
+				strcpy(mpStageList[i++], barrier.c_str());
+			}
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
+	{
+		if (mpInstructionList)
+		{
+			for (int i = 0; i < mInstructionCount; ++i)
+			{
+				delete[] mpInstructionList[i];
+			}
+			delete[] mpInstructionList;
+		}
+
+		auto instructions = mQueue.Dissassemble();
+		mInstructionCount = int(instructions.size());
+
+		mpInstructionList = new char*[mInstructionCount];
+		int i = 0;
+		for (auto& instruction : instructions)
+		{
+			String description = mQueue.GetOpName(instruction.mOp);
+			description += " : " + std::to_string(intptr_t(instruction.mpPayload)) + " : " + std::to_string(intptr_t(instruction.mpContext));
+			mpInstructionList[i] = new char[description.size() + 1];
+			strcpy(mpInstructionList[i++], description.c_str());
+		}
+	}
+}
+
 void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 {
 	// Open the command buffer.

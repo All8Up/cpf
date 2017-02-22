@@ -3,54 +3,16 @@
 #include "Adapter/WindowedApp.hpp"
 #include "Graphics.hpp"
 #include "Concurrency/Scheduler.hpp"
-#include "Math/Vector3.hpp"
 #include "Resources/Locator.hpp"
 #include "GO/Manager.hpp"
 #include "Threading/Reactor.hpp"
 #include "Graphics/DebugUI.hpp"
 #include "MultiCore/Pipeline.hpp"
-#include "GO/ObjectStage.hpp"
-#include "GO/Systems/Timer.hpp"
+#include "MovementSystem.hpp"
 
 //
-class InstanceSystem;
 namespace Cpf
 {
-	class ExperimentalD3D12;
-
-	class MoverSystem : public MultiCore::System
-	{
-	public:
-		static constexpr auto kID = MultiCore::SystemID("Mover System"_crc64);
-
-		struct Desc : MultiCore::System::Desc
-		{
-			MultiCore::SystemID mTimerID;
-			MultiCore::SystemID mInstanceID;
-		};
-
-		// Component(s) supplied.
-		class MoverComponent;
-
-		MoverSystem(const String& name, const Desc* desc);
-		InstanceSystem* GetInstanceSystem() const;
-		bool Configure() override;
-		static bool Install();
-		static bool Remove();
-		void EnableMovement(bool flag) const;
-
-	private:
-		static MultiCore::System* _Creator(const String& name, const MultiCore::System::Desc* desc);
-
-		ExperimentalD3D12* mpApp;
-
-		// system interdependencies.
-		InstanceSystem* mpInstances;
-		const GO::Timer* mpTime;	// The clock this mover is attached to.
-		GO::ObjectStage* mpMoverStage;
-		MultiCore::SystemID mClockID;
-		MultiCore::SystemID mInstanceID;
-	};
 	class ExperimentalD3D12 : public Adapter::WindowedApp
 	{
 	public:
@@ -67,18 +29,8 @@ namespace Cpf
 
 		int Start(const CommandLine&) override;
 
-		static const int32_t kInstancesPerDimension = 75;
+		static const int32_t kInstancesPerDimension = 50;
 		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
-
-		struct Instance
-		{
-			Math::Vector3f mTranslation;
-			Math::Vector3f mScale;
-			// TODO: Resurrect the Matrix33f non-simd class for this.
-			Math::Vector3f mOrientation0;
-			Math::Vector3f mOrientation1;
-			Math::Vector3f mOrientation2;
-		};
 
 		Graphics::iVertexBuffer* GetCurrentInstanceBuffer() const { return mpInstanceBuffer[mCurrentBackbuffer]; }
 

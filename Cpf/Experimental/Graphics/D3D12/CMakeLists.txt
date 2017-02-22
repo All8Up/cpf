@@ -2,6 +2,10 @@ file (GLOB_RECURSE DataFiles Experimental/*)
 
 set (HEADER_FILES
 	Include/ExperimentalD3D12.hpp
+	Include/Instance.hpp
+	Include/RenderSystem.hpp
+	Include/MovementSystem.hpp
+	Include/InstanceSystem.hpp
 )
 set (SOURCE_FILES
 	Source/ExperimentalD3D12.cpp
@@ -11,6 +15,9 @@ set (SOURCE_FILES
 	Source/Device.cpp
 	Source/Resources.cpp
 	Source/DebugUI.cpp
+	Source/RenderSystem.cpp
+	Source/MovementSystem.cpp
+	Source/InstanceSystem.cpp
 )
 
 if (WIN32)

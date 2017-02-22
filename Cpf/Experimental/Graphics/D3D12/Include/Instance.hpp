@@ -1,0 +1,16 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+#include "Math/Vector3.hpp"
+
+namespace Cpf
+{
+	struct Instance
+	{
+		Math::Vector3f mTranslation;
+		Math::Vector3f mScale;
+		// TODO: Resurrect the Matrix33f non-simd class for this.
+		Math::Vector3f mOrientation0;
+		Math::Vector3f mOrientation1;
+		Math::Vector3f mOrientation2;
+	};
+}
