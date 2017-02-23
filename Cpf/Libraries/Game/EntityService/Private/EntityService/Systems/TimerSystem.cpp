@@ -1,11 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "GO/Systems/Timer.hpp"
-#include "GO/Manager.hpp"
-#include "GO/ObjectStage.hpp"
+#include "EntityService/Interfaces/Systems/iTimerSystem.hpp"
+#include "../Manager.hpp"
 #include "MultiCore/Stage.hpp"
 
 using namespace Cpf;
-using namespace GO;
+using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
 bool Timer::Install()

@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/System.hpp"
-#include "GO/ObjectStage.hpp"
+#include "EntityService/Interfaces/Stages/iEntityStage.hpp"
 
 namespace Cpf
 {
-	namespace GO
+	namespace EntityService
 	{
 		class Timer : public MultiCore::System
 		{

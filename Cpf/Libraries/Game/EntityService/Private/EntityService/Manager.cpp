@@ -1,13 +1,20 @@
 //////////////////////////////////////////////////////////////////////////
-#include "GO/Manager.hpp"
-#include "GO/Object.hpp"
+#include "Manager.hpp"
+#include "Entity.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
-using namespace GO;
+using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-ObjectID Manager::mNextID = ObjectID(0);
+iManager* EntityService::CreateManager()
+{
+	return new Manager();
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+EntityID Manager::mNextID = EntityID(0);
 
 //////////////////////////////////////////////////////////////////////////
 Manager::Manager()
@@ -16,19 +23,24 @@ Manager::Manager()
 Manager::~Manager()
 {}
 
-iEntity* Manager::CreateObject(ObjectID id)
+bool Manager::QueryInterface(InterfaceID id, void**)
 {
-	ObjectID realID = id;
-	if (id == kInvalidObjectID)
+	return false;
+}
+
+iEntity* Manager::CreateEntity(EntityID id)
+{
+	EntityID realID = id;
+	if (id == kInvalidEntityID)
 		realID = mNextID;
 
 	iEntity* result;
-	if (Object::Create(realID, &result))
+	if (Entity::Create(realID, &result))
 	{
-		mNextID = ObjectID(mNextID.GetID()+1);
+		mNextID = EntityID(mNextID.GetID()+1);
 		result->Initialize(this);
 		result->AddRef();
-		mObjectIDMap.emplace(realID, IntrusivePtr<iEntity>(result));
+		mEntityIDMap.emplace(realID, IntrusivePtr<iEntity>(result));
 		result->Activate();
 		return result;
 	}
@@ -37,15 +49,15 @@ iEntity* Manager::CreateObject(ObjectID id)
 
 void Manager::Remove(iEntity* object)
 {
-	auto it = mObjectIDMap.find(object->GetID());
-	CPF_ASSERT(it != mObjectIDMap.end());
+	auto it = mEntityIDMap.find(object->GetID());
+	CPF_ASSERT(it != mEntityIDMap.end());
 	object->Deactivate();
-	mObjectIDMap.erase(it);
+	mEntityIDMap.erase(it);
 }
 
-void Manager::IterateObjects(Function<void(iEntity*)> cb)
+void Manager::IterateEntities(Function<void(iEntity*)> cb)
 {
-	for (auto& it : mObjectIDMap)
+	for (auto& it : mEntityIDMap)
 	{
 		cb(it.second);
 	}

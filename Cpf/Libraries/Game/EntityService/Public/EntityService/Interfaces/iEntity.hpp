@@ -1,24 +1,30 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCount.hpp"
-#include "EntityService/Interfaces/iEntityService.hpp"
+#include "EntityService/Interfaces/iManager.hpp"
 
 namespace Cpf
 {
 	namespace EntityService
 	{
-		class iEntity : public iUnknown
+		struct iComponent;
+
+		using ComponentCreator = iComponent* (*)(MultiCore::System*);
+		bool ComponentFactoryInstall(InterfaceID iid, ComponentCreator creator);
+		bool ComponentFactoryRemove(InterfaceID iid);
+		iComponent* ComponentFactoryCreate(InterfaceID iid, MultiCore::System*);
+
+		struct iEntity : public iUnknown
 		{
-		public:
-			virtual void Initialize(iEntityService* owner) = 0;
+			virtual void Initialize(iManager*) = 0;
 			virtual void Shutdown() = 0;
 
-			virtual iEntityService* GetService() = 0;
+			virtual iManager* GetManager() = 0;
 
 			virtual void Activate() = 0;
 			virtual void Deactivate() = 0;
 
-			virtual const ObjectID& GetID() const = 0;
+			virtual const EntityID& GetID() const = 0;
 
 			virtual void AddComponent(InterfaceID id, iComponent* component) = 0;
 			virtual iComponent* GetComponent(InterfaceID id) = 0;
@@ -43,5 +49,40 @@ namespace Cpf
 			template <typename TYPE>
 			TYPE* AddComponent(TYPE* component);
 		};
+
+
+		template <typename TYPE>
+		TYPE* iEntity::AddComponent(TYPE* component)
+		{
+			AddComponent(TYPE::kIID, reinterpret_cast<iComponent*>(component));
+			return component;
+		}
+
+		template <typename TYPE>
+		TYPE* iEntity::CreateComponent(MultiCore::System* system)
+		{
+			iComponent* created = ComponentFactoryCreate(TYPE::kIID, system);
+			TYPE* result = nullptr;
+			if (created)
+			{
+				if (created->QueryInterface(TYPE::kIID, reinterpret_cast<void**>(&result)))
+					AddComponent<TYPE>(result);
+				created->Release();
+			}
+			return result;
+		}
+
+
+		template <typename TYPE>
+		TYPE* iEntity::GetComponent()
+		{
+			return static_cast<TYPE*>(GetComponent(TYPE::kIID));
+		}
+
+		template <typename TYPE>
+		const TYPE* iEntity::GetComponent() const
+		{
+			return static_cast<const TYPE*>(GetComponent(TYPE::kIID));
+		}
 	}
 }

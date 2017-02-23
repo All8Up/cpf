@@ -23,10 +23,9 @@
 #include "Adapter/D3D12/Instance.hpp"
 #include "RenderSystem.hpp"
 
-#include "GO.hpp"
-#include "Go/Object.hpp"
-#include "GO/Systems/Timer.hpp"
-#include "GO/Components/iTransformComponent.hpp"
+#include "EntityService.hpp"
+#include "EntityService/Interfaces/iEntity.hpp"
+#include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -54,7 +53,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
-	ScopedInitializer<GOInitializer> goInit;
+	ScopedInitializer<EntityServiceInitializer> goInit;
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;
@@ -64,6 +63,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
+	mpEntityManager = EntityService::CreateManager();
+
+	//////////////////////////////////////////////////////////////////////////
 	// Install object components.
 	MoverSystem::MoverComponent::Install();
 	
@@ -71,18 +73,16 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	MultiCore::Pipeline::Create(mpMultiCore.AsTypePP());
 
 	// Install the stage types.
-	GO::ObjectStage::Install();
 	MultiCore::SingleUpdateStage::Install();
 
 	// Install the systems this will use.
 	RenderSystem::Install();
-	GO::Timer::Install();
 	InstanceSystem::Install();
 	MoverSystem::Install();
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<GO::Timer> gameTime(MultiCore::System::Create<GO::Timer>("Game Time"));
+	IntrusivePtr<EntityService::Timer> gameTime(MultiCore::System::Create<EntityService::Timer>("Game Time"));
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.
@@ -118,9 +118,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Create test objects.
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
-		IntrusivePtr<GO::iEntity> object(mGOService.CreateObject());
-		object->CreateComponent<GO::iTransformComponent>(nullptr);
-		object->CreateComponent<iMoverComponent>(mpMoverSystem);
+		IntrusivePtr<EntityService::iEntity> entity(mpEntityManager->CreateEntity());
+		entity->CreateComponent<EntityService::iTransformComponent>(nullptr);
+		entity->CreateComponent<iMoverComponent>(mpMoverSystem);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

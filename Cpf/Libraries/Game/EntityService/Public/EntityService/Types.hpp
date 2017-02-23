@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
 #include "Hash/HashID.hpp"
 
 namespace Cpf
@@ -13,9 +12,5 @@ namespace Cpf
 
 		using ComponentID = Hash::HashID<uint64_t, 5>;
 		constexpr ComponentID kInvalidComponentID = ComponentID(uint64_t(-1));
-
-		struct iEntity;
-		struct iComponent;
-		struct iEntityService;
 	}
 }

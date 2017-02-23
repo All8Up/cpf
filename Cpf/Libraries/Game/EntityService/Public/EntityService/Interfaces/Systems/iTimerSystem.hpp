@@ -5,7 +5,7 @@
 
 namespace Cpf
 {
-	namespace GO
+	namespace EntityService
 	{
 		class Timer : public MultiCore::System
 		{

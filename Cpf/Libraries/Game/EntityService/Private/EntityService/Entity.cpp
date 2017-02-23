@@ -1,11 +1,27 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Entity.hpp"
 #include "EntityService/Interfaces/iComponent.hpp"
-#include "EntityService/Interfaces/iEntityService.hpp"
+#include "EntityService/Interfaces/iManager.hpp"
 #include "Move.hpp"
 
 using namespace Cpf;
 using namespace EntityService;
+
+//////////////////////////////////////////////////////////////////////////
+bool EntityService::ComponentFactoryInstall(InterfaceID iid, ComponentCreator creator)
+{
+	return Entity::Install(iid, creator);
+}
+
+bool EntityService::ComponentFactoryRemove(InterfaceID iid)
+{
+	return Entity::Remove(iid);
+}
+
+iComponent* EntityService::ComponentFactoryCreate(InterfaceID iid, MultiCore::System* system)
+{
+	return Entity::CreateComponent(iid, system);
+}
 
 //////////////////////////////////////////////////////////////////////////
 Entity::ComponentMap Entity::mComponentCreators;
@@ -88,7 +104,7 @@ bool Entity::QueryInterface(InterfaceID id, void** outPtr)
 }
 
 Entity::Entity()
-	: mpService(nullptr)
+	: mpManager(nullptr)
 	, mID(kInvalidEntityID)
 	, mActive(false)
 	, mComponentCount(0)
@@ -97,19 +113,19 @@ Entity::Entity()
 Entity::~Entity()
 {}
 
-void Entity::Initialize(iEntityService* owner)
+void Entity::Initialize(iManager* owner)
 {
-	CPF_ASSERT(mpService == nullptr);
-	mpService = owner;
+	CPF_ASSERT(mpManager == nullptr);
+	mpManager = owner;
 }
 
 void Entity::Shutdown()
 {
-	CPF_ASSERT(mpService != nullptr);
+	CPF_ASSERT(mpManager != nullptr);
 #ifdef CPF_DEBUG
 
 #endif
-	mpService = nullptr;
+	mpManager = nullptr;
 }
 
 void Entity::Activate()

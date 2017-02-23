@@ -4,7 +4,7 @@
 #include "Graphics.hpp"
 #include "Concurrency/Scheduler.hpp"
 #include "Resources/Locator.hpp"
-#include "EntityService/Interfaces/iEntityService.hpp"
+#include "EntityService/Interfaces/iManager.hpp"
 #include "Threading/Reactor.hpp"
 #include "Graphics/DebugUI.hpp"
 #include "MultiCore/Pipeline.hpp"
@@ -25,6 +25,7 @@ namespace Cpf
 			, mSelectedInstruction(0)
 			, mpInstructionList(nullptr)
 			, mInstructionCount(0)
+			, mpEntityManager(nullptr)
 		{}
 
 		int Start(const CommandLine&) override;
@@ -128,7 +129,7 @@ namespace Cpf
 		// If the multi-core side of things needs anything run on the main thread,
 		// feed it in this queue.
 		Platform::Threading::Reactor::WorkQueue mReactorQueue;
-		GO::Manager mGOService;
+		EntityService::iManager* mpEntityManager;
 
 		Graphics::DebugUI mDebugUI;
 

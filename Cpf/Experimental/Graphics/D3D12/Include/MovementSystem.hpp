@@ -46,8 +46,8 @@ namespace Cpf
 
 		// system interdependencies.
 		InstanceSystem* mpInstances;
-		const GO::Timer* mpTime;	// The clock this mover is attached to.
-		EntityService::ObjectStage* mpMoverStage;
+		const EntityService::Timer* mpTime;	// The clock this mover is attached to.
+		EntityService::EntityStage* mpMoverStage;
 		MultiCore::SystemID mClockID;
 		MultiCore::SystemID mInstanceID;
 	};

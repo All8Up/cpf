@@ -8,12 +8,12 @@
 
 namespace Cpf
 {
-	namespace EntitySystem
+	namespace EntityService
 	{
 		struct iEntity;
 
 
-		class ObjectStage : public MultiCore::Stage
+		class EntityStage : public MultiCore::Stage
 		{
 		public:
 			static constexpr auto kID = MultiCore::StageID("Object Stage"_crc64);
@@ -30,7 +30,7 @@ namespace Cpf
 			void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 
 		private:
-			ObjectStage(MultiCore::System* owner, const String& name);
+			EntityStage(MultiCore::System* owner, const String& name);
 
 			static MultiCore::Stage* _Creator(MultiCore::System*, const String& name);
 
