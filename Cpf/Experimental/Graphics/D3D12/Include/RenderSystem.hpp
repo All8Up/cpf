@@ -30,7 +30,7 @@ namespace Cpf
 
 	private:
 		// Construction/Destruction.
-		RenderSystem(const String& name, const Desc* desc);
+		RenderSystem(const String& name, const Dependencies& deps, const Desc* desc);
 		~RenderSystem() override;
 
 		static void _BeginFrame(Concurrency::ThreadContext& tc, void* context);

@@ -1,11 +1,51 @@
 //////////////////////////////////////////////////////////////////////////
-#include "GO/Components/TransformComponent.hpp"
+#include "TransformComponent.hpp"
+#include "../Entity.hpp"
 
 using namespace Cpf;
-using namespace GO;
+using namespace EntityService;
+
+bool TransformComponent::Install()
+{
+	return Entity::Install(iTransformComponent::kIID, &TransformComponent::Creator);
+}
+
+bool TransformComponent::Remove()
+{
+	return Entity::Remove(iTransformComponent::kIID);
+}
+
+iComponent* TransformComponent::Creator(MultiCore::System* system)
+{
+	return static_cast<iComponent*>(new TransformComponent(system));
+}
+
+bool TransformComponent::QueryInterface(InterfaceID id, void** outPtr)
+{
+	switch(id.GetID())
+	{
+	case iUnknown::kIID.GetID():
+		{
+			iUnknown* result = static_cast<iUnknown*>(this);
+			result->AddRef();
+			*outPtr = result;
+			return true;
+		}
+
+	case iTransformComponent::kIID.GetID():
+		{
+			iTransformComponent* result = static_cast<iTransformComponent*>(this);
+			result->AddRef();
+			*outPtr = result;
+			return true;
+		}
+	}
+	*outPtr = nullptr;
+	return false;
+}
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent()
+TransformComponent::TransformComponent(MultiCore::System*)
 	: mpParent(nullptr)
 {}
 
@@ -33,7 +73,7 @@ void TransformComponent::Shutdown()
  @brief Gets the parent of transform.
  @return null if this is in world space, else the parent.
  */
-TransformComponent* TransformComponent::GetParent() const
+iTransformComponent* TransformComponent::GetParent() const
 {
 	return mpParent;
 }
@@ -43,7 +83,7 @@ TransformComponent* TransformComponent::GetParent() const
  @param [in,out] transform The parent to set.
  @param maintainRelative true to maintain relative transform information.
  */
-void TransformComponent::SetParent(TransformComponent* transform, bool maintainRelative)
+void TransformComponent::SetParent(iTransformComponent* transform, bool maintainRelative)
 {
 	CPF_ASSERT(mpParent != transform);
 	if (mpParent)
@@ -55,7 +95,7 @@ void TransformComponent::SetParent(TransformComponent* transform, bool maintainR
 		// 1. Get a transform from our current parent into the new parent.
 		// 2. Modify this transform by the mapping.
 	}
-	mpParent = transform;
+	mpParent = static_cast<TransformComponent*>(transform);
 	if (transform)
 		transform->AddChild(this);
 }
@@ -64,21 +104,21 @@ void TransformComponent::SetParent(TransformComponent* transform, bool maintainR
  @brief Adds a child.
  @param [in,out] transform If non-null, the transform.
  */
-void TransformComponent::AddChild(TransformComponent* transform)
+void TransformComponent::AddChild(iTransformComponent* transform)
 {
 #ifdef CPF_DEBUG
 	// Can't be owned already.
 	for (auto& it : mChildren)
 		CPF_ASSERT(it != transform);
 #endif
-	mChildren.emplace_back(transform);
+	mChildren.emplace_back(static_cast<TransformComponent*>(transform));
 }
 
 /**
  @brief Removes the child described by transform.
  @param [in,out] transform If non-null, the transform.
  */
-void TransformComponent::RemoveChild(TransformComponent* transform)
+void TransformComponent::RemoveChild(iTransformComponent* transform)
 {
 	for (auto ibegin = mChildren.begin(), iend=mChildren.end(); ibegin!=iend; ++ibegin)
 	{

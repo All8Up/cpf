@@ -7,10 +7,11 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(const String& name)
+System::System(const String& name, const Dependencies& deps)
 	: mpOwner(nullptr)
 	, mName(name)
 	, mID(Hash::Crc64(name.c_str(), name.size()))
+	, mDependencies(deps)
 {}
 
 System::~System()

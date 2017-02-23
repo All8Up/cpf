@@ -4,7 +4,7 @@
 #include "Graphics.hpp"
 #include "Concurrency/Scheduler.hpp"
 #include "Resources/Locator.hpp"
-#include "GO/Manager.hpp"
+#include "EntityService/Interfaces/iEntityService.hpp"
 #include "Threading/Reactor.hpp"
 #include "Graphics/DebugUI.hpp"
 #include "MultiCore/Pipeline.hpp"

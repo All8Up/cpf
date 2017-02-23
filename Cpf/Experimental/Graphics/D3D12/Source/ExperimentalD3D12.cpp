@@ -19,12 +19,14 @@
 #include "Math/Matrix33v.hpp"
 #include "IO/IO.hpp"
 
-#include "GO.hpp"
-#include "GO/Components/TransformComponent.hpp"
-#include "GO/Systems/Timer.hpp"
 #include "MovementSystem.hpp"
 #include "Adapter/D3D12/Instance.hpp"
 #include "RenderSystem.hpp"
+
+#include "GO.hpp"
+#include "Go/Object.hpp"
+#include "GO/Systems/Timer.hpp"
+#include "GO/Components/iTransformComponent.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -52,6 +54,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
+	ScopedInitializer<GOInitializer> goInit;
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;
@@ -60,6 +63,10 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mViewportSize = halfFov;
 	mAspectRatio = 1.0f;
 
+	//////////////////////////////////////////////////////////////////////////
+	// Install object components.
+	MoverSystem::MoverComponent::Install();
+	
 	//////////////////////////////////////////////////////////////////////////
 	MultiCore::Pipeline::Create(mpMultiCore.AsTypePP());
 
@@ -111,9 +118,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Create test objects.
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
-		IntrusivePtr<GO::Object> object(mGOService.CreateObject());
-		object->CreateComponent<GO::TransformComponent>();
-		object->CreateComponent<MoverSystem::MoverComponent>(mpMultiCore->GetSystem<MoverSystem>("Mover"));
+		IntrusivePtr<GO::iEntity> object(mGOService.CreateObject());
+		object->CreateComponent<GO::iTransformComponent>(nullptr);
+		object->CreateComponent<iMoverComponent>(mpMoverSystem);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

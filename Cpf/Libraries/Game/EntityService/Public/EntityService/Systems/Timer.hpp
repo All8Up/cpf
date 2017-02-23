@@ -23,7 +23,7 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			Timer(const String& name);
+			Timer(const String& name, const Dependencies& deps);
 			~Timer() override;
 
 			//

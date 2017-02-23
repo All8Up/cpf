@@ -1,0 +1,192 @@
+//////////////////////////////////////////////////////////////////////////
+#include "Entity.hpp"
+#include "EntityService/Interfaces/iComponent.hpp"
+#include "EntityService/Interfaces/iEntityService.hpp"
+#include "Move.hpp"
+
+using namespace Cpf;
+using namespace EntityService;
+
+//////////////////////////////////////////////////////////////////////////
+Entity::ComponentMap Entity::mComponentCreators;
+
+//////////////////////////////////////////////////////////////////////////
+bool Entity::Install(InterfaceID iid, ComponentCreator creator)
+{
+	if (mComponentCreators.find(iid)==mComponentCreators.end())
+	{
+		mComponentCreators[iid] = creator;
+		return true;
+	}
+	return false;
+}
+
+bool Entity::Remove(InterfaceID iid)
+{
+	if (mComponentCreators.find(iid) == mComponentCreators.end())
+	{
+		mComponentCreators.erase(iid);
+		return true;
+	}
+	return false;
+}
+
+iComponent* Entity::CreateComponent(InterfaceID iid, MultiCore::System* system)
+{
+	iComponent* result = nullptr;
+	const auto& creator = mComponentCreators.find(iid);
+	if (creator != mComponentCreators.end())
+	{
+		result = (*creator->second)(system);
+	}
+	return result;
+}
+
+//////////////////////////////////////////////////////////////////////////
+bool Entity::Create(EntityID id, iEntity** outEntity)
+{
+	CPF_ASSERT(outEntity != nullptr);
+	Entity* result = new Entity();
+	if (result)
+	{
+		result->mID = id;
+		*outEntity = result;
+		return true;
+	}
+	*outEntity = nullptr;
+	return false;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+bool Entity::QueryInterface(InterfaceID id, void** outPtr)
+{
+	switch (id.GetID())
+	{
+	case iUnknown::kIID.GetID():
+		{
+			iUnknown* result = static_cast<iUnknown*>(this);
+			result->AddRef();
+			*outPtr = result;
+			return true;
+		}
+
+	default:
+		{
+			iComponent* component = static_cast<iComponent*>(GetComponent(id));
+			if (component)
+			{
+				*outPtr = component;
+				component->AddRef();
+				return true;
+			}
+		}
+	}
+
+	*outPtr = nullptr;
+	return false;
+}
+
+Entity::Entity()
+	: mpService(nullptr)
+	, mID(kInvalidEntityID)
+	, mActive(false)
+	, mComponentCount(0)
+{}
+
+Entity::~Entity()
+{}
+
+void Entity::Initialize(iEntityService* owner)
+{
+	CPF_ASSERT(mpService == nullptr);
+	mpService = owner;
+}
+
+void Entity::Shutdown()
+{
+	CPF_ASSERT(mpService != nullptr);
+#ifdef CPF_DEBUG
+
+#endif
+	mpService = nullptr;
+}
+
+void Entity::Activate()
+{
+	mActive = true;
+	for (int i = 0; i < mComponentCount; ++i)
+		mComponents[i].second->Activate();
+}
+
+void Entity::Deactivate()
+{
+	for (int i = 0; i < mComponentCount; ++i)
+		mComponents[i].second->Deactivate();
+	mActive = false;
+}
+
+const EntityID& Entity::GetID() const
+{
+	return mID;
+}
+
+void Entity::AddComponent(InterfaceID id, iComponent* component)
+{
+	component->SetEntity(this);
+	CPF_ASSERT(mComponentCount < kMaxComponents);
+	int i = 0;
+	while (i < mComponentCount)
+	{
+		if (id < mComponents[i].first)
+		{
+			// First move everything up by one slot.
+			for (int j = mComponentCount; j > i; --j)
+				mComponents[j] = Move(mComponents[j - 1]);
+			break;
+		}
+		++i;
+	}
+	// Insert.
+	mComponents[i] = Move(ComponentPair(id, component));
+	++mComponentCount;
+	if (mActive)
+		component->Activate();
+}
+
+int Entity::_GetComponentIndex(InterfaceID id) const
+{
+	int low = 0;
+	int high = mComponentCount;
+
+	while (low < high)
+	{
+		int mid = low + (high - low) / 2;
+		if (mComponents[mid].first < id)
+		{
+			low = mid + 1;
+			continue;
+		}
+		if (id < mComponents[mid].first)
+		{
+			high = mid;
+			continue;
+		}
+		if (id == mComponents[mid].first)
+			return mid;
+		return -1;
+	}
+	return -1;
+}
+
+iComponent* Entity::GetComponent(InterfaceID id)
+{
+	int index = _GetComponentIndex(id);
+	return index==-1 ? nullptr : static_cast<iComponent*>(mComponents[index].second);
+}
+
+const iComponent* Entity::GetComponent(InterfaceID id) const
+{
+	int index = _GetComponentIndex(id);
+	return index == -1 ? nullptr : static_cast<const iComponent*>(mComponents[index].second);
+}

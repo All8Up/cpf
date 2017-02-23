@@ -51,7 +51,7 @@ namespace Cpf
 
 		protected:
 			// Implementation interface.
-			System(const String& name);
+			System(const String& name, const Dependencies& deps);
 			virtual ~System();
 
 			bool AddStage(Stage*);
@@ -66,6 +66,7 @@ namespace Cpf
 			StageVector mStages;
 			String mName;
 			SystemID mID;
+			const Dependencies mDependencies;
 		};
 
 		// Typed system factory.

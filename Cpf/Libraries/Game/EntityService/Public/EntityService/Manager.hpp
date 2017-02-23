@@ -4,6 +4,7 @@
 #include "UnorderedMap.hpp"
 #include "RefCounted.hpp"
 #include "Functional.hpp"
+#include "MultiCore/Pipeline.hpp"
 
 
 namespace Cpf
@@ -16,22 +17,26 @@ namespace Cpf
 		class Manager : public tRefCounted<iRefCounted>
 		{
 		public:
-			using ObjectIDMap = UnorderedMap<ObjectID, IntrusivePtr<Object>>;
+			using ObjectIDMap = UnorderedMap<ObjectID, IntrusivePtr<iEntity>>;
 			using ObjectIDValue = ObjectIDMap::value_type;
 
 			//
 			Manager();
 			~Manager() override;
 
+			// 
+			MultiCore::Pipeline* GetPipeline() const { return mpPipeline; }
+
 			// Service interface.
-			Object* CreateObject(ObjectID id = kInvalidObjectID);
-			void Remove(Object*);
-			void IterateObjects(Function<void (Object*)> cb);
+			iEntity* CreateObject(ObjectID id = kInvalidObjectID);
+			void Remove(iEntity*);
+			void IterateObjects(Function<void (iEntity*)> cb);
 
 		private:
 			//
 			static ObjectID mNextID;
 			ObjectIDMap mObjectIDMap;
+			MultiCore::Pipeline* mpPipeline;
 		};
 	}
 }

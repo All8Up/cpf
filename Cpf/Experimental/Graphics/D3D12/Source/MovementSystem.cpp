@@ -4,17 +4,48 @@
 #include "ExperimentalD3D12.hpp"
 #include "MultiCore/Pipeline.hpp"
 #include "GO/Object.hpp"
-#include "GO/Component.hpp"
 #include "Math/Vector3v.hpp"
 #include "Math/Matrix33v.hpp"
-#include "GO/Components/TransformComponent.hpp"
+
+#include "GO/Components/iTransformComponent.hpp"
 
 using namespace Cpf;
 using namespace Math;
 using namespace Platform;
 
-MoverSystem::MoverSystem(const String& name, const Desc* desc)
-	: System(name)
+bool MoverSystem::MoverComponent::Install()
+{
+	return GO::Object::Install(iMoverComponent::kIID, &MoverSystem::MoverComponent::Create);
+}
+
+bool MoverSystem::MoverComponent::Remove()
+{
+	return GO::Object::Remove(iMoverComponent::kIID);
+}
+
+GO::iComponent* MoverSystem::MoverComponent::Create(MultiCore::System* system)
+{
+	return static_cast<GO::iComponent*>(new MoverComponent(system));
+}
+
+bool MoverSystem::MoverComponent::QueryInterface(InterfaceID id, void** outPtr)
+{
+	if (id.GetID() == iMoverComponent::kIID.GetID())
+	{
+		iMoverComponent* mover = static_cast<iMoverComponent*>(this);
+		mover->AddRef();
+		*outPtr = mover;
+		return true;
+	}
+
+	*outPtr = nullptr;
+	return false;
+}
+
+
+
+MoverSystem::MoverSystem(const String& name, const Dependencies& deps, const Desc* desc)
+	: System(name, deps)
 	, mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -55,16 +86,16 @@ void MoverSystem::EnableMovement(bool flag) const
 
 MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
 {
-	return new MoverSystem(name, static_cast<const Desc*>(desc));
+	return new MoverSystem(name, deps, static_cast<const Desc*>(desc));
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(MoverSystem* mover)
-	: mpMover(mover)
+MoverSystem::MoverComponent::MoverComponent(MultiCore::System* owner)
+	: mpMover(static_cast<MoverSystem*>(owner))
 {}
 
-	//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 GO::ComponentID MoverSystem::MoverComponent::GetID() const
 {
 	return kID;
@@ -72,15 +103,15 @@ GO::ComponentID MoverSystem::MoverComponent::GetID() const
 
 void MoverSystem::MoverComponent::Activate()
 {
-	mpMover->mpMoverStage->AddUpdate(mpMover, GetObject(), &MoverComponent::_Update);
+	mpMover->mpMoverStage->AddUpdate(mpMover, Component::GetOwner(), &MoverComponent::_Update);
 }
 
 void MoverSystem::MoverComponent::Deactivate()
 {
-	mpMover->mpMoverStage->RemoveUpdate(mpMover, GetObject(), &MoverComponent::_Update);
+	mpMover->mpMoverStage->RemoveUpdate(mpMover, Component::GetOwner(), &MoverComponent::_Update);
 }
 
-void MoverSystem::MoverComponent::_Update(System* system, GO::Object* object)
+void MoverSystem::MoverComponent::_Update(System* system, GO::iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	const GO::Timer* timer = mover->mpTime;
@@ -99,7 +130,9 @@ void MoverSystem::MoverComponent::_Update(System* system, GO::Object* object)
 	pos.x = sinf(angle * magnitude) * pos.x - cosf(angle * magnitude) * pos.z;
 	pos.y = (sinf(angle) + 0.5f) * pos.y * magnitude;
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
-	object->GetComponent<GO::TransformComponent>()->GetTransform().SetTranslation(pos);
+
+	IntrusivePtr<GO::iTransformComponent> transform;
+	object->QueryInterface(GO::iTransformComponent::kIID, transform.AsVoidPP());
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time);
 

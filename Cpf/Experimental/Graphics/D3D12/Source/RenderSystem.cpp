@@ -16,8 +16,8 @@ bool RenderSystem::Remove()
 	return System::Remove(kID);
 }
 
-RenderSystem::RenderSystem(const String& name, const Desc* desc)
-	: System(name)
+RenderSystem::RenderSystem(const String& name, const Dependencies& deps, const Desc* desc)
+	: System(name, deps)
 	, mpApp(desc->mpApplication)
 {
 	{
@@ -107,5 +107,5 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 
 MultiCore::System* RenderSystem::Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
 {
-	return new RenderSystem(name, static_cast<const Desc*>(desc));
+	return new RenderSystem(name, deps, static_cast<const Desc*>(desc));
 }

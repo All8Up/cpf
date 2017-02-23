@@ -3,17 +3,26 @@
 */
 #pragma once
 #include "RefCount.hpp"
+#include "Hash/HashID.hpp"
 
 namespace Cpf
 {
-	class iRefCounted
+	using InterfaceID = Hash::HashID<uint64_t, 0>;
+
+	struct iRefCounted
 	{
-	public:
 		virtual int32_t AddRef() = 0;
 		virtual int32_t Release() = 0;
 
 	protected:
 		virtual ~iRefCounted() {};
+	};
+
+	struct iUnknown : iRefCounted
+	{
+		static constexpr auto kIID = InterfaceID("iUnknown Interface"_crc64);
+
+		virtual bool QueryInterface(InterfaceID id, void**) = 0;
 	};
 
 	inline int32_t SafeAddRef(iRefCounted* rc)

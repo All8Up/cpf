@@ -7,6 +7,7 @@ set (INCLUDE_FILES
 
 add_library (RefCount INTERFACE
 )
+target_link_libraries (RefCount INTERFACE Configuration s_Hash)
 
 source_group (Interface FILES ${INCLUDE_FILES})
 

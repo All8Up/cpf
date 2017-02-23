@@ -20,12 +20,12 @@ bool Timer::Remove()
 
 MultiCore::System* Timer::Creator(const String& name, const Desc*, const Dependencies& deps)
 {
-	return new Timer(name);
+	return new Timer(name, deps);
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(const String& name)
-	: System(name)
+Timer::Timer(const String& name, const Dependencies& deps)
+	: System(name, deps)
 	, mpUpdate(nullptr)
 {
 	mStart = Platform::Time::Now();

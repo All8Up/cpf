@@ -22,8 +22,8 @@ namespace Cpf
 			ExperimentalD3D12* mpApplication;
 		};
 
-		InstanceSystem(const String& name, const Desc* desc)
-			: System(name)
+		InstanceSystem(const String& name, const Dependencies& deps, const Desc* desc)
+			: System(name, deps)
 			, mpApp(desc->mpApplication)
 			, mRenderID(desc->mRenderSystemID)
 			, mpInstances(nullptr)
@@ -61,7 +61,7 @@ namespace Cpf
 	private:
 		static System* _Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
 		{
-			return new InstanceSystem(name, static_cast<const Desc*>(desc));
+			return new InstanceSystem(name, deps, static_cast<const Desc*>(desc));
 		}
 
 		static void _Begin(Concurrency::ThreadContext&, void* context);

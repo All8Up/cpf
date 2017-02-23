@@ -31,14 +31,14 @@ void ObjectStage::Emit(Concurrency::Scheduler::Queue& q)
 	q.All(&ObjectStage::_Update, this);
 }
 
-void ObjectStage::AddUpdate(MultiCore::System* s, Object* o, UpdateFunc f)
+void ObjectStage::AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
 	mWork.Add({ s, o, f });
 	mWork.Release();
 }
 
-void ObjectStage::RemoveUpdate(MultiCore::System* s, Object* o, UpdateFunc f)
+void ObjectStage::RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
 	mWork.Remove({ s, o, f });

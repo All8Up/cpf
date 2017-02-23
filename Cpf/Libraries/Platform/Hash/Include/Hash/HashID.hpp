@@ -21,7 +21,7 @@ namespace Cpf
 			HashID(const HashID& rhs);
 			explicit constexpr HashID(TYPE rhs);
 
-			TYPE GetID() const;
+			constexpr TYPE GetID() const;
 
 			HashID& operator =(const HashID& rhs);
 
@@ -52,7 +52,7 @@ namespace Cpf
 		{}
 
 		template <typename TYPE, const int UNIQUE>
-		TYPE HashID<TYPE, UNIQUE>::GetID() const
+		constexpr TYPE HashID<TYPE, UNIQUE>::GetID() const
 		{
 			return mID;
 		}
