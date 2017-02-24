@@ -10,6 +10,7 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Partitioning.hpp
 	Include/MultiCore/Pipeline.hpp
 	Include/MultiCore/System.hpp
+	Include/MultiCore/DependencySolver.hpp
 )
 
 set (SOURCE_FILES
@@ -19,6 +20,7 @@ set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Stage.cpp
 	Source/MultiCore/Pipeline.cpp
 	Source/MultiCore/System.cpp
+	Source/MultiCore/DependencySolver.cpp
 )
 
 add_library (s_MultiCore STATIC
@@ -58,3 +60,11 @@ install (TARGETS s_MultiCore
 )
 install (EXPORT MultiCoreSystemConfig DESTINATION CMake)
 ]]#
+
+# ###############################################
+MakeUnitTest( LIBRARY s_MultiCore GROUP Game
+	TEST_FILES
+		UnitTest/Test_All.hpp
+		UnitTest/Test_DependencySolver.hpp
+		../../Core/Test/UnitTestMain.cpp
+)

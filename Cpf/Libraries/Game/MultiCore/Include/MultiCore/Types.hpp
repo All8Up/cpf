@@ -4,6 +4,7 @@
 #include "Vector.hpp"
 #include "IntrusivePtr.hpp"
 #include "Hash/HashID.hpp"
+#include "Pair.hpp"
 
 namespace Cpf
 {
@@ -18,10 +19,21 @@ namespace Cpf
 		class Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
 
-		enum class ExecutionMode
+		//////////////////////////////////////////////////////////////////////////
+		// These are simply hints to the system, when concurrent is used it is just
+		// a user hint that they want to group stages together.
+		enum class ConcurrencyStyle
 		{
 			eSequencial = 0,
 			eConcurrent = 1
 		};
+		using SystemStagePair = Pair<SystemID, StageID>;
+		struct Dependency
+		{
+			ConcurrencyStyle mStyle;
+			SystemStagePair mDependent;
+			SystemStagePair mTarget;
+		};
+		using DependencyVector = Vector<Dependency>;
 	}
 }

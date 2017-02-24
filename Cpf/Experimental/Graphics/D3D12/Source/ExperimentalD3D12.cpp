@@ -98,7 +98,12 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	instanceDesc.mpApplication = this;
 	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc, {
 		// Add a dependency from this systems begin stage to the render systems begin frame stage.  It can run concurrently with the begin frame stage.
-		{MultiCore::ExecutionMode::eConcurrent, MultiCore::StageID(InstanceSystem::kBegin.ID), renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.ID) }
+		{
+			MultiCore::ConcurrencyStyle::eConcurrent,
+			MultiCore::StageID(InstanceSystem::kBegin.ID),
+			renderSystem->GetID(),
+			MultiCore::StageID(RenderSystem::kBeginFrame.ID)
+		}
 	}));
 	mpMultiCore->Install(instanceSystem);
 
@@ -107,7 +112,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
 	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc, {
-		{MultiCore::ExecutionMode::eSequencial, MultiCore::StageID(MoverSystem::kMoverStage.ID), instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.ID)}
+		{MultiCore::ConcurrencyStyle::eSequencial, MultiCore::StageID(MoverSystem::kMoverStage.ID), instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.ID)}
 	}));
 	mpMultiCore->Install(mpMoverSystem);
 

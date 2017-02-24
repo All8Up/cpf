@@ -18,7 +18,7 @@ namespace Cpf
 			// Extra dependency data.
 			struct Dependency
 			{
-				ExecutionMode Mode;
+				ConcurrencyStyle Mode;
 				StageID LocalStage;
 				SystemID TargetSystem;
 				StageID TargetStage;
