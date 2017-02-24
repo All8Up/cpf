@@ -34,7 +34,7 @@ if (WIN32)
 		s_SDL2
 		Logging
 		s_ANSI_C_FileSystem
-		s_GO
+		s_EntityService
 		s_Resources
 		s_GraphicsDriver
 		s_AdapterD3D12

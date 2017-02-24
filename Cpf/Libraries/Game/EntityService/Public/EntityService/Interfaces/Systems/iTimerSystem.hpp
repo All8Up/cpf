@@ -1,17 +1,28 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Hash/HashString.hpp"
 #include "MultiCore/System.hpp"
-#include "GO/ObjectStage.hpp"
+#include "EntityService/Types.hpp"
+#include "EntityService/Interfaces/Stages/iEntityStage.hpp"
+#include "EntityService/Interfaces/iSystem.hpp"
 
 namespace Cpf
 {
-	namespace GO
+	namespace EntityService
 	{
-		class Timer : public MultiCore::System
+		struct iTimerSystem : iSystem
+		{
+			virtual Platform::Time::Value GetTime() const = 0;
+			virtual float GetDeltaTime() const = 0;
+		};
+
+		class Timer
+			: public MultiCore::System
 		{
 		public:
 			//
 			static constexpr auto kID = MultiCore::SystemID("Timer System"_crc64);
+			static constexpr auto kUpdate = "Update"_stringHash;
 
 			// Registration.
 			static bool Install();
@@ -23,11 +34,11 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			Timer(const String& name);
+			Timer(const String& name, const SystemDependencies& deps);
 			~Timer() override;
 
 			//
-			static System* Creator(const String& name, const Desc*, const Dependencies& deps);
+			static System* Creator(const String& name, const Desc*, const SystemDependencies& deps);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

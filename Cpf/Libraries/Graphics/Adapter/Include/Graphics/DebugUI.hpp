@@ -39,6 +39,11 @@ namespace Cpf
 			void BeginFrame(iCommandBuffer* commands, float deltaTime);
 			void EndFrame(iCommandBuffer* commands);
 
+			//
+			void PushItemWidth(int32_t width);
+			void PopItemWidth();
+			void Separator();
+
 			// Window
 			void Begin(const char* name, bool* isOpen = nullptr, uint32_t flags = 0);
 			void End();

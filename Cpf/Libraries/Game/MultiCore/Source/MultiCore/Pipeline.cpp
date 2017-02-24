@@ -4,6 +4,7 @@
 #include "MultiCore/Stage.hpp"
 #include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
+#include "MultiCore/DependencySolver.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -59,110 +60,39 @@ bool Pipeline::Remove(System* system)
 	return true;
 }
 
-Stage::Dependencies::const_iterator FindDependency(const Stage& stage, const Stage::Dependencies& deps)
-{
-	for (int i = 0; i < deps.size(); ++i)
-	{
-		if (stage.GetSystem()->GetID() != deps[i].first)
-			continue;
-		if (stage.GetID() == deps[i].second)
-			return deps.begin() + i;
-	}
-	return deps.end();
-}
-
 bool Pipeline::Configure()
 {
-	mStages.clear();
-	StageVector stages;
-
-	// First get a flat list of the stages,
-	// stages without dependencies go to the final list.
-	for (const auto& system : mSystemMap)
+	// Iterate the systems and fill in the dependency solver.
+	DependencySolver solver;
+	for (auto& system : mSystemMap)
 	{
-		for (auto stage : system.second->GetStages())
+		for (auto& stage : system.second->GetStages())
 		{
-			if (stage->GetDependencies().empty())
-				mStages.emplace_back(stage);
-			else
-				stages.emplace_back(stage);
+			solver.AddStage(system.first, stage->GetID());
 		}
+		// Resolve system dependencies into full descriptions.
+		DependencyVector dependencies;
+		for (auto& dep : system.second->GetSystemDependencies())
+			dependencies.push_back({ { system.first, dep.mDependent }, dep.mTarget });
+		solver.AddDependencies(dependencies);
+	}
+	if (!solver.Solve())
+	{
+		// Do something about the error here.
+		CPF_LOG(Experimental, Info) << "Error solving stage dependencies.";
 	}
 
-	// Now insert sort the dependency based stages.
-	IntrusivePtr<Stage> barrier;
-	while (!stages.empty())
+	// Convert the solved stage order into the stage vector.
+	mStages.clear();
+	for (size_t i=0; i<solver.GetBucketCount(); ++i)
 	{
-		bool resolved = false;
-		StageVector remaining = stages;
-
-		for (int i = 0; i < remaining.size(); ++i)
+		const auto& bucket = solver.GetBucket(i);
+		for (const auto& systemStage : bucket)
 		{
-			Stage::Dependencies deps = remaining[i]->GetDependencies();
-
-			for (int j = 0; j < mStages.size(); ++j)
-			{
-				if (mStages[j])
-				{
-					const Stage& comp = *mStages[j];
-					auto it = FindDependency(comp, deps);
-					if (it != deps.end())
-					{
-						deps.erase(it);
-						if (deps.empty())
-						{
-							// Check for an existing barrier.
-							auto target = mStages.begin() + j + 1;
-							if (target == mStages.end())
-							{
-								// At the end, just insert both.
-								mStages.emplace_back(barrier);
-								mStages.emplace_back(remaining[i]);
-							}
-							else
-							{
-								if (*target)
-								{
-									// Have a live stage, need to insert a barrier.
-									mStages.emplace(mStages.begin() + j + 1, barrier);
-									mStages.emplace(mStages.begin() + j + 2, remaining[i]);
-								}
-								else
-								{
-									// Have a barrier, insert after it.
-									mStages.emplace(mStages.begin() + j + 2, remaining[i]);
-								}
-							}
-
-							remaining.erase(remaining.begin() + i);
-							resolved = true;
-							goto goagain;
-						}
-					}
-#ifdef CPF_DEBUG
-					if (deps.size()>0)
-					{
-						CPF_LOG(Experimental, Info) << "---- Dependencies failed:";
-						for (auto& dep : deps)
-						{
-							System* system = GetSystem(dep.first);
-							Stage* stage = GetStage(dep.first, dep.second);
-							CPF_LOG(Experimental, Info) << (system ? system->GetName() : "<missing>") << " - "
-								<< (stage ? stage->GetName() : "<missing>");
-						}
-					}
-#endif
-				}
-			}
+			Stage* stage = GetStage(systemStage.mSystem, systemStage.mStage);
+			mStages.emplace_back(stage);
 		}
-
-	goagain:
-		if (!resolved)
-		{
-			CPF_LOG(Experimental, Info) << "!!!!! Dependencies failed !!!!!";
-			break;	// Failed to resolve all dependencies.
-		}
-		stages = remaining;
+		mStages.emplace_back(nullptr);
 	}
 
 	// Let the systems configure to the new pipeline.
@@ -173,9 +103,9 @@ bool Pipeline::Configure()
 	for (const auto& stage : mStages)
 	{
 		if (stage)
-			CPF_LOG(Experimental, Info) << " " << stage->GetName();
+			CPF_LOG(Experimental, Info) << "  " << stage->GetSystem()->GetName() << " : " << stage->GetName();
 		else
-			CPF_LOG(Experimental, Info) << " <barrier>";
+			CPF_LOG(Experimental, Info) << "  <---- barrier ---->";
 	}
 	CPF_LOG(Experimental, Info) << "---------------- Stage Order ---------------------------";
 #endif
@@ -243,7 +173,7 @@ void Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
 		if (stage)
 		{
 			if (stage->IsEnabled())
-				stage->Emit(q);
+				stage->Emit(&q);
 		}
 		else
 			q.Barrier();

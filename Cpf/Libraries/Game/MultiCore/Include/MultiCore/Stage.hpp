@@ -23,24 +23,17 @@ namespace Cpf
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
-			// Interface definitions.
-			using Dependency = Pair<SystemID, StageID>;
-			using Dependencies = Vector<Dependency>;
-
 			// Accessors.
 			System* GetSystem() const;
 			StageID GetID() const;
 			const String& GetName() const;
-
-			const Dependencies& GetDependencies() const;
-			void SetDependencies(Dependencies&& deps) { mDependencies = Move(deps); }
 
 			//
 			bool IsEnabled() const;
 			void SetEnabled(bool flag);
 
 			// Submission to the scheduler queue.
-			virtual void Emit(Concurrency::Scheduler::Queue&) = 0;
+			virtual void Emit(Concurrency::Scheduler::Queue*) = 0;
 
 		protected:
 			// Construction/Destruction.
@@ -54,7 +47,6 @@ namespace Cpf
 			System* mpSystem;
 			String mName;
 			StageID mID;
-			Dependencies mDependencies;
 			bool mEnabled;
 		};
 
@@ -75,7 +67,7 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			void Emit(Concurrency::Scheduler::Queue&) override;
+			void Emit(Concurrency::Scheduler::Queue*) override;
 
 			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier = false, bool first = true);
 

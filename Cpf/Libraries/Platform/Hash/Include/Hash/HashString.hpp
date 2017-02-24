@@ -28,6 +28,16 @@ namespace Cpf
 			: String(rhs.String)
 			, ID(rhs.ID)
 		{}
+
+		inline const char* StringHash::GetString() const
+		{
+			return String;
+		}
+		
+		inline uint64_t StringHash::GetID() const
+		{
+			return ID;
+		}
 	}
 }
 

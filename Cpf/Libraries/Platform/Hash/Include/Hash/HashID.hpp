@@ -18,10 +18,10 @@ namespace Cpf
 		struct HashID
 		{
 			HashID();
-			HashID(const HashID& rhs);
+			constexpr HashID(const HashID& rhs);
 			explicit constexpr HashID(TYPE rhs);
 
-			TYPE GetID() const;
+			constexpr TYPE GetID() const;
 
 			HashID& operator =(const HashID& rhs);
 
@@ -42,7 +42,7 @@ namespace Cpf
 		{}
 
 		template <typename TYPE, const int UNIQUE>
-		HashID<TYPE, UNIQUE>::HashID(const HashID& rhs)
+		constexpr HashID<TYPE, UNIQUE>::HashID(const HashID& rhs)
 			: mID(rhs.mID)
 		{}
 
@@ -52,7 +52,7 @@ namespace Cpf
 		{}
 
 		template <typename TYPE, const int UNIQUE>
-		TYPE HashID<TYPE, UNIQUE>::GetID() const
+		constexpr TYPE HashID<TYPE, UNIQUE>::GetID() const
 		{
 			return mID;
 		}

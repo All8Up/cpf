@@ -12,28 +12,15 @@ namespace Cpf
 		class System : public tRefCounted<iRefCounted>
 		{
 		public:
-			//
-			using StageID = MultiCore::StageID;
-
-			// Extra dependency data.
-			struct Dependency
-			{
-				ExecutionMode Mode;
-				StageID LocalStage;
-				SystemID TargetSystem;
-				StageID TargetStage;
-			};
-			using Dependencies = Vector<Dependency>;
-
 			// Empty base class for system descriptors.
 			struct Desc
 			{};
 
-			using Creator = System* (*)(const String&, const Desc*, const Dependencies& deps);
+			using Creator = System* (*)(const String&, const Desc*, const SystemDependencies& deps);
 
 			// System factory.
 			template <typename TYPE>
-			static TYPE* Create(const String&, const Desc* = nullptr, const Dependencies& dependencies = Dependencies());
+			static TYPE* Create(const String&, const Desc* = nullptr, const SystemDependencies& dependencies = SystemDependencies());
 			static bool Install(SystemID id, Creator);
 			static bool Remove(SystemID id);
 
@@ -47,11 +34,13 @@ namespace Cpf
 
 			const StageVector& GetStages() const;
 
+			void AddDependency(const SystemDependency& dependency) { mDependencies.push_back(dependency); }
+			const SystemDependencies& GetSystemDependencies() const { return mDependencies; }
 			virtual bool Configure() { return true; }
 
 		protected:
 			// Implementation interface.
-			System(const String& name);
+			System(const String& name, const SystemDependencies& deps);
 			virtual ~System();
 
 			bool AddStage(Stage*);
@@ -59,18 +48,19 @@ namespace Cpf
 
 		private:
 			// Untyped factory interface.
-			static System* _Create(SystemID, const String&, const Desc* desc, const Dependencies& deps);
+			static System* _Create(SystemID, const String&, const Desc* desc, const SystemDependencies& deps);
 
 			// Implementation data.
 			Pipeline* mpOwner;
 			StageVector mStages;
 			String mName;
 			SystemID mID;
+			SystemDependencies mDependencies;
 		};
 
 		// Typed system factory.
 		template <typename TYPE>
-		TYPE* System::Create(const String& name, const Desc* desc, const Dependencies& deps)
+		TYPE* System::Create(const String& name, const Desc* desc, const SystemDependencies& deps)
 		{
 			return static_cast<TYPE*>(_Create(TYPE::kID, name, desc, deps));
 		}

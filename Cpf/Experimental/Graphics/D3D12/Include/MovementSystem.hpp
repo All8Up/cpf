@@ -1,8 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/System.hpp"
-#include "GO/Systems/Timer.hpp"
-#include "GO/Component.hpp"
+#include "EntityService/Interfaces/Systems/iTimerSystem.hpp"
+#include "EntityService/Interfaces/iComponent.hpp"
+#include "EntityService/Helpers/ComponentBase.hpp"
+#include "EntityService/Interfaces/Stages/iEntityStage.hpp"
 #include "Hash/HashString.hpp"
 #include "InstanceSystem.hpp"
 
@@ -10,11 +12,17 @@ namespace Cpf
 {
 	class ExperimentalD3D12;
 
+	class iMoverComponent : public EntityService::iComponent
+	{
+	public:
+	};
+
 	class MoverSystem : public MultiCore::System
 	{
 	public:
 		static constexpr auto kID = MultiCore::SystemID("Mover System"_crc64);
-		static constexpr auto kMoverStage = "Mover Stage"_stringHash;
+		static constexpr auto kUpdate = "Update"_stringHash;
+		static constexpr auto kUpdateEBus = "Update EBus"_stringHash;
 
 		struct Desc : System::Desc
 		{
@@ -25,44 +33,60 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(const String& name, const Desc* desc);
+		MoverSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc);
 		InstanceSystem* GetInstanceSystem() const;
 		bool Configure() override;
 		static bool Install();
 		static bool Remove();
-		void EnableMovement(bool flag) const;
+		void EnableMovement(bool flag);
+		void UseEBus(bool flag);
 
 	private:
-		static System* _Creator(const String& name, const System::Desc* desc, const Dependencies& deps);
+		static System* _Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
 
 		ExperimentalD3D12* mpApp;
 
 		// system interdependencies.
 		InstanceSystem* mpInstances;
-		const GO::Timer* mpTime;	// The clock this mover is attached to.
-		GO::ObjectStage* mpMoverStage;
+		const EntityService::Timer* mpTime;	// The clock this mover is attached to.
+		EntityService::EntityStage* mpThreadStage;
+		EntityService::EntityStage* mpEBusStage;
 		MultiCore::SystemID mClockID;
 		MultiCore::SystemID mInstanceID;
+
+		//
+		bool mEnableMovement;
+		bool mUseEBus;
+		Platform::Threading::Mutex mMutex;
 	};
 
 
-	class MoverSystem::MoverComponent : public GO::Component
+	class MoverSystem::MoverComponent
+		: public EntityService::ComponentBase<iMoverComponent>
 	{
 	public:
 		//////////////////////////////////////////////////////////////////////////
-		static constexpr GO::ComponentID kID = GO::ComponentID("Mover Component"_crc64);
+		static constexpr EntityService::ComponentID kID = EntityService::ComponentID("Mover Component"_crc64);
+
+		//
+		static bool Install();
+		static bool Remove();
+		static iComponent* Create(System*);
 
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent(MoverSystem* mover);
+		MoverComponent(System* owner);
+
+		bool QueryInterface(InterfaceID id, void**) override;
 
 		//////////////////////////////////////////////////////////////////////////
-		GO::ComponentID GetID() const;
+		EntityService::ComponentID GetID() const;
 
 		void Activate() override;
 		void Deactivate() override;
 
 	private:
-		static void _Update(System* system, GO::Object* object);
+		static void _Threaded(System* system, EntityService::iEntity* object);
+		static void _EBus(System* system, EntityService::iEntity* object);
 
 		MoverSystem* mpMover;
 	};

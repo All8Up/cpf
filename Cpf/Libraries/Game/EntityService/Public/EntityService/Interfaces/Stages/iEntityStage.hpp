@@ -1,39 +1,53 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Tuple.hpp"
-#include "GO/Types.hpp"
 #include "Hash/Crc.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Container.hpp"
-#include "String.hpp"
+#include "EntityService/Interfaces/iStage.hpp"
 
 namespace Cpf
 {
-	namespace GO
+	namespace EntityService
 	{
-		class ObjectStage : public MultiCore::Stage
+		struct iEntity;
+
+		struct iEntityStage : iStage
+		{
+			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
+
+			// Interface.
+			virtual void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f) = 0;
+			virtual void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f) = 0;
+		};
+
+		class EntityStage
+			: public MultiCore::Stage
+			, tRefCounted<iEntityStage>
 		{
 		public:
 			static constexpr auto kID = MultiCore::StageID("Object Stage"_crc64);
 
-			using UpdateFunc = void(*)(MultiCore::System*, Object*);
+			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
 
 			static bool Install();
 			static bool Remove();
 
-			void Emit(Concurrency::Scheduler::Queue&) override;
+			bool QueryInterface(InterfaceID, void**) { return false; }
+
+			void Emit(Concurrency::Scheduler::Queue*) override;
 
 			// Interface.
-			void AddUpdate(MultiCore::System* s, Object* o, UpdateFunc f);
-			void RemoveUpdate(MultiCore::System* s, Object* o, UpdateFunc f);
+			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
+			void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 
 		private:
-			ObjectStage(MultiCore::System* owner, const String& name);
+			EntityStage(MultiCore::System* owner, const String& name);
 
 			static MultiCore::Stage* _Creator(MultiCore::System*, const String& name);
 
 			// Implementation definitions.
-			using UpdateTuple_t = Tuple<MultiCore::System*, Object*, UpdateFunc>;
+			using UpdateTuple_t = Tuple<MultiCore::System*, iEntity*, UpdateFunc>;
 			struct Compare
 			{
 				bool operator ()(const UpdateTuple_t& lhs, const UpdateTuple_t& rhs) const;

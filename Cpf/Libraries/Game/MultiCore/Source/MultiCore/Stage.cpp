@@ -33,10 +33,6 @@ const String& Stage::GetName() const
 	return mName;
 }
 
-const Stage::Dependencies& Stage::GetDependencies() const
-{
-	return mDependencies;
-}
 
 //////////////////////////////////////////////////////////////////////////
 namespace
@@ -97,21 +93,21 @@ bool SingleUpdateStage::Remove()
 	return Stage::Remove(kID);
 }
 
-void SingleUpdateStage::Emit(Concurrency::Scheduler::Queue& q)
+void SingleUpdateStage::Emit(Concurrency::Scheduler::Queue* q)
 {
 	if (mFirst)
 	{
 		if (mWithBarrier)
-			q.FirstOneBarrier(&SingleUpdateStage::_Update, this);
+			q->FirstOneBarrier(&SingleUpdateStage::_Update, this);
 		else
-			q.FirstOne(&SingleUpdateStage::_Update, this);
+			q->FirstOne(&SingleUpdateStage::_Update, this);
 	}
 	else
 	{
 		if (mWithBarrier)
-			q.LastOneBarrier(&SingleUpdateStage::_Update, this);
+			q->LastOneBarrier(&SingleUpdateStage::_Update, this);
 		else
-			q.LastOne(&SingleUpdateStage::_Update, this);
+			q->LastOne(&SingleUpdateStage::_Update, this);
 	}
 }
 

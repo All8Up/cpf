@@ -19,12 +19,13 @@
 #include "Math/Matrix33v.hpp"
 #include "IO/IO.hpp"
 
-#include "GO.hpp"
-#include "GO/Components/TransformComponent.hpp"
-#include "GO/Systems/Timer.hpp"
 #include "MovementSystem.hpp"
 #include "Adapter/D3D12/Instance.hpp"
 #include "RenderSystem.hpp"
+
+#include "EntityService.hpp"
+#include "EntityService/Interfaces/iEntity.hpp"
+#include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -52,6 +53,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
+	ScopedInitializer<EntityServiceInitializer> goInit;
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;
@@ -61,21 +63,26 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
+	mpEntityManager = EntityService::CreateManager();
+
+	//////////////////////////////////////////////////////////////////////////
+	// Install object components.
+	MoverSystem::MoverComponent::Install();
+	
+	//////////////////////////////////////////////////////////////////////////
 	MultiCore::Pipeline::Create(mpMultiCore.AsTypePP());
 
 	// Install the stage types.
-	GO::ObjectStage::Install();
 	MultiCore::SingleUpdateStage::Install();
 
 	// Install the systems this will use.
 	RenderSystem::Install();
-	GO::Timer::Install();
 	InstanceSystem::Install();
 	MoverSystem::Install();
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<GO::Timer> gameTime(MultiCore::System::Create<GO::Timer>("Game Time"));
+	IntrusivePtr<EntityService::Timer> gameTime(MultiCore::System::Create<EntityService::Timer>("Game Time"));
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.
@@ -89,20 +96,57 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc, {
-		// Add a dependency from this systems begin stage to the render systems begin frame stage.  It can run concurrently with the begin frame stage.
-		{MultiCore::ExecutionMode::eConcurrent, MultiCore::StageID(InstanceSystem::kBegin.ID), renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.ID) }
-	}));
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc));
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
 	MoverSystem::Desc moverDesc;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc, {
-		{MultiCore::ExecutionMode::eSequencial, MultiCore::StageID(MoverSystem::kMoverStage.ID), instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.ID)}
-	}));
+	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc));
 	mpMultiCore->Install(mpMoverSystem);
+
+	//////////////////////////////////////////////////////////////////////////
+	// Add the required inter-system dependencies.
+	// Render system needs to draw after instancing is complete.
+	renderSystem->AddDependency({
+		MultiCore::StageID(RenderSystem::kDrawInstances.GetID()),
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()) }
+	});
+	
+	// Instance system needs to begin after render system begin.
+	// Instance system needs to end after movement update.
+	instanceSystem->AddDependency({
+		MultiCore::StageID(InstanceSystem::kBegin.GetID()),
+		{renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID())}
+	});
+	instanceSystem->AddDependency({
+		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdate.GetID()) }
+	});
+	instanceSystem->AddDependency({
+		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()) }
+	});
+
+	// Mover updates must happen after game time update and instance begin.
+	// Currently there are two movers to test the differences between multicore and ebus.
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdate.GetID()),
+		{gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID())}
+	});
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdate.GetID()),
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()) }
+	});
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()),
+		{ gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID()) }
+	});
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()),
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()) }
+	});
 
 	//////////////////////////////////////////////////////////////////////////
 	// Everything is installed in the pipeline, configure it.
@@ -111,9 +155,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Create test objects.
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
-		IntrusivePtr<GO::Object> object(mGOService.CreateObject());
-		object->CreateComponent<GO::TransformComponent>();
-		object->CreateComponent<MoverSystem::MoverComponent>(mpMultiCore->GetSystem<MoverSystem>("Mover"));
+		IntrusivePtr<EntityService::iEntity> entity(mpEntityManager->CreateEntity());
+		entity->CreateComponent<EntityService::iTransformComponent>(nullptr);
+		entity->CreateComponent<iMoverComponent>(mpMoverSystem);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
