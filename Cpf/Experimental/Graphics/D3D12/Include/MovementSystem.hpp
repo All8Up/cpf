@@ -21,7 +21,8 @@ namespace Cpf
 	{
 	public:
 		static constexpr auto kID = MultiCore::SystemID("Mover System"_crc64);
-		static constexpr auto kMoverStage = "Mover Stage"_stringHash;
+		static constexpr auto kUpdate = "Update"_stringHash;
+		static constexpr auto kUpdateEBus = "Update EBus"_stringHash;
 
 		struct Desc : System::Desc
 		{
@@ -32,7 +33,7 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(const String& name, const Dependencies& deps, const Desc* desc);
+		MoverSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc);
 		InstanceSystem* GetInstanceSystem() const;
 		bool Configure() override;
 		static bool Install();
@@ -41,7 +42,7 @@ namespace Cpf
 		void UseEBus(bool flag);
 
 	private:
-		static System* _Creator(const String& name, const System::Desc* desc, const Dependencies& deps);
+		static System* _Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
 
 		ExperimentalD3D12* mpApp;
 
@@ -70,10 +71,10 @@ namespace Cpf
 		//
 		static bool Install();
 		static bool Remove();
-		static iComponent* Create(MultiCore::System*);
+		static iComponent* Create(System*);
 
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent(MultiCore::System* owner);
+		MoverComponent(System* owner);
 
 		bool QueryInterface(InterfaceID id, void**) override;
 

@@ -96,25 +96,57 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc, {
-		// Add a dependency from this systems begin stage to the render systems begin frame stage.  It can run concurrently with the begin frame stage.
-		{
-			MultiCore::ConcurrencyStyle::eConcurrent,
-			MultiCore::StageID(InstanceSystem::kBegin.ID),
-			renderSystem->GetID(),
-			MultiCore::StageID(RenderSystem::kBeginFrame.ID)
-		}
-	}));
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc));
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
 	MoverSystem::Desc moverDesc;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc, {
-		{MultiCore::ConcurrencyStyle::eSequencial, MultiCore::StageID(MoverSystem::kMoverStage.ID), instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.ID)}
-	}));
+	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc));
 	mpMultiCore->Install(mpMoverSystem);
+
+	//////////////////////////////////////////////////////////////////////////
+	// Add the required inter-system dependencies.
+	// Render system needs to draw after instancing is complete.
+	renderSystem->AddDependency({
+		MultiCore::StageID(RenderSystem::kDrawInstances.GetID()),
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()) }
+	});
+	
+	// Instance system needs to begin after render system begin.
+	// Instance system needs to end after movement update.
+	instanceSystem->AddDependency({
+		MultiCore::StageID(InstanceSystem::kBegin.GetID()),
+		{renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID())}
+	});
+	instanceSystem->AddDependency({
+		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdate.GetID()) }
+	});
+	instanceSystem->AddDependency({
+		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()) }
+	});
+
+	// Mover updates must happen after game time update and instance begin.
+	// Currently there are two movers to test the differences between multicore and ebus.
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdate.GetID()),
+		{gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID())}
+	});
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdate.GetID()),
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()) }
+	});
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()),
+		{ gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID()) }
+	});
+	mpMoverSystem->AddDependency({
+		MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()),
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()) }
+	});
 
 	//////////////////////////////////////////////////////////////////////////
 	// Everything is installed in the pipeline, configure it.

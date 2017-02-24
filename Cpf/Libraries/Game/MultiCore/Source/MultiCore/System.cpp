@@ -7,7 +7,7 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(const String& name, const Dependencies& deps)
+System::System(const String& name, const SystemDependencies& deps)
 	: mpOwner(nullptr)
 	, mName(name)
 	, mID(Hash::Crc64(name.c_str(), name.size()))
@@ -76,7 +76,7 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(SystemID id, const String& name, const Desc* desc, const Dependencies& deps)
+System* System::_Create(SystemID id, const String& name, const Desc* desc, const SystemDependencies& deps)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())

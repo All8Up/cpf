@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "EntityService/Types.hpp"
 #include "MultiCore/System.hpp"
 #include "EntityService/Interfaces/Stages/iEntityStage.hpp"
 
@@ -23,11 +24,11 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			Timer(const String& name, const Dependencies& deps);
+			Timer(const String& name, const SystemDependencies& deps);
 			~Timer() override;
 
 			//
-			static System* Creator(const String& name, const Desc*, const Dependencies& deps);
+			static System* Creator(const String& name, const Desc*, const SystemDependencies& deps);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

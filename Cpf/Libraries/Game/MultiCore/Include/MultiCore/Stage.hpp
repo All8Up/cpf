@@ -23,17 +23,10 @@ namespace Cpf
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
-			// Interface definitions.
-			using Dependency = Pair<SystemID, StageID>;
-			using Dependencies = Vector<Dependency>;
-
 			// Accessors.
 			System* GetSystem() const;
 			StageID GetID() const;
 			const String& GetName() const;
-
-			const Dependencies& GetDependencies() const;
-			void SetDependencies(Dependencies&& deps) { mDependencies = Move(deps); }
 
 			//
 			bool IsEnabled() const;
@@ -54,7 +47,6 @@ namespace Cpf
 			System* mpSystem;
 			String mName;
 			StageID mID;
-			Dependencies mDependencies;
 			bool mEnabled;
 		};
 

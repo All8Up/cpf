@@ -323,6 +323,21 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 	}
 }
 
+void DebugUI::PushItemWidth(int32_t width)
+{
+	ImGui::PushItemWidth(width);
+}
+
+void DebugUI::PopItemWidth()
+{
+	ImGui::PopItemWidth();
+}
+
+void DebugUI::Separator()
+{
+	ImGui::Separator();
+}
+
 void DebugUI::Begin(const char* name, bool* isOpen, uint32_t flags)
 {
 	ImGui::Begin(name, isOpen, flags);

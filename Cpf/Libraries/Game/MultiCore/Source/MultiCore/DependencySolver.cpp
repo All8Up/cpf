@@ -15,14 +15,14 @@ DependencySolver::DependencySolver()
 DependencySolver::~DependencySolver()
 {}
 
-bool DependencySolver::AddStage(const SystemStagePair systemStage)
+bool DependencySolver::AddStage(const SystemID& system, const StageID& stage)
 {
-	auto it = mSystemStages.find(systemStage.first);
+	auto it = mSystemStages.find(system);
 	if (it != mSystemStages.end())
-		if (it->second.find(systemStage.second)!=it->second.end())
+		if (it->second.find(stage)!=it->second.end())
 			return false;
 
-	mSystemStages[systemStage.first].insert(systemStage.second);
+	mSystemStages[system].insert(stage);
 	return true;
 }
 
@@ -30,7 +30,16 @@ void DependencySolver::AddDependencies(const DependencyVector& deps)
 {
 	for (auto& it : deps)
 	{
-		mDependencies[it.mDependent.first][it.mDependent.second][it.mTarget.first][it.mTarget.second] = it.mStyle;
+		auto system = mDependencies.find(it.mDependent);
+		if (system!=mDependencies.end())
+		{
+			mDependencies[it.mDependent].insert(it.mTarget);
+		}
+		else
+		{
+			mDependencies[it.mDependent] = SystemStageSet();
+			mDependencies[it.mDependent].insert(it.mTarget);
+		}
 	}
 }
 
@@ -43,79 +52,99 @@ bool DependencySolver::Solve()
 		SystemStageMap remaining = mSystemStages;
 		mSystemStages.clear();
 
-		for (auto& system : remaining)
+		for (auto& systemStage : remaining)
 		{
-			for (auto& stage : system.second)
+			auto system = systemStage.first;
+			const auto& stages = systemStage.second;
+
+			for (auto& stage : stages)
 			{
-				auto dependencies = _FindDependencies(system.first, stage);
+				auto dependencies = _GetDependencies(system, stage);
+
 				if (dependencies == nullptr)
 				{
 					// Put this in the first bucket, it has no dependencies.
-					_AddToBucket(mStages.begin(), system.first, stage);
+					_AddToBucket(mStages.begin(), system, stage);
 					madeProgress = true;
 				}
 				else
 				{
-					StagesVector::iterator targetBucket = mStages.end();
-					auto solved = _Solve(system.first, *dependencies, targetBucket);
-					if (solved)
+					// If it has dependencies, sort the system/stage into the appropriate location.
+					Buckets::iterator targetBucket = mStages.end();
+					if (_Solve(*dependencies, targetBucket))
 					{
-						_AddToBucket(targetBucket, system.first, stage);
+						_AddToBucket(targetBucket, system, stage);
 						madeProgress = true;
 					}
 					else
 					{
 						// Push this back into the dependency vector and try again later.
-						AddStage({system.first, stage});
+						AddStage(system, stage);
 					}
 				}
 			}
 		}
 	} while (mSystemStages.size() > 0 && madeProgress);
-
 	return true;
 }
 
-bool DependencySolver::_Solve(SystemID system, TargetSystemMap deps, StagesVector::iterator& outBucket)
+size_t DependencySolver::GetBucketCount() const
 {
-	// Iterate the buckets.
-	for (auto& bucket : mStages)
+	return mStages.size();
+}
+
+const SystemStageIDVector& DependencySolver::GetBucket(size_t index) const
+{
+	return mStages[index];
+}
+
+bool DependencySolver::_Solve(const SystemStageSet& dependencies, Buckets::iterator& outLocation)
+{
+	// Copy the dependencies.  As dependencies are identified, they are removed from this.
+	// If this still has items in it after iterating through the stage buckets, we have failed
+	// the constraints.  If it runs out of items, then the location to insert will be after
+	// the current bucket.
+	SystemStageSet remaining = dependencies;
+
+	outLocation = mStages.begin();
+	for (auto ibucket = mStages.begin(), iend = mStages.end(); ibucket != iend; ++ibucket)
 	{
-		// Iterate the system stage pairs in each bucket.
-		for (auto& systemStage : bucket)
+		for (auto& systemStage : *ibucket)
 		{
-			if (systemStage.first == system)
+			auto it = remaining.find(systemStage);
+			if (it == remaining.end())
+				continue;
+
+			remaining.erase(systemStage);
+			if (remaining.empty())
 			{
-				for (auto& it : deps)
-				{
-				}
+				// Constraints are resolved, we go in the next bucket.
+				outLocation = ibucket + 1;
+				return true;
 			}
 		}
 	}
+
 	return false;
 }
 
-const DependencySolver::TargetSystemMap* DependencySolver::_FindDependencies(SystemID system, StageID stage) const
+const DependencySolver::SystemStageSet* DependencySolver::_GetDependencies(const SystemID& system, const StageID& stage) const
 {
-	auto systemIt = mDependencies.find(system);
-	if (systemIt != mDependencies.end())
+	const SystemStageID systemStageID {system, stage};
+	const auto& systemStageSet = mDependencies.find(systemStageID);
+
+	if (systemStageSet != mDependencies.end())
 	{
-		auto stageIt = systemIt->second.find(stage);
-		if (stageIt != systemIt->second.end())
-		{
-			auto& deps = stageIt->second;
-			if (!deps.empty())
-				return &deps;
-		}
+		return &systemStageSet->second;
 	}
 	return nullptr;
 }
 
-void DependencySolver::_AddToBucket(StagesVector::iterator it, SystemID system, StageID stage)
+void DependencySolver::_AddToBucket(Buckets::iterator it, SystemID system, StageID stage)
 {
 	if (it == mStages.end())
 	{
-		mStages.push_back(StageVector());
+		mStages.push_back(SystemStageIDVector());
 		mStages.back().push_back({system, stage});
 	}
 	else

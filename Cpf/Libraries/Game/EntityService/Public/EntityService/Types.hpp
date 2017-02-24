@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Hash/HashID.hpp"
+#include "MultiCore/Stage.hpp"
 
 namespace Cpf
 {
@@ -12,5 +13,11 @@ namespace Cpf
 
 		using ComponentID = Hash::HashID<uint64_t, 5>;
 		constexpr ComponentID kInvalidComponentID = ComponentID(uint64_t(-1));
+
+		using SystmeID = MultiCore::SystemID;
+		using StageID = MultiCore::StageID;
+		using SystemStageID = MultiCore::SystemStageID;
+		using SystemDependency = MultiCore::SystemDependency;
+		using SystemDependencies = MultiCore::SystemDependencies;
 	}
 }

@@ -46,7 +46,7 @@ bool MoverSystem::MoverComponent::QueryInterface(InterfaceID id, void** outPtr)
 
 
 
-MoverSystem::MoverSystem(const String& name, const Dependencies& deps, const Desc* desc)
+MoverSystem::MoverSystem(const String& name, const SystemDependencies& deps, const Desc* desc)
 	: System(name, deps)
 	, mpApp(nullptr)
 	, mpInstances(nullptr)
@@ -56,13 +56,15 @@ MoverSystem::MoverSystem(const String& name, const Dependencies& deps, const Des
 	, mEnableMovement(true)
 	, mUseEBus(false)
 {
-	mpThreadStage = MultiCore::Stage::Create<EntityStage>(this, "Mover");
-	mpThreadStage->SetDependencies({ { mInstanceID, StageID(InstanceSystem::kBegin.ID) } });
-	AddStage(mpThreadStage);
+	// Build the stages.
+	mpThreadStage = MultiCore::Stage::Create<EntityStage>(this, kUpdate.GetString());
+	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, kUpdateEBus.GetString());
 
-	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, "Mover EBus");
-	mpEBusStage->SetDependencies({ { mInstanceID, StageID(InstanceSystem::kBegin.ID) } });
+	// Add the stages to this system.
+	AddStage(mpThreadStage);
 	AddStage(mpEBusStage);
+
+	// Disable the EBus comparison stage to start with.
 	mpEBusStage->SetEnabled(false);
 }
 
@@ -102,7 +104,7 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
+MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc, const SystemDependencies& deps)
 {
 	return new MoverSystem(name, deps, static_cast<const Desc*>(desc));
 }
@@ -153,7 +155,8 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 
-	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time);
+	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
+		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
 
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
@@ -187,8 +190,8 @@ void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 
-	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time);
-
+	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
+		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
 	instances[i].mOrientation0 = orientation[0].xyz;

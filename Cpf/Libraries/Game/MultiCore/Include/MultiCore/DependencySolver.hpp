@@ -3,7 +3,6 @@
 #include "MultiCore/Types.hpp"
 #include "UnorderedMap.hpp"
 #include "UnorderedSet.hpp"
-#include "Set.hpp"
 
 namespace Cpf
 {
@@ -15,29 +14,30 @@ namespace Cpf
 			DependencySolver();
 			~DependencySolver();
 
-			bool AddStage(const SystemStagePair systemStage);
+			bool AddStage(const SystemID& system, const StageID& stage);
 			void AddDependencies(const DependencyVector& deps);
 
 			bool Solve();
 
+			size_t GetBucketCount() const;
+			const SystemStageIDVector& GetBucket(size_t index) const;
+
 		private:
-			using StageVector = Vector<SystemStagePair>;
-			using StagesVector = Vector<StageVector>;
 			using SystemStageMap = UnorderedMap<SystemID, UnorderedSet<StageID>>;
 
-			using TargetStageMap = UnorderedMap<StageID, ConcurrencyStyle>;
-			using TargetSystemMap = UnorderedMap<SystemID, TargetStageMap>;
-			using DependentStageMap = UnorderedMap<StageID, TargetSystemMap>;
-			using DependentSystemMap = UnorderedMap<SystemID, DependentStageMap>;
+			using SystemStageSet = UnorderedSet<SystemStageID>;
+			using DependencyMap = UnorderedMap<SystemStageID, SystemStageSet>;
 
-			const TargetSystemMap* _FindDependencies(SystemID, StageID) const;
-			bool _Solve(SystemID system, TargetSystemMap deps, StagesVector::iterator& bucket);
-			void _AddToBucket(StagesVector::iterator, SystemID, StageID);
+			using Buckets = Vector<SystemStageIDVector>;
+
+			const SystemStageSet* _GetDependencies(const SystemID& system, const StageID& stage) const;
+			void _AddToBucket(Buckets::iterator it, SystemID system, StageID stage);
+			bool _Solve(const SystemStageSet& dependencies, Buckets::iterator& outLocation);
 
 			SystemStageMap mSystemStages;
-			DependentSystemMap mDependencies;
+			DependencyMap mDependencies;
 
-			StagesVector mStages;
+			Buckets mStages;
 		};
 	}
 }

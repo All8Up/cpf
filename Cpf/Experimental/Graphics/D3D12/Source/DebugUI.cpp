@@ -24,8 +24,11 @@ void ExperimentalD3D12::_UpdateStageList()
 		{
 			if (stage)
 			{
-				mpStageList[i] = new char[stage->GetName().size() + 1];
-				strcpy(mpStageList[i++], stage->GetName().c_str());
+				size_t stringSize = stage->GetSystem()->GetName().size() + stage->GetName().size() + 4;
+				mpStageList[i] = new char[stringSize];
+				strcpy(mpStageList[i], stage->GetSystem()->GetName().c_str());
+				strcat(mpStageList[i], " - ");
+				strcat(mpStageList[i++], stage->GetName().c_str());
 			}
 			else
 			{
@@ -99,7 +102,9 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 
 		static bool sShowPerformance = true;
 		mDebugUI.Begin("Performance", &sShowPerformance);
+		mDebugUI.PushItemWidth(300);
 		mDebugUI.Text("Instance Count: %d", kInstanceCount);
+		mDebugUI.Separator();
 		mDebugUI.Text("FPS: %d LOW: %d HIGH: %d", int(average), int(lowFPS), int(highFPS));
 		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.ThreadCount()))
 			mThreadCountChanged = true;
@@ -110,6 +115,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		mDebugUI.ListBox("Stages", &mSelectedStage, const_cast<const char**>(mpStageList), mStageListCount);
 		mDebugUI.ListBox("Instructions", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
 
+		mDebugUI.Separator();
 		static bool movementEnabled = true;
 		if (mDebugUI.CheckBox("Enable Movement", &movementEnabled))
 		{

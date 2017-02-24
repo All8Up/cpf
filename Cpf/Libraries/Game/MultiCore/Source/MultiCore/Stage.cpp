@@ -33,10 +33,6 @@ const String& Stage::GetName() const
 	return mName;
 }
 
-const Stage::Dependencies& Stage::GetDependencies() const
-{
-	return mDependencies;
-}
 
 //////////////////////////////////////////////////////////////////////////
 namespace

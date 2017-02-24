@@ -17,20 +17,20 @@ bool Timer::Remove()
 	return System::Remove(kID);
 }
 
-MultiCore::System* Timer::Creator(const String& name, const Desc*, const Dependencies& deps)
+MultiCore::System* Timer::Creator(const String& name, const Desc*, const SystemDependencies& deps)
 {
 	return new Timer(name, deps);
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(const String& name, const Dependencies& deps)
+Timer::Timer(const String& name, const SystemDependencies& deps)
 	: System(name, deps)
 	, mpUpdate(nullptr)
 {
 	mStart = Platform::Time::Now();
 	mTime = mStart;
 
-	mpUpdate.Adopt(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, String("Timer Update")));
+	mpUpdate.Adopt(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kUpdate.GetString()));
 	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);
 }
