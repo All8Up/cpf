@@ -8,6 +8,7 @@
 
 #include "EntityService/Interfaces/iEntity.hpp"
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
+#include "Threading/ScopedLock.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -52,10 +53,17 @@ MoverSystem::MoverSystem(const String& name, const Dependencies& deps, const Des
 	, mpTime(nullptr)
 	, mClockID(desc->mTimerID)
 	, mInstanceID(desc->mInstanceID)
+	, mEnableMovement(true)
+	, mUseEBus(false)
 {
-	mpMoverStage = MultiCore::Stage::Create<EntityStage>(this, "Mover");
-	mpMoverStage->SetDependencies({ { mInstanceID, StageID(InstanceSystem::kBegin.ID) } });
-	AddStage(mpMoverStage);
+	mpThreadStage = MultiCore::Stage::Create<EntityStage>(this, "Mover");
+	mpThreadStage->SetDependencies({ { mInstanceID, StageID(InstanceSystem::kBegin.ID) } });
+	AddStage(mpThreadStage);
+
+	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, "Mover EBus");
+	mpEBusStage->SetDependencies({ { mInstanceID, StageID(InstanceSystem::kBegin.ID) } });
+	AddStage(mpEBusStage);
+	mpEBusStage->SetEnabled(false);
 }
 
 InstanceSystem* MoverSystem::GetInstanceSystem() const
@@ -80,9 +88,18 @@ bool MoverSystem::Remove()
 	return System::Remove(kID);
 }
 
-void MoverSystem::EnableMovement(bool flag) const
+void MoverSystem::EnableMovement(bool flag)
 {
-	mpMoverStage->SetEnabled(flag);
+	mEnableMovement = flag;
+
+	mpThreadStage->SetEnabled(flag && !mUseEBus);
+	mpEBusStage->SetEnabled(flag && mUseEBus);
+}
+
+void MoverSystem::UseEBus(bool flag)
+{
+	mUseEBus = flag;
+	EnableMovement(mEnableMovement);
 }
 
 MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc, const Dependencies& deps)
@@ -104,15 +121,17 @@ ComponentID MoverSystem::MoverComponent::GetID() const
 
 void MoverSystem::MoverComponent::Activate()
 {
-	mpMover->mpMoverStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_Update);
+	mpMover->mpThreadStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_Threaded);
+	mpMover->mpEBusStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
 void MoverSystem::MoverComponent::Deactivate()
 {
-	mpMover->mpMoverStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_Update);
+	mpMover->mpThreadStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_Threaded);
+	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
-void MoverSystem::MoverComponent::_Update(System* system, iEntity* object)
+void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	const Timer* timer = mover->mpTime;
@@ -132,8 +151,41 @@ void MoverSystem::MoverComponent::_Update(System* system, iEntity* object)
 	pos.y = (sinf(angle) + 0.5f) * pos.y * magnitude;
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 
-	IntrusivePtr<iTransformComponent> transform;
-	object->QueryInterface(iTransformComponent::kIID, transform.AsVoidPP());
+	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
+
+	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time);
+
+	Instance* instances = mover->GetInstanceSystem()->GetInstances();
+	instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
+	instances[i].mOrientation0 = orientation[0].xyz;
+	instances[i].mOrientation1 = orientation[1].xyz;
+	instances[i].mOrientation2 = orientation[2].xyz;
+	instances[i].mTranslation = Vector3f(pos.xyz);
+}
+
+void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
+{
+	MoverSystem* mover = static_cast<MoverSystem*>(system);
+	Threading::ScopedLock<Threading::Mutex> lock(mover->mMutex);
+
+	const Timer* timer = mover->mpTime;
+
+	int i = int(object->GetID().GetID());
+	int count = ExperimentalD3D12::kInstancesPerDimension;
+	int xc = (i % count);
+	int yc = (i / count) % count;
+	int zc = (i / (count * count)) % count;
+
+	Vector3fv pos((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
+	float magnitude = Magnitude(pos + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
+	magnitude *= magnitude;
+	float time = float(Time::Seconds(timer->GetTime()));
+	float angle = sinf(0.25f * time);
+	pos.x = sinf(angle * magnitude) * pos.x - cosf(angle * magnitude) * pos.z;
+	pos.y = (sinf(angle) + 0.5f) * pos.y * magnitude;
+	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
+
+	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time);
 

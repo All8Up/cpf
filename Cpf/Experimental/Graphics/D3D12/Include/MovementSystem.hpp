@@ -37,7 +37,8 @@ namespace Cpf
 		bool Configure() override;
 		static bool Install();
 		static bool Remove();
-		void EnableMovement(bool flag) const;
+		void EnableMovement(bool flag);
+		void UseEBus(bool flag);
 
 	private:
 		static System* _Creator(const String& name, const System::Desc* desc, const Dependencies& deps);
@@ -47,9 +48,15 @@ namespace Cpf
 		// system interdependencies.
 		InstanceSystem* mpInstances;
 		const EntityService::Timer* mpTime;	// The clock this mover is attached to.
-		EntityService::EntityStage* mpMoverStage;
+		EntityService::EntityStage* mpThreadStage;
+		EntityService::EntityStage* mpEBusStage;
 		MultiCore::SystemID mClockID;
 		MultiCore::SystemID mInstanceID;
+
+		//
+		bool mEnableMovement;
+		bool mUseEBus;
+		Platform::Threading::Mutex mMutex;
 	};
 
 
@@ -77,7 +84,8 @@ namespace Cpf
 		void Deactivate() override;
 
 	private:
-		static void _Update(System* system, EntityService::iEntity* object);
+		static void _Threaded(System* system, EntityService::iEntity* object);
+		static void _EBus(System* system, EntityService::iEntity* object);
 
 		MoverSystem* mpMover;
 	};

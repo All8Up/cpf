@@ -243,7 +243,7 @@ void Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
 		if (stage)
 		{
 			if (stage->IsEnabled())
-				stage->Emit(q);
+				stage->Emit(&q);
 		}
 		else
 			q.Barrier();

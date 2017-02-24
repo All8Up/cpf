@@ -26,9 +26,9 @@ MultiCore::Stage* EntityStage::_Creator(MultiCore::System* owner, const String& 
 	return new EntityStage(owner, name);
 }
 
-void EntityStage::Emit(Concurrency::Scheduler::Queue& q)
+void EntityStage::Emit(Concurrency::Scheduler::Queue* q)
 {
-	q.All(&EntityStage::_Update, this);
+	q->All(&EntityStage::_Update, this);
 }
 
 void EntityStage::AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)

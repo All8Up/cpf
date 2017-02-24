@@ -4,7 +4,7 @@
 #include "Hash/Crc.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Container.hpp"
-#include "String.hpp"
+#include "EntityService/Interfaces/iStage.hpp"
 
 namespace Cpf
 {
@@ -12,8 +12,18 @@ namespace Cpf
 	{
 		struct iEntity;
 
+		struct iEntityStage : iStage
+		{
+			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
 
-		class EntityStage : public MultiCore::Stage
+			// Interface.
+			virtual void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f) = 0;
+			virtual void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f) = 0;
+		};
+
+		class EntityStage
+			: public MultiCore::Stage
+			, tRefCounted<iEntityStage>
 		{
 		public:
 			static constexpr auto kID = MultiCore::StageID("Object Stage"_crc64);
@@ -23,7 +33,9 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			void Emit(Concurrency::Scheduler::Queue&) override;
+			bool QueryInterface(InterfaceID, void**) { return false; }
+
+			void Emit(Concurrency::Scheduler::Queue*) override;
 
 			// Interface.
 			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);

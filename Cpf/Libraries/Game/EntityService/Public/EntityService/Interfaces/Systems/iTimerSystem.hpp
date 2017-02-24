@@ -2,12 +2,20 @@
 #pragma once
 #include "MultiCore/System.hpp"
 #include "EntityService/Interfaces/Stages/iEntityStage.hpp"
+#include "EntityService/Interfaces/iSystem.hpp"
 
 namespace Cpf
 {
 	namespace EntityService
 	{
-		class Timer : public MultiCore::System
+		struct iTimerSystem : iSystem
+		{
+			virtual Platform::Time::Value GetTime() const = 0;
+			virtual float GetDeltaTime() const = 0;
+		};
+
+		class Timer
+			: public MultiCore::System
 		{
 		public:
 			//

@@ -115,6 +115,11 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		{
 			mpMoverSystem->EnableMovement(movementEnabled);
 		}
+		static bool usingEBus = false;
+		if (mDebugUI.CheckBox("Use EBus Approx", &usingEBus))
+		{
+			mpMoverSystem->UseEBus(usingEBus);
+		}
 
 		mDebugUI.End();
 	}

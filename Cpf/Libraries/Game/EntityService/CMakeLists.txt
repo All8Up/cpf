@@ -11,6 +11,8 @@ set (PUBLIC_HEADERS_ENTITYSERVICE_HELPERS
 	Public/EntityService/Helpers/ComponentBase.hpp
 )
 set (PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES
+	Public/EntityService/Interfaces/iStage.hpp
+	Public/EntityService/Interfaces/iSystem.hpp
 	Public/EntityService/Interfaces/iEntity.hpp
 	Public/EntityService/Interfaces/iManager.hpp
 	Public/EntityService/Interfaces/iComponent.hpp
@@ -101,12 +103,12 @@ set_property (TARGET s_EntityService PROPERTY FOLDER Libraries/Static/Game)
 
 # ###############################################
 source_group (Public FILES ${PUBLIC_HEADERS})
-source_group (Public\\EntitySystem FILES ${PUBLIC_HEADERS_ENTITYSERVICE})
-source_group (Public\\EntitySystem\\Helpers FILES ${PUBLIC_HEADERS_ENTITYSERVICE_HELPERS})
-source_group (Public\\EntitySystem\\Interfaces FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES})
-source_group (Public\\EntitySystem\\Interfaces\\Stages FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_STAGES})
-source_group (Public\\EntitySystem\\Interfaces\\Systems FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_SYSTEMS})
-source_group (Public\\EntitySystem\\Interfaces\\Components FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_COMPONENTS})
+source_group (Public\\EntityService FILES ${PUBLIC_HEADERS_ENTITYSERVICE})
+source_group (Public\\EntityService\\Helpers FILES ${PUBLIC_HEADERS_ENTITYSERVICE_HELPERS})
+source_group (Public\\EntityService\\Interfaces FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES})
+source_group (Public\\EntityService\\Interfaces\\Stages FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_STAGES})
+source_group (Public\\EntityService\\Interfaces\\Systems FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_SYSTEMS})
+source_group (Public\\EntityService\\Interfaces\\Components FILES ${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_COMPONENTS})
 
 source_group (Private FILES ${PRIVATE_HEADERS} ${PRIVATE_SOURCES})
 source_group (Private\\EntityService FILES ${PRIVATE_HEADERS_ENTITYSERVICE} ${PRIVATE_SOURCES_ENTITYSERVICE})
