@@ -7,9 +7,6 @@
 
 namespace Cpf
 {
-	// TODO: Try again to rework this such that it can handle forward declarations only.
-	// Probably requires a concrete base class to perform the iRefCount operations.
-
 	/**
 	 * @brief An intrusive reference pointer.
 	 * @tparam TARGET Type of the target.
@@ -52,11 +49,11 @@ namespace Cpf
 		void Abandon();
 
 		// Internal access.
-		TARGET* Ptr() { return reinterpret_cast<TARGET*>(mpTarget); }
+		TARGET* Ptr() { return mpTarget; }
 
 		// 
 		void** AsVoidPP() { return reinterpret_cast<void**>(&mpTarget); }
-		TARGET** AsTypePP() { return reinterpret_cast<TARGET**>(&mpTarget); }
+		TARGET** AsTypePP() { return &mpTarget; }
 		template <typename TYPE>
 		TYPE* Cast() { return static_cast<TYPE*>(Cast()); }
 

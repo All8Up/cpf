@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCount.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 
 namespace Cpf
@@ -14,7 +13,7 @@ namespace Cpf
 		bool ComponentFactoryRemove(InterfaceID iid);
 		iComponent* ComponentFactoryCreate(InterfaceID iid, MultiCore::System*);
 
-		struct iEntity : public iUnknown
+		struct iEntity : iUnknown
 		{
 			virtual void Initialize(iManager*) = 0;
 			virtual void Shutdown() = 0;

@@ -19,6 +19,7 @@ bool RenderSystem::Remove()
 RenderSystem::RenderSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc)
 	: System(name, deps)
 	, mpApp(desc->mpApplication)
+	, mCurrentBackBuffer(0)
 {
 	// Build the stages and set the update function for each.
 	IntrusivePtr<MultiCore::SingleUpdateStage> beginFrame(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kBeginFrame.GetString()));
@@ -53,10 +54,23 @@ RenderSystem::RenderSystem(const String& name, const EntityService::SystemDepend
 	AddDependency({ debugUI->GetID(),{ GetID(), drawInstances->GetID() } });
 	AddDependency({ preparePresent->GetID(),{ GetID(), debugUI->GetID() } });
 	AddDependency({ endFrame->GetID(),{ GetID(), preparePresent->GetID() } });
+
+	_AllocateBuffers();
 }
 
 RenderSystem::~RenderSystem()
 {}
+
+void RenderSystem::_AllocateBuffers()
+{
+	for (int i = 0; i < kBufferCount; ++i)
+	{
+		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
+		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
+	}
+}
 
 void RenderSystem::_BeginFrame(ThreadContext& tc, void* context)
 {

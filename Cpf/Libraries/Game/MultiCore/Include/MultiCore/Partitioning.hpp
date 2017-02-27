@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/Types.hpp"
 #include "Concurrency/ThreadContext.hpp"
 
 namespace Cpf

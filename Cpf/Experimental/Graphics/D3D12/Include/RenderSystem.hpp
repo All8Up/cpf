@@ -3,6 +3,7 @@
 #include "EntityService/Types.hpp"
 #include "MultiCore/System.hpp"
 #include "Hash/HashString.hpp"
+#include "Graphics/Interfaces/iCommandBuffer.hpp"
 
 namespace Cpf
 {
@@ -39,6 +40,9 @@ namespace Cpf
 		RenderSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc);
 		~RenderSystem() override;
 
+		//
+		void _AllocateBuffers();
+
 		static void _BeginFrame(Concurrency::ThreadContext& tc, void* context);
 		static void _Clear(Concurrency::ThreadContext& tc, void* context);
 		static void _Draw(Concurrency::ThreadContext& tc, void* context);
@@ -50,5 +54,17 @@ namespace Cpf
 		static System* Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
 
 		ExperimentalD3D12* mpApp;
+
+		//////////////////////////////////////////////////////////////////////////
+		static const int kBufferCount = 3;
+
+		//////////////////////////////////////////////////////////////////////////
+		IntrusivePtr<Graphics::iDevice> mpDevice;
+
+		int mCurrentBackBuffer;
+		IntrusivePtr<Graphics::iCommandPool> mpPreCommandPool[kBufferCount];
+		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[kBufferCount];
+		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[kBufferCount];
+		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[kBufferCount];
 	};
 }
