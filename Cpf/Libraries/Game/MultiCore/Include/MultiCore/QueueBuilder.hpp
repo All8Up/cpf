@@ -75,18 +75,24 @@ namespace Cpf
 		private:
 			struct OpcodeData
 			{
+				bool operator < (const OpcodeData& rhs) const
+				{
+					return mStageOpcodeID < rhs.mStageOpcodeID;
+				}
+
 				StageOpcodeID mStageOpcodeID;
 				OpcodeType mOpcodeType;
 			};
 			using OpcodeDataVector = Vector<OpcodeData>;
 			using DependencySet = Set<DependencyDesc>;
+			using OpcodeMap = Map<OpcodeData, DependencySet>;
 			using Buckets = Vector<OpcodeDataVector>;
 
 			bool _Solve(const DependencySet& dependencies, Buckets::iterator& outLocation);
 			const DependencySet* _GetDependencies(const StageOpcodeID& rhs) const;
 			void _AddToBucket(Buckets::iterator it, OpcodeData data);
 
-			Map<OpcodeData, DependencySet> mOpcodes;
+			OpcodeMap mOpcodes;
 
 			using DependencyMap = Map<StageOpcodeID, DependencySet>;
 

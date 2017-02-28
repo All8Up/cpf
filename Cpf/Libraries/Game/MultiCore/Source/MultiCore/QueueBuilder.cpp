@@ -13,7 +13,7 @@ QueueBuilder::~QueueBuilder()
 
 void QueueBuilder::Add(StageID stageID, OpcodeID opcodeID, const OpcodeType opcode)
 {
-	mOpcodeData.push_back({{stageID, opcodeID}, opcode});
+	mOpcodes[{{stageID, opcodeID}, opcode}] = DependencySet();
 }
 
 void QueueBuilder::Add(const OpcodeDependency& dependency)

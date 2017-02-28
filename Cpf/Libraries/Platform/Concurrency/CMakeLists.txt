@@ -1,7 +1,6 @@
 # ###############################################
 set (INCLUDE_FILES
 	Include/Concurrency/Concurrency.hpp
-	Include/Concurrency/Team.hpp
 	Include/Concurrency/Backoff.hpp
 	Include/Concurrency/Scheduler.hpp
 	Include/Concurrency/Opcodes.hpp
@@ -9,7 +8,6 @@ set (INCLUDE_FILES
 	Include/Concurrency/ThreadContext.hpp
 )
 set (SOURCE_FILES
-	Source/Team.cpp
 	Source/Scheduler.cpp
 	Source/Opcodes.cpp
 	Source/Queue.cpp
@@ -94,7 +92,6 @@ MakeUnitTest (LIBRARY s_Concurrency GROUP Platform
 		UnitTest/Test_Scheduler_Opcode_ThreadLocalAddressRegister.cpp
 		UnitTest/Test_Scheduler_Opcode_SharedDataRegister.cpp
 		UnitTest/Test_Scheduler_Opcode_SharedAddressRegister.cpp
-		UnitTest/Test_Team.cpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Configuration Atomic s_Threading VTune
