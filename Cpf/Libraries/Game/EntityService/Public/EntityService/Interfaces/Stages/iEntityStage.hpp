@@ -35,7 +35,7 @@ namespace Cpf
 
 			bool QueryInterface(InterfaceID, void**) { return false; }
 
-			void Emit(Concurrency::Scheduler::Queue*) override;
+			void Emit(MultiCore::QueueBuilder&, Concurrency::Scheduler::Queue*) override;
 
 			// Interface.
 			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
@@ -58,7 +58,9 @@ namespace Cpf
 				void Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work);
 			};
 
+			static void _Begin(Concurrency::ThreadContext& tc, void* context);
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
+			static void _End(Concurrency::ThreadContext& tc, void* context);
 
 			MultiCore::System* mpSystem;
 			Caller mCaller;

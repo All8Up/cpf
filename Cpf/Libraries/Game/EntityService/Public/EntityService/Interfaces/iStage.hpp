@@ -9,7 +9,7 @@ namespace Cpf
 	{
 		struct iStage : iUnknown
 		{
-			virtual void Emit(Concurrency::Scheduler::Queue*) = 0;
+			virtual void Emit(MultiCore::QueueBuilder&, Concurrency::Scheduler::Queue*) = 0;
 		};
 	}
 }

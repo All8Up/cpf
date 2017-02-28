@@ -26,6 +26,7 @@ namespace Cpf
 
 			// Construction/Destruction.
 			Queue();
+			Queue(size_t size);
 			Queue(Queue&& rhs) noexcept;
 			~Queue();
 
@@ -42,20 +43,18 @@ namespace Cpf
 
 			void Barrier();
 			void Fence(Payload func, void* context);
-			void Submit(Scheduler::Semaphore& semaphore);
 
 			// Control.
-			Queue& ActiveThreads(int count);
+			// TODO: Decide if these will actually remain.
+#if 0
 			void TLD(int index, int32_t value);
 			void TLA(int index, void* value);
 			void SD(int index, int32_t value);
 			void SA(int index, void* value);
+#endif
 
 			//
 			void Discard();
-
-			// Submission.
-			Queue& Execute(SubmissionType type=SubmissionType::eNormal);
 
 #if CPF_SCHEDULER_DISASSEMBLER
 			enum class Op : int32_t
@@ -80,10 +79,7 @@ namespace Cpf
 #endif
 
 		private:
-			//  The queue is only created by the scheduler.
 			friend class Scheduler;
-			Queue(Scheduler* scheduler);
-			Queue(Scheduler* scheduler, size_t size);
 
 			// Internal instruction issuer.
 			void operator ()(Opcode, Payload func, void* context);
@@ -98,7 +94,6 @@ namespace Cpf
 			Queue& operator =(Queue&) = delete;
 
 			// Implementation data.
-			Scheduler* mpScheduler;
 			QueueType mQueue;
 			Platform::Threading::Semaphore mBarrier;
 		};

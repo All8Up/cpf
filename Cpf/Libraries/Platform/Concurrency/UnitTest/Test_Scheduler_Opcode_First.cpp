@@ -19,7 +19,7 @@ TEST(Concurrency, First_Opcode)
 		scheduler->Initialize(std::move(threads));
 		Scheduler::Semaphore sync;
 		{
-			Scheduler::Queue queue = scheduler->CreateQueue();
+			Scheduler::Queue queue;
 
 			auto firstThreadArrived = 0;
 			queue.FirstOne(
@@ -42,8 +42,8 @@ TEST(Concurrency, First_Opcode)
 				&firstThreadArrived);
 
 			// Wait for completion.
-			queue.Submit(sync);
-			queue.Execute();
+			scheduler->Execute(queue);
+			scheduler->Submit(sync);
 			sync.Acquire();
 			EXPECT_EQ(1, firstThreadArrived);
 		}

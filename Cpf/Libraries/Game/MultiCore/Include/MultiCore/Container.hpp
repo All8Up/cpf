@@ -4,6 +4,7 @@
 #include "Threading/Mutex.hpp"
 #include "Functional.hpp"
 #include "Vector.hpp"
+#include "Concurrency/Scheduler.hpp"
 
 namespace Cpf
 {
@@ -14,6 +15,9 @@ namespace Cpf
 		{
 		public:
 			virtual ~ContainerBase() {}
+
+			virtual void Begin() {}
+			virtual void End() {}
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -101,6 +105,9 @@ namespace Cpf
 
 			const WorkType& operator [](const size_t index) const;
 
+			void Begin() override;
+			void End() override;
+
 		private:
 			using WorkVector = Vector<WorkType>;
 
@@ -108,6 +115,10 @@ namespace Cpf
 
 			Platform::Threading::Mutex mLock;
 			WorkVector mWork;
+
+			// Per thread add/remove.
+			WorkVector mAdditions[Concurrency::Scheduler::kMaxThreads];
+			WorkVector mDeletions[Concurrency::Scheduler::kMaxThreads];
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -132,13 +143,7 @@ namespace Cpf
 		template<typename WORKTYPE, typename LESSTHAN>
 		void SortedVectorContainer<WORKTYPE, LESSTHAN>::Add(WorkType&& work)
 		{
-			auto it = _Find(work);
-			if (it>0)
-			{
-				mWork.emplace(mWork.begin()+it, Move(work));
-				return;
-			}
-			mWork.emplace_back(Move(work));
+			mAdditions[0].emplace_back(Move(work));
 		}
 
 		template<typename WORKTYPE, typename LESSTHAN>
@@ -155,6 +160,60 @@ namespace Cpf
 			SortedVectorContainer<WORKTYPE, LESSTHAN>::operator [](const size_t index) const
 		{
 			return mWork[index];
+		}
+
+		template<typename WORKTYPE, typename LESSTHAN> inline
+		void SortedVectorContainer<WORKTYPE, LESSTHAN>::Begin()
+		{
+			WorkVector accumulate;
+			for (int i = 0; i < Concurrency::Scheduler::kMaxThreads; ++i)
+			{
+				accumulate.insert(accumulate.end(), mAdditions[i].begin(), mAdditions[i].end());
+				mAdditions[i].clear();
+			}
+			std::sort(accumulate.begin(), accumulate.end());
+
+			if (accumulate.size() > 0)
+			{
+				auto insertion = accumulate.begin();
+				auto target = mWork.begin();
+
+				while (insertion != accumulate.end() && target != mWork.end())
+				{
+					if (*insertion < *target)
+					{
+						target = mWork.emplace(target, Move(*insertion));
+						++insertion;
+						++target;
+					}
+				}
+
+				mWork.insert(mWork.end(), insertion, accumulate.end());
+			}
+		}
+
+		template<typename WORKTYPE, typename LESSTHAN> inline
+		void SortedVectorContainer<WORKTYPE, LESSTHAN>::End()
+		{
+			WorkVector accumulate;
+			for (int i = 0; i < Concurrency::Scheduler::kMaxThreads; ++i)
+			{
+				accumulate.insert(accumulate.end(), mDeletions[i].begin(), mDeletions[i].end());
+				mDeletions[i].clear();
+			}
+			std::sort(accumulate.begin(), accumulate.end());
+
+			if (accumulate.size() > 0)
+			{
+				auto icurrent = mWork.begin();
+				for (auto ibegin = accumulate.begin(), iend = accumulate.end(); ibegin!=iend; ++ibegin)
+				{
+					while (*ibegin != *icurrent)
+						++icurrent;
+					CPF_ASSERT(*ibegin == *icurrent);
+					icurrent = mWork.erase(icurrent);
+				}
+			}
 		}
 
 		template<typename WORKTYPE, typename LESSTHAN>

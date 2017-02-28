@@ -3,7 +3,7 @@
 #include "gmock/gmock.h"
 #include "Concurrency/Scheduler.hpp"
 
-
+#if 0
 TEST(Concurrency, Set_SharedDataRegister)
 {
 	using namespace Cpf;
@@ -31,3 +31,4 @@ TEST(Concurrency, Set_SharedDataRegister)
 		sync.Acquire();
 	}
 }
+#endif

@@ -4,6 +4,7 @@
 #include "Concurrency/Scheduler.hpp"
 
 
+#if 0
 TEST(Concurrency, Set_SharedAddressRegister)
 {
 	using namespace Cpf;
@@ -31,3 +32,4 @@ TEST(Concurrency, Set_SharedAddressRegister)
 		sync.Acquire();
 	}
 }
+#endif

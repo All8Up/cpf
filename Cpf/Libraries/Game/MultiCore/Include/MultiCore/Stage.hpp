@@ -12,6 +12,8 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
+		class QueueBuilder;
+
 		class Stage : public tRefCounted<iRefCounted>
 		{
 		public:
@@ -33,7 +35,7 @@ namespace Cpf
 			void SetEnabled(bool flag);
 
 			// Submission to the scheduler queue.
-			virtual void Emit(Concurrency::Scheduler::Queue*) = 0;
+			virtual void Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue*) = 0;
 
 		protected:
 			// Construction/Destruction.
@@ -67,7 +69,7 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			void Emit(Concurrency::Scheduler::Queue*) override;
+			void Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue*) override;
 
 			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier = false, bool first = true);
 

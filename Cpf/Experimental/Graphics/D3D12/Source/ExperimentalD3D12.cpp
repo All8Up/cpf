@@ -118,7 +118,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Instance system needs to end after movement update.
 	instanceSystem->AddDependency({
 		MultiCore::StageID(InstanceSystem::kBegin.GetID()),
-		{renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID())}
+		{ renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID()) }
 	});
 	instanceSystem->AddDependency({
 		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
@@ -224,9 +224,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					this
 				);
 				mThreadCountChanged = false;
-				mThreadCount = mScheduler.ThreadCount();
-				mQueue = Move(mScheduler.CreateQueue());
-
+				mThreadCount = mScheduler.GetAvailableThreads();
+				
 				//////////////////////////////////////////////////////////////////////////
 				mStartTime = Time::Now();
 				mCurrentTime = Time::Now() - mStartTime;
@@ -258,7 +257,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						if (mThreadCountChanged)
 						{
 							mThreadCountChanged = false;
-							mQueue.ActiveThreads(mThreadCount);
+							mScheduler.SetActiveThreads(mThreadCount);
 						}
 
 						// Poll the application OS events.
@@ -283,12 +282,12 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						// Issue all the stages.
 						(*mpMultiCore)(mQueue);
 
+						// And tell the scheduler to execute this work queue.
+						mScheduler.Execute(mQueue);
+
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.
-						mQueue.Submit(frameSemaphore);
-
-						// And tell the scheduler to execute this work queue.
-						mQueue.Execute(Scheduler::Queue::SubmissionType::eNormal);
+						mScheduler.Submit(frameSemaphore);
 					}
 
 					// Guarantee last frame is complete before we tear everything down.

@@ -5,6 +5,7 @@
 #include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
 #include "MultiCore/DependencySolver.hpp"
+#include "MultiCore/QueueBuilder.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -168,12 +169,13 @@ void Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
 	CPF_ASSERT(mChanged == false);
 #endif
 
+	QueueBuilder builder;
 	for (auto stage : mStages)
 	{
 		if (stage)
 		{
 			if (stage->IsEnabled())
-				stage->Emit(&q);
+				stage->Emit(builder, &q);
 		}
 		else
 			q.Barrier();

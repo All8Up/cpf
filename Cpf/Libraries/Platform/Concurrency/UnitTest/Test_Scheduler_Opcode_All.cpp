@@ -22,11 +22,11 @@ TEST(Concurrency, All_Opcode)
 		//////////////////////////////////////////////////////////////////////////
 		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
 		EXPECT_TRUE(scheduler->Initialize(std::move(threads)));
-		EXPECT_TRUE(scheduler->ThreadCount() >= 4);
+		EXPECT_TRUE(scheduler->GetAvailableThreads() >= 4);
 
-		Scheduler::Queue queue = scheduler->CreateQueue();
+		Scheduler::Queue queue;
 		Scheduler::Semaphore sync;
-		scheduler->CreateQueue().ActiveThreads(4).Execute();
+		scheduler->SetActiveThreads(4);
 		{
 			//////////////////////////////////////////////////////////////////////////
 			int hitCount = 0;
@@ -38,8 +38,8 @@ TEST(Concurrency, All_Opcode)
 				},
 					&hitCount);
 			}
-			queue.Submit(sync);
-			queue.Execute();
+			scheduler->Execute(queue);
+			scheduler->Submit(sync);
 			sync.Acquire();
 			EXPECT_EQ(4 * 25, hitCount);
 		}

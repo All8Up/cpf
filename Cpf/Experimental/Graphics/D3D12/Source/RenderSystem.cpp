@@ -63,6 +63,7 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::_AllocateBuffers()
 {
+	/*
 	for (int i = 0; i < kBufferCount; ++i)
 	{
 		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
@@ -70,6 +71,7 @@ void RenderSystem::_AllocateBuffers()
 		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
 	}
+	*/
 }
 
 void RenderSystem::_BeginFrame(ThreadContext& tc, void* context)

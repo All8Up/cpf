@@ -11,6 +11,7 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Pipeline.hpp
 	Include/MultiCore/System.hpp
 	Include/MultiCore/DependencySolver.hpp
+	Include/MultiCore/QueueBuilder.hpp
 )
 
 set (SOURCE_FILES
@@ -21,6 +22,7 @@ set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Pipeline.cpp
 	Source/MultiCore/System.cpp
 	Source/MultiCore/DependencySolver.cpp
+	Source/MultiCore/QueueBuilder.cpp
 )
 
 add_library (s_MultiCore STATIC

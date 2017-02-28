@@ -3,7 +3,7 @@
 #include "gmock/gmock.h"
 #include "Concurrency/Scheduler.hpp"
 
-
+#if 0
 TEST(Concurrency, Set_ThreadLocalDataRegister)
 {
 	using namespace Cpf;
@@ -15,7 +15,7 @@ TEST(Concurrency, Set_ThreadLocalDataRegister)
 	scheduler->Initialize(std::move(threads));
 	Scheduler::Semaphore sync;
 	{
-		Scheduler::Queue queue = scheduler->CreateQueue();
+		Scheduler::Queue queue;
 
 		for (int i = 0; i < Scheduler::kRegisterCount; ++i)
 			queue.TLD(i, i);
@@ -31,3 +31,4 @@ TEST(Concurrency, Set_ThreadLocalDataRegister)
 		sync.Acquire();
 	}
 }
+#endif

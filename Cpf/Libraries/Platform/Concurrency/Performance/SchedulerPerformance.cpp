@@ -123,21 +123,21 @@ int64_t SchedulerPerformance::_InstructionRate(int threadCount)
 	};
 	TestData* testData = new TestData;
 
-	Scheduler::Queue instructions = m_Scheduler.CreateQueue(instructionCount);
+	Scheduler::Queue instructions(instructionCount);
 	for (int i = 0; i < instructionCount; ++i)
 		instructions.All([](Scheduler::ThreadContext&, void* context)
 	{
 		(void)context;
 	}, testData);
 
-	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Execute();
+	m_Scheduler.SetActiveThreads(threadCount);
 	Scheduler::Semaphore sync;
 	auto start = Platform::Time::Value::Now();
 	{
 		for (int i = 0; i < loopCount; ++i)
 		{
-			instructions.Submit(sync);
-			instructions.Execute(Scheduler::Queue::SubmissionType::eNoClear);
+			m_Scheduler.Execute(instructions, false);
+			m_Scheduler.Submit(sync);
 			sync.Acquire();
 		}
 	}
@@ -165,7 +165,7 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 	};
 	TestData* testData = new TestData;
 
-	Scheduler::Queue instructions = m_Scheduler.CreateQueue(instructionCount);
+	Scheduler::Queue instructions(instructionCount);
 	for (int i = 0; i < instructionCount; ++i)
 		instructions.All([](Scheduler::ThreadContext&, void* context)
 	{
@@ -183,17 +183,16 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 		}
 	}, testData);
 
-	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Execute();
+	m_Scheduler.SetActiveThreads(threadCount);
 	Scheduler::Semaphore sync;
 	auto start = Platform::Time::Value::Now();
 	{
 		Semaphore wait;
 		for (int i = 0; i < loopCount; ++i)
 		{
-			instructions.Execute(Scheduler::Queue::SubmissionType::eNoClear);
+			m_Scheduler.Execute(instructions, false);
 		}
-		instructions.Submit(sync);
-		instructions.Execute();
+		m_Scheduler.Submit(sync);
 		sync.Acquire();
 	}
 	auto end = Platform::Time::Value::Now();
@@ -211,7 +210,7 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 int64_t SchedulerPerformance::_InstructionRateAlternatePassWait(int threadCount)
 {
 	auto start = Platform::Time::Value::Now();
-	m_Scheduler.CreateQueue().ActiveThreads(threadCount).Execute();
+	m_Scheduler.SetActiveThreads(threadCount);
 	{
 
 	}

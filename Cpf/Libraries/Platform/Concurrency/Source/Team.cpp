@@ -76,7 +76,6 @@ Service* ServiceFactory::Create(const String& name) const
 //////////////////////////////////////////////////////////////////////////
 Team::Team(Scheduler& scheduler)
 : mScheduler(scheduler)
-, mQueue(Move(scheduler.CreateQueue()))
 {}
 
 Team::~Team()

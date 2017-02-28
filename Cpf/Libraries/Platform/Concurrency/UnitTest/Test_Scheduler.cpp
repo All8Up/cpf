@@ -23,7 +23,7 @@ TEST(Concurrency, Basics)
 			static const auto loopCount = 25000;
 			int valid[loopCount] = { 0 };
 
-			Scheduler::Queue queue = scheduler->CreateQueue();
+			Scheduler::Queue queue;
 
 			for (auto i = 0; i < loopCount; ++i)
 			{
@@ -37,8 +37,8 @@ TEST(Concurrency, Basics)
 			}
 
 			// Wait for completion.
-			queue.Submit(sync);
-			queue.Execute();
+			scheduler->Execute(queue);
+			scheduler->Submit(sync);
 			sync.Acquire();
 			for (auto i = 0; i < loopCount; ++i)
 				EXPECT_EQ(1, valid[i]);

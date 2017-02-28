@@ -118,7 +118,7 @@ void Scheduler::Shutdown()
 	{
 		// Activate all threads in the system.
 		// Pass in the exit opcode.
-		_ActiveCount(mThreadCount);
+		SetActiveThreads(mThreadCount);
 		_Emit(nullptr, nullptr, nullptr);
 
 		mThreads.Join();
@@ -127,29 +127,12 @@ void Scheduler::Shutdown()
 }
 
 
-Scheduler::Queue Scheduler::CreateQueue()
-{
-	return Queue(this);
-}
-
-
-Scheduler::Queue Scheduler::CreateQueue(size_t size)
-{
-	return Queue(this, size);
-}
-
-
-int Scheduler::ThreadCount() const
+int Scheduler::GetAvailableThreads() const
 {
 	return mThreadCount;
 }
 
-
-/**
- * @brief Change the number of active threads in the scheduler.
- * @param count Target number.
- */
-void Scheduler::_ActiveCount(int count)
+void Scheduler::SetActiveThreads(int count)
 {
 	CPF_ASSERT(count > 0);
 	CPF_ASSERT(count <= mThreadCount);
@@ -192,11 +175,20 @@ void Scheduler::_Emit(OpcodeFunc_t opcode, PayloadFunc_t func, void* context)
 	}
 }
 
+void Scheduler::Submit(Scheduler::Semaphore& semaphore)
+{
+	_Emit(Detail::Opcodes::LastOneBarrier, [](ThreadContext&, void* context)
+	{
+		reinterpret_cast<Scheduler::Semaphore*>(context)->Release();
+	}, &semaphore);
+}
 
-void Scheduler::operator ()(Queue& queue)
+void Scheduler::Execute(Queue& q, bool clear)
 {
 	Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mWorkLock);
-	mExternalQueue.insert(mExternalQueue.end(), queue.begin(), queue.end());
+	mExternalQueue.insert(mExternalQueue.end(), q.begin(), q.end());
+	if (clear)
+		q.Clear();
 }
 
 

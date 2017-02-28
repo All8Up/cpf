@@ -24,15 +24,11 @@ TEST(Concurrency, AllFenced_Opcode)
 		const int hardwareThreads = Platform::Threading::Thread::GetHardwareThreadCount();
 		Platform::Threading::Thread::Group threads(hardwareThreads);
 		EXPECT_TRUE(scheduler->Initialize(std::move(threads)));
-		EXPECT_TRUE(scheduler->ThreadCount() >= 4);
+		EXPECT_TRUE(scheduler->GetAvailableThreads() >= 4);
 
 		const int threadCount = 8 > hardwareThreads ? hardwareThreads : 8;
 		Scheduler::Semaphore sync;
-		auto activeQueue = scheduler->CreateQueue();
-		activeQueue.ActiveThreads(threadCount);
-		activeQueue.Submit(sync);
-		activeQueue.Execute();
-		sync.Acquire();
+		scheduler->SetActiveThreads(threadCount);
 		{
 			static const int testCount = 100;
 			static const int loopCount = 200;
@@ -50,7 +46,7 @@ TEST(Concurrency, AllFenced_Opcode)
 				testData.clear();
 				testData.reserve(loopCount);
 
-				Scheduler::Queue queue = scheduler->CreateQueue();
+				Scheduler::Queue queue;
 				for (int j = 0; j < loopCount; ++j)
 				{
 					testData.push_back({&hitCount, (j + 1) * threadCount });
@@ -68,8 +64,8 @@ TEST(Concurrency, AllFenced_Opcode)
 					},
 						&testData[j]);
 				}
-				queue.Submit(sync);
-				queue.Execute();
+				scheduler->Execute(queue);
+				scheduler->Submit(sync);
 				sync.Acquire();
 				EXPECT_EQ(threadCount * loopCount, hitCount);
 			}

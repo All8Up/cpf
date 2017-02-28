@@ -106,7 +106,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		mDebugUI.Text("Instance Count: %d", kInstanceCount);
 		mDebugUI.Separator();
 		mDebugUI.Text("FPS: %d LOW: %d HIGH: %d", int(average), int(lowFPS), int(highFPS));
-		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.ThreadCount()))
+		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.GetAvailableThreads()))
 			mThreadCountChanged = true;
 		mDebugUI.Histogram("FPS Histogram", history, kHistorySize, 0, nullptr, lowFPS, highFPS);
 

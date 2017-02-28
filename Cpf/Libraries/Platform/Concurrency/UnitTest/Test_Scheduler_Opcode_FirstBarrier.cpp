@@ -20,7 +20,7 @@ TEST(Concurrency, FirstFenced_Opcode)
 		scheduler->Initialize(std::move(threads));
 		{
 			auto firstThreadArrived = 0;
-			Scheduler::Queue queue = scheduler->CreateQueue();
+			Scheduler::Queue queue;
 			queue.FirstOneBarrier([](Scheduler::ThreadContext&, void* context)
 			{
 				Atomic::Store(*reinterpret_cast<int*>(context), 1);
@@ -33,9 +33,10 @@ TEST(Concurrency, FirstFenced_Opcode)
 			},
 				&firstThreadArrived);
 
+			scheduler->Execute(queue);
+
 			// Wait for completion.
-			queue.Submit(sync);
-			queue.Execute();
+			scheduler->Submit(sync);
 			sync.Acquire();
 
 			EXPECT_EQ(1, firstThreadArrived);

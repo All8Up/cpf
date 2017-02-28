@@ -8,35 +8,18 @@ using namespace Cpf::Concurrency;
  * @brief Constructor.
  */
 Scheduler::Queue::Queue()
-	: mpScheduler(nullptr)
 {}
 
-/**
- * @brief Constructor.
- * @param scheduler The scheduler the queue is associated with.
- */
-Scheduler::Queue::Queue(Scheduler* scheduler)
-	: mpScheduler(scheduler)
+Scheduler::Queue::Queue(size_t size)
+	: mQueue(size)
 {}
-
-/**
- * @brief Constructor.
- * @param scheduler The scheduler the queue is associated with.
- * @param size The size.
- */
-Scheduler::Queue::Queue(Scheduler* scheduler, size_t size)
-	: mpScheduler(scheduler)
-{
-	mQueue.reserve(size);
-}
 
 /**
  * @brief Move assignment.
  */
 Scheduler::Queue& Scheduler::Queue::operator = (Queue&& rhs)
 {
-	mpScheduler = rhs.mpScheduler;
-	rhs.mpScheduler = nullptr;
+	mQueue = Move(rhs.mQueue);
 	return *this;
 }
 
@@ -45,10 +28,8 @@ Scheduler::Queue& Scheduler::Queue::operator = (Queue&& rhs)
  * @param rhs The queue to move from.
  */
 Scheduler::Queue::Queue(Queue&& rhs) noexcept
-	: mpScheduler(rhs.mpScheduler)
-	, mQueue(Move(rhs.mQueue))
+	: mQueue(Move(rhs.mQueue))
 {
-	rhs.mpScheduler = nullptr;
 }
 
 
@@ -148,32 +129,8 @@ void Scheduler::Queue::Fence(Payload func, void* context)
 	(*this)(Detail::Opcodes::LastOne, func, context);
 }
 
-void Scheduler::Queue::Submit(Semaphore& semaphore)
-{
-	LastOneBarrier([](ThreadContext&, void* context)
-	{
-		reinterpret_cast<Scheduler::Semaphore*>(context)->Release();
-	}, &semaphore);
-}
-
-Scheduler::Queue& Scheduler::Queue::ActiveThreads(int count)
-{
-	CPF_ASSERT(count > 0);
-	CPF_ASSERT(count <= mpScheduler->mThreadCount);
-
-	// Make sure anything that is outstanding completes.
-	mpScheduler->_Emit(Detail::Opcodes::LastOneBarrier, [](ThreadContext&, void* context) {
-		reinterpret_cast<Platform::Threading::Semaphore*>(context)->Release();
-	}, &mBarrier);
-	mBarrier.Acquire();
-
-	// Issue the change.
-	intptr_t intCount = intptr_t(count);
-	mpScheduler->_Emit(Detail::Opcodes::ActiveThreads, nullptr, reinterpret_cast<void *>(intCount));
-
-	return *this;
-}
-
+// TODO: Decide if these will remain.
+#if 0
 /**
  * @brief Set's a data register to a value.
  * @param index Zero-based index of the register to set.
@@ -210,23 +167,11 @@ void Scheduler::Queue::SA(int index, void* value)
 	intptr_t idxVal(index);
 	mpScheduler->_Emit(Detail::Opcodes::SA, Payload(idxVal), value);
 }
+#endif
 
 void Scheduler::Queue::Discard()
 {
 	mQueue.clear();
-}
-
-/**
- * @brief Submit the instruction queue to the scheduler.
- * @param type If the submission should clear this queue or not.
- */
-Scheduler::Queue& Scheduler::Queue::Execute(SubmissionType type)
-{
-	(*mpScheduler)(*this);
-	if (type==SubmissionType::eNormal)
-		Clear();
-
-	return *this;
 }
 
 #if CPF_SCHEDULER_DISASSEMBLER

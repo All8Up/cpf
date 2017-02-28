@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/Stage.hpp"
+#include "MultiCore/QueueBuilder.hpp"
 #include "Hash/Crc.hpp"
 #include "UnorderedMap.hpp"
 
@@ -93,8 +94,11 @@ bool SingleUpdateStage::Remove()
 	return Stage::Remove(kID);
 }
 
-void SingleUpdateStage::Emit(Concurrency::Scheduler::Queue* q)
+void SingleUpdateStage::Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue* q)
 {
+	builder.Add(GetID(), mFirst ? ExecutionType::eFirst : ExecutionType::eLast);
+
+	(void)builder;
 	if (mFirst)
 	{
 		if (mWithBarrier)

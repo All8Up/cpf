@@ -37,6 +37,7 @@ namespace Cpf
 				void* mpContext;
 			};
 
+			class Queue;
 			class Semaphore;
 
 			// Construction/Destruction.
@@ -47,14 +48,14 @@ namespace Cpf
 			bool Initialize(Platform::Threading::Thread::Group&&, InitOrShutdownFunc_t init = nullptr, InitOrShutdownFunc_t shutdown = nullptr, void* context = nullptr);
 			void Shutdown();
 
-			// Instruction queues.
-			class Queue;
-			Queue CreateQueue();
-			Queue CreateQueue(size_t size);
-
 			// Data access.
-			int ThreadCount() const;
+			int GetAvailableThreads() const;
+			void SetActiveThreads(int count);
 			void* GetContext() const;
+
+			//
+			void Submit(Semaphore&);
+			void Execute(Queue&, bool clear=true);
 
 		private:
 			//////////////////////////////////////////////////////////////////////////
@@ -65,9 +66,7 @@ namespace Cpf
 			static const int kMaxBackoff;
 
 			// Internal implementation.
-			void operator ()(Queue& queue);
 			void _Emit(OpcodeFunc_t, PayloadFunc_t func, void* context);
-			void _ActiveCount(int count);
 			void _Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdownFunc_t shutdownFunc, void* context);
 			bool _StartMaster();
 			void _EndMaster();
