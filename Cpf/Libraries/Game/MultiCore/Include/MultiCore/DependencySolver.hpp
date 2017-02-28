@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Types.hpp"
+#include "MultiCore/QueueBuilder.hpp"
 #include "UnorderedMap.hpp"
 #include "UnorderedSet.hpp"
 
@@ -38,6 +39,8 @@ namespace Cpf
 			DependencyMap mDependencies;
 
 			Buckets mStages;
+
+			QueueBuilder mQueueBuilder;
 		};
 	}
 }

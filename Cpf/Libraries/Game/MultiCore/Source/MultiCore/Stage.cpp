@@ -96,8 +96,6 @@ bool SingleUpdateStage::Remove()
 
 void SingleUpdateStage::Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue* q)
 {
-	builder.Add(GetID(), mFirst ? ExecutionType::eFirst : ExecutionType::eLast);
-
 	(void)builder;
 	if (mFirst)
 	{

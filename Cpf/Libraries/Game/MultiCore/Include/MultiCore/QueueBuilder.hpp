@@ -3,6 +3,8 @@
 #include "Vector.hpp"
 #include "Hash/HashID.hpp"
 #include "Stage.hpp"
+#include "Set.hpp"
+#include "Map.hpp"
 
 namespace Cpf
 {
@@ -13,19 +15,50 @@ namespace Cpf
 		{
 			StageID mStage;
 			OpcodeID mOpcode;
+
+			bool operator <(const StageOpcodeID& rhs) const
+			{
+				if (mStage < rhs.mStage)
+					return true;
+				if (mOpcode < rhs.mOpcode)
+					return true;
+				return false;
+			}
+			bool operator == (const StageOpcodeID& rhs) const
+			{
+				return mStage == rhs.mStage && mOpcode == rhs.mOpcode;
+			}
 		};
 
-		enum class ExecutionType
+		enum class OpcodeType
 		{
 			eFirst,
 			eAll,
 			eLast
 		};
 
+		enum class DependencyPolicy
+		{
+			eBarrier,		// Must be separated by a barrier.
+			eAfter			// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
+		};
+
+		struct DependencyDesc
+		{
+			StageOpcodeID mID;
+			OpcodeType mType;
+			DependencyPolicy mPolicy;
+
+			bool operator < (const DependencyDesc& rhs) const
+			{
+				return mID < rhs.mID;
+			}
+		};
+
 		struct OpcodeDependency
 		{
-			OpcodeID mDependent;
-			Vector<OpcodeID> mDependencies;
+			StageOpcodeID mDependent;
+			Vector<DependencyDesc> mDependencies;
 		};
 
 		class QueueBuilder
@@ -34,8 +67,34 @@ namespace Cpf
 			QueueBuilder();
 			~QueueBuilder();
 
-			void Add(StageID stageId, const ExecutionType opcode);
+			void Add(StageID stageId, OpcodeID opcodeID, const OpcodeType opcode);
 			void Add(const OpcodeDependency& dependency);
+
+			bool Solve();
+
+		private:
+			struct OpcodeData
+			{
+				StageOpcodeID mStageOpcodeID;
+				OpcodeType mOpcodeType;
+			};
+			using OpcodeDataVector = Vector<OpcodeData>;
+			using DependencySet = Set<DependencyDesc>;
+			using Buckets = Vector<OpcodeDataVector>;
+
+			bool _Solve(const DependencySet& dependencies, Buckets::iterator& outLocation);
+			const DependencySet* _GetDependencies(const StageOpcodeID& rhs) const;
+			void _AddToBucket(Buckets::iterator it, OpcodeData data);
+
+			Map<OpcodeData, DependencySet> mOpcodes;
+
+			using DependencyMap = Map<StageOpcodeID, DependencySet>;
+
+			DependencyMap mDependencies;
+
+			Buckets mBuckets;
+
+			Concurrency::Scheduler::Queue mResultQueue;
 		};
 	}
 }
