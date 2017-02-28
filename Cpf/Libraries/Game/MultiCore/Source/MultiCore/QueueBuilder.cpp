@@ -23,7 +23,6 @@ void QueueBuilder::Add(const OpcodeDependency& dependency)
 
 bool QueueBuilder::Solve()
 {
-#if 0
 	bool madeProgress;
 	do
 	{
@@ -33,38 +32,36 @@ bool QueueBuilder::Solve()
 
 		for (auto& opcode : remaining)
 		{
-			auto stageOpcodeID = opcode.first;
-			const auto& dependencies = opcode.second;
+			auto opcodeData = opcode.first;
+			const auto& dependencySet = opcode.second;
 
-			for (auto& depStageOpcodeID : dependencies)
+			for (auto& depStageOpcodeID : dependencySet)
 			{
-				auto dependencies = _GetDependencies(system, stage);
-
+				auto dependencies = _GetDependencies(depStageOpcodeID.mID);
 				if (dependencies == nullptr)
 				{
 					// Put this in the first bucket, it has no dependencies.
-					_AddToBucket(mStages.begin(), system, stage);
+					_AddToBucket(mBuckets.begin(), opcodeData);
 					madeProgress = true;
 				}
 				else
 				{
 					// If it has dependencies, sort the system/stage into the appropriate location.
-					Buckets::iterator targetBucket = mStages.end();
+					Buckets::iterator targetBucket = mBuckets.end();
 					if (_Solve(*dependencies, targetBucket))
 					{
-						_AddToBucket(targetBucket, system, stage);
+						_AddToBucket(targetBucket, opcodeData);
 						madeProgress = true;
 					}
 					else
 					{
 						// Push this back into the dependency vector and try again later.
-						AddStage(system, stage);
+						Add(opcodeData.mStageOpcodeID.mStage, opcodeData.mStageOpcodeID.mOpcode, opcodeData.mOpcodeType);
 					}
 				}
 			}
 		}
-	} while (mSystemStages.size() > 0 && madeProgress);
-#endif
+	} while (mOpcodes.size() > 0 && madeProgress);
 	return true;
 }
 
@@ -79,6 +76,7 @@ bool QueueBuilder::_Solve(const DependencySet& dependencies, Buckets::iterator& 
 	outLocation = mBuckets.begin();
 	for (auto ibucket = mBuckets.begin(), iend = mBuckets.end(); ibucket != iend; ++ibucket)
 	{
+		bool needsNewBucket = false;
 		for (auto& opcodeData : *ibucket)
 		{
 			DependencyDesc temp;
@@ -88,11 +86,22 @@ bool QueueBuilder::_Solve(const DependencySet& dependencies, Buckets::iterator& 
 			if (it == remaining.end())
 				continue;
 
+			// If any dependency is solved in the current bucket which
+			// specifies a barrier is needed, it is sticky until we
+			// move to the next bucket.
+			if (it->mPolicy == DependencyPolicy::eBarrier)
+				needsNewBucket = true;
+
 			remaining.erase(temp);
 			if (remaining.empty())
 			{
-				// Constraints are resolved, we go in the next bucket.
-				outLocation = ibucket + 1;
+				// Constraints are resolved.
+				if (needsNewBucket)
+					// Goes in the next bucket.
+					outLocation = ibucket + 1;
+				else
+					// Goes in the same bucket.
+					outLocation = ibucket;
 				return true;
 			}
 		}
