@@ -32,6 +32,8 @@ namespace Cpf
 
 			void operator ()(Concurrency::Scheduler&);
 
+			const Concurrency::Scheduler::Queue& GetQueue() const { return mQueue; }
+
 		private:
 			Pipeline();
 			~Pipeline();

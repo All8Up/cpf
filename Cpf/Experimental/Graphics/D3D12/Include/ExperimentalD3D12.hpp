@@ -84,7 +84,6 @@ namespace Cpf
 		IntrusivePtr<Graphics::iPipeline> mpPipeline;
 		IntrusivePtr<Graphics::iFence> mpFence;
 		Concurrency::Scheduler mScheduler;
-		Concurrency::Scheduler::Queue mQueue;
 
 		int32_t mCurrentScheduledBuffer = 0;
 		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];

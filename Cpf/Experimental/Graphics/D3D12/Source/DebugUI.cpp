@@ -54,14 +54,14 @@ void ExperimentalD3D12::_UpdateStageList()
 			delete[] mpInstructionList;
 		}
 
-		auto instructions = mQueue.Dissassemble();
+		auto instructions = mpMultiCore->GetQueue().Dissassemble();
 		mInstructionCount = int(instructions.size());
 
 		mpInstructionList = new char*[mInstructionCount];
 		int i = 0;
 		for (auto& instruction : instructions)
 		{
-			String description = mQueue.GetOpName(instruction.mOp);
+			String description = Concurrency::Scheduler::Queue::GetOpName(instruction.mOp);
 			description += " : " + std::to_string(intptr_t(instruction.mpPayload)) + " : " + std::to_string(intptr_t(instruction.mpContext));
 			mpInstructionList[i] = new char[description.size() + 1];
 			strcpy(mpInstructionList[i++], description.c_str());

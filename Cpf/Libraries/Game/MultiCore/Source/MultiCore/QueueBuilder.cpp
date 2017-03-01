@@ -129,19 +129,22 @@ void QueueBuilder::_BuildQueue()
 			case BlockOpcode::eFirst:
 				CPF_LOG(Experimental, Info) << "  -- First: "
 					<< instruction.mID.mSystem.GetString() << " : "
-					<< instruction.mID.mStage.GetString();
+					<< instruction.mID.mStage.GetString() << "="
+					<< instruction.mID.mBlock.GetString();
 				break;
 
 			case BlockOpcode::eAll:
 				CPF_LOG(Experimental, Info) << "  -- All: "
 					<< instruction.mID.mSystem.GetString() << " : "
-					<< instruction.mID.mStage.GetString();
+					<< instruction.mID.mStage.GetString() << "="
+					<< instruction.mID.mBlock.GetString();
 				break;
 
 			case BlockOpcode::eLast:
 				CPF_LOG(Experimental, Info) << "  -- Last: "
 					<< instruction.mID.mSystem.GetString() << " : "
-					<< instruction.mID.mStage.GetString();
+					<< instruction.mID.mStage.GetString() << "="
+					<< instruction.mID.mBlock.GetString();
 				break;
 
 			default:
@@ -149,7 +152,7 @@ void QueueBuilder::_BuildQueue()
 				break;
 			}
 		}
-		CPF_LOG(Experimental, Info) << "  -- Barrier --";
+		CPF_LOG(Experimental, Info) << "  <<< Barrier >>>";
 	}
 	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
 #endif

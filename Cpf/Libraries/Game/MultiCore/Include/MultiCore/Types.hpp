@@ -20,7 +20,7 @@ namespace Cpf
 		class Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
 
-		using BlockID = Hash::HashID<uint64_t, 3>;
+		using BlockID = Hash::HashString;
 
 		enum class BlockOpcode
 		{

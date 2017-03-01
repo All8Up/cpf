@@ -66,6 +66,18 @@ MoverSystem::MoverSystem(MultiCore::Pipeline* owner, const char* name, const Sys
 
 	// Disable the EBus comparison stage to start with.
 //	mpEBusStage->SetEnabled(false);
+
+	// TODO: These are standard dependencies within the stage, they should be supplied by the stage.
+	AddDependency({
+		{GetID(), mpThreadStage->GetID(), MultiCore::Stage::kEnd},
+		{GetID(), mpThreadStage->GetID(), MultiCore::Stage::kExecute},
+		MultiCore::BlockPolicy::eAfter
+	});
+	AddDependency({
+		{ GetID(), mpThreadStage->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), mpThreadStage->GetID(), MultiCore::Stage::kBegin },
+		MultiCore::BlockPolicy::eBarrier
+	});
 }
 
 InstanceSystem* MoverSystem::GetInstanceSystem() const
@@ -159,6 +171,7 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
 
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
+	CPF_ASSERT(instances != nullptr);
 	instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
 	instances[i].mOrientation0 = orientation[0].xyz;
 	instances[i].mOrientation1 = orientation[1].xyz;

@@ -107,26 +107,25 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(mpMultiCore, "Mover", &moverDesc));
 	mpMultiCore->Install(mpMoverSystem);
 
-#if 0
 	//////////////////////////////////////////////////////////////////////////
 	// Add the required inter-system dependencies.
 	// Render system needs to draw after instancing is complete.
 	renderSystem->AddDependency({
-		{ renderSystem->GetID(), MultiCore::StageID(RenderSystem::kDrawInstances.GetID()), MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()), MultiCore::Stage::kExecute },
+		{ renderSystem->GetID(), RenderSystem::kDrawInstances, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
 		MultiCore::BlockPolicy::eBarrier
 	});
 
 	// Instance system needs to begin after render system begin.
 	// Instance system needs to end after movement update.
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()), MultiCore::Stage::kExecute },
-		{ renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID()), MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		{ renderSystem->GetID(), RenderSystem::kBeginFrame, MultiCore::Stage::kExecute },
 		MultiCore::BlockPolicy::eBarrier
 	});
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()), MultiCore::Stage::kExecute },
-		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdate.GetID()), MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
 		MultiCore::BlockPolicy::eBarrier
 	});
 	/*
@@ -135,7 +134,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute }
 	});
 	*/
-#endif
+
 	// Mover updates must happen after game time update and instance begin.
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
@@ -255,9 +254,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
 
 					//
-					(*mpMultiCore)(mScheduler);
 					_UpdateStageList();
-					mQueue.Discard();
 
 					while (IsRunning())
 					{
@@ -292,9 +289,6 @@ int ExperimentalD3D12::Start(const CommandLine&)
 						//////////////////////////////////////////////////////////////////////////
 						// Issue all the stages.
 						(*mpMultiCore)(mScheduler);
-
-						// And tell the scheduler to execute this work queue.
-						mScheduler.Execute(mQueue);
 
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.

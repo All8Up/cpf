@@ -18,9 +18,9 @@ namespace Cpf
 		{
 		public:
 			// Standard blocks.
-			static constexpr auto kBegin = BlockID("Begin"_crc64);
-			static constexpr auto kExecute = BlockID("Execute"_crc64);
-			static constexpr auto kEnd = BlockID("Execute"_crc64);
+			static constexpr auto kBegin = "Begin"_hashString;
+			static constexpr auto kExecute = "Execute"_hashString;
+			static constexpr auto kEnd = "End"_hashString;
 
 			// Factory.
 			using Creator = Stage* (*)(System*, const char* name);

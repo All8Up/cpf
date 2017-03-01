@@ -2,7 +2,6 @@
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Pipeline.hpp"
-#include "Hash/Crc.hpp"
 #include "UnorderedMap.hpp"
 #include "Logging/Logging.hpp"
 
@@ -103,8 +102,8 @@ BlockDependencies System::GetDependencies() const
 	BlockDependencies result;
 	for (const auto& dep : mDependencies)
 	{
-		Stage* depStage = GetStage(dep.mDependent.mStage);
-		Stage* targetStage = GetStage(dep.mTarget.mStage);
+		Stage* depStage = GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage);
+		Stage* targetStage = GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage);
 		if (depStage && depStage->IsEnabled() &&
 			targetStage && targetStage->IsEnabled())
 		{

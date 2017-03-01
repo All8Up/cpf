@@ -56,7 +56,7 @@ MultiCore::Instructions EntityStage::GetInstructions(MultiCore::SystemID sid)
 {
 	MultiCore::Instructions result;
 	result.push_back({ { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this });
-	result.push_back({ { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Update, this });
+	result.push_back({ { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this });
 	result.push_back({ { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eFirst, &EntityStage::_End, this });
 	return result;
 }
