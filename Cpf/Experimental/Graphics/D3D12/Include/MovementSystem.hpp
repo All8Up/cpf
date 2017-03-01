@@ -20,9 +20,9 @@ namespace Cpf
 	class MoverSystem : public MultiCore::System
 	{
 	public:
-		static constexpr auto kID = MultiCore::SystemID("Mover System"_crc64);
-		static constexpr auto kUpdate = "Update"_stringHash;
-		static constexpr auto kUpdateEBus = "Update EBus"_stringHash;
+		static constexpr auto kID = "Mover System"_hashString;
+		static constexpr auto kUpdate = "Update"_hashString;
+		static constexpr auto kUpdateEBus = "Update EBus"_hashString;
 
 		struct Desc : System::Desc
 		{
@@ -33,7 +33,7 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc);
+		MoverSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc);
 		InstanceSystem* GetInstanceSystem() const;
 		bool Configure() override;
 		static bool Install();
@@ -42,7 +42,7 @@ namespace Cpf
 		void UseEBus(bool flag);
 
 	private:
-		static System* _Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
+		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
 
 		ExperimentalD3D12* mpApp;
 

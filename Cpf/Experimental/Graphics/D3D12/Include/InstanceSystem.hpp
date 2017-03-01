@@ -15,10 +15,10 @@ namespace Cpf
 	public:
 		using StageID = EntityService::StageID;
 
-		static constexpr auto kID = MultiCore::SystemID("Instance Manager"_crc64);
+		static constexpr auto kID = "Instance Manager"_hashString;
 
-		static constexpr Hash::StringHash kBegin = "Instance Begin"_stringHash;
-		static constexpr Hash::StringHash kEnd = "Instance End"_stringHash;
+		static constexpr auto kBegin = "Instance Begin"_hashString;
+		static constexpr auto kEnd = "Instance End"_hashString;
 
 		struct Desc : System::Desc
 		{
@@ -26,7 +26,7 @@ namespace Cpf
 			ExperimentalD3D12* mpApplication;
 		};
 
-		InstanceSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc);
+		InstanceSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc);
 
 		Instance* GetInstances() const { return mpInstances; }
 
@@ -40,9 +40,9 @@ namespace Cpf
 		}
 
 	private:
-		static System* _Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps)
+		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps)
 		{
-			return new InstanceSystem(name, deps, static_cast<const Desc*>(desc));
+			return new InstanceSystem(owner, name, deps, static_cast<const Desc*>(desc));
 		}
 
 		static void _Begin(Concurrency::ThreadContext&, void* context);

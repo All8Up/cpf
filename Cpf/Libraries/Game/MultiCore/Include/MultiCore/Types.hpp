@@ -4,7 +4,8 @@
 #include "Vector.hpp"
 #include "IntrusivePtr.hpp"
 #include "Hash/HashID.hpp"
-#include "Pair.hpp"
+#include "Hash/HashString.hpp"
+#include "Concurrency/Scheduler.hpp"
 
 namespace Cpf
 {
@@ -12,12 +13,73 @@ namespace Cpf
 	{
 		class Pipeline;
 
-		using SystemID = Hash::HashID<uint64_t, 1>;
+		using SystemID = Hash::HashString;
 		class System;
 
-		using StageID = Hash::HashID<uint64_t, 2>;
+		using StageID = Hash::HashString;
 		class Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
+
+		using BlockID = Hash::HashID<uint64_t, 3>;
+
+		enum class BlockOpcode
+		{
+			eFirst,
+			eAll,
+			eLast
+		};
+
+		struct Block
+		{
+			BlockID mID;
+			BlockOpcode mType;
+		};
+		using Blocks = Vector<Block>;
+
+		// System, stage, block id.
+		struct SSBID
+		{
+			SystemID mSystem;
+			StageID mStage;
+			BlockID mBlock;
+
+			bool operator <(const SSBID& rhs) const;
+			bool operator ==(const SSBID& rhs) const;
+		};
+
+		struct Instruction
+		{
+			SSBID mID;
+			BlockOpcode mOpcode;
+			Concurrency::Scheduler::PayloadFunc_t mpFunction;
+			void* mpContext;
+		};
+		using Instructions = Vector<Instruction>;
+
+		struct StageBlockID
+		{
+			StageBlockID(StageID stageID, BlockID blockID);
+			explicit StageBlockID(const SSBID& ssbid);
+
+			StageID mStage;
+			BlockID mBlock;
+		};
+
+		enum class BlockPolicy
+		{
+			eBarrier,		// Must be separated by a barrier.
+			eAfter			// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
+		};
+
+		struct BlockDependency
+		{
+			BlockDependency(SSBID dependent, SSBID target, BlockPolicy policy = BlockPolicy::eBarrier);
+
+			SSBID mDependent;
+			SSBID mTarget;
+			BlockPolicy mPolicy;
+		};
+		using BlockDependencies = Vector<BlockDependency>;
 
 		//////////////////////////////////////////////////////////////////////////
 		struct SystemStageID
@@ -44,14 +106,6 @@ namespace Cpf
 				return false;
 			}
 		};
-		using SystemStageIDVector = Vector<SystemStageID>;
-
-		struct Dependency
-		{
-			SystemStageID mDependent;
-			SystemStageID mTarget;
-		};
-		using DependencyVector = Vector<Dependency>;
 
 		struct SystemDependency
 		{
@@ -61,7 +115,6 @@ namespace Cpf
 		using SystemDependencies = Vector<SystemDependency>;
 	}
 }
-
 
 namespace CPF_STL_NAMESPACE
 {

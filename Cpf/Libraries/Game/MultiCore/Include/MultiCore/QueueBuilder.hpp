@@ -10,97 +10,45 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		using OpcodeID = Hash::HashID<uint64_t, 12332>;
-		struct StageOpcodeID
-		{
-			StageID mStage;
-			OpcodeID mOpcode;
-
-			bool operator <(const StageOpcodeID& rhs) const
-			{
-				if (mStage < rhs.mStage)
-					return true;
-				if (mOpcode < rhs.mOpcode)
-					return true;
-				return false;
-			}
-			bool operator == (const StageOpcodeID& rhs) const
-			{
-				return mStage == rhs.mStage && mOpcode == rhs.mOpcode;
-			}
-		};
-
-		enum class OpcodeType
-		{
-			eFirst,
-			eAll,
-			eLast
-		};
-
-		enum class DependencyPolicy
-		{
-			eBarrier,		// Must be separated by a barrier.
-			eAfter			// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
-		};
-
-		struct DependencyDesc
-		{
-			StageOpcodeID mID;
-			OpcodeType mType;
-			DependencyPolicy mPolicy;
-
-			bool operator < (const DependencyDesc& rhs) const
-			{
-				return mID < rhs.mID;
-			}
-		};
-
-		struct OpcodeDependency
-		{
-			StageOpcodeID mDependent;
-			Vector<DependencyDesc> mDependencies;
-		};
-
 		class QueueBuilder
 		{
 		public:
-			QueueBuilder();
+			QueueBuilder(Pipeline* pipeline);
 			~QueueBuilder();
 
-			void Add(StageID stageId, OpcodeID opcodeID, const OpcodeType opcode);
-			void Add(const OpcodeDependency& dependency);
+			void Add(const Instruction& instructions);
+			void Add(const BlockDependencies& dependencies);
 
 			bool Solve();
 
+			Concurrency::Scheduler::Queue& GetQueue() { return mResultQueue; }
+
 		private:
-			struct OpcodeData
+			Instructions mInstructions;
+
+			struct DependencyEntry
 			{
-				bool operator < (const OpcodeData& rhs) const
-				{
-					return mStageOpcodeID < rhs.mStageOpcodeID;
-				}
+				SSBID mID;
+				BlockPolicy mPolicy;
 
-				StageOpcodeID mStageOpcodeID;
-				OpcodeType mOpcodeType;
+				bool operator < (const DependencyEntry& rhs) const;
 			};
-			using OpcodeDataVector = Vector<OpcodeData>;
-			using DependencySet = Set<DependencyDesc>;
-			using OpcodeMap = Map<OpcodeData, DependencySet>;
-			using Buckets = Vector<OpcodeDataVector>;
 
-			bool _Solve(const DependencySet& dependencies, Buckets::iterator& outLocation);
-			const DependencySet* _GetDependencies(const StageOpcodeID& rhs) const;
-			void _AddToBucket(Buckets::iterator it, OpcodeData data);
-
-			OpcodeMap mOpcodes;
-
-			using DependencyMap = Map<StageOpcodeID, DependencySet>;
-
+			using DependencySet = Set<DependencyEntry>;
+			using DependencyMap = Map<SSBID, DependencySet>;
 			DependencyMap mDependencies;
 
-			Buckets mBuckets;
+			using BucketVector = Vector<Instructions>;
+			BucketVector mBuckets;
 
+			void _BuildQueue();
+			bool _Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation);
+			void _AddToBucket(BucketVector::iterator it, const Instruction& data);
+
+			//
 			Concurrency::Scheduler::Queue mResultQueue;
+
+			Pipeline* mpPipeline;
 		};
 	}
 }

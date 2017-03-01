@@ -1,21 +1,28 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
+#include "MultiCore/Pipeline.hpp"
 #include "Hash/Crc.hpp"
 #include "UnorderedMap.hpp"
+#include "Logging/Logging.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(const String& name, const SystemDependencies& deps)
-	: mpOwner(nullptr)
-	, mName(name)
-	, mID(Hash::Crc64(name.c_str(), name.size()))
-	, mDependencies(deps)
-{}
+System::System(Pipeline* owner, const char* name, const SystemDependencies& deps)
+	: mpOwner(owner)
+	, mID(name, strlen(name))
+{
+	CPF_ASSERT(deps.empty());
+}
 
 System::~System()
 {}
+
+Pipeline* System::GetOwner() const
+{
+	return mpOwner;
+}
 
 Stage* System::GetStage(StageID id) const
 {
@@ -32,7 +39,7 @@ Stage* System::GetStage(StageID id) const
 
 bool System::AddStage(Stage* stage)
 {
-	if (stage)
+	if (stage && stage->IsEnabled())
 	{
 		stage->AddRef();
 		mStages.emplace_back(stage);
@@ -54,11 +61,6 @@ bool System::RemoveStage(StageID id)
 	return false;
 }
 
-const String& System::GetName() const
-{
-	return mName;
-}
-
 SystemID System::GetID() const
 {
 	return mID;
@@ -69,6 +71,53 @@ const StageVector& System::GetStages() const
 	return mStages;
 }
 
+Instructions System::GetInstructions() const
+{
+	Instructions result;
+	for (const auto& stage : mStages)
+	{
+		if (stage->IsEnabled())
+		{
+			const auto& instructions = stage->GetInstructions(GetID());
+			result.insert(result.end(), instructions.begin(), instructions.end());
+		}
+	}
+	return result;
+}
+
+/**
+ @brief Adds a fully described dependency.
+ @param dependency The dependency between fully identified blocks.
+ */
+void System::AddDependency(const BlockDependency& dependency)
+{
+	mDependencies.emplace_back(dependency);
+}
+
+/**
+ @brief Gets the dependencies.
+ @return The dependency vector.
+ */
+BlockDependencies System::GetDependencies() const
+{
+	BlockDependencies result;
+	for (const auto& dep : mDependencies)
+	{
+		Stage* depStage = GetStage(dep.mDependent.mStage);
+		Stage* targetStage = GetStage(dep.mTarget.mStage);
+		if (depStage && depStage->IsEnabled() &&
+			targetStage && targetStage->IsEnabled())
+		{
+			result.push_back(dep);
+		}
+		else
+		{
+			CPF_LOG(Experimental, Info) << "Dropped disabled dependency.";
+		}
+	}
+	return result;
+}
+
 //////////////////////////////////////////////////////////////////////////
 namespace
 {
@@ -76,11 +125,11 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(SystemID id, const String& name, const Desc* desc, const SystemDependencies& deps)
+System* System::_Create(Pipeline* owner, SystemID id, const char* name, const Desc* desc, const SystemDependencies& deps)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
-		return (*it->second)(name, desc, deps);
+		return (*it->second)(owner, name, desc, deps);
 	return nullptr;
 }
 

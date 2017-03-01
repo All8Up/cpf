@@ -16,8 +16,8 @@ bool RenderSystem::Remove()
 	return System::Remove(kID);
 }
 
-RenderSystem::RenderSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc)
-	: System(name, deps)
+RenderSystem::RenderSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc)
+	: System(owner, name, deps)
 	, mpApp(desc->mpApplication)
 	, mCurrentBackBuffer(0)
 {
@@ -49,11 +49,27 @@ RenderSystem::RenderSystem(const String& name, const EntityService::SystemDepend
 	AddStage(endFrame);
 
 	// Add the default set of dependencies.
-	AddDependency({ clearBuffers->GetID(),{ GetID(), beginFrame->GetID() } });
-	AddDependency({ drawInstances->GetID(),{ GetID(), clearBuffers->GetID() } });
-	AddDependency({ debugUI->GetID(),{ GetID(), drawInstances->GetID() } });
-	AddDependency({ preparePresent->GetID(),{ GetID(), debugUI->GetID() } });
-	AddDependency({ endFrame->GetID(),{ GetID(), preparePresent->GetID() } });
+	AddDependency({
+		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), beginFrame->GetID(), MultiCore::Stage::kExecute },
+		MultiCore::BlockPolicy::eBarrier
+	});
+	AddDependency({
+		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute }
+	});
+	AddDependency({
+		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute }
+	});
+	AddDependency({
+		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute }
+	});
+	AddDependency({
+		{ GetID(), endFrame->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute }
+	});
 
 	_AllocateBuffers();
 }
@@ -105,7 +121,7 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::System* RenderSystem::Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps)
+MultiCore::System* RenderSystem::Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps)
 {
-	return new RenderSystem(name, deps, static_cast<const Desc*>(desc));
+	return new RenderSystem(owner, name, deps, static_cast<const Desc*>(desc));
 }

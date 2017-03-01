@@ -16,31 +16,31 @@ namespace Cpf
 			struct Desc
 			{};
 
-			using Creator = System* (*)(const String&, const Desc*, const SystemDependencies& deps);
+			using Creator = System* (*)(Pipeline* owner, const char*, const Desc*, const SystemDependencies& deps);
 
 			// System factory.
 			template <typename TYPE>
-			static TYPE* Create(const String&, const Desc* = nullptr, const SystemDependencies& dependencies = SystemDependencies());
+			static TYPE* Create(Pipeline* owner, const char*, const Desc* = nullptr, const SystemDependencies& dependencies = SystemDependencies());
 			static bool Install(SystemID id, Creator);
 			static bool Remove(SystemID id);
 
 			// System interface.
-			Pipeline* GetOwner() const { return mpOwner; }
-			void SetOwner(Pipeline* pipeline) { mpOwner = pipeline; }
+			Pipeline* GetOwner() const;
 			Stage* GetStage(StageID id) const;
 
-			const String& GetName() const;
 			SystemID GetID() const;
 
 			const StageVector& GetStages() const;
+			Instructions GetInstructions() const;
 
-			void AddDependency(const SystemDependency& dependency) { mDependencies.push_back(dependency); }
-			const SystemDependencies& GetSystemDependencies() const { return mDependencies; }
+			void AddDependency(const BlockDependency& dependency);
+			BlockDependencies GetDependencies() const;
+
 			virtual bool Configure() { return true; }
 
 		protected:
 			// Implementation interface.
-			System(const String& name, const SystemDependencies& deps);
+			System(Pipeline* owner, const char* name, const SystemDependencies& deps);
 			virtual ~System();
 
 			bool AddStage(Stage*);
@@ -48,21 +48,20 @@ namespace Cpf
 
 		private:
 			// Untyped factory interface.
-			static System* _Create(SystemID, const String&, const Desc* desc, const SystemDependencies& deps);
+			static System* _Create(Pipeline* owner, SystemID, const char*, const Desc* desc, const SystemDependencies& deps);
 
 			// Implementation data.
 			Pipeline* mpOwner;
 			StageVector mStages;
-			String mName;
 			SystemID mID;
-			SystemDependencies mDependencies;
+			BlockDependencies mDependencies;
 		};
 
 		// Typed system factory.
 		template <typename TYPE>
-		TYPE* System::Create(const String& name, const Desc* desc, const SystemDependencies& deps)
+		TYPE* System::Create(Pipeline* owner, const char* name, const Desc* desc, const SystemDependencies& deps)
 		{
-			return static_cast<TYPE*>(_Create(TYPE::kID, name, desc, deps));
+			return static_cast<TYPE*>(_Create(owner, TYPE::kID, name, desc, deps));
 		}
 	}
 }

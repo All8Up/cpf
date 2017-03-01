@@ -10,7 +10,6 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Partitioning.hpp
 	Include/MultiCore/Pipeline.hpp
 	Include/MultiCore/System.hpp
-	Include/MultiCore/DependencySolver.hpp
 	Include/MultiCore/QueueBuilder.hpp
 )
 
@@ -18,10 +17,10 @@ set (SOURCE_FILES
 	Source/MultiCore.cpp
 )
 set (MULTICORE_SOURCE_FILES
+	Source/MultiCore/Types.cpp
 	Source/MultiCore/Stage.cpp
 	Source/MultiCore/Pipeline.cpp
 	Source/MultiCore/System.cpp
-	Source/MultiCore/DependencySolver.cpp
 	Source/MultiCore/QueueBuilder.cpp
 )
 
@@ -67,6 +66,6 @@ install (EXPORT MultiCoreSystemConfig DESTINATION CMake)
 MakeUnitTest( LIBRARY s_MultiCore GROUP Game
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		UnitTest/Test_DependencySolver.hpp
+		UnitTest/Test_QueueBuilder.hpp
 		../../Core/Test/UnitTestMain.cpp
 )

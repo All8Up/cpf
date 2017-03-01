@@ -26,7 +26,7 @@ namespace Cpf
 			, tRefCounted<iEntityStage>
 		{
 		public:
-			static constexpr auto kID = MultiCore::StageID("Object Stage"_crc64);
+			static constexpr auto kID = "Object Stage"_hashString;
 
 			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
 
@@ -35,16 +35,17 @@ namespace Cpf
 
 			bool QueryInterface(InterfaceID, void**) { return false; }
 
-			void Emit(MultiCore::QueueBuilder&, Concurrency::Scheduler::Queue*) override;
-
 			// Interface.
 			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 			void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 
-		private:
-			EntityStage(MultiCore::System* owner, const String& name);
+			MultiCore::Instructions GetInstructions(MultiCore::SystemID sid) override;
+			const MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
 
-			static MultiCore::Stage* _Creator(MultiCore::System*, const String& name);
+		private:
+			EntityStage(MultiCore::System* owner, const char* name);
+
+			static MultiCore::Stage* _Creator(MultiCore::System*, const char* name);
 
 			// Implementation definitions.
 			using UpdateTuple_t = Tuple<MultiCore::System*, iEntity*, UpdateFunc>;

@@ -87,7 +87,6 @@ namespace Cpf
 			// Scheduler helpers.
 			QueueType::const_iterator begin() const;
 			QueueType::const_iterator end() const;
-			void Clear();
 
 			// Not intended for others to use.
 			Queue(Queue&) = delete;

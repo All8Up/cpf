@@ -4,8 +4,8 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc)
-	: System(name, deps)
+InstanceSystem::InstanceSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc)
+	: System(owner, name, deps)
 	, mpApp(desc->mpApplication)
 	, mRenderID(desc->mRenderSystemID)
 	, mpInstances(nullptr)
@@ -22,7 +22,10 @@ InstanceSystem::InstanceSystem(const String& name, const EntityService::SystemDe
 	AddStage(instanceEnd);
 
 	// Add the default dependencies.
-	AddDependency({ instanceEnd->GetID(),{ GetID(), instanceBegin->GetID() } });
+	AddDependency({
+		{ GetID(), instanceEnd->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), instanceBegin->GetID(), MultiCore::Stage::kExecute }
+	});
 }
 
 

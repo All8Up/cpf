@@ -82,71 +82,82 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<EntityService::Timer> gameTime(MultiCore::System::Create<EntityService::Timer>("Game Time"));
+	IntrusivePtr<EntityService::Timer>
+		gameTime(MultiCore::System::Create<EntityService::Timer>(mpMultiCore, "Game Time"));
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.
 	RenderSystem::Desc renderDesc;
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
-	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>("Render System", &renderDesc));
+	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(mpMultiCore, "Render System", &renderDesc));
 	mpMultiCore->Install(renderSystem);
 
 	// Create the instance management system.
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>("Instance System", &instanceDesc));
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(mpMultiCore, "Instance System", &instanceDesc));
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
 	MoverSystem::Desc moverDesc;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>("Mover", &moverDesc));
+	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(mpMultiCore, "Mover", &moverDesc));
 	mpMultiCore->Install(mpMoverSystem);
 
+#if 0
 	//////////////////////////////////////////////////////////////////////////
 	// Add the required inter-system dependencies.
 	// Render system needs to draw after instancing is complete.
 	renderSystem->AddDependency({
-		MultiCore::StageID(RenderSystem::kDrawInstances.GetID()),
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()) }
+		{ renderSystem->GetID(), MultiCore::StageID(RenderSystem::kDrawInstances.GetID()), MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()), MultiCore::Stage::kExecute },
+		MultiCore::BlockPolicy::eBarrier
 	});
-	
+
 	// Instance system needs to begin after render system begin.
 	// Instance system needs to end after movement update.
 	instanceSystem->AddDependency({
-		MultiCore::StageID(InstanceSystem::kBegin.GetID()),
-		{ renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID()) }
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()), MultiCore::Stage::kExecute },
+		{ renderSystem->GetID(), MultiCore::StageID(RenderSystem::kBeginFrame.GetID()), MultiCore::Stage::kExecute },
+		MultiCore::BlockPolicy::eBarrier
 	});
 	instanceSystem->AddDependency({
-		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
-		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdate.GetID()) }
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()), MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdate.GetID()), MultiCore::Stage::kExecute },
+		MultiCore::BlockPolicy::eBarrier
 	});
+	/*
 	instanceSystem->AddDependency({
-		MultiCore::StageID(InstanceSystem::kEnd.GetID()),
-		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()) }
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()), MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute }
 	});
-
+	*/
+#endif
 	// Mover updates must happen after game time update and instance begin.
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
-		MultiCore::StageID(MoverSystem::kUpdate.GetID()),
-		{gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID())}
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), EntityService::Timer::kUpdate, MultiCore::Stage::kExecute },
+		MultiCore::BlockPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
-		MultiCore::StageID(MoverSystem::kUpdate.GetID()),
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()) }
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		MultiCore::BlockPolicy::eBarrier
+	});
+	/*
+	mpMoverSystem->AddDependency({
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID()), MultiCore::Stage::kExecute }
 	});
 	mpMoverSystem->AddDependency({
-		MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()),
-		{ gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID()) }
+		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()), MultiCore::Stage::kExecute }
 	});
-	mpMoverSystem->AddDependency({
-		MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()),
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()) }
-	});
+	*/
 
 	//////////////////////////////////////////////////////////////////////////
 	// Everything is installed in the pipeline, configure it.
@@ -244,7 +255,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
 
 					//
-					(*mpMultiCore)(mQueue);
+					(*mpMultiCore)(mScheduler);
 					_UpdateStageList();
 					mQueue.Discard();
 
@@ -280,7 +291,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 						//////////////////////////////////////////////////////////////////////////
 						// Issue all the stages.
-						(*mpMultiCore)(mQueue);
+						(*mpMultiCore)(mScheduler);
 
 						// And tell the scheduler to execute this work queue.
 						mScheduler.Execute(mQueue);

@@ -46,8 +46,8 @@ bool MoverSystem::MoverComponent::QueryInterface(InterfaceID id, void** outPtr)
 
 
 
-MoverSystem::MoverSystem(const String& name, const SystemDependencies& deps, const Desc* desc)
-	: System(name, deps)
+MoverSystem::MoverSystem(MultiCore::Pipeline* owner, const char* name, const SystemDependencies& deps, const Desc* desc)
+	: System(owner, name, deps)
 	, mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -58,14 +58,14 @@ MoverSystem::MoverSystem(const String& name, const SystemDependencies& deps, con
 {
 	// Build the stages.
 	mpThreadStage = MultiCore::Stage::Create<EntityStage>(this, kUpdate.GetString());
-	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, kUpdateEBus.GetString());
+//	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, kUpdateEBus.GetString());
 
 	// Add the stages to this system.
 	AddStage(mpThreadStage);
-	AddStage(mpEBusStage);
+//	AddStage(mpEBusStage);
 
 	// Disable the EBus comparison stage to start with.
-	mpEBusStage->SetEnabled(false);
+//	mpEBusStage->SetEnabled(false);
 }
 
 InstanceSystem* MoverSystem::GetInstanceSystem() const
@@ -104,9 +104,9 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::System* MoverSystem::_Creator(const String& name, const System::Desc* desc, const SystemDependencies& deps)
+MultiCore::System* MoverSystem::_Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const SystemDependencies& deps)
 {
-	return new MoverSystem(name, deps, static_cast<const Desc*>(desc));
+	return new MoverSystem(owner, name, deps, static_cast<const Desc*>(desc));
 }
 
 
@@ -124,13 +124,13 @@ ComponentID MoverSystem::MoverComponent::GetID() const
 void MoverSystem::MoverComponent::Activate()
 {
 	mpMover->mpThreadStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_Threaded);
-	mpMover->mpEBusStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
+//	mpMover->mpEBusStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
 void MoverSystem::MoverComponent::Deactivate()
 {
 	mpMover->mpThreadStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_Threaded);
-	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
+//	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
 void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)

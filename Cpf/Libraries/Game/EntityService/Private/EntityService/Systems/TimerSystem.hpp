@@ -24,11 +24,11 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			Timer(const String& name, const SystemDependencies& deps);
+			Timer(MultiCore::Pipeline* owner, const char* name, const SystemDependencies& deps);
 			~Timer() override;
 
 			//
-			static System* Creator(const String& name, const Desc*, const SystemDependencies& deps);
+			static System* Creator(MultiCore::Pipeline* owner, const char* name, const Desc*, const SystemDependencies& deps);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

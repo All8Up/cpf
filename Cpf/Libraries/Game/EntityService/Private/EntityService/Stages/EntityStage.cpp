@@ -7,7 +7,7 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(MultiCore::System* owner, const String& name)
+EntityStage::EntityStage(MultiCore::System* owner, const char* name)
 	: Stage(owner, name)
 {
 }
@@ -22,11 +22,12 @@ bool EntityStage::Remove()
 	return Stage::Remove(kID);
 }
 
-MultiCore::Stage* EntityStage::_Creator(MultiCore::System* owner, const String& name)
+MultiCore::Stage* EntityStage::_Creator(MultiCore::System* owner, const char* name)
 {
 	return new EntityStage(owner, name);
 }
 
+/*
 void EntityStage::Emit(MultiCore::QueueBuilder& builder, Concurrency::Scheduler::Queue* q)
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -35,6 +36,7 @@ void EntityStage::Emit(MultiCore::QueueBuilder& builder, Concurrency::Scheduler:
 	q->All(&EntityStage::_Update, this);
 	q->LastOneBarrier(&EntityStage::_End, this);
 }
+*/
 
 void EntityStage::AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 {
@@ -48,6 +50,15 @@ void EntityStage::RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 	mWork.Acquire();
 	mWork.Remove({ s, o, f });
 	mWork.Release();
+}
+
+MultiCore::Instructions EntityStage::GetInstructions(MultiCore::SystemID sid)
+{
+	MultiCore::Instructions result;
+	result.push_back({ { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this });
+	result.push_back({ { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Update, this });
+	result.push_back({ { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eFirst, &EntityStage::_End, this });
+	return result;
 }
 
 void EntityStage::_Begin(Concurrency::ThreadContext& tc, void* context)

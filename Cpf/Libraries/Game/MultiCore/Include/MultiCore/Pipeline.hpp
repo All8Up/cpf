@@ -30,9 +30,7 @@ namespace Cpf
 
 			Stage* GetStage(SystemID systemID, StageID stageID);
 
-			const StageVector& GetStages() const;
-
-			void operator ()(Concurrency::Scheduler::Queue&);
+			void operator ()(Concurrency::Scheduler&);
 
 		private:
 			Pipeline();
@@ -42,8 +40,8 @@ namespace Cpf
 
 			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<System>>;
 			SystemMap mSystemMap;
-			StageVector mStages;
 
+			Concurrency::Scheduler::Queue mQueue;
 #ifdef CPF_DEBUG
 			bool mChanged;
 #endif

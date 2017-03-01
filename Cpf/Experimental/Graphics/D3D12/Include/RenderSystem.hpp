@@ -17,13 +17,14 @@ namespace Cpf
 	{
 	public:
 		//
-		static constexpr auto kID = MultiCore::SystemID("Render System"_crc64);
-		static constexpr Hash::StringHash kBeginFrame = "Begin Frame"_stringHash;
-		static constexpr Hash::StringHash kClearBuffers = "Clear Buffers"_stringHash;
-		static constexpr Hash::StringHash kDrawInstances = "Draw Instances"_stringHash;
-		static constexpr Hash::StringHash kDebugUI = "Debug UI"_stringHash;
-		static constexpr Hash::StringHash kPreparePresent = "Prepare Present"_stringHash;
-		static constexpr Hash::StringHash kEndFrame = "End Frame"_stringHash;
+		static constexpr auto kID = "Render System"_hashString;
+
+		static constexpr auto kBeginFrame = "Begin Frame"_hashString;
+		static constexpr auto kClearBuffers = "Clear Buffers"_hashString;
+		static constexpr auto kDrawInstances = "Draw Instances"_hashString;
+		static constexpr auto kDebugUI = "Debug UI"_hashString;
+		static constexpr auto kPreparePresent = "Prepare Present"_hashString;
+		static constexpr auto kEndFrame = "End Frame"_hashString;
 
 		// Registration.
 		static bool Install();
@@ -37,7 +38,7 @@ namespace Cpf
 
 	private:
 		// Construction/Destruction.
-		RenderSystem(const String& name, const EntityService::SystemDependencies& deps, const Desc* desc);
+		RenderSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc);
 		~RenderSystem() override;
 
 		//
@@ -51,7 +52,7 @@ namespace Cpf
 		static void _EndFrame(Concurrency::ThreadContext& tc, void* context);
 
 		//
-		static System* Creator(const String& name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
+		static System* Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
 
 		ExperimentalD3D12* mpApp;
 

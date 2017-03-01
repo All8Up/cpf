@@ -1,24 +1,51 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/QueueBuilder.hpp"
+#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/System.hpp"
+#include "MultiCore/Stage.hpp"
+#include "Logging/Logging.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
+//////////////////////////////////////////////////////////////////////////
+bool QueueBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) const
+{
+	return mID < rhs.mID;
+}
 
-QueueBuilder::QueueBuilder()
+
+//////////////////////////////////////////////////////////////////////////
+
+QueueBuilder::QueueBuilder(Pipeline* pipeline)
+	: mpPipeline(pipeline)
 {}
 
 QueueBuilder::~QueueBuilder()
 {}
 
-void QueueBuilder::Add(StageID stageID, OpcodeID opcodeID, const OpcodeType opcode)
+void QueueBuilder::Add(const Instruction& instruction)
 {
-	mOpcodes[{{stageID, opcodeID}, opcode}] = DependencySet();
+	mInstructions.push_back(instruction);
 }
 
-void QueueBuilder::Add(const OpcodeDependency& dependency)
+void QueueBuilder::Add(const BlockDependencies& dependencies)
 {
-	mDependencies[dependency.mDependent] = DependencySet(dependency.mDependencies.begin(), dependency.mDependencies.end());
+	CPF_LOG(Experimental, Info) << "--- Dependencies ---";
+	for (const auto& dep : dependencies)
+	{
+		if (mDependencies.find(dep.mDependent) == mDependencies.end())
+			mDependencies[dep.mDependent] = DependencySet();
+		DependencyEntry entry{dep.mTarget, dep.mPolicy};
+		mDependencies[dep.mDependent].insert(entry);
+
+		CPF_LOG(Experimental, Info) <<
+			" " << dep.mDependent.mSystem.GetString() <<
+			" : " << dep.mDependent.mStage.GetString() <<
+			" = " << dep.mTarget.mSystem.GetString() <<
+			" : " << dep.mTarget.mStage.GetString();
+	}
+	CPF_LOG(Experimental, Info) << "--- Dependencies ---";
 }
 
 bool QueueBuilder::Solve()
@@ -27,45 +54,108 @@ bool QueueBuilder::Solve()
 	do
 	{
 		madeProgress = false;
-		OpcodeMap remaining = mOpcodes;
-		mOpcodes.clear();
+		Instructions remaining = mInstructions;
+		mInstructions.clear();
 
-		for (auto& opcode : remaining)
+		for (auto& instruction : remaining)
 		{
-			auto opcodeData = opcode.first;
-			const auto& dependencySet = opcode.second;
+			const auto dependencySet = mDependencies.find(instruction.mID);
 
-			for (auto& depStageOpcodeID : dependencySet)
+			if (dependencySet == mDependencies.end())
 			{
-				auto dependencies = _GetDependencies(depStageOpcodeID.mID);
-				if (dependencies == nullptr)
+				// No dependencies for this block, push into the first bucket.
+				_AddToBucket(mBuckets.begin(), instruction);
+			}
+			else
+			{
+				// Solve the dependencies if possible.
+				BucketVector::iterator it;
+				if (_Solve(dependencySet->second, it))
 				{
-					// Put this in the first bucket, it has no dependencies.
-					_AddToBucket(mBuckets.begin(), opcodeData);
+					// Add this to the buckets.
+					_AddToBucket(it, instruction);
 					madeProgress = true;
 				}
 				else
 				{
-					// If it has dependencies, sort the system/stage into the appropriate location.
-					Buckets::iterator targetBucket = mBuckets.end();
-					if (_Solve(*dependencies, targetBucket))
-					{
-						_AddToBucket(targetBucket, opcodeData);
-						madeProgress = true;
-					}
-					else
-					{
-						// Push this back into the dependency vector and try again later.
-						Add(opcodeData.mStageOpcodeID.mStage, opcodeData.mStageOpcodeID.mOpcode, opcodeData.mOpcodeType);
-					}
+					// Try again later.
+					Add(instruction);
 				}
 			}
 		}
-	} while (mOpcodes.size() > 0 && madeProgress);
-	return true;
+	} while (mInstructions.size() > 0 && madeProgress);
+
+	_BuildQueue();
+	return mInstructions.empty();
 }
 
-bool QueueBuilder::_Solve(const DependencySet& dependencies, Buckets::iterator& outLocation)
+void QueueBuilder::_BuildQueue()
+{
+	mResultQueue.Discard();
+	for (const auto& bucket : mBuckets)
+	{
+		for (const auto& instruction : bucket)
+		{
+			switch (instruction.mOpcode)
+			{
+			case BlockOpcode::eFirst:
+				mResultQueue.FirstOne(instruction.mpFunction, instruction.mpContext);
+				break;
+
+			case BlockOpcode::eAll:
+				mResultQueue.All(instruction.mpFunction, instruction.mpContext);
+				break;
+
+			case BlockOpcode::eLast:
+				mResultQueue.LastOne(instruction.mpFunction, instruction.mpContext);
+				break;
+
+			default:
+				CPF_ASSERT_ALWAYS;
+				break;
+			}
+		}
+		mResultQueue.Barrier();
+	}
+
+#ifdef CPF_DEBUG
+	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
+	for (const auto& bucket : mBuckets)
+	{
+		for (const auto& instruction : bucket)
+		{
+			switch (instruction.mOpcode)
+			{
+			case BlockOpcode::eFirst:
+				CPF_LOG(Experimental, Info) << "  -- First: "
+					<< instruction.mID.mSystem.GetString() << " : "
+					<< instruction.mID.mStage.GetString();
+				break;
+
+			case BlockOpcode::eAll:
+				CPF_LOG(Experimental, Info) << "  -- All: "
+					<< instruction.mID.mSystem.GetString() << " : "
+					<< instruction.mID.mStage.GetString();
+				break;
+
+			case BlockOpcode::eLast:
+				CPF_LOG(Experimental, Info) << "  -- Last: "
+					<< instruction.mID.mSystem.GetString() << " : "
+					<< instruction.mID.mStage.GetString();
+				break;
+
+			default:
+				CPF_ASSERT_ALWAYS;
+				break;
+			}
+		}
+		CPF_LOG(Experimental, Info) << "  -- Barrier --";
+	}
+	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
+#endif
+}
+
+bool QueueBuilder::_Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation)
 {
 	// Copy the dependencies.  As dependencies are identified, they are removed from this.
 	// If this still has items in it after iterating through the stage buckets, we have failed
@@ -77,22 +167,23 @@ bool QueueBuilder::_Solve(const DependencySet& dependencies, Buckets::iterator& 
 	for (auto ibucket = mBuckets.begin(), iend = mBuckets.end(); ibucket != iend; ++ibucket)
 	{
 		bool needsNewBucket = false;
-		for (auto& opcodeData : *ibucket)
+		for (auto& instruction : *ibucket)
 		{
-			DependencyDesc temp;
-			temp.mID = opcodeData.mStageOpcodeID;
-
-			auto it = remaining.find(temp);
+			DependencyEntry comparator{
+				instruction.mID,
+				BlockPolicy::eAfter
+			};
+			auto it = remaining.find(comparator);
 			if (it == remaining.end())
 				continue;
 
 			// If any dependency is solved in the current bucket which
 			// specifies a barrier is needed, it is sticky until we
 			// move to the next bucket.
-			if (it->mPolicy == DependencyPolicy::eBarrier)
+			if (it->mPolicy == BlockPolicy::eBarrier)
 				needsNewBucket = true;
 
-			remaining.erase(temp);
+			remaining.erase(comparator);
 			if (remaining.empty())
 			{
 				// Constraints are resolved.
@@ -110,22 +201,11 @@ bool QueueBuilder::_Solve(const DependencySet& dependencies, Buckets::iterator& 
 	return false;
 }
 
-const QueueBuilder::DependencySet* QueueBuilder::_GetDependencies(const StageOpcodeID& rhs) const
-{
-	const auto& systemStageSet = mDependencies.find(rhs);
-
-	if (systemStageSet != mDependencies.end())
-	{
-		return &systemStageSet->second;
-	}
-	return nullptr;
-}
-
-void QueueBuilder::_AddToBucket(Buckets::iterator it, OpcodeData data)
+void QueueBuilder::_AddToBucket(BucketVector::iterator it, const Instruction& data)
 {
 	if (it == mBuckets.end())
 	{
-		mBuckets.push_back(OpcodeDataVector());
+		mBuckets.push_back(Instructions());
 		mBuckets.back().push_back(data);
 	}
 	else

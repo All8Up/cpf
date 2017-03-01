@@ -16,7 +16,10 @@ void ExperimentalD3D12::_UpdateStageList()
 			}
 			delete[] mpStageList;
 		}
+		mStageListCount = 0;
+		mpStageList = nullptr;
 
+		/*
 		mStageListCount = int(mpMultiCore->GetStages().size());
 		mpStageList = new char*[mStageListCount];
 		int i = 0;
@@ -37,6 +40,7 @@ void ExperimentalD3D12::_UpdateStageList()
 				strcpy(mpStageList[i++], barrier.c_str());
 			}
 		}
+		*/
 	}
 
 	//////////////////////////////////////////////////////////////////////////

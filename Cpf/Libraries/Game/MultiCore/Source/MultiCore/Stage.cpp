@@ -7,10 +7,9 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-Stage::Stage(System* service, const String& name)
+Stage::Stage(System* service, const char* name)
 	: mpSystem(service)
-	, mName(name)
-	, mID(Hash::Crc64(name.c_str(), name.size()))
+	, mID(name, strlen(name))
 	, mEnabled(true)
 {
 	
@@ -27,11 +26,6 @@ System* Stage::GetSystem() const
 StageID Stage::GetID() const
 {
 	return mID;
-}
-
-const String& Stage::GetName() const
-{
-	return mName;
 }
 
 
@@ -62,7 +56,7 @@ bool Stage::Remove(StageID id)
 	return false;
 }
 
-Stage* Stage::_Create(StageID type, System* owner, const String& name)
+Stage* Stage::_Create(StageID type, System* owner, const char* name)
 {
 	if (s_StageMap.find(type) != s_StageMap.end())
 	{
@@ -81,6 +75,11 @@ void Stage::SetEnabled(bool flag)
 	mEnabled = flag;
 }
 
+Instructions Stage::GetInstructions(SystemID)
+{
+	return Instructions();
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -94,6 +93,7 @@ bool SingleUpdateStage::Remove()
 	return Stage::Remove(kID);
 }
 
+/*
 void SingleUpdateStage::Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue* q)
 {
 	(void)builder;
@@ -112,6 +112,7 @@ void SingleUpdateStage::Emit(QueueBuilder& builder, Concurrency::Scheduler::Queu
 			q->LastOne(&SingleUpdateStage::_Update, this);
 	}
 }
+*/
 
 void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier, bool first)
 {
@@ -121,7 +122,15 @@ void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, voi
 	mpContext = context;
 }
 
-SingleUpdateStage::SingleUpdateStage(System* owner, const String& name)
+Instructions SingleUpdateStage::GetInstructions(SystemID sid)
+{
+	Instructions result;
+	result.push_back({ {sid, GetID(), kExecute}, BlockOpcode::eFirst, &SingleUpdateStage::_Update, this });
+	return result;
+}
+
+
+SingleUpdateStage::SingleUpdateStage(System* owner, const char* name)
 	: Stage(owner, name)
 	, mWithBarrier(false)
 	, mFirst(true)
@@ -129,7 +138,7 @@ SingleUpdateStage::SingleUpdateStage(System* owner, const String& name)
 	, mpContext(nullptr)
 {}
 
-Stage* SingleUpdateStage::_Creator(System* owner, const String& name)
+Stage* SingleUpdateStage::_Creator(System* owner, const char* name)
 {
 	return new SingleUpdateStage(owner, name);
 }

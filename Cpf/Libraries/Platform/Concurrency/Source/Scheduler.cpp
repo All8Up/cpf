@@ -188,7 +188,7 @@ void Scheduler::Execute(Queue& q, bool clear)
 	Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mWorkLock);
 	mExternalQueue.insert(mExternalQueue.end(), q.begin(), q.end());
 	if (clear)
-		q.Clear();
+		q.Discard();
 }
 
 

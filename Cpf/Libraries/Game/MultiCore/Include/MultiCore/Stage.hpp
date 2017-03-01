@@ -17,44 +17,50 @@ namespace Cpf
 		class Stage : public tRefCounted<iRefCounted>
 		{
 		public:
+			// Standard blocks.
+			static constexpr auto kBegin = BlockID("Begin"_crc64);
+			static constexpr auto kExecute = BlockID("Execute"_crc64);
+			static constexpr auto kEnd = BlockID("Execute"_crc64);
+
 			// Factory.
-			using Creator = Stage* (*)(System*, const String& name);
+			using Creator = Stage* (*)(System*, const char* name);
 
 			template <typename TYPE>
-			static TYPE* Create(System* owner, const String& name);
+			static TYPE* Create(System* owner, const char* name);
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
 			// Accessors.
 			System* GetSystem() const;
 			StageID GetID() const;
-			const String& GetName() const;
 
 			//
 			bool IsEnabled() const;
 			void SetEnabled(bool flag);
 
-			// Submission to the scheduler queue.
-			virtual void Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue*) = 0;
+			//
+			virtual Instructions GetInstructions(SystemID sid) = 0;
+			virtual const BlockID GetDefaultBlock() const = 0;
+			virtual const BlockID GetBeginBlock() const { return GetDefaultBlock(); }
+			virtual const BlockID GetEndBlock() const { return GetDefaultBlock(); }
 
 		protected:
 			// Construction/Destruction.
-			Stage(System* system, const String& name);
+			Stage(System* system, const char* name);
 			virtual ~Stage();
 
 		private:
-			static Stage* _Create(StageID type, System* owner, const String& name);
+			static Stage* _Create(StageID type, System* owner, const char* name);
 
 			// Implementation data.
 			System* mpSystem;
-			String mName;
 			StageID mID;
 			bool mEnabled;
 		};
 
 		//
 		template <typename TYPE>
-		TYPE* Stage::Create(System* owner, const String& name)
+		TYPE* Stage::Create(System* owner, const char* name)
 		{
 			return static_cast<TYPE*>(_Create(TYPE::kID, owner, name));
 		}
@@ -64,19 +70,20 @@ namespace Cpf
 		class SingleUpdateStage : public Stage
 		{
 		public:
-			static constexpr auto kID = StageID("Single Update Stage"_crc64);
+			static constexpr auto kID = "Single Update Stage"_hashString;
 
 			static bool Install();
 			static bool Remove();
 
-			void Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue*) override;
-
 			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier = false, bool first = true);
 
-		private:
-			SingleUpdateStage(System* owner, const String& name);
+			Instructions GetInstructions(SystemID sid) override;
+			const BlockID GetDefaultBlock() const override { return kExecute; }
 
-			static Stage* _Creator(System*, const String& name);
+		private:
+			SingleUpdateStage(System* owner, const char* name);
+
+			static Stage* _Creator(System*, const char* name);
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 
 			bool mWithBarrier;

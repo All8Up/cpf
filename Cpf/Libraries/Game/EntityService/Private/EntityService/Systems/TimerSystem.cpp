@@ -17,14 +17,14 @@ bool Timer::Remove()
 	return System::Remove(kID);
 }
 
-MultiCore::System* Timer::Creator(const String& name, const Desc*, const SystemDependencies& deps)
+MultiCore::System* Timer::Creator(MultiCore::Pipeline* owner, const char* name, const Desc*, const SystemDependencies& deps)
 {
-	return new Timer(name, deps);
+	return new Timer(owner, name, deps);
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(const String& name, const SystemDependencies& deps)
-	: System(name, deps)
+Timer::Timer(MultiCore::Pipeline* owner, const char* name, const SystemDependencies& deps)
+	: System(owner, name, deps)
 	, mpUpdate(nullptr)
 {
 	mStart = Platform::Time::Now();

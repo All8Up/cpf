@@ -234,10 +234,3 @@ Scheduler::Queue::QueueType::const_iterator Scheduler::Queue::end() const
 {
 	return mQueue.cend();
 }
-
-
-/** @brief Clears the content of this queue. */
-void Scheduler::Queue::Clear()
-{
-	mQueue.clear();
-}

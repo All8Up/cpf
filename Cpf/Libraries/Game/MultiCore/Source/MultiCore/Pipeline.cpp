@@ -4,7 +4,6 @@
 #include "MultiCore/Stage.hpp"
 #include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
-#include "MultiCore/DependencySolver.hpp"
 #include "MultiCore/QueueBuilder.hpp"
 
 using namespace Cpf;
@@ -42,7 +41,6 @@ System* Pipeline::Install(System* system)
 #endif
 		system->AddRef();
 		mSystemMap.emplace(id, system);
-		system->SetOwner(this);
 		return system;
 	}
 	return nullptr;
@@ -57,59 +55,36 @@ bool Pipeline::Remove(System* system)
 	mChanged = true;
 #endif
 	mSystemMap.erase(id);
-	system->SetOwner(nullptr);
 	return true;
 }
 
 bool Pipeline::Configure()
 {
-	// Iterate the systems and fill in the dependency solver.
-	DependencySolver solver;
+	// Iterate the systems and setup the queue builder.
+	QueueBuilder builder(this);
 	for (auto& system : mSystemMap)
 	{
-		for (auto& stage : system.second->GetStages())
+		// Iterate and add all blocks.
+		for (auto& instruction : GetSystem(system.first)->GetInstructions())
 		{
-			solver.AddStage(system.first, stage->GetID());
+			builder.Add(instruction);
 		}
-		// Resolve system dependencies into full descriptions.
-		DependencyVector dependencies;
-		for (auto& dep : system.second->GetSystemDependencies())
-			dependencies.push_back({ { system.first, dep.mDependent }, dep.mTarget });
-		solver.AddDependencies(dependencies);
-	}
-	if (!solver.Solve())
-	{
-		// Do something about the error here.
-		CPF_LOG(Experimental, Info) << "Error solving stage dependencies.";
-	}
 
-	// Convert the solved stage order into the stage vector.
-	mStages.clear();
-	for (size_t i=0; i<solver.GetBucketCount(); ++i)
-	{
-		const auto& bucket = solver.GetBucket(i);
-		for (const auto& systemStage : bucket)
-		{
-			Stage* stage = GetStage(systemStage.mSystem, systemStage.mStage);
-			mStages.emplace_back(stage);
-		}
-		mStages.emplace_back(nullptr);
+		// Add dependencies between blocks.
+		BlockDependencies dependencies = system.second->GetDependencies();
+		if (!dependencies.empty())
+			builder.Add(dependencies);
 	}
+	if (!builder.Solve())
+	{
+		CPF_LOG(Experimental, Error) << "Error resolving block dependencies.";
+	}
+	else
+		mQueue = Move(builder.GetQueue());
 
 	// Let the systems configure to the new pipeline.
+	// This allows systems to get pointers to other configured systems.
 	_ConfigureSystems();
-
-#ifdef CPF_DEBUG
-	CPF_LOG(Experimental, Info) << "---------------- Stage Order ---------------------------";
-	for (const auto& stage : mStages)
-	{
-		if (stage)
-			CPF_LOG(Experimental, Info) << "  " << stage->GetSystem()->GetName() << " : " << stage->GetName();
-		else
-			CPF_LOG(Experimental, Info) << "  <---- barrier ---->";
-	}
-	CPF_LOG(Experimental, Info) << "---------------- Stage Order ---------------------------";
-#endif
 
 #ifdef CPF_DEBUG
 	mChanged = false;
@@ -132,7 +107,6 @@ bool Pipeline::_ConfigureSystems() const
 	return result;
 }
 
-
 System* Pipeline::GetSystem(SystemID id) const
 {
 	auto result = mSystemMap.find(id);
@@ -146,7 +120,7 @@ System* Pipeline::GetSystem(SystemID id) const
 
 System* Pipeline::GetSystem(const String& name) const
 {
-	return GetSystem(SystemID(Hash::Crc64(name.c_str(), name.size())));
+	return GetSystem(SystemID(name.c_str(), name.size()));
 }
 
 Stage* Pipeline::GetStage(SystemID systemID, StageID stageID)
@@ -157,27 +131,11 @@ Stage* Pipeline::GetStage(SystemID systemID, StageID stageID)
 	return nullptr;
 }
 
-const StageVector& Pipeline::GetStages() const
-{
-	return mStages;
-}
-
-void Pipeline::operator ()(Concurrency::Scheduler::Queue& q)
+void Pipeline::operator ()(Concurrency::Scheduler& scheduler)
 {
 #ifdef CPF_DEBUG
 	// Asserts can be enabled in release mode.
 	CPF_ASSERT(mChanged == false);
 #endif
-
-	QueueBuilder builder;
-	for (auto stage : mStages)
-	{
-		if (stage)
-		{
-			if (stage->IsEnabled())
-				stage->Emit(builder, &q);
-		}
-		else
-			q.Barrier();
-	}
+	scheduler.Execute(mQueue, false);
 }

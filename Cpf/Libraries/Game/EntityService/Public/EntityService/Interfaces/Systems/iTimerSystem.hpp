@@ -21,8 +21,8 @@ namespace Cpf
 		{
 		public:
 			//
-			static constexpr auto kID = MultiCore::SystemID("Timer System"_crc64);
-			static constexpr auto kUpdate = "Update"_stringHash;
+			static constexpr auto kID = "Timer System"_hashString;
+			static constexpr auto kUpdate = "Update"_hashString;
 
 			// Registration.
 			static bool Install();
@@ -34,11 +34,11 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			Timer(const String& name, const SystemDependencies& deps);
+			Timer(MultiCore::Pipeline* owner, const char* name, const SystemDependencies& deps);
 			~Timer() override;
 
 			//
-			static System* Creator(const String& name, const Desc*, const SystemDependencies& deps);
+			static System* Creator(MultiCore::Pipeline* owner, const char* name, const Desc*, const SystemDependencies& deps);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/DependencySolver.hpp"
+#include "MultiCore/QueueBuilder.hpp"
 #include <gtest/gtest.h>
 
 TEST(MultiCore, DependencySolver_Basic)
