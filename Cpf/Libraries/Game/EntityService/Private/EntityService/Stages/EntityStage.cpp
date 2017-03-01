@@ -27,17 +27,6 @@ MultiCore::Stage* EntityStage::_Creator(MultiCore::System* owner, const char* na
 	return new EntityStage(owner, name);
 }
 
-/*
-void EntityStage::Emit(MultiCore::QueueBuilder& builder, Concurrency::Scheduler::Queue* q)
-{
-	//////////////////////////////////////////////////////////////////////////
-	// GOING AWAY.
-	q->FirstOneBarrier(&EntityStage::_Begin, this);
-	q->All(&EntityStage::_Update, this);
-	q->LastOneBarrier(&EntityStage::_End, this);
-}
-*/
-
 void EntityStage::AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
@@ -57,7 +46,7 @@ MultiCore::Instructions EntityStage::GetInstructions(MultiCore::SystemID sid)
 	MultiCore::Instructions result;
 	result.push_back({ { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this });
 	result.push_back({ { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this });
-	result.push_back({ { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eFirst, &EntityStage::_End, this });
+	result.push_back({ { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this });
 	return result;
 }
 
