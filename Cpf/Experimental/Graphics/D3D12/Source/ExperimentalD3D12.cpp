@@ -254,7 +254,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
 
 					//
-					_UpdateStageList();
+					_UpdatePipelineDisplay();
 
 					while (IsRunning())
 					{

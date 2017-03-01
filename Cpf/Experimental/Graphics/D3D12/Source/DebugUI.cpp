@@ -5,67 +5,26 @@
 using namespace Cpf;
 using namespace Platform;
 
-void ExperimentalD3D12::_UpdateStageList()
+void ExperimentalD3D12::_UpdatePipelineDisplay()
 {
+	if (mpInstructionList)
 	{
-		if (mpStageList)
+		for (int i = 0; i < mInstructionCount; ++i)
 		{
-			for (int i = 0; i < mStageListCount; ++i)
-			{
-				delete[] mpStageList[i];
-			}
-			delete[] mpStageList;
+			delete[] mpInstructionList[i];
 		}
-		mStageListCount = 0;
-		mpStageList = nullptr;
-
-		/*
-		mStageListCount = int(mpMultiCore->GetStages().size());
-		mpStageList = new char*[mStageListCount];
-		int i = 0;
-		for (auto& stage : mpMultiCore->GetStages())
-		{
-			if (stage)
-			{
-				size_t stringSize = stage->GetSystem()->GetName().size() + stage->GetName().size() + 4;
-				mpStageList[i] = new char[stringSize];
-				strcpy(mpStageList[i], stage->GetSystem()->GetName().c_str());
-				strcat(mpStageList[i], " - ");
-				strcat(mpStageList[i++], stage->GetName().c_str());
-			}
-			else
-			{
-				static const String barrier("-- barrier --");
-				mpStageList[i] = new char[barrier.size() + 1];
-				strcpy(mpStageList[i++], barrier.c_str());
-			}
-		}
-		*/
+		delete[] mpInstructionList;
 	}
 
-	//////////////////////////////////////////////////////////////////////////
+	const Vector<String> queueInfo = mpMultiCore->GetQueueInfo();
+	mInstructionCount = int(queueInfo.size());
+
+	mpInstructionList = new char*[mInstructionCount];
+	int i = 0;
+	for (const auto& string : queueInfo)
 	{
-		if (mpInstructionList)
-		{
-			for (int i = 0; i < mInstructionCount; ++i)
-			{
-				delete[] mpInstructionList[i];
-			}
-			delete[] mpInstructionList;
-		}
-
-		auto instructions = mpMultiCore->GetQueue().Dissassemble();
-		mInstructionCount = int(instructions.size());
-
-		mpInstructionList = new char*[mInstructionCount];
-		int i = 0;
-		for (auto& instruction : instructions)
-		{
-			String description = Concurrency::Scheduler::Queue::GetOpName(instruction.mOp);
-			description += " : " + std::to_string(intptr_t(instruction.mpPayload)) + " : " + std::to_string(intptr_t(instruction.mpContext));
-			mpInstructionList[i] = new char[description.size() + 1];
-			strcpy(mpInstructionList[i++], description.c_str());
-		}
+		mpInstructionList[i] = new char[string.size() + 1];
+		strcpy(mpInstructionList[i++], string.c_str());
 	}
 }
 
@@ -116,8 +75,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 
 //		if (mGOService.GetStagesChanged())
 		{}
-		mDebugUI.ListBox("Stages", &mSelectedStage, const_cast<const char**>(mpStageList), mStageListCount);
-		mDebugUI.ListBox("Instructions", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
+		mDebugUI.ListBox("Thread Pipeline", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
 
 		mDebugUI.Separator();
 		static bool movementEnabled = true;

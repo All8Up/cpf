@@ -19,9 +19,6 @@ namespace Cpf
 		ExperimentalD3D12()
 			: mScheduler(this)
 			, mFenceTarget(1)
-			, mSelectedStage(0)
-			, mpStageList(nullptr)
-			, mStageListCount(0)
 			, mSelectedInstruction(0)
 			, mpInstructionList(nullptr)
 			, mInstructionCount(0)
@@ -57,7 +54,7 @@ namespace Cpf
 
 		void _Resize(int32_t x, int32_t y);
 
-		void _UpdateStageList();
+		void _UpdatePipelineDisplay();
 
 		IntrusivePtr<Resources::Locator> mpLocator;
 
@@ -131,10 +128,6 @@ namespace Cpf
 		EntityService::iManager* mpEntityManager;
 
 		Graphics::DebugUI mDebugUI;
-
-		int mSelectedStage;
-		char** mpStageList;
-		int mStageListCount;
 
 		int mSelectedInstruction;
 		char** mpInstructionList;

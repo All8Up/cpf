@@ -23,6 +23,8 @@ namespace Cpf
 
 			Concurrency::Scheduler::Queue& GetQueue() { return mResultQueue; }
 
+			Vector<String> GetQueueInfo() const;
+
 		private:
 			Instructions mInstructions;
 
@@ -41,6 +43,7 @@ namespace Cpf
 			using BucketVector = Vector<Instructions>;
 			BucketVector mBuckets;
 
+			void _MakeQueueInfo();
 			void _BuildQueue();
 			bool _Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation);
 			void _AddToBucket(BucketVector::iterator it, const Instruction& data);
@@ -49,6 +52,8 @@ namespace Cpf
 			Concurrency::Scheduler::Queue mResultQueue;
 
 			Pipeline* mpPipeline;
+
+			Vector<String> mQueueInfo;
 		};
 	}
 }

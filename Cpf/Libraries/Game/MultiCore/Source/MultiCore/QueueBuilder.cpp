@@ -118,8 +118,24 @@ void QueueBuilder::_BuildQueue()
 		mResultQueue.Barrier();
 	}
 
+	_MakeQueueInfo();
 #ifdef CPF_DEBUG
 	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
+	for (const auto& string : mQueueInfo)
+	{
+		CPF_LOG(Experimental, Info) << string;
+	}
+	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
+#endif
+}
+
+Vector<String> QueueBuilder::GetQueueInfo() const
+{
+	return mQueueInfo;
+}
+
+void QueueBuilder::_MakeQueueInfo()
+{
 	for (const auto& bucket : mBuckets)
 	{
 		for (const auto& instruction : bucket)
@@ -127,24 +143,24 @@ void QueueBuilder::_BuildQueue()
 			switch (instruction.mOpcode)
 			{
 			case BlockOpcode::eFirst:
-				CPF_LOG(Experimental, Info) << "  -- First: "
-					<< instruction.mID.mSystem.GetString() << " : "
-					<< instruction.mID.mStage.GetString() << "="
-					<< instruction.mID.mBlock.GetString();
+				mQueueInfo.push_back( String("First: ")
+					+ String(instruction.mID.mSystem.GetString()) + String(" : ")
+					+ String(instruction.mID.mStage.GetString()) + String("=")
+					+ String(instruction.mID.mBlock.GetString()) );
 				break;
 
 			case BlockOpcode::eAll:
-				CPF_LOG(Experimental, Info) << "  -- All: "
-					<< instruction.mID.mSystem.GetString() << " : "
-					<< instruction.mID.mStage.GetString() << "="
-					<< instruction.mID.mBlock.GetString();
+				mQueueInfo.push_back(String("All: ")
+					+ String(instruction.mID.mSystem.GetString()) + String(" : ")
+					+ String(instruction.mID.mStage.GetString()) + String("=")
+					+ String(instruction.mID.mBlock.GetString()));
 				break;
 
 			case BlockOpcode::eLast:
-				CPF_LOG(Experimental, Info) << "  -- Last: "
-					<< instruction.mID.mSystem.GetString() << " : "
-					<< instruction.mID.mStage.GetString() << "="
-					<< instruction.mID.mBlock.GetString();
+				mQueueInfo.push_back(String("Last: ")
+					+ String(instruction.mID.mSystem.GetString()) + String(" : ")
+					+ String(instruction.mID.mStage.GetString()) + String("=")
+					+ String(instruction.mID.mBlock.GetString()));
 				break;
 
 			default:
@@ -152,10 +168,8 @@ void QueueBuilder::_BuildQueue()
 				break;
 			}
 		}
-		CPF_LOG(Experimental, Info) << "  <<< Barrier >>>";
+		mQueueInfo.push_back("<<< Barrier >>>");
 	}
-	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
-#endif
 }
 
 bool QueueBuilder::_Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation)

@@ -84,13 +84,14 @@ bool Pipeline::Configure()
 
 	// Let the systems configure to the new pipeline.
 	// This allows systems to get pointers to other configured systems.
-	_ConfigureSystems();
+	bool result = _ConfigureSystems();
 
 #ifdef CPF_DEBUG
 	mChanged = false;
 #endif
 
-	return false;
+	mQueueInfo = builder.GetQueueInfo();
+	return result;
 }
 
 bool Pipeline::_ConfigureSystems() const

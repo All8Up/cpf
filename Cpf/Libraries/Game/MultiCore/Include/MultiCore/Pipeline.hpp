@@ -34,6 +34,8 @@ namespace Cpf
 
 			const Concurrency::Scheduler::Queue& GetQueue() const { return mQueue; }
 
+			const Vector<String>& GetQueueInfo() const { return mQueueInfo; }
+
 		private:
 			Pipeline();
 			~Pipeline();
@@ -47,6 +49,7 @@ namespace Cpf
 #ifdef CPF_DEBUG
 			bool mChanged;
 #endif
+			Vector<String> mQueueInfo;
 		};
 
 		template <typename TYPE>
