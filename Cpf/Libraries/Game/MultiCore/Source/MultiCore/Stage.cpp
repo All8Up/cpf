@@ -92,31 +92,9 @@ bool SingleUpdateStage::Remove()
 	return Stage::Remove(kID);
 }
 
-/*
-void SingleUpdateStage::Emit(QueueBuilder& builder, Concurrency::Scheduler::Queue* q)
+void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode)
 {
-	(void)builder;
-	if (mFirst)
-	{
-		if (mWithBarrier)
-			q->FirstOneBarrier(&SingleUpdateStage::_Update, this);
-		else
-			q->FirstOne(&SingleUpdateStage::_Update, this);
-	}
-	else
-	{
-		if (mWithBarrier)
-			q->LastOneBarrier(&SingleUpdateStage::_Update, this);
-		else
-			q->LastOne(&SingleUpdateStage::_Update, this);
-	}
-}
-*/
-
-void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier, bool first)
-{
-	mWithBarrier = withBarrier;
-	mFirst = first;
+	mOpcode = opcode;
 	mpUpdate = func;
 	mpContext = context;
 }
@@ -124,17 +102,16 @@ void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, voi
 Instructions SingleUpdateStage::GetInstructions(SystemID sid)
 {
 	Instructions result;
-	result.push_back({ {sid, GetID(), kExecute}, BlockOpcode::eFirst, &SingleUpdateStage::_Update, this });
+	result.push_back({ {sid, GetID(), kExecute}, mOpcode, &SingleUpdateStage::_Update, this });
 	return result;
 }
 
 
 SingleUpdateStage::SingleUpdateStage(System* owner, const char* name)
 	: Stage(owner, name)
-	, mWithBarrier(false)
-	, mFirst(true)
 	, mpUpdate(nullptr)
 	, mpContext(nullptr)
+	, mOpcode(BlockOpcode::eFirst)
 {}
 
 Stage* SingleUpdateStage::_Creator(System* owner, const char* name)

@@ -31,7 +31,7 @@ namespace Cpf
 			struct DependencyEntry
 			{
 				SSBID mID;
-				BlockPolicy mPolicy;
+				DependencyPolicy mPolicy;
 
 				bool operator < (const DependencyEntry& rhs) const;
 			};
@@ -47,6 +47,7 @@ namespace Cpf
 			void _BuildQueue();
 			bool _Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation);
 			void _AddToBucket(BucketVector::iterator it, const Instruction& data);
+			void _GatherStageDependencies();
 
 			//
 			Concurrency::Scheduler::Queue mResultQueue;

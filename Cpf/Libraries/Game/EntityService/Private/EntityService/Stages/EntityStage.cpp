@@ -41,6 +41,22 @@ void EntityStage::RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 	mWork.Release();
 }
 
+MultiCore::BlockDependencies EntityStage::GetDependencies(MultiCore::SystemID sid) const
+{
+	return MultiCore::BlockDependencies({
+		{
+			{sid, GetID(), Stage::kEnd},
+			{sid, GetID(), Stage::kExecute},
+			MultiCore::DependencyPolicy::eAfter
+		},
+		{
+			{sid, GetID(), Stage::kExecute},
+			{sid, GetID(), Stage::kBegin},
+			MultiCore::DependencyPolicy::eBarrier
+		}
+	});
+}
+
 MultiCore::Instructions EntityStage::GetInstructions(MultiCore::SystemID sid)
 {
 	MultiCore::Instructions result;

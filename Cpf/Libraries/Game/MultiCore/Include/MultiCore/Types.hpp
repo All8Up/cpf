@@ -56,16 +56,7 @@ namespace Cpf
 		};
 		using Instructions = Vector<Instruction>;
 
-		struct StageBlockID
-		{
-			StageBlockID(StageID stageID, BlockID blockID);
-			explicit StageBlockID(const SSBID& ssbid);
-
-			StageID mStage;
-			BlockID mBlock;
-		};
-
-		enum class BlockPolicy
+		enum class DependencyPolicy
 		{
 			eBarrier,		// Must be separated by a barrier.
 			eAfter			// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
@@ -73,61 +64,12 @@ namespace Cpf
 
 		struct BlockDependency
 		{
-			BlockDependency(SSBID dependent, SSBID target, BlockPolicy policy = BlockPolicy::eBarrier);
+			BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy = DependencyPolicy::eBarrier);
 
 			SSBID mDependent;
 			SSBID mTarget;
-			BlockPolicy mPolicy;
+			DependencyPolicy mPolicy;
 		};
 		using BlockDependencies = Vector<BlockDependency>;
-
-		//////////////////////////////////////////////////////////////////////////
-		struct SystemStageID
-		{
-			constexpr SystemStageID(SystemID system, StageID stage)
-				: mSystem(system)
-				, mStage(stage)
-			{}
-
-			SystemID mSystem;
-			StageID mStage;
-
-			bool operator == (const SystemStageID& rhs) const
-			{
-				return mSystem == rhs.mSystem && mStage == rhs.mStage;
-			}
-
-			bool operator < (const SystemStageID& rhs) const
-			{
-				if (mSystem < rhs.mSystem)
-					return true;
-				if (mStage < rhs.mStage)
-					return true;
-				return false;
-			}
-		};
-
-		struct SystemDependency
-		{
-			StageID mDependent;
-			SystemStageID mTarget;
-		};
-		using SystemDependencies = Vector<SystemDependency>;
 	}
-}
-
-namespace CPF_STL_NAMESPACE
-{
-	template<>
-	struct hash<Cpf::MultiCore::SystemStageID>
-	{
-		size_t operator ()(const Cpf::MultiCore::SystemStageID& id) const
-		{
-			size_t first = id.mSystem.GetID();
-			size_t second = id.mStage.GetID();
-			first <<= 11;
-			first ^= second;
-			return size_t(first);
-		}
-	};
 }

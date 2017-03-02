@@ -40,6 +40,7 @@ namespace Cpf
 
 			//
 			virtual Instructions GetInstructions(SystemID sid) = 0;
+			virtual BlockDependencies GetDependencies(SystemID sid) const = 0;
 			virtual const BlockID GetDefaultBlock() const = 0;
 			virtual const BlockID GetBeginBlock() const { return GetDefaultBlock(); }
 			virtual const BlockID GetEndBlock() const { return GetDefaultBlock(); }
@@ -75,8 +76,9 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, bool withBarrier = false, bool first = true);
+			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
 
+			BlockDependencies GetDependencies(SystemID) const override { return BlockDependencies(); }
 			Instructions GetInstructions(SystemID sid) override;
 			const BlockID GetDefaultBlock() const override { return kExecute; }
 
@@ -86,10 +88,9 @@ namespace Cpf
 			static Stage* _Creator(System*, const char* name);
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 
-			bool mWithBarrier;
-			bool mFirst;
 			Function<void(Concurrency::ThreadContext&, void*)> mpUpdate;
 			void* mpContext;
+			BlockOpcode mOpcode;
 		};
 	}
 }

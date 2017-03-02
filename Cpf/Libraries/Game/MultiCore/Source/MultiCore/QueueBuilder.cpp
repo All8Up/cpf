@@ -48,8 +48,23 @@ void QueueBuilder::Add(const BlockDependencies& dependencies)
 	CPF_LOG(Experimental, Info) << "--- Dependencies ---";
 }
 
+void QueueBuilder::_GatherStageDependencies()
+{
+	for (const auto& system : mpPipeline->GetSystems())
+	{
+		for (const auto& stage : system.second->GetStages())
+		{
+			auto dependencies = stage->GetDependencies(system.first);
+			if (!dependencies.empty())
+				Add(dependencies);
+		}
+	}
+}
+
 bool QueueBuilder::Solve()
 {
+	_GatherStageDependencies();
+
 	bool madeProgress;
 	do
 	{
@@ -119,14 +134,13 @@ void QueueBuilder::_BuildQueue()
 	}
 
 	_MakeQueueInfo();
-#ifdef CPF_DEBUG
+
 	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
 	for (const auto& string : mQueueInfo)
 	{
 		CPF_LOG(Experimental, Info) << string;
 	}
 	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
-#endif
 }
 
 Vector<String> QueueBuilder::GetQueueInfo() const
@@ -188,7 +202,7 @@ bool QueueBuilder::_Solve(const DependencySet& dependencies, BucketVector::itera
 		{
 			DependencyEntry comparator{
 				instruction.mID,
-				BlockPolicy::eAfter
+				DependencyPolicy::eAfter
 			};
 			auto it = remaining.find(comparator);
 			if (it == remaining.end())
@@ -197,7 +211,7 @@ bool QueueBuilder::_Solve(const DependencySet& dependencies, BucketVector::itera
 			// If any dependency is solved in the current bucket which
 			// specifies a barrier is needed, it is sticky until we
 			// move to the next bucket.
-			if (it->mPolicy == BlockPolicy::eBarrier)
+			if (it->mPolicy == DependencyPolicy::eBarrier)
 				needsNewBucket = true;
 
 			remaining.erase(comparator);

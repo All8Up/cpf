@@ -27,20 +27,8 @@ bool SSBID::operator ==(const SSBID& rhs) const
 	return mSystem == rhs.mSystem && mStage == rhs.mStage && mBlock == rhs.mBlock;
 }
 
-
 //////////////////////////////////////////////////////////////////////////
-StageBlockID::StageBlockID(StageID stageID, BlockID blockID)
-	: mStage(stageID)
-	, mBlock(blockID)
-{}
-
-StageBlockID::StageBlockID(const SSBID& ssbid)
-	: mStage(ssbid.mStage)
-	, mBlock(ssbid.mBlock)
-{}
-
-//////////////////////////////////////////////////////////////////////////
-BlockDependency::BlockDependency(SSBID dependent, SSBID target, BlockPolicy policy)
+BlockDependency::BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy)
 	: mDependent(dependent)
 	, mTarget(target)
 	, mPolicy(policy)

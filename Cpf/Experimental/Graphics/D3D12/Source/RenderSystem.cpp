@@ -16,29 +16,29 @@ bool RenderSystem::Remove()
 	return System::Remove(kID);
 }
 
-RenderSystem::RenderSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc)
-	: System(owner, name, deps)
+RenderSystem::RenderSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc)
+	: System(owner, name)
 	, mpApp(desc->mpApplication)
 	, mCurrentBackBuffer(0)
 {
 	// Build the stages and set the update function for each.
+	// NOTE: While there are 6 stages which must operate in order, there will only
+	// be two required barrier groups since the only thing required is that they
+	// run in order which is accomplished via series of eLast types.
 	IntrusivePtr<MultiCore::SingleUpdateStage> beginFrame(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kBeginFrame.GetString()));
-	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this);
-
+	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, MultiCore::BlockOpcode::eFirst);
+	// Paired in a group ^
 	IntrusivePtr<MultiCore::SingleUpdateStage> clearBuffers(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kClearBuffers.GetString()));
-	clearBuffers->SetUpdate(&RenderSystem::_Clear, this);
+	clearBuffers->SetUpdate(&RenderSystem::_Clear, this, MultiCore::BlockOpcode::eLast);
 
 	IntrusivePtr<MultiCore::SingleUpdateStage> drawInstances(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kDrawInstances.GetString()));
-	drawInstances->SetUpdate(&RenderSystem::_Draw, this);
-
+	drawInstances->SetUpdate(&RenderSystem::_Draw, this, MultiCore::BlockOpcode::eLast);
 	IntrusivePtr<MultiCore::SingleUpdateStage> debugUI(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kDebugUI.GetString()));
-	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, true, false);
-
+	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, MultiCore::BlockOpcode::eLast);
 	IntrusivePtr<MultiCore::SingleUpdateStage> preparePresent(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kPreparePresent.GetString()));
-	preparePresent->SetUpdate(&RenderSystem::_PreparePresent, this);
-
+	preparePresent->SetUpdate(&RenderSystem::_PreparePresent, this, MultiCore::BlockOpcode::eLast);
 	IntrusivePtr<MultiCore::SingleUpdateStage> endFrame(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kEndFrame.GetString()));
-	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, true, false);
+	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, MultiCore::BlockOpcode::eLast);
 
 	// Add the stages.
 	AddStage(beginFrame);
@@ -52,23 +52,27 @@ RenderSystem::RenderSystem(MultiCore::Pipeline* owner, const char* name, const E
 	AddDependency({
 		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute },
 		{ GetID(), beginFrame->GetID(), MultiCore::Stage::kExecute },
-		MultiCore::BlockPolicy::eBarrier
+		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
 		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute }
+		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
 		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute }
+		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
 		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute }
+		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
 		{ GetID(), endFrame->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute }
+		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
 	});
 
 	_AllocateBuffers();
@@ -121,7 +125,7 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::System* RenderSystem::Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps)
+MultiCore::System* RenderSystem::Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new RenderSystem(owner, name, deps, static_cast<const Desc*>(desc));
+	return new RenderSystem(owner, name, static_cast<const Desc*>(desc));
 }

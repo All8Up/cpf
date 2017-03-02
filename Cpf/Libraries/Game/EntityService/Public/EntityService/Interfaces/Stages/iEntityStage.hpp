@@ -39,6 +39,7 @@ namespace Cpf
 			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 			void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 
+			MultiCore::BlockDependencies GetDependencies(MultiCore::SystemID sid) const override;
 			MultiCore::Instructions GetInstructions(MultiCore::SystemID sid) override;
 			const MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
 

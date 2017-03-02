@@ -16,8 +16,5 @@ namespace Cpf
 
 		using SystmeID = MultiCore::SystemID;
 		using StageID = MultiCore::StageID;
-		using SystemStageID = MultiCore::SystemStageID;
-		using SystemDependency = MultiCore::SystemDependency;
-		using SystemDependencies = MultiCore::SystemDependencies;
 	}
 }

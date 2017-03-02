@@ -41,6 +41,11 @@ using namespace Concurrency;
 #define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
 
 
+void ExperimentalD3D12::ReconfigurePipeline()
+{
+	mpMultiCore->Configure();
+}
+
 int ExperimentalD3D12::Start(const CommandLine&)
 {
 	// Initialize logging.
@@ -102,6 +107,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 	// Create the mover system.
 	MoverSystem::Desc moverDesc;
+	moverDesc.mpApplication = this;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
 	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(mpMultiCore, "Mover", &moverDesc));
@@ -113,7 +119,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	renderSystem->AddDependency({
 		{ renderSystem->GetID(), RenderSystem::kDrawInstances, MultiCore::Stage::kExecute },
 		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
-		MultiCore::BlockPolicy::eBarrier
+		MultiCore::DependencyPolicy::eAfter
 	});
 
 	// Instance system needs to begin after render system begin.
@@ -121,46 +127,46 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	instanceSystem->AddDependency({
 		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
 		{ renderSystem->GetID(), RenderSystem::kBeginFrame, MultiCore::Stage::kExecute },
-		MultiCore::BlockPolicy::eBarrier
+		MultiCore::DependencyPolicy::eAfter
 	});
 	instanceSystem->AddDependency({
 		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		MultiCore::BlockPolicy::eBarrier
+		MultiCore::DependencyPolicy::eAfter
 	});
-	/*
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kEnd.GetID()), MultiCore::Stage::kExecute },
-		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute }
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
 	});
-	*/
 
 	// Mover updates must happen after game time update and instance begin.
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
 		{ gameTime->GetID(), EntityService::Timer::kUpdate, MultiCore::Stage::kExecute },
-		MultiCore::BlockPolicy::eBarrier
+		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
 		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
-		MultiCore::BlockPolicy::eBarrier
-	});
-	/*
-	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::StageID(EntityService::Timer::kUpdate.GetID()), MultiCore::Stage::kExecute }
+		MultiCore::DependencyPolicy::eAfter
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MultiCore::StageID(MoverSystem::kUpdateEBus.GetID()), MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), MultiCore::StageID(InstanceSystem::kBegin.GetID()), MultiCore::Stage::kExecute }
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), EntityService::Timer::kUpdate, MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eBarrier
 	});
-	*/
+	mpMoverSystem->AddDependency({
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
+	});
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// Everything is installed in the pipeline, configure it.
-	mpMultiCore->Configure();
+	ReconfigurePipeline();
 
 	// Create test objects.
 	for (int i = 0; i<kInstanceCount; ++i)

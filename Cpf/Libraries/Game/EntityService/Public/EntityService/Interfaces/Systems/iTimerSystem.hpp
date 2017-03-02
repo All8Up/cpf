@@ -31,14 +31,18 @@ namespace Cpf
 			// Timer interface.
 			Platform::Time::Value GetTime() const;
 			float GetDeltaTime() const;
+			bool IsPaused() const;
+			void SetPause(bool flag);
+			void Pause();
+			void Resume();
 
 		private:
 			// Construction/Destruction.
-			Timer(MultiCore::Pipeline* owner, const char* name, const SystemDependencies& deps);
+			Timer(MultiCore::Pipeline* owner, const char* name);
 			~Timer() override;
 
 			//
-			static System* Creator(MultiCore::Pipeline* owner, const char* name, const Desc*, const SystemDependencies& deps);
+			static System* Creator(MultiCore::Pipeline* owner, const char* name, const Desc*);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);
@@ -46,6 +50,8 @@ namespace Cpf
 			// Implementation data.
 			Platform::Time::Value mTime;
 			Platform::Time::Value mStart;
+			Platform::Time::Value mDelta;
+			bool mPaused;
 
 			// The internal update stage.
 			IntrusivePtr<MultiCore::SingleUpdateStage> mpUpdate;

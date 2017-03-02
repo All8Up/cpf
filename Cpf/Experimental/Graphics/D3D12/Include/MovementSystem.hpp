@@ -26,6 +26,7 @@ namespace Cpf
 
 		struct Desc : System::Desc
 		{
+			ExperimentalD3D12* mpApplication;
 			MultiCore::SystemID mTimerID;
 			MultiCore::SystemID mInstanceID;
 		};
@@ -33,7 +34,7 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc);
+		MoverSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc);
 		InstanceSystem* GetInstanceSystem() const;
 		bool Configure() override;
 		static bool Install();
@@ -42,7 +43,7 @@ namespace Cpf
 		void UseEBus(bool flag);
 
 	private:
-		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
+		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc);
 
 		ExperimentalD3D12* mpApp;
 

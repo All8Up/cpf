@@ -38,7 +38,7 @@ namespace Cpf
 
 	private:
 		// Construction/Destruction.
-		RenderSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc);
+		RenderSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc);
 		~RenderSystem() override;
 
 		//
@@ -52,7 +52,7 @@ namespace Cpf
 		static void _EndFrame(Concurrency::ThreadContext& tc, void* context);
 
 		//
-		static System* Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps);
+		static System* Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc);
 
 		ExperimentalD3D12* mpApp;
 

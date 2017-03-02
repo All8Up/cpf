@@ -4,18 +4,18 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc)
-	: System(owner, name, deps)
+InstanceSystem::InstanceSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc)
+	: System(owner, name)
 	, mpApp(desc->mpApplication)
 	, mRenderID(desc->mRenderSystemID)
 	, mpInstances(nullptr)
 {
 	// Build the stages and set the update function.
 	IntrusivePtr<MultiCore::SingleUpdateStage> instanceBegin(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kBegin.GetString()));
-	instanceBegin->SetUpdate(&InstanceSystem::_Begin, this);
+	instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);
 
 	IntrusivePtr<MultiCore::SingleUpdateStage> instanceEnd(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kEnd.GetString()));
-	instanceEnd->SetUpdate(&InstanceSystem::_End, this);
+	instanceEnd->SetUpdate(&InstanceSystem::_End, this, MultiCore::BlockOpcode::eLast);
 
 	// Add the stages to this system.
 	AddStage(instanceBegin);
@@ -24,7 +24,8 @@ InstanceSystem::InstanceSystem(MultiCore::Pipeline* owner, const char* name, con
 	// Add the default dependencies.
 	AddDependency({
 		{ GetID(), instanceEnd->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), instanceBegin->GetID(), MultiCore::Stage::kExecute }
+		{ GetID(), instanceBegin->GetID(), MultiCore::Stage::kExecute },
+		MultiCore::DependencyPolicy::eAfter
 	});
 }
 

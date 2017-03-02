@@ -16,11 +16,11 @@ namespace Cpf
 			struct Desc
 			{};
 
-			using Creator = System* (*)(Pipeline* owner, const char*, const Desc*, const SystemDependencies& deps);
+			using Creator = System* (*)(Pipeline* owner, const char*, const Desc*);
 
 			// System factory.
 			template <typename TYPE>
-			static TYPE* Create(Pipeline* owner, const char*, const Desc* = nullptr, const SystemDependencies& dependencies = SystemDependencies());
+			static TYPE* Create(Pipeline* owner, const char*, const Desc* = nullptr);
 			static bool Install(SystemID id, Creator);
 			static bool Remove(SystemID id);
 
@@ -40,7 +40,7 @@ namespace Cpf
 
 		protected:
 			// Implementation interface.
-			System(Pipeline* owner, const char* name, const SystemDependencies& deps);
+			System(Pipeline* owner, const char* name);
 			virtual ~System();
 
 			bool AddStage(Stage*);
@@ -48,7 +48,7 @@ namespace Cpf
 
 		private:
 			// Untyped factory interface.
-			static System* _Create(Pipeline* owner, SystemID, const char*, const Desc* desc, const SystemDependencies& deps);
+			static System* _Create(Pipeline* owner, SystemID, const char*, const Desc* desc);
 
 			// Implementation data.
 			Pipeline* mpOwner;
@@ -59,9 +59,9 @@ namespace Cpf
 
 		// Typed system factory.
 		template <typename TYPE>
-		TYPE* System::Create(Pipeline* owner, const char* name, const Desc* desc, const SystemDependencies& deps)
+		TYPE* System::Create(Pipeline* owner, const char* name, const Desc* desc)
 		{
-			return static_cast<TYPE*>(_Create(owner, TYPE::kID, name, desc, deps));
+			return static_cast<TYPE*>(_Create(owner, TYPE::kID, name, desc));
 		}
 	}
 }

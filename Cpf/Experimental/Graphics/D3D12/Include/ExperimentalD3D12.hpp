@@ -32,6 +32,8 @@ namespace Cpf
 
 		Graphics::iVertexBuffer* GetCurrentInstanceBuffer() const { return mpInstanceBuffer[mCurrentBackbuffer]; }
 
+		void ReconfigurePipeline();
+
 		// Moving to a render system.
 		void _BeginFrame(Concurrency::ThreadContext&);
 		void _ClearBuffers(Concurrency::ThreadContext&);

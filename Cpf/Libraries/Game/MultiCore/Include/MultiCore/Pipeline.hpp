@@ -16,6 +16,8 @@ namespace Cpf
 		class Pipeline : public tRefCounted<iRefCounted>
 		{
 		public:
+			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<System>>;
+
 			static bool Create(Pipeline**);
 
 			System* Install(System*);
@@ -25,6 +27,7 @@ namespace Cpf
 
 			System* GetSystem(SystemID id) const;
 			System* GetSystem(const String& name) const;
+			const SystemMap& GetSystems() const { return mSystemMap; }
 			template <typename TYPE>
 			TYPE* GetSystem(const String& name) const;
 
@@ -42,7 +45,6 @@ namespace Cpf
 
 			bool _ConfigureSystems() const;
 
-			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<System>>;
 			SystemMap mSystemMap;
 
 			Concurrency::Scheduler::Queue mQueue;

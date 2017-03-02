@@ -26,7 +26,7 @@ namespace Cpf
 			ExperimentalD3D12* mpApplication;
 		};
 
-		InstanceSystem(MultiCore::Pipeline* owner, const char* name, const EntityService::SystemDependencies& deps, const Desc* desc);
+		InstanceSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc);
 
 		Instance* GetInstances() const { return mpInstances; }
 
@@ -40,9 +40,9 @@ namespace Cpf
 		}
 
 	private:
-		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc, const EntityService::SystemDependencies& deps)
+		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc)
 		{
-			return new InstanceSystem(owner, name, deps, static_cast<const Desc*>(desc));
+			return new InstanceSystem(owner, name, static_cast<const Desc*>(desc));
 		}
 
 		static void _Begin(Concurrency::ThreadContext&, void* context);

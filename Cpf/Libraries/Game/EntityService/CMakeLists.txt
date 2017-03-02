@@ -42,7 +42,6 @@ set (PRIVATE_HEADERS_ENTITYSERVICE
 	Private/EntityService/Manager.hpp
 )
 set (PRIVATE_HEADERS_ENTITYSERVICE_SYSTEMS
-	Private/EntityService/Systems/TimerSystem.hpp
 )
 
 # ###############################################

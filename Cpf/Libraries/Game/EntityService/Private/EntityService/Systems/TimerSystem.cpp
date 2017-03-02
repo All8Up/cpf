@@ -17,15 +17,16 @@ bool Timer::Remove()
 	return System::Remove(kID);
 }
 
-MultiCore::System* Timer::Creator(MultiCore::Pipeline* owner, const char* name, const Desc*, const SystemDependencies& deps)
+MultiCore::System* Timer::Creator(MultiCore::Pipeline* owner, const char* name, const Desc*)
 {
-	return new Timer(owner, name, deps);
+	return new Timer(owner, name);
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(MultiCore::Pipeline* owner, const char* name, const SystemDependencies& deps)
-	: System(owner, name, deps)
+Timer::Timer(MultiCore::Pipeline* owner, const char* name)
+	: System(owner, name)
 	, mpUpdate(nullptr)
+	, mPaused(false)
 {
 	mStart = Platform::Time::Now();
 	mTime = mStart;
@@ -47,10 +48,41 @@ Platform::Time::Value Timer::GetTime() const
 
 float Timer::GetDeltaTime() const
 {
-	return float(Platform::Time::Seconds(mTime - mStart));
+	return float(Platform::Time::Seconds(mDelta));
+}
+
+bool Timer::IsPaused() const
+{
+	return mPaused;
+}
+
+void Timer::SetPause(bool flag)
+{
+	if (!flag && flag)
+	{
+		mStart = Platform::Time::Now();
+		mTime = mStart + mDelta;
+	}
+	mPaused = flag;
+}
+
+void Timer::Pause()
+{
+	mPaused = true;
+}
+
+void Timer::Resume()
+{
+	SetPause(false);
 }
 
 void Timer::_Update(Concurrency::ThreadContext&, void* context)
 {
-	reinterpret_cast<Timer*>(context)->mTime = Platform::Time::Now();
+	Timer* self = reinterpret_cast<Timer*>(context);
+	if (!self->mPaused)
+	{
+		Platform::Time::Value now = Platform::Time::Now();
+		self->mDelta = now - self->mTime;
+		self->mTime = now;
+	}
 }

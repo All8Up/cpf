@@ -8,11 +8,10 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(Pipeline* owner, const char* name, const SystemDependencies& deps)
+System::System(Pipeline* owner, const char* name)
 	: mpOwner(owner)
 	, mID(name, strlen(name))
 {
-	CPF_ASSERT(deps.empty());
 }
 
 System::~System()
@@ -124,11 +123,11 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(Pipeline* owner, SystemID id, const char* name, const Desc* desc, const SystemDependencies& deps)
+System* System::_Create(Pipeline* owner, SystemID id, const char* name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
-		return (*it->second)(owner, name, desc, deps);
+		return (*it->second)(owner, name, desc);
 	return nullptr;
 }
 
