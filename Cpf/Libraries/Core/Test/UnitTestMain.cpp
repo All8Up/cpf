@@ -13,7 +13,7 @@
 
 using namespace Cpf;
 
-int main( int argc, char** argv )
+int CPF_CDECL main( int argc, char** argv )
 {
 # if defined(_WIN32)
 	::SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);

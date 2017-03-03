@@ -77,7 +77,7 @@ bool Pipeline::Configure()
 	}
 	if (!builder.Solve())
 	{
-		CPF_LOG(Experimental, Error) << "Error resolving block dependencies.";
+		CPF_LOG(MultiCore, Error) << "Error resolving block dependencies.";
 	}
 	else
 		mQueue = Move(builder.GetQueue());

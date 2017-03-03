@@ -31,7 +31,7 @@ void QueueBuilder::Add(const Instruction& instruction)
 
 void QueueBuilder::Add(const BlockDependencies& dependencies)
 {
-	CPF_LOG(Experimental, Info) << "--- Dependencies ---";
+	CPF_LOG(MultiCore, Info) << "--- Dependencies ---";
 	for (const auto& dep : dependencies)
 	{
 		if (mDependencies.find(dep.mDependent) == mDependencies.end())
@@ -39,13 +39,13 @@ void QueueBuilder::Add(const BlockDependencies& dependencies)
 		DependencyEntry entry{dep.mTarget, dep.mPolicy};
 		mDependencies[dep.mDependent].insert(entry);
 
-		CPF_LOG(Experimental, Info) <<
+		CPF_LOG(MultiCore, Info) <<
 			" " << dep.mDependent.mSystem.GetString() <<
 			" : " << dep.mDependent.mStage.GetString() <<
 			" = " << dep.mTarget.mSystem.GetString() <<
 			" : " << dep.mTarget.mStage.GetString();
 	}
-	CPF_LOG(Experimental, Info) << "--- Dependencies ---";
+	CPF_LOG(MultiCore, Info) << "--- Dependencies ---";
 }
 
 void QueueBuilder::_GatherStageDependencies()
@@ -135,12 +135,12 @@ void QueueBuilder::_BuildQueue()
 
 	_MakeQueueInfo();
 
-	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
+	CPF_LOG(MultiCore, Info) << "--------------------- Queue disassembly ---------------------";
 	for (const auto& string : mQueueInfo)
 	{
-		CPF_LOG(Experimental, Info) << string;
+		CPF_LOG(MultiCore, Info) << string;
 	}
-	CPF_LOG(Experimental, Info) << "--------------------- Queue disassembly ---------------------";
+	CPF_LOG(MultiCore, Info) << "--------------------- Queue disassembly ---------------------";
 }
 
 Vector<String> QueueBuilder::GetQueueInfo() const

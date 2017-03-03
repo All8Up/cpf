@@ -26,6 +26,7 @@
 #include "EntityService.hpp"
 #include "EntityService/Interfaces/iEntity.hpp"
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
+#include "MultiCore.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -59,6 +60,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
 	ScopedInitializer<EntityServiceInitializer> goInit;
+	ScopedInitializer<MultiCoreInitializer> multicoreInit;
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;

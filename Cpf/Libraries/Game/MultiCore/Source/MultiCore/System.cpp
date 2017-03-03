@@ -110,7 +110,7 @@ BlockDependencies System::GetDependencies() const
 		}
 		else
 		{
-			CPF_LOG(Experimental, Info) << "Dropped disabled dependency.";
+			CPF_LOG(MultiCore, Info) << "Dropped disabled dependency.";
 		}
 	}
 	return result;

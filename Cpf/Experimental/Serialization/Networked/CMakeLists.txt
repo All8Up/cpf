@@ -15,6 +15,7 @@ target_include_directories (Networked
 )
 target_link_libraries (Networked
 	s_Concurrency
+	s_MultiCore
 	s_SDL2
 	Logging
 	s_ANSI_C_FileSystem
