@@ -20,6 +20,11 @@ include (CMake/Doxygen/BuildDocs.cmake)
 find_package (Threads)
 
 # ###############################################
+# Setup for Qt
+set (CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Qt/5.8/msvc2015_64;D:/Qt/5.8/msvc2015_64")
+set (CMAKE_AUTOMOC ON)
+
+# ###############################################
 # Detect utilities and software.
 include (CMake/Modules/FindVTune.cmake)
 
@@ -42,5 +47,6 @@ include (CMake/Settings/Settings.cmake)
 include (CMake/Tools/FindFlexBison.cmake)
 
 # ###############################################
-# Check for needed headers.
+# Check for needed headers and libraries.
+include (CMake/Checks/All.cmake)
 include (CMake/Checks/${CMAKE_SYSTEM_NAME}.cmake)

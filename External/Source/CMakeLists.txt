@@ -52,3 +52,26 @@ else ()
 		target_include_directories (rapidjson INTERFACE $<BUILD_INTERFACE:${RAPIDJSON_SRC_DIR}/include/>)
 	endif ()
 endif ()
+
+# Cereal
+if (NOT EXTERN_INLINE_CEREAL)
+else ()
+	if (IS_DIRECTORY "${CEREAL_SRC_DIR}")
+		set (CPF_HAVE_CEREAL ON PARENT_SCOPE)
+		set (JUST_INSTALL_CEREAL ON)
+		add_subdirectory (${CEREAL_SRC_DIR})
+	endif ()
+endif ()
+
+# ASIO
+if (NOT EXTERN_INLINE_ASIO)
+else ()
+	if (IS_DIRECTORY "${ASIO_SRC_DIR}")
+		set (CPF_HAVE_ASIO ON PARENT_SCOPE)
+		add_library (asio INTERFACE)
+		target_include_directories (asio INTERFACE "${ASIO_SRC_DIR}/include")
+		target_compile_definitions (asio
+			INTERFACE ASIO_STANDALONE
+		)
+	endif ()
+endif ()

@@ -14,7 +14,7 @@ namespace Cpf
 		public:
 			//////////////////////////////////////////////////////////////////////////
 			WindowedApp();
-			~WindowedApp();
+			~WindowedApp() override;
 
 			bool Poll() override;
 			bool Wait() override;

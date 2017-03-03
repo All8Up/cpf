@@ -13,13 +13,8 @@ set( INCLUDE_FILES
 	Include/IO/TextReader.hpp
 	Include/IO/TextWriter.hpp
 	Include/IO/FileSystem.hpp
-	Include/IO/Archive.hpp
-	Include/IO/JsonArchive.hpp
-	Include/IO/BinaryArchive.hpp
-	Include/IO/Serializer.hpp
 )
 set( SOURCE_FILES
-	Source/Archive.cpp
 	Source/IO.cpp
 	Source/Stream.cpp
 	Source/File.cpp
@@ -55,8 +50,8 @@ target_compile_definitions( IO
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-#target_link_libraries( IO Configuration Collections RefCount )
-target_link_libraries( s_IO Configuration s_Std s_Collections RefCount )
+#target_link_libraries( IO Configuration Collections RefCount cereal)
+target_link_libraries (s_IO Configuration s_Std s_Collections RefCount cereal)
 
 #[[
 target_include_directories( IO
@@ -108,8 +103,6 @@ MakeUnitTests( LIBRARY IO:static GROUP Platform
 		UnitTest/Test_Path.hpp
 		UnitTest/Test_TextReader.hpp
 		UnitTest/Test_TextWriter.hpp
-		UnitTest/Test_Archive.hpp
-		UnitTest/Test_Serializer.hpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		ANSI_C_FileSystem:static

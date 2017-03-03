@@ -30,3 +30,10 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Cpf")
 else ()
 	message ("No CPF library sources found.")
 endif ()
+
+# ###############################################
+# Setup for tools build.
+find_package (Qt5Widgets)
+if (Qt5Widgets)
+	# With Qt found, include tools.
+endif ()
