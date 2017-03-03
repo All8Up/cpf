@@ -1,11 +1,17 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#define NOCOMM
+#ifndef NOCOMM
+#	define NOCOMM
+#endif
 #ifndef STRICT
 #	define STRICT
 #endif
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
+#ifndef NOMINMAX
+#	define NOMINMAX
+#endif
+#ifndef WIN32_LEAN_AND_MEAN
+#	define WIN32_LEAN_AND_MEAN
+#endif
 #include <WinSock2.h>
 #include <Windows.h>
 

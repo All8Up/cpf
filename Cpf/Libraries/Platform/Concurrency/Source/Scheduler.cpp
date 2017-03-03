@@ -103,6 +103,14 @@ bool Scheduler::Initialize(Platform::Threading::Thread::Group&& threads, InitOrS
 
 			for(int i=0; i<mThreadCount; ++i)
 				mThreads(i, std::bind(&Scheduler::_Worker, this, i, init, shutdown, context));
+
+			mTimeInfo.mThreadCount = mThreadCount;
+			mTimeInfo.mDuration = Platform::Time::Value::Zero();
+			for (int i = 0; i < mThreadCount; ++i)
+			{
+				mTimeInfo.mUserTime[i] = Platform::Time::Value::Zero();
+				mTimeInfo.mKernelTime[i] = Platform::Time::Value::Zero();
+			}
 			return true;
 		}
 		mThreadCount = mTargetCount = mActiveCount = 0;
@@ -130,6 +138,11 @@ void Scheduler::Shutdown()
 int Scheduler::GetAvailableThreads() const
 {
 	return mThreadCount;
+}
+
+int Scheduler::GetActiveThreads() const
+{
+	return mActiveCount;
 }
 
 void Scheduler::SetActiveThreads(int count)
@@ -177,10 +190,40 @@ void Scheduler::_Emit(OpcodeFunc_t opcode, PayloadFunc_t func, void* context)
 
 void Scheduler::Submit(Scheduler::Semaphore& semaphore)
 {
-	_Emit(Detail::Opcodes::LastOneBarrier, [](ThreadContext&, void* context)
+	_Emit(Detail::Opcodes::LastOne, [](ThreadContext&, void* context)
 	{
 		reinterpret_cast<Scheduler::Semaphore*>(context)->Release();
 	}, &semaphore);
+}
+
+void Scheduler::Submit(ThreadTimes& times)
+{
+	_Emit(Detail::Opcodes::All, [](ThreadContext& tc, void* context)
+	{
+		ThreadTimes* times = reinterpret_cast<ThreadTimes*>(context);
+		Platform::Threading::Thread::GetThreadTimes(
+			times->mTimeResult.mUserTime[tc.GetThreadIndex()],
+			times->mTimeResult.mKernelTime[tc.GetThreadIndex()]
+		);
+	}, &times);
+	_Emit(Detail::Opcodes::LastOne, [](ThreadContext& tc, void* context)
+	{
+		auto now = Platform::Time::Now();
+		ThreadTimes* times = reinterpret_cast<ThreadTimes*>(context);
+		times->mTimeResult.mThreadCount = tc.GetThreadCount();
+		times->mTimeResult.mDuration = now;
+		auto temp = times->mTimeResult;
+
+		// Make the times relative.
+		times->mTimeResult.mDuration -= tc.GetScheduler().mTimeInfo.mDuration;
+		for (int i=0; i<tc.GetThreadCount(); ++i)
+		{
+			times->mTimeResult.mUserTime[i] -= tc.GetScheduler().mTimeInfo.mUserTime[i];
+			times->mTimeResult.mKernelTime[i] -= tc.GetScheduler().mTimeInfo.mKernelTime[i];
+		}
+		tc.GetScheduler().mTimeInfo = temp;
+	}, &times);
+	Submit(*static_cast<Semaphore*>(&times));
 }
 
 void Scheduler::Execute(Queue& q, bool clear)

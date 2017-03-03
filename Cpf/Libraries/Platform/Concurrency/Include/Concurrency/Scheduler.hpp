@@ -36,9 +36,18 @@ namespace Cpf
 				PayloadFunc_t mpFunction;
 				void* mpContext;
 			};
+			struct ThreadTimeInfo
+			{
+				int mThreadCount;
+				Platform::Time::Value mDuration;
+				Platform::Time::Value mUserTime[kMaxThreads];
+				Platform::Time::Value mKernelTime[kMaxThreads];
+			};
+
 
 			class Queue;
 			class Semaphore;
+			class ThreadTimes;
 
 			// Construction/Destruction.
 			explicit Scheduler(void* outerContext = nullptr, size_t queueSize=4096);
@@ -51,10 +60,12 @@ namespace Cpf
 			// Data access.
 			int GetAvailableThreads() const;
 			void SetActiveThreads(int count);
+			int GetActiveThreads() const;
 			void* GetContext() const;
 
 			//
 			void Submit(Semaphore&);
+			void Submit(ThreadTimes&);
 			void Execute(Queue&, bool clear=true);
 
 		private:
@@ -120,6 +131,8 @@ namespace Cpf
 
 			int32_t mSharedDataRegister[kRegisterCount];
 			void* mSharedAddressRegister[kRegisterCount];
+
+			ThreadTimeInfo mTimeInfo;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -155,6 +168,19 @@ namespace Cpf
 
 		private:
 			Platform::Threading::Semaphore mSemaphore;
+		};
+
+		class Scheduler::ThreadTimes : private Semaphore
+		{
+		public:
+			ThreadTimes() {}
+
+			ThreadTimeInfo GetResult() { Acquire(); return mTimeResult; }
+
+		private:
+			friend class Scheduler;
+
+			ThreadTimeInfo mTimeResult;
 		};
 	}
 }

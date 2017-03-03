@@ -6,12 +6,16 @@ set (INCLUDE_FILES
 	Include/Concurrency/Opcodes.hpp
 	Include/Concurrency/Queue.hpp
 	Include/Concurrency/ThreadContext.hpp
+	Include/Concurrency/ThreadPool.hpp
+	Include/Concurrency/LoadBalancer.hpp
 )
 set (SOURCE_FILES
 	Source/Scheduler.cpp
 	Source/Opcodes.cpp
 	Source/Queue.cpp
 	Source/ThreadContext.cpp
+	Source/ThreadPool.cpp
+	Source/LoadBalancer.cpp
 )
 
 set (COLLECTIONS_INCLUDE
