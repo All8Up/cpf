@@ -4,6 +4,7 @@
 #include "Logging/Logging.hpp"
 #include "Functional.hpp"
 #include "Move.hpp"
+#include <thread>
 
 
 using namespace Cpf;

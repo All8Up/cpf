@@ -120,6 +120,8 @@ else()
 	set(PROFILE_ON 0)
 endif()
 # Only profile in static link libraries.
-target_compile_definitions( Test_s_Threading
-	PUBLIC CPF_THREADING_PROFILE_BUILD=${PROFILE_ON}
-)
+if (TARGET Test_s_Threading)
+	target_compile_definitions( Test_s_Threading
+		PUBLIC CPF_THREADING_PROFILE_BUILD=${PROFILE_ON}
+	)
+endif ()

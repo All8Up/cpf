@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+
+#ifdef CPF_HAVE_SPDLOG
 #include <spdlog/spdlog.h>
 
 namespace Cpf
@@ -82,3 +84,15 @@ namespace Cpf
 #define CPF_LOG_LEVEL(name, l) {spdlog::get(#name)->set_level(spdlog::level::CPF_LOG_LEVEL_ACCESSOR(l));}
 #define CPF_TRACE_LOG(name) spdlog::get(#name)->trace()
 #define CPF_DEBUG_LOG(name) spdlog::get(#name)->debug()
+
+#else
+
+#define CPF_INIT_LOG(name) {}
+#define CPF_DROP_LOG(name) {}
+#define CPF_LOG(name, level) {}
+#define CPF_LOG_LEVELS(l) {}
+#define CPF_LOG_LEVEL(name, l) {}
+#define CPF_TRACE_LOG(name) {}
+#define CPF_DEBUG_LOG(name) {}
+
+#endif
