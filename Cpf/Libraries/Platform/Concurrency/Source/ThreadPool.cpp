@@ -13,7 +13,7 @@ ThreadPool::~ThreadPool()
 	mScheduler.Shutdown();
 }
 
-bool ThreadPool::Initialize(Platform::Threading::Thread::Group&& group)
+bool ThreadPool::Initialize(Threading::Thread::Group&& group)
 {
 	return mScheduler.Initialize(Move(group));
 }

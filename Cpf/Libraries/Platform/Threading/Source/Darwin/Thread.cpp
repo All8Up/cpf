@@ -5,7 +5,6 @@
 #include <thread>
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 namespace

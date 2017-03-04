@@ -4,6 +4,7 @@
 #include "Concurrency/Scheduler.hpp"
 #include "Logging/Logging.hpp"
 #include "Memory/Memory.hpp"
+#include "Threading.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -23,14 +24,14 @@ private:
 	int64_t _InstructionRateAlternatePassWait(int threadCount);
 
 	Cpf::Concurrency::Scheduler m_Scheduler;
-	Cpf::ScopedInitializer<Cpf::Platform::ThreadingInitializer> mLibInit;
+	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> mLibInit;
 };
 
 
 //////////////////////////////////////////////////////////////////////////
 SchedulerPerformance::SchedulerPerformance()
 {
-	Cpf::Platform::Threading::Thread::Group group(12);
+	Cpf::Threading::Thread::Group group(12);
 	m_Scheduler.Initialize(std::move(group));
 }
 

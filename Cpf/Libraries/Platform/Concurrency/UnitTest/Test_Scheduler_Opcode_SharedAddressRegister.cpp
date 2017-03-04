@@ -11,7 +11,7 @@ TEST(Concurrency, Set_SharedAddressRegister)
 	using namespace Concurrency;
 	ScopedInitializer<Platform::TimeInitializer> timeInit;
 
-	Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+	Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 	Scheduler* scheduler = new Scheduler;
 	Scheduler::Semaphore sync;
 	scheduler->Initialize(std::move(threads));

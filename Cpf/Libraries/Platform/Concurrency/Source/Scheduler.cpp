@@ -14,6 +14,7 @@
 
 
 using namespace Cpf;
+using namespace Platform;
 using namespace Concurrency;
 
 
@@ -91,7 +92,7 @@ void Scheduler::_ClearRegisters()
  * @param context If non-null, context for the shutdown.
  * @return true if it succeeds, false if it fails.
  */
-bool Scheduler::Initialize(Platform::Threading::Thread::Group&& threads, InitOrShutdownFunc_t init, InitOrShutdownFunc_t shutdown, void* context)
+bool Scheduler::Initialize(Threading::Thread::Group&& threads, InitOrShutdownFunc_t init, InitOrShutdownFunc_t shutdown, void* context)
 {
 	if (threads)
 	{
@@ -105,11 +106,11 @@ bool Scheduler::Initialize(Platform::Threading::Thread::Group&& threads, InitOrS
 				mThreads(i, std::bind(&Scheduler::_Worker, this, i, init, shutdown, context));
 
 			mTimeInfo.mThreadCount = mThreadCount;
-			mTimeInfo.mDuration = Platform::Time::Value::Zero();
+			mTimeInfo.mDuration = Time::Value::Zero();
 			for (int i = 0; i < mThreadCount; ++i)
 			{
-				mTimeInfo.mUserTime[i] = Platform::Time::Value::Zero();
-				mTimeInfo.mKernelTime[i] = Platform::Time::Value::Zero();
+				mTimeInfo.mUserTime[i] = Time::Value::Zero();
+				mTimeInfo.mKernelTime[i] = Time::Value::Zero();
 			}
 			return true;
 		}
@@ -151,7 +152,7 @@ void Scheduler::SetActiveThreads(int count)
 	CPF_ASSERT(count <= mThreadCount);
 
 	_Emit(Detail::Opcodes::AllBarrier, [](ThreadContext&, void* context) {
-		reinterpret_cast<Platform::Threading::Semaphore*>(context)->Release();
+		reinterpret_cast<Threading::Semaphore*>(context)->Release();
 	}, &mWait);
 	mWait.Acquire();
 
@@ -183,7 +184,7 @@ void Scheduler::_Emit(OpcodeFunc_t opcode, PayloadFunc_t func, void* context)
 	// attempt to push work which really is not intended usage at this
 	// level of the system.
 	{
-		Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mWorkLock);
+		Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
 		mExternalQueue.push_back({opcode, func, context});
 	}
 }
@@ -201,14 +202,14 @@ void Scheduler::Submit(ThreadTimes& times)
 	_Emit(Detail::Opcodes::All, [](ThreadContext& tc, void* context)
 	{
 		ThreadTimes* times = reinterpret_cast<ThreadTimes*>(context);
-		Platform::Threading::Thread::GetThreadTimes(
+		Threading::Thread::GetThreadTimes(
 			times->mTimeResult.mUserTime[tc.GetThreadIndex()],
 			times->mTimeResult.mKernelTime[tc.GetThreadIndex()]
 		);
 	}, &times);
 	_Emit(Detail::Opcodes::LastOne, [](ThreadContext& tc, void* context)
 	{
-		auto now = Platform::Time::Now();
+		auto now = Time::Now();
 		ThreadTimes* times = reinterpret_cast<ThreadTimes*>(context);
 		times->mTimeResult.mThreadCount = tc.GetThreadCount();
 		times->mTimeResult.mDuration = now;
@@ -228,7 +229,7 @@ void Scheduler::Submit(ThreadTimes& times)
 
 void Scheduler::Execute(Queue& q, bool clear)
 {
-	Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mWorkLock);
+	Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
 	mExternalQueue.insert(mExternalQueue.end(), q.begin(), q.end());
 	if (clear)
 		q.Discard();
@@ -244,7 +245,7 @@ void Scheduler::Execute(Queue& q, bool clear)
 void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdownFunc_t shutdownFunc, void* ctx)
 {
 	// Setup the thread name for debugging.
-	Platform::Threading::Thread::SetName((std::string("Scheduler thread: ") + std::to_string(index)).c_str());
+	Threading::Thread::SetName((std::string("Scheduler thread: ") + std::to_string(index)).c_str());
 
 	// Setup the thread context for calling opcodes.
 	ThreadContext context{*this, index, nullptr};
@@ -350,7 +351,7 @@ bool Scheduler::_FetchWork()
 {
 	// NOTE: This mutex may seem like a bad thing but it actually does not
 	// impact overall performance due to it being rarely called from this side.
-	Platform::Threading::ScopedLock<Platform::Threading::Mutex> lock(mWorkLock);
+	Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
 
 	// We try to pull as many instructions off the external queue as possible.
 	auto externalCount = mExternalQueue.size();

@@ -2,14 +2,15 @@
 #pragma once
 #include "Threading/Thread.hpp"
 #include "Atomic/Atomic.hpp"
+#include "Threading.hpp"
 
 
 TEST(Threading, Thread_Run)
 {
-	Cpf::ScopedInitializer<Cpf::Platform::ThreadingInitializer> threadingInit;
+	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
 
 	volatile bool testRan = false;
-	Cpf::Platform::Threading::Thread testThread([&]() {
+	Cpf::Threading::Thread testThread([&]() {
 		testRan = true;
 	});
 	testThread.Join();
@@ -26,10 +27,10 @@ TEST(Threading, Thread_Sleep)
 	const int64_t aproxDurationMs = 2000;
 	const int64_t tollerance = 200;
 
-	Cpf::ScopedInitializer<Cpf::Platform::ThreadingInitializer> threadingInit;
+	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
 
 	Cpf::Platform::Time::Value startTime = Cpf::Platform::Time::Value::Now();
-	Cpf::Platform::Threading::Thread::Sleep(Cpf::Platform::Time::Ms(aproxDurationMs));
+	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Ms(aproxDurationMs));
 	Cpf::Platform::Time::Value endTime = Cpf::Platform::Time::Value::Now();
 	int64_t deltaMs = int64_t(Cpf::Platform::Time::Ms(endTime-startTime))-aproxDurationMs;
 
@@ -39,8 +40,8 @@ TEST(Threading, Thread_Sleep)
 
 TEST(Threading, Thread_Group)
 {
-	using namespace Cpf::Platform::Threading;
-	Cpf::ScopedInitializer<Cpf::Platform::ThreadingInitializer> threadingInit;
+	using namespace Cpf::Threading;
+	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
 
 	Thread::Group testGroup(10);
 	int testValue = 0;

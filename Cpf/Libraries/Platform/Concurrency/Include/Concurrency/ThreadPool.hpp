@@ -17,7 +17,7 @@ namespace Cpf
 			ThreadPool();
 			~ThreadPool();
 
-			bool Initialize(Platform::Threading::Thread::Group&&);
+			bool Initialize(Threading::Thread::Group&&);
 			void Shutdown();
 
 			// TODO: Make this promise/future based, but it will need to be a

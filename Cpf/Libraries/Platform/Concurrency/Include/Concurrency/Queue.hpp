@@ -94,7 +94,7 @@ namespace Cpf
 
 			// Implementation data.
 			QueueType mQueue;
-			Platform::Threading::Semaphore mBarrier;
+			Threading::Semaphore mBarrier;
 		};
 	}
 }

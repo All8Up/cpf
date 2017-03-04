@@ -5,5 +5,5 @@
 
 TEST(Threading, Semapore_Create)
 {
-	Cpf::Platform::Threading::Semaphore testSemapore;
+	Cpf::Threading::Semaphore testSemapore;
 }

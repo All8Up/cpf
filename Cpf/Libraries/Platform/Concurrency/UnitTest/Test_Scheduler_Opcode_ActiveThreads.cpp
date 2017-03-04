@@ -11,7 +11,7 @@ namespace ConcurrencyTest
 	struct CPF_ALIGN(16) TestData
 	{
 		int32_t HitCount;
-		Cpf::Platform::Threading::Semaphore Complete;
+		Cpf::Threading::Semaphore Complete;
 	};
 }
 
@@ -32,7 +32,7 @@ TEST(Concurrency, ActiveChange)
 		TestData* testData = new TestData;
 		Scheduler* scheduler = new Scheduler;
 
-		scheduler->Initialize(Move(Platform::Threading::Thread::Group(Platform::Threading::Thread::GetHardwareThreadCount())));
+		scheduler->Initialize(Move(Threading::Thread::Group(Threading::Thread::GetHardwareThreadCount())));
 		Scheduler::Queue queue;
 
 		for (auto threads = 1; threads < scheduler->GetAvailableThreads(); ++threads)

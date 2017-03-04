@@ -3,11 +3,12 @@
 #include "VTune/VTune.hpp"
 #include "Threading/Thread.hpp"
 #include "Time/Unit.hpp"
+#include "Threading.hpp"
 
 
 TEST(VTune, AllTests)
 {
-	Cpf::ScopedInitializer<Cpf::Platform::ThreadingInitializer> threadingInit;
+	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
 
 	// Setup test domains.
 	VTune::Domain* frameDomain = VTune::DomainCreate("test name");
@@ -27,7 +28,7 @@ TEST(VTune, AllTests)
 	VTune::BeginFrame(frameDomain);
 
 	// Offset to the event.
-	Cpf::Platform::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(0.1f));
+	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(0.1f));
 
 	// Start a sync.
 	VTune::SyncPrepare(&frameDomain);
@@ -40,7 +41,7 @@ TEST(VTune, AllTests)
 	VTune::TaskBegin(innerDomain, taskName);
 
 	// Sleep for a second.
-	Cpf::Platform::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(1.0f));
+	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(1.0f));
 
 	// End the event.
 	VTune::EventEnd(testEvent);
@@ -52,7 +53,7 @@ TEST(VTune, AllTests)
 	VTune::SyncReleasing(&frameDomain);
 
 	// Offset before end frame.
-	Cpf::Platform::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(0.1f));
+	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(0.1f));
 
 	// End the frame.
 	VTune::EndFrame(frameDomain);

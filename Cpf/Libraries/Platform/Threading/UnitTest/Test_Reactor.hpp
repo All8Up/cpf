@@ -34,9 +34,9 @@ public:
 		delete mpData;
 	}
 
-	Cpf::Platform::Threading::Reactor mReactor;
-	Cpf::Platform::Threading::Reactor::WorkQueue mQueue;
-	Cpf::Platform::Threading::Thread::Group mGroup;
+	Cpf::Threading::Reactor mReactor;
+	Cpf::Threading::Reactor::WorkQueue mQueue;
+	Cpf::Threading::Thread::Group mGroup;
 	bool* mpData;
 };
 

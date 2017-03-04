@@ -14,7 +14,7 @@ TEST(Concurrency, First_Opcode)
 
 	for (auto i = 0; i < 10; ++i)
 	{
-		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 		Scheduler* scheduler = new Scheduler;
 		scheduler->Initialize(std::move(threads));
 		Scheduler::Semaphore sync;
@@ -29,7 +29,7 @@ TEST(Concurrency, First_Opcode)
 				Atomic::Store(*reinterpret_cast<int*>(context), 1);
 
 				// Wait a sec, just to make sure the next instruction executes before we wake.
-				Platform::Threading::Thread::Sleep(Platform::Time::Seconds(0.1f));
+				Threading::Thread::Sleep(Platform::Time::Seconds(0.1f));
 			},
 				&firstThreadArrived);
 			queue.FirstOne(

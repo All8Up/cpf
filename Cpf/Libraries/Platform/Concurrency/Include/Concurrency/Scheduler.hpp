@@ -54,7 +54,7 @@ namespace Cpf
 			~Scheduler();
 
 			//
-			bool Initialize(Platform::Threading::Thread::Group&&, InitOrShutdownFunc_t init = nullptr, InitOrShutdownFunc_t shutdown = nullptr, void* context = nullptr);
+			bool Initialize(Threading::Thread::Group&&, InitOrShutdownFunc_t init = nullptr, InitOrShutdownFunc_t shutdown = nullptr, void* context = nullptr);
 			void Shutdown();
 
 			// Data access.
@@ -89,7 +89,7 @@ namespace Cpf
 			int8_t pad0[64-sizeof(int32_t)];
 
 			// External work queue.
-			Platform::Threading::Mutex mWorkLock;
+			Threading::Mutex mWorkLock;
 			Deque<Instruction> mExternalQueue;
 
 			// Active thread counts.
@@ -97,7 +97,7 @@ namespace Cpf
 			int8_t pad1[64-sizeof(int32_t)];
 			int32_t mActiveCount;
 			int32_t mThreadCount;
-			Platform::Threading::Thread::Group mThreads;
+			Threading::Thread::Group mThreads;
 
 			// The internal instruction queue.
 			// This is split into two pieces to avoid false sharing
@@ -106,9 +106,9 @@ namespace Cpf
 			Collections::RingBuffer<int64_t> mPredicateRing;
 
 			// Thread parking.
-			Platform::Threading::Semaphore mActive;
-			Platform::Threading::Mutex mActiveLock;
-			Platform::Threading::ConditionVariable mActiveCondition;
+			Threading::Semaphore mActive;
+			Threading::Mutex mActiveLock;
+			Threading::ConditionVariable mActiveCondition;
 
 			// System binding.
 			void* mpOuterContext;
@@ -117,7 +117,7 @@ namespace Cpf
 			const size_t mQueueSize;
 
 			// Utility.
-			Platform::Threading::Semaphore mWait;
+			Threading::Semaphore mWait;
 
 			// Register access, used only via the ThreadContext.
 			int32_t& _TLD(int tid, int index);
@@ -167,7 +167,7 @@ namespace Cpf
 			void Release();
 
 		private:
-			Platform::Threading::Semaphore mSemaphore;
+			Threading::Semaphore mSemaphore;
 		};
 
 		class Scheduler::ThreadTimes : private Semaphore

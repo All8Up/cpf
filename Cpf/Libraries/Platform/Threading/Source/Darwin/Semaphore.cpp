@@ -2,7 +2,6 @@
 #include "Threading/Semaphore.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 Semaphore::Semaphore(int initCount)

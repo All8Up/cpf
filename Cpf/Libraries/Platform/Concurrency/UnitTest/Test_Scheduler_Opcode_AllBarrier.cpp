@@ -21,8 +21,8 @@ TEST(Concurrency, AllFenced_Opcode)
 	if (scheduler)
 	{
 		//////////////////////////////////////////////////////////////////////////
-		const int hardwareThreads = Platform::Threading::Thread::GetHardwareThreadCount();
-		Platform::Threading::Thread::Group threads(hardwareThreads);
+		const int hardwareThreads = Threading::Thread::GetHardwareThreadCount();
+		Threading::Thread::Group threads(hardwareThreads);
 		EXPECT_TRUE(scheduler->Initialize(std::move(threads)));
 		EXPECT_TRUE(scheduler->GetAvailableThreads() >= 4);
 

@@ -8,6 +8,7 @@
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
 #include "Resources/ResourceConfig.hpp"
+#include "Threading.hpp"
 
 using namespace Cpf;
 using namespace Platform;

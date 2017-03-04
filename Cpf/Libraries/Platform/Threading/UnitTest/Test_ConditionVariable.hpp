@@ -6,5 +6,5 @@
 
 TEST(Threading, ConditionVariable_Create)
 {
-	Cpf::Platform::Threading::ConditionVariable condVar;
+	Cpf::Threading::ConditionVariable condVar;
 }

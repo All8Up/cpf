@@ -10,7 +10,7 @@ TEST(Concurrency, Set_SharedDataRegister)
 	using namespace Concurrency;
 	ScopedInitializer<Platform::TimeInitializer> timeInit;
 
-	Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+	Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 	Scheduler* scheduler = new Scheduler;
 	scheduler->Initialize(std::move(threads));
 	Scheduler::Semaphore sync;

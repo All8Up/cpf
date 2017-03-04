@@ -58,7 +58,7 @@ namespace Cpf
 		//
 		bool mEnableMovement;
 		bool mUseEBus;
-		Platform::Threading::Mutex mMutex;
+		Threading::Mutex mMutex;
 	};
 
 

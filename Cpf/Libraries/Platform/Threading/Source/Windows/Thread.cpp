@@ -5,7 +5,6 @@
 #include <thread>
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 namespace
@@ -67,9 +66,9 @@ void Thread::Join()
 @brief Put the thread to sleep for the given time value.
 @param tp The amount of time to put the thread to sleep.
 */
-void Thread::Sleep(const Time::Value& tp)
+void Thread::Sleep(const Platform::Time::Value& tp)
 {
-	auto ms = int64_t(Time::Ms(tp));
+	auto ms = int64_t(Platform::Time::Ms(tp));
 	::SleepEx(DWORD(ms), TRUE);
 }
 
@@ -88,7 +87,7 @@ void Thread::Pause()
 @param userTime Time spent in user code.
 @param kernelTime Time spent in kernel code.
 */
-void Thread::GetThreadTimes(Time::Value& userTime, Time::Value& kernelTime)
+void Thread::GetThreadTimes(Platform::Time::Value& userTime, Platform::Time::Value& kernelTime)
 {
 	FILETIME unused;
 	FILETIME kernel, user;
@@ -99,7 +98,7 @@ void Thread::GetThreadTimes(Time::Value& userTime, Time::Value& kernelTime)
 	uint64_t user64 = (((uint64_t)user.dwHighDateTime) << 32) + user.dwLowDateTime;
 
 	// Convert the time from FILETIME 100ns multiples to time value.
-	using oneHundredNs = Time::UnitBase < int64_t, 1, 10000000 >;
+	using oneHundredNs = Platform::Time::UnitBase < int64_t, 1, 10000000 >;
 	kernelTime = oneHundredNs(kernel64);
 	userTime = oneHundredNs(user64);
 }

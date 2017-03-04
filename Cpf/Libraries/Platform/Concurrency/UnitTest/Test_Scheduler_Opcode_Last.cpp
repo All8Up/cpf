@@ -14,7 +14,7 @@ TEST(Concurrency, Last_Opcode)
 
 	for (auto i = 0; i < 100; ++i)
 	{
-		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 		Scheduler* scheduler = new Scheduler;
 		scheduler->Initialize(std::move(threads));
 		Scheduler::Semaphore sync;

@@ -4,7 +4,6 @@
 #include <time.h>
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 ConditionVariable::ConditionVariable()

@@ -4,7 +4,6 @@
 #include "Threading/ScopedLock.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 

@@ -6,7 +6,7 @@
 
 #include "IntrusivePtr.hpp"
 #include "Resources/ResourceConfig.hpp"
-#include "Threading/Threading.hpp"
+#include "Threading.hpp"
 #include "Time/Time.hpp"
 
 #include "Graphics/Driver.hpp"

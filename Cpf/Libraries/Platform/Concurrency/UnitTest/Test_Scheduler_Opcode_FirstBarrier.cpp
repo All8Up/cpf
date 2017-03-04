@@ -16,7 +16,7 @@ TEST(Concurrency, FirstFenced_Opcode)
 	{
 		Scheduler* scheduler = new Scheduler;
 		Scheduler::Semaphore sync;
-		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 		scheduler->Initialize(std::move(threads));
 		{
 			auto firstThreadArrived = 0;

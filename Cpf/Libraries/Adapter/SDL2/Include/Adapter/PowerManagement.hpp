@@ -41,7 +41,7 @@ namespace Cpf
 
 		private:
 			volatile bool mRunning;
-			Platform::Threading::Thread mWorker;
+			Threading::Thread mWorker;
 			SDL_PowerState mLastState;
 		};
 

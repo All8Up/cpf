@@ -3,7 +3,9 @@ option( CPF_THREADING_DISABLE_PROFILING "" OFF )
 
 # ###############################################
 set( THREADING_INCLUDE_FILES
-	Include/Threading/Threading.hpp
+	Include/Threading.hpp
+	Include/Threading/Export.hpp
+	Include/Threading/CPU.hpp
 	Include/Threading/Thread.hpp
 	Include/Threading/ThreadLocal.hpp
 	Include/Threading/Mutex.hpp
@@ -17,6 +19,7 @@ set( THREADING_PLATFORM_INCLUDE_FILES
 )
 set( THREADING_SOURCE_FILES
 	Source/Threading.cpp
+	Source/${CMAKE_SYSTEM_NAME}/CPU.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Thread.cpp
 	Source/${CMAKE_SYSTEM_NAME}/ThreadLocal.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Mutex.cpp

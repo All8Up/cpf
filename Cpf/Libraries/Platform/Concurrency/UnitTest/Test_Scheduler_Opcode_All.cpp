@@ -20,7 +20,7 @@ TEST(Concurrency, All_Opcode)
 	if (scheduler)
 	{
 		//////////////////////////////////////////////////////////////////////////
-		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 		EXPECT_TRUE(scheduler->Initialize(std::move(threads)));
 		EXPECT_TRUE(scheduler->GetAvailableThreads() >= 4);
 

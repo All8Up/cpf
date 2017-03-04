@@ -37,7 +37,7 @@ namespace Cpf
 			const WorkType& operator [](const size_t index) const;
 
 		private:
-			Platform::Threading::Mutex mLock;
+			Threading::Mutex mLock;
 			Vector<WorkType> mWork;
 		};
 
@@ -113,7 +113,7 @@ namespace Cpf
 
 			int _Find(const WorkType& work) const;
 
-			Platform::Threading::Mutex mLock;
+			Threading::Mutex mLock;
 			WorkVector mWork;
 
 			// Per thread add/remove.

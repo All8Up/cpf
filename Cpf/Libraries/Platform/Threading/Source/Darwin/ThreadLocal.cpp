@@ -3,7 +3,6 @@
 #include <pthread.h>
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 CPF_EXPORT_THREADING ThreadLocal::ThreadLocal()

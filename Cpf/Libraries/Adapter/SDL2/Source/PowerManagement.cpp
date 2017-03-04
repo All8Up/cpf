@@ -79,6 +79,6 @@ void BatteryPowerManagementEvents::Worker()
 			}
 		}
 
-		Platform::Threading::Thread::Sleep(Platform::Time::Seconds(30));
+		Threading::Thread::Sleep(Platform::Time::Seconds(30));
 	}
 }

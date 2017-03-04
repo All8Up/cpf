@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Threading/Threading.hpp"
+#include "Threading.hpp"
 #include "Threading/Thread.hpp"
 #include "Logging/Logging.hpp"
 #include "Functional.hpp"
@@ -8,7 +8,6 @@
 
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 
 namespace
@@ -23,7 +22,7 @@ CPF_EXPORT_THREADING int ThreadingInitializer::Install()
 	if (s_RefCount++ == 0)
 	{
 		CPF_INIT_LOG(Concurrency);
-		TimeInitializer::Install();
+		Platform::TimeInitializer::Install();
 	}
 	return s_RefCount;
 }
@@ -34,7 +33,7 @@ CPF_EXPORT_THREADING int ThreadingInitializer::Remove()
 	if (--s_RefCount == 0)
 	{
 		CPF_DROP_LOG(Concurrency);
-		TimeInitializer::Remove();
+		Platform::TimeInitializer::Remove();
 	}
 	return s_RefCount;
 }

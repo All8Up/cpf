@@ -24,14 +24,14 @@ public:
 	}
 
 	bool mHasRun = false;
-	Cpf::Platform::Threading::Mutex mMutex;
-	Cpf::Platform::Threading::ConditionVariable mCondition;
+	Cpf::Threading::Mutex mMutex;
+	Cpf::Threading::ConditionVariable mCondition;
 };
 
 
 TEST_F(Threading_Mutex, Mutex_Create)
 {
-	Cpf::Platform::Threading::Mutex testMutex;
+	Cpf::Threading::Mutex testMutex;
 	testMutex.Acquire();
 	testMutex.Release();
 }
@@ -39,7 +39,7 @@ TEST_F(Threading_Mutex, Mutex_Create)
 
 TEST_F(Threading_Mutex, AcquireRelease)
 {
-	Cpf::Platform::Threading::Thread testThread(std::bind(&Threading_Mutex::TestAcquireRelease, this));
+	Cpf::Threading::Thread testThread(std::bind(&Threading_Mutex::TestAcquireRelease, this));
 	mCondition.Acquire(mMutex, [this]{return mHasRun;});
 	EXPECT_TRUE(mHasRun);
 	mMutex.Release();

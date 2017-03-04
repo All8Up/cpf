@@ -1,55 +1,51 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 
-
 namespace Cpf
 {
-	namespace Platform
+	namespace Threading
 	{
-		namespace Threading
+		//////////////////////////////////////////////////////////////////////////
+		/// Take a lock on the given primitive and release it on scope exit.
+		//////////////////////////////////////////////////////////////////////////
+		template<typename tPrimitive>
+		class ScopedLock
 		{
+		public:
 			//////////////////////////////////////////////////////////////////////////
-			/// Take a lock on the given primitive and release it on scope exit.
+			ScopedLock(tPrimitive& prim);
+			~ScopedLock();
+
+		private:
 			//////////////////////////////////////////////////////////////////////////
-			template<typename tPrimitive>
-			class ScopedLock
-			{
-			public:
-				//////////////////////////////////////////////////////////////////////////
-				ScopedLock(tPrimitive& prim);
-				~ScopedLock();
+			ScopedLock(const ScopedLock&) = delete;
+			ScopedLock(ScopedLock&&) = delete;
+			ScopedLock& operator =(const ScopedLock&) = delete;
+			ScopedLock& operator =(ScopedLock&&) = delete;
 
-			private:
-				//////////////////////////////////////////////////////////////////////////
-				ScopedLock(const ScopedLock&) = delete;
-				ScopedLock(ScopedLock&&) = delete;
-				ScopedLock& operator =(const ScopedLock&) = delete;
-				ScopedLock& operator =(ScopedLock&&) = delete;
-
-				//////////////////////////////////////////////////////////////////////////
-				tPrimitive* mpPrimitive;
-			};
+			//////////////////////////////////////////////////////////////////////////
+			tPrimitive* mpPrimitive;
+		};
 
 
-			/**
-			 * @brief Create a scoped lock.
-			 */
-			template<typename tPrimitive> inline
-				ScopedLock<tPrimitive>::ScopedLock(tPrimitive& prim)
-				: mpPrimitive(&prim)
-			{
-				mpPrimitive->Acquire();
-			}
+		/**
+		 * @brief Create a scoped lock.
+		 */
+		template<typename tPrimitive> inline
+			ScopedLock<tPrimitive>::ScopedLock(tPrimitive& prim)
+			: mpPrimitive(&prim)
+		{
+			mpPrimitive->Acquire();
+		}
 
 
-			/**
-			 * @brief Release the primitive on scope exit.
-			 */
-			template<typename tPrimitive> inline
-				ScopedLock<tPrimitive>::~ScopedLock()
-			{
-				mpPrimitive->Release();
-			}
+		/**
+		 * @brief Release the primitive on scope exit.
+		 */
+		template<typename tPrimitive> inline
+			ScopedLock<tPrimitive>::~ScopedLock()
+		{
+			mpPrimitive->Release();
 		}
 	}
 }

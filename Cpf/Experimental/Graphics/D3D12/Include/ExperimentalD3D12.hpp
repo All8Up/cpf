@@ -123,10 +123,10 @@ namespace Cpf
 		IntrusivePtr<Graphics::iConstantBuffer> mpModelTransform;
 		*/
 
-		Platform::Threading::Reactor mReactor;
+		Threading::Reactor mReactor;
 		// If the multi-core side of things needs anything run on the main thread,
 		// feed it in this queue.
-		Platform::Threading::Reactor::WorkQueue mReactorQueue;
+		Threading::Reactor::WorkQueue mReactorQueue;
 		EntityService::iManager* mpEntityManager;
 
 		Graphics::DebugUI mDebugUI;

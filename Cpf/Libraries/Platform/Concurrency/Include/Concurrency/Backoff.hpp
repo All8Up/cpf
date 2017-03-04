@@ -49,14 +49,14 @@ namespace Cpf
 			if (mBackoff >= MAX_SPIN)
 			{
 				VTUNE_SYNC_ACQUIRED(this);
-				Platform::Threading::Thread::Sleep(Platform::Time::Ms(SLEEP_MS));
+				Threading::Thread::Sleep(Platform::Time::Ms(SLEEP_MS));
 				VTUNE_SYNC_RELEASING(this);
 			}
 			else
 			{
 				VTUNE_SYNC_ACQUIRED(this);
 				for (auto i = 0; i < mBackoff; ++i)
-					Platform::Threading::Thread::Pause();
+					Threading::Thread::Pause();
 				mBackoff <<= 1;
 				VTUNE_SYNC_RELEASING(this);
 			}

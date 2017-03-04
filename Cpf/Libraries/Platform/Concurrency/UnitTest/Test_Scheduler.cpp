@@ -14,7 +14,7 @@ TEST(Concurrency, Basics)
 
 	for (auto iterations = 0; iterations < 20; ++iterations)
 	{
-		Platform::Threading::Thread::Group threads(Platform::Threading::Thread::GetHardwareThreadCount());
+		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
 		Scheduler* scheduler = new Scheduler;
 
 		scheduler->Initialize(Move(threads));

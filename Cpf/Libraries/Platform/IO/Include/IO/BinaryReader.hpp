@@ -1,5 +1,4 @@
 #pragma once
-#include "IO/IO.hpp"
 #include "IO/Stream.hpp"
 #include "IO/Reader.hpp"
 
