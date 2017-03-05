@@ -21,7 +21,6 @@ set (PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_STAGES
 	Public/EntityService/Interfaces/Stages/iEntityStage.hpp
 )
 set (PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_SYSTEMS
-	Public/EntityService/Interfaces/Systems/iTimerSystem.hpp
 	Public/EntityService/Interfaces/Systems/iAwarenessSystem.hpp
 )
 set (PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_COMPONENTS
@@ -58,7 +57,6 @@ set (PRIVATE_SOURCES_ENTITYSERVICE_COMPONENTS
 	Private/EntityService/Components/TransformComponent.cpp
 )
 set (PRIVATE_SOURCES_ENTITYSERVICE_SYSTEMS
-	Private/EntityService/Systems/TimerSystem.cpp
 )
 set (PRIVATE_SOURCES_ENTITYSERVICE_STAGES
 	Private/EntityService/Stages/EntityStage.cpp

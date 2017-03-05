@@ -77,7 +77,7 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 
 bool MoverSystem::Configure()
 {
-	mpTime = static_cast<Timer*>(GetOwner()->GetSystem(mClockID));
+	mpTime = static_cast<MultiCore::Timer*>(GetOwner()->GetSystem(mClockID));
 	mpInstances = static_cast<InstanceSystem*>(GetOwner()->GetSystem(mInstanceID));
 
 	return mpTime && mpInstances;
@@ -140,7 +140,7 @@ void MoverSystem::MoverComponent::Deactivate()
 void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
-	const Timer* timer = mover->mpTime;
+	const MultiCore::Timer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -176,7 +176,7 @@ void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	Threading::ScopedLock<Threading::Mutex> lock(mover->mMutex);
 
-	const Timer* timer = mover->mpTime;
+	const MultiCore::Timer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;

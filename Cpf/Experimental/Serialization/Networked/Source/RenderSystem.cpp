@@ -97,14 +97,14 @@ void RenderSystem::_CreateStages()
 	AddStage(beginFrame);
 
 	IntrusivePtr<SingleUpdateStage> debugUI(Stage::Create<SingleUpdateStage>(this, "DebugUI"));
-	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eFirst);
+	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eLast);
 	AddStage(debugUI);
 
 	IntrusivePtr<SingleUpdateStage> endFrame(Stage::Create<SingleUpdateStage>(this, "End Frame"));
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, BlockOpcode::eLast);
 	AddStage(endFrame);
 
-
+	//////////////////////////////////////////////////////////////////////////
 	AddDependency({
 		{GetID(), endFrame->GetID(), Stage::kExecute},
 		{GetID(), beginFrame->GetID(), Stage::kExecute},

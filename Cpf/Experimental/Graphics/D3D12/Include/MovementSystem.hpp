@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/System.hpp"
-#include "EntityService/Interfaces/Systems/iTimerSystem.hpp"
+#include "MultiCore/System/Timer.hpp"
 #include "EntityService/Interfaces/iComponent.hpp"
 #include "EntityService/Helpers/ComponentBase.hpp"
 #include "EntityService/Interfaces/Stages/iEntityStage.hpp"
@@ -49,7 +49,7 @@ namespace Cpf
 
 		// system interdependencies.
 		InstanceSystem* mpInstances;
-		const EntityService::Timer* mpTime;	// The clock this mover is attached to.
+		const MultiCore::Timer* mpTime;	// The clock this mover is attached to.
 		EntityService::EntityStage* mpThreadStage;
 		EntityService::EntityStage* mpEBusStage;
 		MultiCore::SystemID mClockID;

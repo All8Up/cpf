@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "MultiCore/Export.hpp"
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
 
@@ -8,7 +9,7 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class Timer : public System
+		class CPF_EXPORT_MULTICORE Timer : public System
 		{
 		public:
 			static constexpr auto kID = "Timer System"_hashString;

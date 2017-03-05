@@ -89,8 +89,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<EntityService::Timer>
-		gameTime(MultiCore::System::Create<EntityService::Timer>(mpMultiCore, "Game Time"));
+	IntrusivePtr<MultiCore::Timer>
+		gameTime(MultiCore::System::Create<MultiCore::Timer>(mpMultiCore, "Game Time"));
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.
@@ -146,7 +146,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), EntityService::Timer::kUpdate, MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), MultiCore::Stage::kExecute, MultiCore::Stage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
@@ -156,7 +156,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	});
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), EntityService::Timer::kUpdate, MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), MultiCore::Stage::kExecute, MultiCore::Stage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({

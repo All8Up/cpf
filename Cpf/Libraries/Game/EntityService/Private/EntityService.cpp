@@ -2,7 +2,7 @@
 #include "EntityService.hpp"
 #include "EntityService/Components/TransformComponent.hpp"
 #include "EntityService/Interfaces/Stages/iEntityStage.hpp"
-#include "EntityService/Interfaces/Systems/iTimerSystem.hpp"
+#include "MultiCore/System/Timer.hpp"
 
 using namespace Cpf;
 
@@ -17,7 +17,7 @@ CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Install()
 	{
 		EntityService::TransformComponent::Install();
 		EntityService::EntityStage::Install();
-		EntityService::Timer::Install();
+		MultiCore::Timer::Install();
 	}
 	return s_RefCount;
 }
@@ -26,7 +26,7 @@ CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Remove()
 {
 	if (--s_RefCount == 0)
 	{
-		EntityService::Timer::Remove();
+		MultiCore::Timer::Remove();
 		EntityService::EntityStage::Remove();
 		EntityService::TransformComponent::Remove();
 	}
