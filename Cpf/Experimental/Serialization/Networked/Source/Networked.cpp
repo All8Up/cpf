@@ -97,7 +97,7 @@ int Networked::Start(const CommandLine&)
 bool Networked::_CreateWindow()
 {
 	// Create the main window.
-	Math::Vector2i mWindowSize(200, 200);
+	Math::Vector2i mWindowSize(400, 400);
 	mpWindow.Adopt(
 		WindowDesc(this)
 		.Title("Network Test")

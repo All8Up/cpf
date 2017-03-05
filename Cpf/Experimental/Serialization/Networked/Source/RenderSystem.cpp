@@ -3,6 +3,7 @@
 #include "Graphics.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Pipeline.hpp"
+#include "Application/Application.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -34,6 +35,7 @@ bool RenderSystem::Initialize(iWindow* window, Resources::Locator* locator)
 			_CreateRenderData(window, locator)
 			)
 		{
+			mpDebugUI->SetWindowSize(window->GetClientArea().x, window->GetClientArea().y);
 			_CreateStages();
 			return true;
 		}
@@ -63,6 +65,8 @@ bool RenderSystem::Shutdown()
 void RenderSystem::Resize(int32_t w, int32_t h)
 {
 	mpSwapChain->Resize(w, h);
+	if (mpDebugUI)
+		mpDebugUI->SetWindowSize(w, h);
 }
 
 DebugUI& RenderSystem::GetDebugUI()
@@ -92,6 +96,10 @@ void RenderSystem::_CreateStages()
 	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, BlockOpcode::eFirst);
 	AddStage(beginFrame);
 
+	IntrusivePtr<SingleUpdateStage> debugUI(Stage::Create<SingleUpdateStage>(this, "DebugUI"));
+	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eFirst);
+	AddStage(debugUI);
+
 	IntrusivePtr<SingleUpdateStage> endFrame(Stage::Create<SingleUpdateStage>(this, "End Frame"));
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, BlockOpcode::eLast);
 	AddStage(endFrame);
@@ -102,6 +110,17 @@ void RenderSystem::_CreateStages()
 		{GetID(), beginFrame->GetID(), Stage::kExecute},
 		DependencyPolicy::eAfter
 	});
+
+	AddDependency({
+		{ GetID(), debugUI->GetID(), Stage::kExecute },
+		{ GetID(), beginFrame->GetID(), Stage::kExecute },
+		DependencyPolicy::eAfter
+	});
+	AddDependency({
+		{ GetID(), endFrame->GetID(), Stage::kExecute },
+		{ GetID(), debugUI->GetID(), Stage::kExecute },
+		DependencyPolicy::eBarrier
+	});
 }
 
 bool RenderSystem::_SelectAdapter()
@@ -109,7 +128,7 @@ bool RenderSystem::_SelectAdapter()
 	// Enumerate the graphics adapters attached to the system.
 	int adapterCount = 0;
 	mpInstance->EnumerateAdapters(adapterCount, nullptr);
-	Vector<IntrusivePtr<Graphics::iAdapter>> adapters;
+	Vector<IntrusivePtr<iAdapter>> adapters;
 	adapters.resize(adapterCount);
 	mpInstance->EnumerateAdapters(adapterCount, adapters[0].AsTypePP());
 
@@ -164,7 +183,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 
 bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locator)
 {
-	mpDevice->CreateFence(0, mpFence.AsTypePP());
+	mpDevice->CreateFence(3, mpFence.AsTypePP());
 	for (int i = 0; i < kBufferCount; ++i)
 	{
 		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
@@ -172,7 +191,7 @@ bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locato
 		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
 		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[kBufferCount].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP());
 	}
 	mpDebugUI.Adopt(new DebugUI());
 	mpDebugUI->Initialize(mpDevice, window, locator);
@@ -227,9 +246,8 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
 	float deltaTime = self.mpTimer->GetDeltaTime();
 
-//	self.mpDebugUIPool[self.mBufferIndex]->Reset();
-//	self.mpDebugUIBuffer[self.mBufferIndex]->Reset(self.mpDebugUIPool[self.mBufferIndex]);
-	/*
+	self.mpDebugUIPool[self.mBufferIndex]->Reset();
+	self.mpDebugUIBuffer[self.mBufferIndex]->Reset(self.mpDebugUIPool[self.mBufferIndex]);
 	self.mpDebugUIBuffer[self.mBufferIndex]->Begin();
 
 	iImageView* imageViews[] = { self.mpSwapChain->GetImageView(self.mSwapIndex) };
@@ -237,11 +255,15 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 
 	self.mpDebugUI->BeginFrame(self.mpDebugUIBuffer[self.mBufferIndex], deltaTime);
 	//////////////////////////////////////////////////////////////////////////
+	static bool sShowWindow = true;
+	self.mpDebugUI->Begin("Test", &sShowWindow);
+	self.mpDebugUI->End();
+
+	//////////////////////////////////////////////////////////////////////////
 	self.mpDebugUI->EndFrame(self.mpDebugUIBuffer[self.mBufferIndex]);
 
 	self.mpDebugUIBuffer[self.mBufferIndex]->End();
 	self.mpScheduledBuffers[Atomic::Inc(self.mScheduleIndex) - 1] = self.mpDebugUIBuffer[self.mBufferIndex];
-	*/
 }
 
 void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)

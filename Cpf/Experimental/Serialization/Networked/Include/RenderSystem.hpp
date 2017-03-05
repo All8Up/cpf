@@ -60,7 +60,7 @@ namespace Cpf
 
 		int mBufferIndex = 0;
 		int mSwapIndex = 0;
-		uint64_t mFenceTarget = 0;
+		uint64_t mFenceTarget = 4;
 		IntrusivePtr<Graphics::iCommandPool> mpPreCommandPool[kBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[kBufferCount];
