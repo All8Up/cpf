@@ -12,6 +12,9 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/System.hpp
 	Include/MultiCore/QueueBuilder.hpp
 )
+set (MULTICORE_SYSTEM_INCLUDE_FILES
+	Include/MultiCore/System/Timer.hpp
+)
 
 set (SOURCE_FILES
 	Source/MultiCore.cpp
@@ -23,12 +26,17 @@ set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/System.cpp
 	Source/MultiCore/QueueBuilder.cpp
 )
+set (MULTICORE_SYSTEM_SOURCE_FILES
+	Source/MultiCore/System/Timer.cpp
+)
 
 add_library (s_MultiCore STATIC
 	${INCLUDE_FILES}
 	${MULTICORE_INCLUDE_FILES}
+	${MULTICORE_SYSTEM_INCLUDE_FILES}
 	${SOURCE_FILES}
 	${MULTICORE_SOURCE_FILES}
+	${MULTICORE_SYSTEM_SOURCE_FILES}
 )
 target_compile_definitions (s_MultiCore
 	PUBLIC CPF_STATIC_MULTICORE
@@ -48,8 +56,10 @@ set_property (TARGET s_MultiCore PROPERTY FOLDER Libraries/Static/Game)
 # ###############################################
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Headers\\MultiCore FILES ${MULTICORE_INCLUDE_FILES})
+source_group (Headers\\MultiCore\\System FILES ${MULTICORE_SYSTEM_INCLUDE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
 source_group (Sources\\MultiCore FILES ${MULTICORE_SOURCE_FILES})
+source_group (Sources\\MultiCore\\System FILES ${MULTICORE_SYSTEM_SOURCE_FILES})
 
 # ###############################################
 #[[

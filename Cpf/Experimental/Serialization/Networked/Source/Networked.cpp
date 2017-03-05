@@ -118,6 +118,7 @@ bool Networked::_CreateWindow()
 bool Networked::_Install()
 {
 	return (
+		Timer::Install() &&
 		SingleUpdateStage::Install() &&
 		NetworkSystem::Install() &&
 		RenderSystem::Install()
@@ -129,7 +130,8 @@ bool Networked::_Remove()
 	return (
 		RenderSystem::Remove() &&
 		NetworkSystem::Remove() &&
-		SingleUpdateStage::Remove()
+		SingleUpdateStage::Remove() &&
+		Timer::Remove()
 		);
 }
 
@@ -171,11 +173,16 @@ bool Networked::_InitializePipeline()
 {
 	if(Pipeline::Create(mpPipeline.AsTypePP()))
 	{
+		mpTimer.Adopt(static_cast<Timer*>(mpPipeline->Install(System::Create<Timer>(mpPipeline, "Timer", nullptr))));
 		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(mpPipeline, "Networking", nullptr))));
-		mpRenderSystem.Adopt(static_cast<RenderSystem*>(mpPipeline->Install(System::Create<RenderSystem>(mpPipeline, "Rendering", nullptr))));
-		if (mpRenderSystem && mpRenderSystem->Initialize(mpWindow, mpLocator))
+
+		RenderSystem::Desc renderDesc;
+		renderDesc.mTimer = mpTimer->GetID();
+		mpRenderSystem.Adopt(static_cast<RenderSystem*>(mpPipeline->Install(System::Create<RenderSystem>(mpPipeline, "Rendering", &renderDesc))));
+		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(mpWindow, mpLocator))
 		{
 			return (
+				mpTimer &&
 				mpNetworkSystem &&
 				mpRenderSystem
 				);

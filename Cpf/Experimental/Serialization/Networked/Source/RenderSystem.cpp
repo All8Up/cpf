@@ -2,6 +2,7 @@
 #include "RenderSystem.hpp"
 #include "Graphics.hpp"
 #include "MultiCore/Stage.hpp"
+#include "MultiCore/Pipeline.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -15,6 +16,12 @@ bool RenderSystem::Install()
 bool RenderSystem::Remove()
 {
 	return System::Remove(kID);
+}
+
+bool RenderSystem::Configure()
+{
+	mpTimer = GetOwner()->GetSystem<Timer>(mDesc.mTimer.GetString());
+	return mpTimer != nullptr;
 }
 
 bool RenderSystem::Initialize(iWindow* window, Resources::Locator* locator)
@@ -58,7 +65,7 @@ void RenderSystem::Resize(int32_t w, int32_t h)
 	mpSwapChain->Resize(w, h);
 }
 
-Graphics::DebugUI& RenderSystem::GetDebugUI()
+DebugUI& RenderSystem::GetDebugUI()
 {
 	return *mpDebugUI;
 }
@@ -66,16 +73,17 @@ Graphics::DebugUI& RenderSystem::GetDebugUI()
 
 RenderSystem::RenderSystem(Pipeline* pipeline, const char* name, const Desc* desc)
 	: System(pipeline, name)
+	, mpTimer(nullptr)
+	, mDesc(*desc)
 {
-	(void)desc;
 }
 
 RenderSystem::~RenderSystem()
 {}
 
-System* RenderSystem::_Create(MultiCore::Pipeline* owner, const char* name, const Desc* desc)
+System* RenderSystem::_Create(Pipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new RenderSystem(owner, name, desc);
+	return new RenderSystem(owner, name, reinterpret_cast<const Desc*>(desc));
 }
 
 void RenderSystem::_CreateStages()
@@ -163,6 +171,8 @@ bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locato
 		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[kBufferCount].AsTypePP());
 	}
 	mpDebugUI.Adopt(new DebugUI());
 	mpDebugUI->Initialize(mpDevice, window, locator);
@@ -215,8 +225,23 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 {
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
+	float deltaTime = self.mpTimer->GetDeltaTime();
 
-//	self.mpDebugUI->BeginFrame(threadData.mpDebugUIBuffer[self.mBufferIndex], Platform::Time::Seconds(mDeltaTime));
+//	self.mpDebugUIPool[self.mBufferIndex]->Reset();
+//	self.mpDebugUIBuffer[self.mBufferIndex]->Reset(self.mpDebugUIPool[self.mBufferIndex]);
+	/*
+	self.mpDebugUIBuffer[self.mBufferIndex]->Begin();
+
+	iImageView* imageViews[] = { self.mpSwapChain->GetImageView(self.mSwapIndex) };
+	self.mpDebugUIBuffer[self.mBufferIndex]->SetRenderTargets(1, imageViews, nullptr);
+
+	self.mpDebugUI->BeginFrame(self.mpDebugUIBuffer[self.mBufferIndex], deltaTime);
+	//////////////////////////////////////////////////////////////////////////
+	self.mpDebugUI->EndFrame(self.mpDebugUIBuffer[self.mBufferIndex]);
+
+	self.mpDebugUIBuffer[self.mBufferIndex]->End();
+	self.mpScheduledBuffers[Atomic::Inc(self.mScheduleIndex) - 1] = self.mpDebugUIBuffer[self.mBufferIndex];
+	*/
 }
 
 void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)

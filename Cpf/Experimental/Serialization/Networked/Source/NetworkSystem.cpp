@@ -8,26 +8,26 @@ using namespace MultiCore;
 //////////////////////////////////////////////////////////////////////////
 bool NetworkSystem::Install()
 {
-	return MultiCore::System::Install(kID, &NetworkSystem::_Creator);
+	return System::Install(kID, &NetworkSystem::_Creator);
 }
 
 bool NetworkSystem::Remove()
 {
-	return MultiCore::System::Remove(kID);
+	return System::Remove(kID);
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem(MultiCore::Pipeline* pipeline, const char* name, const NetworkSystem::Desc* desc)
-	: MultiCore::System(pipeline, name)
+NetworkSystem::NetworkSystem(Pipeline* pipeline, const char* name, const Desc*)
+	: System(pipeline, name)
 {
-	IntrusivePtr<MultiCore::SingleUpdateStage> updateStage(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, Stage::kExecute.GetString()));
+	IntrusivePtr<SingleUpdateStage> updateStage(Stage::Create<SingleUpdateStage>(this, Stage::kExecute.GetString()));
 	updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
 	AddStage(updateStage);
 }
 
-System* NetworkSystem::_Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc)
+System* NetworkSystem::_Creator(Pipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new NetworkSystem(owner, name, static_cast<const NetworkSystem::Desc*>(desc));
+	return new NetworkSystem(owner, name, static_cast<const Desc*>(desc));
 }
 
 void NetworkSystem::_Update(Concurrency::ThreadContext&, void* context)

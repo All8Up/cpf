@@ -5,6 +5,7 @@
 #include "Graphics/Interfaces/iInstance.hpp"
 #include "Graphics/Interfaces/iDevice.hpp"
 #include "Graphics/Interfaces/iSwapChain.hpp"
+#include "MultiCore/System/Timer.hpp"
 
 
 namespace Cpf
@@ -14,8 +15,15 @@ namespace Cpf
 	public:
 		static constexpr MultiCore::SystemID kID = "Render System"_hashString;
 
+		struct Desc : System::Desc
+		{
+			MultiCore::SystemID mTimer;
+		};
+
 		static bool Install();
 		static bool Remove();
+
+		bool Configure() override;
 
 		bool Initialize(iWindow*, Resources::Locator*);
 		bool Shutdown();
@@ -28,7 +36,7 @@ namespace Cpf
 		RenderSystem(MultiCore::Pipeline* pipeline, const char* name, const Desc* desc);
 		~RenderSystem() override;
 
-		static System* _Create(MultiCore::Pipeline* owner, const char* name, const Desc* desc);
+		static System* _Create(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();
@@ -40,6 +48,9 @@ namespace Cpf
 		static void _EndFrame(Concurrency::ThreadContext&, void* context);
 
 		static constexpr int kBufferCount = 3;
+
+		Desc mDesc;
+		MultiCore::Timer* mpTimer;
 
 		IntrusivePtr<Graphics::iInstance> mpInstance;
 		IntrusivePtr<Graphics::iAdapter> mpAdapter;
@@ -54,6 +65,8 @@ namespace Cpf
 		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[kBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[kBufferCount];
+		IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[kBufferCount];
+		IntrusivePtr<Graphics::iCommandBuffer> mpDebugUIBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iFence> mpFence;
 
 		int mScheduleIndex = 0;

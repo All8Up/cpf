@@ -6,6 +6,7 @@
 #include "NetworkSystem.hpp"
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
+#include "MultiCore/System/Timer.hpp"
 
 namespace Cpf
 {
@@ -39,6 +40,7 @@ namespace Cpf
 		IntrusivePtr<Resources::Locator> mpLocator;
 
 		IntrusivePtr<MultiCore::Pipeline> mpPipeline;
+		IntrusivePtr<MultiCore::Timer> mpTimer;
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
 	};
