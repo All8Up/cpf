@@ -17,7 +17,7 @@ namespace Cpf
 		static bool Install();
 		static bool Remove();
 
-		bool Initialize(iWindow*);
+		bool Initialize(iWindow*, Resources::Locator*);
 		bool Shutdown();
 
 		void Resize(int32_t, int32_t);
@@ -33,8 +33,10 @@ namespace Cpf
 
 		bool _SelectAdapter();
 		bool _CreateSwapChain(iWindow* window);
+		bool _CreateRenderData(iWindow*, Resources::Locator*);
 
 		static void _BeginFrame(Concurrency::ThreadContext&, void* context);
+		static void _DebugUI(Concurrency::ThreadContext&, void* context);
 		static void _EndFrame(Concurrency::ThreadContext&, void* context);
 
 		static constexpr int kBufferCount = 3;
@@ -44,5 +46,17 @@ namespace Cpf
 		IntrusivePtr<Graphics::iDevice> mpDevice;
 		IntrusivePtr<Graphics::iSwapChain> mpSwapChain;
 		IntrusivePtr<Graphics::DebugUI> mpDebugUI;
+
+		int mBufferIndex = 0;
+		int mSwapIndex = 0;
+		uint64_t mFenceTarget = 0;
+		IntrusivePtr<Graphics::iCommandPool> mpPreCommandPool[kBufferCount];
+		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[kBufferCount];
+		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[kBufferCount];
+		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[kBufferCount];
+		IntrusivePtr<Graphics::iFence> mpFence;
+
+		int mScheduleIndex = 0;
+		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];
 	};
 }

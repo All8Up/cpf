@@ -325,7 +325,7 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 
 void DebugUI::PushItemWidth(int32_t width)
 {
-	ImGui::PushItemWidth(width);
+	ImGui::PushItemWidth(float(width));
 }
 
 void DebugUI::PopItemWidth()

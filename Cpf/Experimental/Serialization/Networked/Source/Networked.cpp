@@ -173,7 +173,7 @@ bool Networked::_InitializePipeline()
 	{
 		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(mpPipeline, "Networking", nullptr))));
 		mpRenderSystem.Adopt(static_cast<RenderSystem*>(mpPipeline->Install(System::Create<RenderSystem>(mpPipeline, "Rendering", nullptr))));
-		if (mpRenderSystem && mpRenderSystem->Initialize(mpWindow))
+		if (mpRenderSystem && mpRenderSystem->Initialize(mpWindow, mpLocator))
 		{
 			return (
 				mpNetworkSystem &&
