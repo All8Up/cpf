@@ -55,8 +55,11 @@ target_compile_definitions( Threading
 source_group( Headers FILES ${THREADING_INCLUDE_FILES} ${THREADING_PLATFORM_INCLUDE_FILES} )
 source_group( Source FILES ${THREADING_SOURCE_FILES} )
 
-target_link_libraries( Threading Configuration Collections Time Atomic Logging )
-target_link_libraries( s_Threading Configuration s_Collections s_Time Atomic Logging )
+if (WIN32)
+	set (ADDITIONAL_LIBS "Pdh.lib")
+endif ()
+target_link_libraries( Threading Configuration Collections Time Atomic Logging ${ADDITIONAL_LIBS})
+target_link_libraries( s_Threading Configuration s_Collections s_Time Atomic Logging ${ADDITIONAL_LIBS})
 
 target_include_directories( Threading PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Scheduler.hpp"
+#include "Threading/CPU.hpp"
 
 namespace Cpf
 {
@@ -34,6 +35,7 @@ namespace Cpf
 			Scheduler::ThreadTimes mDistTimeQuery;
 			bool mQueryOutstanding = false;
 			Platform::Time::Value mLastUpdate;
+			Threading::CPUUsage mCPUUsage;
 		};
 	}
 }

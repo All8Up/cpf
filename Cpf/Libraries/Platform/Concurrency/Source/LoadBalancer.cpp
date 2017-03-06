@@ -27,9 +27,11 @@ void LoadBalancer::Balance()
 
 	if (mQueryOutstanding)
 	{
+		CPF_LOG(Networked, Info) << " Processor usage: " << mCPUUsage.GetValue();
+
 		mQueryOutstanding = false;
 		auto distTimes = mDistTimeQuery.GetResult();
-		int threadCount = 0;
+		int threadCount;
 
 		// TODO: Currently expects scheduler 0 to be a distributor and 1 to be a thread pool.
 		if (distTimes.mDuration.GetTicks() > 0)
