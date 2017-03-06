@@ -207,15 +207,15 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	self.mBufferIndex = (self.mBufferIndex + 1) % kBufferCount;
 	self.mSwapIndex = self.mpSwapChain->GetCurrentIndex();
 
-	// Issue on the shared command buffers.
-	self.mpPreCommandPool[self.mBufferIndex]->Reset();
-	self.mpPreCommandBuffer[self.mBufferIndex]->Reset(self.mpPreCommandPool[self.mBufferIndex]);
-	self.mpPreCommandBuffer[self.mBufferIndex]->Begin();
-
 	// Can only have 3 frames outstanding at a time so hang out here if we get too far ahead.
 	auto lastFence = self.mFenceTarget;
 	if (lastFence - self.mpFence->GetValue() >= kBufferCount)
 		self.mpFence->WaitFor(lastFence - (kBufferCount - 1));
+
+	// Issue on the shared command buffers.
+	self.mpPreCommandPool[self.mBufferIndex]->Reset();
+	self.mpPreCommandBuffer[self.mBufferIndex]->Reset(self.mpPreCommandPool[self.mBufferIndex]);
+	self.mpPreCommandBuffer[self.mBufferIndex]->Begin();
 
 	// TODO: This will move into the render pass abstraction when it is ready.
 	self.mpDevice->BeginFrame(self.mpPreCommandBuffer[self.mBufferIndex]);
