@@ -38,3 +38,8 @@ void ThreadPool::SetActiveThreads(int count)
 {
 	mScheduler.SetActiveThreads(count);
 }
+
+int ThreadPool::GetActiveThreads() const
+{
+	return mScheduler.GetActiveThreads();
+}

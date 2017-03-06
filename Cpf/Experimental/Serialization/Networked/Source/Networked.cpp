@@ -42,6 +42,8 @@ int Networked::Start(const CommandLine&)
 		{
 			if (_ConfigurePipeline())
 			{
+				_ConfigureDebugUI();
+
 				// Semaphore to track when the last submitted queue of work has completed.
 				Concurrency::Scheduler::Semaphore complete;
 
@@ -93,6 +95,34 @@ int Networked::Start(const CommandLine&)
 	return 0;
 }
 
+void Networked::_ConfigureDebugUI()
+{
+	Graphics::DebugUI& debugUI = mpRenderSystem->GetDebugUI();
+	debugUI.Add(&Networked::_PerformanceUI, this);
+	mLastTime = Time::Now();
+}
+
+void Networked::_PerformanceUI(Graphics::DebugUI* ui, void* context)
+{
+	Networked& self = *reinterpret_cast<Networked*>(context);
+
+	//////////////////////////////////////////////////////////////////////////
+	ui->Begin("Performance");
+	auto activeLoopThreads = self.mLoopScheduler.GetActiveThreads();
+	auto activePoolThreads = self.mThreadPool.GetActiveThreads();
+
+	auto now = Time::Now();
+	auto delta = now - self.mLastTime;
+	self.mLastTime = now;
+	int fps = int(float(Time::Seconds(1)) / float(Time::Seconds(delta)));
+
+	ui->Text("           FPS: %d", fps);
+	ui->Text("Worker threads: %d", activeLoopThreads);
+	ui->Text("  Pool threads: %d", activePoolThreads);
+
+	//////////////////////////////////////////////////////////////////////////
+	ui->End();
+}
 
 bool Networked::_CreateWindow()
 {

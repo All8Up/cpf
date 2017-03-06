@@ -411,6 +411,32 @@ void DebugUI::SetWindowSize(int32_t width, int32_t height)
 	mHeight = height;
 }
 
+void DebugUI::Add(DebugUICall call, void* context)
+{
+	mDebugCalls.push_back({ call, context });
+}
+
+void DebugUI::Remove(DebugUICall call, void* context)
+{
+	DebugCallPair testPair{call, context};
+	for (size_t i=0; i<mDebugCalls.size(); ++i)
+	{
+		if (testPair == mDebugCalls[i])
+		{
+			mDebugCalls.erase(mDebugCalls.begin() + i);
+			return;
+		}
+	}
+}
+
+void DebugUI::Execute()
+{
+	for (const auto& it : mDebugCalls)
+	{
+		(*it.first)(this, it.second);
+	}
+}
+
 bool DebugUI::HandleRawInput(void* context, const void* data)
 {
 	return reinterpret_cast<DebugUI*>(context)->_HandleRawInput(data);

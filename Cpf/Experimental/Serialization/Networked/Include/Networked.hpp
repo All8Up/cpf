@@ -19,6 +19,7 @@ namespace Cpf
 		int Start(const CommandLine&) override;
 
 	private:
+		void _ConfigureDebugUI();
 		bool _CreateWindow();
 		bool _Install();
 		bool _Remove();
@@ -29,6 +30,9 @@ namespace Cpf
 		bool _InitializePipeline();
 		bool _ConfigurePipeline();
 		bool _ShutdownPipeline();
+
+		// Debug panels.
+		static void _PerformanceUI(Graphics::DebugUI*, void*);
 
 		void _Resize(int32_t width, int32_t height);
 
@@ -43,5 +47,7 @@ namespace Cpf
 		IntrusivePtr<MultiCore::Timer> mpTimer;
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
+
+		Platform::Time::Value mLastTime;
 	};
 }

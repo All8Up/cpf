@@ -29,6 +29,7 @@ namespace Cpf
 
 			int GetAvailableThreads() const;
 			void SetActiveThreads(int count);
+			int GetActiveThreads() const;
 
 			Scheduler& GetScheduler() { return mScheduler; }
 

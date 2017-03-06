@@ -254,12 +254,7 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 	self.mpDebugUIBuffer[self.mBufferIndex]->SetRenderTargets(1, imageViews, nullptr);
 
 	self.mpDebugUI->BeginFrame(self.mpDebugUIBuffer[self.mBufferIndex], deltaTime);
-	//////////////////////////////////////////////////////////////////////////
-	static bool sShowWindow = true;
-	self.mpDebugUI->Begin("Test", &sShowWindow);
-	self.mpDebugUI->End();
-
-	//////////////////////////////////////////////////////////////////////////
+	self.mpDebugUI->Execute();
 	self.mpDebugUI->EndFrame(self.mpDebugUIBuffer[self.mBufferIndex]);
 
 	self.mpDebugUIBuffer[self.mBufferIndex]->End();

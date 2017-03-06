@@ -4,6 +4,8 @@
 #include "Math/Color.hpp"
 #include "Math/Vector2.hpp"
 #include "Math/Constants.hpp"
+#include "Pair.hpp"
+#include "Vector.hpp"
 
 
 namespace Cpf
@@ -74,6 +76,13 @@ namespace Cpf
 			// Rendering information.
 			void SetWindowSize(int32_t width, int32_t height);
 
+			// Debug list.
+			using DebugUICall = void(*)(DebugUI*, void* context);
+			void Add(DebugUICall call, void* context);
+			void Remove(DebugUICall call, void* context);
+			void Execute();
+
+			// Input attachment.
 			static bool HandleRawInput(void* context, const void* data);
 
 		private:
@@ -103,6 +112,11 @@ namespace Cpf
 			// Rendering information.
 			int32_t mWidth;
 			int32_t mHeight;
+
+			//
+			using DebugCallPair = Pair<DebugUICall, void*>;
+			using DebugCalls = Vector<DebugCallPair>;
+			DebugCalls mDebugCalls;
 		};
 	}
 }
