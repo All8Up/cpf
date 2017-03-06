@@ -47,35 +47,12 @@ int Networked::Start(const CommandLine&)
 				// Semaphore to track when the last submitted queue of work has completed.
 				Concurrency::Scheduler::Semaphore complete;
 
-				// Thread time information for tracking purposes.  Only updated every second.
-				Time::Value lastTimeUpdate = Time::Now();
-				Concurrency::Scheduler::ThreadTimeInfo loopThreadTimes;
-				Concurrency::Scheduler::ThreadTimes loopThreadTimeQuery;
-
 				// Run the event loop for the window.
 				while (IsRunning())
 				{
 					Poll();
 					(*mpPipeline)(mLoopScheduler);
 					mLoopScheduler.Submit(complete);
-
-					auto now = Time::Now();
-					if (Time::Seconds(now - lastTimeUpdate) >= 1.0f)
-					{
-						mLoopScheduler.Submit(loopThreadTimeQuery);
-						loopThreadTimes = loopThreadTimeQuery.GetResult();
-						lastTimeUpdate = now;
-
-						CPF_LOG(Networked, Info) << "------- Thread count: " << loopThreadTimes.mThreadCount << " - "
-							<< float(Time::Seconds(loopThreadTimes.mDuration));
-						for (int i=0; i<loopThreadTimes.mThreadCount; ++i)
-						{
-							CPF_LOG(Networked, Info) << "  Thread(" << i << ") User: "
-								<< float(Time::Seconds(loopThreadTimes.mUserTime[i]))
-								<< " Kernel: " << float(Time::Seconds(loopThreadTimes.mKernelTime[i]));
-						}
-					}
-
 					complete.Acquire();
 
 					// Keep balancing the threads.

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Concurrency/LoadBalancer.hpp"
+#include "Logging/Logging.hpp"
 
 using namespace Cpf;
 using namespace Concurrency;
@@ -24,25 +25,56 @@ void LoadBalancer::Balance()
 	if (mSchedulers.empty())
 		return;
 
-	auto now = Time::Now();
-	if (Time::Seconds(now - mLastUpdate) < float(kUpdateRate))
-		return;
-	mLastUpdate = now;
+	if (mQueryOutstanding)
+	{
+		mQueryOutstanding = false;
+		auto distTimes = mDistTimeQuery.GetResult();
+		int threadCount = 0;
 
-	// For the moment, just assign threads first come first serve.
-	// TODO: Do something to make this use the scheduler timing information.
-	int totalThreads = Thread::GetHardwareThreadCount();
-	int first = totalThreads - (int(mSchedulers.size()) - 1);
-	first = first > 0 ? first : 1;
-	int remains = totalThreads - first;
-	remains = remains > 0 ? remains : 1;
-	int divy = remains / (int(mSchedulers.size()) - 1);
-	divy = divy > 0 ? divy : 1;
+		// TODO: Currently expects scheduler 0 to be a distributor and 1 to be a thread pool.
+		if (distTimes.mDuration.GetTicks() > 0)
+		{
+			float duration = float(Time::Seconds(distTimes.mDuration));
+			float utilization = 0.0f;
+			for (int i = 0; i < distTimes.mThreadCount; ++i)
+				utilization += float(Time::Seconds(distTimes.mUserTime[i]));
 
-	if (first != mSchedulers[0]->GetActiveThreads())
-		mSchedulers[0]->SetActiveThreads(first);
+			utilization = utilization / (float(distTimes.mThreadCount) * duration);
+			if (utilization < 0.9f)
+			{
+				threadCount = distTimes.mThreadCount;
+				if (threadCount>1)
+				{
+					threadCount -= 1;
+					mSchedulers[0]->SetActiveThreads(threadCount);
+				}
+			}
+			else
+			{
+				threadCount = distTimes.mThreadCount;
+				if (threadCount < mSchedulers[0]->GetAvailableThreads() - 1)
+				{
+					threadCount += 1;
+					mSchedulers[0]->SetActiveThreads(threadCount);
+				}
+			}
 
-	for (int i = 1; i < mSchedulers.size(); ++i)
-		if (divy != mSchedulers[i]->GetActiveThreads())
-			mSchedulers[i]->SetActiveThreads(divy);
+			// Simply set the number of pool threads to the inverse of those used in distribution.
+			int targetThreads = mSchedulers[1]->GetAvailableThreads() - mSchedulers[0]->GetActiveThreads();
+			targetThreads = targetThreads > 0 ? targetThreads : 1;
+			mSchedulers[1]->SetActiveThreads(targetThreads);
+		}
+	}
+	else
+	{
+		auto now = Time::Now();
+		if (Time::Seconds(now - mLastUpdate) < float(kUpdateRate))
+			return;
+		mLastUpdate = now;
+
+		// Submits queries to pick up on the next loop.
+		// Picking the result up on the next loop prevents blocking.
+		mSchedulers[0]->Submit(mDistTimeQuery);
+		mQueryOutstanding = true;
+	}
 }

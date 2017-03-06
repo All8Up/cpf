@@ -283,7 +283,6 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, ThreadContext& tc, int64_t in
 			for (auto i = 0; i < vm.mThreadCount; ++i)
 			{
 				vm.mInstructionRing.ThreadHead(i, index);
-//				vm.m
 			}
 
 			// Wake the currently parked threads.
@@ -308,6 +307,12 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, ThreadContext& tc, int64_t in
 		{
 			vm.mActiveCondition.Acquire(vm.mActiveLock);
 			vm.mActiveLock.Release();
+
+			// Reset thread time so it is accurate for load balancing.
+			Threading::Thread::GetThreadTimes(
+				vm.mTimeInfo.mUserTime[tc.GetThreadIndex()],
+				vm.mTimeInfo.mKernelTime[tc.GetThreadIndex()]
+			);
 		}
 		else
 		{

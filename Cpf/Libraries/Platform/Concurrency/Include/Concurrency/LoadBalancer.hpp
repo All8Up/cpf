@@ -31,6 +31,8 @@ namespace Cpf
 
 		private:
 			Schedulers mSchedulers;
+			Scheduler::ThreadTimes mDistTimeQuery;
+			bool mQueryOutstanding = false;
 			Platform::Time::Value mLastUpdate;
 		};
 	}
