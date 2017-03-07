@@ -18,9 +18,10 @@ namespace Cpf
 		{
 		public:
 			// Standard blocks.
-			static constexpr auto kBegin = "Begin"_hashString;
-			static constexpr auto kExecute = "Execute"_hashString;
-			static constexpr auto kEnd = "End"_hashString;
+			static constexpr StageID kStageID = Hash::Create<StageID_tag>("Stage Update"_hashString);
+			static constexpr BlockID kBegin = Hash::Create<BlockID_tag>("Begin"_hashString);
+			static constexpr BlockID kExecute = Hash::Create<BlockID_tag>("Execute"_hashString);
+			static constexpr BlockID kEnd = Hash::Create<BlockID_tag>("End"_hashString);
 
 			// Factory.
 			using Creator = Stage* (*)(System*, const char* name);
@@ -71,7 +72,7 @@ namespace Cpf
 		class SingleUpdateStage : public Stage
 		{
 		public:
-			static constexpr auto kID = "Single Update Stage"_hashString;
+			static constexpr StageID kID = Hash::Create<StageID_tag>("Single Update Stage"_hashString);
 
 			static bool Install();
 			static bool Remove();

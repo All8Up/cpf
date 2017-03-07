@@ -2,7 +2,6 @@
 #include "Time/Scoped.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Time;
 
 //////////////////////////////////////////////////////////////////////////

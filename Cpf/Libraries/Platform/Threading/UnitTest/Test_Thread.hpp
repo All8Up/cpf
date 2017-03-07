@@ -29,10 +29,10 @@ TEST(Threading, Thread_Sleep)
 
 	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
 
-	Cpf::Platform::Time::Value startTime = Cpf::Platform::Time::Value::Now();
-	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Ms(aproxDurationMs));
-	Cpf::Platform::Time::Value endTime = Cpf::Platform::Time::Value::Now();
-	int64_t deltaMs = int64_t(Cpf::Platform::Time::Ms(endTime-startTime))-aproxDurationMs;
+	Cpf::Time::Value startTime = Cpf::Time::Value::Now();
+	Cpf::Threading::Thread::Sleep(Cpf::Time::Ms(aproxDurationMs));
+	Cpf::Time::Value endTime = Cpf::Time::Value::Now();
+	int64_t deltaMs = int64_t(Cpf::Time::Ms(endTime-startTime))-aproxDurationMs;
 
 	EXPECT_LT(std::abs(deltaMs), tollerance);
 }

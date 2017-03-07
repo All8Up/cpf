@@ -6,7 +6,7 @@
 
 TEST_F(TimeLibrary, InitializationValue)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	{
 		// A note about the use of 'near'.
 		// Working in Us/Ms is very prone to rounding error, as such
@@ -41,7 +41,7 @@ TEST_F(TimeLibrary, InitializationValue)
 
 TEST_F(TimeLibrary, ComparisonsValue)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	{
 		Value tpOneMicrosecond(Us(1));
 		Value tpOneMillisecond(Ms(1));
@@ -74,7 +74,7 @@ TEST_F(TimeLibrary, ComparisonsValue)
 
 TEST_F(TimeLibrary, MathValue)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	{
 		Value tpFiveHundredMicroseconds(Us(500));
 		Value tpOneThousandMicroseconds(tpFiveHundredMicroseconds + tpFiveHundredMicroseconds);
@@ -88,7 +88,7 @@ TEST_F(TimeLibrary, CommonUsageValue)
 {
 	// NOTE: This is not a proper test, this is currently just a run through of the common
 	// API usage requirements.
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	{
 		// The standard usage of this system is to build delta time.
 		// We'll fake a last frame time.

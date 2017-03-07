@@ -16,6 +16,11 @@ namespace Cpf
 			LoadBalancer();
 			~LoadBalancer();
 
+			struct Desc
+			{
+				
+			};
+
 			using Schedulers = Vector<Scheduler*>;
 
 			// TODO: Add policy information to each scheduler.
@@ -34,7 +39,7 @@ namespace Cpf
 			Schedulers mSchedulers;
 			Scheduler::ThreadTimes mDistTimeQuery;
 			bool mQueryOutstanding = false;
-			Platform::Time::Value mLastUpdate;
+			Time::Value mLastUpdate;
 			Threading::CPUUsage mCPUUsage;
 		};
 	}

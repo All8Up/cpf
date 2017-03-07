@@ -10,7 +10,7 @@ TEST(Concurrency, Basics)
 {
 	using namespace Cpf;
 	using namespace Concurrency;
-	ScopedInitializer<Platform::TimeInitializer> timeInit;
+	ScopedInitializer<TimeInitializer> timeInit;
 
 	for (auto iterations = 0; iterations < 20; ++iterations)
 	{

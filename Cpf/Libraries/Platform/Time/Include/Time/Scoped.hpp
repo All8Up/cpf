@@ -1,146 +1,143 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Time/Time.hpp"
+#include "Time.hpp"
 #include "Time/Value.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	namespace Platform
+	namespace Time
 	{
-		namespace Time
+		//////////////////////////////////////////////////////////////////////////
+		/// Scoped is a timer encapsulation for scoped delta time measurements.
+		//////////////////////////////////////////////////////////////////////////
+		template<typename ACTION>
+		class Scoped
+		{
+		public:
+			Scoped(Value& value);
+			~Scoped();
+
+			Value& Start();
+
+		private:
+			Value mStart;
+			ACTION mAction;
+		};
+
+
+		//////////////////////////////////////////////////////////////////////////
+		/// ScopedNull is a do nothing variation when internal profiling is disabled.
+		//////////////////////////////////////////////////////////////////////////
+		class CPF_EXPORT_TIME ScopedNull
+		{
+		public:
+			ScopedNull(Value& value);
+
+			Value& Start();
+		};
+
+
+		namespace Action
 		{
 			//////////////////////////////////////////////////////////////////////////
-			/// Scoped is a timer encapsulation for scoped delta time measurements.
+			/// Store stores the final delta value in the referenced value.
 			//////////////////////////////////////////////////////////////////////////
-			template<typename ACTION>
-			class Scoped
+			class CPF_EXPORT_TIME Store
 			{
 			public:
-				Scoped(Value& value);
-				~Scoped();
-
-				Value& Start();
+				Store(Value& value);
+				void operator ()(const Value& duration);
 
 			private:
-				Value mStart;
-				ACTION mAction;
+				Value& mValue;
 			};
 
 
 			//////////////////////////////////////////////////////////////////////////
-			/// ScopedNull is a do nothing variation when internal profiling is disabled.
+			/// Add adds the delta value to the referenced value.
 			//////////////////////////////////////////////////////////////////////////
-			class CPF_EXPORT_TIME ScopedNull
+			class CPF_EXPORT_TIME Add
 			{
 			public:
-				ScopedNull(Value& value);
+				Add(Value& value);
+				void operator ()(const Value& duration);
 
-				Value& Start();
+			private:
+				Value& mValue;
 			};
 
 
-			namespace Action
-			{
-				//////////////////////////////////////////////////////////////////////////
-				/// Store stores the final delta value in the referenced value.
-				//////////////////////////////////////////////////////////////////////////
-				class CPF_EXPORT_TIME Store
-				{
-				public:
-					Store(Value& value);
-					void operator ()(const Value& duration);
-
-				private:
-					Value& mValue;
-				};
-
-
-				//////////////////////////////////////////////////////////////////////////
-				/// Add adds the delta value to the referenced value.
-				//////////////////////////////////////////////////////////////////////////
-				class CPF_EXPORT_TIME Add
-				{
-				public:
-					Add(Value& value);
-					void operator ()(const Value& duration);
-
-				private:
-					Value& mValue;
-				};
-
-
-				//////////////////////////////////////////////////////////////////////////
-				/// Average the delta time value over a given number of samples.
-				//////////////////////////////////////////////////////////////////////////
-				template<const int SAMPLES = 10>
-				class Average
-				{
-				public:
-					Average(Value& value);
-					void operator ()(const Value& duration);
-
-				private:
-					Value& mValue;
-					Value mTotal;
-					int mIndex;
-					Value mSamples[SAMPLES];
-				};
-			}
-
-
 			//////////////////////////////////////////////////////////////////////////
-			using ScopedAdd = Scoped<Action::Add>;
-			using ScopedStore = Scoped<Action::Store>;
-			using ScopedAverage10 = Scoped<Action::Average<10>>;
-
-
+			/// Average the delta time value over a given number of samples.
 			//////////////////////////////////////////////////////////////////////////
-			template<typename ACTION>
-			Scoped<ACTION>::Scoped(Value& value)
-				: mAction(value)
+			template<const int SAMPLES = 10>
+			class Average
 			{
-				mStart = Value::Now();
+			public:
+				Average(Value& value);
+				void operator ()(const Value& duration);
+
+			private:
+				Value& mValue;
+				Value mTotal;
+				int mIndex;
+				Value mSamples[SAMPLES];
+			};
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////
+		using ScopedAdd = Scoped<Action::Add>;
+		using ScopedStore = Scoped<Action::Store>;
+		using ScopedAverage10 = Scoped<Action::Average<10>>;
+
+
+		//////////////////////////////////////////////////////////////////////////
+		template<typename ACTION>
+		Scoped<ACTION>::Scoped(Value& value)
+			: mAction(value)
+		{
+			mStart = Value::Now();
+		}
+		template<typename ACTION>
+		Scoped<ACTION>::~Scoped()
+		{
+			Value delta = Value::Now() - mStart;
+			mAction(delta);
+		}
+
+		template<typename ACTION>
+		Value& Scoped<ACTION>::Start()
+		{
+			return mStart;
+		}
+
+
+		namespace Action
+		{
+			//////////////////////////////////////////////////////////////////////////
+			template<const int SAMPLES>
+			Average<SAMPLES>::Average(Value& value)
+				: mValue(value)
+				, mIndex(0)
+			{
 			}
-			template<typename ACTION>
-			Scoped<ACTION>::~Scoped()
+
+			template<const int SAMPLES>
+			void Average<SAMPLES>::operator ()(const Value& duration)
 			{
-				Value delta = Value::Now() - mStart;
-				mAction(delta);
-			}
+				// Remove and overwrite the old sample.
+				mTotal -= mSamples[mIndex];
+				mTotal += duration;
+				mSamples[mIndex++] = duration;
 
-			template<typename ACTION>
-			Value& Scoped<ACTION>::Start()
-			{
-				return mStart;
-			}
+				// Loop the index.
+				mIndex = mIndex % SAMPLES;
 
-
-			namespace Action
-			{
-				//////////////////////////////////////////////////////////////////////////
-				template<const int SAMPLES>
-				Average<SAMPLES>::Average(Value& value)
-					: mValue(value)
-					, mIndex(0)
-				{
-				}
-
-				template<const int SAMPLES>
-				void Average<SAMPLES>::operator ()(const Value& duration)
-				{
-					// Remove and overwrite the old sample.
-					mTotal -= mSamples[mIndex];
-					mTotal += duration;
-					mSamples[mIndex++] = duration;
-
-					// Loop the index.
-					mIndex = mIndex % SAMPLES;
-
-					// Store the new average.
-					mValue = mTotal / SAMPLES;
-				}
+				// Store the new average.
+				mValue = mTotal / SAMPLES;
 			}
 		}
 	}

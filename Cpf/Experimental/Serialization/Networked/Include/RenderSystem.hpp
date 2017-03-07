@@ -13,7 +13,7 @@ namespace Cpf
 	class RenderSystem : public MultiCore::System
 	{
 	public:
-		static constexpr MultiCore::SystemID kID = "Render System"_hashString;
+		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
 		struct Desc : System::Desc
 		{

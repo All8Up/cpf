@@ -17,14 +17,14 @@ namespace Cpf
 	{
 	public:
 		//
-		static constexpr auto kID = "Render System"_hashString;
+		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
-		static constexpr auto kBeginFrame = "Begin Frame"_hashString;
-		static constexpr auto kClearBuffers = "Clear Buffers"_hashString;
-		static constexpr auto kDrawInstances = "Draw Instances"_hashString;
-		static constexpr auto kDebugUI = "Debug UI"_hashString;
-		static constexpr auto kPreparePresent = "Prepare Present"_hashString;
-		static constexpr auto kEndFrame = "End Frame"_hashString;
+		static constexpr MultiCore::StageID kBeginFrame = Hash::Create<MultiCore::StageID_tag>("Begin Frame"_hashString);
+		static constexpr MultiCore::BlockID kClearBuffers = Hash::Create<MultiCore::BlockID_tag>("Clear Buffers"_hashString);
+		static constexpr MultiCore::StageID kDrawInstances = Hash::Create<MultiCore::StageID_tag>("Draw Instances"_hashString);
+		static constexpr MultiCore::BlockID kDebugUI = Hash::Create<MultiCore::BlockID_tag>("Debug UI"_hashString);
+		static constexpr MultiCore::BlockID kPreparePresent = Hash::Create<MultiCore::BlockID_tag>("Prepare Present"_hashString);
+		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Registration.
 		static bool Install();

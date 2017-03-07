@@ -28,7 +28,7 @@ TEST(VTune, AllTests)
 	VTune::BeginFrame(frameDomain);
 
 	// Offset to the event.
-	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(0.1f));
+	Cpf::Threading::Thread::Sleep(Cpf::Time::Seconds(0.1f));
 
 	// Start a sync.
 	VTune::SyncPrepare(&frameDomain);
@@ -41,7 +41,7 @@ TEST(VTune, AllTests)
 	VTune::TaskBegin(innerDomain, taskName);
 
 	// Sleep for a second.
-	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(1.0f));
+	Cpf::Threading::Thread::Sleep(Cpf::Time::Seconds(1.0f));
 
 	// End the event.
 	VTune::EventEnd(testEvent);
@@ -53,7 +53,7 @@ TEST(VTune, AllTests)
 	VTune::SyncReleasing(&frameDomain);
 
 	// Offset before end frame.
-	Cpf::Threading::Thread::Sleep(Cpf::Platform::Time::Seconds(0.1f));
+	Cpf::Threading::Thread::Sleep(Cpf::Time::Seconds(0.1f));
 
 	// End the frame.
 	VTune::EndFrame(frameDomain);

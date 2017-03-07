@@ -75,7 +75,7 @@ int SchedulerPerformance::Start(const Cpf::CommandLine&)
 		// Using a fixed set of thread counts, run the testing functionality.
 		for (auto& metric : perfFunctions)
 		{
-			auto start = Platform::Time::Value::Now();
+			auto start = Time::Value::Now();
 
 			for (int i = 0; i < sizeof(threadCounts) / sizeof(int); ++i)
 			{
@@ -101,12 +101,12 @@ int SchedulerPerformance::Start(const Cpf::CommandLine&)
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			auto end = Platform::Time::Value::Now();
+			auto end = Time::Value::Now();
 			auto deltaTime = end - start;
 
 			// Report the total time to teamcity.  This is a primitive test for kpi's.
 			std::cout << "##teamcity[buildStatisticValue key='ConcurrencySchedulerTotalTime_" << metric.MetricName << "' value='"
-				<< int64_t(Platform::Time::Us(deltaTime)) << "']" << std::endl;
+				<< int64_t(Time::Us(deltaTime)) << "']" << std::endl;
 		}
 	}
 	return 0;
@@ -133,7 +133,7 @@ int64_t SchedulerPerformance::_InstructionRate(int threadCount)
 
 	m_Scheduler.SetActiveThreads(threadCount);
 	Scheduler::Semaphore sync;
-	auto start = Platform::Time::Value::Now();
+	auto start = Time::Value::Now();
 	{
 		for (int i = 0; i < loopCount; ++i)
 		{
@@ -142,15 +142,15 @@ int64_t SchedulerPerformance::_InstructionRate(int threadCount)
 			sync.Acquire();
 		}
 	}
-	auto end = Platform::Time::Value::Now();
-	auto delta = Platform::Time::Seconds(end - start);
+	auto end = Time::Value::Now();
+	auto delta = Time::Seconds(end - start);
 
 	// Figure out the opcodes per second.
 	int64_t opPerSecond(int64_t(instructionCount / float(delta)));
 	std::cout << "##teamcity[buildStatisticValue key='ConcurrencyOpcodesPerSecond_" << threadCount << "' value='" << int64_t(opPerSecond) << "']" << std::endl;
 
 	delete testData;
-	return int64_t(Platform::Time::Us(end - start));
+	return int64_t(Time::Us(end - start));
 }
 
 
@@ -186,7 +186,7 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 
 	m_Scheduler.SetActiveThreads(threadCount);
 	Scheduler::Semaphore sync;
-	auto start = Platform::Time::Value::Now();
+	auto start = Time::Value::Now();
 	{
 		Semaphore wait;
 		for (int i = 0; i < loopCount; ++i)
@@ -196,27 +196,27 @@ int64_t SchedulerPerformance::_BasicWork(int threadCount)
 		m_Scheduler.Submit(sync);
 		sync.Acquire();
 	}
-	auto end = Platform::Time::Value::Now();
-	auto delta = Platform::Time::Seconds(end - start);
+	auto end = Time::Value::Now();
+	auto delta = Time::Seconds(end - start);
 
 	// Figure out the opcodes per second.
 	int64_t opPerSecond(int64_t(instructionCount / float(delta)));
 	std::cout << "##teamcity[buildStatisticValue key='ConcurrencyBasicWorkRate_" << threadCount << "' value='" << int64_t(opPerSecond) << "']" << std::endl;
 
 	delete testData;
-	return int64_t(Platform::Time::Us(end - start));
+	return int64_t(Time::Us(end - start));
 }
 
 
 int64_t SchedulerPerformance::_InstructionRateAlternatePassWait(int threadCount)
 {
-	auto start = Platform::Time::Value::Now();
+	auto start = Time::Value::Now();
 	m_Scheduler.SetActiveThreads(threadCount);
 	{
 
 	}
-	auto end = Platform::Time::Value::Now();
-	return int64_t(Platform::Time::Us(end - start));
+	auto end = Time::Value::Now();
+	return int64_t(Time::Us(end - start));
 }
 
 

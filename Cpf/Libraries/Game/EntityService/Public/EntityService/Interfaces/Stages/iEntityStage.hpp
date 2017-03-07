@@ -26,7 +26,7 @@ namespace Cpf
 			, tRefCounted<iEntityStage>
 		{
 		public:
-			static constexpr auto kID = "Object Stage"_hashString;
+			static constexpr MultiCore::StageID kID = Hash::Create<MultiCore::StageID_tag>("Object Stage"_hashString);
 
 			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
 

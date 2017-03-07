@@ -13,14 +13,17 @@ namespace Cpf
 	{
 		class Pipeline;
 
-		using SystemID = Hash::HashString;
+		struct SystemID_tag {};
+		using SystemID = Hash::HashString<SystemID_tag>;
 		class System;
 
-		using StageID = Hash::HashString;
+		struct StageID_tag {};
+		using StageID = Hash::HashString<StageID_tag>;
 		class Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
 
-		using BlockID = Hash::HashString;
+		struct BlockID_tag {};
+		using BlockID = Hash::HashString<BlockID_tag>;
 
 		enum class BlockOpcode
 		{

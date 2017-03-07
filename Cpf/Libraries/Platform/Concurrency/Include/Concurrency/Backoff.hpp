@@ -49,7 +49,7 @@ namespace Cpf
 			if (mBackoff >= MAX_SPIN)
 			{
 				VTUNE_SYNC_ACQUIRED(this);
-				Threading::Thread::Sleep(Platform::Time::Ms(SLEEP_MS));
+				Threading::Thread::Sleep(Time::Ms(SLEEP_MS));
 				VTUNE_SYNC_RELEASING(this);
 			}
 			else

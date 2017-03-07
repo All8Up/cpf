@@ -7,7 +7,7 @@
 #include "IntrusivePtr.hpp"
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
-#include "Time/Time.hpp"
+#include "Time.hpp"
 
 #include "Graphics/Driver.hpp"
 #include "Graphics/DebugUI.hpp"
@@ -146,7 +146,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::Stage::kExecute, MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), MultiCore::Stage::kStageID, MultiCore::Stage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
@@ -156,7 +156,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	});
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::Stage::kExecute, MultiCore::Stage::kExecute },
+		{ gameTime->GetID(), MultiCore::Stage::kStageID, MultiCore::Stage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({

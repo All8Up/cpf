@@ -28,7 +28,7 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 			void Acquire(Mutex&);
 			void Acquire(Mutex&, Predicate_t&&);
-			bool TimedAcquire(Mutex&, const Platform::Time::Value);
+			bool TimedAcquire(Mutex&, const Time::Value);
 
 			void Release();
 			void ReleaseAll();

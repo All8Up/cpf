@@ -10,7 +10,7 @@ TEST(Concurrency, FirstFenced_Opcode)
 {
 	using namespace Cpf;
 	using namespace Concurrency;
-	ScopedInitializer<Platform::TimeInitializer> timeInit;
+	ScopedInitializer<TimeInitializer> timeInit;
 
 	for (auto i = 0; i < 10; ++i)
 	{

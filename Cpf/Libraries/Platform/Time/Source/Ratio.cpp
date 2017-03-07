@@ -2,7 +2,6 @@
 #include "Time/Ratio.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Time;
 
 Ratio::Ratio()

@@ -8,7 +8,7 @@ namespace Cpf
 	class NetworkSystem : public MultiCore::System
 	{
 	public:
-		static constexpr MultiCore::SystemID kID = "Network System"_hashString;
+		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Network System"_hashString);
 
 		static bool Install();
 		static bool Remove();

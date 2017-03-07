@@ -2,8 +2,6 @@
 #include "Time/Counter.hpp"
 
 using namespace Cpf;
-using namespace Platform;
-using namespace Time;
 
 //
 namespace
@@ -20,7 +18,7 @@ CPF_EXPORT_TIME int TimeInitializer::Install()
 {
 	if (s_RefCount++ == 0)
 	{
-		if (InitializeCounter())
+		if (Time::InitializeCounter())
 		{
 			return s_RefCount;
 		}

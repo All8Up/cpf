@@ -18,9 +18,9 @@ namespace Cpf
 			using OnResume = Platform::Events::Event< 2, Function< void() > >;
 
 			using OnPluggedIn = Platform::Events::Event< 3, Function< void() > >;
-			using OnCharging = Platform::Events::Event< 4, Function< void(Platform::Time::Value, float) > >;
+			using OnCharging = Platform::Events::Event< 4, Function< void(Time::Value, float) > >;
 			using OnCharged = Platform::Events::Event< 5, Function< void() > >;
-			using OnUnplugged = Platform::Events::Event< 6, Function< void(Platform::Time::Value, float) > >;
+			using OnUnplugged = Platform::Events::Event< 6, Function< void(Time::Value, float) > >;
 
 			static Platform::Events::Emitter Emitter;
 

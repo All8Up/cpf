@@ -35,9 +35,9 @@ namespace Cpf
 			void Join();
 
 			//////////////////////////////////////////////////////////////////////////
-			static void Sleep(const Platform::Time::Value&);
+			static void Sleep(const Time::Value&);
 			static void Pause();
-			static void GetThreadTimes(Platform::Time::Value& userTime, Platform::Time::Value& kernelTime);
+			static void GetThreadTimes(Time::Value& userTime, Time::Value& kernelTime);
 			static void SetName(const char*);
 			static int GetHardwareThreadCount();
 

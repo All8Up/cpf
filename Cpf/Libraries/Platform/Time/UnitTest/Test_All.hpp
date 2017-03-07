@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Time/Time.hpp"
+#include "Time.hpp"
 #include "Time/Unit.hpp"
 
 
@@ -20,21 +20,21 @@ public:
 
 	virtual void SetUp() override
 	{
-		Cpf::Platform::TimeInitializer::Install();
+		Cpf::TimeInitializer::Install();
 	}
 	virtual void TearDown() override
 	{
-		Cpf::Platform::TimeInitializer::Remove();
+		Cpf::TimeInitializer::Remove();
 	}
 
-	Cpf::Platform::Time::Ns oneNs;
-	Cpf::Platform::Time::Us oneUs;
-	Cpf::Platform::Time::Ms oneMs;
-	Cpf::Platform::Time::Seconds oneSecond;
-	Cpf::Platform::Time::Minutes oneMinute;
-	Cpf::Platform::Time::Hours oneHour;
-	Cpf::Platform::Time::Days oneDay;
-	Cpf::Platform::Time::Years oneYear;
+	Cpf::Time::Ns oneNs;
+	Cpf::Time::Us oneUs;
+	Cpf::Time::Ms oneMs;
+	Cpf::Time::Seconds oneSecond;
+	Cpf::Time::Minutes oneMinute;
+	Cpf::Time::Hours oneHour;
+	Cpf::Time::Days oneDay;
+	Cpf::Time::Years oneYear;
 };
 
 

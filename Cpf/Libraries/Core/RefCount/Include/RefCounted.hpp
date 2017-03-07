@@ -7,7 +7,8 @@
 
 namespace Cpf
 {
-	using InterfaceID = Hash::HashID<uint64_t, 0>;
+	struct interface_tag {};
+	using InterfaceID = Hash::HashID<uint64_t, interface_tag>;
 
 	struct CPF_NOVTABLE iRefCounted
 	{

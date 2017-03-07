@@ -10,7 +10,7 @@ TEST(Concurrency, First_Opcode)
 {
 	using namespace Cpf;
 	using namespace Concurrency;
-	ScopedInitializer<Platform::TimeInitializer> init;
+	ScopedInitializer<TimeInitializer> init;
 
 	for (auto i = 0; i < 10; ++i)
 	{
@@ -29,7 +29,7 @@ TEST(Concurrency, First_Opcode)
 				Atomic::Store(*reinterpret_cast<int*>(context), 1);
 
 				// Wait a sec, just to make sure the next instruction executes before we wake.
-				Threading::Thread::Sleep(Platform::Time::Seconds(0.1f));
+				Threading::Thread::Sleep(Time::Seconds(0.1f));
 			},
 				&firstThreadArrived);
 			queue.FirstOne(

@@ -31,8 +31,8 @@ namespace Cpf
 		/**
 		 * @brief Create a scoped lock.
 		 */
-		template<typename tPrimitive> inline
-			ScopedLock<tPrimitive>::ScopedLock(tPrimitive& prim)
+		template<typename tPrimitive>
+		ScopedLock<tPrimitive>::ScopedLock(tPrimitive& prim)
 			: mpPrimitive(&prim)
 		{
 			mpPrimitive->Acquire();
@@ -42,8 +42,8 @@ namespace Cpf
 		/**
 		 * @brief Release the primitive on scope exit.
 		 */
-		template<typename tPrimitive> inline
-			ScopedLock<tPrimitive>::~ScopedLock()
+		template<typename tPrimitive>
+		ScopedLock<tPrimitive>::~ScopedLock()
 		{
 			mpPrimitive->Release();
 		}

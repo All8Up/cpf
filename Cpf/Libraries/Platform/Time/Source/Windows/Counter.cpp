@@ -1,11 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Time/Counter.hpp"
-#include "Time/Time.hpp"
+#include "Time.hpp"
 #include "Time/Ratio.hpp"
 #include <Windows.h>
 
 using namespace Cpf;
-using namespace Platform;
 
 namespace
 {

@@ -4,7 +4,7 @@
 
 TEST_F(TimeLibrary, UnitComparison)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 
 	EXPECT_TRUE(oneNs < oneUs);
 	EXPECT_TRUE(oneUs < oneMs);

@@ -39,9 +39,9 @@ namespace Cpf
 			struct ThreadTimeInfo
 			{
 				int mThreadCount;
-				Platform::Time::Value mDuration;
-				Platform::Time::Value mUserTime[kMaxThreads];
-				Platform::Time::Value mKernelTime[kMaxThreads];
+				Time::Value mDuration;
+				Time::Value mUserTime[kMaxThreads];
+				Time::Value mKernelTime[kMaxThreads];
 			};
 
 

@@ -26,7 +26,7 @@ Timer::Timer(Pipeline* owner, const char* name)
 	, mPaused(false)
 	, mpUpdate(nullptr)
 {
-	mStart = Platform::Time::Now();
+	mStart = Time::Now();
 	mTime = mStart;
 
 	mpUpdate.Adopt(Stage::Create<SingleUpdateStage>(this, Stage::kExecute.GetString()));
@@ -39,14 +39,14 @@ Timer::~Timer()
 	RemoveStage(mpUpdate->GetID());
 }
 
-Platform::Time::Value Timer::GetTime() const
+Time::Value Timer::GetTime() const
 {
 	return mTime - mStart;
 }
 
 float Timer::GetDeltaTime() const
 {
-	return float(Platform::Time::Seconds(mDelta));
+	return float(Time::Seconds(mDelta));
 }
 
 bool Timer::IsPaused() const
@@ -58,7 +58,7 @@ void Timer::SetPause(bool flag)
 {
 	if (!flag && flag)
 	{
-		mStart = Platform::Time::Now();
+		mStart = Time::Now();
 		mTime = mStart + mDelta;
 	}
 	mPaused = flag;
@@ -79,7 +79,7 @@ void Timer::_Update(Concurrency::ThreadContext&, void* context)
 	Timer* self = reinterpret_cast<Timer*>(context);
 	if (!self->mPaused)
 	{
-		Platform::Time::Value now = Platform::Time::Now();
+		Time::Value now = Time::Now();
 		self->mDelta = now - self->mTime;
 		self->mTime = now;
 	}

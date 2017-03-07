@@ -4,5 +4,6 @@
 
 TEST(Hash, Basic_HashID)
 {
-	Cpf::Hash::HashID<uint64_t> test0("Test"_crc64);
+	struct test_tag {};
+	Cpf::Hash::HashID<uint64_t, test_tag> test0("Test"_crc64);
 }

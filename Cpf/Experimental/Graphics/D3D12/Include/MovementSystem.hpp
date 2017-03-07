@@ -20,9 +20,9 @@ namespace Cpf
 	class MoverSystem : public MultiCore::System
 	{
 	public:
-		static constexpr auto kID = "Mover System"_hashString;
-		static constexpr auto kUpdate = "Update"_hashString;
-		static constexpr auto kUpdateEBus = "Update EBus"_hashString;
+		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Mover System"_hashString);
+		static constexpr MultiCore::StageID kUpdate = Hash::Create<MultiCore::StageID_tag>("Update"_hashString);
+		static constexpr MultiCore::StageID kUpdateEBus = Hash::Create<MultiCore::StageID_tag>("Update EBus"_hashString);
 
 		struct Desc : System::Desc
 		{

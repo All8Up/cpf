@@ -2,7 +2,6 @@
 #pragma once
 #include "Configuration.hpp"
 
-
 //////////////////////////////////////////////////////////////////////////
 // Setup the shared library export mechanism.
 #ifdef CPF_TARGET_WINDOWS
@@ -22,25 +21,3 @@
 #		define CPF_EXPORT_TIME
 #	endif
 #endif // CPF_TARGET_WINDOWS
-
-
-
-//////////////////////////////////////////////////////////////////////////
-namespace Cpf
-{
-	namespace Platform
-	{
-		//////////////////////////////////////////////////////////////////////////
-		/// Initialize the time library.
-		//////////////////////////////////////////////////////////////////////////
-		struct TimeInitializer
-		{
-			CPF_EXPORT_TIME static int Install();
-			CPF_EXPORT_TIME static int Remove();
-
-		private:
-			TimeInitializer() = delete;
-			~TimeInitializer() = delete;
-		};
-	}
-}

@@ -21,9 +21,9 @@ TEST(Concurrency, ActiveChange)
 	using namespace Cpf;
 	using namespace Concurrency;
 	using namespace ConcurrencyTest;
-	ScopedInitializer<Platform::TimeInitializer> timeInit;
+	ScopedInitializer<TimeInitializer> timeInit;
 
-	srand(int(Platform::Time::Value::Now().GetTicks()));
+	srand(int(Time::Value::Now().GetTicks()));
 
 	static const auto loopCount = 1000;
 	static const auto innerLoopCount = 1000;

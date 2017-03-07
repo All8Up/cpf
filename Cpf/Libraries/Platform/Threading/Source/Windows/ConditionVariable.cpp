@@ -46,9 +46,9 @@ void ConditionVariable::Acquire(Mutex& mtx, Predicate_t&& predicate)
 @param mtx The mutex used to control access.
 @param timeout The timeout before the attempt gives up.
 */
-bool ConditionVariable::TimedAcquire(Mutex& mtx, const Platform::Time::Value timeout)
+bool ConditionVariable::TimedAcquire(Mutex& mtx, const Time::Value timeout)
 {
-	return SleepConditionVariableCS(&m_ConditionVar, &mtx.NativeHandle(), DWORD(int64_t(Platform::Time::Ms(timeout))))!=0;
+	return SleepConditionVariableCS(&m_ConditionVar, &mtx.NativeHandle(), DWORD(int64_t(Time::Ms(timeout))))!=0;
 }
 
 

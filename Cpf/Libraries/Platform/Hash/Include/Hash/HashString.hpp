@@ -8,12 +8,17 @@ namespace Cpf
 	namespace Hash
 	{
 		//////////////////////////////////////////////////////////////////////////
+		struct BaseHashString_Tag {};
+
+		//////////////////////////////////////////////////////////////////////////
+		template <typename TAG = BaseHashString_Tag>
 		class HashString
 		{
 		public:
 			constexpr HashString();
 			constexpr HashString(HashString&& rhs) noexcept;
 			constexpr HashString(const char* string, size_t length);
+			explicit constexpr HashString(uint64_t ID, const char* string);
 			constexpr HashString(const HashString& rhs) noexcept;
 
 			const HashString& operator = (const HashString& rhs);
@@ -26,8 +31,8 @@ namespace Cpf
 			bool operator > (const HashString& rhs) const;
 			bool operator >= (const HashString& rhs) const;
 
-			const char* GetString() const;
-			uint64_t GetID() const;
+			constexpr const char* GetString() const;
+			constexpr uint64_t GetID() const;
 
 		private:
 			const char* mpString;
@@ -35,94 +40,121 @@ namespace Cpf
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		constexpr HashString::HashString()
+		template <typename TAG>
+		constexpr HashString<TAG>::HashString()
 			: mpString(nullptr)
 			, mID(uint64_t(-1))
 		{}
 
-		constexpr HashString::HashString(HashString&& rhs) noexcept
+		template <typename TAG>
+		constexpr HashString<TAG>::HashString(HashString<TAG>&& rhs) noexcept
 			: mpString(rhs.mpString)
 			, mID(rhs.mID)
 		{}
 
-		constexpr HashString::HashString(const char* string, size_t length)
+		template <typename TAG>
+		constexpr HashString<TAG>::HashString(const char* string, size_t length)
 			: mpString(string)
 			, mID(Crc64(string, length))
 		{}
 
-		constexpr HashString::HashString(const HashString& rhs) noexcept
+		template <typename TAG>
+		constexpr HashString<TAG>::HashString(uint64_t ID, const char* string)
+			: mpString(string)
+			, mID(ID)
+		{}
+
+		template <typename TAG>
+		constexpr HashString<TAG>::HashString(const HashString<TAG>& rhs) noexcept
 			: mpString(rhs.mpString)
 			, mID(rhs.mID)
 		{}
 
-		inline const HashString& HashString::operator = (const HashString& rhs)
+		template <typename TAG>
+		const HashString<TAG>& HashString<TAG>::operator = (const HashString<TAG>& rhs)
 		{
 			mpString = rhs.mpString;
 			mID = rhs.mID;
 			return *this;
 		}
 
-		inline const HashString& HashString::operator = (const HashString&& rhs)
+		template <typename TAG>
+		const HashString<TAG>& HashString<TAG>::operator = (const HashString<TAG>&& rhs)
 		{
 			mpString = rhs.mpString;
 			mID = rhs.mID;
 			return *this;
 		}
 
-		inline bool HashString::operator == (const HashString& rhs) const
+		template <typename TAG>
+		bool HashString<TAG>::operator == (const HashString<TAG>& rhs) const
 		{
 			return mID == rhs.mID;
 		}
 
-		inline bool HashString::operator != (const HashString& rhs) const
+		template <typename TAG>
+		bool HashString<TAG>::operator != (const HashString<TAG>& rhs) const
 		{
 			return mID != rhs.mID;
 		}
 
-		inline bool HashString::operator < (const HashString& rhs) const
+		template <typename TAG>
+		bool HashString<TAG>::operator < (const HashString<TAG>& rhs) const
 		{
 			return mID < rhs.mID;
 		}
 
-		inline bool HashString::operator <= (const HashString& rhs) const
+		template <typename TAG>
+		bool HashString<TAG>::operator <= (const HashString<TAG>& rhs) const
 		{
 			return mID <= rhs.mID;
 		}
 
-		inline bool HashString::operator > (const HashString& rhs) const
+		template <typename TAG>
+		bool HashString<TAG>::operator > (const HashString<TAG>& rhs) const
 		{
 			return mID > rhs.mID;
 		}
 
-		inline bool HashString::operator >= (const HashString& rhs) const
+		template <typename TAG>
+		bool HashString<TAG>::operator >= (const HashString<TAG>& rhs) const
 		{
 			return mID >= rhs.mID;
 		}
 
-		inline const char* HashString::GetString() const
+		template <typename TAG>
+		constexpr const char* HashString<TAG>::GetString() const
 		{
 			return mpString;
 		}
 		
-		inline uint64_t HashString::GetID() const
+		template <typename TAG>
+		constexpr uint64_t HashString<TAG>::GetID() const
 		{
 			return mID;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		template <typename TAG>
+		constexpr HashString<TAG> Create(HashString<BaseHashString_Tag>&& rhs)
+		{
+			return HashString<TAG>(rhs.GetID(), rhs.GetString());
 		}
 	}
 }
 
 
-constexpr Cpf::Hash::HashString operator "" _hashString(const char* val, size_t idx)
+constexpr Cpf::Hash::HashString<Cpf::Hash::BaseHashString_Tag> operator "" _hashString(const char* val, size_t idx)
 {
-	return Cpf::Hash::HashString(val, idx);
+	return Cpf::Hash::HashString<Cpf::Hash::BaseHashString_Tag>(val, idx);
 }
 
 namespace CPF_STL_NAMESPACE
 {
-	template <>
-	struct hash<Cpf::Hash::HashString>
+	template <typename TAG>
+	struct hash<Cpf::Hash::HashString<TAG>>
 	{
-		size_t operator ()(const Cpf::Hash::HashString& id) const
+		size_t operator ()(const Cpf::Hash::HashString<TAG>& id) const
 		{
 			return id.GetID();
 		}

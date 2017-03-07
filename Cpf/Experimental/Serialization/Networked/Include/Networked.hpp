@@ -48,6 +48,6 @@ namespace Cpf
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
 
-		Platform::Time::Value mLastTime;
+		Time::Value mLastTime;
 	};
 }

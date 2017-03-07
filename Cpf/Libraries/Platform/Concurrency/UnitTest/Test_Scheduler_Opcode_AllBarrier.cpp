@@ -13,7 +13,7 @@ TEST(Concurrency, AllFenced_Opcode)
 	//////////////////////////////////////////////////////////////////////////
 	using namespace Cpf;
 	using namespace Concurrency;
-	ScopedInitializer<Platform::TimeInitializer> timeInit;
+	ScopedInitializer<TimeInitializer> timeInit;
 
 	//////////////////////////////////////////////////////////////////////////
 	auto scheduler = new Scheduler;

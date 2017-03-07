@@ -4,7 +4,6 @@
 
 using namespace Cpf;
 using namespace Concurrency;
-using namespace Platform;
 using namespace Threading;
 
 LoadBalancer::LoadBalancer()
@@ -62,7 +61,7 @@ void LoadBalancer::Balance()
 			}
 
 			// Simply set the number of pool threads to the inverse of those used in distribution.
-			int targetThreads = mSchedulers[1]->GetAvailableThreads() - mSchedulers[0]->GetActiveThreads();
+			int targetThreads = mSchedulers[1]->GetAvailableThreads() - threadCount;
 			targetThreads = targetThreads > 0 ? targetThreads : 1;
 			mSchedulers[1]->SetActiveThreads(targetThreads);
 		}

@@ -92,9 +92,9 @@ namespace Cpf
 		uint64_t mFrameIndex = 0;
 		uint64_t mSubmissionIndex = 0;
 
-		Platform::Time::Value mStartTime;
-		Platform::Time::Value mCurrentTime;
-		Platform::Time::Value mDeltaTime;
+		Time::Value mStartTime;
+		Time::Value mCurrentTime;
+		Time::Value mDeltaTime;
 
 		float mFOV;
 		float mViewportSize;

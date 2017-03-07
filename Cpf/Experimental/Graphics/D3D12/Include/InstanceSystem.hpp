@@ -15,10 +15,10 @@ namespace Cpf
 	public:
 		using StageID = EntityService::StageID;
 
-		static constexpr auto kID = "Instance Manager"_hashString;
+		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Instance Manager"_hashString);
 
-		static constexpr auto kBegin = "Instance Begin"_hashString;
-		static constexpr auto kEnd = "Instance End"_hashString;
+		static constexpr MultiCore::StageID kBegin = Hash::Create<MultiCore::StageID_tag>("Instance Begin"_hashString);
+		static constexpr MultiCore::StageID kEnd = Hash::Create<MultiCore::StageID_tag>("Instance End"_hashString);
 
 		struct Desc : System::Desc
 		{

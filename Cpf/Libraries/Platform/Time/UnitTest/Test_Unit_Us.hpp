@@ -4,14 +4,14 @@
 
 TEST_F(TimeLibrary, InitializationUs)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	EXPECT_EQ(1, int64_t(oneUs));
 }
 
 
 TEST_F(TimeLibrary, ComparisonsUs)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	Us twoUs(2);
 
 	EXPECT_GT(twoUs, oneUs);
@@ -27,7 +27,7 @@ TEST_F(TimeLibrary, ComparisonsUs)
 
 TEST_F(TimeLibrary, MathUs)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	Us twoUs(2);
 
 	EXPECT_EQ(twoUs, oneUs + oneUs);
@@ -39,14 +39,14 @@ TEST_F(TimeLibrary, MathUs)
 
 TEST_F(TimeLibrary, InitializationMs)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	EXPECT_EQ(1, int64_t(oneMs));
 }
 
 
 TEST_F(TimeLibrary, ComparisonsMs)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	Ms twoMs(2);
 
 	EXPECT_GT(twoMs, oneMs);
@@ -62,7 +62,7 @@ TEST_F(TimeLibrary, ComparisonsMs)
 
 TEST_F(TimeLibrary, MathMs)
 {
-	using namespace Cpf::Platform::Time;
+	using namespace Cpf::Time;
 	Ms twoMs(2);
 
 	EXPECT_EQ(twoMs, oneMs + oneMs);

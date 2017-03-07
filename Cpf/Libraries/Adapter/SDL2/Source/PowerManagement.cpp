@@ -18,12 +18,12 @@ BatteryPowerManagementEvents::BatteryPowerManagementEvents()
 	: mRunning(true)
 {
 	CPF_INIT_LOG(PowerManagement);
-	Platform::TimeInitializer::Install();
+	TimeInitializer::Install();
 	Start();
 }
 BatteryPowerManagementEvents::~BatteryPowerManagementEvents()
 {
-	Platform::TimeInitializer::Remove();
+	TimeInitializer::Remove();
 }
 
 void BatteryPowerManagementEvents::Start()
@@ -47,10 +47,10 @@ void BatteryPowerManagementEvents::Worker()
 			case SDL_POWERSTATE_NO_BATTERY:
 				break;
 			case SDL_POWERSTATE_ON_BATTERY:
-				Emitter.Emit<OnUnplugged>(Platform::Time::Value(Platform::Time::Seconds(float(secs))), float(perc) / float(100));
+				Emitter.Emit<OnUnplugged>(Time::Value(Time::Seconds(float(secs))), float(perc) / float(100));
 				break;
 			case SDL_POWERSTATE_CHARGING:
-				Emitter.Emit<OnCharging>(Platform::Time::Value(Platform::Time::Seconds(float(secs))), float(perc) / float(100));
+				Emitter.Emit<OnCharging>(Time::Value(Time::Seconds(float(secs))), float(perc) / float(100));
 				break;
 			case SDL_POWERSTATE_CHARGED:
 				Emitter.Emit<OnCharged>();
@@ -67,11 +67,11 @@ void BatteryPowerManagementEvents::Worker()
 				break;
 			case SDL_POWERSTATE_ON_BATTERY:
 				CPF_LOG(PowerManagement, Info) << "On battery: " << secs << " - " << perc << "%";
-				Emitter.Emit<OnUnplugged>(Platform::Time::Value(Platform::Time::Seconds(float(secs))), perc / float(100));
+				Emitter.Emit<OnUnplugged>(Time::Value(Time::Seconds(float(secs))), perc / float(100));
 				break;
 			case SDL_POWERSTATE_CHARGING:
 				CPF_LOG(PowerManagement, Info) << "Charging: " << secs << " - " << perc << "%";
-				Emitter.Emit<OnCharging>(Platform::Time::Value(Platform::Time::Seconds(float(secs))), perc / float(100));
+				Emitter.Emit<OnCharging>(Time::Value(Time::Seconds(float(secs))), perc / float(100));
 				break;
 			case SDL_POWERSTATE_CHARGED:
 				CPF_LOG(PowerManagement, Info) << "Charged.";
@@ -79,6 +79,6 @@ void BatteryPowerManagementEvents::Worker()
 			}
 		}
 
-		Threading::Thread::Sleep(Platform::Time::Seconds(30));
+		Threading::Thread::Sleep(Time::Seconds(30));
 	}
 }
