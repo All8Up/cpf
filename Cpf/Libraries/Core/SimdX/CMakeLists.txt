@@ -4,8 +4,15 @@ set (INCLUDE_FILES
 )
 
 set (SIMD_INCLUDE_FILES
+	Include/Simd/Types.hpp
+	Include/Simd/Float32x1.hpp
+	Include/Simd/Float32x2.hpp
+	Include/Simd/Float32x3.hpp
 	Include/Simd/Float32x4.hpp
-	Include/Simd/Float32x4_RefOne.hpp
+	Include/Simd/Float32x4_Ref1.hpp
+	Include/Simd/Float32x4_Ref2.hpp
+	Include/Simd/Float32x4_Ref3.hpp
+	Include/Simd/Float32x4_Ref4.hpp
 )
 
 add_library (SimdX INTERFACE
