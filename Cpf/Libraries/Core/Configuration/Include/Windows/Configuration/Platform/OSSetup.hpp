@@ -20,5 +20,8 @@
 #define CPF_DLL_SAFE_END __pragma(warning(pop))
 
 #define CPF_CDECL __cdecl
+#define CPF_VECTORCALL __vectorcall
 
 #define CPF_NOVTABLE __declspec(novtable)
+
+#define CPF_FORCE_INLINE __forceinline
