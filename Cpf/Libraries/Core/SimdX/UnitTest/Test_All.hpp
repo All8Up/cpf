@@ -51,6 +51,27 @@ TYPED_TEST( TypedTest_F32x4_1 , BasicMath )
 	EXPECT_TRUE(Valid(f));
 }
 
+TEST(SimdX, I32x4_1)
+{
+	using namespace Cpf;
+	using namespace SIMD;
+
+	using Type = Cpf::SIMD::I32x4_1; // typename TypeParam;
+
+	Type a = 1;
+	Type b = 2;
+
+	EXPECT_EQ(a, 1);
+	EXPECT_EQ(b, 2);
+	Type ab_p = a + b;
+	EXPECT_EQ(ab_p, 3);
+	Type ab_s = a - b;
+	EXPECT_EQ(ab_s, -1);
+	Type ab_m = a * b;
+	EXPECT_EQ(ab_m, 2);
+//	Type ab_d = a / b;
+}
+
 TEST(SimdX, Float32x2)
 {
 	using namespace Cpf;
