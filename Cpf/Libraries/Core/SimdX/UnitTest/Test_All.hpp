@@ -69,7 +69,8 @@ TEST(SimdX, I32x4_1)
 	EXPECT_EQ(ab_s, -1);
 	Type ab_m = a * b;
 	EXPECT_EQ(ab_m, 2);
-//	Type ab_d = a / b;
+	Type ab_d = a / b;
+	EXPECT_EQ(ab_d, 0);
 }
 
 TEST(SimdX, Float32x2)
@@ -108,4 +109,21 @@ TEST(SimdX, Float32x2)
 	EXPECT_TRUE(Valid(aaab_s));
 	EXPECT_TRUE(Valid(aaab_m));
 	EXPECT_TRUE(Valid(aaab_d));
+}
+
+TEST(SimdX, Float32x4)
+{
+	using namespace Cpf;
+	using namespace SIMD;
+
+	Float32x4 a = {1.0f, 2.0f, 3.0f, 4.0f};
+	float x = a.x;
+	float y = a.y;
+	float z = a.z;
+	float w = a.w;
+
+	Float32x4 _xy89(a.xy, 8.0f, 9.0f);
+	Float32x4 _8yz9(8.0f, a.yz, 9.0f);
+	Float32x4 _89zw(8.0f, 9.0f, a.zw);
+	Float32x4 _zwxy(a.zw, a.xy);
 }

@@ -7,7 +7,7 @@ namespace Cpf
 	namespace SIMD
 	{
 		/*
-		Let's get the bit WTF question out of the way, why wrap up a
+		Let's get the big WTF question out of the way, why wrap up a
 		vector 4 to be representable as a 1 through 4 sized vector?
 		Later, in the actual vector math classes there needs to be
 		consistent handling of 1-4 sizes so the various accessors such
@@ -36,6 +36,9 @@ namespace Cpf
 		using F32x3 = SSE4_1::F32x4_3;
 		using F32x4 = SSE4_1::F32x4_4;
 
-//		using I32x1 = SSE4_1::I32x4_1;
+		using I32x1 = SSE4_1::I32x4_1;
+		using I32x2 = SSE4_1::I32x4_2;
+		using I32x3 = SSE4_1::I32x4_3;
+		using I32x4 = SSE4_1::I32x4_4;
 	}
 }

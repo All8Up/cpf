@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include <immintrin.h>
 
 namespace Cpf
 {
@@ -110,13 +111,16 @@ namespace Cpf
 			{
 				return I32x4_<TAG, COUNT>(_mm_mul_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
-			/*
 			template <typename TAG, int COUNT>
 			CPF_FORCE_INLINE I32x4_<TAG, COUNT> CPF_VECTORCALL operator / (const I32x4_<TAG, COUNT> lhs, const I32x4_<TAG, COUNT> rhs)
 			{
-				return I32x4_<TAG, COUNT><TAG, COUNT>(_mm_div_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
+				// WTF, where is the instruction??
+				// return I32x4_<TAG, COUNT><TAG, COUNT>(_mm_div_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
+				// floating point based solution for the time being.
+				auto l = _mm_cvtepi32_ps(static_cast<__m128i>(lhs));
+				auto r = _mm_cvtepi32_ps(static_cast<__m128i>(rhs));
+				return I32x4_<TAG, COUNT>(_mm_cvttps_epi32(_mm_div_ps(l, r)));
 			}
-			*/
 
 			//////////////////////////////////////////////////////////////////////////
 			template <typename TAG, int COUNT>
