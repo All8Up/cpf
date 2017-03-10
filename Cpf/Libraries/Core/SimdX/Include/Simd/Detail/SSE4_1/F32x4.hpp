@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include <emmintrin.h>
 
 namespace Cpf
 {
@@ -11,6 +12,8 @@ namespace Cpf
 		of the simd types.  While this is implemented in terms of VC it
 		is intended to extend over to GCC/Clang and wrap the vector types
 		there, which should be a bit easier.
+		TODO: There are plenty of optimizations to do here, this is a rough
+		first pass.
 		*/
 		inline namespace SSE4_1
 		{
@@ -30,7 +33,7 @@ namespace Cpf
 			{
 				static constexpr int kAlignment = 16;
 				using Type = __m128;
-				static constexpr int Lanes = 4;
+				static constexpr int kLanes = 4;
 				using Element = float;
 				static constexpr int kCount = COUNT;
 				static constexpr int kCompareMask = (1 << kCount) - 1;
@@ -43,6 +46,50 @@ namespace Cpf
 				constexpr F32x4(Element v0, Element v1, Element v2) : mVector{ v0, v1, v2, 0.0f } {}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
 				constexpr F32x4(Element v0, Element v1, Element v2, Element v3) : mVector{ v0, v1, v2, v3 } {}
+
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				constexpr F32x4(F32x4<Type, kAlignment, kLanes, Element, Count_2Tag, 2> v01, Element v2)
+					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), _mm_set_ps(v2, 0, 0, 0), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				constexpr F32x4(F32x4<Type, kAlignment, kLanes, Element, Count_2Tag, 2> v01, Element v2, Element v3)
+					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), _mm_set_ps(0, 0, v3, v2), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				F32x4(float v0, F32x4<Type, kAlignment, kLanes, Element, Count_2Tag, 2> v12, Element v3)
+				{
+					auto t = _mm_movelh_ps(_mm_set_ps(0, 0, v3, v0), static_cast<__m128>(v12));
+					mVector = _mm_shuffle_ps(t, t, _MM_SHUFFLE(1, 3, 2, 0));
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				F32x4(float v0, float v1, F32x4<Type, kAlignment, kLanes, Element, Count_2Tag, 2> v23)
+					: mVector(_mm_shuffle_ps(_mm_set_ps(0, 0, v1, v0), static_cast<__m128>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				F32x4(F32x4<Type, kAlignment, kLanes, Element, Count_2Tag, 2> v01, F32x4<Type, kAlignment, kLanes, Element, Count_2Tag, 2> v23)
+					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), static_cast<__m128>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				F32x4(F32x4<Type, kAlignment, kLanes, Element, Count_3Tag, 3> v012, Element v3)
+				{
+					auto mask = _mm_set_epi32(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+					auto t = _mm_and_si128(_mm_castps_si128(static_cast<__m128>(v012)), mask);
+					auto a = _mm_or_si128(t, _mm_set_epi32(*reinterpret_cast<int*>(&v3), 0, 0, 0));
+					mVector = _mm_castsi128_ps(a);
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				F32x4(Element v0, F32x4<Type, kAlignment, kLanes, Element, Count_3Tag, 3> v123)
+				{
+					auto t = _mm_slli_si128(_mm_castps_si128(static_cast<__m128>(v123)), 4);
+					auto a = _mm_or_si128(t, _mm_set_epi32(0, 0, 0, *reinterpret_cast<int*>(&v0)));
+					mVector = _mm_castsi128_ps(a);
+				}
 
 				explicit constexpr F32x4(Type value) : mVector(value) {}
 

@@ -118,12 +118,23 @@ TEST(SimdX, Float32x4)
 
 	Float32x4 a = {1.0f, 2.0f, 3.0f, 4.0f};
 	float x = a.x;
+	EXPECT_NEAR(x, 1.0f, 0.01f);
 	float y = a.y;
+	EXPECT_NEAR(y, 2.0f, 0.01f);
 	float z = a.z;
+	EXPECT_NEAR(z, 3.0f, 0.01f);
 	float w = a.w;
+	EXPECT_NEAR(w, 4.0f, 0.01f);
 
 	Float32x4 _xy89(a.xy, 8.0f, 9.0f);
 	Float32x4 _8yz9(8.0f, a.yz, 9.0f);
 	Float32x4 _89zw(8.0f, 9.0f, a.zw);
 	Float32x4 _zwxy(a.zw, a.xy);
+	Float32x4 _xyzw(a.xyz, a.w);
+	Float32x4 _wxyz(a.w, a.xyz);
+	Float32x4 _xxxx(a.xxxx);
+	Float32x4 _yyyy(a.yyyy);
+	Float32x4 _zzzz(a.zzzz);
+	Float32x4 _wwww(a.wwww);
+	Float32x4 _wzyx(a.wzyx);
 }

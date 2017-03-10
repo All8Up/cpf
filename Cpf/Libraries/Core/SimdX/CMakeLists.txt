@@ -11,6 +11,7 @@ set (SIMD_DETAIL_INCLUDE_FILES
 	Include/SIMD/Detail/F32x4_Ref1.hpp
 	Include/SIMD/Detail/F32x4_Ref2.hpp
 	Include/SIMD/Detail/F32x4_Ref3.hpp
+	Include/SIMD/Detail/F32x4_Ref4.hpp
 )
 set (SIMD_DETAIL_REFERENCE_INCLUDE_FILES
 	Include/SIMD/Detail/Reference/F32x4.hpp
