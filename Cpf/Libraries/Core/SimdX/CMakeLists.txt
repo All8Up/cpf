@@ -49,5 +49,13 @@ source_group (Interface\\SimdX\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUD
 MakeUnitTest (LIBRARY SimdX GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
+		UnitTest/Test_F32x4_1.cpp
+		UnitTest/Test_F32x4_2.cpp
+		UnitTest/Test_F32x4_3.cpp
+		UnitTest/Test_F32x4_4.cpp
+		UnitTest/Test_F32x4_Ref1.cpp
+		UnitTest/Test_F32x4_Ref2.cpp
+		UnitTest/Test_F32x4_Ref3.cpp
+		UnitTest/Test_F32x4_Ref4.cpp
 		../Test/UnitTestMain.cpp
 )
