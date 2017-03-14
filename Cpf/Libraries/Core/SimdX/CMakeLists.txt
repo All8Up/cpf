@@ -6,6 +6,9 @@ set (INCLUDE_FILES
 set (SIMD_INCLUDE_FILES
 	Include/SIMD/Types.hpp
 	Include/SIMD/Float32x4.hpp
+	Include/SIMD/Vector2v.hpp
+	Include/SIMD/Vector3v.hpp
+	Include/SIMD/Vector4v.hpp
 )
 set (SIMD_DETAIL_INCLUDE_FILES
 	Include/SIMD/Detail/F32x4_Ref1.hpp

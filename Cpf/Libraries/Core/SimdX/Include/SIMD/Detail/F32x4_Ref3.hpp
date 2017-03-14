@@ -10,27 +10,26 @@ namespace Cpf
 		class F32x4_Ref3
 		{
 		public:
-			F32x4_Ref3& operator = (typename TYPE::F32x4_3 value);
 			constexpr operator typename TYPE::F32x4_3() const;
 
 		private:
-			TYPE* _Data() { return reinterpret_cast<TYPE*>(mData); }
-			const TYPE* _Data() const { return reinterpret_cast<const TYPE*>(mData); }
+			TYPE* _Data()
+			{
+				return reinterpret_cast<TYPE*>(mData);
+			}
+			const TYPE* _Data() const
+			{
+				auto data = reinterpret_cast<const TYPE*>(mData);
+				return data;
+			}
 
 			uint8_t mData[1];
 		};
 
 		template <typename TYPE, int I0, int I1, int I2>
-		F32x4_Ref3<TYPE, I0, I1, I2>& F32x4_Ref3<TYPE, I0, I1, I2>::operator =(typename TYPE::F32x4_3 value)
-		{
-
-			return *this;
-		}
-
-		template <typename TYPE, int I0, int I1, int I2>
 		constexpr F32x4_Ref3<TYPE, I0, I1, I2>::operator typename TYPE::F32x4_3() const
 		{
-			return typename TYPE::F32x4_3(_mm_shuffle_ps(static_cast<__m128>(*_Data()), static_cast<__m128>(*_Data()), _MM_SHUFFLE(0, I2, I1, I0)));
+			return TYPE::F32x4_3(_Data()->GetLanes<I0, I1, I2>());
 		}
 	}
 }

@@ -2,6 +2,49 @@
 #pragma once
 #include <gtest\gtest.h>
 #include "SimdX.hpp"
+#include "SIMD/Vector2v.hpp"
+#include "SIMD/Vector3v.hpp"
+#include "SIMD/Vector4v.hpp"
+
+
+//////////////////////////////////////////////////////////////////////////
+template <typename T>
+class TypedTest_Vector3v : public::testing::Test
+{
+public:
+};
+
+typedef ::testing::Types <
+	Cpf::Math::Vector3v<Cpf::SIMD::Reference::F32x4_3>,
+	Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::F32x4_3>
+> TypedTest_Vector3v_Types;
+
+TYPED_TEST_CASE(TypedTest_Vector3v, TypedTest_Vector3v_Types);
+
+TYPED_TEST(TypedTest_Vector3v, Vector3fv)
+{
+	using Vector3fv = typename TypeParam;
+
+	Vector3fv t0 = Vector3fv(0.0f);
+	EXPECT_NEAR(t0.x, 0.0f, 0.01f);
+	EXPECT_NEAR(t0.y, 0.0f, 0.01f);
+	EXPECT_NEAR(t0.z, 0.0f, 0.01f);
+/*	EXPECT_TRUE(Near(t0.xy, { 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(t0.yz, { 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(t0.xyz, { 0.0f, 0.0f,0.0f }, 0.01f)); */
+
+	Vector3fv t1 = t0.xyz;
+	EXPECT_NEAR(t1.x, 0.0f, 0.01f);
+	EXPECT_NEAR(t1.y, 0.0f, 0.01f);
+	EXPECT_NEAR(t1.z, 0.0f, 0.01f);
+
+	/*
+	EXPECT_TRUE(Near(t0, t1));
+	*/
+
+	t1 = Vector3fv(1.0f, 0.0f, 1.0f);
+	t1 = Vector3fv(2.0f, 3.0f, 4.0f);
+}
 
 TEST(SimdX, I32x4_1)
 {
@@ -89,36 +132,7 @@ TEST(SimdX, F32x4)
 		EXPECT_NEAR(high_b, 4.0f, 0.01f);
 	}
 }
-
-TEST(SimdX, Float32x4)
-{
-	using namespace Cpf;
-	using namespace SIMD;
-	using namespace SSE4_1;
-
-	Float32x4<F32x4_4> a = {1.0f, 2.0f, 3.0f, 4.0f};
-	float x = a.x;
-	EXPECT_NEAR(x, 1.0f, 0.01f);
-	float y = a.y;
-	EXPECT_NEAR(y, 2.0f, 0.01f);
-	float z = a.z;
-	EXPECT_NEAR(z, 3.0f, 0.01f);
-	float w = a.w;
-	EXPECT_NEAR(w, 4.0f, 0.01f);
-
-	Float32x4<F32x4_4> _xy89(a.xy, 8.0f, 9.0f);
-	Float32x4<F32x4_4> _8yz9(8.0f, a.yz, 9.0f);
-	Float32x4<F32x4_4> _89zw(8.0f, 9.0f, a.zw);
-	Float32x4<F32x4_4> _zwxy(a.zw, a.xy);
-	Float32x4<F32x4_4> _xyzw(a.xyz, a.w);
-	Float32x4<F32x4_4> _wxyz(a.w, a.xyz);
-	Float32x4<F32x4_4> _xxxx(a.xxxx);
-	Float32x4<F32x4_4> _yyyy(a.yyyy);
-	Float32x4<F32x4_4> _zzzz(a.zzzz);
-	Float32x4<F32x4_4> _wwww(a.wwww);
-	Float32x4<F32x4_4> _wzyx(a.wzyx);
-}
-
+/*
 TEST(SimdX, IntersectRayBox)
 {
 	using namespace Cpf;
@@ -144,3 +158,4 @@ TEST(SimdX, IntersectRayBox)
 	bool hit = (tmax >= 0) && (tmax >= tmin) && (tmin <= hitT);
 	EXPECT_FALSE(hit);
 }
+*/

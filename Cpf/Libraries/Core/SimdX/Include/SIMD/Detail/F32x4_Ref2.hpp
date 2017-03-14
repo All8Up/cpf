@@ -10,7 +10,6 @@ namespace Cpf
 		class F32x4_Ref2
 		{
 		public:
-			F32x4_Ref2& operator = (typename TYPE::F32x4_2 value);
 			constexpr operator typename TYPE::F32x4_2() const;
 
 		private:
@@ -19,13 +18,6 @@ namespace Cpf
 
 			uint8_t mData[1];
 		};
-
-		template <typename TYPE, int I0, int I1>
-		F32x4_Ref2<TYPE, I0, I1>& F32x4_Ref2<TYPE, I0, I1>::operator =(typename TYPE::F32x4_2 value)
-		{
-
-			return *this;
-		}
 
 		template <typename TYPE, int I0, int I1>
 		constexpr F32x4_Ref2<TYPE, I0, I1>::operator typename TYPE::F32x4_2() const

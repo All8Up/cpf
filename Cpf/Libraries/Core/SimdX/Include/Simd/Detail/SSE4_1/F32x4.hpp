@@ -2,6 +2,7 @@
 #pragma once
 #include "Configuration.hpp"
 #include <emmintrin.h>
+#include <smmintrin.h>
 
 namespace Cpf
 {
@@ -97,6 +98,19 @@ namespace Cpf
 
 				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
 				operator const Element() const { Element result; _mm_store_ss(&result, mVector); return result; }
+
+				template <int INDEX>
+				Element GetLane() const
+				{
+					Element result;
+					_MM_EXTRACT_FLOAT(result, mVector, INDEX);
+					return result;
+				}
+				template <int I0, int I1, int I2>
+				Type GetLanes() const
+				{
+					return _mm_shuffle_ps(static_cast<__m128>(mVector), static_cast<__m128>(mVector), _MM_SHUFFLE(0, I2, I1, I0));
+				}
 
 				Type mVector;
 			};

@@ -33,6 +33,11 @@ namespace Cpf
 				static constexpr int kCount = COUNT;
 				static constexpr int kLaneMask = (1 << kCount) - 1;
 
+				using F32x4_1 = F32x4<Type, 16, 4, float, 1>;
+				using F32x4_2 = F32x4<Type, 16, 4, float, 2>;
+				using F32x4_3 = F32x4<Type, 16, 4, float, 3>;
+				using F32x4_4 = F32x4<Type, 16, 4, float, 4>;
+
 				F32x4() {}
 				F32x4(Element value) : mVector{ value, value, value, value } {}
 				template <typename = std::enable_if<COUNT == 2, Element>::type>
@@ -89,11 +94,24 @@ namespace Cpf
 				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
 				operator const Element() const { return mVector.mData[0]; }
 
+				template <int INDEX>
+				Element GetLane() const
+				{
+					return mVector.mData[INDEX];
+				}
+				template <int I0, int I1, int I2>
+				Type GetLanes() const
+				{
+					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
+					return result;
+				}
+
 				Type mVector;
 			};
 
 			template<int COUNT>
 			using F32x4_ = F32x4<float4, 16, 4, float, COUNT>;
+
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
