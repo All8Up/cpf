@@ -18,6 +18,7 @@ namespace Cpf
 }
 
 #include "Detail/Reference/F32x4.hpp"
+#include "Detail/Reference/I32x4.hpp"
 #include "Detail/SSE4_1/F32x4.hpp"
 #include "Detail/SSE4_1/I32x4.hpp"
 

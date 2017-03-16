@@ -32,10 +32,10 @@ namespace Cpf
 				static constexpr int kCount = COUNT;
 				static constexpr int kLaneMask = (1 << kCount) - 1;
 
-				using F32x4_1 = F32x4<__m128, 16, 4, float, 1>;
-				using F32x4_2 = F32x4<__m128, 16, 4, float, 2>;
-				using F32x4_3 = F32x4<__m128, 16, 4, float, 3>;
-				using F32x4_4 = F32x4<__m128, 16, 4, float, 4>;
+				using Lanes_1 = F32x4<__m128, 16, 4, float, 1>;
+				using Lanes_2 = F32x4<__m128, 16, 4, float, 2>;
+				using Lanes_3 = F32x4<__m128, 16, 4, float, 3>;
+				using Lanes_4 = F32x4<__m128, 16, 4, float, 4>;
 
 				constexpr F32x4() {}
 				constexpr F32x4(Element value) : mVector{ value, value, value, value } {}
@@ -251,6 +251,7 @@ namespace Cpf
 				int mask = _mm_movemask_ps(static_cast<__m128>(test));
 				return(F32x4_<COUNT>::kLaneMask == (mask & F32x4_<COUNT>::kLaneMask));
 			}
+
 
 			//////////////////////////////////////////////////////////////////////////
 			using F32x4_1 = F32x4<__m128, 16, 4, float, 1>;

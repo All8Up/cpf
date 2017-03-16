@@ -36,6 +36,11 @@ namespace Cpf
 				static constexpr int kCount = COUNT;
 				static constexpr int kCompareMask = (1 << kCount) - 1;
 
+				using Lanes_1 = I32x4<Type, 16, 4, int32_t, 1>;
+				using Lanes_2 = I32x4<Type, 16, 4, int32_t, 2>;
+				using Lanes_3 = I32x4<Type, 16, 4, int32_t, 3>;
+				using Lanes_4 = I32x4<Type, 16, 4, int32_t, 4>;
+
 				constexpr I32x4() {}
 				constexpr I32x4(Element value) : mVector(_mm_setr_epi32(value, value, value, value)) {}
 				template <typename = std::enable_if<COUNT == 2, Element>::type>

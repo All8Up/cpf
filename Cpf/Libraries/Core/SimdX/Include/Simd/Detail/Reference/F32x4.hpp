@@ -1,6 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include "SIMD/Detail/Ref32x4_1.hpp"
+#include "SIMD/Detail/Ref32x4_2.hpp"
+#include "SIMD/Detail/Ref32x4_3.hpp"
+#include "SIMD/Detail/Ref32x4_4.hpp"
+
 
 namespace Cpf
 {
@@ -33,10 +38,10 @@ namespace Cpf
 				static constexpr int kCount = COUNT;
 				static constexpr int kLaneMask = (1 << kCount) - 1;
 
-				using F32x4_1 = F32x4<Type, 16, 4, float, 1>;
-				using F32x4_2 = F32x4<Type, 16, 4, float, 2>;
-				using F32x4_3 = F32x4<Type, 16, 4, float, 3>;
-				using F32x4_4 = F32x4<Type, 16, 4, float, 4>;
+				using Lanes_1 = F32x4<Type, 16, 4, float, 1>;
+				using Lanes_2 = F32x4<Type, 16, 4, float, 2>;
+				using Lanes_3 = F32x4<Type, 16, 4, float, 3>;
+				using Lanes_4 = F32x4<Type, 16, 4, float, 4>;
 
 				F32x4() {}
 				F32x4(Element value) : mVector{ value, value, value, value } {}
@@ -133,7 +138,7 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE int operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -142,7 +147,7 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE int operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -151,7 +156,7 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE int operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -160,7 +165,7 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE int operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -287,14 +292,14 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Near(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs, float tolerance)
 			{
-				return Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance);
+				return (Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance)) == F32x4_<COUNT>::kLaneMask;
 			}
 
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Valid(const F32x4_<COUNT> value)
 			{
 				F32x4_<COUNT> test(value * F32x4_<COUNT>{ 0.0f });
-				return test == F32x4_<COUNT>{0.0f};
+				return (test == F32x4_<COUNT>{0.0f}) == F32x4_<COUNT>::kLaneMask;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
