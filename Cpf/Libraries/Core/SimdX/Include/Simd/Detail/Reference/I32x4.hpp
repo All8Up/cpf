@@ -99,6 +99,14 @@ namespace Cpf
 				{
 					return mVector.mData[INDEX];
 				}
+				Element GetLane(int index) const
+				{
+					return mVector.mData[index];
+				}
+				void SetLane(int index, int32_t value)
+				{
+					mVector.mData[index] = value;
+				}
 				template <int I0, int I1, int I2>
 				Type GetLanes() const
 				{
@@ -112,6 +120,199 @@ namespace Cpf
 			template<int COUNT>
 			using I32x4_ = I32x4<int32x4, 16, 4, int32_t, COUNT>;
 
+			//////////////////////////////////////////////////////////////////////////
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int CPF_VECTORCALL operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				int result = 0;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mVector.mData[i] == rhs.mVector.mData[i])
+						result |= 1 << i;
+				}
+				return result & I32x4_<COUNT>::kLaneMask;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int CPF_VECTORCALL operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				int result = 0;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mVector.mData[i] != rhs.mVector.mData[i])
+						result |= 1 << i;
+				}
+				return result & I32x4_<COUNT>::kLaneMask;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int CPF_VECTORCALL operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				int result = 0;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mVector.mData[i] < rhs.mVector.mData[i])
+						result |= 1 << i;
+				}
+				return result & I32x4_<COUNT>::kLaneMask;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int CPF_VECTORCALL operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				int result = 0;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mVector.mData[i] <= rhs.mVector.mData[i])
+						result |= 1 << i;
+				}
+				return result & I32x4_<COUNT>::kLaneMask;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int CPF_VECTORCALL operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				int result = 0;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mVector.mData[i] > rhs.mVector.mData[i])
+						result |= 1 << i;
+				}
+				return result & I32x4_<COUNT>::kLaneMask;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int CPF_VECTORCALL operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				int result = 0;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mVector.mData[i] >= rhs.mVector.mData[i])
+						result |= 1 << i;
+				}
+				return result & I32x4_<COUNT>::kLaneMask;
+			}
+
+			//////////////////////////////////////////////////////////////////////////
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator - (const I32x4_<COUNT> value)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = -value.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator + (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = lhs.mVector.mData[i] + rhs.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator - (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = lhs.mVector.mData[i] - rhs.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator * (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = lhs.mVector.mData[i] * rhs.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator / (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = lhs.mVector.mData[i] / rhs.mVector.mData[i];
+				return result;
+			}
+
+			//////////////////////////////////////////////////////////////////////////
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Min(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = lhs.mVector.mData[i] <= rhs.mVector.mData[i] ? lhs.mVector.mData[i] : rhs.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<COUNT> value)
+			{
+				int32_t result = value.mVector.mData[0];
+				for (int i = 1; i < COUNT; ++i)
+					result = result <= value.mVector.mData[i] ? result : value.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Max(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = lhs.mVector.mData[i] >= rhs.mVector.mData[i] ? lhs.mVector.mData[i] : rhs.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<COUNT> value)
+			{
+				int32_t result = value.mVector.mData[0];
+				for (int i = 1; i < COUNT; ++i)
+					result = result >= value.mVector.mData[i] ? result : value.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Sqrt(const I32x4_<COUNT> value)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = int32_t(std::sqrt(value.mVector.mData[i]));
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Clamp(const I32x4_<COUNT> value, typename I32x4_<COUNT>::Element l, typename I32x4_<COUNT>::Element h)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					result.mVector.mData[i] = value.mVector.mData[i] <= l ? l : value.mVector.mData[i] >= h ? h : value.mVector.mData[i];
+				}
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Abs(const I32x4_<COUNT> value)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = value.mVector.mData[i] >= 0 ? value.mVector.mData[i] : -value.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE bool CPF_VECTORCALL Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
+			{
+				return (Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance)) == I32x4_<COUNT>::kLaneMask;
+			}
 
 			//////////////////////////////////////////////////////////////////////////
 			using I32x4_1 = I32x4<int32x4, 16, 4, int32_t, 1>;

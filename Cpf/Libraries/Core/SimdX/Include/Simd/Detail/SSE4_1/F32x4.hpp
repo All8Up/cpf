@@ -106,6 +106,31 @@ namespace Cpf
 					_MM_EXTRACT_FLOAT(result, mVector, INDEX);
 					return result;
 				}
+				Element GetLane(int index) const
+				{
+					Element result;
+					switch (index)
+					{
+					case 0: _MM_EXTRACT_FLOAT(result, mVector, 0); break;
+					case 1: _MM_EXTRACT_FLOAT(result, mVector, 1); break;
+					case 2: _MM_EXTRACT_FLOAT(result, mVector, 2); break;
+					case 3: _MM_EXTRACT_FLOAT(result, mVector, 3); break;
+					default:
+						result = 0.0f;
+						CPF_ASSERT_ALWAYS;
+					}
+					return result;
+				}
+				void SetLane(int index, float value)
+				{
+					switch (index)
+					{
+					case 0: mVector = _mm_insert_ps(static_cast<__m128>(mVector), _mm_set_ps(value, value, value, value), _MM_MK_INSERTPS_NDX(0, 0, 0)); break;
+					case 1: mVector = _mm_insert_ps(static_cast<__m128>(mVector), _mm_set_ps(value, value, value, value), _MM_MK_INSERTPS_NDX(0, 1, 0)); break;
+					case 2: mVector = _mm_insert_ps(static_cast<__m128>(mVector), _mm_set_ps(value, value, value, value), _MM_MK_INSERTPS_NDX(0, 2, 0)); break;
+					case 3: mVector = _mm_insert_ps(static_cast<__m128>(mVector), _mm_set_ps(value, value, value, value), _MM_MK_INSERTPS_NDX(0, 3, 0)); break;
+					}
+				}
 				template <int I0, int I1, int I2>
 				Type GetLanes() const
 				{
@@ -153,6 +178,11 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL operator - (const F32x4_<COUNT> value)
+			{
+				return F32x4_<COUNT>(_mm_mul_ps(static_cast<__m128>(value), _mm_set_ps(-1.0f, -1.0f, -1.0f, -1.0f)));
+			}
+			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL operator + (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				return F32x4_<COUNT>(_mm_add_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
@@ -179,8 +209,21 @@ namespace Cpf
 			{
 				return F32x4_<COUNT>(_mm_min_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
 			}
+
 			template <int COUNT>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<COUNT> value)
+			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<COUNT> value);
+
+			template <>
+			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<2> value)
+			{
+				auto second = _mm_shuffle_ps(static_cast<__m128>(value), static_cast<__m128>(value), _MM_SHUFFLE(0, 0, 0, 1));
+				auto the_low = _mm_min_ss(static_cast<__m128>(value), second);
+				float result;
+				_mm_store_ss(&result, the_low);
+				return result;
+			}
+			template <>
+			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<4> value)
 			{
 				auto folded = _mm_movehl_ps(static_cast<__m128>(value), static_cast<__m128>(value));
 				auto two_low = _mm_min_ps(static_cast<__m128>(value), folded);
@@ -190,6 +233,7 @@ namespace Cpf
 				_mm_store_ss(&result, the_low);
 				return result;
 			}
+
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Max(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
@@ -222,9 +266,12 @@ namespace Cpf
 				return F32x4_<COUNT>(_mm_rsqrt_ps(static_cast<__m128>(value)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Clamp(const F32x4_<COUNT> value, const F32x4_<COUNT> low, const F32x4_<COUNT> high)
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Clamp(const F32x4_<COUNT> value, typename F32x4_<COUNT>::Element low, typename F32x4_<COUNT>::Element high)
 			{
-				return F32x4_<COUNT>(_mm_min_ps(static_cast<__m128>(high), _mm_max_ps(static_cast<__m128>(low), static_cast<__m128>(value))));
+				return F32x4_<COUNT>(
+					_mm_min_ps(static_cast<__m128>(
+						_mm_set_ps(high, high, high, high)),
+						_mm_max_ps(_mm_set_ps(low, low, low, low), static_cast<__m128>(value))));
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Abs(const F32x4_<COUNT> value)

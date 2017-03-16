@@ -6,12 +6,15 @@ namespace Cpf
 {
 	namespace SIMD
 	{
+		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE, int INDEX>
 		class Ref32x4_1
 		{
 		public:
+			using Element = typename TYPE::Element;
+
 			Ref32x4_1& operator = (float value);
-			operator float() const;
+			operator Element() const;
 
 		private:
 			TYPE* _Data() { return reinterpret_cast<TYPE*>(mData); }
@@ -29,11 +32,30 @@ namespace Cpf
 		}
 
 		template <typename TYPE, int INDEX>
-		Ref32x4_1<TYPE, INDEX>::operator float() const
+		Ref32x4_1<TYPE, INDEX>::operator typename Ref32x4_1<TYPE, INDEX>::Element () const
 		{
-			float result = _Data()->GetLane<INDEX>();
+			Element result = _Data()->GetLane<INDEX>();
 			return result;
 		}
+
+
+		//////////////////////////////////////////////////////////////////////////
+		template <typename TYPE>
+		class Ref32x4_Index
+		{
+		public:
+			using Element = typename TYPE::Element;
+
+			Ref32x4_Index(TYPE& v, int idx) : mVector(v), mIndex(idx) {};
+			Ref32x4_Index(const Ref32x4_Index& rhs) : mVector(rhs.mVector), mIndex(rhs.mIndex) {}
+
+			Ref32x4_Index& operator = (Element value) { mVector.SetLane(mIndex, value); return *this; }
+			operator Element() const { return mVector.GetLane(mIndex); }
+
+		private:
+			TYPE& mVector;
+			const int mIndex;
+		};
 	}
 }
 

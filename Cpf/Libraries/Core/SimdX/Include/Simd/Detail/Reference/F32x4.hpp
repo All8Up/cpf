@@ -104,6 +104,14 @@ namespace Cpf
 				{
 					return mVector.mData[INDEX];
 				}
+				Element GetLane(int index) const
+				{
+					return mVector.mData[index];
+				}
+				void SetLane(int index, float value)
+				{
+					mVector.mData[index] = value;
+				}
 				template <int I0, int I1, int I2>
 				Type GetLanes() const
 				{
@@ -124,9 +132,9 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] != rhs.mVector.mData[i])
+					if (lhs.mVector.mData[i] == rhs.mVector.mData[i])
 						result |= 1<<i;
-				return ~result;
+				return result;
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE int operator != (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
@@ -176,6 +184,15 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> operator - (const F32x4_<COUNT> value)
+			{
+				F32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = -value.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> operator + (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				F32x4_<COUNT> result;
@@ -214,7 +231,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::min(lhs.mVector.mData[i], rhs.mVector.mData[i]);
+					result.mVector.mData[i] = lhs.mVector.mData[i] <= rhs.mVector.mData[i] ? lhs.mVector.mData[i] : rhs.mVector.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -222,7 +239,7 @@ namespace Cpf
 			{
 				float result = value.mVector.mData[0];
 				for (int i = 1; i < COUNT; ++i)
-					result = std::min(result, value.mVector.mData[i]);
+					result = result < value.mVector.mData[i] ? result : value.mVector.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -230,7 +247,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::max(lhs.mVector.mData[i], rhs.mVector.mData[i]);
+					result.mVector.mData[i] = lhs.mVector.mData[i] >= rhs.mVector.mData[i] ? lhs.mVector.mData[i] : rhs.mVector.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -238,7 +255,7 @@ namespace Cpf
 			{
 				float result = value.mVector.mData[0];
 				for (int i = 1; i < COUNT; ++i)
-					result = std::max(result, value.mVector.mData[i]);
+					result = result >= value.mVector.mData[i] ? result : value.mVector.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -266,12 +283,11 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x4_<COUNT> Clamp(const F32x4_<COUNT> value, const F32x4_<COUNT> low, const F32x4_<COUNT> high)
+			CPF_FORCE_INLINE F32x4_<COUNT> Clamp(const F32x4_<COUNT> value, typename F32x4_<COUNT>::Element low, typename F32x4_<COUNT>::Element high)
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = value.mVector.mData[i] >= high.mVector.mData[i] ? high.mVector.mData[i]
-						: (value.mVector.mData[i] <= low.mVector.mData[i]) ? low.mVector.mData[i] : value.mVector.mData[i];
+					result.mVector.mData[i] = (value.mVector.mData[i] <= low) ? low : value.mVector.mData[i] >= high ? high : value.mVector.mData[i];
 				return result;
 			}
 

@@ -25,5 +25,9 @@ option (EXTERN_INLINE_CEREAL "Include the source project for cereal." ON)
 set (ASIO_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/asio-1.10.8")
 option (EXTERN_INLINE_ASIO "Include the source project for asio." ON)
 
+# Aurora
+set (AURORA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Aurora")
+option (EXTERN_INLINE_AURORA "Include the source project for Aurora" ON)
+
 # ################################
 include ("Source/CMakeLists.txt")
