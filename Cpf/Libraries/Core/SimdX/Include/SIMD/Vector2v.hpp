@@ -248,8 +248,29 @@ namespace Cpf
 			return Vector2v<TYPE>(value.mVector * TYPE(dot2) - norm.mVector);
 		}
 
-		// TODO: Ceil, Floor, Round, Mod.
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2v<TYPE> CPF_VECTORCALL Ceil(Vector2v<TYPE> value)
+		{
+			return Vector2v<TYPE>(Ceil(value.mVector));
+		}
 
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2v<TYPE> CPF_VECTORCALL Floor(Vector2v<TYPE> value)
+		{
+			return Vector2v<TYPE>(Floor(value.mVector));
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2v<TYPE> CPF_VECTORCALL Round(Vector2v<TYPE> value, SIMD::Rounding mode)
+		{
+			return Vector2v<TYPE>(Round(value.mVector, mode));
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2v<TYPE> CPF_VECTORCALL Modulus(Vector2v<TYPE> lhs, Vector2v<TYPE> rhs)
+		{
+			return Vector2v<TYPE>(Modulus(lhs.mVector, rhs.mVector));
+		}
 
 		template <typename TYPE>
 		CPF_FORCE_INLINE bool CPF_VECTORCALL Near(TYPE a, TYPE b, typename TYPE::Element tolerance)

@@ -325,6 +325,48 @@ namespace Cpf
 			}
 
 			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Round(const F32x4_<COUNT> value, Rounding mode)
+			{
+				auto oldMode = _mm_getcsr();
+				switch (mode)
+				{
+				case Rounding::eCurrent: break;
+				case Rounding::eTruncate: _mm_setcsr((oldMode&~_MM_ROUND_MASK) | _MM_ROUND_TOWARD_ZERO); break;
+				case Rounding::eNearest: _mm_setcsr((oldMode&~_MM_ROUND_MASK) | _MM_ROUND_NEAREST);  break;
+				case Rounding::eDown: _mm_setcsr((oldMode&~_MM_ROUND_MASK) | _MM_ROUND_DOWN);  break;
+				case Rounding::eUp: _mm_setcsr((oldMode&~_MM_ROUND_MASK) | _MM_ROUND_UP); break;
+				}
+				auto intValue = _mm_cvtps_epi32(static_cast<__m128>(value));
+				auto result = _mm_cvtepi32_ps(intValue);
+
+				_mm_setcsr(oldMode);
+				return F32x4_<COUNT>(result);
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Floor(const F32x4_<COUNT> value)
+			{
+				return Round(value, Rounding::eDown);
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Ceil(const F32x4_<COUNT> value)
+			{
+				return Round(value, Rounding::eUp);
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Modulus(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			{
+				__m128 c = _mm_div_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs));
+				__m128i i = _mm_cvttps_epi32(c);
+				__m128 ct = _mm_cvtepi32_ps(i);
+				__m128 bs = _mm_mul_ps(ct, static_cast<__m128>(rhs));
+				__m128 r = _mm_sub_ps(static_cast<__m128>(lhs), bs);
+				return F32x4_<COUNT>(r);
+			}
+
+			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Abs(const F32x4_<COUNT> value)
 			{
 				return F32x4_<COUNT>(_mm_andnot_ps(_mm_castsi128_ps(_mm_set_epi32(0x80000000, 0x80000000, 0x80000000, 0x80000000)), static_cast<__m128>(value)));

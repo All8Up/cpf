@@ -56,5 +56,7 @@ MakeUnitTest (LIBRARY SimdX GROUP Core
 		UnitTest/Test_F32x4_3.cpp
 		UnitTest/Test_F32x4_4.cpp
 		UnitTest/Test_Vector2v.cpp
+		UnitTest/Test_Vector3v.cpp
+		UnitTest/Test_Vector4v.cpp
 		../Test/UnitTestMain.cpp
 )

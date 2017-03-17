@@ -14,6 +14,15 @@ namespace Cpf
 		as v.x, v.xy, v.xyz are still represented by registers in order
 		to prevent spilling to memory and breaking pipelining.
 		*/
+
+		enum class Rounding : int
+		{
+			eCurrent,
+			eNearest,
+			eUp,
+			eDown,
+			eTruncate
+		};
 	}
 }
 

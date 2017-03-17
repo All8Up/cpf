@@ -251,6 +251,14 @@ namespace Cpf
 						_mm_max_epi32(_mm_set_epi32(low, low, low, low), static_cast<__m128i>(value))));
 			}
 			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Modulus(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result = lhs / rhs;
+				result = result * rhs;
+				result = lhs - result;
+				return result;
+			}
+			template <int COUNT>
 			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Abs(const I32x4_<COUNT> value)
 			{
 				static constexpr UInt32x4 kSignBits = { 0x80000000, 0x80000000, 0x80000000, 0x80000000 };

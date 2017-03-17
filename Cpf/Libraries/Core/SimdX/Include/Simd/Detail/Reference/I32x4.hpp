@@ -300,6 +300,17 @@ namespace Cpf
 			}
 
 			template <int COUNT>
+			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Modulus(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			{
+				I32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					result.mVector.mData[i] = lhs.mVector.mData[i] % rhs.mVector.mData[i];
+				}
+				return result;
+			}
+
+			template <int COUNT>
 			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Abs(const I32x4_<COUNT> value)
 			{
 				I32x4_<COUNT> result;

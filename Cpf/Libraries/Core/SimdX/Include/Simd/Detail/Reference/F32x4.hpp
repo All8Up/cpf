@@ -319,6 +319,64 @@ namespace Cpf
 			}
 
 			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Round(const F32x4_<COUNT> value, Rounding mode)
+			{
+				F32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+				{
+					switch (mode)
+					{
+					case Rounding::eCurrent:
+						result.mVector.mData[i] = std::round(value.mVector.mData[i]);
+						break;
+					case Rounding::eUp:
+						result.mVector.mData[i] = std::ceil(value.mVector.mData[i]);
+						break;
+					case Rounding::eDown:
+						result.mVector.mData[i] = std::floor(value.mVector.mData[i]);
+						break;
+					case Rounding::eTruncate:
+						{
+							int32_t v = int32_t(value.mVector.mData[i]);
+							result.mVector.mData[i] = float(v);
+						}
+						break;
+					case Rounding::eNearest:
+						result.mVector.mData[i] = std::round(value.mVector.mData[i]);
+						break;
+					}
+				}
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> Floor(const F32x4_<COUNT> value)
+			{
+				F32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = std::floor(value.mVector.mData[i]);
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> Ceil(const F32x4_<COUNT> value)
+			{
+				F32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = std::ceil(value.mVector.mData[i]);
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> Modulus(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			{
+				F32x4_<COUNT> result;
+				for (int i = 0; i < COUNT; ++i)
+					result.mVector.mData[i] = std::fmod(lhs.mVector.mData[i], rhs.mVector.mData[i]);
+				return result;
+			}
+
+			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> Abs(const F32x4_<COUNT> value)
 			{
 				F32x4_<COUNT> result;
