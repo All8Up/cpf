@@ -297,6 +297,90 @@ TYPED_TEST(TypedTest_Vector2v, Clamp)
 }
 
 // NOTE: Next items only make sense for floating point.
+TEST(Vector2fv, Dot_Reference)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	Vector2fv t1 = { 3.0f, 5.0f };
+	float dot = Dot(t0, t1);
+	EXPECT_NEAR(dot, (3.0f * 5.0f) + (5.0f * 12.0f), 0.01f);
+}
+
+TEST(Vector2fv, Dot_SSE4_1)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	Vector2fv t1 = { 3.0f, 5.0f };
+	float dot = Dot(t0, t1);
+	EXPECT_NEAR(dot, (3.0f * 5.0f) + (5.0f * 12.0f), 0.01f);
+}
+
+TEST(Vector2fv, Magnitude_Reference)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	float dot = Magnitude(t0);
+	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f)), 0.01f);
+}
+
+TEST(Vector2fv, Magnitude_SSE4_1)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	float dot = Magnitude(t0);
+	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f)), 0.01f);
+}
+
+TEST(Vector2fv, MagnitudeSq_Reference)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	float dot = MagnitudeSq(t0);
+	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f), 0.01f);
+}
+
+TEST(Vector2fv, MagnitudeSq_SSE4_1)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	float dot = MagnitudeSq(t0);
+	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f), 0.01f);
+}
+
+TEST(Vector2fv, Normalize_Reference)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	Vector2fv t1 = Normalize(t0);
+	EXPECT_TRUE(Near(t1, {t0.x / Magnitude(t0), t0.y / Magnitude(t0)}, 0.01f));
+}
+
+TEST(Vector2fv, Normalize_SSE4_1)
+{
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
+	Vector2fv t0 = { 5.0f, 12.0f };
+	Vector2fv t1 = Normalize(t0);
+	EXPECT_TRUE(Near(t1, { t0.x / Magnitude(t0), t0.y / Magnitude(t0) }, 0.01f));
+}
+
+TEST(Vector2fv, Reflect_Reference)
+{
+	using Type = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
+	Type t0 = { 1.0f, 0.0f };
+	Type t1 = { 0.0f, 1.0f };
+	Type t3 = Reflect(t0, t1);
+	EXPECT_TRUE(Near(t3, {0.0f, -1.0f}, 0.01f));
+}
+
+TEST(Vector2fv, Reflect_SSE4_1)
+{
+	using Type = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
+	Type t0 = { 1.0f, 0.0f };
+	Type t1 = { 0.0f, 1.0f };
+	Type t3 = Reflect(t0, t1);
+	EXPECT_TRUE(Near(t3, { 0.0f, -1.0f }, 0.01f));
+}
+
 TEST(Vector2fv, Reciprocal_Reference)
 {
 	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
@@ -334,4 +418,3 @@ TEST(Vector2fv, RSqrt_SSE4_1)
 	EXPECT_NEAR(t1.x, 1.0f / std::sqrt(t0.x), 0.01f);
 	EXPECT_NEAR(t1.y, 1.0f / std::sqrt(t0.y), 0.01f);
 }
-

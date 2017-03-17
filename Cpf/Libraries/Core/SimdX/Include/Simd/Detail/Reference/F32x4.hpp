@@ -292,6 +292,33 @@ namespace Cpf
 			}
 
 			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element Dot(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			{
+				typename F32x4_<COUNT>::Element result = 0.0f;
+				for (int i = 0; i < COUNT; ++i)
+					result += lhs.mVector.mData[i] * rhs.mVector.mData[i];
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element Magnitude(const F32x4_<COUNT> value)
+			{
+				return std::sqrt(Dot(value, value));
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element MagnitudeSq(const F32x4_<COUNT> value)
+			{
+				return Dot(value, value);
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> Normalize(const F32x4_<COUNT> value)
+			{
+				return value / F32x4_<COUNT>(Magnitude(value));
+			}
+
+			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> Abs(const F32x4_<COUNT> value)
 			{
 				F32x4_<COUNT> result;

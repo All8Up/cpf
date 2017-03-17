@@ -273,6 +273,57 @@ namespace Cpf
 						_mm_set_ps(high, high, high, high)),
 						_mm_max_ps(_mm_set_ps(low, low, low, low), static_cast<__m128>(value))));
 			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<2>::Element CPF_VECTORCALL Dot(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
+
+			template <>
+			CPF_FORCE_INLINE typename F32x4_<2>::Element CPF_VECTORCALL Dot(const F32x4_<2> lhs, const F32x4_<2> rhs)
+			{
+				typename F32x4_<2>::Element result;
+				auto mul = _mm_mul_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs));
+				auto yin0 = _mm_shuffle_ps(mul, mul, _MM_SHUFFLE(0, 0, 0, 1));
+				auto add = _mm_add_ps(mul, yin0);
+				_mm_store_ss(&result, add);
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element CPF_VECTORCALL Magnitude(const F32x4_<COUNT> value);
+
+			template <>
+			CPF_FORCE_INLINE typename F32x4_<2>::Element CPF_VECTORCALL Magnitude(const F32x4_<2> value)
+			{
+				typename F32x4_<2>::Element result;
+				auto mul = _mm_mul_ps(static_cast<__m128>(value), static_cast<__m128>(value));
+				auto yin0 = _mm_shuffle_ps(mul, mul, _MM_SHUFFLE(0, 0, 0, 1));
+				auto add = _mm_add_ps(mul, yin0);
+				add = _mm_sqrt_ss(add);
+				_mm_store_ss(&result, add);
+				return result;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element CPF_VECTORCALL MagnitudeSq(const F32x4_<COUNT> value)
+			{
+				return Dot(value, value);
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Normalize(const F32x4_<COUNT> value);
+
+			template <>
+			CPF_FORCE_INLINE F32x4_<2> CPF_VECTORCALL Normalize(const F32x4_<2> value)
+			{
+				auto mul = _mm_mul_ps(static_cast<__m128>(value), static_cast<__m128>(value));
+				auto yin0 = _mm_shuffle_ps(mul, mul, _MM_SHUFFLE(0, 0, 0, 1));
+				auto len = _mm_add_ps(mul, yin0);
+				len = _mm_sqrt_ss(len);
+				len = _mm_shuffle_ps(len, len, _MM_SHUFFLE(0, 0, 0, 0));
+				len = _mm_div_ps(static_cast<__m128>(value), len);
+				return F32x4_<2>(len);
+			}
+
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Abs(const F32x4_<COUNT> value)
 			{

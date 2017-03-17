@@ -217,8 +217,38 @@ namespace Cpf
 			return Vector2v<TYPE>(Abs(value.mVector));
 		}
 
+		template <typename TYPE>
+		CPF_FORCE_INLINE typename Vector2v<TYPE>::Element CPF_VECTORCALL Dot(Vector2v<TYPE> lhs, Vector2v<TYPE> rhs)
+		{
+			return Dot(lhs.mVector, rhs.mVector);
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE typename Vector2v<TYPE>::Element CPF_VECTORCALL Magnitude(Vector2v<TYPE> value)
+		{
+			return Magnitude(value.mVector);
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE typename Vector2v<TYPE>::Element CPF_VECTORCALL MagnitudeSq(Vector2v<TYPE> value)
+		{
+			return MagnitudeSq(value.mVector);
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2v<TYPE> CPF_VECTORCALL Normalize(Vector2v<TYPE> value)
+		{
+			return Vector2v<TYPE>(Normalize(value.mVector));
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2v<TYPE> CPF_VECTORCALL Reflect(Vector2v<TYPE> value, Vector2v<TYPE> norm)
+		{
+			const typename TYPE::Element dot2 = Dot(value, norm) * 2;
+			return Vector2v<TYPE>(value.mVector * TYPE(dot2) - norm.mVector);
+		}
+
 		// TODO: Ceil, Floor, Round, Mod.
-		// TODO: Dot, Reflect, Magnitude, MagnitudeSq, Normalize, Distance, DistanceSq
 
 
 		template <typename TYPE>
