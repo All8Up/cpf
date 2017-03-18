@@ -125,6 +125,20 @@ namespace Cpf
 			template<int COUNT>
 			using F32x4_ = F32x4<float4, 16, 4, float, COUNT>;
 
+			//////////////////////////////////////////////////////////////////////////
+			template <int COUNT>
+			CPF_FORCE_INLINE typename F32x4_<COUNT> CPF_VECTORCALL Cross(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
+
+			template <>
+			CPF_FORCE_INLINE typename F32x4_<3> CPF_VECTORCALL Cross(const F32x4_<3> lhs, const F32x4_<3> rhs)
+			{
+				return F32x4_<3>(
+					lhs.mVector.mData[1] * rhs.mVector.mData[2] - rhs.mVector.mData[1] * lhs.mVector.mData[2],
+					lhs.mVector.mData[2] * rhs.mVector.mData[0] - rhs.mVector.mData[2] * lhs.mVector.mData[0],
+					lhs.mVector.mData[0] * rhs.mVector.mData[1] - rhs.mVector.mData[0] * lhs.mVector.mData[1]);
+			}
+
+
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>

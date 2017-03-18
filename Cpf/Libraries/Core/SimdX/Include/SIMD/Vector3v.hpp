@@ -68,6 +68,14 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
+		CPF_FORCE_INLINE Vector3v<TYPE> CPF_VECTORCALL Cross(Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		{
+			return Vector3v<TYPE>(Cross(lhs.mVector, rhs.mVector));
+		}
+
+
+		//////////////////////////////////////////////////////////////////////////
+		template <typename TYPE>
 		CPF_FORCE_INLINE int CPF_VECTORCALL operator == (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mVector == rhs.mVector;

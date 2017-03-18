@@ -190,6 +190,18 @@ namespace Cpf
 				return result;
 			}
 			template <>
+			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<3> value)
+			{
+				auto folded = _mm_castps_si128(_mm_movehl_ps(
+					_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value))));
+				auto two_low = _mm_castsi128_ps(_mm_min_epi32(static_cast<__m128i>(value), folded));
+				auto second = _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value)), _MM_SHUFFLE(0, 0, 0, 1)));
+				auto the_low = _mm_min_epi32(_mm_castps_si128(two_low), second);
+				int32_t result;
+				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
+				return result;
+			}
+			template <>
 			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<4> value)
 			{
 				auto folded = _mm_castps_si128(_mm_movehl_ps(
@@ -221,6 +233,17 @@ namespace Cpf
 				int32_t result;
 				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
 				return result;
+			}
+			template <>
+			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<3> value)
+			{
+				auto folded = _mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value)));
+				auto two_high = _mm_max_epi32(static_cast<__m128i>(value), _mm_castps_si128(folded));
+				auto second = _mm_shuffle_ps(folded, folded, _MM_SHUFFLE(0, 0, 0, 1));
+				auto the_high = _mm_max_epi32(two_high, _mm_castps_si128(second));
+				float result;
+				_mm_store_ss(&result, _mm_castsi128_ps(the_high));
+				return *reinterpret_cast<int32_t*>(&result);
 			}
 			template <>
 			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<4> value)
