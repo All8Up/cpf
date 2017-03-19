@@ -25,12 +25,15 @@ namespace Cpf
 			);
 
 			//////////////////////////////////////////////////////////////////////////
-			Row& operator [](int idx);
+			Matrix22<TYPE>& CPF_VECTORCALL operator = (const Matrix22<TYPE>& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
-			static Matrix22<TYPE> Identity();
-			static Matrix22<TYPE> Rotation(Element radians);
-			static Matrix22<TYPE> Scale(Element x, Element y);
+			Row& CPF_VECTORCALL operator [](int idx);
+
+			//////////////////////////////////////////////////////////////////////////
+			static Matrix22<TYPE> CPF_VECTORCALL Identity();
+			static Matrix22<TYPE> CPF_VECTORCALL Rotation(Element radians);
+			static Matrix22<TYPE> CPF_VECTORCALL Scale(Element x, Element y);
 
 			//////////////////////////////////////////////////////////////////////////
 			Row mRows[2];
