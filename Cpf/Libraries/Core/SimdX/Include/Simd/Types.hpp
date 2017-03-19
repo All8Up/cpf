@@ -30,6 +30,9 @@ namespace Cpf
 #include "Detail/Reference/I32x4.hpp"
 #include "Detail/SSE4_1/F32x4.hpp"
 #include "Detail/SSE4_1/I32x4.hpp"
+#include "SIMD/Vector2.hpp"
+#include "SIMD/Vector3.hpp"
+#include "SIMD/Vector4.hpp"
 
 namespace Cpf
 {
@@ -37,6 +40,7 @@ namespace Cpf
 	{
 		// Currently only one level of SSE.
 #if CPF_SIMD_AVX2 || CPF_SIMD_AVX || CPF_SIMD_SSE4a || CPF_SIMD_SSE4_2 || CPF_SIMD_SSE4_1 || CPF_SIMD_SSE3
+		//////////////////////////////////////////////////////////////////////////
 		using F32x4_1 = SSE4_1::F32x4_1;
 		using F32x4_2 = SSE4_1::F32x4_2;
 		using F32x4_3 = SSE4_1::F32x4_3;
@@ -47,6 +51,7 @@ namespace Cpf
 		using I32x4_3 = SSE4_1::I32x4_3;
 		using I32x4 = SSE4_1::I32x4_4;
 #else
+		//////////////////////////////////////////////////////////////////////////
 		using F32x4_1 = Reference::F32x4_1;
 		using F32x4_2 = Reference::F32x4_2;
 		using F32x4_3 = Reference::F32x4_3;
@@ -57,5 +62,28 @@ namespace Cpf
 		using I32x4_3 = Reference::I32x4_3;
 		using I32x4 = Reference::I32x4_4;
 #endif
+
+		using float2 = Math::Vector2<F32x4_2>;
+		using float3 = Math::Vector3<F32x4_3>;
+		using float4 = Math::Vector4<F32x4>;
+
+		using int2 = Math::Vector2<I32x4_2>;
+		using int3 = Math::Vector2<I32x4_3>;
+		using int4 = Math::Vector2<I32x4>;
+
+		// Eventual types.
+		// For purposes of things which don't use vectorized types (networking, file formats etc)
+		// a set of types need to exist which don't use 4 unit types.  Need to decide on how
+		// that will be named.  The problem is what's a good naming scheme given I want to maintain
+		// the hlsl names?  Or perhaps drop that and go back to post fixing?
+		/*
+		using float2x2 = Math::Matrix2x2<F32x4_2>;
+		using float3x3 = Math::Matrix3x3<F32x4_3>;
+		using float4x4 = Math::Matrix4x4<F32x4_4>;
+
+		using int2x2 = Math::Matrix2x2<I32x4_2>;
+		using int3x3 = Math::Matrix2x2<I32x4_3>;
+		using int4x4 = Math::Matrix2x2<I32x4_4>;
+		*/
 	}
 }

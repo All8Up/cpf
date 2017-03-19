@@ -5,6 +5,13 @@ set (INCLUDE_FILES
 
 set (SIMD_INCLUDE_FILES
 	Include/SIMD/Types.hpp
+#	Include/SIMD/AABB.hpp
+	Include/SIMD/Matrix22.hpp
+	Include/SIMD/Matrix33.hpp
+	Include/SIMD/Matrix44.hpp
+#	Include/SIMD/OBB.hpp
+	Include/SIMD/Quaternion.hpp
+	Include/SIMD/Rectangle.hpp
 	Include/SIMD/Vector2.hpp
 	Include/SIMD/Vector3.hpp
 	Include/SIMD/Vector4.hpp
