@@ -35,18 +35,27 @@ namespace Cpf
 {
 	namespace SIMD
 	{
-
-		/*
+		// Currently only one level of SSE.
+#if CPF_SIMD_AVX2 || CPF_SIMD_AVX || CPF_SIMD_SSE4a || CPF_SIMD_SSE4_2 || CPF_SIMD_SSE4_1 || CPF_SIMD_SSE3
 		using F32x4_1 = SSE4_1::F32x4_1;
 		using F32x4_2 = SSE4_1::F32x4_2;
 		using F32x4_3 = SSE4_1::F32x4_3;
-		using F32x4_4 = SSE4_1::F32x4_4;
-		using F32x4 = F32x4_4;
+		using F32x4 = SSE4_1::F32x4_4;
 
 		using I32x4_1 = SSE4_1::I32x4_1;
 		using I32x4_2 = SSE4_1::I32x4_2;
 		using I32x4_3 = SSE4_1::I32x4_3;
-		using I32x4_4 = SSE4_1::I32x4_4;
-		*/
+		using I32x4 = SSE4_1::I32x4_4;
+#else
+		using F32x4_1 = Reference::F32x4_1;
+		using F32x4_2 = Reference::F32x4_2;
+		using F32x4_3 = Reference::F32x4_3;
+		using F32x4 = Reference::F32x4_4;
+
+		using I32x4_1 = Reference::I32x4_1;
+		using I32x4_2 = Reference::I32x4_2;
+		using I32x4_3 = Reference::I32x4_3;
+		using I32x4 = Reference::I32x4_4;
+#endif
 	}
 }
