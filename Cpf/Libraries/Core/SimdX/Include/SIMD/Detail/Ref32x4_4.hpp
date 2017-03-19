@@ -10,7 +10,7 @@ namespace Cpf
 		class Ref32x4_4
 		{
 		public:
-			constexpr operator typename TYPE::F32x4_4() const;
+			constexpr operator typename TYPE::Lanes_4() const;
 
 		private:
 			TYPE* _Data() { return reinterpret_cast<TYPE*>(mData); }
@@ -20,7 +20,7 @@ namespace Cpf
 		};
 
 		template <typename TYPE, int I0, int I1, int I2, int I3>
-		constexpr Ref32x4_4<TYPE, I0, I1, I2, I3>::operator typename TYPE::F32x4_4() const
+		constexpr Ref32x4_4<TYPE, I0, I1, I2, I3>::operator typename TYPE::Lanes_4() const
 		{
 			return typename TYPE::F32x4_4(_mm_shuffle_ps(static_cast<__m128>(*_Data()), static_cast<__m128>(*_Data()), _MM_SHUFFLE(I3, I2, I1, I0)));
 		}

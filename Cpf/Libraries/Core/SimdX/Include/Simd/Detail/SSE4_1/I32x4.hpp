@@ -48,7 +48,7 @@ namespace Cpf
 				template <typename = std::enable_if<COUNT == 3, Element>::type>
 				constexpr I32x4(Element v0, Element v1, Element v2) : mVector(_mm_set_epi32(0, v2, v1, v0)) {}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				constexpr I32x4(Element v0, Element v1, Element v2, Element v3) : mVector(_mm_set_epi32(0, v2, v1, v0)) {}
+				constexpr I32x4(Element v0, Element v1, Element v2, Element v3) : mVector(_mm_set_epi32(v3, v2, v1, v0)) {}
 
 				explicit constexpr I32x4(Type value) : mVector(value) {}
 
@@ -245,14 +245,16 @@ namespace Cpf
 				_mm_store_ss(&result, _mm_castsi128_ps(the_high));
 				return *reinterpret_cast<int32_t*>(&result);
 			}
+#define cpf_movehl_epi32(lhs, rhs) _mm_castps_si128(_mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
+#define cpf_shuffle_epi32(lhs, rhs, mask) _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(lhs), _mm_castsi128_ps(rhs), mask))
+
 			template <>
 			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<4> value)
 			{
-				auto folded = _mm_castps_si128(_mm_movehl_ps(
-					_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value))));
-				auto two_low = _mm_castsi128_ps(_mm_min_epi32(static_cast<__m128i>(value), folded));
-				auto second = _mm_castps_si128(_mm_shuffle_ps(two_low, two_low, _MM_SHUFFLE(0, 0, 0, 1)));
-				auto the_low = _mm_max_epi32(_mm_castps_si128(two_low), second);
+				auto folded = cpf_movehl_epi32(static_cast<__m128i>(value), static_cast<__m128i>(value));
+				auto two_low = _mm_max_epi32(static_cast<__m128i>(value), folded);
+				auto second = cpf_shuffle_epi32(two_low, two_low, _MM_SHUFFLE(0, 0, 0, 1));
+				auto the_low = _mm_max_epi32(two_low, second);
 				int32_t result;
 				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
 				return result;

@@ -312,7 +312,6 @@ namespace Cpf
 
 			template <int COUNT>
 			CPF_FORCE_INLINE typename F32x4_<COUNT> CPF_VECTORCALL Cross(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
-
 			template <>
 			CPF_FORCE_INLINE typename F32x4_<3> CPF_VECTORCALL Cross(const F32x4_<3> lhs, const F32x4_<3> rhs)
 			{
@@ -344,7 +343,6 @@ namespace Cpf
 				_mm_store_ss(&result, add);
 				return result;
 			}
-
 			template <>
 			CPF_FORCE_INLINE typename F32x4_<3>::Element CPF_VECTORCALL Dot(const F32x4_<3> lhs, const F32x4_<3> rhs)
 			{
@@ -352,6 +350,19 @@ namespace Cpf
 				__m128 p1 = _mm_movehl_ps(result, result);
 				__m128 a1 = _mm_add_ps(result, p1);
 				__m128 p2 = _mm_shuffle_ps(result, result, _MM_SHUFFLE(1, 3, 3, 1));
+				result = _mm_add_ps(a1, p2);
+
+				float sresult;
+				_mm_store_ss(&sresult, result);
+				return sresult;
+			}
+			template <>
+			CPF_FORCE_INLINE typename F32x4_<4>::Element CPF_VECTORCALL Dot(const F32x4_<4> lhs, const F32x4_<4> rhs)
+			{
+				__m128 result = _mm_mul_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs));
+				__m128 p1 = _mm_movehl_ps(result, result);
+				__m128 a1 = _mm_add_ps(result, p1);
+				__m128 p2 = _mm_shuffle_ps(a1, a1, _MM_SHUFFLE(1, 3, 3, 1));
 				result = _mm_add_ps(a1, p2);
 
 				float sresult;
@@ -380,6 +391,20 @@ namespace Cpf
 				__m128 p1 = _mm_movehl_ps(result, result);
 				__m128 a1 = _mm_add_ps(result, p1);
 				__m128 p2 = _mm_shuffle_ps(result, result, _MM_SHUFFLE(3, 3, 3, 1));
+				result = _mm_add_ps(a1, p2);
+				result = _mm_sqrt_ss(result);
+
+				typename F32x4_<3>::Element sresult;
+				_mm_store_ss(&sresult, result);
+				return sresult;
+			}
+			template <>
+			CPF_FORCE_INLINE typename F32x4_<4>::Element CPF_VECTORCALL Magnitude(const F32x4_<4> value)
+			{
+				__m128 result = _mm_mul_ps(static_cast<__m128>(value), static_cast<__m128>(value));
+				__m128 p1 = _mm_movehl_ps(result, result);
+				__m128 a1 = _mm_add_ps(result, p1);
+				__m128 p2 = _mm_shuffle_ps(a1, a1, _MM_SHUFFLE(0, 0, 0, 1));
 				result = _mm_add_ps(a1, p2);
 				result = _mm_sqrt_ss(result);
 
@@ -420,6 +445,19 @@ namespace Cpf
 				result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(0, 0, 0, 0));
 				result = _mm_div_ps(static_cast<__m128>(value), result);
 				return F32x4_<3>(result);
+			}
+			template <>
+			CPF_FORCE_INLINE F32x4_<4> CPF_VECTORCALL Normalize(const F32x4_<4> value)
+			{
+				__m128 result = _mm_mul_ps(static_cast<__m128>(value), static_cast<__m128>(value));
+				__m128 p1 = _mm_movehl_ps(result, result);
+				__m128 a1 = _mm_add_ps(result, p1);
+				__m128 p2 = _mm_shuffle_ps(a1, a1, _MM_SHUFFLE(0, 0, 0, 1));
+				__m128 a2 = _mm_add_ps(a1, p2);
+				result = _mm_sqrt_ss(a2);
+				result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(0, 0, 0, 0));
+				result = _mm_div_ps(static_cast<__m128>(value), result);
+				return F32x4_<4>(result);
 			}
 
 			template <int COUNT>
