@@ -181,9 +181,9 @@ namespace Cpf
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector3v<TYPE> CPF_VECTORCALL HMin(Vector3v<TYPE> value)
+		CPF_FORCE_INLINE typename Vector3v<TYPE>::Element CPF_VECTORCALL HMin(Vector3v<TYPE> value)
 		{
-			return Vector3v<TYPE>(HMin(value.mVector));
+			return HMin(value.mVector);
 		}
 
 		template <typename TYPE>
@@ -192,9 +192,9 @@ namespace Cpf
 			return Vector3v<TYPE>(Max(lhs.mVector, rhs.mVector));
 		}
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector3v<TYPE> CPF_VECTORCALL HMax(Vector3v<TYPE> value)
+		CPF_FORCE_INLINE typename Vector3v<TYPE>::Element CPF_VECTORCALL HMax(Vector3v<TYPE> value)
 		{
-			return Vector3v<TYPE>(HMax(value.mVector));
+			return HMax(value.mVector);
 		}
 
 		template <typename TYPE>

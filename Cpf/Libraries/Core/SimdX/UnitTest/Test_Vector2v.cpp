@@ -244,9 +244,9 @@ TYPED_TEST(TypedTest_Vector2v, HMin)
 	using Element = typename Type::Element;
 
 	Type t0 = { Element(1), Element(2) };
-	Type t1 = HMin(t0);
+	Element t1 = HMin(t0);
 
-	EXPECT_TRUE(t1.x == Element(1));
+	EXPECT_TRUE(t1 == Element(1));
 }
 
 TYPED_TEST(TypedTest_Vector2v, Max)
@@ -267,9 +267,9 @@ TYPED_TEST(TypedTest_Vector2v, HMax)
 	using Element = typename Type::Element;
 
 	Type t0 = { Element(1), Element(2) };
-	Type t1 = HMax(t0);
+	Element t1 = HMax(t0);
 
-	EXPECT_TRUE(t1.x == Element(2));
+	EXPECT_TRUE(t1 == Element(2));
 }
 
 TYPED_TEST(TypedTest_Vector2v, Sqrt)
