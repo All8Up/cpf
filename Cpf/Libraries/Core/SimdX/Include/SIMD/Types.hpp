@@ -30,9 +30,9 @@ namespace Cpf
 #include "Detail/Reference/I32x4.hpp"
 #include "Detail/SSE4_1/F32x4.hpp"
 #include "Detail/SSE4_1/I32x4.hpp"
-#include "SIMD/Vector2.hpp"
-#include "SIMD/Vector3.hpp"
-#include "SIMD/Vector4.hpp"
+#include "Math/Vector2.hpp"
+#include "Math/Vector3.hpp"
+#include "Math/Vector4.hpp"
 
 namespace Cpf
 {

@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest\gtest.h>
 #include "SimdX.hpp"
-#include "SIMD/Vector2.hpp"
-#include "SIMD/Vector4.hpp"
+#include "Math/Vector2.hpp"
+#include "Math/Vector4.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 using Vector4fv_SSE4_1 = Cpf::Math::Vector4<Cpf::SIMD::SSE4_1::F32x4_4>;

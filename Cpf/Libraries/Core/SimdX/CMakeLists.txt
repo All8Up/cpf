@@ -5,16 +5,6 @@ set (INCLUDE_FILES
 
 set (SIMD_INCLUDE_FILES
 	Include/SIMD/Types.hpp
-	Include/SIMD/AABB.hpp
-	Include/SIMD/Matrix22.hpp
-	Include/SIMD/Matrix33.hpp
-	Include/SIMD/Matrix44.hpp
-	Include/SIMD/OBB.hpp
-	Include/SIMD/Quaternion.hpp
-	Include/SIMD/Rectangle.hpp
-	Include/SIMD/Vector2.hpp
-	Include/SIMD/Vector3.hpp
-	Include/SIMD/Vector4.hpp
 )
 set (SIMD_DETAIL_INCLUDE_FILES
 	Include/SIMD/Detail/Ref32x4_1.hpp
@@ -62,6 +52,45 @@ MakeUnitTest (LIBRARY SimdX GROUP Core
 		UnitTest/Test_F32x4_2.cpp
 		UnitTest/Test_F32x4_3.cpp
 		UnitTest/Test_F32x4_4.cpp
+		UnitTest/Test_Vector2.cpp
+		UnitTest/Test_Vector3.cpp
+		UnitTest/Test_Vector4.cpp
+		../Test/UnitTestMain.cpp
+)
+
+# ###############################################
+set (MATH_INCLUDE_FILES
+	Include/Math/AABB.hpp
+	Include/Math/Matrix22.hpp
+	Include/Math/Matrix33.hpp
+	Include/Math/Matrix44.hpp
+	Include/Math/OBB.hpp
+	Include/Math/Quaternion.hpp
+	Include/Math/Rectangle.hpp
+	Include/Math/Vector2.hpp
+	Include/Math/Vector3.hpp
+	Include/Math/Vector4.hpp
+)
+add_library (MathX INTERFACE)
+target_link_libraries (MathX INTERFACE Configuration)
+
+target_include_directories (MathX
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+)
+
+add_custom_target (MathX_IDE SOURCES
+	Include/Math.hpp
+	${MATH_INCLUDE_FILES}
+)
+
+set_property (TARGET MathX_IDE PROPERTY FOLDER Libraries/Interface/Core)
+source_group (Interface FILES Include/Math.hpp)
+source_group (Interface\\MathX FILES ${MATH_INCLUDE_FILES})
+
+# ###############################################
+MakeUnitTest (LIBRARY MathX GROUP Core
+	TEST_FILES
 		UnitTest/Test_Vector2.cpp
 		UnitTest/Test_Vector3.cpp
 		UnitTest/Test_Vector4.cpp
