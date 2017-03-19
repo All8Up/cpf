@@ -3,7 +3,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #include <Simd/Detail/Sse/Sse1.hpp>
-#if CPF_SIMD_SSE2
+#if CPF_SIMD_SSE3
 #	include <emmintrin.h>
 #	include <Simd/Detail/Sse/Sse2/Int8x16.hpp>
 #	include <Simd/Detail/Sse/Sse2/Float32x4.hpp>

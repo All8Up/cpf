@@ -2,7 +2,7 @@
 #pragma once
 
 //////////////////////////////////////////////////////////////////////////
-#if CPF_SIMD_SSE1==1
+#if CPF_SIMD_SSE3==1
 #	include "Configuration.hpp"
 #	include <xmmintrin.h>
 #	include <Simd/Detail/Sse/Sse1/Float32x4.hpp>

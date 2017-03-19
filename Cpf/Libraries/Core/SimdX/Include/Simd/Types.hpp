@@ -35,6 +35,7 @@ namespace Cpf
 {
 	namespace SIMD
 	{
+
 		/*
 		using F32x4_1 = SSE4_1::F32x4_1;
 		using F32x4_2 = SSE4_1::F32x4_2;

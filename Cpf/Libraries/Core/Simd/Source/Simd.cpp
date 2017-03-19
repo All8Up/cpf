@@ -25,7 +25,7 @@ namespace Cpf
 		}
 #endif
 
-#if CPF_SIMD_SSE2
+#if CPF_SIMD_SSE3
 		namespace Sse2
 		{
 			Int8x16::ValueType Int8x16::kZero = Int8x16::Create(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
