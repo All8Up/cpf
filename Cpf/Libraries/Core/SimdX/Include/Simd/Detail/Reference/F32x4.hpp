@@ -127,10 +127,10 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x4_<COUNT> CPF_VECTORCALL Cross(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
+			CPF_FORCE_INLINE typename F32x4_<COUNT> Cross(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
 
 			template <>
-			CPF_FORCE_INLINE typename F32x4_<3> CPF_VECTORCALL Cross(const F32x4_<3> lhs, const F32x4_<3> rhs)
+			CPF_FORCE_INLINE typename F32x4_<3> Cross(const F32x4_<3> lhs, const F32x4_<3> rhs)
 			{
 				return F32x4_<3>(
 					lhs.mVector.mData[1] * rhs.mVector.mData[2] - rhs.mVector.mData[1] * lhs.mVector.mData[2],
@@ -249,12 +249,12 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE float HMin(const F32x4_<COUNT> value)
+			CPF_FORCE_INLINE F32x4_<1> HMin(const F32x4_<COUNT> value)
 			{
 				float result = value.mVector.mData[0];
 				for (int i = 1; i < COUNT; ++i)
 					result = result < value.mVector.mData[i] ? result : value.mVector.mData[i];
-				return result;
+				return F32x4_<1>(result);
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> Max(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
@@ -265,12 +265,12 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMax(const F32x4_<COUNT> value)
+			CPF_FORCE_INLINE F32x4_<1> HMax(const F32x4_<COUNT> value)
 			{
 				float result = value.mVector.mData[0];
 				for (int i = 1; i < COUNT; ++i)
 					result = result >= value.mVector.mData[i] ? result : value.mVector.mData[i];
-				return result;
+				return F32x4_<1>(result);
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> Sqrt(const F32x4_<COUNT> value)
@@ -333,7 +333,7 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Round(const F32x4_<COUNT> value, Rounding mode)
+			CPF_FORCE_INLINE F32x4_<COUNT> Round(const F32x4_<COUNT> value, Rounding mode)
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)

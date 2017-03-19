@@ -37,23 +37,23 @@ namespace Cpf
 				using Lanes_3 = F32x4<__m128, 16, 4, float, 3>;
 				using Lanes_4 = F32x4<__m128, 16, 4, float, 4>;
 
-				constexpr F32x4() {}
-				constexpr F32x4(Element value) : mVector{ value, value, value, value } {}
+				F32x4() {}
+				F32x4(Element value) : mVector{ value, value, value, value } {}
 				template <typename = std::enable_if<COUNT == 2, Element>::type>
-				constexpr F32x4(Element v0, Element v1) : mVector(_mm_set_ps(0.0f, 0.0f, v1, v0)) {}
+				F32x4(Element v0, Element v1) : mVector(_mm_set_ps(0.0f, 0.0f, v1, v0)) {}
 				template <typename = std::enable_if<COUNT == 3, Element>::type>
-				constexpr F32x4(Element v0, Element v1, Element v2) : mVector(_mm_set_ps(0.0f, v2, v1, v0)) {}
+				F32x4(Element v0, Element v1, Element v2) : mVector(_mm_set_ps(0.0f, v2, v1, v0)) {}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				constexpr F32x4(Element v0, Element v1, Element v2, Element v3) : mVector(_mm_set_ps(v3, v2, v1, v0)) {}
+				F32x4(Element v0, Element v1, Element v2, Element v3) : mVector(_mm_set_ps(v3, v2, v1, v0)) {}
 
 				template <typename = std::enable_if<COUNT == 3, Element>::type>
-				constexpr F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2)
+				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2)
 					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), _mm_set_ps(v2, 0, 0, 0), _MM_SHUFFLE(1, 0, 1, 0)))
 				{
 				}
 
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				constexpr F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2, Element v3)
+				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2, Element v3)
 					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), _mm_set_ps(0, 0, v3, v2), _MM_SHUFFLE(1, 0, 1, 0)))
 				{
 				}
@@ -90,7 +90,7 @@ namespace Cpf
 					mVector = _mm_castsi128_ps(a);
 				}
 
-				explicit constexpr F32x4(Type value) : mVector(value) {}
+				F32x4(Type value) : mVector(value) {}
 
 				F32x4& operator = (Type value) { mVector = value; return *this; }
 
@@ -150,30 +150,54 @@ namespace Cpf
 			{
 				return F32x4_<COUNT>::kLaneMask & _mm_movemask_ps(_mm_cmpeq_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
 			}
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator == (const F32x4_<1> lhs, const typename F32x4_<1>::Element rhs)
+			{
+				return (F32x4_<1>::kLaneMask & _mm_movemask_ps(_mm_cmpeq_ps(static_cast<__m128>(lhs), _mm_set1_ps(rhs)))) == F32x4_<1>::kLaneMask;
+			}
 			template <int COUNT>
 			CPF_FORCE_INLINE int CPF_VECTORCALL operator != (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				return F32x4_<COUNT>::kLaneMask & _mm_movemask_ps(_mm_cmpneq_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
+			}
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator != (const F32x4_<1> lhs, const typename F32x4_<1>::Element rhs)
+			{
+				return (F32x4_<1>::kLaneMask & _mm_movemask_ps(_mm_cmpneq_ps(static_cast<__m128>(lhs), _mm_set1_ps(rhs)))) == F32x4_<1>::kLaneMask;
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE int CPF_VECTORCALL operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				return F32x4_<COUNT>::kLaneMask & _mm_movemask_ps(_mm_cmplt_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
 			}
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator < (const F32x4_<1> lhs, const typename F32x4_<1>::Element rhs)
+			{
+				return (F32x4_<1>::kLaneMask & _mm_movemask_ps(_mm_cmplt_ps(static_cast<__m128>(lhs), _mm_set1_ps(rhs)))) == F32x4_<1>::kLaneMask;
+			}
 			template <int COUNT>
 			CPF_FORCE_INLINE int CPF_VECTORCALL operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				return F32x4_<COUNT>::kLaneMask & _mm_movemask_ps(_mm_cmple_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
+			}
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator <= (const F32x4_<1> lhs, const typename F32x4_<1>::Element rhs)
+			{
+				return (F32x4_<1>::kLaneMask & _mm_movemask_ps(_mm_cmple_ps(static_cast<__m128>(lhs), _mm_set1_ps(rhs)))) == F32x4_<1>::kLaneMask;
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE int CPF_VECTORCALL operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				return F32x4_<COUNT>::kLaneMask & _mm_movemask_ps(_mm_cmpgt_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
 			}
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator > (const F32x4_<1> lhs, const typename F32x4_<1>::Element rhs)
+			{
+				return (F32x4_<1>::kLaneMask & _mm_movemask_ps(_mm_cmpgt_ps(static_cast<__m128>(lhs), _mm_set1_ps(rhs)))) == F32x4_<1>::kLaneMask;
+			}
 			template <int COUNT>
 			CPF_FORCE_INLINE int CPF_VECTORCALL operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				return F32x4_<COUNT>::kLaneMask & _mm_movemask_ps(_mm_cmpge_ps(static_cast<__m128>(lhs), static_cast<__m128>(rhs)));
+			}
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator >= (const F32x4_<1> lhs, const typename F32x4_<1>::Element rhs)
+			{
+				return (F32x4_<1>::kLaneMask & _mm_movemask_ps(_mm_cmpge_ps(static_cast<__m128>(lhs), _mm_set1_ps(rhs)))) == F32x4_<1>::kLaneMask;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -211,40 +235,34 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<COUNT> value);
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMin(const F32x4_<COUNT> value);
 
 			template <>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<2> value)
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMin(const F32x4_<2> value)
 			{
 				auto second = _mm_shuffle_ps(static_cast<__m128>(value), static_cast<__m128>(value), _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_low = _mm_min_ss(static_cast<__m128>(value), second);
-				float result;
-				_mm_store_ss(&result, the_low);
-				return result;
+				return F32x4_<1>(the_low);
 			}
 
 			template <>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<3> value)
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMin(const F32x4_<3> value)
 			{
 				auto folded = _mm_movehl_ps(static_cast<__m128>(value), static_cast<__m128>(value));
 				auto two_low = _mm_min_ps(static_cast<__m128>(value), folded);
 				auto second = _mm_shuffle_ps(static_cast<__m128>(value), static_cast<__m128>(value), _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_low = _mm_min_ss(two_low, second);
-				float result;
-				_mm_store_ss(&result, the_low);
-				return result;
+				return F32x4_<1>(the_low);
 			}
 
 			template <>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMin(const F32x4_<4> value)
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMin(const F32x4_<4> value)
 			{
 				auto folded = _mm_movehl_ps(static_cast<__m128>(value), static_cast<__m128>(value));
 				auto two_low = _mm_min_ps(static_cast<__m128>(value), folded);
 				auto second = _mm_shuffle_ps(two_low, two_low, _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_low = _mm_min_ss(two_low, second);
-				float result;
-				_mm_store_ss(&result, the_low);
-				return result;
+				return F32x4_<1>(the_low);
 			}
 
 			template <int COUNT>
@@ -254,37 +272,31 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMax(const F32x4_<COUNT> value);
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMax(const F32x4_<COUNT> value);
 			template <>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMax(const F32x4_<2> value)
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMax(const F32x4_<2> value)
 			{
 				auto second = _mm_shuffle_ps(static_cast<__m128>(value), static_cast<__m128>(value), _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_low = _mm_max_ss(static_cast<__m128>(value), second);
-				float result;
-				_mm_store_ss(&result, the_low);
-				return result;
+				return F32x4_<1>(the_low);
 			}
 			template <>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMax(const F32x4_<3> value)
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMax(const F32x4_<3> value)
 			{
 				auto folded = _mm_movehl_ps(static_cast<__m128>(value), static_cast<__m128>(value));
 				auto two_high = _mm_max_ps(static_cast<__m128>(value), folded);
 				auto second = _mm_shuffle_ps(folded, folded, _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_high = _mm_max_ss(two_high, second);
-				float result;
-				_mm_store_ss(&result, the_high);
-				return result;
+				return F32x4_<1>(the_high);
 			}
 			template <>
-			CPF_FORCE_INLINE float CPF_VECTORCALL HMax(const F32x4_<4> value)
+			CPF_FORCE_INLINE F32x4_<1> CPF_VECTORCALL HMax(const F32x4_<4> value)
 			{
 				auto folded = _mm_movehl_ps(static_cast<__m128>(value), static_cast<__m128>(value));
 				auto two_high = _mm_max_ps(static_cast<__m128>(value), folded);
 				auto second = _mm_shuffle_ps(two_high, two_high, _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_high = _mm_max_ss(two_high, second);
-				float result;
-				_mm_store_ss(&result, the_high);
-				return result;
+				return F32x4_<1>(the_high);
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<COUNT> CPF_VECTORCALL Sqrt(const F32x4_<COUNT> value)

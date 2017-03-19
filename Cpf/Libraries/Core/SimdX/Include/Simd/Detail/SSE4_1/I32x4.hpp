@@ -175,43 +175,37 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<COUNT> value);
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<COUNT> value);
 
 			template <>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<2> value)
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<2> value)
 			{
 				auto second = _mm_castps_si128(
 					_mm_shuffle_ps(
 						_mm_castsi128_ps(static_cast<__m128i>(value)),
 						_mm_castsi128_ps(static_cast<__m128i>(value)), _MM_SHUFFLE(0, 0, 0, 1)));
 				auto the_low = _mm_min_epi32(static_cast<__m128i>(value), second);
-				int32_t result;
-				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
-				return result;
+				return I32x4_<1>(the_low);
 			}
 			template <>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<3> value)
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<3> value)
 			{
 				auto folded = _mm_castps_si128(_mm_movehl_ps(
 					_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value))));
 				auto two_low = _mm_castsi128_ps(_mm_min_epi32(static_cast<__m128i>(value), folded));
 				auto second = _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value)), _MM_SHUFFLE(0, 0, 0, 1)));
 				auto the_low = _mm_min_epi32(_mm_castps_si128(two_low), second);
-				int32_t result;
-				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
-				return result;
+				return I32x4_<1>(the_low);
 			}
 			template <>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMin(const I32x4_<4> value)
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<4> value)
 			{
 				auto folded = _mm_castps_si128(_mm_movehl_ps(
 					_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value))));
 				auto two_low = _mm_castsi128_ps(_mm_min_epi32(static_cast<__m128i>(value), folded));
 				auto second = _mm_castps_si128(_mm_shuffle_ps(two_low, two_low, _MM_SHUFFLE(0, 0, 0, 1)));
 				auto the_low = _mm_min_epi32(_mm_castps_si128(two_low), second);
-				int32_t result;
-				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
-				return result;
+				return I32x4_<1>(the_low);
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Max(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
@@ -220,44 +214,38 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<COUNT> value);
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<COUNT> value);
 
 			template <>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<2> value)
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<2> value)
 			{
 				auto second = _mm_castps_si128(
 					_mm_shuffle_ps(
 						_mm_castsi128_ps(static_cast<__m128i>(value)),
 						_mm_castsi128_ps(static_cast<__m128i>(value)), _MM_SHUFFLE(0, 0, 0, 1)));
-				auto the_low = _mm_max_epi32(static_cast<__m128i>(value), second);
-				int32_t result;
-				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
-				return result;
+				auto the_high = _mm_max_epi32(static_cast<__m128i>(value), second);
+				return I32x4_<1>(the_high);
 			}
 			template <>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<3> value)
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<3> value)
 			{
 				auto folded = _mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value)));
 				auto two_high = _mm_max_epi32(static_cast<__m128i>(value), _mm_castps_si128(folded));
 				auto second = _mm_shuffle_ps(folded, folded, _MM_SHUFFLE(0, 0, 0, 1));
 				auto the_high = _mm_max_epi32(two_high, _mm_castps_si128(second));
-				float result;
-				_mm_store_ss(&result, _mm_castsi128_ps(the_high));
-				return *reinterpret_cast<int32_t*>(&result);
+				return I32x4_<1>(the_high);
 			}
 #define cpf_movehl_epi32(lhs, rhs) _mm_castps_si128(_mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
 #define cpf_shuffle_epi32(lhs, rhs, mask) _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(lhs), _mm_castsi128_ps(rhs), mask))
 
 			template <>
-			CPF_FORCE_INLINE int32_t CPF_VECTORCALL HMax(const I32x4_<4> value)
+			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<4> value)
 			{
 				auto folded = cpf_movehl_epi32(static_cast<__m128i>(value), static_cast<__m128i>(value));
 				auto two_low = _mm_max_epi32(static_cast<__m128i>(value), folded);
 				auto second = cpf_shuffle_epi32(two_low, two_low, _MM_SHUFFLE(0, 0, 0, 1));
-				auto the_low = _mm_max_epi32(two_low, second);
-				int32_t result;
-				_mm_store_ss(reinterpret_cast<float*>(&result), _mm_castsi128_ps(the_low));
-				return result;
+				auto the_high = _mm_max_epi32(two_low, second);
+				return I32x4_<1>(the_high);
 			}
 
 			template <int COUNT>
