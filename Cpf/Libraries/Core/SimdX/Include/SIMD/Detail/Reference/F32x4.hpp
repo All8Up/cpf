@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "SIMD/Rounding.hpp"
 #include "SIMD/Detail/Ref32x4_1.hpp"
 #include "SIMD/Detail/Ref32x4_2.hpp"
 #include "SIMD/Detail/Ref32x4_3.hpp"
 #include "SIMD/Detail/Ref32x4_4.hpp"
-
+#include <cmath>
 
 namespace Cpf
 {

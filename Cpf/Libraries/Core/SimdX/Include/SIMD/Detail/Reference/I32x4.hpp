@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "SIMD/Rounding.hpp"
 
 namespace Cpf
 {

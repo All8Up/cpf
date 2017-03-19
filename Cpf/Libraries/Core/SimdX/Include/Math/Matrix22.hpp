@@ -1,0 +1,41 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+#include "Math/Types.hpp"
+#include "Math/Vector2.hpp"
+
+namespace Cpf
+{
+	namespace Math
+	{
+		template <typename TYPE>
+		struct Matrix22
+		{
+		public:
+			//////////////////////////////////////////////////////////////////////////
+			using Row = Vector2<TYPE>;
+			using Element = typename Vector2<TYPE>::Element;
+
+			//////////////////////////////////////////////////////////////////////////
+			Matrix22();
+			Matrix22(Element v0);
+			Matrix22(Row r0, Row r1);
+			Matrix22(
+				Element _00, Element _01,
+				Element _10, Element _11
+			);
+
+			//////////////////////////////////////////////////////////////////////////
+			Row& operator [](int idx);
+
+			//////////////////////////////////////////////////////////////////////////
+			static Matrix22<TYPE> Identity();
+			static Matrix22<TYPE> Rotation(Element radians);
+			static Matrix22<TYPE> Scale(Element x, Element y);
+
+			//////////////////////////////////////////////////////////////////////////
+			Row mRows[2];
+		};
+	}
+}
+
+#include "Math/Detail/Matrix22.inl"

@@ -5,6 +5,7 @@ set (INCLUDE_FILES
 
 set (SIMD_INCLUDE_FILES
 	Include/SIMD/Types.hpp
+	Include/SIMD/Rounding.hpp
 )
 set (SIMD_DETAIL_INCLUDE_FILES
 	Include/SIMD/Detail/Ref32x4_1.hpp
@@ -52,9 +53,6 @@ MakeUnitTest (LIBRARY SimdX GROUP Core
 		UnitTest/Test_F32x4_2.cpp
 		UnitTest/Test_F32x4_3.cpp
 		UnitTest/Test_F32x4_4.cpp
-		UnitTest/Test_Vector2.cpp
-		UnitTest/Test_Vector3.cpp
-		UnitTest/Test_Vector4.cpp
 		../Test/UnitTestMain.cpp
 )
 
@@ -69,18 +67,22 @@ set (MATH_INCLUDE_FILES
 	Include/Math/OBB.hpp
 	Include/Math/Quaternion.hpp
 	Include/Math/Rectangle.hpp
+	Include/Math/Types.hpp
 	Include/Math/Vector2.hpp
 	Include/Math/Vector3.hpp
 	Include/Math/Vector4.hpp
 )
 set (MATH_DETAIL_INCLUDE_FILES
+	Include/Math/Detail/Matrix22.inl
+	Include/Math/Detail/Matrix33.inl
+	Include/Math/Detail/Matrix44.inl
 	Include/Math/Detail/Vector2.inl
 	Include/Math/Detail/Vector3.inl
 	Include/Math/Detail/Vector4.inl
 )
 
 add_library (MathX INTERFACE)
-target_link_libraries (MathX INTERFACE Configuration)
+target_link_libraries (MathX INTERFACE Configuration SimdX)
 
 target_include_directories (MathX
 	INTERFACE
@@ -105,5 +107,6 @@ MakeUnitTest (LIBRARY MathX GROUP Core
 		UnitTest/Test_Vector2.cpp
 		UnitTest/Test_Vector3.cpp
 		UnitTest/Test_Vector4.cpp
+		UnitTest/Test_Matrix22.cpp
 		../Test/UnitTestMain.cpp
 )

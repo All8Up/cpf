@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "SIMD/Rounding.hpp"
 #include "SIMD/Detail/Ref32x4_2.hpp"
 #include "SIMD/Detail/Ref32x4_3.hpp"
 
