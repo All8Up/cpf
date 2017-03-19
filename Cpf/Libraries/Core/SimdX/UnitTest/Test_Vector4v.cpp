@@ -102,7 +102,7 @@ TYPED_TEST(TypedTest_Vector4v, OperatorDivideAssign)
 	Type t1 = { Element(3), Element(4), Element(5), Element(6) };
 	t0 /= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(4), Element(5), Element(5), Element(5))) == Type::kLaneMask);
+	EXPECT_TRUE(Near(t0, Type(Element(4), Element(5), Element(5), Element(5)), Element(0.01f)));
 }
 
 TYPED_TEST(TypedTest_Vector4v, OperatorNegate)
@@ -233,7 +233,7 @@ TYPED_TEST(TypedTest_Vector4v, OperatorDevide)
 	Type t1 = { Element(3), Element(4), Element(5), Element(6) };
 	Type t2 = t0 / t1;
 
-	EXPECT_TRUE((t2 == Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f), Element(4.0f / 6.0f))) == Type::kLaneMask);
+	EXPECT_TRUE(Near(t2, Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f), Element(4.0f / 6.0f)), Element(0.01f)));
 }
 
 TYPED_TEST(TypedTest_Vector4v, Min)

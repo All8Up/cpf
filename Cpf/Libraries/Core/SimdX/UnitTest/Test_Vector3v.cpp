@@ -230,7 +230,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorDevide)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	Type t2 = t0 / t1;
 
-	EXPECT_TRUE((t2 == Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f))) == Type::kLaneMask);
+	EXPECT_TRUE(Near(t2, Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f)), Element(0.01f)));
 }
 
 TYPED_TEST(TypedTest_Vector3v, Min)
