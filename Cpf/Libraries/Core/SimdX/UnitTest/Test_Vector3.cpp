@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest\gtest.h>
 #include "SimdX.hpp"
-#include "SIMD/Vector2v.hpp"
-#include "SIMD/Vector3v.hpp"
+#include "SIMD/Vector2.hpp"
+#include "SIMD/Vector3.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector3fv_SSE4_1 = Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::F32x4_3>;
-using Vector3fv_Reference = Cpf::Math::Vector3v<Cpf::SIMD::Reference::F32x4_3>;
+using Vector3fv_SSE4_1 = Cpf::Math::Vector3<Cpf::SIMD::SSE4_1::F32x4_3>;
+using Vector3fv_Reference = Cpf::Math::Vector3<Cpf::SIMD::Reference::F32x4_3>;
 
 template <typename T>
-class TypedTest_Vector3v : public::testing::Test
+class TypedTest_Vector3 : public::testing::Test
 {
 public:
 };
@@ -17,14 +17,14 @@ public:
 typedef ::testing::Types <
 	Vector3fv_Reference,
 	Vector3fv_SSE4_1,
-	Cpf::Math::Vector3v<Cpf::SIMD::Reference::I32x4_3>,
-	Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::I32x4_3>
+	Cpf::Math::Vector3<Cpf::SIMD::Reference::I32x4_3>,
+	Cpf::Math::Vector3<Cpf::SIMD::SSE4_1::I32x4_3>
 > F32x4_1_Types;
 
-TYPED_TEST_CASE(TypedTest_Vector3v, F32x4_1_Types);
+TYPED_TEST_CASE(TypedTest_Vector3, F32x4_1_Types);
 
 
-TYPED_TEST(TypedTest_Vector3v, Construction)
+TYPED_TEST(TypedTest_Vector3, Construction)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -36,7 +36,7 @@ TYPED_TEST(TypedTest_Vector3v, Construction)
 	EXPECT_TRUE(Near(t1, { Element(3), Element(4), Element(5) }, Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3v, ArrayAccess)
+TYPED_TEST(TypedTest_Vector3, ArrayAccess)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -54,7 +54,7 @@ TYPED_TEST(TypedTest_Vector3v, ArrayAccess)
 	EXPECT_NEAR(t0[2], Element(8), Element(0.01f));
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorAddAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorAddAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -66,7 +66,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorAddAssign)
 	EXPECT_TRUE((t0 == Type(Element(4), Element(6), Element(8))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorSubtractAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorSubtractAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -78,7 +78,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorSubtractAssign)
 	EXPECT_TRUE((t0 == Type(Element(-2), Element(-2), Element(-2))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorMultiplyAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorMultiplyAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -90,7 +90,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorMultiplyAssign)
 	EXPECT_TRUE((t0 == Type(Element(3), Element(8), Element(15))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorDivideAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorDivideAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -102,7 +102,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorDivideAssign)
 	EXPECT_TRUE((t0 == Type(Element(4), Element(5), Element(5))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorNegate)
+TYPED_TEST(TypedTest_Vector3, OperatorNegate)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -113,7 +113,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorNegate)
 	EXPECT_TRUE(Near(t1, { Element(-1), Element(-2), Element(-3) }, Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorEquals)
+TYPED_TEST(TypedTest_Vector3, OperatorEquals)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -125,7 +125,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorEquals)
 	EXPECT_FALSE(t0 == t1);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorNotEquals)
+TYPED_TEST(TypedTest_Vector3, OperatorNotEquals)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -137,7 +137,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorNotEquals)
 	EXPECT_TRUE((t0 != t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorLessThan)
+TYPED_TEST(TypedTest_Vector3, OperatorLessThan)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -149,7 +149,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorLessThan)
 	EXPECT_TRUE((t0 < t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorLessThanEqual)
+TYPED_TEST(TypedTest_Vector3, OperatorLessThanEqual)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -161,7 +161,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorLessThanEqual)
 	EXPECT_TRUE((t0 <= t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorGreaterThan)
+TYPED_TEST(TypedTest_Vector3, OperatorGreaterThan)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -173,7 +173,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorGreaterThan)
 	EXPECT_FALSE((t0 > t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorGreaterThanEqual)
+TYPED_TEST(TypedTest_Vector3, OperatorGreaterThanEqual)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -185,7 +185,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorGreaterThanEqual)
 	EXPECT_FALSE((t0 >= t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorAdd)
+TYPED_TEST(TypedTest_Vector3, OperatorAdd)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -197,7 +197,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorAdd)
 	EXPECT_TRUE((t2 == Type(Element(4), Element(6), Element(8))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorSubtract)
+TYPED_TEST(TypedTest_Vector3, OperatorSubtract)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -209,7 +209,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorSubtract)
 	EXPECT_TRUE((t2 == Type(Element(-2), Element(-2), Element(-2))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorMultiply)
+TYPED_TEST(TypedTest_Vector3, OperatorMultiply)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -221,7 +221,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorMultiply)
 	EXPECT_TRUE(Near(t2, Type(Element(3), Element(8), Element(15)), Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3v, OperatorDevide)
+TYPED_TEST(TypedTest_Vector3, OperatorDevide)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -233,7 +233,7 @@ TYPED_TEST(TypedTest_Vector3v, OperatorDevide)
 	EXPECT_TRUE(Near(t2, Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f)), Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3v, Min)
+TYPED_TEST(TypedTest_Vector3, Min)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -245,7 +245,7 @@ TYPED_TEST(TypedTest_Vector3v, Min)
 	EXPECT_TRUE((t2 == Type(Element(1.0f), Element(2.0f), Element(3.0f))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, HMin)
+TYPED_TEST(TypedTest_Vector3, HMin)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -256,7 +256,7 @@ TYPED_TEST(TypedTest_Vector3v, HMin)
 	EXPECT_TRUE(t1 == Element(1));
 }
 
-TYPED_TEST(TypedTest_Vector3v, Max)
+TYPED_TEST(TypedTest_Vector3, Max)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -268,7 +268,7 @@ TYPED_TEST(TypedTest_Vector3v, Max)
 	EXPECT_TRUE((t2 == Type(Element(3.0f), Element(4.0f), Element(5.0f))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3v, HMax)
+TYPED_TEST(TypedTest_Vector3, HMax)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -279,7 +279,7 @@ TYPED_TEST(TypedTest_Vector3v, HMax)
 	EXPECT_TRUE(t1 == Element(3));
 }
 
-TYPED_TEST(TypedTest_Vector3v, Sqrt)
+TYPED_TEST(TypedTest_Vector3, Sqrt)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -292,7 +292,7 @@ TYPED_TEST(TypedTest_Vector3v, Sqrt)
 	EXPECT_TRUE(t1.z == Element(6));
 }
 
-TYPED_TEST(TypedTest_Vector3v, Clamp)
+TYPED_TEST(TypedTest_Vector3, Clamp)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -306,7 +306,7 @@ TYPED_TEST(TypedTest_Vector3v, Clamp)
 }
 
 
-TYPED_TEST(TypedTest_Vector3v, Modulus)
+TYPED_TEST(TypedTest_Vector3, Modulus)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;

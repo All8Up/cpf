@@ -5,9 +5,9 @@ set (INCLUDE_FILES
 
 set (SIMD_INCLUDE_FILES
 	Include/SIMD/Types.hpp
-	Include/SIMD/Vector2v.hpp
-	Include/SIMD/Vector3v.hpp
-	Include/SIMD/Vector4v.hpp
+	Include/SIMD/Vector2.hpp
+	Include/SIMD/Vector3.hpp
+	Include/SIMD/Vector4.hpp
 )
 set (SIMD_DETAIL_INCLUDE_FILES
 	Include/SIMD/Detail/Ref32x4_1.hpp
@@ -55,8 +55,8 @@ MakeUnitTest (LIBRARY SimdX GROUP Core
 		UnitTest/Test_F32x4_2.cpp
 		UnitTest/Test_F32x4_3.cpp
 		UnitTest/Test_F32x4_4.cpp
-		UnitTest/Test_Vector2v.cpp
-		UnitTest/Test_Vector3v.cpp
-		UnitTest/Test_Vector4v.cpp
+		UnitTest/Test_Vector2.cpp
+		UnitTest/Test_Vector3.cpp
+		UnitTest/Test_Vector4.cpp
 		../Test/UnitTestMain.cpp
 )
