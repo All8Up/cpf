@@ -44,7 +44,7 @@ namespace Cpf
 				using Lanes_4 = F32x4<Type, 16, 4, float, 4>;
 
 				F32x4() {}
-				F32x4(Element value) : mVector{ value, value, value, value } {}
+				explicit F32x4(Element value) : mVector{ value, value, value, value } {}
 				template <typename = std::enable_if<COUNT == 2, Element>::type>
 				F32x4(Element v0, Element v1) : mVector(v0, v1) {}
 				template <typename = std::enable_if<COUNT == 3, Element>::type>
@@ -53,40 +53,45 @@ namespace Cpf
 				F32x4(Element v0, Element v1, Element v2, Element v3) : mVector(v0, v1, v2, v3) {}
 
 				template <typename = std::enable_if<COUNT == 3, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2)
-					: mVector(v01.mData[0], v01.mData[1], v2)
+				F32x4(Lanes_2 v01, Element v2)
+					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2)
+				{
+				}
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				F32x4(Element v0, Lanes_2 v12)
+					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1])
 				{
 				}
 
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2, Element v3)
-					: mVector(v01.mData[0], v01.mData[1], v2, v3)
+				F32x4(Lanes_2 v01, Element v2, Element v3)
+					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2, v3)
 				{
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(float v0, F32x4<Type, kAlignment, kLanes, Element, 2> v12, Element v3)
-					: mVector(v0, v12.mData[0], v12.mData[1], v3)
+				F32x4(float v0, Lanes_2 v12, Element v3)
+					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1], v3)
 				{
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(float v0, float v1, F32x4<Type, kAlignment, kLanes, Element, 2> v23)
-					: mVector(v0, v1, v23.mData[0], v23.mData[1])
+				F32x4(float v0, float v1, Lanes_2 v23)
+					: mVector(v0, v1, v23.mVector.mData[0], v23.mVector.mData[1])
 				{
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, F32x4<Type, kAlignment, kLanes, Element, 2> v23)
-					: mVector(v01.mData[0], v01.mData[1], v23.mData[0], v23.mData[1])
+				F32x4(Lanes_2 v01, Lanes_2 v23)
+					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v23.mVector.mData[0], v23.mVector.mData[1])
 				{
 				}
 
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 3> v012, Element v3)
-					: mVector(v012.mData[0], v012.mData[1], v012.mData[2], v3)
+				F32x4(Lanes_3 v012, Element v3)
+					: mVector(v012.mVector.mData[0], v012.mVector.mData[1], v012.mVector.mData[2], v3)
 				{
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(Element v0, F32x4<Type, kAlignment, kLanes, Element, 3> v123)
-					: mVector(v0, v123.mData[0], v123.mData[1], v123.mData[2])
+				F32x4(Element v0, Lanes_3 v123)
+					: mVector(v0, v123.mVector.mData[0], v123.mVector.mData[1], v123.mVector.mData[2])
 				{
 				}
 
@@ -95,6 +100,15 @@ namespace Cpf
 				F32x4& operator = (Type value) { mVector = value; return *this; }
 
 				explicit operator Type () const { return mVector; }
+
+				template <typename = std::enable_if<COUNT == 1, Element>::type>
+				operator Lanes_1 () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 2, Element>::type>
+				operator Lanes_2 () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				operator Lanes_3 () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				operator Lanes_4 () const { return mVector; }
 
 				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
 				operator const Element() const { return mVector.mData[0]; }
@@ -112,10 +126,22 @@ namespace Cpf
 				{
 					mVector.mData[index] = value;
 				}
+				template <int I0, int I1>
+				Type GetLanes() const
+				{
+					Type result(mVector.mData[I0], mVector.mData[I1]);
+					return result;
+				}
 				template <int I0, int I1, int I2>
 				Type GetLanes() const
 				{
 					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
+					return result;
+				}
+				template <int I0, int I1, int I2, int I3>
+				Type GetLanes() const
+				{
+					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2], mVector.mData[i3]);
 					return result;
 				}
 

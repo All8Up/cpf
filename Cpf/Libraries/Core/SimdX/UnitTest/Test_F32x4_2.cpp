@@ -22,7 +22,7 @@ TYPED_TEST(TypedTest_F32x4_2, Construction_BasicAccess_Near)
 	using Type = typename TypeParam;
 
 	// Test splat construction.
-	Type a = 1.0f;
+	Type a(1.0f);
 	Type b(2.0f);
 
 	EXPECT_TRUE(Near(a, { 1.0f, 1.0f }, 0.01f));

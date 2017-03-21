@@ -15,6 +15,10 @@ namespace Cpf
 		*/
 		namespace SSE4_1
 		{
+#define cpf_movehl_epi32(lhs, rhs) _mm_castps_si128(_mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
+#define cpf_movelh_epi32(lhs, rhs) _mm_castps_si128(_mm_movelh_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
+#define cpf_shuffle_epi32(lhs, rhs, mask) _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(lhs), _mm_castsi128_ps(rhs), mask))
+
 			union alignas(16) UInt32x4
 			{
 				uint32_t UInt32[4];
@@ -31,7 +35,7 @@ namespace Cpf
 			{
 				static constexpr int kAlignment = 16;
 				using Type = __m128i;
-				static constexpr int Lanes = 4;
+				static constexpr int kLanes = 4;
 				using Element = int32_t;
 				static constexpr int kCount = COUNT;
 				static constexpr int kLaneMask = (1 << kCount) - 1;
@@ -50,6 +54,54 @@ namespace Cpf
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
 				constexpr I32x4(Element v0, Element v1, Element v2, Element v3) : mVector(_mm_set_epi32(v3, v2, v1, v0)) {}
 
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				I32x4(Lanes_2 v01, Element v2)
+					: mVector(cpf_shuffle_epi32(static_cast<__m128i>(v01), _mm_set_epi32(v2, 0, 0, 0), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				I32x4(Element v0, Lanes_2 v12)
+					: mVector(_mm_set_epi32(0, v12.GetLane<1>(), v12.GetLane<0>(), v0))
+				{
+				}
+
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				I32x4(Lanes_2 v01, Element v2, Element v3)
+					: mVector(cpf_shuffle_epi32(static_cast<__m128i>(v01), _mm_set_epi32(0, 0, v3, v2), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				I32x4(Element v0, Lanes_2 v12, Element v3)
+				{
+					auto t = cpf_movelh_epi32(_mm_set_epi32(0, 0, v3, v0), v12);
+					mVector = cpf_shuffle_epi32(t, t, _MM_SHUFFLE(1, 3, 2, 0));
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				I32x4(Element v0, Element v1, Lanes_2 v23)
+					: mVector(cpf_shuffle_epi32(_mm_set_epi32(0, 0, v1, v0), static_cast<__m128i>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				I32x4(Lanes_2 v01, I32x4<Type, kAlignment, kLanes, Element, 2> v23)
+					: mVector(cpf_shuffle_epi32(static_cast<__m128i>(v01), static_cast<__m128i>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				I32x4(Lanes_3 v012, Element v3)
+				{
+					auto mask = _mm_set_epi32(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+					auto t = _mm_and_si128(static_cast<__m128i>(v012), mask);
+					auto a = _mm_or_si128(t, _mm_set_epi32(*reinterpret_cast<int*>(&v3), 0, 0, 0));
+					mVector = a;
+				}
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				I32x4(Element v0, Lanes_3 v123)
+				{
+					auto t = _mm_slli_si128(static_cast<__m128i>(v123), 4);
+					auto a = _mm_or_si128(t, _mm_set_epi32(0, 0, 0, *reinterpret_cast<int*>(&v0)));
+					mVector = a;
+				}
 				explicit constexpr I32x4(Type value) : mVector(value) {}
 
 				I32x4& operator = (Type value) { mVector = value; return *this; }
@@ -93,6 +145,21 @@ namespace Cpf
 					case 2: mVector = _mm_insert_epi32(static_cast<__m128i>(mVector), value, 2); break;
 					case 3: mVector = _mm_insert_epi32(static_cast<__m128i>(mVector), value, 3); break;
 					}
+				}
+				template <int I0, int I1>
+				Type GetLanes() const
+				{
+					return cpf_shuffle_epi32(static_cast<__m128i>(mVector), static_cast<__m128i>(mVector), _MM_SHUFFLE(0, 0, I1, I0));
+				}
+				template <int I0, int I1, int I2>
+				Type GetLanes() const
+				{
+					return cpf_shuffle_epi32(static_cast<__m128i>(mVector), static_cast<__m128i>(mVector), _MM_SHUFFLE(0, I2, I1, I0));
+				}
+				template <int I0, int I1, int I2, int I3>
+				Type GetLanes() const
+				{
+					return cpf_shuffle_epi32(static_cast<__m128i>(mVector), static_cast<__m128i>(mVector), _MM_SHUFFLE(I3, I2, I1, I0));
 				}
 
 				Type mVector;
@@ -235,8 +302,6 @@ namespace Cpf
 				auto the_high = _mm_max_epi32(two_high, _mm_castps_si128(second));
 				return I32x4_<1>(the_high);
 			}
-#define cpf_movehl_epi32(lhs, rhs) _mm_castps_si128(_mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
-#define cpf_shuffle_epi32(lhs, rhs, mask) _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(lhs), _mm_castsi128_ps(rhs), mask))
 
 			template <>
 			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<4> value)

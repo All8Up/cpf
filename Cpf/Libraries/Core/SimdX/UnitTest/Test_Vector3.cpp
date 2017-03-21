@@ -54,6 +54,30 @@ TYPED_TEST(TypedTest_Vector3, ArrayAccess)
 	EXPECT_NEAR(t0[2], Element(8), Element(0.01f));
 }
 
+TYPED_TEST(TypedTest_Vector3, ElementAccess)
+{
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+	Type t0 = { Element(1), Element(2), Element(3) };
+
+	// NOTE: Have to cast it back to a vector type here to get the Near function to resolve.
+	// This should not be a deal breaker since it will still resolve to vectors/refs in most other cases.
+	EXPECT_TRUE(Near(Type(t0.xx, Element(0)), { Element(1), Element(1), Element(0) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.xy, Element(0)), { Element(1), Element(2), Element(0) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yy, Element(0)), { Element(2), Element(2), Element(0) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yx, Element(0)), { Element(2), Element(1), Element(0) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(Element(0), t0.xx), { Element(0), Element(1), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(0), t0.xy), { Element(0), Element(1), Element(2) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(0), t0.yy), { Element(0), Element(2), Element(2) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(0), t0.yx), { Element(0), Element(2), Element(1) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(t0.xxx), { Element(1), Element(1), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.xyx), { Element(1), Element(2), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yyz), { Element(2), Element(2), Element(3) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.zyx), { Element(3), Element(2), Element(1) }, Element(0.01f)));
+}
+
 TYPED_TEST(TypedTest_Vector3, OperatorAddAssign)
 {
 	using Type = typename TypeParam;
@@ -219,6 +243,28 @@ TYPED_TEST(TypedTest_Vector3, OperatorMultiply)
 	Type t2 = t0 * t1;
 
 	EXPECT_TRUE(Near(t2, Type(Element(3), Element(8), Element(15)), Element(0.01f)));
+}
+
+TYPED_TEST(TypedTest_Vector3, OperatorMultiplyScalar)
+{
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t2 = t0 * Element(2);
+
+	EXPECT_TRUE(Near(t2, Type(Element(2), Element(4), Element(6)), Element(0.01f)));
+}
+
+TYPED_TEST(TypedTest_Vector3, OperatorScalarMultiply)
+{
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t2 = Element(2) * t0;
+
+	EXPECT_TRUE(Near(t2, Type(Element(2), Element(4), Element(6)), Element(0.01f)));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorDevide)

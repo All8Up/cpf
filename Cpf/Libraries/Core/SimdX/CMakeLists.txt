@@ -76,6 +76,7 @@ set (MATH_DETAIL_INCLUDE_FILES
 	Include/Math/Detail/Matrix22.inl
 	Include/Math/Detail/Matrix33.inl
 	Include/Math/Detail/Matrix44.inl
+	Include/Math/Detail/Quaternion.inl
 	Include/Math/Detail/Vector2.inl
 	Include/Math/Detail/Vector3.inl
 	Include/Math/Detail/Vector4.inl
@@ -108,5 +109,8 @@ MakeUnitTest (LIBRARY MathX GROUP Core
 		UnitTest/Test_Vector3.cpp
 		UnitTest/Test_Vector4.cpp
 		UnitTest/Test_Matrix22.cpp
+		UnitTest/Test_Matrix33.cpp
+		UnitTest/Test_Matrix44.cpp
+		UnitTest/Test_Quaternion.cpp
 		../Test/UnitTestMain.cpp
 )

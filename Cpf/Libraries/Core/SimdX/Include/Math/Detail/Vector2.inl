@@ -118,6 +118,18 @@ namespace Cpf
 		}
 
 		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2<TYPE> CPF_VECTORCALL operator * (Vector2<TYPE> lhs, typename TYPE::Element rhs)
+		{
+			return Vector2<TYPE>(lhs.mVector * TYPE(rhs));
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector2<TYPE> CPF_VECTORCALL operator * (typename TYPE::Element lhs, Vector2<TYPE> rhs)
+		{
+			return Vector2<TYPE>(TYPE(lhs) * rhs.mVector);
+		}
+
+		template <typename TYPE>
 		CPF_FORCE_INLINE Vector2<TYPE> CPF_VECTORCALL operator / (Vector2<TYPE> lhs, Vector2<TYPE> rhs)
 		{
 			return Vector2<TYPE>(lhs.mVector / rhs.mVector);

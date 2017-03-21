@@ -23,6 +23,10 @@ namespace Cpf
 			Vector3(Element v0, Element v1, Element v2);
 			template <int I0, int I1, int I2>
 			Vector3(Cpf::SIMD::Ref32x4_3<TYPE, I0, I1, I2>& ref);
+			template <int I0, int I1>
+			Vector3(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, Element v2);
+			template <int I1, int I2>
+			Vector3(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
@@ -36,6 +40,7 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			explicit operator Storage () const { return static_cast<Storage>(mVector); }
+			operator typename TYPE::Lanes_3() const { return mVector; }
 
 			//////////////////////////////////////////////////////////////////////////
 			TYPE mVector;

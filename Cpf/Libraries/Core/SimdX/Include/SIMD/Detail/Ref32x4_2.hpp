@@ -13,8 +13,8 @@ namespace Cpf
 			constexpr operator typename TYPE::Lanes_2() const;
 
 		private:
-			typename TYPE::Lanes_4* _Data() { return reinterpret_cast<typename TYPE::Lanes_4*>(mData); }
-			const typename TYPE::Lanes_4* _Data() const { return reinterpret_cast<const typename TYPE::Lanes_4*>(mData); }
+			typename TYPE::Lanes_2* _Data() { return reinterpret_cast<typename TYPE::Lanes_2*>(mData); }
+			const typename TYPE::Lanes_2* _Data() const { return reinterpret_cast<const typename TYPE::Lanes_2*>(mData); }
 
 			uint8_t mData[1];
 		};
@@ -22,7 +22,7 @@ namespace Cpf
 		template <typename TYPE, int I0, int I1>
 		constexpr Ref32x4_2<TYPE, I0, I1>::operator typename TYPE::Lanes_2() const
 		{
-			return typename TYPE::Lanes_4(_mm_shuffle_ps(static_cast<__m128>(*_Data()), static_cast<__m128>(*_Data()), _MM_SHUFFLE(0, 0, I1, I0)));
+			return TYPE::Lanes_2(_Data()->GetLanes<I0, I1>());
 		}
 	}
 }

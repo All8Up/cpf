@@ -47,35 +47,40 @@ namespace Cpf
 				F32x4(Element v0, Element v1, Element v2, Element v3) : mVector(_mm_set_ps(v3, v2, v1, v0)) {}
 
 				template <typename = std::enable_if<COUNT == 3, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2)
+				F32x4(Lanes_2 v01, Element v2)
 					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), _mm_set_ps(v2, 0, 0, 0), _MM_SHUFFLE(1, 0, 1, 0)))
+				{
+				}
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				F32x4(Element v0, Lanes_2 v12)
+					: mVector(_mm_set_ps(0, v12.GetLane<1>(), v12.GetLane<0>(), v0))
 				{
 				}
 
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, Element v2, Element v3)
+				F32x4(Lanes_2 v01, Element v2, Element v3)
 					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), _mm_set_ps(0, 0, v3, v2), _MM_SHUFFLE(1, 0, 1, 0)))
 				{
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(float v0, F32x4<Type, kAlignment, kLanes, Element, 2> v12, Element v3)
+				F32x4(Element v0, Lanes_2 v12, Element v3)
 				{
 					auto t = _mm_movelh_ps(_mm_set_ps(0, 0, v3, v0), static_cast<__m128>(v12));
 					mVector = _mm_shuffle_ps(t, t, _MM_SHUFFLE(1, 3, 2, 0));
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(float v0, float v1, F32x4<Type, kAlignment, kLanes, Element, 2> v23)
+				F32x4(Element v0, Element v1, Lanes_2 v23)
 					: mVector(_mm_shuffle_ps(_mm_set_ps(0, 0, v1, v0), static_cast<__m128>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
 				{
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 2> v01, F32x4<Type, kAlignment, kLanes, Element, 2> v23)
+				F32x4(Lanes_2 v01, Lanes_2 v23)
 					: mVector(_mm_shuffle_ps(static_cast<__m128>(v01), static_cast<__m128>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
 				{
 				}
 
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(F32x4<Type, kAlignment, kLanes, Element, 3> v012, Element v3)
+				F32x4(Lanes_3 v012, Element v3)
 				{
 					auto mask = _mm_set_epi32(0, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
 					auto t = _mm_and_si128(_mm_castps_si128(static_cast<__m128>(v012)), mask);
@@ -83,7 +88,7 @@ namespace Cpf
 					mVector = _mm_castsi128_ps(a);
 				}
 				template <typename = std::enable_if<COUNT == 4, Element>::type>
-				F32x4(Element v0, F32x4<Type, kAlignment, kLanes, Element, 3> v123)
+				F32x4(Element v0, Lanes_3 v123)
 				{
 					auto t = _mm_slli_si128(_mm_castps_si128(static_cast<__m128>(v123)), 4);
 					auto a = _mm_or_si128(t, _mm_set_epi32(0, 0, 0, *reinterpret_cast<int*>(&v0)));
@@ -95,6 +100,14 @@ namespace Cpf
 				F32x4& operator = (Type value) { mVector = value; return *this; }
 
 				explicit operator Type () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 1, Element>::type>
+				operator Lanes_1 () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 2, Element>::type>
+				operator Lanes_2 () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				operator Lanes_3 () const { return mVector; }
+				template <typename = std::enable_if<COUNT == 4, Element>::type>
+				operator Lanes_4 () const { return mVector; }
 
 				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
 				operator const Element() const { Element result; _mm_store_ss(&result, mVector); return result; }
@@ -131,10 +144,20 @@ namespace Cpf
 					case 3: mVector = _mm_insert_ps(static_cast<__m128>(mVector), _mm_set_ps(value, value, value, value), _MM_MK_INSERTPS_NDX(0, 3, 0)); break;
 					}
 				}
+				template <int I0, int I1>
+				Type GetLanes() const
+				{
+					return _mm_shuffle_ps(static_cast<__m128>(mVector), static_cast<__m128>(mVector), _MM_SHUFFLE(0, 0, I1, I0));
+				}
 				template <int I0, int I1, int I2>
 				Type GetLanes() const
 				{
 					return _mm_shuffle_ps(static_cast<__m128>(mVector), static_cast<__m128>(mVector), _MM_SHUFFLE(0, I2, I1, I0));
+				}
+				template <int I0, int I1, int I2, int I3>
+				Type GetLanes() const
+				{
+					return _mm_shuffle_ps(static_cast<__m128>(mVector), static_cast<__m128>(mVector), _MM_SHUFFLE(I3, I2, I1, I0));
 				}
 
 				Type mVector;

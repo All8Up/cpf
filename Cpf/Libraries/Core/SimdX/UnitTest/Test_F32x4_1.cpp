@@ -21,7 +21,7 @@ TYPED_TEST(TypedTest_F32x4_1, Construction_BasicAccess_Near)
 {
 	using Type = typename TypeParam;
 
-	Type a = 1.0f;
+	Type a(1.0f);
 	Type b(2.0f);
 
 	EXPECT_NEAR(a, 1.0f, 0.01f);
@@ -39,7 +39,7 @@ TYPED_TEST(TypedTest_F32x4_1, Construction_BasicAccess_Near)
 TYPED_TEST(TypedTest_F32x4_1, Addition)
 {
 	using Type = typename TypeParam;
-	Type a = 1.0f;
+	Type a(1.0f);
 	Type b(2.0f);
 
 	Type c = a + b;
@@ -50,7 +50,7 @@ TYPED_TEST(TypedTest_F32x4_1, Addition)
 TYPED_TEST(TypedTest_F32x4_1, Subtraction)
 {
 	using Type = typename TypeParam;
-	Type a = 1.0f;
+	Type a(1.0f);
 	Type b(2.0f);
 
 	Type d = b - a;
@@ -61,7 +61,7 @@ TYPED_TEST(TypedTest_F32x4_1, Subtraction)
 TYPED_TEST(TypedTest_F32x4_1, Multiplication)
 {
 	using Type = typename TypeParam;
-	Type a = 1.0f;
+	Type a(1.0f);
 	Type b(2.0f);
 
 	Type e = a * b;
@@ -72,7 +72,7 @@ TYPED_TEST(TypedTest_F32x4_1, Multiplication)
 TYPED_TEST(TypedTest_F32x4_1, Division)
 {
 	using Type = typename TypeParam;
-	Type a = 1.0f;
+	Type a(1.0f);
 	Type b(2.0f);
 
 	Type f = a / b;

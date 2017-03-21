@@ -29,6 +29,18 @@ namespace Cpf
 			: mVector(ref)
 		{}
 
+		template <typename TYPE>
+		template <int I0, int I1>
+		Vector3<TYPE>::Vector3(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, Element v2)
+			: mVector(typename TYPE::Lanes_2(ref), v2)
+		{}
+
+		template <typename TYPE>
+		template <int I1, int I2>
+		Vector3<TYPE>::Vector3(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref)
+			: mVector(v0, typename TYPE::Lanes_2(ref))
+		{}
+
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
@@ -119,6 +131,19 @@ namespace Cpf
 		{
 			return Vector3<TYPE>(lhs.mVector * rhs.mVector);
 		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector3<TYPE> CPF_VECTORCALL operator * (Vector3<TYPE> lhs, typename TYPE::Element rhs)
+		{
+			return Vector3<TYPE>(lhs.mVector * TYPE(rhs));
+		}
+
+		template <typename TYPE>
+		CPF_FORCE_INLINE Vector3<TYPE> CPF_VECTORCALL operator * (typename TYPE::Element lhs, Vector3<TYPE> rhs)
+		{
+			return Vector3<TYPE>(TYPE(lhs) * rhs.mVector);
+		}
+
 
 		template <typename TYPE>
 		CPF_FORCE_INLINE Vector3<TYPE> CPF_VECTORCALL operator / (Vector3<TYPE> lhs, Vector3<TYPE> rhs)

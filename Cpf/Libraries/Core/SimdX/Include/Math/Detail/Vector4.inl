@@ -28,6 +28,36 @@ namespace Cpf
 		template <int I0, int I1, int I2, int I3>
 		Vector4<TYPE>::Vector4(Cpf::SIMD::Ref32x4_4<TYPE, I0, I1, I2, I3>& ref) : mVector(ref) {}
 
+		template <typename TYPE>
+		Vector4<TYPE>::Vector4(Lanes_2 v01, Element v2, Element v3)
+			: mVector(v01, v2, v3)
+		{}
+
+		template <typename TYPE>
+		Vector4<TYPE>::Vector4(Element v0, Lanes_2 v12, Element v3)
+			: mVector(v0, v12, v3)
+		{}
+
+		template <typename TYPE>
+		Vector4<TYPE>::Vector4(Element v0, Element v1, Lanes_2 v23)
+			: mVector(v0, v1, v23)
+		{}
+
+		template <typename TYPE>
+		Vector4<TYPE>::Vector4(Lanes_2 v01, Lanes_2 v23)
+			: mVector(v01, v23)
+		{}
+
+		template <typename TYPE>
+		Vector4<TYPE>::Vector4(Lanes_3 v012, Element v3)
+			: mVector(v012, v3)
+		{}
+
+		template <typename TYPE>
+		Vector4<TYPE>::Vector4(Element v0, Lanes_3 v123)
+			: mVector(v0, v123)
+		{}
+
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
 		SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL Vector4<TYPE>::operator [](int idx)

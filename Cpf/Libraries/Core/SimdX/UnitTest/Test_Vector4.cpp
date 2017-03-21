@@ -57,6 +57,40 @@ TYPED_TEST(TypedTest_Vector4, ArrayAccess)
 	EXPECT_NEAR(t0[3], Element(9), Element(0.01f));
 }
 
+TYPED_TEST(TypedTest_Vector4, ElementAccess)
+{
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+	Type t0 = { Element(1), Element(2), Element(3), Element(4) };
+
+	// NOTE: Have to cast it back to a vector type here to get the Near function to resolve.
+	// This should not be a deal breaker since it will still resolve to vectors/refs in most other cases.
+	EXPECT_TRUE(Near(Type(t0.xx, Element(3), Element(4)), { Element(1), Element(1), Element(3), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.xy, Element(3), Element(4)), { Element(1), Element(2), Element(3), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yy, Element(3), Element(4)), { Element(2), Element(2), Element(3), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yx, Element(3), Element(4)), { Element(2), Element(1), Element(3), Element(4) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(Element(3), t0.xx, Element(4)), { Element(3), Element(1), Element(1), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(3), t0.xy, Element(4)), { Element(3), Element(1), Element(2), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(3), t0.yy, Element(4)), { Element(3), Element(2), Element(2), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(3), t0.yx, Element(4)), { Element(3), Element(2), Element(1), Element(4) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(Element(3), Element(4), t0.xx), { Element(3), Element(4), Element(1), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(3), Element(4), t0.xy), { Element(3), Element(4), Element(1), Element(2) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(3), Element(4), t0.yy), { Element(3), Element(4), Element(2), Element(2) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(3), Element(4), t0.yx), { Element(3), Element(4), Element(2), Element(1) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(t0.xxx, Element(4)), { Element(1), Element(1), Element(1), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.xyx, Element(4)), { Element(1), Element(2), Element(1), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yyz, Element(4)), { Element(2), Element(2), Element(3), Element(4) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.zyx, Element(4)), { Element(3), Element(2), Element(1), Element(4) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(Element(4), t0.xxx), { Element(4), Element(1), Element(1), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(4), t0.xyx), { Element(4), Element(1), Element(2), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(4), t0.yyz), { Element(4), Element(2), Element(2), Element(3) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(4), t0.zyx), { Element(4), Element(3), Element(2), Element(1) }, Element(0.01f)));
+}
+
 TYPED_TEST(TypedTest_Vector4, OperatorAddAssign)
 {
 	using Type = typename TypeParam;
