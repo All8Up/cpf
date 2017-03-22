@@ -149,7 +149,7 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 	int zc = (i / (count * count)) % count;
 
 	Vector3fv pos((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
-	float magnitude = Magnitude(pos + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
+	float magnitude = Magnitude(pos + Vector3fv(0.0f, 50.0f, 0.0f)) * 0.03f;
 	magnitude *= magnitude;
 	float time = float(Time::Seconds(timer->GetTime()));
 	float angle = sinf(0.25f * time);
@@ -164,11 +164,12 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	CPF_ASSERT(instances != nullptr);
+
 	instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
-	instances[i].mOrientation0 = orientation[0].xyz;
-	instances[i].mOrientation1 = orientation[1].xyz;
-	instances[i].mOrientation2 = orientation[2].xyz;
-	instances[i].mTranslation = Vector3f(pos.xyz);
+	instances[i].mOrientation0 = Vector3f(orientation[0].x, orientation[0].y, orientation[0].z);
+	instances[i].mOrientation1 = Vector3f(orientation[1].x, orientation[1].y, orientation[1].z);
+	instances[i].mOrientation2 = Vector3f(orientation[2].x, orientation[2].y, orientation[2].z);
+	instances[i].mTranslation = Vector3f(pos.x, pos.y, pos.z);
 }
 
 void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
@@ -185,7 +186,7 @@ void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
 	int zc = (i / (count * count)) % count;
 
 	Vector3fv pos((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
-	float magnitude = Magnitude(pos + Vector3f(0.0f, 50.0f, 0.0f)) * 0.03f;
+	float magnitude = Magnitude(pos + Vector3fv(0.0f, 50.0f, 0.0f)) * 0.03f;
 	magnitude *= magnitude;
 	float time = float(Time::Seconds(timer->GetTime()));
 	float angle = sinf(0.25f * time);
@@ -199,8 +200,8 @@ void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	instances[i].mScale = Vector3f(1.0f, 1.0f, 1.0f);
-	instances[i].mOrientation0 = orientation[0].xyz;
-	instances[i].mOrientation1 = orientation[1].xyz;
-	instances[i].mOrientation2 = orientation[2].xyz;
-	instances[i].mTranslation = Vector3f(pos.xyz);
+	instances[i].mOrientation0 = Vector3f(orientation[0].x, orientation[0].y, orientation[0].z);
+	instances[i].mOrientation1 = Vector3f(orientation[1].x, orientation[1].y, orientation[1].z);
+	instances[i].mOrientation2 = Vector3f(orientation[2].x, orientation[2].y, orientation[2].z);
+	instances[i].mTranslation = Vector3f(pos.x, pos.y, pos.z);
 }

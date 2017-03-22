@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCounted.hpp"
-#include "Math/Color.hpp"
-#include "Math/Vector2.hpp"
+#include "Math/Vector2v.hpp"
+#include "Math/Vector4v.hpp"
 #include "Math/Constants.hpp"
 #include "Pair.hpp"
 #include "Vector.hpp"
@@ -52,7 +52,7 @@ namespace Cpf
 
 			// Text
 			void Text(const char* fmt, ...);
-			void TextColored(const Math::Color4f& color, const char* fmt, ...);
+			void TextColored(const Math::Vector4fv& color, const char* fmt, ...);
 
 			// Buttons.
 			bool Button(const char* label, const Math::Vector2i = Math::Vector2i(0));

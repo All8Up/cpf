@@ -9,7 +9,7 @@ namespace Cpf
 	namespace Math
 	{
 		template <typename TYPE>
-		union Vector2
+		union Vector2v
 		{
 			//////////////////////////////////////////////////////////////////////////
 			using Storage = typename TYPE::Type;
@@ -17,22 +17,22 @@ namespace Cpf
 			static constexpr int kLaneMask = TYPE::kLaneMask;
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector2();
-			explicit Vector2(typename TYPE::Element value);
-			explicit Vector2(TYPE value);
-			Vector2(Element v0, Element v1);
+			Vector2v();
+			explicit Vector2v(typename TYPE::Element value);
+			explicit Vector2v(TYPE value);
+			Vector2v(Element v0, Element v1);
 			template <int I0, int I1>
-			explicit Vector2(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref);
+			explicit Vector2v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
 			Element CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector2& CPF_VECTORCALL operator += (const Vector2& rhs);
-			Vector2& CPF_VECTORCALL operator -= (const Vector2& rhs);
-			Vector2& CPF_VECTORCALL operator *= (const Vector2& rhs);
-			Vector2& CPF_VECTORCALL operator /= (const Vector2& rhs);
+			Vector2v& CPF_VECTORCALL operator += (const Vector2v& rhs);
+			Vector2v& CPF_VECTORCALL operator -= (const Vector2v& rhs);
+			Vector2v& CPF_VECTORCALL operator *= (const Vector2v& rhs);
+			Vector2v& CPF_VECTORCALL operator /= (const Vector2v& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
 			explicit operator Storage () const;
@@ -45,4 +45,13 @@ namespace Cpf
 	}
 }
 
-#include "Math/Detail/Vector2.inl"
+#include "Math/Detail/Vector2v.inl"
+#include "SIMD/Types.hpp"
+
+namespace Cpf
+{
+	namespace Math
+	{
+		using Vector2i = Vector2v<SIMD::I32x4_2>;
+	}
+}

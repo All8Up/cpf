@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Types.hpp"
-#include "Math/Vector2.hpp"
+#include "Math/Vector2v.hpp"
 
 namespace Cpf
 {
@@ -12,8 +11,8 @@ namespace Cpf
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			using Row = Vector2<TYPE>;
-			using Element = typename Vector2<TYPE>::Element;
+			using Row = Vector2v<TYPE>;
+			using Element = typename Vector2v<TYPE>::Element;
 
 			//////////////////////////////////////////////////////////////////////////
 			Matrix22();
@@ -41,4 +40,4 @@ namespace Cpf
 	}
 }
 
-#include "Math/Detail/Matrix22.inl"
+#include "Math/Detail/Matrix22v.inl"

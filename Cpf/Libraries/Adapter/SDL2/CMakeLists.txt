@@ -33,7 +33,7 @@ source_group( Sources FILES ${SOURCE_FILES} )
 target_link_libraries (s_SDL2
 	Configuration
 	s_Application
-	s_Math
+	MathX
 	s_Time
 	s_Threading
 	SDL2-static

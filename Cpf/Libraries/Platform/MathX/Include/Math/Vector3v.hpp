@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
+#include "SIMD/Detail/Ref32x4_1.hpp"
 #include "SIMD/Detail/Ref32x4_2.hpp"
 #include "SIMD/Detail/Ref32x4_3.hpp"
 
@@ -9,7 +10,7 @@ namespace Cpf
 	namespace Math
 	{
 		template <typename TYPE>
-		union Vector3
+		union Vector3v
 		{
 			//////////////////////////////////////////////////////////////////////////
 			using Storage = typename TYPE::Type;
@@ -17,26 +18,26 @@ namespace Cpf
 			static constexpr int kLaneMask = TYPE::kLaneMask;
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector3();
-			explicit Vector3(typename TYPE::Element value);
-			explicit Vector3(TYPE value);
-			Vector3(Element v0, Element v1, Element v2);
+			Vector3v();
+			explicit Vector3v(typename TYPE::Element value);
+			Vector3v(TYPE value);
+			Vector3v(Element v0, Element v1, Element v2);
 			template <int I0, int I1, int I2>
-			Vector3(Cpf::SIMD::Ref32x4_3<TYPE, I0, I1, I2>& ref);
+			Vector3v(Cpf::SIMD::Ref32x4_3<TYPE, I0, I1, I2>& ref);
 			template <int I0, int I1>
-			Vector3(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, Element v2);
+			Vector3v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, Element v2);
 			template <int I1, int I2>
-			Vector3(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
+			Vector3v(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
 			Element CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector3& CPF_VECTORCALL operator += (const Vector3& rhs);
-			Vector3& CPF_VECTORCALL operator -= (const Vector3& rhs);
-			Vector3& CPF_VECTORCALL operator *= (const Vector3& rhs);
-			Vector3& CPF_VECTORCALL operator /= (const Vector3& rhs);
+			Vector3v& CPF_VECTORCALL operator += (const Vector3v& rhs);
+			Vector3v& CPF_VECTORCALL operator -= (const Vector3v& rhs);
+			Vector3v& CPF_VECTORCALL operator *= (const Vector3v& rhs);
+			Vector3v& CPF_VECTORCALL operator /= (const Vector3v& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
 			explicit operator Storage () const { return static_cast<Storage>(mVector); }
@@ -51,4 +52,13 @@ namespace Cpf
 	}
 }
 
-#include "Math/Detail/Vector3.inl"
+#include "Math/Detail/Vector3v.inl"
+#include "SIMD/Types.hpp"
+
+namespace Cpf
+{
+	namespace Math
+	{
+		using Vector3fv = Vector3v<SIMD::F32x4_3>;
+	}
+}

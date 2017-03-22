@@ -1,5 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Math/Matrix22.hpp"
+#include "Math.hpp"
+#include "SimdX.hpp"
+#include "Math/Matrix22v.hpp"
 #include "Math/Constants.hpp"
 #include <gmock/gmock.h>
 
@@ -20,7 +22,7 @@ TYPED_TEST_CASE(TypedTest_Matrix22, Data32_2_Types);
 TYPED_TEST(TypedTest_Matrix22, Construction)
 {
 	using Element = typename TypeParam::Element;
-	using VType = Cpf::Math::Vector2<typename TypeParam>;
+	using VType = Cpf::Math::Vector2v<typename TypeParam>;
 	using Type = Cpf::Math::Matrix22<typename TypeParam>;
 
 	Type t0;  // Should be a garbage type.

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest\gtest.h>
 #include "SimdX.hpp"
-#include "Math/Vector2.hpp"
+#include "Math/Vector2v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -11,10 +11,10 @@ public:
 };
 
 typedef ::testing::Types <
-	Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>,
-	Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>,
-	Cpf::Math::Vector2<Cpf::SIMD::Reference::I32x4_2>,
-	Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::I32x4_2>
+	Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>,
+	Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>,
+	Cpf::Math::Vector2v<Cpf::SIMD::Reference::I32x4_2>,
+	Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::I32x4_2>
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector2, F32x4_1_Types);
@@ -348,7 +348,7 @@ TYPED_TEST(TypedTest_Vector2, Modulus)
 // NOTE: Next items only make sense for floating point.
 TEST(Vector2fv, Dot_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = { 3.0f, 5.0f };
 	float dot = Dot(t0, t1);
@@ -357,7 +357,7 @@ TEST(Vector2fv, Dot_Reference)
 
 TEST(Vector2fv, Dot_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = { 3.0f, 5.0f };
 	float dot = Dot(t0, t1);
@@ -366,7 +366,7 @@ TEST(Vector2fv, Dot_SSE4_1)
 
 TEST(Vector2fv, Magnitude_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	float dot = Magnitude(t0);
 	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f)), 0.01f);
@@ -374,7 +374,7 @@ TEST(Vector2fv, Magnitude_Reference)
 
 TEST(Vector2fv, Magnitude_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	float dot = Magnitude(t0);
 	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f)), 0.01f);
@@ -382,7 +382,7 @@ TEST(Vector2fv, Magnitude_SSE4_1)
 
 TEST(Vector2fv, MagnitudeSq_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	float dot = MagnitudeSq(t0);
 	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f), 0.01f);
@@ -390,7 +390,7 @@ TEST(Vector2fv, MagnitudeSq_Reference)
 
 TEST(Vector2fv, MagnitudeSq_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	float dot = MagnitudeSq(t0);
 	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f), 0.01f);
@@ -398,7 +398,7 @@ TEST(Vector2fv, MagnitudeSq_SSE4_1)
 
 TEST(Vector2fv, Normalize_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = Normalize(t0);
 	EXPECT_TRUE(Near(t1, {t0.x / Magnitude(t0), t0.y / Magnitude(t0)}, 0.01f));
@@ -406,7 +406,7 @@ TEST(Vector2fv, Normalize_Reference)
 
 TEST(Vector2fv, Normalize_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = Normalize(t0);
 	EXPECT_TRUE(Near(t1, { t0.x / Magnitude(t0), t0.y / Magnitude(t0) }, 0.01f));
@@ -414,7 +414,7 @@ TEST(Vector2fv, Normalize_SSE4_1)
 
 TEST(Vector2fv, Reflect_Reference)
 {
-	using Type = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Type = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Type t0 = { 1.0f, 0.0f };
 	Type t1 = { 0.0f, 1.0f };
 	Type t3 = Reflect(t0, t1);
@@ -423,7 +423,7 @@ TEST(Vector2fv, Reflect_Reference)
 
 TEST(Vector2fv, Reflect_SSE4_1)
 {
-	using Type = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Type = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Type t0 = { 1.0f, 0.0f };
 	Type t1 = { 0.0f, 1.0f };
 	Type t3 = Reflect(t0, t1);
@@ -432,7 +432,7 @@ TEST(Vector2fv, Reflect_SSE4_1)
 
 TEST(Vector2fv, Reciprocal_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = Reciprocal(t0);
 
@@ -441,7 +441,7 @@ TEST(Vector2fv, Reciprocal_Reference)
 }
 TEST(Vector2fv, Reciprocal_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = Reciprocal(t0);
 
@@ -451,7 +451,7 @@ TEST(Vector2fv, Reciprocal_SSE4_1)
 
 TEST(Vector2fv, RSqrt_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = RSqrt(t0);
 
@@ -460,7 +460,7 @@ TEST(Vector2fv, RSqrt_Reference)
 }
 TEST(Vector2fv, RSqrt_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.0f, 12.0f };
 	Vector2fv t1 = RSqrt(t0);
 
@@ -471,7 +471,7 @@ TEST(Vector2fv, RSqrt_SSE4_1)
 //////////////////////////////////////////////////////////////////////////
 TEST(Vector2fv, Round_Truncate_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.25f, 12.85f };
 	Vector2fv t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
 
@@ -479,7 +479,7 @@ TEST(Vector2fv, Round_Truncate_Reference)
 }
 TEST(Vector2fv, Round_Truncate_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.25f, 12.85f };
 	Vector2fv t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
 
@@ -488,7 +488,7 @@ TEST(Vector2fv, Round_Truncate_SSE4_1)
 
 TEST(Vector2fv, Floor_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.25f, 12.85f };
 	Vector2fv t1 = Floor(t0);
 
@@ -496,7 +496,7 @@ TEST(Vector2fv, Floor_Reference)
 }
 TEST(Vector2fv, Floor_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.25f, 12.85f };
 	Vector2fv t1 = Floor(t0);
 
@@ -505,7 +505,7 @@ TEST(Vector2fv, Floor_SSE4_1)
 
 TEST(Vector2fv, Ceil_Reference)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::Reference::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>;
 	Vector2fv t0 = { 5.25f, 12.85f };
 	Vector2fv t1 = Ceil(t0);
 
@@ -513,7 +513,7 @@ TEST(Vector2fv, Ceil_Reference)
 }
 TEST(Vector2fv, Ceil_SSE4_1)
 {
-	using Vector2fv = Cpf::Math::Vector2<Cpf::SIMD::SSE4_1::F32x4_2>;
+	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
 	Vector2fv t0 = { 5.25f, 12.85f };
 	Vector2fv t1 = Ceil(t0);
 

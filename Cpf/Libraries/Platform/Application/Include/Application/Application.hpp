@@ -4,7 +4,7 @@
 #include "Application/Arguments.hpp"
 #include "Platform/iGLContext.hpp"
 #include "Events/Emitter.hpp"
-#include "Math/Vector2.hpp"
+#include "Math/Vector2v.hpp"
 #include "String.hpp"
 #include "RefCounted.hpp"
 

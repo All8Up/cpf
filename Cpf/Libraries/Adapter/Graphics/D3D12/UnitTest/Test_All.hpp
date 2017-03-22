@@ -18,7 +18,7 @@ TEST(AdaptersD3D12, Matrix44v)
 	);
 
 	DirectX::XMMATRIX xmTranslation = DirectX::XMMatrixTranslation(1.0f, 2.0f, 3.0f);
-	Math::Matrix44fv cpfTranslation = Math::Matrix44fv::Translate(1.0f, 2.0f, 3.0f);
+	Math::Matrix44fv cpfTranslation = Math::Matrix44fv::Translation(1.0f, 2.0f, 3.0f);
 
 	static int i = 0;
 	++i;

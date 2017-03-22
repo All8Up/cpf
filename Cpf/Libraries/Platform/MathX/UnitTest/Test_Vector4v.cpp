@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest\gtest.h>
 #include "SimdX.hpp"
-#include "Math/Vector2.hpp"
-#include "Math/Vector4.hpp"
+#include "Math/Vector2v.hpp"
+#include "Math/Vector4v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector4fv_SSE4_1 = Cpf::Math::Vector4<Cpf::SIMD::SSE4_1::F32x4_4>;
-using Vector4fv_Reference = Cpf::Math::Vector4<Cpf::SIMD::Reference::F32x4_4>;
+using Vector4fv_SSE4_1 = Cpf::Math::Vector4v<Cpf::SIMD::SSE4_1::F32x4_4>;
+using Vector4fv_Reference = Cpf::Math::Vector4v<Cpf::SIMD::Reference::F32x4_4>;
 
 template <typename T>
 class TypedTest_Vector4 : public::testing::Test
@@ -17,8 +17,8 @@ public:
 typedef ::testing::Types <
 	Vector4fv_Reference,
 	Vector4fv_SSE4_1,
-	Cpf::Math::Vector4<Cpf::SIMD::Reference::I32x4_4>,
-	Cpf::Math::Vector4<Cpf::SIMD::SSE4_1::I32x4_4>
+	Cpf::Math::Vector4v<Cpf::SIMD::Reference::I32x4_4>,
+	Cpf::Math::Vector4v<Cpf::SIMD::SSE4_1::I32x4_4>
 > x32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector4, x32x4_1_Types);

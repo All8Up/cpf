@@ -229,7 +229,7 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 		SubResource::eAll);
 
 	// Cycle the colors to make sure things are working.
-	Math::Color4f color(0.0f, 0.0f, 0.0f, 1.0f);
+	Math::Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Clear the color and depth buffers.
 	self.mpPreCommandBuffer[self.mBufferIndex]->ClearRenderTargetView(self.mpSwapChain->GetImageView(self.mSwapIndex), color, 0, nullptr);

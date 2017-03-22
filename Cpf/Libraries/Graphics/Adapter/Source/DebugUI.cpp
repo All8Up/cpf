@@ -356,11 +356,11 @@ void DebugUI::Text(const char* fmt, ...)
 	va_end(vargs);
 }
 
-void DebugUI::TextColored(const Math::Color4f& color, const char* fmt, ...)
+void DebugUI::TextColored(const Math::Vector4fv& color, const char* fmt, ...)
 {
 	va_list vargs;
 	va_start(vargs, fmt);
-	ImVec4 c(color.R(), color.G(), color.B(), color.A());
+	ImVec4 c(color.x, color.y, color.z, color.w);
 	ImGui::TextColoredV(c, fmt, vargs);
 	va_end(vargs);
 }

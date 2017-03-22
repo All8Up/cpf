@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "Graphics/TopologyType.hpp"
+#include "Math/Vector4v.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -38,7 +39,7 @@ void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
 	);
 
 	// Cycle the colors to make sure things are working.
-	Color4f color(0.0f, 0.0f, 0.0f, 1.0f);
+	Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Clear the color and depth buffers.
 	iImageView* imageViews[] = { mpSwapChain->GetImageView(mCurrentBackbuffer) };

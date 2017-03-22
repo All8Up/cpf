@@ -12,7 +12,6 @@
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/ConstantBuffer.hpp"
-#include "Math/Color.hpp"
 #include "Logging/Logging.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
 
@@ -205,7 +204,7 @@ void CommandBuffer::SetRenderTargets(int32_t imageCount, Graphics::iImageView** 
 		mpCommandList->OMSetRenderTargets(imageCount, imageDescs, FALSE, nullptr);
 }
 
-void CommandBuffer::ClearRenderTargetView(Graphics::iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects)
+void CommandBuffer::ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects)
 {
 	// TODO: Clean up the casts and validate that the rects are the same style.
 	mpCommandList->ClearRenderTargetView(

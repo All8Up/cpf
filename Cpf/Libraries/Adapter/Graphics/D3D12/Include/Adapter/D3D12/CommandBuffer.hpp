@@ -65,7 +65,7 @@ namespace Cpf
 
 				void SetRenderTargets(int32_t imageCount, Graphics::iImageView** images, Graphics::iImageView* depthView) override;
 
-				void ClearRenderTargetView(Graphics::iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects) override;
+				void ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) override;
 				void ClearDepthStencilView(Graphics::iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
 
 				ID3D12GraphicsCommandList* GetCommandList() { return mpCommandList.Cast<ID3D12GraphicsCommandList>(); }

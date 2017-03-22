@@ -71,7 +71,7 @@ target_include_directories (s_AdapterD3D12
 )
 target_link_libraries (s_AdapterD3D12
 	LINK_PUBLIC
-		Configuration RefCount s_Math s_IO s_GraphicsDriver DXGI.lib d3d12.lib D3DCompiler.lib Logging
+		Configuration RefCount MathX s_IO s_GraphicsDriver DXGI.lib d3d12.lib D3DCompiler.lib Logging
 )
 
 # ###############################################
@@ -105,7 +105,7 @@ MakeUnitTest( LIBRARY s_AdapterD3D12 GROUP Adapter
 		UnitTest/Test_All.hpp
 		../../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Configuration s_Simd s_Math
+		Configuration s_Simd MathX
 )
 
 # WIN32

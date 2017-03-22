@@ -1,9 +1,4 @@
 # ###############################################
-set( CPF_SIMD_LEVEL "Sse3" CACHE STRING "Simd level supported." )
-set_property( CACHE CPF_SIMD_LEVEL PROPERTY STRINGS Reference Sse3 Sse4.1 Sse4.2 Sse4a Avx Avx2 )
-
-
-# ###############################################
 set( INCLUDE_FILES
 	Include/Simd/Simd.hpp
 	Include/${CPF_COMPILER_INCLUDE_DIR}/${CPF_TARGET_CPU_DIR}/Simd/Types.hpp
