@@ -17,27 +17,11 @@ namespace Cpf
 			operator Element() const;
 
 		private:
-			TYPE* _Data() { return reinterpret_cast<TYPE*>(mData); }
-			const TYPE* _Data() const { return reinterpret_cast<const TYPE*>(mData); }
+			TYPE* _Data();
+			const TYPE* _Data() const;
 
 			uint8_t mData[1];
 		};
-
-		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE, int INDEX>
-		Ref32x4_1<TYPE, INDEX>& Ref32x4_1<TYPE, INDEX>::operator =(float value)
-		{
-			_Data()->SetLane(INDEX, value);
-			return *this;
-		}
-
-		template <typename TYPE, int INDEX>
-		Ref32x4_1<TYPE, INDEX>::operator typename Ref32x4_1<TYPE, INDEX>::Element () const
-		{
-			Element result = _Data()->GetLane<INDEX>();
-			return result;
-		}
-
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
@@ -46,11 +30,11 @@ namespace Cpf
 		public:
 			using Element = typename TYPE::Element;
 
-			Ref32x4_Index(TYPE& v, int idx) : mVector(v), mIndex(idx) {};
-			Ref32x4_Index(const Ref32x4_Index& rhs) : mVector(rhs.mVector), mIndex(rhs.mIndex) {}
+			Ref32x4_Index(TYPE& v, int idx);
+			Ref32x4_Index(const Ref32x4_Index& rhs);
 
-			Ref32x4_Index& operator = (Element value) { mVector.SetLane(mIndex, value); return *this; }
-			operator Element() const { return mVector.GetLane(mIndex); }
+			Ref32x4_Index& operator = (Element value);
+			operator Element() const;
 
 		private:
 			TYPE& mVector;
@@ -58,6 +42,8 @@ namespace Cpf
 		};
 	}
 }
+
+#include "Ref32x4_1.inl"
 
 #define REF32X4_1_SWIZZLE(t)		\
 	Cpf::SIMD::Ref32x4_1<t, 0> x;	\

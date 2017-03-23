@@ -116,7 +116,7 @@ MakeUnitTests( LIBRARY Threading GROUP Platform
 		UnitTest/Test_Reactor.hpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Collections Time Simd:static Math:static
+		Collections Time
 )
 
 option( CPF_THREADING_PROFILE_BUILD "" OFF )

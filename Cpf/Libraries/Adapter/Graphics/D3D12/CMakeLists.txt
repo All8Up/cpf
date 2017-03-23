@@ -105,7 +105,7 @@ MakeUnitTest( LIBRARY s_AdapterD3D12 GROUP Adapter
 		UnitTest/Test_All.hpp
 		../../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Configuration s_Simd MathX
+		Configuration MathX
 )
 
 # WIN32

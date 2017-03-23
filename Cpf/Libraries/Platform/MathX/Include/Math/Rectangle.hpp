@@ -14,26 +14,21 @@ namespace Cpf
 
 			Rectangle() {}
 			Rectangle(Element left, Element right, Element top, Element bottom)
-				: mLeft(left)
-				, mTop(top)
-				, mRight(right)
-				, mBottom(bottom) {}
+				: mRect(left, right, top, bottom)
+			{}
 
-			Element Top() const { return mTop; }
-			Element Left() const { return mLeft; }
-			Element Bottom() const { return mBottom; }
-			Element Right() const { return mRight; }
+			Element Left() const { return mRect.GetLane(0); }
+			Element Right() const { return mRect.GetLane(1); }
+			Element Top() const { return mRect.GetLane(2); }
+			Element Bottom() const { return mRect.GetLane(3); }
 
-			void Top(Element v) { mTop = v; }
-			void Left(Element v) { mLeft = v; }
-			void Bottom(Element v) { mBottom = v; }
-			void Right(Element v) { mRight = v; }
+			void Left(Element v) { mRect.SetLane(0, v); }
+			void Right(Element v) { mRect.SetLane(1, v); }
+			void Top(Element v) { mRect.SetLane(2, v); }
+			void Bottom(Element v) { mRect.SetLane(3, v); }
 
 		private:
-			Element mLeft;
-			Element mRight;
-			Element mTop;
-			Element mBottom;
+			TYPE mRect;
 		};
 	}
 }
@@ -45,6 +40,6 @@ namespace Cpf
 {
 	namespace Math
 	{
-		using Rectanglei = Rectangle<SIMD::I32x4_2>;
+		using Rectanglei = Rectangle<SIMD::I32x4>;
 	}
 }
