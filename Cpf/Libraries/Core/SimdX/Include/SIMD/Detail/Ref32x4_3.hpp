@@ -11,50 +11,19 @@ namespace Cpf
 		{
 		public:
 			constexpr operator typename TYPE::Lanes_3() const;
+			
+			typename TYPE::Element GetLane(int idx) const;
 
 		private:
-			TYPE* _Data()
-			{
-				return reinterpret_cast<TYPE*>(mData);
-			}
-			const TYPE* _Data() const
-			{
-				auto data = reinterpret_cast<const TYPE*>(mData);
-				return data;
-			}
-
-			uint8_t mData[1];
-		};
-
-		template <typename TYPE, int I0, int I1, int I2>
-		constexpr Ref32x4_3<TYPE, I0, I1, I2>::operator typename TYPE::Lanes_3() const
-		{
-			return TYPE::Lanes_3(_Data()->GetLanes<I0, I1, I2>());
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE>
-		class Ref32x4_3<TYPE, 0, 1, 2>
-		{
-		public:
-			constexpr operator const typename TYPE::Lanes_3() const { return *reinterpret_cast<const typename TYPE::Lanes_3*>(_Data()); }
-
-		private:
-			TYPE* _Data()
-			{
-				return reinterpret_cast<TYPE*>(mData);
-			}
-			const TYPE* _Data() const
-			{
-				auto data = reinterpret_cast<const TYPE*>(mData);
-				return data;
-			}
+			TYPE* _Data();
+			const TYPE* _Data() const;
 
 			uint8_t mData[1];
 		};
 	}
 }
 
+#include "Ref32x4_3.inl"
 
 #define F32X4_3_SWIZZLE_3(t, a, an, b, bn)		\
 	Cpf::SIMD::Ref32x4_3<t, a, b, 0> an##bn##x;	\

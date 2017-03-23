@@ -11,9 +11,6 @@ set (MATH_INCLUDE_FILES
 	Include/Math/Rectangle.hpp
 	Include/Math/Transform.hpp
 	Include/Math/Types.hpp
-	Include/Math/Vector2.hpp
-	Include/Math/Vector3.hpp
-	Include/Math/Vector4.hpp
 	Include/Math/Vector2v.hpp
 	Include/Math/Vector3v.hpp
 	Include/Math/Vector4v.hpp
@@ -27,19 +24,9 @@ set (MATH_DETAIL_INCLUDE_FILES
 	Include/Math/Detail/Quaternion.inl
 	Include/Math/Detail/Rectangle.inl
 	Include/Math/Detail/Transform.inl
-	Include/Math/Detail/Vector2.inl
-	Include/Math/Detail/Vector3.inl
-	Include/Math/Detail/Vector4.inl
 	Include/Math/Detail/Vector2v.inl
 	Include/Math/Detail/Vector3v.inl
 	Include/Math/Detail/Vector4v.inl
-	Include/Math/Detail/Swizzle2.hpp
-	Include/Math/Detail/Swizzle2.inl
-	Include/Math/Detail/Swizzle3.hpp
-	Include/Math/Detail/Swizzle3.inl
-	Include/Math/Detail/Swizzle4.hpp
-	Include/Math/Detail/Swizzle4.inl
-	Include/Math/Detail/SwizzleMacros.hpp
 )
 
 add_library (MathX INTERFACE)
@@ -79,6 +66,7 @@ MakeUnitTest (LIBRARY MathX GROUP Platform
 		UnitTest/Test_BitManipulation.cpp
 		UnitTest/Test_CodeGen.cpp
 		UnitTest/Test_Vector2v.cpp
+		UnitTest/Test_Vector3.cpp
 		UnitTest/Test_Vector3v.cpp
 		UnitTest/Test_Vector4v.cpp
 		UnitTest/Test_Matrix22v.cpp

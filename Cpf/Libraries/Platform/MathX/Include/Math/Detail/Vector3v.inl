@@ -42,6 +42,13 @@ namespace Cpf
 			: mVector(v0, typename TYPE::Lanes_2(ref))
 		{}
 
+		//////////////////////////////////////////////////////////////////////////
+		template <typename TYPE>
+		template <typename RTYPE, int I0, int I1, int I2>
+		Vector3v<TYPE>::Vector3v(const SIMD::Ref32x4_3<RTYPE, I0, I1, I2>& ref)
+			: mVector(ref.GetLane(0), ref.GetLane(1), ref.GetLane(2))
+		{}
+
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>

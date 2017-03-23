@@ -13,34 +13,15 @@ namespace Cpf
 			constexpr operator typename TYPE::Lanes_2() const;
 
 		private:
-			typename TYPE::Lanes_2* _Data() { return reinterpret_cast<typename TYPE::Lanes_2*>(mData); }
-			const typename TYPE::Lanes_2* _Data() const { return reinterpret_cast<const typename TYPE::Lanes_2*>(mData); }
-
-			uint8_t mData[1];
-		};
-
-		template <typename TYPE, int I0, int I1>
-		constexpr Ref32x4_2<TYPE, I0, I1>::operator typename TYPE::Lanes_2() const
-		{
-			return TYPE::Lanes_2(_Data()->GetLanes<I0, I1>());
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE>
-		class Ref32x4_2<TYPE, 0, 1>
-		{
-		public:
-			constexpr operator typename TYPE::Lanes_2() const { return *_Data(); }
-
-		private:
-			typename TYPE::Lanes_2* _Data() { return reinterpret_cast<typename TYPE::Lanes_2*>(mData); }
-			const typename TYPE::Lanes_2* _Data() const { return reinterpret_cast<const typename TYPE::Lanes_2*>(mData); }
+			typename TYPE::Lanes_2* _Data();
+			const typename TYPE::Lanes_2* _Data() const;
 
 			uint8_t mData[1];
 		};
 	}
 }
 
+#include "Ref32x4_2.inl"
 
 #define REF32X4_2_SWIZZLE_(t, s, v)		\
 	Cpf::SIMD::Ref32x4_2<t, s, 0> v##x;	\

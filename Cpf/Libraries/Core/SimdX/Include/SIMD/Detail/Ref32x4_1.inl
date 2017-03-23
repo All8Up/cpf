@@ -34,15 +34,27 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		Ref32x4_Index<TYPE>::Ref32x4_Index(TYPE& v, int idx) : mVector(v), mIndex(idx) {};
+		Ref32x4_Index<TYPE>::Ref32x4_Index(TYPE& v, int idx)
+			: mVector(v)
+			, mIndex(idx)
+		{};
 
 		template <typename TYPE>
-		Ref32x4_Index<TYPE>::Ref32x4_Index(const Ref32x4_Index& rhs) : mVector(rhs.mVector), mIndex(rhs.mIndex) {}
+		Ref32x4_Index<TYPE>::Ref32x4_Index(const Ref32x4_Index& rhs)
+			: mVector(rhs.mVector)
+			, mIndex(rhs.mIndex)
+		{}
 
 		template <typename TYPE>
-		Ref32x4_Index<TYPE>& Ref32x4_Index<TYPE>::operator = (Element value) { mVector.SetLane(mIndex, value); return *this; }
+		Ref32x4_Index<TYPE>& Ref32x4_Index<TYPE>::operator = (Element value)
+		{
+			mVector.SetLane(mIndex, value); return *this;
+		}
 
 		template <typename TYPE>
-		Ref32x4_Index<TYPE>::operator Element() const { return mVector.GetLane(mIndex); }
+		Ref32x4_Index<TYPE>::operator Element() const
+		{
+			return mVector.GetLane(mIndex);
+		}
 	}
 }

@@ -64,11 +64,13 @@ namespace Cpf
 
 #include "Math/Detail/Vector4v.inl"
 #include "SIMD/Types.hpp"
+#include "SIMD/Detail/FPU/F32x4.hpp"
 
 namespace Cpf
 {
 	namespace Math
 	{
 		using Vector4fv = Vector4v<SIMD::F32x4>;
+		using Vector4f = Vector4v<SIMD::FPU::F32x4_4>;
 	}
 }

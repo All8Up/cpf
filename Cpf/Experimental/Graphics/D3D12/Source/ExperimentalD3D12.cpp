@@ -12,7 +12,7 @@
 #include "Graphics/Driver.hpp"
 #include "Graphics/DebugUI.hpp"
 
-#include "Math/Vector4.hpp"
+#include "Math/Vector4v.hpp"
 
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Constants.hpp"

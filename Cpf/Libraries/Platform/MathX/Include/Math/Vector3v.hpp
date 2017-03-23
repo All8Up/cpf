@@ -29,6 +29,9 @@ namespace Cpf
 			template <int I1, int I2>
 			Vector3v(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
 
+			template <typename RTYPE, int I0, int I1, int I2>
+			explicit Vector3v(const SIMD::Ref32x4_3<RTYPE, I0, I1, I2>& ref);
+
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
 			Element CPF_VECTORCALL operator [](int idx) const;
@@ -54,11 +57,13 @@ namespace Cpf
 
 #include "Math/Detail/Vector3v.inl"
 #include "SIMD/Types.hpp"
+#include "SIMD/Detail/FPU/F32x3.hpp"
 
 namespace Cpf
 {
 	namespace Math
 	{
 		using Vector3fv = Vector3v<SIMD::F32x4_3>;
+		using Vector3f = Vector3v<SIMD::FPU::F32x3_3>;
 	}
 }
