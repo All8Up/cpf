@@ -15,9 +15,12 @@ Fence::Fence(Device* device, int64_t initValue CPF_GFX_DEBUG_PARAM_DEF)
 	CPF_LOG(D3D12, Info) << "Created fence: " << intptr_t(this) << " - " << intptr_t(mpFence.Ptr());
 
 #ifdef CPF_GFX_TRACKING
-	std::wstringstream str;
-	str << dbgFilename << " : " << dbgLineNumber;
-	mpFence->SetName(str.str().c_str());
+	if (dbgFilename)
+	{
+		std::wstringstream str;
+		str << dbgFilename << " : " << dbgLineNumber;
+		mpFence->SetName(str.str().c_str());
+	}
 #endif
 }
 

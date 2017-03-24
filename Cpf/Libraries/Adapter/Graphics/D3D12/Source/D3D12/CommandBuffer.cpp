@@ -36,9 +36,12 @@ CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* 
 	CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
 
 #ifdef CPF_GFX_TRACKING
-	std::wstringstream str;
-	str << dbgFilename << " : " << dbgLineNumber;
-	mpCommandList->SetName(str.str().c_str());
+	if (dbgFilename)
+	{
+		std::wstringstream str;
+		str << dbgFilename << " : " << dbgLineNumber;
+		mpCommandList->SetName(str.str().c_str());
+	}
 #endif
 }
 

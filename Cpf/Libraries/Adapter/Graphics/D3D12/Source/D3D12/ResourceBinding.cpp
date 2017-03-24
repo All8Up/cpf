@@ -34,9 +34,12 @@ ResourceBinding::ResourceBinding(Device* device, const Graphics::ResourceBinding
 	}
 
 #ifdef CPF_GFX_TRACKING
-	std::wstringstream str;
-	str << dbgFilename << " : " << dbgLineNumber;
-	mpSignature->SetName(str.str().c_str());
+	if (dbgFilename)
+	{
+		std::wstringstream str;
+		str << dbgFilename << " : " << dbgLineNumber;
+		mpSignature->SetName(str.str().c_str());
+	}
 #endif
 }
 

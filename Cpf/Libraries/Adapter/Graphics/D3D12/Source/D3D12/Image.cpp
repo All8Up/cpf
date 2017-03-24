@@ -101,9 +101,12 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 	}
 
 #ifdef CPF_GFX_TRACKING
-	std::wstringstream str;
-	str << dbgFilename << " : " << dbgLineNumber;
-	mpResource->SetName(str.str().c_str());
+	if (dbgFilename)
+	{
+		std::wstringstream str;
+		str << dbgFilename << " : " << dbgLineNumber;
+		mpResource->SetName(str.str().c_str());
+	}
 #endif
 }
 

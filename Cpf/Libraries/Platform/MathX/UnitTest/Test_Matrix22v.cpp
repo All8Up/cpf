@@ -19,6 +19,7 @@ typedef ::testing::Types <
 
 TYPED_TEST_CASE(TypedTest_Matrix22, Data32_2_Types);
 
+
 TYPED_TEST(TypedTest_Matrix22, Construction)
 {
 	using Element = typename TypeParam::Element;

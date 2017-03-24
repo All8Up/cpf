@@ -13,9 +13,12 @@ CommandPool::CommandPool(Device* device CPF_GFX_DEBUG_PARAM_DEF)
 	CPF_LOG(D3D12, Info) << "Created command pool: " << intptr_t(this) << " - " << intptr_t(mpCommandPool.Ptr());
 
 #ifdef CPF_GFX_TRACKING
-	std::wstringstream str;
-	str << dbgFilename << " : " << dbgLineNumber;
-	mpCommandPool->SetName(str.str().c_str());
+	if (dbgFilename)
+	{
+		std::wstringstream str;
+		str << dbgFilename << " : " << dbgLineNumber;
+		mpCommandPool->SetName(str.str().c_str());
+	}
 #endif
 }
 
