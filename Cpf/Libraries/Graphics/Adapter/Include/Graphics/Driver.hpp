@@ -13,6 +13,7 @@
 #	define CPF_GFX_DEBUG_FORWARD , dbgFilename, dbgLineNumber
 #else
 #	define CPF_GFX_DEBUG_PARAM_DECL
+#	define CPF_GFX_DEBUG_PARAM_DEF
 #	define CPF_GFX_DEBUG_PARAMS
 #	define CPF_GFX_DEBUG_FORWARD
 #endif
