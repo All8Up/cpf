@@ -221,8 +221,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 				// and performs the presents as the first and last submitted command lists.
 				for (int i = 0; i < mBackBufferCount; ++i)
 				{
-					mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
-					mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
+					mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+					mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
 					mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
 					mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
 				}
@@ -251,7 +251,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 				// Currently only a single frame.  Will Eventually match the number of back buffers and other resources.
 				Scheduler::Semaphore frameSemaphore(1);
 				// Create a graphics fence to track back buffers.
-				mpDevice->CreateFence(0, mpFence.AsTypePP());
+				mpDevice->CreateFence(0, mpFence.AsTypePP() CPF_GFX_DEBUG_PARAMS);
 
 				{
 					if (!mDebugUI.Initialize(mpDevice, mpWindow, mpLocator))

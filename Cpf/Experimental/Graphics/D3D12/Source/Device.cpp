@@ -104,7 +104,7 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		mBackBufferCount,
 		true
 	};
-	mpDevice->CreateSwapChain(instance, mpWindow, &desc, mpSwapChain.AsTypePP());
+	mpDevice->CreateSwapChain(instance, mpWindow, &desc, mpSwapChain.AsTypePP() CPF_GFX_DEBUG_PARAMS);
 
 	// Create a set of depth buffers to go with the swap chain.
 	mpDepthBufferImages.resize(desc.mBackBufferCount);

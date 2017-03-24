@@ -11,7 +11,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 
-Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, const ResourceBinding* resourceBinding)
+Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, const ResourceBinding* resourceBinding CPF_GFX_DEBUG_PARAM_DEF)
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC stateDesc;
 	stateDesc.pRootSignature = nullptr;
@@ -125,6 +125,12 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 
 	//////////////////////////////////////////////////////////////////////////
 	delete[] inputDescs;
+
+#ifdef CPF_GFX_TRACKING
+	std::wstringstream str;
+	str << dbgFilename << " : " << dbgLineNumber;
+	mpPipelineState->SetName(str.str().c_str());
+#endif
 
 	CPF_LOG(D3D12, Info) << "Created pipeline: " << intptr_t(this) << " - " << intptr_t(mpPipelineState.Ptr());
 }

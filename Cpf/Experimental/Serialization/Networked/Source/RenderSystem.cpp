@@ -47,12 +47,17 @@ bool RenderSystem::Shutdown()
 {
 	for (int i = 0; i < kBufferCount; ++i)
 	{
-		mpPreCommandPool[kBufferCount].Adopt(nullptr);
-		mpPreCommandBuffer[kBufferCount].Adopt(nullptr);
-		mpPostCommandPool[kBufferCount].Adopt(nullptr);
-		mpPostCommandBuffer[kBufferCount].Adopt(nullptr);
+		mpPreCommandPool[i].Adopt(nullptr);
+		mpPreCommandBuffer[i].Adopt(nullptr);
+		mpPostCommandPool[i].Adopt(nullptr);
+		mpPostCommandBuffer[i].Adopt(nullptr);
+		mpDebugUIPool[i].Adopt(nullptr);
+		mpDebugUIBuffer[i].Adopt(nullptr);
 	}
 	mpFence.Adopt(nullptr);
+
+	mpDepthBufferImages.clear();
+	mpDepthBufferImageViews.clear();
 
 	mpDebugUI.Adopt(nullptr);
 	mpSwapChain.Adopt(nullptr);
@@ -156,15 +161,14 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		kBufferCount,
 		true
 	};
-	mpDevice->CreateSwapChain(mpInstance, window, &desc, mpSwapChain.AsTypePP());
+	mpDevice->CreateSwapChain(mpInstance, window, &desc, mpSwapChain.AsTypePP() CPF_GFX_DEBUG_PARAMS);
 
-	/*
 	// Create a set of depth buffers to go with the swap chain.
 	mpDepthBufferImages.resize(desc.mBackBufferCount);
 	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
 	ImageDesc depthBufferDesc
 	{
-		mpWindow->GetClientArea().x, mpWindow->GetClientArea().y,
+		window->GetClientArea().x, window->GetClientArea().y,
 		1,
 		1,
 		Format::eD32f,
@@ -176,22 +180,21 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBufferImages[i].AsTypePP());
 		mpDevice->CreateDepthStencilView(mpDepthBufferImages[i], nullptr, mpDepthBufferImageViews[i].AsTypePP());
 	}
-	*/
 
 	return mpSwapChain;
 }
 
 bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locator)
 {
-	mpDevice->CreateFence(3, mpFence.AsTypePP());
+	mpDevice->CreateFence(3, mpFence.AsTypePP() CPF_GFX_DEBUG_PARAMS);
 	for (int i = 0; i < kBufferCount; ++i)
 	{
-		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
-		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP());
+		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
 	}
 	mpDebugUI.Adopt(new DebugUI());
 	mpDebugUI->Initialize(mpDevice, window, locator);

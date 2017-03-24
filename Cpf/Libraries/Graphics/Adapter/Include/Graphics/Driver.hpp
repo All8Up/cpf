@@ -1,5 +1,21 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Configuration.hpp"
+
+//////////////////////////////////////////////////////////////////////////
+#ifdef CPF_DEBUG
+#	define CPF_GFX_TRACKING
+#endif
+#ifdef CPF_GFX_TRACKING
+#	define CPF_GFX_DEBUG_PARAM_DECL , const char* dbgFilename=nullptr, int dbgLineNumber=0
+#	define CPF_GFX_DEBUG_PARAM_DEF , const char* dbgFilename, int dbgLineNumber
+#	define CPF_GFX_DEBUG_PARAMS , __FILE__, __LINE__
+#	define CPF_GFX_DEBUG_FORWARD , dbgFilename, dbgLineNumber
+#else
+#	define CPF_GFX_DEBUG_PARAM_DECL
+#	define CPF_GFX_DEBUG_PARAMS
+#	define CPF_GFX_DEBUG_FORWARD
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 #include "Graphics/Range.hpp"

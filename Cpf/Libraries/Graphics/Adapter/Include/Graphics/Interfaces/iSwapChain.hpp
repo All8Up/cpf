@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCounted.hpp"
+#include "Graphics/Driver.hpp"
 #include "Graphics/Format.hpp"
 #include "iImage.hpp"
 #include "iImageView.hpp"

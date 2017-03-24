@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Graphics/Driver.hpp"
 #include "Graphics/Interfaces/iImage.hpp"
 #include "Graphics/Interfaces/iImageView.hpp"
 #include "D3D12Utils.hpp"
@@ -16,7 +17,7 @@ namespace Cpf
 			{
 			public:
 				Image(ID3D12Resource* resource);
-				Image(Device*, const void* initData, const Graphics::ImageDesc* desc);
+				Image(Device*, const void* initData, const Graphics::ImageDesc* desc CPF_GFX_DEBUG_PARAM_DECL);
 				~Image() override;
 
 				const Graphics::ImageDesc& GetDesc() const override;

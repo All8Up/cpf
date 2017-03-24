@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Graphics/Driver.hpp"
 #include "Graphics/Interfaces/iCommandBuffer.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
@@ -36,7 +37,7 @@ namespace Cpf
 			class CommandBuffer : public tRefCounted<Graphics::iCommandBuffer>
 			{
 			public:
-				CommandBuffer(Graphics::iDevice*, Graphics::iCommandPool*);
+				CommandBuffer(Graphics::iDevice*, Graphics::iCommandPool* CPF_GFX_DEBUG_PARAM_DECL);
 				~CommandBuffer() override;
 
 				void Begin() override;

@@ -13,7 +13,7 @@ Image::Image(ID3D12Resource* resource)
 {
 }
 
-Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* desc)
+Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* desc CPF_GFX_DEBUG_PARAM_DEF)
 	: mDesc(*desc)
 {
 	{
@@ -99,6 +99,12 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 		mDescriptor = device->GetShaderResourceDescriptors().Alloc();
 		device->GetD3DDevice()->CreateShaderResourceView(GetResource(), &mResourceView, mDescriptor);
 	}
+
+#ifdef CPF_GFX_TRACKING
+	std::wstringstream str;
+	str << dbgFilename << " : " << dbgLineNumber;
+	mpResource->SetName(str.str().c_str());
+#endif
 }
 
 Image::~Image()
