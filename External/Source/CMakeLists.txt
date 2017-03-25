@@ -87,3 +87,44 @@ else ()
 		set_property (TARGET RuntimeObjectSystem PROPERTY FOLDER External)
 	endif ()
 endif ()
+
+# Bx
+if (NOT EXTERN_INLINE_BX)
+else ()
+	if (IS_DIRECTORY "${BX_SRC_DIR}")
+		add_library (bx STATIC
+			${BX_SRC_DIR}/src/amalgamated.cpp
+		)
+		target_include_directories (bx PUBLIC "${BX_SRC_DIR}/include")
+		if (WIN32)
+			target_include_directories (bx PUBLIC "${BX_SRC_DIR}/include/compat/msvc")
+		endif ()
+		set_property (TARGET bx PROPERTY FOLDER External)
+	endif ()
+endif ()
+
+
+# Bgfx
+if (NOT EXTERN_INLINE_BGFX)
+else ()
+	if (IS_DIRECTORY "${BGFX_SRC_DIR}")
+		add_library (bgfx STATIC
+			${BGFX_SRC_DIR}/src/amalgamated.cpp
+		)
+		target_include_directories (bgfx PUBLIC
+			"${BGFX_SRC_DIR}/include"
+			"${BGFX_SRC_DIR}/3rdparty"
+			"${BGFX_SRC_DIR}/3rdparty/dxsdk/include"
+			)
+		target_link_libraries (bgfx bx SDL2)
+		target_compile_definitions (bgfx PUBLIC
+			BGFX_CONFIG_USE_OVR=0
+			BGFX_CONFIG_RENDERER_DIRECT3D9=1
+			BGFX_CONFIG_RENDERER_DIRECT3D11=1
+			BGFX_CONFIG_RENDERER_DIRECT3D12=1
+			BGFX_CONFIG_RENDERER_OPENGL=1
+			BGFX_CONFIG_RENDERER_VULKAN=0
+			)
+		set_property (TARGET bgfx PROPERTY FOLDER External)
+	endif ()
+endif ()
