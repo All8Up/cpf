@@ -88,97 +88,25 @@ else ()
 	endif ()
 endif ()
 
-# Bx
-if (NOT EXTERN_INLINE_BX)
-else ()
-	if (IS_DIRECTORY "${BX_SRC_DIR}")
-		add_library (bx STATIC
-			${BX_SRC_DIR}/src/amalgamated.cpp
-		)
-		target_include_directories (bx PUBLIC "${BX_SRC_DIR}/include")
-		if (WIN32)
-			target_include_directories (bx PUBLIC "${BX_SRC_DIR}/include/compat/msvc")
-		endif ()
-		set_property (TARGET bx PROPERTY FOLDER External)
-	endif ()
-endif ()
-
-
 # Bgfx
 if (NOT EXTERN_INLINE_BGFX)
 else ()
 	if (IS_DIRECTORY "${BGFX_SRC_DIR}")
-		add_library (bgfx STATIC
-			${BGFX_SRC_DIR}/src/amalgamated.cpp
-		)
-		target_include_directories (bgfx PUBLIC
-			"${BGFX_SRC_DIR}/include"
-			"${BGFX_SRC_DIR}/3rdparty"
-			"${BGFX_SRC_DIR}/3rdparty/dxsdk/include"
-			"${BGFX_SRC_DIR}/3rdparty/khronos"
-			)
-		target_link_libraries (bgfx bx SDL2)
-		target_compile_definitions (bgfx PUBLIC
-			BGFX_CONFIG_USE_OVR=0
-			BGFX_CONFIG_RENDERER_DIRECT3D9=1
-			BGFX_CONFIG_RENDERER_DIRECT3D11=1
-			BGFX_CONFIG_RENDERER_DIRECT3D12=1
-			BGFX_CONFIG_RENDERER_OPENGL=1
-			BGFX_CONFIG_RENDERER_VULKAN=1
-			)
-		set_property (TARGET bgfx PROPERTY FOLDER External)
+		set (BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+		add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/bgfx)
 
-		add_library (bgfx_util STATIC
-			${BGFX_SRC_DIR}/examples/common/entry/cmd.h
-			${BGFX_SRC_DIR}/examples/common/entry/cmd.cpp
-			${BGFX_SRC_DIR}/examples/common/entry/entry.h
-			${BGFX_SRC_DIR}/examples/common/entry/entry.cpp
-			${BGFX_SRC_DIR}/examples/common/entry/entry_windows.cpp
-			${BGFX_SRC_DIR}/examples/common/entry/input.h
-			${BGFX_SRC_DIR}/examples/common/entry/input.cpp
-			${BGFX_SRC_DIR}/examples/common/debugdraw/debugdraw.h
-			${BGFX_SRC_DIR}/examples/common/debugdraw/debugdraw.cpp
-			${BGFX_SRC_DIR}/examples/common/font/font_manager.h
-			${BGFX_SRC_DIR}/examples/common/font/font_manager.cpp
-			${BGFX_SRC_DIR}/examples/common/nanovg/nanovg.h
-			${BGFX_SRC_DIR}/examples/common/nanovg/nanovg.cpp
-			${BGFX_SRC_DIR}/examples/common/nanovg/nanovg_bgfx.h
-			${BGFX_SRC_DIR}/examples/common/nanovg/nanovg_bgfx.cpp
-			${BGFX_SRC_DIR}/examples/common/ps/particle_system.h
-			${BGFX_SRC_DIR}/examples/common/ps/particle_system.cpp
-#			${BGFX_SRC_DIR}/examples/common/bgfx_utils.h
-#			${BGFX_SRC_DIR}/examples/common/bgfx_utils.cpp
-			${BGFX_SRC_DIR}/examples/common/bounds.h
-			${BGFX_SRC_DIR}/examples/common/bounds.cpp
-			${BGFX_SRC_DIR}/examples/common/camera.h
-			${BGFX_SRC_DIR}/examples/common/camera.cpp
-			${BGFX_SRC_DIR}/examples/common/cube_atlas.h
-			${BGFX_SRC_DIR}/examples/common/cube_atlas.cpp
-#			${BGFX_SRC_DIR}/examples/common/image.h
-#			${BGFX_SRC_DIR}/examples/common/image.cpp
-			${BGFX_SRC_DIR}/examples/common/packrect.h
-			${BGFX_SRC_DIR}/examples/common/imgui/imgui.h
-			${BGFX_SRC_DIR}/examples/common/imgui/imgui.cpp
-			${BGFX_SRC_DIR}/examples/common/imgui/ocornut_imgui.h
-			${BGFX_SRC_DIR}/examples/common/imgui/ocornut_imgui.cpp
-			${BGFX_SRC_DIR}/examples/common/imgui/scintilla.h
-			${BGFX_SRC_DIR}/examples/common/imgui/scintilla.cpp
-			${BGFX_SRC_DIR}/3rdparty/ocornut-imgui/imgui.h
-			${BGFX_SRC_DIR}/3rdparty/ocornut-imgui/imgui.cpp
-			${BGFX_SRC_DIR}/3rdparty/ocornut-imgui/imgui_demo.cpp
-			${BGFX_SRC_DIR}/3rdparty/ocornut-imgui/imgui_draw.cpp
-			${BGFX_SRC_DIR}/3rdparty/ocornut-imgui/imgui_node_graph_test.cpp
-			${BGFX_SRC_DIR}/3rdparty/ib-compress/indexbuffercompression.h
-			${BGFX_SRC_DIR}/3rdparty/ib-compress/indexbuffercompression.cpp
-			${BGFX_SRC_DIR}/3rdparty/ib-compress/indexbuffercompressionformat.h
-			${BGFX_SRC_DIR}/3rdparty/ib-compress/indexbufferdecompression.h
-			${BGFX_SRC_DIR}/3rdparty/ib-compress/indexbufferdecompression.cpp
-			${BGFX_SRC_DIR}/3rdparty/ib-compress/indexcompressionconstants.h
-			)
-		target_link_libraries (bgfx_util bx bgfx)
-		target_include_directories (bgfx_util PUBLIC
-			"${BGFX_SRC_DIR}/examples/common"
-			)
-		set_property (TARGET bgfx_util PROPERTY FOLDER External)
+		set_property (TARGET bx PROPERTY FOLDER External)
+		set_property (TARGET bgfx PROPERTY FOLDER External)
+		set_property (TARGET geometryc PROPERTY FOLDER External)
+		set_property (TARGET shaderc PROPERTY FOLDER External)
+
+		set_property (TARGET fcpp PROPERTY FOLDER External)
+		set_property (TARGET mesa PROPERTY FOLDER External)
+		set_property (TARGET glcpp PROPERTY FOLDER External)
+		set_property (TARGET forsyth-too PROPERTY FOLDER External)
+		set_property (TARGET glcpp PROPERTY FOLDER External)
+		set_property (TARGET glslang PROPERTY FOLDER External)
+		set_property (TARGET glsl-optimizer PROPERTY FOLDER External)
+		set_property (TARGET ib-compress PROPERTY FOLDER External)
 	endif ()
 endif ()

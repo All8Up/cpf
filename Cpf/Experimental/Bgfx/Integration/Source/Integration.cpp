@@ -9,7 +9,6 @@
 #include <bx/bx.h>
 #include <bx/uint32_t.h>
 #include "bgfx/platform.h"
-#include "bgfx_utils.h"
 
 using namespace Cpf;
 using namespace Platform;
@@ -129,7 +128,7 @@ int BgfxIntegration::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
-	mpLocator.Adopt(Resources::Configuration("./Networked/resource_config.json").GetLocator());
+	mpLocator.Adopt(Resources::Configuration("./integration_res/resource_config.json").GetLocator());
 
 	mWindowSize.x = 1024;
 	mWindowSize.y = 768;
@@ -169,7 +168,7 @@ int BgfxIntegration::Start(const CommandLine&)
 //	m_program = loadProgram("vs_cubes", "fs_cubes");
 
 	///
-	bgfx::reset(mWindowSize.x, mWindowSize.y, 0);
+	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
 	bgfx::setDebug(BGFX_DEBUG_STATS);
 	bgfx::setViewClear(
 		0
@@ -220,8 +219,9 @@ int BgfxIntegration::Start(const CommandLine&)
 
 	bgfx::destroyIndexBuffer(m_ibh);
 	bgfx::destroyVertexBuffer(m_vbh);
-	bgfx::destroyProgram(m_program);
+//	bgfx::destroyProgram(m_program);
 	bgfx::shutdown();
+	mpLocator.Adopt(nullptr);
 	mpWindow.Adopt(nullptr);
 	return 0;
 }
@@ -230,7 +230,7 @@ void BgfxIntegration::_Resize(int32_t width, int32_t height)
 {
 	mWindowSize.x = width;
 	mWindowSize.y = height;
-	bgfx::reset(mWindowSize.x, mWindowSize.y, 0);
+	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
 }
 
 

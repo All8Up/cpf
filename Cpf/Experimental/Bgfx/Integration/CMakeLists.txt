@@ -24,7 +24,6 @@ target_link_libraries (BgfxIntegration
 	s_Resources
 	bx
 	bgfx
-	bgfx_util
 )
 target_compile_definitions (BgfxIntegration PUBLIC)
 
@@ -32,7 +31,7 @@ set_property (TARGET BgfxIntegration PROPERTY FOLDER Experimental/Bgfx)
 
 
 if(MSVC)
-	set (targetPath /Cpf/Bgfx/Integration/integration_res)
+	set (targetPath /Cpf/Experimental/Bgfx/Integration)
 else()
 	set (targetPath /)
 endif()
@@ -42,7 +41,7 @@ file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/integration_res/shaders)
 foreach (file ${DataFiles})
 	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
 	set (target ${CMAKE_BINARY_DIR}${targetPath}/${relative})
-#	message ("src: ${file}  dst: ${target}")
+	message ("src: ${file}  dst: ${target}")
 	add_custom_command (OUTPUT ${target}
 		COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
 		MAIN_DEPENDENCY ${file}
