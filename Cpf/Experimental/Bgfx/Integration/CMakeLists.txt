@@ -21,6 +21,7 @@ target_link_libraries (BgfxIntegration
 	s_Resources
 	bx
 	bgfx
+	bgfx_util
 )
 target_compile_definitions (BgfxIntegration PUBLIC)
 

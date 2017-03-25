@@ -21,5 +21,9 @@ namespace Cpf
 
 		IntrusivePtr<iWindow> mpWindow;
 		Math::Vector2i mWindowSize;
+
+		Concurrency::Scheduler mScheduler;
+		Concurrency::ThreadPool mThreadPool;
+		Concurrency::LoadBalancer mLoadBalancer;
 	};
 }
