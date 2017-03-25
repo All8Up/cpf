@@ -1,0 +1,17 @@
+{
+  "Mounts": [
+    {
+      "VolumeType": "FileSystem",
+      "MountPoint": "shaders",
+      "Descriptor": {
+        "Directory": "./integration_res/shaders"
+      }
+    }
+  ],
+  "Caches": [
+    {
+      "CacheType": "Default",
+      "Name": "default"
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 #include "MultiCore/Pipeline.hpp"
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
-#include "MultiCore/System/Timer.hpp"
+#include "Resources\Locator.hpp"
 
 namespace Cpf
 {
@@ -25,5 +25,7 @@ namespace Cpf
 		Concurrency::Scheduler mScheduler;
 		Concurrency::ThreadPool mThreadPool;
 		Concurrency::LoadBalancer mLoadBalancer;
+
+		IntrusivePtr<Resources::Locator> mpLocator;
 	};
 }

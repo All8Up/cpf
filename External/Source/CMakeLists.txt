@@ -146,16 +146,16 @@ else ()
 			${BGFX_SRC_DIR}/examples/common/nanovg/nanovg_bgfx.cpp
 			${BGFX_SRC_DIR}/examples/common/ps/particle_system.h
 			${BGFX_SRC_DIR}/examples/common/ps/particle_system.cpp
-			${BGFX_SRC_DIR}/examples/common/bgfx_utils.h
-			${BGFX_SRC_DIR}/examples/common/bgfx_utils.cpp
+#			${BGFX_SRC_DIR}/examples/common/bgfx_utils.h
+#			${BGFX_SRC_DIR}/examples/common/bgfx_utils.cpp
 			${BGFX_SRC_DIR}/examples/common/bounds.h
 			${BGFX_SRC_DIR}/examples/common/bounds.cpp
 			${BGFX_SRC_DIR}/examples/common/camera.h
 			${BGFX_SRC_DIR}/examples/common/camera.cpp
 			${BGFX_SRC_DIR}/examples/common/cube_atlas.h
 			${BGFX_SRC_DIR}/examples/common/cube_atlas.cpp
-			${BGFX_SRC_DIR}/examples/common/image.h
-			${BGFX_SRC_DIR}/examples/common/image.cpp
+#			${BGFX_SRC_DIR}/examples/common/image.h
+#			${BGFX_SRC_DIR}/examples/common/image.cpp
 			${BGFX_SRC_DIR}/examples/common/packrect.h
 			${BGFX_SRC_DIR}/examples/common/imgui/imgui.h
 			${BGFX_SRC_DIR}/examples/common/imgui/imgui.cpp

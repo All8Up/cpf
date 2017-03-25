@@ -2,6 +2,7 @@
 #include "Logging\Logging.hpp"
 #include "IO\IO.hpp"
 #include "Resources\Resources.hpp"
+#include "Resources\ResourceConfig.hpp"
 
 #include "SDL.h"
 #include "SDL_syswm.h"
@@ -128,6 +129,8 @@ int BgfxIntegration::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
+	mpLocator.Adopt(Resources::Configuration("./Networked/resource_config.json").GetLocator());
+
 	mWindowSize.x = 1024;
 	mWindowSize.y = 768;
 	mpWindow.Adopt(
@@ -163,7 +166,7 @@ int BgfxIntegration::Start(const CommandLine&)
 	);
 
 	// Create program from shaders.
-	m_program = loadProgram("vs_cubes", "fs_cubes");
+//	m_program = loadProgram("vs_cubes", "fs_cubes");
 
 	///
 	bgfx::reset(mWindowSize.x, mWindowSize.y, 0);
