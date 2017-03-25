@@ -70,7 +70,7 @@ target_include_directories (s_AdapterD3D12
 		$<INSTALL_INTERFACE:Include>
 )
 target_link_libraries (s_AdapterD3D12
-	LINK_PUBLIC
+	PUBLIC
 		Configuration RefCount Math s_IO s_GraphicsDriver DXGI.lib d3d12.lib D3DCompiler.lib Logging
 )
 
