@@ -115,6 +115,7 @@ else ()
 			"${BGFX_SRC_DIR}/include"
 			"${BGFX_SRC_DIR}/3rdparty"
 			"${BGFX_SRC_DIR}/3rdparty/dxsdk/include"
+			"${BGFX_SRC_DIR}/../opengl_additions"
 			)
 		target_link_libraries (bgfx bx SDL2)
 		target_compile_definitions (bgfx PUBLIC
