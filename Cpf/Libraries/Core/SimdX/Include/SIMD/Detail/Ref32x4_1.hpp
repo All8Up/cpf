@@ -13,7 +13,7 @@ namespace Cpf
 		public:
 			using Element = typename TYPE::Element;
 
-			Ref32x4_1& operator = (float value);
+			Ref32x4_1& operator = (Element value);
 			operator Element() const;
 
 		private:

@@ -7,7 +7,7 @@ namespace Cpf
 	{
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE, int INDEX>
-		Ref32x4_1<TYPE, INDEX>& Ref32x4_1<TYPE, INDEX>::operator =(float value)
+		Ref32x4_1<TYPE, INDEX>& Ref32x4_1<TYPE, INDEX>::operator =(Element value)
 		{
 			_Data()->SetLane(INDEX, value);
 			return *this;

@@ -17,5 +17,9 @@ namespace Cpf
 		int Start(const CommandLine&) override;
 
 	private:
+		void _Resize(int32_t width, int32_t height);
+
+		IntrusivePtr<iWindow> mpWindow;
+		Math::Vector2i mWindowSize;
 	};
 }

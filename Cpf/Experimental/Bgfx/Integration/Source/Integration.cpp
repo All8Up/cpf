@@ -10,14 +10,9 @@ using namespace Cpf;
 
 
 //////////////////////////////////////////////////////////////////////////
-inline bool sdlSetWindow(SDL_Window* _window)
+inline bool bgfxSetWindow(iWindow* _window)
 {
-	SDL_SysWMinfo wmi;
-	SDL_VERSION(&wmi.version);
-	if (!SDL_GetWindowWMInfo(_window, &wmi))
-	{
-		return false;
-	}
+	OSWindowData windowData = _window->GetOSWindowData();
 
 	bgfx::PlatformData pd;
 #	if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
@@ -28,7 +23,7 @@ inline bool sdlSetWindow(SDL_Window* _window)
 	pd.nwh = wmi.info.cocoa.window;
 #	elif BX_PLATFORM_WINDOWS
 	pd.ndt = NULL;
-	pd.nwh = wmi.info.win.window;
+	pd.nwh = windowData.mHwnd;
 #	elif BX_PLATFORM_STEAMLINK
 	pd.ndt = wmi.info.vivante.display;
 	pd.nwh = wmi.info.vivante.window;
@@ -305,11 +300,21 @@ BgfxIntegration::~BgfxIntegration()
 
 int BgfxIntegration::Start(const CommandLine&)
 {
-	SDL_Window* window = SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, 0);
-	sdlSetWindow(window);
+	mWindowSize.x = 1024;
+	mWindowSize.y = 768;
+	mpWindow.Adopt(
+		WindowDesc(this)
+		.Title("BGFX")
+		.Position(iWindow::Centered)
+		.Size(mWindowSize)
+		.Flags(iWindow::eResizable | iWindow::eShown)
+	);
+	mpWindow->GetEmitter().On<iWindow::OnResized>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
+
+	bgfxSetWindow(mpWindow);
 	bgfx::init(); // bgfx::RendererType::Direct3D11, BGFX_PCI_ID_NVIDIA);
 
-	bgfx::reset(1024, 768, 0);
+	bgfx::reset(mWindowSize.x, mWindowSize.y, 0);
 	bgfx::setDebug(BGFX_DEBUG_STATS);
 	bgfx::setViewClear(
 		0
@@ -331,7 +336,7 @@ int BgfxIntegration::Start(const CommandLine&)
 				running = false;
 			}
 
-			bgfx::setViewRect(0, 0, 0, uint16_t(1024), uint16_t(768));
+			bgfx::setViewRect(0, 0, 0, uint16_t(mWindowSize.x), uint16_t(mWindowSize.y));
 
 			// This dummy draw call is here to make sure that view 0 is cleared
 			// if no other draw calls are submitted to view 0.
@@ -339,8 +344,8 @@ int BgfxIntegration::Start(const CommandLine&)
 
 			// Use debug font to print information about this example.
 			bgfx::dbgTextClear();
-			bgfx::dbgTextImage(bx::uint16_max(uint16_t(1024 / 2 / 8), 20) - 20
-				, bx::uint16_max(uint16_t(768 / 2 / 16), 6) - 6
+			bgfx::dbgTextImage(bx::uint16_max(uint16_t(mWindowSize.x / 2 / 8), 20) - 20
+				, bx::uint16_max(uint16_t(mWindowSize.y / 2 / 16), 6) - 6
 				, 40
 				, 12
 				, s_logo
@@ -366,8 +371,15 @@ int BgfxIntegration::Start(const CommandLine&)
 	}
 
 	bgfx::shutdown();
-	SDL_DestroyWindow(window);
+	mpWindow.Adopt(nullptr);
 	return 0;
+}
+
+void BgfxIntegration::_Resize(int32_t width, int32_t height)
+{
+	mWindowSize.x = width;
+	mWindowSize.y = height;
+	bgfx::reset(mWindowSize.x, mWindowSize.y, 0);
 }
 
 
