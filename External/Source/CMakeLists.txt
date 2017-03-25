@@ -95,6 +95,8 @@ else ()
 		set (BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 		add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/bgfx)
 
+		set_property (TARGET tools PROPERTY FOLDER External)
+
 		set_property (TARGET bx PROPERTY FOLDER External)
 		set_property (TARGET bgfx PROPERTY FOLDER External)
 		set_property (TARGET geometryc PROPERTY FOLDER External)

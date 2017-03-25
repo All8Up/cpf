@@ -2,7 +2,7 @@
 #include "Math/Quaternion.hpp"
 #include "Math/Constants.hpp"
 #include "Math/Vector3v.hpp"
-#include "SimdX.hpp"
+#include "SIMD.hpp"
 #include <gmock/gmock.h>
 
 //////////////////////////////////////////////////////////////////////////

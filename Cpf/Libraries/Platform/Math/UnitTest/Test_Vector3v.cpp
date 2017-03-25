@@ -1,36 +1,30 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest\gtest.h>
-#include "SimdX.hpp"
-#include "SIMD/Detail/FPU/F32x2.hpp"
-#include "SIMD/Detail/FPU/I32x2.hpp"
-#include "SIMD/Detail/FPU/F32x3.hpp"
-#include "SIMD/Detail/FPU/I32x3.hpp"
+#include "SIMD.hpp"
 #include "Math/Vector2v.hpp"
 #include "Math/Vector3v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector3f = Cpf::Math::Vector3v<Cpf::SIMD::FPU::F32x3_3>;
+using Vector3fv_SSE4_1 = Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::F32x4_3>;
+using Vector3fv_Reference = Cpf::Math::Vector3v<Cpf::SIMD::Reference::F32x4_3>;
 
 template <typename T>
-class TypedTest_Vector3_fpu : public::testing::Test
+class TypedTest_Vector3 : public::testing::Test
 {
 public:
 };
 
 typedef ::testing::Types <
-	Vector3f,
-	Cpf::Math::Vector3v<Cpf::SIMD::FPU::I32x3_3>
+	Vector3fv_Reference,
+	Vector3fv_SSE4_1,
+	Cpf::Math::Vector3v<Cpf::SIMD::Reference::I32x4_3>,
+	Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::I32x4_3>
 > F32x4_1_Types;
 
-TYPED_TEST_CASE(TypedTest_Vector3_fpu, F32x4_1_Types);
+TYPED_TEST_CASE(TypedTest_Vector3, F32x4_1_Types);
 
 
-TYPED_TEST(TypedTest_Vector3_fpu, SizeValidation)
-{
-	EXPECT_EQ(sizeof(typename TypeParam), sizeof(typename TypeParam::Element)*3);
-}
-
-TYPED_TEST(TypedTest_Vector3_fpu, Construction)
+TYPED_TEST(TypedTest_Vector3, Construction)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -42,7 +36,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, Construction)
 	EXPECT_TRUE(Near(t1, { Element(3), Element(4), Element(5) }, Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, ArrayAccess)
+TYPED_TEST(TypedTest_Vector3, ArrayAccess)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -60,7 +54,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, ArrayAccess)
 	EXPECT_NEAR(t0[2], Element(8), Element(0.01f));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, ElementAccess)
+TYPED_TEST(TypedTest_Vector3, ElementAccess)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -84,7 +78,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, ElementAccess)
 	EXPECT_TRUE(Near(Type(t0.zyx), { Element(3), Element(2), Element(1) }, Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorAddAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorAddAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -96,7 +90,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorAddAssign)
 	EXPECT_TRUE((t0 == Type(Element(4), Element(6), Element(8))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorSubtractAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorSubtractAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -108,7 +102,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorSubtractAssign)
 	EXPECT_TRUE((t0 == Type(Element(-2), Element(-2), Element(-2))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiplyAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorMultiplyAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -120,7 +114,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiplyAssign)
 	EXPECT_TRUE((t0 == Type(Element(3), Element(8), Element(15))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorDivideAssign)
+TYPED_TEST(TypedTest_Vector3, OperatorDivideAssign)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -132,7 +126,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorDivideAssign)
 	EXPECT_TRUE((t0 == Type(Element(4), Element(5), Element(5))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorNegate)
+TYPED_TEST(TypedTest_Vector3, OperatorNegate)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -143,7 +137,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorNegate)
 	EXPECT_TRUE(Near(t1, { Element(-1), Element(-2), Element(-3) }, Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorEquals)
+TYPED_TEST(TypedTest_Vector3, OperatorEquals)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -155,7 +149,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorEquals)
 	EXPECT_FALSE(t0 == t1);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorNotEquals)
+TYPED_TEST(TypedTest_Vector3, OperatorNotEquals)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -167,7 +161,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorNotEquals)
 	EXPECT_TRUE((t0 != t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorLessThan)
+TYPED_TEST(TypedTest_Vector3, OperatorLessThan)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -179,7 +173,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorLessThan)
 	EXPECT_TRUE((t0 < t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorLessThanEqual)
+TYPED_TEST(TypedTest_Vector3, OperatorLessThanEqual)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -191,7 +185,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorLessThanEqual)
 	EXPECT_TRUE((t0 <= t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorGreaterThan)
+TYPED_TEST(TypedTest_Vector3, OperatorGreaterThan)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -203,7 +197,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorGreaterThan)
 	EXPECT_FALSE((t0 > t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorGreaterThanEqual)
+TYPED_TEST(TypedTest_Vector3, OperatorGreaterThanEqual)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -215,7 +209,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorGreaterThanEqual)
 	EXPECT_FALSE((t0 >= t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorAdd)
+TYPED_TEST(TypedTest_Vector3, OperatorAdd)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -227,7 +221,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorAdd)
 	EXPECT_TRUE((t2 == Type(Element(4), Element(6), Element(8))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorSubtract)
+TYPED_TEST(TypedTest_Vector3, OperatorSubtract)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -239,7 +233,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorSubtract)
 	EXPECT_TRUE((t2 == Type(Element(-2), Element(-2), Element(-2))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiply)
+TYPED_TEST(TypedTest_Vector3, OperatorMultiply)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -251,7 +245,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiply)
 	EXPECT_TRUE(Near(t2, Type(Element(3), Element(8), Element(15)), Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiplyScalar)
+TYPED_TEST(TypedTest_Vector3, OperatorMultiplyScalar)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -262,7 +256,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiplyScalar)
 	EXPECT_TRUE(Near(t2, Type(Element(2), Element(4), Element(6)), Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorScalarMultiply)
+TYPED_TEST(TypedTest_Vector3, OperatorScalarMultiply)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -273,7 +267,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorScalarMultiply)
 	EXPECT_TRUE(Near(t2, Type(Element(2), Element(4), Element(6)), Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, OperatorDevide)
+TYPED_TEST(TypedTest_Vector3, OperatorDevide)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -285,7 +279,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, OperatorDevide)
 	EXPECT_TRUE(Near(t2, Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f)), Element(0.01f)));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, Min)
+TYPED_TEST(TypedTest_Vector3, Min)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -297,7 +291,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, Min)
 	EXPECT_TRUE((t2 == Type(Element(1.0f), Element(2.0f), Element(3.0f))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, HMin)
+TYPED_TEST(TypedTest_Vector3, HMin)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -308,7 +302,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, HMin)
 	EXPECT_TRUE(t1 == Element(1));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, Max)
+TYPED_TEST(TypedTest_Vector3, Max)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -320,7 +314,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, Max)
 	EXPECT_TRUE((t2 == Type(Element(3.0f), Element(4.0f), Element(5.0f))) == Type::kLaneMask);
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, HMax)
+TYPED_TEST(TypedTest_Vector3, HMax)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -331,7 +325,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, HMax)
 	EXPECT_TRUE(t1 == Element(3));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, Sqrt)
+TYPED_TEST(TypedTest_Vector3, Sqrt)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -344,7 +338,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, Sqrt)
 	EXPECT_TRUE(t1.z == Element(6));
 }
 
-TYPED_TEST(TypedTest_Vector3_fpu, Clamp)
+TYPED_TEST(TypedTest_Vector3, Clamp)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -358,7 +352,7 @@ TYPED_TEST(TypedTest_Vector3_fpu, Clamp)
 }
 
 
-TYPED_TEST(TypedTest_Vector3_fpu, Modulus)
+TYPED_TEST(TypedTest_Vector3, Modulus)
 {
 	using Type = typename TypeParam;
 	using Element = typename Type::Element;
@@ -370,64 +364,126 @@ TYPED_TEST(TypedTest_Vector3_fpu, Modulus)
 }
 
 // NOTE: Next items only make sense for floating point.
-TEST(Vector3f, Dot_Reference)
+TEST(Vector3fv, Dot_Reference)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
-	Vector3f t1 = { 3.0f, 5.0f, 6.0f };
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
+	Vector3fv t1 = { 3.0f, 5.0f, 6.0f };
 	float dot = Dot(t0, t1);
 	EXPECT_NEAR(dot, (3.0f * 5.0f) + (5.0f * 12.0f) + (13.0f * 6.0f), 0.01f);
 }
 
-TEST(Vector3f, Magnitude_Reference)
+TEST(Vector3fv, Dot_SSE4_1)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
+	Vector3fv t1 = { 3.0f, 5.0f, 6.0f };
+	float dot = Dot(t0, t1);
+	EXPECT_NEAR(dot, (3.0f * 5.0f) + (5.0f * 12.0f) + (13.0f * 6.0f), 0.01f);
+}
+
+TEST(Vector3fv, Magnitude_Reference)
+{
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
 	float dot = Magnitude(t0);
 	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f)), 0.01f);
 }
 
-TEST(Vector3f, MagnitudeSq_Reference)
+TEST(Vector3fv, Magnitude_SSE4_1)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
+	float dot = Magnitude(t0);
+	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f)), 0.01f);
+}
+
+TEST(Vector3fv, MagnitudeSq_Reference)
+{
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
 	float dot = MagnitudeSq(t0);
 	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f), 0.01f);
 }
 
-TEST(Vector3f, Normalize_Reference)
+TEST(Vector3fv, MagnitudeSq_SSE4_1)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
-	Vector3f t1 = Normalize(t0);
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
+	float dot = MagnitudeSq(t0);
+	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f), 0.01f);
+}
+
+TEST(Vector3fv, Normalize_Reference)
+{
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
+	Vector3fv t1 = Normalize(t0);
 	EXPECT_TRUE(Near(t1, { t0.x / Magnitude(t0), t0.y / Magnitude(t0), t0.z / Magnitude(t0) }, 0.01f));
 }
 
-TEST(Vector3f, Reflect_Reference)
+TEST(Vector3fv, Normalize_SSE4_1)
 {
-	using Type = Vector3f;
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.0f, 12.0f, 13.0f };
+	Vector3fv t1 = Normalize(t0);
+	EXPECT_TRUE(Near(t1, { t0.x / Magnitude(t0), t0.y / Magnitude(t0), t0.z / Magnitude(t0) }, 0.01f));
+}
+
+TEST(Vector3fv, Reflect_Reference)
+{
+	using Type = Vector3fv_Reference;
 	Type t0 = { 1.0f, 0.0f, 0.0f };
 	Type t1 = { 0.0f, 1.0f, 0.0f };
 	Type t3 = Reflect(t0, t1);
 	EXPECT_TRUE(Near(t3, { 0.0f, -1.0f, 0.0f }, 0.01f));
 }
 
-TEST(Vector3f, Reciprocal_Reference)
+TEST(Vector3fv, Reflect_SSE4_1)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.0f, 12.0f, 15.0f };
-	Vector3f t1 = Reciprocal(t0);
+	using Type = Vector3fv_SSE4_1;
+	Type t0 = { 1.0f, 0.0f, 0.0f };
+	Type t1 = { 0.0f, 1.0f, 0.0f };
+	Type t3 = Reflect(t0, t1);
+	EXPECT_TRUE(Near(t3, { 0.0f, -1.0f, 0.0f }, 0.01f));
+}
+
+TEST(Vector3fv, Reciprocal_Reference)
+{
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.0f, 12.0f, 15.0f };
+	Vector3fv t1 = Reciprocal(t0);
+
+	EXPECT_NEAR(t1.x, 1.0f / t0.x, 0.01f);
+	EXPECT_NEAR(t1.y, 1.0f / t0.y, 0.01f);
+	EXPECT_NEAR(t1.z, 1.0f / t0.z, 0.01f);
+}
+TEST(Vector3fv, Reciprocal_SSE4_1)
+{
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.0f, 12.0f, 15.0f };
+	Vector3fv t1 = Reciprocal(t0);
 
 	EXPECT_NEAR(t1.x, 1.0f / t0.x, 0.01f);
 	EXPECT_NEAR(t1.y, 1.0f / t0.y, 0.01f);
 	EXPECT_NEAR(t1.z, 1.0f / t0.z, 0.01f);
 }
 
-TEST(Vector3f, RSqrt_Reference)
+TEST(Vector3fv, RSqrt_Reference)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.0f, 12.0f, 15.0f };
-	Vector3f t1 = RSqrt(t0);
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.0f, 12.0f, 15.0f };
+	Vector3fv t1 = RSqrt(t0);
+
+	EXPECT_NEAR(t1.x, 1.0f / std::sqrt(t0.x), 0.01f);
+	EXPECT_NEAR(t1.y, 1.0f / std::sqrt(t0.y), 0.01f);
+	EXPECT_NEAR(t1.z, 1.0f / std::sqrt(t0.z), 0.01f);
+}
+TEST(Vector3fv, RSqrt_SSE4_1)
+{
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.0f, 12.0f, 15.0f };
+	Vector3fv t1 = RSqrt(t0);
 
 	EXPECT_NEAR(t1.x, 1.0f / std::sqrt(t0.x), 0.01f);
 	EXPECT_NEAR(t1.y, 1.0f / std::sqrt(t0.y), 0.01f);
@@ -435,39 +491,72 @@ TEST(Vector3f, RSqrt_Reference)
 }
 
 //////////////////////////////////////////////////////////////////////////
-TEST(Vector3f, Round_Truncate_Reference)
+TEST(Vector3fv, Round_Truncate_Reference)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
-	Vector3f t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3fv t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+
+	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
+}
+TEST(Vector3fv, Round_Truncate_SSE4_1)
+{
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3fv t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
 }
 
-TEST(Vector3f, Floor_Reference)
+TEST(Vector3fv, Floor_Reference)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
-	Vector3f t1 = Floor(t0);
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3fv t1 = Floor(t0);
+
+	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
+}
+TEST(Vector3fv, Floor_SSE4_1)
+{
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3fv t1 = Floor(t0);
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
 }
 
-TEST(Vector3f, Ceil_Reference)
+TEST(Vector3fv, Ceil_Reference)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
-	Vector3f t1 = Ceil(t0);
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3fv t1 = Ceil(t0);
+
+	EXPECT_TRUE(Near(t1, { 6.0f, 13.0f, 20.0f }, 0.01f));
+}
+TEST(Vector3fv, Ceil_SSE4_1)
+{
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3fv t1 = Ceil(t0);
 
 	EXPECT_TRUE(Near(t1, { 6.0f, 13.0f, 20.0f }, 0.01f));
 }
 
-TEST(Vector3f, Cross_Reference)
+TEST(Vector3fv, Cross_Reference)
 {
-	using Vector3f = Vector3f;
-	Vector3f t0 = { 1.0f, 0.0f, 0.0f };
-	Vector3f t1 = { 0.0f, 1.0f, 0.0f };
-	Vector3f t2 = Cross(t0, t1);
+	using Vector3fv = Vector3fv_Reference;
+	Vector3fv t0 = { 1.0f, 0.0f, 0.0f };
+	Vector3fv t1 = { 0.0f, 1.0f, 0.0f };
+	Vector3fv t2 = Cross(t0, t1);
+
+	EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
+}
+TEST(Vector3fv, Cross_SSE4_1)
+{
+	using Vector3fv = Vector3fv_SSE4_1;
+	Vector3fv t0 = { 1.0f, 0.0f, 0.0f };
+	Vector3fv t1 = { 0.0f, 1.0f, 0.0f };
+	Vector3fv t2 = Cross(t0, t1);
 
 	EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
 }

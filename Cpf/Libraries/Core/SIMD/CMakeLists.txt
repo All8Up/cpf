@@ -1,6 +1,6 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/SimdX.hpp
+	Include/SIMD.hpp
 )
 
 set (SIMD_INCLUDE_FILES
@@ -37,15 +37,15 @@ set (SIMD_DETAIL_SSE4_1_INCLUDE_FILES
 	Include/SIMD/Detail/SSE4_1/I32x4.hpp
 )
 
-add_library (SimdX INTERFACE)
-target_link_libraries (SimdX INTERFACE Configuration)
+add_library (SIMD INTERFACE)
+target_link_libraries (SIMD INTERFACE Configuration)
 
-target_include_directories (SimdX
+target_include_directories (SIMD
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 )
 
-add_custom_target (SimdX_IDE SOURCES
+add_custom_target (SIMD_IDE SOURCES
 	${INCLUDE_FILES}
 	${SIMD_INCLUDE_FILES}
 	${SIMD_DETAIL_INCLUDE_FILES}
@@ -54,26 +54,26 @@ add_custom_target (SimdX_IDE SOURCES
 	${SIMD_DETAIL_SSE4_1_INCLUDE_FILES}
 )
 
-install (TARGETS SimdX
-	EXPORT SimdXConfig
+install (TARGETS SIMD
+	EXPORT SIMDConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install (EXPORT SimdXConfig
+install (EXPORT SIMDConfig
 	DESTINATION CMake
 )
 
-set_property (TARGET SimdX_IDE PROPERTY FOLDER Libraries/Interface/Core)
+set_property (TARGET SIMD_IDE PROPERTY FOLDER Libraries/Interface/Core)
 source_group (Interface FILES ${INCLUDE_FILES})
-source_group (Interface\\SimdX FILES ${SIMD_INCLUDE_FILES})
-source_group (Interface\\SimdX\\Detail FILES ${SIMD_DETAIL_INCLUDE_FILES})
-source_group (Interface\\SimdX\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDE_FILES})
-source_group (Interface\\SimdX\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDE_FILES})
-source_group (Interface\\SimdX\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDE_FILES})
+source_group (Interface\\SIMD FILES ${SIMD_INCLUDE_FILES})
+source_group (Interface\\SIMD\\Detail FILES ${SIMD_DETAIL_INCLUDE_FILES})
+source_group (Interface\\SIMD\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDE_FILES})
+source_group (Interface\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDE_FILES})
+source_group (Interface\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDE_FILES})
 
 # ###############################################
-MakeUnitTest (LIBRARY SimdX GROUP Core
+MakeUnitTest (LIBRARY SIMD GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_F32x4_1.cpp

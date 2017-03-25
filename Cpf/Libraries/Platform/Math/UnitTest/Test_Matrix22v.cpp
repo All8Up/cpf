@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Math.hpp"
-#include "SimdX.hpp"
+#include "SIMD.hpp"
 #include "Math/Matrix22v.hpp"
 #include "Math/Constants.hpp"
 #include <gmock/gmock.h>

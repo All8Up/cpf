@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <gtest\gtest.h>
-#include "SimdX.hpp"
+#include "SIMD.hpp"
 #include "Math/Vector2v.hpp"
 #include "Math/Vector3v.hpp"
 #include "Math/Vector4v.hpp"
 
 // Test code gen.
-TEST(SimdX, IntersectRayBox)
+TEST(SIMD, IntersectRayBox)
 {
 	using namespace Cpf;
 	using namespace Math;

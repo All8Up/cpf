@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Math.hpp"
-#include "SimdX.hpp"
+#include "SIMD.hpp"
 #include "Math/Vector3v.hpp"
 #include "Math/Matrix33v.hpp"
 #include "Math/Constants.hpp"

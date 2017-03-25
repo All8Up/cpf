@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "SimdX.hpp"
+#include "SIMD.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
 #include <gmock/gmock.h>

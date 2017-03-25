@@ -29,37 +29,37 @@ set (MATH_DETAIL_INCLUDE_FILES
 	Include/Math/Detail/Vector4v.inl
 )
 
-add_library (MathX INTERFACE)
-target_link_libraries (MathX INTERFACE Configuration SimdX)
+add_library (Math INTERFACE)
+target_link_libraries (Math INTERFACE Configuration SIMD)
 
-target_include_directories (MathX
+target_include_directories (Math
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 )
 
-add_custom_target (MathX_IDE SOURCES
+add_custom_target (Math_IDE SOURCES
 	Include/Math.hpp
 	${MATH_INCLUDE_FILES}
 	${MATH_DETAIL_INCLUDE_FILES}
 )
 
-install (TARGETS MathX
-	EXPORT MathXConfig
+install (TARGETS Math
+	EXPORT MathConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install (EXPORT MathXConfig
+install (EXPORT MathConfig
 	DESTINATION CMake
 )
 
-set_property (TARGET MathX_IDE PROPERTY FOLDER Libraries/Interface/Core)
+set_property (TARGET Math_IDE PROPERTY FOLDER Libraries/Interface/Core)
 source_group (Interface FILES Include/Math.hpp)
-source_group (Interface\\MathX FILES ${MATH_INCLUDE_FILES})
-source_group (Interface\\MathX\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
+source_group (Interface\\Math FILES ${MATH_INCLUDE_FILES})
+source_group (Interface\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
 
 # ###############################################
-MakeUnitTest (LIBRARY MathX GROUP Platform
+MakeUnitTest (LIBRARY Math GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_AABB.cpp
