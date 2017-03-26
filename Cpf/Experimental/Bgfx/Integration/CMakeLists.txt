@@ -6,9 +6,10 @@ set (HEADER_FILES
 set (SOURCE_FILES
 	Source/Integration.cpp
 )
-set (SHADER_FILES
-	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/fs_cubes.bin.h
-	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/vs_cubes.bin.h
+
+set (DataFiles ${DataFiles}
+	${CMAKE_CURRENT_SOURCE_DIR}/integration_res/fs_cubes.sc.bin
+	${CMAKE_CURRENT_SOURCE_DIR}/integration_res/vs_cubes.sc.bin
 )
 
 add_executable (BgfxIntegration WIN32
@@ -40,18 +41,18 @@ function (add_shader type src varying outfile)
 	if (type STREQUAL "f")
 		add_custom_command (
 			OUTPUT ${outfile}
-			COMMAND shaderc -f ${src} -o ${outfile} --type ${type} --platform windows -p ps_5_0 -i integration_res --varyingdef ${varying} --bin2c
+			COMMAND shaderc -f ${src} -o ${outfile} --type ${type} --platform windows -p ps_5_0 -i integration_res --varyingdef ${varying}
 		)
 	else ()
 		add_custom_command (
 			OUTPUT ${outfile}
-			COMMAND shaderc -f ${src} -o ${outfile} --type ${type} --platform windows -p vs_5_0 -i integration_res --varyingdef ${varying} --bin2c
+			COMMAND shaderc -f ${src} -o ${outfile} --type ${type} --platform windows -p vs_5_0 -i integration_res --varyingdef ${varying}
 		)
 	endif ()
 endfunction (add_shader)
 
-add_shader (f integration_res/fs_cubes.sc integration_res/varying.def.sc ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/fs_cubes.bin.h)
-add_shader (v integration_res/vs_cubes.sc integration_res/varying.def.sc ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/vs_cubes.bin.h)
+add_shader (f integration_res/fs_cubes.sc integration_res/varying.def.sc ${CMAKE_CURRENT_SOURCE_DIR}/integration_res/fs_cubes.sc.bin)
+add_shader (v integration_res/vs_cubes.sc integration_res/varying.def.sc ${CMAKE_CURRENT_SOURCE_DIR}/integration_res/vs_cubes.sc.bin)
 
 
 if(MSVC)

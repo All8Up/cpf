@@ -110,34 +110,6 @@ inline bool bgfxSetWindow(iWindow* _window)
 
 	return true;
 }
-
-//////////////////////////////////////////////////////////////////////////
-#include "fs_cubes.bin.h"
-#include "vs_cubes.bin.h"
-
-static bgfx::EmbeddedShader sShaders[] =
-{
-	{ "fs_cubes", { bgfx::RendererType::Direct3D9, fs_cubes_bin_h, sizeof(fs_cubes_bin_h) } },
-	{ "fs_cubes", { bgfx::RendererType::Direct3D11, fs_cubes_bin_h, sizeof(fs_cubes_bin_h) } },
-	{ "fs_cubes", { bgfx::RendererType::Direct3D12, fs_cubes_bin_h, sizeof(fs_cubes_bin_h) } },
-	{ "fs_cubes", { bgfx::RendererType::Gnm, nullptr, 0 } },
-	{ "fs_cubes", { bgfx::RendererType::Metal, nullptr, 0 } },
-	{ "fs_cubes", { bgfx::RendererType::OpenGLES, nullptr, 0 } },
-	{ "fs_cubes", { bgfx::RendererType::OpenGL, nullptr, 0 } },
-	{ "fs_cubes", { bgfx::RendererType::Vulkan, nullptr, 0 } },
-	{ "fs_cubes", { bgfx::RendererType::Noop, (const uint8_t*)"VSH\x4\x0\x0\x0\x0\x0\x0", 10 } },
-	{ "fs_cubes", { bgfx::RendererType::Count, nullptr, 0 } },
-	{ "vs_cubes", { bgfx::RendererType::Direct3D9, vs_cubes_bin_h, sizeof(vs_cubes_bin_h) } },
-	{ "vs_cubes", { bgfx::RendererType::Direct3D11, vs_cubes_bin_h, sizeof(vs_cubes_bin_h) } },
-	{ "vs_cubes", { bgfx::RendererType::Direct3D12, vs_cubes_bin_h, sizeof(vs_cubes_bin_h) } },
-	{ "vs_cubes", { bgfx::RendererType::Gnm, nullptr, 0 } },
-	{ "vs_cubes", { bgfx::RendererType::Metal, nullptr, 0 } },
-	{ "vs_cubes", { bgfx::RendererType::OpenGLES, nullptr, 0 } },
-	{ "vs_cubes", { bgfx::RendererType::OpenGL, nullptr, 0 } },
-	{ "vs_cubes", { bgfx::RendererType::Vulkan, nullptr, 0 } },
-	{ "vs_cubes", { bgfx::RendererType::Noop, (const uint8_t*)"VSH\x4\x0\x0\x0\x0\x0\x0", 10 } },
-	{ "vs_cubes", { bgfx::RendererType::Count, nullptr, 0 } }
-};
 //////////////////////////////////////////////////////////////////////////
 
 BgfxIntegration::BgfxIntegration()
@@ -174,7 +146,7 @@ int BgfxIntegration::Start(const CommandLine&)
 	bgfxSetWindow(mpWindow);
 	bgfx::init();
 	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
-	bgfx::setDebug(BGFX_DEBUG_STATS);
+	bgfx::setDebug(BGFX_DEBUG_NONE);
 	bgfx::setViewClear(
 		0
 		, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
@@ -193,36 +165,29 @@ int BgfxIntegration::Start(const CommandLine&)
 
 	// Create static vertex buffer.
 	m_vbh = bgfx::createVertexBuffer(
-		// Static data can be passed with bgfx::makeRef
 		bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices))
 		, PosColorVertex::ms_decl
 	);
 
 	// Create static index buffer.
 	m_ibh = bgfx::createIndexBuffer(
-		// Static data can be passed with bgfx::makeRef
 		bgfx::makeRef(s_cubeTriStrip, sizeof(s_cubeTriStrip))
 	);
 
 	// Create program from shaders.
-	bgfx::ShaderHandle vsh = createEmbeddedShader(sShaders, bgfx::RendererType::Direct3D11, "fs_cubes");
-	bgfx::ShaderHandle fsh = createEmbeddedShader(sShaders, bgfx::RendererType::Direct3D11, "vs_cubes");
+	IntrusivePtr<Platform::IO::Stream> vertexShader(mpLocator->Open(RESOURCE_ID("/", "vs_cubes.sc.bin")));
+	Vector<uint8_t> vertexShaderData(Move(ReadBinary(vertexShader)));
+	bgfx::ShaderHandle vsh = bgfx::createShader(bgfx::makeRef(vertexShaderData.data(), uint32_t(vertexShaderData.size())));
+
+	IntrusivePtr<Platform::IO::Stream> fragmentShader(mpLocator->Open(RESOURCE_ID("/", "fs_cubes.sc.bin")));
+	Vector<uint8_t> fragmentShaderData(Move(ReadBinary(fragmentShader)));
+	bgfx::ShaderHandle fsh = bgfx::createShader(bgfx::makeRef(fragmentShaderData.data(), uint32_t(fragmentShaderData.size())));
 	m_program = createProgram(vsh, fsh, true);
 
-	bgfx::frame();
-
 	int64_t m_timeOffset = bx::getHPCounter();
-	bool running = true;
-	SDL_Event sdlEvent;
-	while (running)
+	while (IsRunning())
 	{
-		while (SDL_PollEvent(&sdlEvent))
-		{
-			if (sdlEvent.type == SDL_QUIT)
-			{
-				running = false;
-			}
-		}
+		Poll();
 
 		bgfx::setViewRect(0, 0, 0, uint16_t(mWindowSize.x), uint16_t(mWindowSize.y));
 
@@ -239,10 +204,12 @@ int BgfxIntegration::Start(const CommandLine&)
 		float time = (float)((now - m_timeOffset) / double(bx::getHPFrequency()));
 
 		// Use debug font to print information about this example.
+		/*
 		bgfx::dbgTextClear();
 		bgfx::dbgTextPrintf(0, 1, 0x4f, "bgfx/examples/01-cube");
 		bgfx::dbgTextPrintf(0, 2, 0x6f, "Description: Rendering simple static mesh.");
 		bgfx::dbgTextPrintf(0, 3, 0x0f, "Frame: % 7.3f[ms]", double(frameTime)*toMs);
+		*/
 
 		float at[3] = { 0.0f, 0.0f,   0.0f };
 		float eye[3] = { 0.0f, 0.0f, -35.0f };

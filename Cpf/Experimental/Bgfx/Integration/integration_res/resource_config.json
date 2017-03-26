@@ -2,9 +2,9 @@
   "Mounts": [
     {
       "VolumeType": "FileSystem",
-      "MountPoint": "shaders",
+      "MountPoint": "/",
       "Descriptor": {
-        "Directory": "./integration_res/shaders"
+        "Directory": "./integration_res"
       }
     }
   ],
