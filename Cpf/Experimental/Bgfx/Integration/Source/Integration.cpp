@@ -4,6 +4,9 @@
 #include "Resources\Resources.hpp"
 #include "Resources\ResourceConfig.hpp"
 
+#include "Math/Matrix44v.hpp"
+#include "Math/Vector2v.hpp"
+
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include <bx/bx.h>
@@ -245,14 +248,13 @@ int BgfxIntegration::Start(const CommandLine&)
 		{
 			for (uint32_t xx = 0; xx < 11; ++xx)
 			{
-				float mtx[16];
-				bx::mtxRotateXY(mtx, time + xx*0.21f, time + yy*0.37f);
-				mtx[12] = -15.0f + float(xx)*3.0f;
-				mtx[13] = -15.0f + float(yy)*3.0f;
-				mtx[14] = 0.0f;
+				Math::Matrix44fv rotX = Math::Matrix44fv::RotationX(time + xx*0.21f);
+				Math::Matrix44fv rotY = Math::Matrix44fv::RotationY(time + yy*0.37f);
+				Math::Matrix44fv rotation = rotX * rotY;
+				rotation[3] = { -15.0f + float(xx)*3.0f, -15.0f + float(yy)*3.0f, 0.0f, 1.0f };
 
 				// Set model matrix for rendering.
-				bgfx::setTransform(mtx);
+				bgfx::setTransform(rotation.Data());
 
 				// Set vertex and index buffer.
 				bgfx::setVertexBuffer(m_vbh);

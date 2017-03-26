@@ -53,5 +53,6 @@ namespace Cpf
 	namespace Math
 	{
 		using Vector2i = Vector2v<SIMD::I32x4_2>;
+		using Vector2fv = Vector2v<SIMD::F32x4_2>;
 	}
 }

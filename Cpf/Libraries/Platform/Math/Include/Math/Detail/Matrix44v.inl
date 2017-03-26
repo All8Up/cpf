@@ -77,7 +77,7 @@ namespace Cpf
 				for (int c = 0; c < 4; ++c)
 				{
 					for (int i = 0; i < 4; ++i)
-						result.[r][c] += lhs[r][i] * rhs[i][c];
+						result[r][c] = result[r][c] + lhs[r][i] * rhs[i][c];
 				}
 			}
 			return result;

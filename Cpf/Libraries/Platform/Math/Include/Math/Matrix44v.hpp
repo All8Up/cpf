@@ -33,6 +33,8 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 			Matrix44<TYPE>& CPF_VECTORCALL operator = (const Matrix44<TYPE>& rhs);
 
+			const Element* Data() const { return reinterpret_cast<const Element*>(this); }
+
 			//////////////////////////////////////////////////////////////////////////
 			Row& CPF_VECTORCALL operator [](int idx);
 			const Row& CPF_VECTORCALL operator [](int idx) const;
