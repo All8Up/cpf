@@ -9,6 +9,7 @@
 #include <bx/bx.h>
 #include <bx/uint32_t.h>
 #include "bgfx/platform.h"
+#include "bgfx/embedded_shader.h"
 
 using namespace Cpf;
 using namespace Platform;
@@ -107,7 +108,34 @@ inline bool bgfxSetWindow(iWindow* _window)
 
 	return true;
 }
+
 //////////////////////////////////////////////////////////////////////////
+#include "fs_cubes.bin.h"
+#include "vs_cubes.bin.h"
+
+static bgfx::EmbeddedShader sShaders[] =
+{
+	{ "fs_cubes", { bgfx::RendererType::Direct3D9, fs_cubes_bin_h, sizeof(fs_cubes_bin_h) } },
+	{ "fs_cubes", { bgfx::RendererType::Direct3D11, fs_cubes_bin_h, sizeof(fs_cubes_bin_h) } },
+	{ "fs_cubes", { bgfx::RendererType::Direct3D12, fs_cubes_bin_h, sizeof(fs_cubes_bin_h) } },
+	{ "fs_cubes", { bgfx::RendererType::Gnm, nullptr, 0 } },
+	{ "fs_cubes", { bgfx::RendererType::Metal, nullptr, 0 } },
+	{ "fs_cubes", { bgfx::RendererType::OpenGLES, nullptr, 0 } },
+	{ "fs_cubes", { bgfx::RendererType::OpenGL, nullptr, 0 } },
+	{ "fs_cubes", { bgfx::RendererType::Vulkan, nullptr, 0 } },
+	{ "fs_cubes", { bgfx::RendererType::Noop, (const uint8_t*)"VSH\x4\x0\x0\x0\x0\x0\x0", 10 } },
+	{ "fs_cubes", { bgfx::RendererType::Count, nullptr, 0 } },
+	{ "vs_cubes", { bgfx::RendererType::Direct3D9, vs_cubes_bin_h, sizeof(vs_cubes_bin_h) } },
+	{ "vs_cubes", { bgfx::RendererType::Direct3D11, vs_cubes_bin_h, sizeof(vs_cubes_bin_h) } },
+	{ "vs_cubes", { bgfx::RendererType::Direct3D12, vs_cubes_bin_h, sizeof(vs_cubes_bin_h) } },
+	{ "vs_cubes", { bgfx::RendererType::Gnm, nullptr, 0 } },
+	{ "vs_cubes", { bgfx::RendererType::Metal, nullptr, 0 } },
+	{ "vs_cubes", { bgfx::RendererType::OpenGLES, nullptr, 0 } },
+	{ "vs_cubes", { bgfx::RendererType::OpenGL, nullptr, 0 } },
+	{ "vs_cubes", { bgfx::RendererType::Vulkan, nullptr, 0 } },
+	{ "vs_cubes", { bgfx::RendererType::Noop, (const uint8_t*)"VSH\x4\x0\x0\x0\x0\x0\x0", 10 } },
+	{ "vs_cubes", { bgfx::RendererType::Count, nullptr, 0 } }
+};
 //////////////////////////////////////////////////////////////////////////
 
 BgfxIntegration::BgfxIntegration()
@@ -165,7 +193,9 @@ int BgfxIntegration::Start(const CommandLine&)
 	);
 
 	// Create program from shaders.
-//	m_program = loadProgram("vs_cubes", "fs_cubes");
+	bgfx::ShaderHandle vsh = createEmbeddedShader(sShaders, bgfx::RendererType::Direct3D11, "fs_cubes");
+	bgfx::ShaderHandle fsh = createEmbeddedShader(sShaders, bgfx::RendererType::Direct3D11, "vs_cubes");
+	m_program = createProgram(vsh, fsh, true);
 
 	///
 	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
@@ -219,7 +249,7 @@ int BgfxIntegration::Start(const CommandLine&)
 
 	bgfx::destroyIndexBuffer(m_ibh);
 	bgfx::destroyVertexBuffer(m_vbh);
-//	bgfx::destroyProgram(m_program);
+	bgfx::destroyProgram(m_program);
 	bgfx::shutdown();
 	mpLocator.Adopt(nullptr);
 	mpWindow.Adopt(nullptr);
