@@ -27,5 +27,7 @@ namespace Cpf
 		Concurrency::LoadBalancer mLoadBalancer;
 
 		IntrusivePtr<Resources::Locator> mpLocator;
+
+		uint32_t mResetFlags;
 	};
 }

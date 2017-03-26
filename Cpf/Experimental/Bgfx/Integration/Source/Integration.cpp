@@ -15,6 +15,7 @@
 #include <bx/uint32_t.h>
 #include "bgfx/platform.h"
 #include "bgfx/embedded_shader.h"
+//#include "nanovg/nanovg.h"
 
 using namespace Cpf;
 using namespace Platform;
@@ -116,6 +117,7 @@ inline bool bgfxSetWindow(iWindow* _window)
 //////////////////////////////////////////////////////////////////////////
 
 BgfxIntegration::BgfxIntegration()
+	: mResetFlags(BGFX_RESET_MSAA_X8)
 {
 	CPF_INIT_LOG(Integration);
 }
@@ -148,7 +150,7 @@ int BgfxIntegration::Start(const CommandLine&)
 
 	bgfxSetWindow(mpWindow);
 	bgfx::init();
-	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
+	bgfx::reset(mWindowSize.x, mWindowSize.y, mResetFlags);
 	bgfx::setDebug(BGFX_DEBUG_NONE);
 	bgfx::setViewClear(
 		0
@@ -207,13 +209,6 @@ int BgfxIntegration::Start(const CommandLine&)
 		float time = (float)((now - m_timeOffset) / double(bx::getHPFrequency()));
 
 		// Use debug font to print information about this example.
-		/*
-		bgfx::dbgTextClear();
-		bgfx::dbgTextPrintf(0, 1, 0x4f, "bgfx/examples/01-cube");
-		bgfx::dbgTextPrintf(0, 2, 0x6f, "Description: Rendering simple static mesh.");
-		bgfx::dbgTextPrintf(0, 3, 0x0f, "Frame: % 7.3f[ms]", double(frameTime)*toMs);
-		*/
-
 		float at[3] = { 0.0f, 0.0f,   0.0f };
 		float eye[3] = { 0.0f, 0.0f, -35.0f };
 
@@ -250,7 +245,7 @@ int BgfxIntegration::Start(const CommandLine&)
 			{
 				Math::Matrix44fv rotX = Math::Matrix44fv::RotationX(time + xx*0.21f);
 				Math::Matrix44fv rotY = Math::Matrix44fv::RotationY(time + yy*0.37f);
-				Math::Matrix44fv rotation = rotX * rotY;
+				Math::Matrix44fv rotation = rotY * rotX;
 				rotation[3] = { -15.0f + float(xx)*3.0f, -15.0f + float(yy)*3.0f, 0.0f, 1.0f };
 
 				// Set model matrix for rendering.
@@ -289,7 +284,7 @@ void BgfxIntegration::_Resize(int32_t width, int32_t height)
 {
 	mWindowSize.x = width;
 	mWindowSize.y = height;
-	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
+	bgfx::reset(mWindowSize.x, mWindowSize.y, mResetFlags);
 }
 
 
