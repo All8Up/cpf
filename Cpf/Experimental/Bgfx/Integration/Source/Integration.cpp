@@ -7,6 +7,8 @@
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include <bx/bx.h>
+#include <bx/fpumath.h>
+#include <bx/timer.h>
 #include <bx/uint32_t.h>
 #include "bgfx/platform.h"
 #include "bgfx/embedded_shader.h"
@@ -171,10 +173,20 @@ int BgfxIntegration::Start(const CommandLine&)
 
 	bgfxSetWindow(mpWindow);
 	bgfx::init();
+	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
+	bgfx::setDebug(BGFX_DEBUG_STATS);
+	bgfx::setViewClear(
+		0
+		, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
+		, 0x303030ff
+		, 1.0f
+		, 0
+	);
 
 	// Create vertex stream declaration.
 	PosColorVertex::init();
 
+	///
 	bgfx::VertexBufferHandle m_vbh;
 	bgfx::IndexBufferHandle m_ibh;
 	bgfx::ProgramHandle m_program;
@@ -197,18 +209,9 @@ int BgfxIntegration::Start(const CommandLine&)
 	bgfx::ShaderHandle fsh = createEmbeddedShader(sShaders, bgfx::RendererType::Direct3D11, "vs_cubes");
 	m_program = createProgram(vsh, fsh, true);
 
-	///
-	bgfx::reset(mWindowSize.x, mWindowSize.y, BGFX_RESET_MSAA_X8);
-	bgfx::setDebug(BGFX_DEBUG_STATS);
-	bgfx::setViewClear(
-		0
-		, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-		, 0x303030ff
-		, 1.0f
-		, 0
-	);
+	bgfx::frame();
 
-
+	int64_t m_timeOffset = bx::getHPCounter();
 	bool running = true;
 	SDL_Event sdlEvent;
 	while (running)
@@ -227,20 +230,77 @@ int BgfxIntegration::Start(const CommandLine&)
 		// if no other draw calls are submitted to view 0.
 		bgfx::touch(0);
 
+		int64_t now = bx::getHPCounter();
+		static int64_t last = now;
+		const int64_t frameTime = now - last;
+		last = now;
+		const double freq = double(bx::getHPFrequency());
+		const double toMs = 1000.0 / freq;
+		float time = (float)((now - m_timeOffset) / double(bx::getHPFrequency()));
+
 		// Use debug font to print information about this example.
 		bgfx::dbgTextClear();
-		bgfx::dbgTextPrintf(0, 1, 0x4f, "bgfx/examples/00-helloworld");
-		bgfx::dbgTextPrintf(0, 2, 0x6f, "Description: Initialization and debug text.");
+		bgfx::dbgTextPrintf(0, 1, 0x4f, "bgfx/examples/01-cube");
+		bgfx::dbgTextPrintf(0, 2, 0x6f, "Description: Rendering simple static mesh.");
+		bgfx::dbgTextPrintf(0, 3, 0x0f, "Frame: % 7.3f[ms]", double(frameTime)*toMs);
 
-		bgfx::dbgTextPrintf(0, 4, 0x0f, "Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.");
+		float at[3] = { 0.0f, 0.0f,   0.0f };
+		float eye[3] = { 0.0f, 0.0f, -35.0f };
 
-		const bgfx::Stats* stats = bgfx::getStats();
-		bgfx::dbgTextPrintf(0, 6, 0x0f, "Backbuffer %dW x %dH in pixels, debug text %dW x %dH in characters."
-			, stats->width
-			, stats->height
-			, stats->textWidth
-			, stats->textHeight
-		);
+		// Set view and projection matrix for view 0.
+		const bgfx::HMD* hmd = bgfx::getHMD();
+		if (NULL != hmd && 0 != (hmd->flags & BGFX_HMD_RENDERING))
+		{
+			float view[16];
+			bx::mtxQuatTranslationHMD(view, hmd->eye[0].rotation, eye);
+			bgfx::setViewTransform(0, view, hmd->eye[0].projection, BGFX_VIEW_STEREO, hmd->eye[1].projection);
+
+			// Set view 0 default viewport.
+			//
+			// Use HMD's width/height since HMD's internal frame buffer size
+			// might be much larger than window size.
+			bgfx::setViewRect(0, 0, 0, hmd->width, hmd->height);
+		}
+		else
+		{
+			float view[16];
+			bx::mtxLookAt(view, eye, at);
+
+			float proj[16];
+			bx::mtxProj(proj, 60.0f, float(mWindowSize.x) / float(mWindowSize.y), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+			bgfx::setViewTransform(0, view, proj);
+
+			// Set view 0 default viewport.
+			bgfx::setViewRect(0, 0, 0, uint16_t(mWindowSize.x), uint16_t(mWindowSize.y));
+		}
+
+		for (uint32_t yy = 0; yy < 11; ++yy)
+		{
+			for (uint32_t xx = 0; xx < 11; ++xx)
+			{
+				float mtx[16];
+				bx::mtxRotateXY(mtx, time + xx*0.21f, time + yy*0.37f);
+				mtx[12] = -15.0f + float(xx)*3.0f;
+				mtx[13] = -15.0f + float(yy)*3.0f;
+				mtx[14] = 0.0f;
+
+				// Set model matrix for rendering.
+				bgfx::setTransform(mtx);
+
+				// Set vertex and index buffer.
+				bgfx::setVertexBuffer(m_vbh);
+				bgfx::setIndexBuffer(m_ibh);
+
+				// Set render states.
+				bgfx::setState(0
+					| BGFX_STATE_DEFAULT
+					| BGFX_STATE_PT_TRISTRIP
+				);
+
+				// Submit primitive for rendering to view 0.
+				bgfx::submit(0, m_program);
+			}
+		}
 
 		// Advance to next frame. Rendering thread will be kicked to
 		// process submitted rendering primitives.
