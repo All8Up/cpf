@@ -29,17 +29,17 @@ namespace Cpf
 
 				F32x3() {}
 				explicit F32x3(Element value) : mVector{ value, value, value } {}
-				template <typename = std::enable_if<COUNT == 2, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 2, Element>::type>
 				F32x3(Element v0, Element v1) : mVector(v0, v1) {}
-				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
 				F32x3(Element v0, Element v1, Element v2) : mVector(v0, v1, v2) {}
 
-				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
 				F32x3(Lanes_2 v01, Element v2)
 					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2)
 				{
 				}
-				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
 				F32x3(Element v0, Lanes_2 v12)
 					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1])
 				{
@@ -52,14 +52,14 @@ namespace Cpf
 
 				explicit operator Type () const { return mVector; }
 
-				template <typename = std::enable_if<COUNT == 1, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 1, Element>::type>
 				operator Lanes_1 () const { return mVector; }
-				template <typename = std::enable_if<COUNT == 2, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 2, Element>::type>
 				operator Lanes_2 () const { return mVector; }
-				template <typename = std::enable_if<COUNT == 3, Element>::type>
+				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
 				operator Lanes_3 () const { return mVector; }
 
-				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
+				template <typename = typename std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
 				operator const Element() const { return mVector.mData[0]; }
 
 				template <int INDEX>

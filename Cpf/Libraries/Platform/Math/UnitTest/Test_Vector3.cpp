@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include <gtest\gtest.h>
+#include <gtest/gtest.h>
 #include "SIMD.hpp"
 #include "SIMD/Detail/FPU/F32x2.hpp"
 #include "SIMD/Detail/FPU/I32x2.hpp"

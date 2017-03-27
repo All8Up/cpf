@@ -1,11 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Time/Time.hpp"
+#include "Time.hpp"
 #include "Time/Ratio.hpp"
 #include "Time/Counter.hpp"
 #include <mach/mach_time.h>
 
 using namespace Cpf;
-using namespace Platform;
 
 namespace
 {

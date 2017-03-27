@@ -63,9 +63,9 @@ namespace Cpf
 		/**
 		 * @brief Compute a 32 bit crc from the given data.
 		 */
-		constexpr uint16_t Crc16(const void* const data, size_t length)
+		constexpr uint16_t Crc16(const char* const data, size_t length)
 		{
-			return ComputeCrc16(reinterpret_cast<const char*>(data), length, uint16_t(-1));
+			return ComputeCrc16(data, length, uint16_t(-1));
 		}
 
 
@@ -92,9 +92,9 @@ namespace Cpf
 		/**
 		 * @brief Compute a 32 bit crc from the given data.
 		 */
-		constexpr uint32_t Crc32(const void* const data, size_t length)
+		constexpr uint32_t Crc32(const char* const data, size_t length)
 		{
-			return ComputeCrc32(reinterpret_cast<const char*>(data), length, uint32_t(-1));
+			return ComputeCrc32(data, length, uint32_t(-1));
 		}
 
 
@@ -121,9 +121,9 @@ namespace Cpf
 		/**
 		* @brief Compute a 64 bit crc from the given data.
 		*/
-		constexpr uint64_t Crc64(const void* const data, size_t length)
+		constexpr uint64_t Crc64(const char* const data, size_t length)
 		{
-			return ComputeCrc64(reinterpret_cast<const char*>(data), length, uint64_t(-1));
+			return ComputeCrc64(data, length, uint64_t(-1));
 		}
 	}
 }

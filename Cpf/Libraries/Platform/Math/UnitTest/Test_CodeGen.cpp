@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#pragma once
-#include <gtest\gtest.h>
+#include <gtest/gtest.h>
 #include "SIMD.hpp"
 #include "Math/Vector2v.hpp"
 #include "Math/Vector3v.hpp"
