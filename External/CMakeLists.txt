@@ -33,5 +33,9 @@ option (EXTERN_INLINE_AURORA "Include the source project for Aurora" ON)
 set (BGFX_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/bgfx")
 option (EXTERN_INLINE_BGFX "Include the source project for Bgfx" ON)
 
+# Box2D
+set (BOX2D_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Box2D-2.3.1")
+option (EXTERN_INLINE_BOX2D "Include the source project for Box2D" ON)
+
 # ################################
 include ("Source/CMakeLists.txt")

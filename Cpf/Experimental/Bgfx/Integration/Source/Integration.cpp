@@ -15,7 +15,6 @@
 #include <bx/uint32_t.h>
 #include "bgfx/platform.h"
 #include "bgfx/embedded_shader.h"
-//#include "nanovg/nanovg.h"
 
 using namespace Cpf;
 using namespace Platform;

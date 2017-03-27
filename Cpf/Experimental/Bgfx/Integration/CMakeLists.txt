@@ -7,6 +7,10 @@ set (SOURCE_FILES
 	Source/Integration.cpp
 )
 set (SHADER_FILES
+	Shaders/bgfx_shader.sh
+	Shaders/common.sh
+	Shaders/shaderlib.sh
+	Shaders/varying.def.sc
 	Shaders/fs_cubes.sc
 	Shaders/vs_cubes.sc
 )
