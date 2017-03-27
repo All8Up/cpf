@@ -28,6 +28,7 @@ namespace Cpf
 			Vector3v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, Element v2);
 			template <int I1, int I2>
 			Vector3v(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
+			explicit Vector3v(const Element* data);
 
 			template <typename RTYPE, int I0, int I1, int I2>
 			explicit Vector3v(const SIMD::Ref32x4_3<RTYPE, I0, I1, I2>& ref);

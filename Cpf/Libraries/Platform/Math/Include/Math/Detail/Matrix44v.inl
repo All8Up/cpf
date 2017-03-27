@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Math/Quaternion.hpp"
+#include "Math/Constants.hpp"
 
 namespace Cpf
 {
@@ -198,120 +199,29 @@ namespace Cpf
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::Frustum(const Element l, const Element r, const Element b, const Element t, const Element n, const Element f)
-		{
-			return Matrix44<TYPE>(
-				(2 * n) / (r - l), 0, 0, 0,
-				0, (2 * n) / (t - b), 0, 0,
-				(r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1,
-				0, 0, (-2 * f*n) / (f - n), 0);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::Orthographic(const Element left, const Element right, const Element bottom, const Element top, const Element inNear, const Element inFar)
-		{
-			const Element A = 2 / (right - left);
-			const Element B = 2 / (top - bottom);
-			const Element C = -2 / (inFar - inNear);
-			const Element tx = -(right + left) / (right - left);
-			const Element ty = -(top + bottom) / (top - bottom);
-			const Element tz = -(inFar + inNear) / (inFar - inNear);
-
-			return Matrix44<TYPE>(
-				A, 0, 0, 0,
-				0, B, 0, 0,
-				0, 0, C, 0,
-				tx, ty, tz, 1);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveRH(Element w, Element h, Element zn, Element zf)
+		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveLH(Element w, Element h, Element zn, Element zf, Element nzn, Element nzf)
 		{
 			return Matrix44<TYPE>(
 				(2 * zn) / w, 0, 0, 0,
 				0, (2 * zn) / h, 0, 0,
-				0, 0, -(zf + zn) / (zf - zn), -1,
-				0, 0, -(2 * zf*zn) / (zf - zn), 0
+				0, 0, (nzf*zf + nzn*zn) / (zf - zn), 1,
+				0, 0, -(nzf - nzn)*(zn*zf) / (zf - zn), 0
 				);
 		}
 
 		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveRH(Element w, Element h, Element zn, Element zf, Element dn, Element df)
+		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveFovLH(Element fovy, Element aspect, Element zn, Element zf, Element nzn, Element nzf)
 		{
+			Element h = Element(1) / std::tan(fovy*Element(0.5));
+			Element w = h / aspect;
 			return Matrix44<TYPE>(
-				(2 * zn) / w, 0, 0, 0,
-				0, (2 * zn) / h, 0, 0,
-				0, 0, (df*zf - dn*zn) / (zn - zf), -1,
-				0, 0, (df - dn)*(zn*zf) / (zn - zf), 0
+				w, 0, 0, 0,
+				0, h, 0, 0,
+				0, 0, (nzf*zf + nzn*zn) / (zf - zn), 1,
+				0, 0, -(nzf - nzn)*(zn*zf) / (zf - zn), 0
 				);
 		}
 
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveOffCenterRH(typename Matrix44<TYPE>::Element l, typename Matrix44<TYPE>::Element r, typename Matrix44<TYPE>::Element b, typename Matrix44<TYPE>::Element t, typename Matrix44<TYPE>::Element zn, typename Matrix44<TYPE>::Element zf)
-		{
-			return Matrix44<TYPE>(
-				(2 * zn) / (r - l), 0, 0, 0,
-				0, (2 * zn) / (t - b), 0, 0,
-				(r + l) / (r - l), (t + b) / (t - b), -(zf + zn) / (zf - zn), -1,
-				0, 0, -(2 * zf*zn) / (zf - zn), 0
-				);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveOffCenterRH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element dn, Element df)
-		{
-			// see: https://anteru.net/blog/2011/12/27/1830/
-			return Matrix44<TYPE>(
-				(2 * zn) / (r - l), 0, 0, 0,
-				0, (2 * zn) / (t - b), 0, 0,
-				(r + l) / (r - l), (t + b) / (t - b), -(df*zf - dn*zn) / (zn - zf), -1,
-				0, 0, (df - dn)*(zn*zf) / (zn - zf), 0
-				);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveLH(Element w, Element h, Element zn, Element zf)
-		{
-			return Matrix44<TYPE>(
-				(2 * zn) / w, 0, 0, 0,
-				0, (2 * zn) / h, 0, 0,
-				0, 0, zf / (zf - zn), 1,
-				0, 0, zn*zf / (zn - zf), 0
-				);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveLH(Element w, Element h, Element zn, Element zf, Element dn, Element df)
-		{
-			return Matrix44<TYPE>(
-				(2 * zn) / w, 0, 0, 0,
-				0, (2 * zn) / h, 0, 0,
-				0, 0, (df*zf + dn*zn) / (zf - zn), 1,
-				0, 0, -(df - dn)*(zn*zf) / (zf - zn), 0
-				);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf)
-		{
-			return Matrix44<TYPE>(
-				(2 * zn) / (r - l), 0, 0, 0,
-				0, (2 * zn) / (t - b), 0, 0,
-				(r + l) / (r - l), (t + b) / (t - b), zf + zn / (zf - zn), 1,
-				0, 0, -zn*zf / (zf - zn), 0
-				);
-		}
-
-		template<typename TYPE>
-		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::PerspectiveOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element dn, Element df)
-		{
-			return Matrix44<TYPE>(
-				(2 * zn) / (r - l), 0, 0, 0,
-				0, (2 * zn) / (t - b), 0, 0,
-				(r + l) / (r - l), (t + b) / (t - b), (df*zf + dn*zn) / (zf - zn), 1,
-				0, 0, -(df - dn)*(zn*zf) / (zf - zn), 0
-				);
-		}
 
 		template<typename TYPE>
 		Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::LookAt(const Vector3v<typename TYPE::Lanes_3> eye, const Vector3v<typename TYPE::Lanes_3> target, const Vector3v<typename TYPE::Lanes_3> up)

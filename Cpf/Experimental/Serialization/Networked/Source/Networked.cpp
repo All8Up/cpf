@@ -31,6 +31,7 @@ int Networked::Start(const CommandLine&)
 	// Initialize libraries.
 	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
+	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<MultiCoreInitializer> multicoreInit;

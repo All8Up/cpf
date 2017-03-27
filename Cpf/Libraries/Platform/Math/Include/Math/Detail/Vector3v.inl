@@ -49,6 +49,10 @@ namespace Cpf
 			: mVector(ref.GetLane(0), ref.GetLane(1), ref.GetLane(2))
 		{}
 
+		template <typename TYPE>
+		Vector3v<TYPE>::Vector3v(const Element* data)
+			: mVector(data[0], data[1], data[2])
+		{}
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>

@@ -1,6 +1,7 @@
 # ###############################################
 set (MATH_INCLUDE_FILES
 	Include/Math/AABB.hpp
+	Include/Math/Algorithm.hpp
 	Include/Math/BitManipulation.hpp
 	Include/Math/Constants.hpp
 	Include/Math/Matrix22v.hpp

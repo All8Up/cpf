@@ -48,16 +48,18 @@ namespace Cpf
 			static Matrix44<TYPE> CPF_VECTORCALL Scale(Element x, Element y, Element z);
 			static Matrix44<TYPE> CPF_VECTORCALL Translation(Element x, Element y, Element z);
 
-			static Matrix44<TYPE> CPF_VECTORCALL Frustum(const Element l, const Element r, const Element b, const Element t, const Element n, const Element f);
-			static Matrix44<TYPE> CPF_VECTORCALL Orthographic(const Element left, const Element right, const Element bottom, const Element top, const Element inNear, const Element inFar);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveLH(Element w, Element h, Element zn, Element zf);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveLH(Element w, Element h, Element zn, Element zf, Element dn, Element df);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element dn, Element df);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveRH(Element w, Element h, Element zn, Element zf);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveRH(Element w, Element h, Element zn, Element zf, Element dn, Element df);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterRH(Element l, Element r, Element b, Element t, Element zn, Element zf);
-			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterRH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element dn, Element df);
+			// https://msdn.microsoft.com/en-us/library/windows/desktop/ee780369(v=vs.85).aspx
+			static Matrix44<TYPE> CPF_VECTORCALL OrthographicLH(Element w, Element h, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL OrthographicRH(Element w, Element h, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL OrthographicOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL OrthographicOffCenterRH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveFovLH(Element fovy, Element aspect, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveFovRH(Element fovy, Element aspect, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveLH(Element w, Element h, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveRH(Element w, Element h, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element nzn, Element nzf);
+			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterRH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element nzn, Element nzf);
+
 			static Matrix44<TYPE> CPF_VECTORCALL LookAt(const Vector3v<typename TYPE::Lanes_3> eye, const Vector3v<typename TYPE::Lanes_3> target, const Vector3v<typename TYPE::Lanes_3> up);
 
 			//////////////////////////////////////////////////////////////////////////

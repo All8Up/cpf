@@ -10,6 +10,7 @@ set (INCLUDE_FILES
 	Include/Concurrency/LoadBalancer.hpp
 )
 set (SOURCE_FILES
+	Source/Concurrency.cpp
 	Source/Scheduler.cpp
 	Source/Opcodes.cpp
 	Source/Queue.cpp
