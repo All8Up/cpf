@@ -380,6 +380,7 @@ int BgfxIntegration::Start(const CommandLine&)
 		bgfx::destroyVertexBuffer(m_vbh);
 		bgfx::destroyProgram(m_program);
 		bgfx::shutdown();
+		mScheduler.Shutdown();
 		mpWindow.Adopt(nullptr);
 	}
 	mpLocator.Adopt(nullptr);
