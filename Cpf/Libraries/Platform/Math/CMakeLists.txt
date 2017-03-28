@@ -1,105 +1,79 @@
 # ###############################################
-set( INCLUDE_FILES
-	Include/Math/Ballistics.hpp
-	Include/Math/Bits.hpp
-	Include/Math/Color.hpp
+set (MATH_INCLUDE_FILES
+	Include/Math/AABB.hpp
+	Include/Math/Algorithm.hpp
+	Include/Math/BitManipulation.hpp
 	Include/Math/Constants.hpp
-	Include/Math/Easing.hpp
-	Include/Math/Half.hpp
-	Include/Math/LargeVector3f.hpp
-	Include/Math/Math.hpp
+	Include/Math/Matrix22v.hpp
 	Include/Math/Matrix33v.hpp
 	Include/Math/Matrix44v.hpp
-	Include/Math/Matrix44v_Operations.hpp
-	Include/Math/Morton.hpp
-	Include/Math/Quaternionv.hpp
+	Include/Math/OBB.hpp
+	Include/Math/Quaternion.hpp
 	Include/Math/Rectangle.hpp
 	Include/Math/Transform.hpp
-	Include/Math/Utilities.hpp
-	Include/Math/Vector2.hpp
-	Include/Math/Vector3.hpp
+	Include/Math/Types.hpp
+	Include/Math/Vector2v.hpp
 	Include/Math/Vector3v.hpp
-	Include/Math/Vector4.hpp
 	Include/Math/Vector4v.hpp
 )
-set (INCLUDE_DETAIL_FILES
-	Include/Math/Detail/Quaternionv.inl
-	Include/Math/Detail/Swizzle2.hpp
-	Include/Math/Detail/Swizzle2.inl
-	Include/Math/Detail/Swizzle3.hpp
-	Include/Math/Detail/Swizzle3.inl
-	Include/Math/Detail/Swizzle4.hpp
-	Include/Math/Detail/Swizzle4.inl
-	Include/Math/Detail/SwizzleMacros.hpp
-	Include/Math/Detail/Vector2.inl
-	Include/Math/Detail/Vector3.inl
+set (MATH_DETAIL_INCLUDE_FILES
+	Include/Math/Detail/AABB.inl
+	Include/Math/Detail/Matrix22v.inl
+	Include/Math/Detail/Matrix33v.inl
+	Include/Math/Detail/Matrix44v.inl
+	Include/Math/Detail/OBB.inl
+	Include/Math/Detail/Quaternion.inl
+	Include/Math/Detail/Rectangle.inl
+	Include/Math/Detail/Transform.inl
+	Include/Math/Detail/Vector2v.inl
 	Include/Math/Detail/Vector3v.inl
-	Include/Math/Detail/Vector4.inl
 	Include/Math/Detail/Vector4v.inl
 )
-set( SOURCE_FILES
-	Source/Math.cpp
-	Source/LargeVector3f.cpp
-	Source/Transform.cpp
-	Source/Utilities.cpp
+
+add_library (Math INTERFACE)
+target_link_libraries (Math INTERFACE Configuration SIMD)
+
+target_include_directories (Math
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 )
 
-add_library( s_Math STATIC
-	${INCLUDE_FILES}
-	${INCLUDE_DETAIL_FILES}
-	${SOURCE_FILES}
+add_custom_target (Math_IDE SOURCES
+	Include/Math.hpp
+	${MATH_INCLUDE_FILES}
+	${MATH_DETAIL_INCLUDE_FILES}
 )
 
-target_compile_definitions( s_Math
-	PUBLIC
-		CPF_STATIC_MATH
-	PRIVATE
-		CPF_BUILD_MATH
-)
-source_group (Headers FILES ${INCLUDE_FILES})
-source_group (Headers\\Detail FILES ${INCLUDE_DETAIL_FILES})
-source_group (Sources FILES ${SOURCE_FILES})
-
-target_link_libraries (s_Math Configuration s_Simd)
-
-target_include_directories (s_Math PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-	$<INSTALL_INTERFACE:Include>
-)
-
-set_property( TARGET s_Math PROPERTY FOLDER Libraries/Static/Platform )
-
-install( DIRECTORY Include/Math
-	DESTINATION Include/Math
-	PATTERN *
-)
-
-
-install( TARGETS s_Math
+install (TARGETS Math
 	EXPORT MathConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install( EXPORT MathConfig DESTINATION CMake )
+install (EXPORT MathConfig
+	DESTINATION CMake
+)
 
+set_property (TARGET Math_IDE PROPERTY FOLDER Libraries/Interface/Core)
+source_group (Interface FILES Include/Math.hpp)
+source_group (Interface\\Math FILES ${MATH_INCLUDE_FILES})
+source_group (Interface\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
 
 # ###############################################
-MakeUnitTest( LIBRARY s_Math GROUP Platform
+MakeUnitTest (LIBRARY Math GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		UnitTest/Test_Bits.cpp
-		UnitTest/Test_LargeVector3f.cpp
-		UnitTest/Test_Mat33Mat44Quat.cpp
+		UnitTest/Test_AABB.cpp
+		UnitTest/Test_BitManipulation.cpp
+		UnitTest/Test_CodeGen.cpp
+		UnitTest/Test_Vector2v.cpp
+		UnitTest/Test_Vector3.cpp
+		UnitTest/Test_Vector3v.cpp
+		UnitTest/Test_Vector4v.cpp
+		UnitTest/Test_Matrix22v.cpp
 		UnitTest/Test_Matrix33v.cpp
 		UnitTest/Test_Matrix44v.cpp
-		UnitTest/Test_Morton.cpp
-		UnitTest/Test_Transform.cpp		
-		UnitTest/Test_Utilities.cpp
-		UnitTest/Test_Vector2.cpp
-		UnitTest/Test_Vector3.cpp
-		UnitTest/Test_Vector4.cpp
+		UnitTest/Test_OBB.cpp
+		UnitTest/Test_Quaternion.cpp
 		../../Core/Test/UnitTestMain.cpp
-	LINK_LIBRARIES
-		Configuration s_Simd
 )

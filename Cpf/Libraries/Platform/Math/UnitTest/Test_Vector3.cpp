@@ -1,396 +1,473 @@
 //////////////////////////////////////////////////////////////////////////
-#include "gmock/gmock.h"
-#include "Math/Vector3.hpp"
+#include <gtest/gtest.h>
+#include "SIMD.hpp"
+#include "SIMD/Detail/FPU/F32x2.hpp"
+#include "SIMD/Detail/FPU/I32x2.hpp"
+#include "SIMD/Detail/FPU/F32x3.hpp"
+#include "SIMD/Detail/FPU/I32x3.hpp"
+#include "Math/Vector2v.hpp"
 #include "Math/Vector3v.hpp"
-#include "Math/Constants.hpp"
-#include "Simd/Simd.hpp"
-
-
-template <typename T>
-class Test_Vector3 : public::testing::Test
-{
-public:
-	static void Near(const T& a, const T& b)
-	{
-		EXPECT_NEAR(a.x, b.x, 0.01);
-		EXPECT_NEAR(a.y, b.y, 0.01);
-		EXPECT_NEAR(a.z, b.z, 0.01);
-	}
-};
-
 
 //////////////////////////////////////////////////////////////////////////
+using Vector3f = Cpf::Math::Vector3v<Cpf::SIMD::FPU::F32x3_3>;
+
+template <typename T>
+class TypedTest_Vector3_fpu : public::testing::Test
+{
+public:
+};
+
 typedef ::testing::Types <
-	//	Cpf::Math::Vector3h,
-	Cpf::Math::Vector3f,
-	Cpf::Math::Vector3d,
-	Cpf::Math::Vector3v<Cpf::Simd::Reference::Float32x4>
-#if CPF_SIMD_AVX2
-	, Cpf::Math::Vector3v<Cpf::Simd::Avx2::Float32x4>
-#endif
-#if CPF_SIMD_AVX
-	, Cpf::Math::Vector3v<Cpf::Simd::Avx::Float32x4>
-#endif
-#if CPF_SIMD_SSE4a
-	, Cpf::Math::Vector3v<Cpf::Simd::Sse4a::Float32x4>
-#endif
-#if CPF_SIMD_SSE4_2
-	, Cpf::Math::Vector3v<Cpf::Simd::Sse4_2::Float32x4>
-#endif
-#if CPF_SIMD_SSE4_1
-	, Cpf::Math::Vector3v<Cpf::Simd::Sse4_1::Float32x4>
-#endif
-#if CPF_SIMD_SSE3
-	, Cpf::Math::Vector3v<Cpf::Simd::Sse3::Float32x4>
-#endif
-#if CPF_SIMD_SSE2
-	, Cpf::Math::Vector3v<Cpf::Simd::Sse2::Float32x4>
-#endif
-#if CPF_SIMD_SSE1
-	, Cpf::Math::Vector3v<Cpf::Simd::Sse1::Float32x4>
-#endif
-> Vector3_Types;
-TYPED_TEST_CASE(Test_Vector3, Vector3_Types);
+	Vector3f,
+	Cpf::Math::Vector3v<Cpf::SIMD::FPU::I32x3_3>
+> F32x4_1_Types;
+
+TYPED_TEST_CASE(TypedTest_Vector3_fpu, F32x4_1_Types);
 
 
-TYPED_TEST(Test_Vector3, CreateAndAccess)
+TYPED_TEST(TypedTest_Vector3_fpu, SizeValidation)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test(ElementType(1), ElementType(2), ElementType(3));
-	EXPECT_EQ(ElementType(1), test.X());
-	EXPECT_EQ(ElementType(2), test.Y());
-	EXPECT_EQ(ElementType(3), test.Z());
+	EXPECT_EQ(sizeof(typename TypeParam), sizeof(typename TypeParam::Element)*3);
 }
 
-TYPED_TEST(Test_Vector3, CopyConstruct)
+TYPED_TEST(TypedTest_Vector3_fpu, Construction)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test(ElementType(1), ElementType(2), ElementType(3));
-	TypeParam test2(test);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(test.X(), test2.X());
-	EXPECT_EQ(test.Y(), test2.Y());
-	EXPECT_EQ(test.Z(), test2.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	EXPECT_TRUE(Near(t0, { Element(1), Element(2), Element(3) }, Element(0.01f)));
+
+	Type t1(Element(3), Element(4), Element(5));
+	EXPECT_TRUE(Near(t1, { Element(3), Element(4), Element(5) }, Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, ArrayAccess)
+TYPED_TEST(TypedTest_Vector3_fpu, ArrayAccess)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test(ElementType(1), ElementType(2), ElementType(3));
-	EXPECT_EQ(ElementType(1), test[0]);
-	EXPECT_EQ(ElementType(2), test[1]);
-	EXPECT_EQ(ElementType(3), test[2]);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(test.x, test[0]);
-	EXPECT_EQ(test.y, test[1]);
-	EXPECT_EQ(test.z, test[2]);
+	Type t0 = { Element(1), Element(2), Element(3) };
+	EXPECT_NEAR(t0[0], Element(1), Element(0.01f));
+	EXPECT_NEAR(t0[1], Element(2), Element(0.01f));
+	EXPECT_NEAR(t0[2], Element(3), Element(0.01f));
+
+	t0[0] = Element(5);
+	t0[1] = Element(7);
+	t0[2] = Element(8);
+	EXPECT_NEAR(t0[0], Element(5), Element(0.01f));
+	EXPECT_NEAR(t0[1], Element(7), Element(0.01f));
+	EXPECT_NEAR(t0[2], Element(8), Element(0.01f));
 }
 
-TYPED_TEST(Test_Vector3, ElementSetters)
+TYPED_TEST(TypedTest_Vector3_fpu, ElementAccess)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test(TypeParam(0));
-	test.X(ElementType(1));
-	test.Y(ElementType(2));
-	test.Z(ElementType(3));
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+	Type t0 = { Element(1), Element(2), Element(3) };
 
-	EXPECT_EQ(ElementType(1), test[0]);
-	EXPECT_EQ(ElementType(2), test[1]);
-	EXPECT_EQ(ElementType(3), test[2]);
+	// NOTE: Have to cast it back to a vector type here to get the Near function to resolve.
+	// This should not be a deal breaker since it will still resolve to vectors/refs in most other cases.
+	EXPECT_TRUE(Near(Type(t0.xx, Element(0)), { Element(1), Element(1), Element(0) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.xy, Element(0)), { Element(1), Element(2), Element(0) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yy, Element(0)), { Element(2), Element(2), Element(0) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yx, Element(0)), { Element(2), Element(1), Element(0) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(Element(0), t0.xx), { Element(0), Element(1), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(0), t0.xy), { Element(0), Element(1), Element(2) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(0), t0.yy), { Element(0), Element(2), Element(2) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(Element(0), t0.yx), { Element(0), Element(2), Element(1) }, Element(0.01f)));
+
+	EXPECT_TRUE(Near(Type(t0.xxx), { Element(1), Element(1), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.xyx), { Element(1), Element(2), Element(1) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.yyz), { Element(2), Element(2), Element(3) }, Element(0.01f)));
+	EXPECT_TRUE(Near(Type(t0.zyx), { Element(3), Element(2), Element(1) }, Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, ExactCompare)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorAddAssign)
 {
-	TypeParam test0(1, 2, 3);
-	TypeParam test1(1, 2, 3);
-	TypeParam test2(TypeParam(0));
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_TRUE(test0 == test1);
-	EXPECT_FALSE(test0 == test2);
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	t0 += t1;
+
+	EXPECT_TRUE((t0 == Type(Element(4), Element(6), Element(8))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, ExactInequality)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorSubtractAssign)
 {
-	TypeParam test0(1, 2, 3);
-	TypeParam test1(1, 2, 3);
-	TypeParam test2(TypeParam(0));
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_TRUE(test0 != test2);
-	EXPECT_FALSE(test0 != test1);
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	t0 -= t1;
+
+	EXPECT_TRUE((t0 == Type(Element(-2), Element(-2), Element(-2))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, Negate)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiplyAssign)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test0(1, 2, 3);
-	TypeParam result(-test0);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(ElementType(-1), result[0]);
-	EXPECT_EQ(ElementType(-2), result[1]);
-	EXPECT_EQ(ElementType(-3), result[2]);
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	t0 *= t1;
+
+	EXPECT_TRUE((t0 == Type(Element(3), Element(8), Element(15))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, Add)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorDivideAssign)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test0(1, 2, 3);
-	TypeParam test1(1, 2, 3);
-	TypeParam result = test0 + test1;
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(ElementType(2), result.X());
-	EXPECT_EQ(ElementType(4), result.Y());
-	EXPECT_EQ(ElementType(6), result.Z());
+	Type t0 = { Element(12), Element(20), Element(25) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	t0 /= t1;
+
+	EXPECT_TRUE((t0 == Type(Element(4), Element(5), Element(5))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, Subtract)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorNegate)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test0(1, 2, 3);
-	TypeParam test1(1, 2, 3);
-	TypeParam result = test0 - test1;
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(ElementType(0), result.X());
-	EXPECT_EQ(ElementType(0), result.Y());
-	EXPECT_EQ(ElementType(0), result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = -t0;
+
+	EXPECT_TRUE(Near(t1, { Element(-1), Element(-2), Element(-3) }, Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, Multiply)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorEquals)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test0(1, 2, 3);
-	TypeParam result = test0 * ElementType(2);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(ElementType(2), result.X());
-	EXPECT_EQ(ElementType(4), result.Y());
-	EXPECT_EQ(ElementType(6), result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+
+	EXPECT_TRUE((t0 == Type(Element(1), Element(2), Element(3))) == Type::kLaneMask);
+	EXPECT_FALSE(t0 == t1);
 }
 
-TYPED_TEST(Test_Vector3, LeftMultiply)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorNotEquals)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam test0(1, 2, 3);
-	TypeParam result = ElementType(2) * test0;
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(ElementType(2), result.X());
-	EXPECT_EQ(ElementType(4), result.Y());
-	EXPECT_EQ(ElementType(6), result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+
+	EXPECT_FALSE((t0 != Type(Element(1), Element(2), Element(3))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 != t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, DotOperator)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorLessThan)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	ElementType result;
-	result = Dot(TypeParam::XAxis(), TypeParam::XAxis());
-	EXPECT_EQ(result, 1);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	result = Dot(TypeParam::XAxis(), TypeParam::YAxis());
-	EXPECT_EQ(result, 0);
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+
+	EXPECT_TRUE((t0 < Type(Element(1), Element(2), Element(3))) == 0);
+	EXPECT_TRUE((t0 < t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, Divide)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorLessThanEqual)
 {
-	TypeParam test0(2, 4, 6);
-	TypeParam result = test0 / 2;
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(1, result.X());
-	EXPECT_EQ(2, result.Y());
-	EXPECT_EQ(3, result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+
+	EXPECT_TRUE((t0 <= Type(Element(1), Element(2), Element(3))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 <= t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, CrossOperator)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorGreaterThan)
 {
-	EXPECT_TRUE((TypeParam::XAxis() ^ TypeParam::YAxis()) == TypeParam::ZAxis());
-	EXPECT_TRUE((TypeParam::ZAxis() ^ TypeParam::XAxis()) == TypeParam::YAxis());
-	EXPECT_TRUE((TypeParam::YAxis() ^ TypeParam::ZAxis()) == TypeParam::XAxis());
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+
+	EXPECT_TRUE((t0 > Type(Element(1), Element(2), Element(3))) == 0);
+	EXPECT_FALSE((t0 > t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, AddAssign)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorGreaterThanEqual)
 {
-	TypeParam result = TypeParam(1, 2, 3);
-	result += TypeParam(1, 2, 3);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(2, result.X());
-	EXPECT_EQ(4, result.Y());
-	EXPECT_EQ(6, result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+
+	EXPECT_TRUE((t0 >= Type(Element(1), Element(2), Element(3))) == Type::kLaneMask);
+	EXPECT_FALSE((t0 >= t1) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, SubAssign)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorAdd)
 {
-	TypeParam result = TypeParam(1, 2, 3);
-	result -= TypeParam(1, 2, 3);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(0, result.X());
-	EXPECT_EQ(0, result.Y());
-	EXPECT_EQ(0, result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	Type t2 = t0 + t1;
+
+	EXPECT_TRUE((t2 == Type(Element(4), Element(6), Element(8))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, MulAssign)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorSubtract)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam result = TypeParam(2, 4, 6);
-	result *= ElementType(2);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(ElementType(4), result.X());
-	EXPECT_EQ(ElementType(8), result.Y());
-	EXPECT_EQ(ElementType(12), result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	Type t2 = t0 - t1;
+
+	EXPECT_TRUE((t2 == Type(Element(-2), Element(-2), Element(-2))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, DivAssign)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiply)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	TypeParam result = TypeParam(2, 4, 6);
-	result /= ElementType(2);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	EXPECT_EQ(1, result.X());
-	EXPECT_EQ(2, result.Y());
-	EXPECT_EQ(3, result.Z());
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	Type t2 = t0 * t1;
+
+	EXPECT_TRUE(Near(t2, Type(Element(3), Element(8), Element(15)), Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, CrossAssign)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorMultiplyScalar)
 {
-	{
-		TypeParam res = TypeParam::XAxis();
-		EXPECT_TRUE((res ^= TypeParam::YAxis()) == TypeParam::ZAxis());
-	}
-	{
-		TypeParam res = TypeParam::ZAxis();
-		EXPECT_TRUE((res ^= TypeParam::XAxis()) == TypeParam::YAxis());
-	}
-	{
-		TypeParam res = TypeParam::YAxis();
-		EXPECT_TRUE((res ^= TypeParam::ZAxis()) == TypeParam::XAxis());
-	}
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t2 = t0 * Element(2);
+
+	EXPECT_TRUE(Near(t2, Type(Element(2), Element(4), Element(6)), Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, Rotate)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorScalarMultiply)
 {
-	typedef typename TypeParam::ElementType ElementType;
-	{
-		TypeParam res = TypeParam::XAxis();
-		res = Cpf::Math::Rotate(res, TypeParam::YAxis(), Cpf::Math::Constants<ElementType>::kHalfPI);
-		EXPECT_NEAR(0, res.X(), 0.01);
-		EXPECT_NEAR(0, res.Y(), 0.01);
-		EXPECT_NEAR(-1, res.Z(), 0.01);
-	}
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-	{
-		TypeParam res = TypeParam::XAxis();
-		res = Cpf::Math::Rotate(res, TypeParam::YAxis(), Cpf::Math::Constants<ElementType>::kPI);
-		EXPECT_NEAR(-1, res.X(), 0.01);
-		EXPECT_NEAR(0, res.Y(), 0.01);
-		EXPECT_NEAR(0, res.Z(), 0.01);
-	}
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t2 = Element(2) * t0;
 
-	{
-		TypeParam res = TypeParam::YAxis();
-		res = Cpf::Math::Rotate(res, TypeParam::XAxis(), Cpf::Math::Constants<ElementType>::kHalfPI);
-		EXPECT_NEAR(0, res.X(), 0.01);
-		EXPECT_NEAR(0, res.Y(), 0.01);
-		EXPECT_NEAR(1, res.Z(), 0.01);
-	}
-
-	{
-		TypeParam res = TypeParam::YAxis();
-		res = Cpf::Math::Rotate(res, TypeParam::XAxis(), Cpf::Math::Constants<ElementType>::kPI);
-		EXPECT_NEAR(0, res.X(), 0.01);
-		EXPECT_NEAR(-1, res.Y(), 0.01);
-		EXPECT_NEAR(0, res.Z(), 0.01);
-	}
-
-	{
-		TypeParam res = TypeParam::ZAxis();
-		res = Cpf::Math::Rotate(res, TypeParam::XAxis(), Cpf::Math::Constants<ElementType>::kHalfPI);
-		EXPECT_NEAR(0, res.X(), 0.01);
-		EXPECT_NEAR(-1, res.Y(), 0.01);
-		EXPECT_NEAR(0, res.Z(), 0.01);
-	}
-
-	{
-		TypeParam res = TypeParam::ZAxis();
-		res = Cpf::Math::Rotate(res, TypeParam::XAxis(), Cpf::Math::Constants<ElementType>::kPI);
-		EXPECT_NEAR(0, res.X(), 0.01);
-		EXPECT_NEAR(0, res.Y(), 0.01);
-		EXPECT_NEAR(-1, res.Z(), 0.01);
-	}
+	EXPECT_TRUE(Near(t2, Type(Element(2), Element(4), Element(6)), Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, Magnitude)
+TYPED_TEST(TypedTest_Vector3_fpu, OperatorDevide)
 {
-	EXPECT_NEAR(Magnitude(TypeParam::XAxis()), 1, 0.01);
-	EXPECT_NEAR(Magnitude(TypeParam::YAxis()), 1, 0.01);
-	EXPECT_NEAR(Magnitude(TypeParam::ZAxis()), 1, 0.01);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	Type t2 = t0 / t1;
+
+	EXPECT_TRUE(Near(t2, Type(Element(1.0f / 3.0f), Element(2.0f / 4.0f), Element(3.0f / 5.0f)), Element(0.01f)));
 }
 
-TYPED_TEST(Test_Vector3, MagnitudeSquared)
+TYPED_TEST(TypedTest_Vector3_fpu, Min)
 {
-	EXPECT_NEAR(MagnitudeSquared(TypeParam::XAxis()), 1, 0.01);
-	EXPECT_NEAR(MagnitudeSquared(TypeParam::YAxis()), 1, 0.01);
-	EXPECT_NEAR(MagnitudeSquared(TypeParam::ZAxis()), 1, 0.01);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	Type t2 = Min(t0, t1);
+
+	EXPECT_TRUE((t2 == Type(Element(1.0f), Element(2.0f), Element(3.0f))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, Normalize)
+TYPED_TEST(TypedTest_Vector3_fpu, HMin)
 {
-	TypeParam test = Normalize(TypeParam::XAxis());
-	EXPECT_NEAR(test.X(), 1, 0.01);
-	EXPECT_NEAR(test.Y(), 0, 0.01);
-	EXPECT_NEAR(test.Z(), 0, 0.01);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Element t1 = HMin(t0);
+
+	EXPECT_TRUE(t1 == Element(1));
 }
 
-TYPED_TEST(Test_Vector3, NormalizeTo)
+TYPED_TEST(TypedTest_Vector3_fpu, Max)
 {
-	using ElementType = typename TypeParam::ElementType;
-	TypeParam test = NormalizeTo(TypeParam::XAxis(), ElementType(2));
-	EXPECT_NEAR(test.X(), 2, 0.01);
-	EXPECT_NEAR(test.Y(), 0, 0.01);
-	EXPECT_NEAR(test.Z(), 0, 0.01);
-	EXPECT_NEAR(Magnitude(test), 2, 0.01);
-	EXPECT_NEAR(MagnitudeSquared(test), 4, 0.01);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Type t1 = { Element(3), Element(4), Element(5) };
+	Type t2 = Max(t0, t1);
+
+	EXPECT_TRUE((t2 == Type(Element(3.0f), Element(4.0f), Element(5.0f))) == Type::kLaneMask);
 }
 
-TYPED_TEST(Test_Vector3, Reflect)
+TYPED_TEST(TypedTest_Vector3_fpu, HMax)
 {
-	{
-		TypeParam test = Reflect(TypeParam::XAxis(), TypeParam::YAxis());
-		EXPECT_NEAR(test.X(), -1.0, 0.01);
-		EXPECT_NEAR(test.Y(), 0.0, 0.01);
-		EXPECT_NEAR(test.Z(), 0.0, 0.01);
-	}
-	{
-		TypeParam test = Reflect(TypeParam::ZAxis(), TypeParam::YAxis());
-		EXPECT_NEAR(test.X(), 0.0, 0.01);
-		EXPECT_NEAR(test.Y(), 0.0, 0.01);
-		EXPECT_NEAR(test.Z(), -1.0, 0.01);
-	}
-	{
-		TypeParam test = Reflect(TypeParam::YAxis(), TypeParam::ZAxis());
-		EXPECT_NEAR(test.X(), 0.0, 0.01);
-		EXPECT_NEAR(test.Y(), -1.0, 0.01);
-		EXPECT_NEAR(test.Z(), 0.0, 0.01);
-	}
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Element t1 = HMax(t0);
+
+	EXPECT_TRUE(t1 == Element(3));
 }
 
-/* TODO
-TYPED_TEST(Test_Vector3, Refract)
+TYPED_TEST(TypedTest_Vector3_fpu, Sqrt)
 {
-}
-*/
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
 
-TYPED_TEST(Test_Vector3, Distance)
-{
-	typename TypeParam::ElementType distance = Distance(TypeParam(1, 2, 3), TypeParam(2, 4, 6));
-	EXPECT_NEAR(distance, 3.7416, 0.01);
-}
+	Type t0 = { Element(9), Element(25), Element(36) };
+	Type t1 = Sqrt(t0);
 
-TYPED_TEST(Test_Vector3, DistanceSquared)
-{
-	typename TypeParam::ElementType distance = DistanceSquared(TypeParam(1, 2, 3), TypeParam(2, 4, 6));
-	EXPECT_NEAR(distance, 14, 0.01);
+	EXPECT_TRUE(t1.x == Element(3));
+	EXPECT_TRUE(t1.y == Element(5));
+	EXPECT_TRUE(t1.z == Element(6));
 }
 
-TYPED_TEST(Test_Vector3, ElementMultiply)
+TYPED_TEST(TypedTest_Vector3_fpu, Clamp)
 {
-	TypeParam test = TypeParam(1, 2, 3) * TypeParam(1, 2, 3);
-	EXPECT_NEAR(test.X(), 1, 0.001);
-	EXPECT_NEAR(test.Y(), 4, 0.001);
-	EXPECT_NEAR(test.Z(), 9, 0.001);
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(9), Element(25), Element(4) };
+	Type t1 = Clamp(t0, Element(12), Element(16));
+
+	EXPECT_TRUE(t1.x == Element(12));
+	EXPECT_TRUE(t1.y == Element(16));
+	EXPECT_TRUE(t1.z == Element(12));
+}
+
+
+TYPED_TEST(TypedTest_Vector3_fpu, Modulus)
+{
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+	Type t0 = { Element(5.25f), Element(12.85f), Element(16.7f) };
+	Type t1 = { Element(3.0f), Element(4.0f), Element(16) };
+	Type t2 = Modulus(t0, t1);
+
+	EXPECT_TRUE(Near(t2, { Element(2.25f), Element(0.85f), Element(0.7f) }, Element(0.01f)));
+}
+
+// NOTE: Next items only make sense for floating point.
+TEST(Vector3f, Dot_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
+	Vector3f t1 = { 3.0f, 5.0f, 6.0f };
+	float dot = Dot(t0, t1);
+	EXPECT_NEAR(dot, (3.0f * 5.0f) + (5.0f * 12.0f) + (13.0f * 6.0f), 0.01f);
+}
+
+TEST(Vector3f, Magnitude_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
+	float dot = Magnitude(t0);
+	EXPECT_NEAR(dot, std::sqrt((5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f)), 0.01f);
+}
+
+TEST(Vector3f, MagnitudeSq_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
+	float dot = MagnitudeSq(t0);
+	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f), 0.01f);
+}
+
+TEST(Vector3f, Normalize_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.0f, 12.0f, 13.0f };
+	Vector3f t1 = Normalize(t0);
+	EXPECT_TRUE(Near(t1, { t0.x / Magnitude(t0), t0.y / Magnitude(t0), t0.z / Magnitude(t0) }, 0.01f));
+}
+
+TEST(Vector3f, Reflect_Reference)
+{
+	using Type = Vector3f;
+	Type t0 = { 1.0f, 0.0f, 0.0f };
+	Type t1 = { 0.0f, 1.0f, 0.0f };
+	Type t3 = Reflect(t0, t1);
+	EXPECT_TRUE(Near(t3, { 0.0f, -1.0f, 0.0f }, 0.01f));
+}
+
+TEST(Vector3f, Reciprocal_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.0f, 12.0f, 15.0f };
+	Vector3f t1 = Reciprocal(t0);
+
+	EXPECT_NEAR(t1.x, 1.0f / t0.x, 0.01f);
+	EXPECT_NEAR(t1.y, 1.0f / t0.y, 0.01f);
+	EXPECT_NEAR(t1.z, 1.0f / t0.z, 0.01f);
+}
+
+TEST(Vector3f, RSqrt_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.0f, 12.0f, 15.0f };
+	Vector3f t1 = RSqrt(t0);
+
+	EXPECT_NEAR(t1.x, 1.0f / std::sqrt(t0.x), 0.01f);
+	EXPECT_NEAR(t1.y, 1.0f / std::sqrt(t0.y), 0.01f);
+	EXPECT_NEAR(t1.z, 1.0f / std::sqrt(t0.z), 0.01f);
+}
+
+//////////////////////////////////////////////////////////////////////////
+TEST(Vector3f, Round_Truncate_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3f t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+
+	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
+}
+
+TEST(Vector3f, Floor_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3f t1 = Floor(t0);
+
+	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
+}
+
+TEST(Vector3f, Ceil_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
+	Vector3f t1 = Ceil(t0);
+
+	EXPECT_TRUE(Near(t1, { 6.0f, 13.0f, 20.0f }, 0.01f));
+}
+
+TEST(Vector3f, Cross_Reference)
+{
+	using Vector3f = Vector3f;
+	Vector3f t0 = { 1.0f, 0.0f, 0.0f };
+	Vector3f t1 = { 0.0f, 1.0f, 0.0f };
+	Vector3f t2 = Cross(t0, t1);
+
+	EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
 }

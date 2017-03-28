@@ -10,6 +10,7 @@ namespace Cpf
 	struct interface_tag {};
 	using InterfaceID = Hash::HashID<uint64_t, interface_tag>;
 
+	//////////////////////////////////////////////////////////////////////////
 	struct CPF_NOVTABLE iRefCounted
 	{
 		virtual int32_t AddRef() = 0;
@@ -19,6 +20,7 @@ namespace Cpf
 		virtual ~iRefCounted() {};
 	};
 
+	//////////////////////////////////////////////////////////////////////////
 	struct CPF_NOVTABLE iUnknown : iRefCounted
 	{
 		static constexpr auto kIID = InterfaceID("iUnknown Interface"_crc64);
@@ -26,6 +28,7 @@ namespace Cpf
 		virtual bool QueryInterface(InterfaceID id, void**) = 0;
 	};
 
+	//////////////////////////////////////////////////////////////////////////
 	inline int32_t SafeAddRef(iRefCounted* rc)
 	{
 		if (rc)
@@ -39,6 +42,8 @@ namespace Cpf
 		return 0;
 	}
 
+
+	//////////////////////////////////////////////////////////////////////////
 	CPF_DLL_SAFE_BEGIN
 
 	template<typename BASE = iRefCounted>

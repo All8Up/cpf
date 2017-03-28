@@ -155,9 +155,9 @@ void Device::Finalize()
 	mReleaseQueue.clear();
 }
 
-bool Device::CreateSwapChain(Graphics::iInstance* instance, iWindow* window, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain)
+bool Device::CreateSwapChain(Graphics::iInstance* instance, iWindow* window, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain CPF_GFX_DEBUG_PARAM_DEF)
 {
-	Graphics::iSwapChain* result = new SwapChain(static_cast<Instance*>(instance), this, window, desc);
+	Graphics::iSwapChain* result = new SwapChain(static_cast<Instance*>(instance), this, window, desc CPF_GFX_DEBUG_FORWARD);
 	if (result)
 	{
 		*swapChain = result;
@@ -166,9 +166,9 @@ bool Device::CreateSwapChain(Graphics::iInstance* instance, iWindow* window, con
 	return false;
 }
 
-bool Device::CreateCommandPool(Graphics::iCommandPool** pool)
+bool Device::CreateCommandPool(Graphics::iCommandPool** pool CPF_GFX_DEBUG_PARAM_DEF)
 {
-	CommandPool* result = new CommandPool(this);
+	CommandPool* result = new CommandPool(this CPF_GFX_DEBUG_FORWARD);
 	if (pool)
 	{
 		*pool = result;
@@ -177,9 +177,9 @@ bool Device::CreateCommandPool(Graphics::iCommandPool** pool)
 	return false;
 }
 
-bool Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::iCommandBuffer** buffer)
+bool Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::iCommandBuffer** buffer CPF_GFX_DEBUG_PARAM_DEF)
 {
-	CommandBuffer* result = new CommandBuffer(this, pool);
+	CommandBuffer* result = new CommandBuffer(this, pool CPF_GFX_DEBUG_FORWARD);
 	if (result)
 	{
 		*buffer = result;
@@ -188,9 +188,9 @@ bool Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::iComman
 	return false;
 }
 
-bool Device::CreateFence(int64_t initValue, Graphics::iFence** fence)
+bool Device::CreateFence(int64_t initValue, Graphics::iFence** fence CPF_GFX_DEBUG_PARAM_DEF)
 {
-	Fence* result = new Fence(this, initValue);
+	Fence* result = new Fence(this, initValue CPF_GFX_DEBUG_FORWARD);
 	if (result)
 	{
 		*fence = result;
@@ -199,9 +199,9 @@ bool Device::CreateFence(int64_t initValue, Graphics::iFence** fence)
 	return false;
 }
 
-bool Device::CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** image)
+bool Device::CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** image CPF_GFX_DEBUG_PARAM_DEF)
 {
-	Image* result = new Image(this, initData, desc);
+	Image* result = new Image(this, initData, desc CPF_GFX_DEBUG_FORWARD);
 	if (result)
 	{
 		*image = result;
@@ -225,9 +225,9 @@ bool Device::CreateShader(Graphics::BinaryBlob* blob, Graphics::iShader** shader
 	return false;
 }
 
-bool Device::CreateResourceBinding(const Graphics::ResourceBindingDesc* resourceState, Graphics::iResourceBinding** binding)
+bool Device::CreateResourceBinding(const Graphics::ResourceBindingDesc* resourceState, Graphics::iResourceBinding** binding CPF_GFX_DEBUG_PARAM_DEF)
 {
-	IntrusivePtr<ResourceBinding> resourceBinding(new ResourceBinding(this, resourceState));
+	IntrusivePtr<ResourceBinding> resourceBinding(new ResourceBinding(this, resourceState CPF_GFX_DEBUG_FORWARD));
 	if (resourceBinding)
 	{
 		resourceBinding->AddRef();
@@ -237,9 +237,9 @@ bool Device::CreateResourceBinding(const Graphics::ResourceBindingDesc* resource
 	return false;
 }
 
-bool Device::CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding* rb, Graphics::iPipeline** pipeline)
+bool Device::CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding* rb, Graphics::iPipeline** pipeline CPF_GFX_DEBUG_PARAM_DEF)
 {
-	IntrusivePtr<Pipeline> result(new Pipeline(this, desc, static_cast<const ResourceBinding*>(rb)));
+	IntrusivePtr<Pipeline> result(new Pipeline(this, desc, static_cast<const ResourceBinding*>(rb) CPF_GFX_DEBUG_FORWARD));
 	if (result)
 	{
 		result->AddRef();
@@ -249,7 +249,7 @@ bool Device::CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::i
 	return false;
 }
 
-bool Device::CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource)
+bool Device::CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<Resource> result(new Resource(this, desc));
 	if (result)
@@ -261,7 +261,7 @@ bool Device::CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResou
 	return false;
 }
 
-bool Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler)
+bool Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<Sampler> result(new Sampler(this, desc));
 	if (result)
@@ -273,7 +273,7 @@ bool Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler
 	return false;
 }
 
-bool Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer)
+bool Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<IndexBuffer> result(new IndexBuffer(this, format, usage, byteSize, initData));
 	if (result)
@@ -285,7 +285,7 @@ bool Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage us
 	return false;
 }
 
-bool Device::CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer)
+bool Device::CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<VertexBuffer> result(new VertexBuffer(this, usage, byteSize, byteStride, initData));
 	if (result)
@@ -297,7 +297,7 @@ bool Device::CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, si
 	return false;
 }
 
-bool Device::CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer** cbuf)
+bool Device::CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer** cbuf CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<ConstantBuffer> result(new ConstantBuffer(this, bufferSize, initData));
 	if (result)
@@ -358,7 +358,7 @@ bool Device::CompileToByteCode(const String& entryPoint, Graphics::ShaderType ty
 	return false;
 }
 
-bool Device::CreateDepthStencilView(Graphics::iImage* image, const Graphics::DepthStencilViewDesc* dsDesc, Graphics::iImageView** imageView)
+bool Device::CreateDepthStencilView(Graphics::iImage* image, const Graphics::DepthStencilViewDesc* dsDesc, Graphics::iImageView** imageView CPF_GFX_DEBUG_PARAM_DEF)
 {
 	ImageView* result = new ImageView(this, static_cast<Image*>(image), dsDesc);
 	if (result)

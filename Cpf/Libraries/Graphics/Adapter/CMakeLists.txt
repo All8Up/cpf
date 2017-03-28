@@ -105,7 +105,7 @@ target_include_directories (s_GraphicsDriver
 )
 target_link_libraries (s_GraphicsDriver
 	LINK_PUBLIC
-		Configuration RefCount s_Math s_Application s_SDL2 s_IO s_Resources Logging
+		Configuration RefCount Math s_Application s_SDL2 s_IO s_Resources Logging
 )
 
 # ###############################################

@@ -1,0 +1,17 @@
+{
+  "Mounts": [
+    {
+      "VolumeType": "FileSystem",
+      "MountPoint": "/",
+      "Descriptor": {
+        "Directory": "./integration_res"
+      }
+    }
+  ],
+  "Caches": [
+    {
+      "CacheType": "Default",
+      "Name": "default"
+    }
+  ]
+}

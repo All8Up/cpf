@@ -10,6 +10,7 @@ set (INCLUDE_FILES
 	Include/Concurrency/LoadBalancer.hpp
 )
 set (SOURCE_FILES
+	Source/Concurrency.cpp
 	Source/Scheduler.cpp
 	Source/Opcodes.cpp
 	Source/Queue.cpp
@@ -107,6 +108,6 @@ MakeUnitTest (LIBRARY s_Concurrency GROUP Platform
 add_executable( SchedulerPerformance
 	Performance/SchedulerPerformance.cpp
 )
-target_link_libraries( SchedulerPerformance Configuration Logging s_Application s_Math s_Concurrency )
+target_link_libraries( SchedulerPerformance Configuration Logging Math s_Application s_Concurrency )
 
 set_property( TARGET SchedulerPerformance PROPERTY FOLDER Performance/Concurrency )

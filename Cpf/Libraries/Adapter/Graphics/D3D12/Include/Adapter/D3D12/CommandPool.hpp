@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Graphics/Driver.hpp"
 #include "Graphics/Interfaces/iCommandPool.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
@@ -16,7 +17,7 @@ namespace Cpf
 			class CommandPool : public tRefCounted<Graphics::iCommandPool>
 			{
 			public:
-				CommandPool(Device* device);
+				CommandPool(Device* device CPF_GFX_DEBUG_PARAM_DECL);
 				~CommandPool() override;
 
 				void Reset() override;

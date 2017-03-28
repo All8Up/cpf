@@ -1,90 +1,76 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Math.hpp"
-#include "Math/Detail/Swizzle2.hpp"
-#include "Math/Detail/Swizzle3.hpp"
-#include "Math/Detail/Swizzle4.hpp"
+#include "SIMD/Rounding.hpp"
+#include "SIMD/Detail/Ref32x4_1.hpp"
+#include "SIMD/Detail/Ref32x4_2.hpp"
+#include "SIMD/Detail/Ref32x4_3.hpp"
+#include "SIMD/Detail/Ref32x4_4.hpp"
 
 namespace Cpf
 {
 	namespace Math
 	{
-		template< typename SIMD_TYPE >
-		class Vector4v
+		template <typename TYPE>
+		union Vector4v
 		{
-		public:
 			//////////////////////////////////////////////////////////////////////////
-			using ElementType = typename SIMD_TYPE::ElementType;
-			using ValueType = typename SIMD_TYPE::ValueType;
+			using Storage = typename TYPE::Type;
+			using Element = typename TYPE::Element;
+			static constexpr int kLaneMask = TYPE::kLaneMask;
+
+			using Lanes_1 = typename TYPE::Lanes_1;
+			using Lanes_2 = typename TYPE::Lanes_2;
+			using Lanes_3 = typename TYPE::Lanes_3;
+			using Lanes_4 = typename TYPE::Lanes_4;
 
 			//////////////////////////////////////////////////////////////////////////
 			Vector4v();
-			Vector4v(ElementType v);
-			Vector4v(const Vector3v<SIMD_TYPE>& xyz, ElementType _w);
-			Vector4v(ElementType _x, const Vector3v<SIMD_TYPE>& yzw);
-			Vector4v(const Vector2<ElementType>& xy, ElementType _z, ElementType _w);
-			Vector4v(ElementType _x, const Vector2<ElementType>& yz, ElementType _w);
-			Vector4v(ElementType _x, ElementType _y, const Vector2<ElementType>& zw);
-			Vector4v(const Vector2<ElementType>& xy, const Vector2<ElementType>& zw);
-			Vector4v(ElementType _x, ElementType _y, ElementType _z, ElementType _w);
-			Vector4v(const Vector4v& rhs);
-			Vector4v(ValueType value);
+			explicit Vector4v(typename TYPE::Element value);
+			explicit Vector4v(TYPE value);
+			Vector4v(Element v0, Element v1, Element v2, Element v3);
+			template <int I0, int I1, int I2, int I3>
+			Vector4v(Cpf::SIMD::Ref32x4_4<TYPE, I0, I1, I2, I3>& ref);
+
+			explicit Vector4v(Lanes_2 v01, Element v2, Element v3);
+			explicit Vector4v(Element v0, Lanes_2 v12, Element v3);
+			explicit Vector4v(Element v0, Element v1, Lanes_2 v23);
+			explicit Vector4v(Lanes_2 v01, Lanes_2 v23);
+
+			explicit Vector4v(Lanes_3 v012, Element v3);
+			explicit Vector4v(Element v0, Lanes_3 v123);
 
 			//////////////////////////////////////////////////////////////////////////
-			ElementType& operator [](int idx);
-			ElementType operator [](int idx) const;
-			float X() const;
-			Vector4v& X(float);
-			float Y() const;
-			Vector4v& Y(float);
-			float Z() const;
-			Vector4v& Z(float);
-			float W() const;
-			Vector4v& W(float);
+			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
+			Element CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
-			bool operator ==(const Vector4v& rhs) const;
-			bool operator !=(const Vector4v& rhs) const;
+			Vector4v& CPF_VECTORCALL operator += (const Vector4v& rhs);
+			Vector4v& CPF_VECTORCALL operator -= (const Vector4v& rhs);
+			Vector4v& CPF_VECTORCALL operator *= (const Vector4v& rhs);
+			Vector4v& CPF_VECTORCALL operator /= (const Vector4v& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector4v operator -() const;
-			Vector4v operator +(const Vector4v& rhs) const;
-			Vector4v operator -(const Vector4v& rhs) const;
-			Vector4v operator *(const float rhs) const;
-			Vector4v operator *(const Vector4v& rhs) const;
-			Vector4v operator /(const ElementType rhs) const;
+			explicit operator Storage () const { return static_cast<Storage>(mVector); }
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector4v& operator +=(const Vector4v& rhs);
-			Vector4v& operator -=(const Vector4v& rhs);
-			Vector4v& operator *=(const ElementType rhs);
-			Vector4v& operator /=(const ElementType rhs);
-
-			//////////////////////////////////////////////////////////////////////////
-			operator ValueType() const;
-
-			//////////////////////////////////////////////////////////////////////////
-			static Vector4v<SIMD_TYPE> XAxis();
-			static Vector4v<SIMD_TYPE> YAxis();
-			static Vector4v<SIMD_TYPE> ZAxis();
-
-			//////////////////////////////////////////////////////////////////////////
-			union
-			{
-				ValueType mData;
-				ElementType data[4];
-				struct
-				{
-					ElementType x, y, z, w;
-				};
-				// Swizzles
-				SWIZZLE2_XYZW(ElementType);
-				SWIZZLE3_XYZW(ElementType);
-				SWIZZLE4_XYZW(ElementType);
-			};
+			TYPE mVector;
+			REF32X4_1_SWIZZLE(TYPE);
+			REF32X4_2_SWIZZLE(TYPE);
+			REF32X4_3_SWIZZLE(TYPE);
+			REF32X4_4_SWIZZLE(TYPE);
 		};
 	}
 }
 
+#include "Math/Detail/Vector4v.inl"
+#include "SIMD/Types.hpp"
+#include "SIMD/Detail/FPU/F32x4.hpp"
 
-#include <Math/Detail/Vector4v.inl>
+namespace Cpf
+{
+	namespace Math
+	{
+		using Vector4fv = Vector4v<SIMD::F32x4>;
+		using Vector4f = Vector4v<SIMD::FPU::F32x4_4>;
+	}
+}

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-
+#include "Configuration.hpp"
 
 namespace Cpf
 {
@@ -29,6 +29,7 @@ namespace Cpf
 		static constexpr float kLog2E = 1.44269504088896338700f;
 		static constexpr float kLogP5 = -0.693147f;
 		static constexpr float kC = 299792458.0f;
+		static constexpr float kFloatMax = 3.402823466e+38f;
 
 		static constexpr double kPI_d = 3.14159265358979323846;
 		static constexpr double kTwoPI_d = 6.28318530717958623200;
@@ -53,8 +54,6 @@ namespace Cpf
 		static constexpr double kC_d = 299792458.0;
 		static constexpr double kDegToRad_d = kPI_d / 180.0;
 		static constexpr double kRadToDeg_d = 180.0 / kPI_d;
-
-		static constexpr float kFloatMax = 3.402823466e+38f;
 
 		//////////////////////////////////////////////////////////////////////////
 		// Wrappers for template usage.

@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCounted.hpp"
-#include "Math/Color.hpp"
 #include "Math/Rectangle.hpp"
+#include "Math/Vector4v.hpp"
 
 namespace Cpf
 {
@@ -100,7 +100,7 @@ namespace Cpf
 			virtual void DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) = 0;
 
 			virtual void SetRenderTargets(int32_t imageCount, iImageView** images, iImageView* depthView) = 0;
-			virtual void ClearRenderTargetView(iImageView* view, Math::Color4f& color, int32_t count, const Math::Rectanglei* rects) = 0;
+			virtual void ClearRenderTargetView(iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) = 0;
 			virtual void ClearDepthStencilView(iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
 		};
 	}

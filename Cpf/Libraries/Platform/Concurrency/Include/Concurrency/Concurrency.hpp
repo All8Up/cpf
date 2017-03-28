@@ -28,4 +28,14 @@ namespace Cpf
 	{
 		class Scheduler;
 	}
+
+	struct ConcurrencyInitializer
+	{
+		CPF_EXPORT_CONCURRENCY static int Install();
+		CPF_EXPORT_CONCURRENCY static int Remove();
+
+	private:
+		ConcurrencyInitializer() = delete;
+		~ConcurrencyInitializer() = delete;
+	};
 }

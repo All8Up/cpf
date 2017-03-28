@@ -25,5 +25,17 @@ option (EXTERN_INLINE_CEREAL "Include the source project for cereal." ON)
 set (ASIO_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/asio-1.10.8")
 option (EXTERN_INLINE_ASIO "Include the source project for asio." ON)
 
+# Aurora
+set (AURORA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Aurora")
+option (EXTERN_INLINE_AURORA "Include the source project for Aurora" ON)
+
+# BGFX
+set (BGFX_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/bgfx")
+option (EXTERN_INLINE_BGFX "Include the source project for Bgfx" ON)
+
+# Box2D
+set (BOX2D_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Box2D-2.3.1")
+option (EXTERN_INLINE_BOX2D "Include the source project for Box2D" ON)
+
 # ################################
 include ("Source/CMakeLists.txt")

@@ -15,7 +15,7 @@ namespace Cpf
 			class Fence : public tRefCounted<Graphics::iFence>
 			{
 			public:
-				Fence(Device*, int64_t initValue);
+				Fence(Device*, int64_t initValue CPF_GFX_DEBUG_PARAM_DECL);
 				~Fence() override;
 
 				uint64_t GetValue() const override;

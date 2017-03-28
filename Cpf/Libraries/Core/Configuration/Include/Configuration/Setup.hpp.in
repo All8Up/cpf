@@ -60,8 +60,6 @@
 #	define CPF_SIMD_SSE4_2 @CPF_SIMD_SSE4_2@
 #	define CPF_SIMD_SSE4_1 @CPF_SIMD_SSE4_1@
 #	define CPF_SIMD_SSE3 @CPF_SIMD_SSE3@
-#	define CPF_SIMD_SSE2 @CPF_SIMD_SSE2@
-#	define CPF_SIMD_SSE1 @CPF_SIMD_SSE1@
 
 #	if CPF_SIMD_INSTRUCTION_LEVEL_Avx2
 #		include <immintrin.h>
@@ -75,10 +73,6 @@
 #		include <smmintrin.h>
 #	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse3
 #		include <pmmintrin.h>
-#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse2
-#		include <emmintrin.h>
-#	elif CPF_SIMD_INSTRUCTION_LEVEL_Sse1
-#		include <xmmintrin.h>
 #	elif CPF_SIMD_INSTRUCTION_LEVEL_Reference
 #	endif
 #endif

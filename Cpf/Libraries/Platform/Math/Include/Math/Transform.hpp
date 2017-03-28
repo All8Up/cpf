@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Quaternionv.hpp"
+#include "Math/Vector3v.hpp"
+#include "Math/Matrix44v.hpp"
+#include "Math/Quaternion.hpp"
 
 namespace Cpf
 {
@@ -12,9 +14,9 @@ namespace Cpf
 		public:
 			// Construction.
 			Transform(
-				Quaternionfv = Quaternionfv::Identity(),
+				Quaternionf = Quaternionf::Identity(),
 				Vector3fv = Vector3fv(1.0f),
-				Vector3fv = Vector3fv::Zero()
+				Vector3fv = Vector3fv(0.0f)
 			);
 			Transform(const Transform& rhs);
 
@@ -23,8 +25,8 @@ namespace Cpf
 			Transform operator * (const Transform& rhs) const;
 
 			// Interface.
-			Quaternionfv GetOrientation() const;
-			void SetOrientation(Quaternionfv q);
+			Quaternionf GetOrientation() const;
+			void SetOrientation(Quaternionf q);
 			Vector3fv GetScale() const;
 			void SetScale(Vector3fv v);
 			Vector3fv GetTranslation() const;
@@ -33,9 +35,11 @@ namespace Cpf
 
 		private:
 			// Implementation data.
-			Quaternionfv mOrientation;
+			Quaternionf mOrientation;
 			Vector3fv mScale;
 			Vector3fv mTranslation;
 		};
 	}
 }
+
+#include "Math/Detail/Transform.inl"

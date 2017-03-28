@@ -21,7 +21,7 @@ CPF_EXPORT_THREADING int ThreadingInitializer::Install()
 {
 	if (s_RefCount++ == 0)
 	{
-		CPF_INIT_LOG(Concurrency);
+		CPF_INIT_LOG(Threading);
 		TimeInitializer::Install();
 	}
 	return s_RefCount;
@@ -32,7 +32,7 @@ CPF_EXPORT_THREADING int ThreadingInitializer::Remove()
 {
 	if (--s_RefCount == 0)
 	{
-		CPF_DROP_LOG(Concurrency);
+		CPF_DROP_LOG(Threading);
 		TimeInitializer::Remove();
 	}
 	return s_RefCount;

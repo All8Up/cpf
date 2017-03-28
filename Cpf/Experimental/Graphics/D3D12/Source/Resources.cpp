@@ -8,7 +8,7 @@
 #include "Graphics/Descriptors/DepthStencilDesc.hpp"
 #include "Graphics/Descriptors/InputLayoutDesc.hpp"
 #include "Graphics/Descriptors/PipelineStateDesc.hpp"
-#include "Math/Vector4.hpp"
+#include "Math/Vector4v.hpp"
 #include "Math/Matrix44v.hpp"
 
 using namespace Cpf;

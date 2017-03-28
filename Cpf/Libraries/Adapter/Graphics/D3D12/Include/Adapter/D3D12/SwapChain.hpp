@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Graphics/Driver.hpp"
 #include "Graphics/Interfaces/iSwapChain.hpp"
 #include "Vector.hpp"
 #include "RefCounted.hpp"
@@ -27,7 +28,7 @@ namespace Cpf
 			class SwapChain : public tRefCounted<Graphics::iSwapChain>
 			{
 			public:
-				SwapChain(Instance*, Graphics::iDevice*, iWindow*, const Graphics::SwapChainDesc* desc);
+				SwapChain(Instance*, Graphics::iDevice*, iWindow*, const Graphics::SwapChainDesc* desc CPF_GFX_DEBUG_PARAM_DECL);
 				~SwapChain() override;
 
 				void Present() override;

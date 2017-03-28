@@ -26,7 +26,7 @@ void LoadBalancer::Balance()
 
 	if (mQueryOutstanding)
 	{
-		CPF_LOG(Networked, Info) << " Processor usage: " << mCPUUsage.GetValue();
+		CPF_LOG(Concurrency, Info) << " Processor usage: " << mCPUUsage.GetValue();
 
 		mQueryOutstanding = false;
 		auto distTimes = mDistTimeQuery.GetResult();

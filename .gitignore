@@ -5,3 +5,6 @@ External/cmake/
 External/include/
 External/lib64/
 .vs/
+*.iml
+cmake-build-debug/
+.idea/
