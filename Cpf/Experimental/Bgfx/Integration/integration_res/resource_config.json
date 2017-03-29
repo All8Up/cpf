@@ -6,6 +6,13 @@
       "Descriptor": {
         "Directory": "./integration_res"
       }
+    },
+    {
+      "VolumeType": "FileSystem",
+      "MountPoint": "/font",
+      "Descriptor": {
+        "Directory":  "./integration_res/font"
+      }
     }
   ],
   "Caches": [

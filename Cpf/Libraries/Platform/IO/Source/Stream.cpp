@@ -16,9 +16,11 @@ Cpf::Vector<char> CPF_EXPORT_IO Cpf::Platform::IO::ReadText(Stream* stream)
 Cpf::Vector<uint8_t> CPF_EXPORT_IO Cpf::Platform::IO::ReadBinary(Stream* stream)
 {
 	Vector<uint8_t> result;
-	int64_t streamLen = stream->GetLength();
-	result.resize(streamLen);
-	stream->Read(result.data(), streamLen);
-	result.push_back(0);
+	if (stream)
+	{
+		int64_t streamLen = stream->GetLength();
+		result.resize(streamLen);
+		stream->Read(result.data(), streamLen);
+	}
 	return result;
 }

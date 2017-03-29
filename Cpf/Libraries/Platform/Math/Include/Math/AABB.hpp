@@ -13,8 +13,8 @@ namespace Cpf
 			AABB();
 
 		private:
-			Vector3<TYPE> mMin;
-			Vector3<TYPE> mMax;
+			Vector3v<TYPE> mMin;
+			Vector3v<TYPE> mMax;
 		};
 	}
 }

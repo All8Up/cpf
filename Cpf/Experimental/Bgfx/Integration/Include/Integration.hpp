@@ -6,6 +6,7 @@
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
 #include "Resources/Locator.hpp"
+#include "NanoVG/nanovg.h"
 
 namespace Cpf
 {
@@ -41,5 +42,8 @@ namespace Cpf
 		uint32_t mResetFlags;
 
 		int32_t mSelectedRenderDevice;
+
+		NVGcontext* mNvg;
+		int mFont;
 	};
 }

@@ -40,6 +40,7 @@ target_link_libraries (BgfxIntegration
 	s_Resources
 	bx
 	bgfx
+	s_NanoVG_BGFX
 )
 target_compile_definitions (BgfxIntegration PUBLIC)
 

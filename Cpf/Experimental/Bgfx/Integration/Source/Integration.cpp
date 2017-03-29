@@ -121,6 +121,7 @@ inline bool bgfxSetWindow(iWindow* _window)
 BgfxIntegration::BgfxIntegration()
 	: mResetFlags(BGFX_RESET_MSAA_X8)
 	, mSelectedRenderDevice(-1)
+	, mNvg(nullptr)
 {
 	CPF_INIT_LOG(Integration);
 }
@@ -259,6 +260,10 @@ int BgfxIntegration::Start(const CommandLine&)
 			, 1.0f
 			, 0
 		);
+		mNvg = nvgCreate(1, 0);
+		IntrusivePtr<Platform::IO::Stream> roboto_reg_font(mpLocator->Open(RESOURCE_ID("font/", "roboto-regular.ttf")));
+		Vector<uint8_t> robotoData(Move(ReadBinary(roboto_reg_font)));
+		mFont = nvgCreateFontMem(mNvg, "roboto-regular", robotoData.data(), int(robotoData.size()), 0);
 
 		// Create vertex stream declaration.
 		PosColorVertex::init();
@@ -371,11 +376,38 @@ int BgfxIntegration::Start(const CommandLine&)
 				}
 			}
 
-			// Advance to next frame. Rendering thread will be kicked to
-			// process submitted rendering primitives.
+			nvgBeginFrame(mNvg, mWindowSize.x, mWindowSize.y, 1.0f);
+			{
+				nvgBeginPath(mNvg);
+				nvgStrokeWidth(mNvg, 5.0f);
+				nvgStrokeColor(mNvg, { 1.0f, 1.0f, 1.0f, 0.5f });
+				nvgEllipse(mNvg, 50, 50, 40, 30);
+				nvgStroke(mNvg);
+
+				nvgBeginPath(mNvg);
+				nvgStrokeWidth(mNvg, 2.0f);
+				nvgStrokeColor(mNvg, { 0.5f, 0.8f, 1.0f, 0.9f });
+				nvgRoundedRect(mNvg, 200.0f, 200.0f, 50.0f, 50.0f, 10.0f);
+				nvgFillColor(mNvg, {0.0f, 0.25f, 0.5f, 1.0f});
+				nvgFill(mNvg);
+				nvgStroke(mNvg);
+
+				nvgSave(mNvg);
+
+				nvgFontSize(mNvg, 36.0f);
+				nvgFontFace(mNvg, "roboto-regular");
+				nvgTextAlign(mNvg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
+				nvgText(mNvg, 100.0f, 100.0f, "Test text", nullptr);
+
+				nvgRestore(mNvg);
+			}
+			nvgEndFrame(mNvg);
+
+			// Render
 			bgfx::frame();
 		}
 
+		nvgDelete(mNvg);
 		bgfx::destroyIndexBuffer(m_ibh);
 		bgfx::destroyVertexBuffer(m_vbh);
 		bgfx::destroyProgram(m_program);
