@@ -14,6 +14,7 @@ CPF_EXPORT_CONCURRENCY int ConcurrencyInitializer::Install()
 	if (++sRefCount == 1)
 	{
 		CPF_INIT_LOG(Concurrency);
+		CPF_LOG_LEVEL(Concurrency, Warn);
 	}
 	return sRefCount;
 }

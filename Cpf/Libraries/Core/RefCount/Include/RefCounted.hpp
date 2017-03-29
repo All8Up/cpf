@@ -11,7 +11,7 @@ namespace Cpf
 	using InterfaceID = Hash::HashID<uint64_t, interface_tag>;
 
 	//////////////////////////////////////////////////////////////////////////
-	struct CPF_NOVTABLE iRefCounted
+	struct CPF_EXPORT CPF_NOVTABLE iRefCounted
 	{
 		virtual int32_t AddRef() = 0;
 		virtual int32_t Release() = 0;
@@ -21,9 +21,9 @@ namespace Cpf
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	struct CPF_NOVTABLE iUnknown : iRefCounted
+	struct CPF_EXPORT iUnknown : iRefCounted
 	{
-		static constexpr auto kIID = InterfaceID("iUnknown Interface"_crc64);
+		static constexpr InterfaceID kIID = InterfaceID("iUnknown Interface"_crc64);
 
 		virtual bool QueryInterface(InterfaceID id, void**) = 0;
 	};
@@ -44,8 +44,6 @@ namespace Cpf
 
 
 	//////////////////////////////////////////////////////////////////////////
-	CPF_DLL_SAFE_BEGIN
-
 	template<typename BASE = iRefCounted>
 	class tRefCounted : public BASE
 	{
@@ -74,6 +72,4 @@ namespace Cpf
 	private:
 		int32_t mRefCount;
 	};
-
-	CPF_DLL_SAFE_END
 }
