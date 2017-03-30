@@ -245,7 +245,8 @@ namespace Cpf
 	{
 		if (mpTarget)
 		{
-			Cast()->Release();
+			if (Cast()->Release() == 0)
+				mpTarget = nullptr;
 		}
 	}
 

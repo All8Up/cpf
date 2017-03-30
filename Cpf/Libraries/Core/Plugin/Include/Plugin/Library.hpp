@@ -11,6 +11,7 @@ namespace Cpf
 		{
 		public:
 			Library();
+			Library(Library&&);
 			~Library();
 
 			bool Load(const char* const name);
@@ -26,6 +27,9 @@ namespace Cpf
 			}
 
 		private:
+			Library(const Library&) = delete;
+			Library& operator = (const Library&) = delete;
+
 			Platform::Library::Handle mHandle;
 		};
 
@@ -35,6 +39,12 @@ namespace Cpf
 		inline Library::Library()
 			: mHandle(Platform::Library::kInvalid)
 		{
+		}
+
+		inline Library::Library(Library&& rhs)
+			: mHandle(rhs.mHandle)
+		{
+			rhs.mHandle = Platform::Library::kInvalid;
 		}
 
 		inline Library::~Library()

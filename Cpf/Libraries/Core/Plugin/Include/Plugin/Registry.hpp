@@ -12,8 +12,10 @@ namespace Cpf
 
 			using Creator = void*(*)();
 
+			virtual bool Load(const char* const) = 0;
 			virtual bool Install(InterfaceID, Creator) = 0;
 			virtual bool Remove(InterfaceID) = 0;
+			virtual bool Exists(InterfaceID) = 0;
 			virtual bool Create(InterfaceID, void**) = 0;
 		};
 	}

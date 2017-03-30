@@ -6,15 +6,6 @@
 using namespace Cpf;
 
 //////////////////////////////////////////////////////////////////////////
-extern "C"
-int32_t CPF_EXPORT Register(Plugin::iRegistry* registry)
-{
-	(void)registry;
-	return 0;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
 class TestPlugin : public iTestPlugin
 {
 public:
@@ -34,6 +25,16 @@ public:
 private:
 	int32_t mRefCount;
 };
+
+//////////////////////////////////////////////////////////////////////////
+extern "C"
+int32_t CPF_EXPORT Install(Plugin::iRegistry* registry)
+{
+	if (registry->Install(iTestPlugin::kIID, []() -> void* {return new TestPlugin; }))
+		return 0;
+	return -1;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 TestPlugin::TestPlugin()

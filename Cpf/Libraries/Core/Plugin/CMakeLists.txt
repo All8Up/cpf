@@ -72,6 +72,8 @@ add_library (s_PluginHost STATIC
 )
 target_link_libraries (s_PluginHost PUBLIC Plugin)
 set_property (TARGET s_PluginHost PROPERTY FOLDER Libraries/Static/Core)
+source_group ("Header Files" FILES ${PLUGINHOST_INCLUDE_FILES})
+source_group ("Source Files" FILES ${PLUGINHOST_SOURCE_FILES})
 
 
 # ###############################################
