@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Plugin/Registry.hpp"
+#include "Plugin/iRegistry.hpp"
 
 namespace Cpf
 {
 	namespace PluginHost
 	{
-		bool CreateRegistry(Plugin::iRegistry**);
+		bool CPF_STDCALL CreateRegistry(Plugin::iRegistry**);
 	}
 }

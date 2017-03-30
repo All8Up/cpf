@@ -4,6 +4,7 @@
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/Pipeline.hpp"
 #include "Application/Application.hpp"
+#include "Application/Window.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;

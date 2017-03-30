@@ -5,6 +5,7 @@
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Image.hpp"
 #include "Application/Application.hpp"
+#include "Application/Window.hpp"
 #include "Logging/Logging.hpp"
 #include "Move.hpp"
 

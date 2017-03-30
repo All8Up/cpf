@@ -1,8 +1,13 @@
 # ###############################################
 set( INCLUDE_FILES
 	Include/Application/Application.hpp
+	Include/Application/WindowedApplication.hpp
+	Include/Application/Window.hpp
 	Include/Application/Arguments.hpp
 	Include/Application/ConsoleCommands.hpp
+	Include/Application/KeyCode.hpp
+	Include/Application/MouseButton.hpp
+	Include/Application/WindowFlags.hpp
 
 	Include/Platform/Platform.hpp
 	Include/Platform/ConsoleApp.hpp
@@ -12,6 +17,8 @@ set( SOURCE_FILES
 	Source/Application.cpp
 	Source/Arguments.cpp
 	Source/ConsoleCommands.cpp
+	Source/Window.cpp
+	Source/WindowedApplication.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Main.cpp
 )
 
@@ -26,7 +33,7 @@ target_compile_definitions( s_Application
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( s_Application Configuration s_Memory s_Collections Math s_Events RefCount )
+target_link_libraries( s_Application Configuration s_Memory s_Collections Math s_Events s_PluginHost )
 
 target_include_directories( s_Application PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

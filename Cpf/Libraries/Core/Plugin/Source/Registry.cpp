@@ -15,28 +15,29 @@ public:
 	virtual ~Registry() override;
 
 	// iUnknown overrides.
-	int32_t AddRef() override;
-	int32_t Release() override;
-	bool QueryInterface(InterfaceID id, void**) override;
+	int32_t CPF_STDCALL AddRef() override;
+	int32_t CPF_STDCALL Release() override;
+	bool CPF_STDCALL QueryInterface(InterfaceID id, void**) override;
 
 	// iRegistry overrides.
-	bool Load(const char* const) override;
-	bool Install(InterfaceID, Creator) override;
-	bool Remove(InterfaceID) override;
-	bool Registry::Exists(InterfaceID id) override;
-	bool Create(InterfaceID, void**) override;
+	bool CPF_STDCALL Load(const char* const) override;
+	bool CPF_STDCALL Install(InterfaceID, Creator) override;
+	bool CPF_STDCALL Remove(InterfaceID) override;
+	bool CPF_STDCALL Registry::Exists(InterfaceID id) override;
+	bool CPF_STDCALL Create(iUnknown*, InterfaceID, void**) override;
 
 private:
 	int32_t mRefCount;
 
 	using LibraryMap = Cpf::UnorderedMap<String, Plugin::Library>;
-	LibraryMap mLibraryMap;
 	using CreationMap = Cpf::UnorderedMap<InterfaceID, Creator>;
+
+	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
 };
 
 //////////////////////////////////////////////////////////////////////////
-bool PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
+bool CPF_STDCALL PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
 {
 	if (outRegistry)
 	{
@@ -56,12 +57,12 @@ Registry::~Registry()
 	CPF_ASSERT(mRefCount == 0);
 }
 
-int32_t Registry::AddRef()
+int32_t CPF_STDCALL Registry::AddRef()
 {
 	return ++mRefCount;
 }
 
-int32_t Registry::Release()
+int32_t CPF_STDCALL Registry::Release()
 {
 	if (--mRefCount == 0)
 	{
@@ -71,7 +72,7 @@ int32_t Registry::Release()
 	return mRefCount;
 }
 
-bool Registry::QueryInterface(InterfaceID id, void** outIface)
+bool CPF_STDCALL Registry::QueryInterface(InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -94,7 +95,7 @@ bool Registry::QueryInterface(InterfaceID id, void** outIface)
 	return outIface && (*outIface != nullptr);
 }
 
-bool Registry::Load(const char* const name)
+bool CPF_STDCALL Registry::Load(const char* const name)
 {
 	if (name)
 	{
@@ -119,7 +120,7 @@ bool Registry::Load(const char* const name)
 	return false;
 }
 
-bool Registry::Install(InterfaceID id, Creator creator)
+bool CPF_STDCALL Registry::Install(InterfaceID id, Creator creator)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists == mCreationMap.end())
@@ -130,7 +131,7 @@ bool Registry::Install(InterfaceID id, Creator creator)
 	return false;
 }
 
-bool Registry::Remove(InterfaceID id)
+bool CPF_STDCALL Registry::Remove(InterfaceID id)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists != mCreationMap.end())
@@ -141,20 +142,20 @@ bool Registry::Remove(InterfaceID id)
 	return false;
 }
 
-bool Registry::Exists(InterfaceID id)
+bool CPF_STDCALL Registry::Exists(InterfaceID id)
 {
 	auto exists = mCreationMap.find(id);
 	return exists != mCreationMap.end();
 }
 
-bool Registry::Create(InterfaceID id, void** outIface)
+bool CPF_STDCALL Registry::Create(iUnknown* outer, InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		auto creator = mCreationMap.find(id);
 		if (creator != mCreationMap.end())
 		{
-			*outIface = (*creator->second)();
+			*outIface = (*creator->second)(outer);
 			return *outIface != nullptr;
 		}
 	}

@@ -9,6 +9,7 @@
 #include "RenderSystem.hpp"
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
+#include "Application/WindowFlags.hpp"
 
 using namespace Cpf;
 using namespace Platform;
@@ -111,7 +112,7 @@ bool Networked::_CreateWindow()
 		.Title("Network Test")
 		.Position(iWindow::Centered)
 		.Size(mWindowSize)
-		.Flags(iWindow::eResizable | iWindow::eShown)
+		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
 
 	if (mpWindow)

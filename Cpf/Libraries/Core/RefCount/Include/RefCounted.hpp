@@ -13,8 +13,8 @@ namespace Cpf
 	//////////////////////////////////////////////////////////////////////////
 	struct CPF_EXPORT CPF_NOVTABLE iRefCounted
 	{
-		virtual int32_t AddRef() = 0;
-		virtual int32_t Release() = 0;
+		virtual int32_t CPF_STDCALL AddRef() = 0;
+		virtual int32_t CPF_STDCALL Release() = 0;
 
 	protected:
 		virtual ~iRefCounted() {};
@@ -25,7 +25,7 @@ namespace Cpf
 	{
 		static constexpr InterfaceID kIID = InterfaceID("iUnknown Interface"_crc64);
 
-		virtual bool QueryInterface(InterfaceID id, void**) = 0;
+		virtual bool CPF_STDCALL QueryInterface(InterfaceID id, void**) = 0;
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -52,12 +52,12 @@ namespace Cpf
 		tRefCounted(PARAMS... params) : BASE(params...), mRefCount(1) {}
 		tRefCounted() : mRefCount(1) {}
 
-		virtual int32_t AddRef() override
+		virtual int32_t CPF_STDCALL AddRef() override
 		{
 			CPF_ASSERT(mRefCount > 0);
 			return ++mRefCount;
 		}
-		virtual int32_t Release() override
+		virtual int32_t CPF_STDCALL Release() override
 		{
 			CPF_ASSERT(mRefCount > 0);
 			if (--mRefCount == 0)

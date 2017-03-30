@@ -1,5 +1,4 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Plugin/Library.hpp"
-#include "Plugin/Factory.hpp"
-#include "Plugin/Registry.hpp"
+#include "Plugin/iRegistry.hpp"

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Application/Application.hpp"
+#include "Application/WindowedApplication.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -20,7 +21,10 @@ iWindow::~iWindow()
 Application::Application()
 	: mRunning(true)
 //	, mCommandLine("Cpf::Application")
-{}
+{
+	PluginHost::CreateRegistry(mpRegistry.AsTypePP());
+	CPF_ASSERT(bool(mpRegistry));
+}
 
 
 Application::~Application()

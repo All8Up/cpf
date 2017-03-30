@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Application/Application.hpp"
+#include "Application/WindowedApplication.hpp"
 #include "Application/Arguments.hpp"
 #include "String.hpp"
 #include "StringUtils.hpp"

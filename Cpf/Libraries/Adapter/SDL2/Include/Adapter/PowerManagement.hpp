@@ -44,21 +44,5 @@ namespace Cpf
 			Threading::Thread mWorker;
 			SDL_PowerState mLastState;
 		};
-
-		class Window : public iWindow
-		{
-		public:
-			Window(SDL_Window* win);
-			virtual ~Window();
-
-			Math::Vector2i GetClientArea() const override;
-
-#if CPF_TARGET_WINDOWS
-			HDC GetHDC() const;
-#endif
-			SDL_Window* GetSDLWindow() const;
-		private:
-			SDL_Window* mpWindow;
-		};
 	}
 }

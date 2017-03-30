@@ -5,6 +5,8 @@
 #include "Resources/ResourceConfig.hpp"
 #include "MultiCore.hpp"
 
+#include "Application/WindowFlags.hpp"
+
 #include "Math/Algorithm.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Vector2v.hpp"
@@ -143,7 +145,7 @@ bool BgfxIntegration::_CreateWindow()
 		.Title("BGFX")
 		.Position(iWindow::Centered)
 		.Size(mWindowSize)
-		.Flags(iWindow::eResizable | iWindow::eShown)
+		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
 	mpWindow->GetEmitter().On<iWindow::OnResized>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
 

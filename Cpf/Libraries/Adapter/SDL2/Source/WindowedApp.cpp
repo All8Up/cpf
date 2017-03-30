@@ -2,6 +2,8 @@
 #include "Adapter/WindowedApp.hpp"
 #include "Adapter/Window.hpp"
 #include "Logging/Logging.hpp"
+#include "Application/MouseButton.hpp"
+#include "Application/WindowFlags.hpp"
 #include "SDL_syswm.h"
 
 using namespace Cpf;
@@ -11,20 +13,20 @@ using namespace Adapter;
 int32_t WindowFlags(int32_t flags)
 {
 	int32_t result = 0;
-	if (flags&iWindow::eFullscreen)			result |= SDL_WINDOW_FULLSCREEN;
-	if (flags&iWindow::eSupportOpenGL)		result |= SDL_WINDOW_OPENGL;
-	if (flags&iWindow::eShown)				result |= SDL_WINDOW_SHOWN;
-	if (flags&iWindow::eHidden)				result |= SDL_WINDOW_HIDDEN;
-	if (flags&iWindow::eBorderless)			result |= SDL_WINDOW_BORDERLESS;
-	if (flags&iWindow::eResizable)			result |= SDL_WINDOW_RESIZABLE;
-	if (flags&iWindow::eMinimized)			result |= SDL_WINDOW_MINIMIZED;
-	if (flags&iWindow::eMaximized)			result |= SDL_WINDOW_MAXIMIZED;
-	if (flags&iWindow::eInputGrabbed)		result |= SDL_WINDOW_INPUT_GRABBED;
-	if (flags&iWindow::eInputFocus)			result |= SDL_WINDOW_INPUT_FOCUS;
-	if (flags&iWindow::eMouseFocus)			result |= SDL_WINDOW_MOUSE_FOCUS;
-	if (flags&iWindow::eFullscreenDesktop)	result |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-	if (flags&iWindow::eAllowHDPI)			result |= SDL_WINDOW_ALLOW_HIGHDPI;
-	if (flags&iWindow::eMouseCapture)		result |= SDL_WINDOW_MOUSE_CAPTURE;
+	if (flags&WindowFlags::eFullscreen)			result |= SDL_WINDOW_FULLSCREEN;
+	if (flags&WindowFlags::eSupportOpenGL)		result |= SDL_WINDOW_OPENGL;
+	if (flags&WindowFlags::eShown)				result |= SDL_WINDOW_SHOWN;
+	if (flags&WindowFlags::eHidden)				result |= SDL_WINDOW_HIDDEN;
+	if (flags&WindowFlags::eBorderless)			result |= SDL_WINDOW_BORDERLESS;
+	if (flags&WindowFlags::eResizable)			result |= SDL_WINDOW_RESIZABLE;
+	if (flags&WindowFlags::eMinimized)			result |= SDL_WINDOW_MINIMIZED;
+	if (flags&WindowFlags::eMaximized)			result |= SDL_WINDOW_MAXIMIZED;
+	if (flags&WindowFlags::eInputGrabbed)		result |= SDL_WINDOW_INPUT_GRABBED;
+	if (flags&WindowFlags::eInputFocus)			result |= SDL_WINDOW_INPUT_FOCUS;
+	if (flags&WindowFlags::eMouseFocus)			result |= SDL_WINDOW_MOUSE_FOCUS;
+	if (flags&WindowFlags::eFullscreenDesktop)	result |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+	if (flags&WindowFlags::eAllowHDPI)			result |= SDL_WINDOW_ALLOW_HIGHDPI;
+	if (flags&WindowFlags::eMouseCapture)		result |= SDL_WINDOW_MOUSE_CAPTURE;
 
 	return result;
 }
@@ -93,7 +95,7 @@ bool WindowedApp::Create(const WindowDesc& desc, iWindow** outWindow)
 			desc.mPosition.y,
 			desc.mSize.x,
 			desc.mSize.y,
-			WindowFlags(desc.mFlags)
+			Uint32(desc.mFlags)
 		)
 	);
 	if (win)
@@ -145,14 +147,14 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 	case SDL_MOUSEBUTTONDOWN:
 	{
 		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.button.windowID), "iWindow"));
-		ButtonID id = ButtonID::eLeft;
+		MouseButton id = MouseButton::eLeft;
 		switch (event.button.button)
 		{
-		case SDL_BUTTON_LEFT: id = ButtonID::eLeft; break;
-		case SDL_BUTTON_MIDDLE: id = ButtonID::eMiddle; break;
-		case SDL_BUTTON_RIGHT: id = ButtonID::eRight; break;
-		case SDL_BUTTON_X1: id = ButtonID::eX1; break;
-		case SDL_BUTTON_X2: id = ButtonID::eX2; break;
+		case SDL_BUTTON_LEFT: id = MouseButton::eLeft; break;
+		case SDL_BUTTON_MIDDLE: id = MouseButton::eMiddle; break;
+		case SDL_BUTTON_RIGHT: id = MouseButton::eRight; break;
+		case SDL_BUTTON_X1: id = MouseButton::eX1; break;
+		case SDL_BUTTON_X2: id = MouseButton::eX2; break;
 		}
 		window->GetEmitter().Emit<iWindow::OnButtonDown>(id, event.button.x, event.button.y);
 
@@ -165,16 +167,16 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 	case SDL_MOUSEBUTTONUP:
 	{
 		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.button.windowID), "iWindow"));
-		ButtonID id;
+		MouseButton id;
 		switch (event.button.button)
 		{
-		case SDL_BUTTON_LEFT: id = ButtonID::eLeft; break;
-		case SDL_BUTTON_MIDDLE: id = ButtonID::eMiddle; break;
-		case SDL_BUTTON_RIGHT: id = ButtonID::eRight; break;
-		case SDL_BUTTON_X1: id = ButtonID::eX1; break;
-		case SDL_BUTTON_X2: id = ButtonID::eX2; break;
+		case SDL_BUTTON_LEFT: id = MouseButton::eLeft; break;
+		case SDL_BUTTON_MIDDLE: id = MouseButton::eMiddle; break;
+		case SDL_BUTTON_RIGHT: id = MouseButton::eRight; break;
+		case SDL_BUTTON_X1: id = MouseButton::eX1; break;
+		case SDL_BUTTON_X2: id = MouseButton::eX2; break;
 		default:
-			id = ButtonID::eLeft;
+			id = MouseButton::eLeft;
 			CPF_ASSERT_ALWAYS;
 			break;
 		}

@@ -8,6 +8,7 @@
 #include "Graphics/Descriptors/PipelineStateDesc.hpp"
 #include "Graphics/Descriptors/ResourceBindingDesc.hpp"
 #include "Application/Application.hpp"
+#include "Application/Window.hpp"
 #include "imgui/imgui.h"
 #include "IO/Stream.hpp"
 #include "Resources/ID.hpp"

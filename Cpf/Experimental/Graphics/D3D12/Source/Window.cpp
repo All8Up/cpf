@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Application/WindowFlags.hpp"
 #include "Logging/Logging.hpp"
 #include "Math/Constants.hpp"
 
@@ -23,7 +24,7 @@ bool ExperimentalD3D12::_CreateWindow()
 		.Title(WINDOW_TITLE)
 		.Position(iWindow::Centered)
 		.Size(mWindowSize)
-		.Flags(iWindow::eResizable | iWindow::eShown)
+		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
 
 	if (mpWindow)

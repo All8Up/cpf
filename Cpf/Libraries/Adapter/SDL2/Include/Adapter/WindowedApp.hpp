@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Application/Application.hpp"
+#include "Application/WindowedApplication.hpp"
 #include "SDL.h"
 #include "Pair.hpp"
 

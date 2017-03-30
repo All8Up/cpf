@@ -3,9 +3,8 @@ set (INCLUDE_FILES
 	Include/Plugin.hpp
 )
 set (INCLUDE_PLUGIN_FILES
-	Include/Plugin/Factory.hpp
 	Include/Plugin/Library.hpp
-	Include/Plugin/Registry.hpp
+	Include/Plugin/iRegistry.hpp
 )
 set (INCLUDE_PLATFORM_FILES
 	Include/${CPF_TARGET_OS}/Platform/SharedLibrary.hpp
@@ -44,7 +43,7 @@ install (EXPORT PluginConfig DESTINATION CMake)
 
 # ###############################################
 add_library (TestPlugin SHARED
-	UnitTest/TestPlugin/TestPlugin.hpp
+	UnitTest/TestPlugin/iTestPlugin.hpp
 	UnitTest/TestPlugin/TestPlugin.cpp
 )
 target_link_libraries (TestPlugin PUBLIC Plugin)
@@ -75,6 +74,13 @@ set_property (TARGET s_PluginHost PROPERTY FOLDER Libraries/Static/Core)
 source_group ("Header Files" FILES ${PLUGINHOST_INCLUDE_FILES})
 source_group ("Source Files" FILES ${PLUGINHOST_SOURCE_FILES})
 
+install (TARGETS s_PluginHost
+	EXPORT PluginHostConfig
+	CONFIGURATIONS Debug Release
+	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
+	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
+)
+install (EXPORT PluginHostConfig DESTINATION CMake)
 
 # ###############################################
 if(MSVC)

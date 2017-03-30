@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "TestPlugin.hpp"
-#include "Plugin/Registry.hpp"
+#include "iTestPlugin.hpp"
+#include "Plugin/iRegistry.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 using namespace Cpf;
@@ -27,12 +27,36 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
+namespace
+{
+	int32_t sRefCount = 0;
+}
+
 extern "C"
 int32_t CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
-	if (registry->Install(iTestPlugin::kIID, []() -> void* {return new TestPlugin; }))
-		return 0;
+	if (registry)
+	{
+		if (registry->Install(iTestPlugin::kIID, [](iUnknown*) -> void* {++sRefCount; return new TestPlugin; }))
+			return 0;
+	}
 	return -1;
+}
+
+extern "C"
+bool CPF_EXPORT CanUnload()
+{
+	return sRefCount == 0;
+}
+
+extern "C"
+bool CPF_EXPORT Remove(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		registry->Remove(iTestPlugin::kIID);
+	}
+	return false;
 }
 
 
@@ -44,6 +68,7 @@ TestPlugin::TestPlugin()
 TestPlugin::~TestPlugin()
 {
 	CPF_ASSERT(mRefCount == 0);
+	--sRefCount;
 }
 
 int32_t TestPlugin::AddRef()

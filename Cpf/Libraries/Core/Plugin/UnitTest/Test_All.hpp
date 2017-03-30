@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include "IO/Directory.hpp"
 #include "Plugin.hpp"
-#include "TestPlugin/TestPlugin.hpp"
+#include "TestPlugin/iTestPlugin.hpp"
 #include "PluginHost/Registry.hpp"
 
 TEST(Plugin, LoadUnload)
@@ -52,7 +52,7 @@ TEST(Plugin, Register)
 	EXPECT_FALSE(bool(registry));
 }
 
-TEST(Plugin, Call)
+TEST(Plugin, CreateAndCall)
 {
 	Cpf::IntrusivePtr<Cpf::Plugin::iRegistry> registry;
 	Cpf::PluginHost::CreateRegistry(registry.AsTypePP());
@@ -62,7 +62,7 @@ TEST(Plugin, Call)
 	EXPECT_TRUE(registry->Exists(Cpf::iTestPlugin::kIID));
 
 	Cpf::IntrusivePtr<Cpf::iTestPlugin> testPlugin;
-	EXPECT_TRUE(registry->Create(Cpf::iTestPlugin::kIID, testPlugin.AsVoidPP()));
+	EXPECT_TRUE(registry->Create(nullptr, Cpf::iTestPlugin::kIID, testPlugin.AsVoidPP()));
 	EXPECT_TRUE(bool(testPlugin));
 
 	EXPECT_TRUE(0 == testPlugin->Test());
