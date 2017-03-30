@@ -60,6 +60,21 @@ set_target_properties (TestPlugin
 )
 
 # ###############################################
+set (PLUGINHOST_INCLUDE_FILES
+	Include/PluginHost/Registry.hpp
+)
+set (PLUGINHOST_SOURCE_FILES
+	Source/Registry.cpp
+)
+add_library (s_PluginHost STATIC
+	${PLUGINHOST_INCLUDE_FILES}
+	${PLUGINHOST_SOURCE_FILES}
+)
+target_link_libraries (s_PluginHost PUBLIC Plugin)
+set_property (TARGET s_PluginHost PROPERTY FOLDER Libraries/Static/Core)
+
+
+# ###############################################
 if(MSVC)
 	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Libraries/Core/Plugin)
 else()
@@ -76,5 +91,5 @@ MakeUnitTest (LIBRARY Plugin GROUP Core
 		UnitTest/Test_All.hpp
 		../Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		s_IO
+		s_IO s_PluginHost
 )
