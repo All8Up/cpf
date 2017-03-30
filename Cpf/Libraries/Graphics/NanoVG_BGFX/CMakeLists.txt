@@ -6,7 +6,6 @@ set (INCLUDE_NANOVG_FILES
 set (SOURCE_NANOVG_FILES
 	Source/nanovg.cpp
 	Source/nanovg_bgfx.cpp
-	Source/stb.c
 )
 
 # ###############################################
@@ -31,6 +30,7 @@ target_include_directories (s_NanoVG_BGFX
 target_link_libraries (s_NanoVG_BGFX
 	PUBLIC
 		bgfx
+		s_STB
 )
 
 # ###############################################

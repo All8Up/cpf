@@ -41,6 +41,8 @@ target_link_libraries (BgfxIntegration
 	bx
 	bgfx
 	s_NanoVG_BGFX
+	s_Imgui_BGFX
+	Plugin
 )
 target_compile_definitions (BgfxIntegration PUBLIC)
 
@@ -76,7 +78,7 @@ file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/integration_res/shaders)
 foreach (file ${DataFiles})
 	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
 	set (target ${CMAKE_BINARY_DIR}${targetPath}/${relative})
-	message ("src: ${file}  dst: ${target}")
+#	message ("src: ${file}  dst: ${target}")
 	add_custom_command (OUTPUT ${target}
 		COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
 		MAIN_DEPENDENCY ${file}

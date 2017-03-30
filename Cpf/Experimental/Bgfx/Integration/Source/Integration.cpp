@@ -18,6 +18,9 @@
 #include "bgfx/platform.h"
 #include "bgfx/embedded_shader.h"
 
+#include "Imgui/imgui.h"
+#include "Plugin.hpp"
+
 using namespace Cpf;
 using namespace Math;
 using namespace Platform;
@@ -265,6 +268,8 @@ int BgfxIntegration::Start(const CommandLine&)
 		Vector<uint8_t> robotoData(Move(ReadBinary(roboto_reg_font)));
 		mFont = nvgCreateFontMem(mNvg, "roboto-regular", robotoData.data(), int(robotoData.size()), 0);
 
+		imguiCreate();
+
 		// Create vertex stream declaration.
 		PosColorVertex::init();
 
@@ -283,6 +288,8 @@ int BgfxIntegration::Start(const CommandLine&)
 		m_ibh = bgfx::createIndexBuffer(
 			bgfx::makeRef(s_cubeTriStrip, sizeof(s_cubeTriStrip))
 		);
+
+		int32_t mScrollArea = 0;
 
 		// Create program from shaders.
 		IntrusivePtr<Platform::IO::Stream> vertexShader(mpLocator->Open(RESOURCE_ID("/", "vs_cubes.sc.bin")));
@@ -394,7 +401,7 @@ int BgfxIntegration::Start(const CommandLine&)
 
 				nvgSave(mNvg);
 
-				nvgFontSize(mNvg, 36.0f);
+				nvgFontSize(mNvg, 8.0f);
 				nvgFontFace(mNvg, "roboto-regular");
 				nvgTextAlign(mNvg, NVG_ALIGN_LEFT | NVG_ALIGN_TOP);
 				nvgText(mNvg, 100.0f, 100.0f, "Test text", nullptr);
@@ -403,11 +410,21 @@ int BgfxIntegration::Start(const CommandLine&)
 			}
 			nvgEndFrame(mNvg);
 
+			imguiBeginFrame(0, 0, 0, 0, uint16_t(mWindowSize.x), uint16_t(mWindowSize.y));
+			{
+				imguiBeginScrollArea("Settings", mWindowSize.x - mWindowSize.x / 5 - 10, 10, mWindowSize.x / 5, mWindowSize.y / 2, &mScrollArea);
+				imguiSeparatorLine();
+				imguiButton("Hello");
+				imguiEndScrollArea();
+			}
+			imguiEndFrame();
+
 			// Render
 			bgfx::frame();
 		}
 
 		nvgDelete(mNvg);
+		imguiDestroy();
 		bgfx::destroyIndexBuffer(m_ibh);
 		bgfx::destroyVertexBuffer(m_vbh);
 		bgfx::destroyProgram(m_program);
