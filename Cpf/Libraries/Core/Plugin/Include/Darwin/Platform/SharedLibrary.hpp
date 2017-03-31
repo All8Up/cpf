@@ -26,13 +26,13 @@ namespace Cpf
 			inline
 			void Free(Handle lib)
 			{
-				::dlclose(ptr);
+				::dlclose(lib);
 			}
 
 			inline
 			void* GetAddress(Handle lib, const char* const symbol)
 			{
-				return ::dlsym(ptr, name);
+				return ::dlsym(lib, symbol);
 			}
 		}
 	}

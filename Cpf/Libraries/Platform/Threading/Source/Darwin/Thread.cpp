@@ -3,6 +3,7 @@
 #include "Functional.hpp"
 #include "Move.hpp"
 #include <thread>
+#include <emmintrin.h>
 
 using namespace Cpf;
 using namespace Threading;

@@ -86,7 +86,7 @@ install (EXPORT PluginHostConfig DESTINATION CMake)
 if(MSVC)
 	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Libraries/Core/Plugin)
 else()
-	set (targetPath /)
+	set (targetPath test/)
 endif()
 file (MAKE_DIRECTORY ${targetPath}/plugins)
 add_custom_command (

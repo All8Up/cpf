@@ -89,7 +89,7 @@ namespace Cpf
 
 #define CPF_INIT_LOG(name) {}
 #define CPF_DROP_LOG(name) {}
-#define CPF_LOG(name, level) {}
+#define CPF_LOG(name, level) std::cout
 #define CPF_LOG_LEVELS(l) {}
 #define CPF_LOG_LEVEL(name, l) {}
 #define CPF_TRACE_LOG(name) {}

@@ -23,7 +23,7 @@ public:
 	bool CPF_STDCALL Load(const char* const) override;
 	bool CPF_STDCALL Install(InterfaceID, Creator) override;
 	bool CPF_STDCALL Remove(InterfaceID) override;
-	bool CPF_STDCALL Registry::Exists(InterfaceID id) override;
+	bool CPF_STDCALL Exists(InterfaceID id) override;
 	bool CPF_STDCALL Create(iUnknown*, InterfaceID, void**) override;
 
 private:

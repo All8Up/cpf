@@ -1,2 +1,4 @@
 #
-add_subdirectory (Integration)
+if (WIN32)
+	add_subdirectory (Integration)
+endif ()
