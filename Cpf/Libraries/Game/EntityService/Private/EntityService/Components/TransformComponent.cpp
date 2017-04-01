@@ -20,7 +20,7 @@ iComponent* TransformComponent::Creator(MultiCore::System* system)
 	return static_cast<iComponent*>(new TransformComponent(system));
 }
 
-bool TransformComponent::QueryInterface(InterfaceID id, void** outPtr)
+COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
 {
 	switch(id.GetID())
 	{
@@ -29,7 +29,7 @@ bool TransformComponent::QueryInterface(InterfaceID id, void** outPtr)
 			iUnknown* result = static_cast<iUnknown*>(this);
 			result->AddRef();
 			*outPtr = result;
-			return true;
+			return COM::kOK;
 		}
 
 	case iTransformComponent::kIID.GetID():
@@ -37,11 +37,11 @@ bool TransformComponent::QueryInterface(InterfaceID id, void** outPtr)
 			iTransformComponent* result = static_cast<iTransformComponent*>(this);
 			result->AddRef();
 			*outPtr = result;
-			return true;
+			return COM::kOK;
 		}
 	}
 	*outPtr = nullptr;
-	return false;
+	return COM::kUnknownInterface;
 }
 
 /** @brief Default constructor. */

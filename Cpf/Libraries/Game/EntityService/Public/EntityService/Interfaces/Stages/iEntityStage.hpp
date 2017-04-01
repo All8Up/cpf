@@ -33,7 +33,7 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			bool QueryInterface(InterfaceID, void**) { return false; }
+			COM::Result QueryInterface(COM::InterfaceID, void**) { return COM::kUnimplemented; }
 
 			// Interface.
 			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);

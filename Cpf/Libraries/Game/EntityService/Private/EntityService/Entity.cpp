@@ -8,17 +8,17 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-bool EntityService::ComponentFactoryInstall(InterfaceID iid, ComponentCreator creator)
+bool EntityService::ComponentFactoryInstall(COM::InterfaceID iid, ComponentCreator creator)
 {
 	return Entity::Install(iid, creator);
 }
 
-bool EntityService::ComponentFactoryRemove(InterfaceID iid)
+bool EntityService::ComponentFactoryRemove(COM::InterfaceID iid)
 {
 	return Entity::Remove(iid);
 }
 
-iComponent* EntityService::ComponentFactoryCreate(InterfaceID iid, MultiCore::System* system)
+iComponent* EntityService::ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::System* system)
 {
 	return Entity::CreateComponent(iid, system);
 }
@@ -27,7 +27,7 @@ iComponent* EntityService::ComponentFactoryCreate(InterfaceID iid, MultiCore::Sy
 Entity::ComponentMap Entity::mComponentCreators;
 
 //////////////////////////////////////////////////////////////////////////
-bool Entity::Install(InterfaceID iid, ComponentCreator creator)
+bool Entity::Install(COM::InterfaceID iid, ComponentCreator creator)
 {
 	if (mComponentCreators.find(iid)==mComponentCreators.end())
 	{
@@ -37,7 +37,7 @@ bool Entity::Install(InterfaceID iid, ComponentCreator creator)
 	return false;
 }
 
-bool Entity::Remove(InterfaceID iid)
+bool Entity::Remove(COM::InterfaceID iid)
 {
 	if (mComponentCreators.find(iid) == mComponentCreators.end())
 	{
@@ -47,7 +47,7 @@ bool Entity::Remove(InterfaceID iid)
 	return false;
 }
 
-iComponent* Entity::CreateComponent(InterfaceID iid, MultiCore::System* system)
+iComponent* Entity::CreateComponent(COM::InterfaceID iid, MultiCore::System* system)
 {
 	iComponent* result = nullptr;
 	const auto& creator = mComponentCreators.find(iid);
@@ -75,7 +75,7 @@ bool Entity::Create(EntityID id, iEntity** outEntity)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool Entity::QueryInterface(InterfaceID id, void** outPtr)
+COM::Result Entity::QueryInterface(COM::InterfaceID id, void** outPtr)
 {
 	switch (id.GetID())
 	{
@@ -84,7 +84,7 @@ bool Entity::QueryInterface(InterfaceID id, void** outPtr)
 			iUnknown* result = static_cast<iUnknown*>(this);
 			result->AddRef();
 			*outPtr = result;
-			return true;
+			return COM::kOK;
 		}
 
 	default:
@@ -94,13 +94,13 @@ bool Entity::QueryInterface(InterfaceID id, void** outPtr)
 			{
 				*outPtr = component;
 				component->AddRef();
-				return true;
+				return COM::kOK;
 			}
 		}
 	}
 
 	*outPtr = nullptr;
-	return false;
+	return COM::kUnknownInterface;
 }
 
 Entity::Entity()
@@ -147,7 +147,7 @@ const EntityID& Entity::GetID() const
 	return mID;
 }
 
-void Entity::AddComponent(InterfaceID id, iComponent* component)
+void Entity::AddComponent(COM::InterfaceID id, iComponent* component)
 {
 	component->SetEntity(this);
 	CPF_ASSERT(mComponentCount < kMaxComponents);
@@ -170,7 +170,7 @@ void Entity::AddComponent(InterfaceID id, iComponent* component)
 		component->Activate();
 }
 
-int Entity::_GetComponentIndex(InterfaceID id) const
+int Entity::_GetComponentIndex(COM::InterfaceID id) const
 {
 	int low = 0;
 	int high = mComponentCount;
@@ -195,13 +195,13 @@ int Entity::_GetComponentIndex(InterfaceID id) const
 	return -1;
 }
 
-iComponent* Entity::GetComponent(InterfaceID id)
+iComponent* Entity::GetComponent(COM::InterfaceID id)
 {
 	int index = _GetComponentIndex(id);
 	return index==-1 ? nullptr : static_cast<iComponent*>(mComponents[index].second);
 }
 
-const iComponent* Entity::GetComponent(InterfaceID id) const
+const iComponent* Entity::GetComponent(COM::InterfaceID id) const
 {
 	int index = _GetComponentIndex(id);
 	return index == -1 ? nullptr : static_cast<const iComponent*>(mComponents[index].second);

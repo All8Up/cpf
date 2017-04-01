@@ -17,7 +17,7 @@ public:
 	int32_t Release() override;
 
 	// iUnknown overrides.
-	bool QueryInterface(InterfaceID id, void**) override;
+	COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 
 	// iTestPlugin overrides.
 	uint32_t Test() override;
@@ -33,14 +33,13 @@ namespace
 }
 
 extern "C"
-int32_t CPF_EXPORT Install(Plugin::iRegistry* registry)
+COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		if (registry->Install(iTestPlugin::kIID, [](iUnknown*) -> void* {++sRefCount; return new TestPlugin; }))
-			return 0;
+		return registry->Install(kTestPluginCID, [](COM::iUnknown*) -> COM::iUnknown* {++sRefCount; return new TestPlugin; });
 	}
-	return -1;
+	return COM::kInvalidParameter;
 }
 
 extern "C"
@@ -54,7 +53,7 @@ bool CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		registry->Remove(iTestPlugin::kIID);
+		registry->Remove(kTestPluginCID);
 	}
 	return false;
 }
@@ -86,7 +85,7 @@ int32_t TestPlugin::Release()
 	return mRefCount;
 }
 
-bool TestPlugin::QueryInterface(InterfaceID id, void** outIface)
+COM::Result TestPlugin::QueryInterface(COM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -102,11 +101,12 @@ bool TestPlugin::QueryInterface(InterfaceID id, void** outIface)
 			break;
 
 		default:
-			return false;
+			return COM::kUnknownInterface;
 		}
 		AddRef();
+		return COM::kOK;
 	}
-	return outIface && (*outIface != nullptr);
+	return COM::kInvalidParameter;
 }
 
 uint32_t TestPlugin::Test()

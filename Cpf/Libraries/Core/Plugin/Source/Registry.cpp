@@ -17,33 +17,36 @@ public:
 	// iUnknown overrides.
 	int32_t CPF_STDCALL AddRef() override;
 	int32_t CPF_STDCALL Release() override;
-	bool CPF_STDCALL QueryInterface(InterfaceID id, void**) override;
+	COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void**) override;
 
 	// iRegistry overrides.
-	bool CPF_STDCALL Load(const char* const) override;
-	bool CPF_STDCALL Install(InterfaceID, Creator) override;
-	bool CPF_STDCALL Remove(InterfaceID) override;
-	bool CPF_STDCALL Exists(InterfaceID id) override;
-	bool CPF_STDCALL Create(iUnknown*, InterfaceID, void**) override;
+	COM::Result CPF_STDCALL Load(const char* const) override;
+	COM::Result CPF_STDCALL Install(COM::ClassID, Creator) override;
+	COM::Result CPF_STDCALL Remove(COM::ClassID) override;
+	COM::Result CPF_STDCALL Exists(COM::ClassID id) override;
+	COM::Result CPF_STDCALL Create(COM::iUnknown*, COM::ClassID, COM::InterfaceID, void**) override;
 
 private:
 	int32_t mRefCount;
 
 	using LibraryMap = Cpf::UnorderedMap<String, Plugin::Library>;
-	using CreationMap = Cpf::UnorderedMap<InterfaceID, Creator>;
+	using CreationMap = Cpf::UnorderedMap<COM::ClassID, Creator>;
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
 };
 
 //////////////////////////////////////////////////////////////////////////
-bool CPF_STDCALL PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
+COM::Result CPF_STDCALL PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
 {
 	if (outRegistry)
 	{
 		*outRegistry = new Registry;
+		if (*outRegistry)
+			return COM::kOK;
+		return COM::kOutOfMemory;
 	}
-	return outRegistry && (*outRegistry != nullptr);
+	return COM::kInvalidParameter;
 }
 
 
@@ -72,30 +75,31 @@ int32_t CPF_STDCALL Registry::Release()
 	return mRefCount;
 }
 
-bool CPF_STDCALL Registry::QueryInterface(InterfaceID id, void** outIface)
+COM::Result CPF_STDCALL Registry::QueryInterface(COM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
 			break;
 
 		case iRegistry::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+			*outIface = static_cast<iRegistry*>(this);
 			break;
 
 		default:
 			*outIface = nullptr;
-			return false;;
+			return COM::kUnknownInterface;
 		}
 		AddRef();
+		return COM::kOK;
 	}
-	return outIface && (*outIface != nullptr);
+	return COM::kInvalidParameter;
 }
 
-bool CPF_STDCALL Registry::Load(const char* const name)
+COM::Result CPF_STDCALL Registry::Load(const char* const name)
 {
 	if (name)
 	{
@@ -111,53 +115,58 @@ bool CPF_STDCALL Registry::Load(const char* const name)
 					if ((*install)(this) == 0)
 					{
 						mLibraryMap.insert(LibraryMap::value_type{ String(name), Move(library) });
-						return true;
+						return COM::kOK;
 					}
 				}
 			}
 		}
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 
-bool CPF_STDCALL Registry::Install(InterfaceID id, Creator creator)
+COM::Result CPF_STDCALL Registry::Install(COM::ClassID id, Creator creator)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists == mCreationMap.end())
 	{
 		mCreationMap.insert(CreationMap::value_type{id, creator});
-		return true;
+		return COM::kOK;
 	}
-	return false;
+	return COM::kUnknownClass;
 }
 
-bool CPF_STDCALL Registry::Remove(InterfaceID id)
+COM::Result CPF_STDCALL Registry::Remove(COM::ClassID id)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists != mCreationMap.end())
 	{
 		mCreationMap.erase(id);
-		return true;
+		return COM::kOK;
 	}
-	return false;
+	return COM::kUnknownClass;
 }
 
-bool CPF_STDCALL Registry::Exists(InterfaceID id)
+COM::Result CPF_STDCALL Registry::Exists(COM::ClassID id)
 {
 	auto exists = mCreationMap.find(id);
-	return exists != mCreationMap.end();
+	return exists != mCreationMap.end() ? COM::kOK : COM::kUnknownClass;
 }
 
-bool CPF_STDCALL Registry::Create(iUnknown* outer, InterfaceID id, void** outIface)
+COM::Result CPF_STDCALL Registry::Create(COM::iUnknown* outer, COM::ClassID cid, COM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
-		auto creator = mCreationMap.find(id);
+		auto creator = mCreationMap.find(cid);
 		if (creator != mCreationMap.end())
 		{
-			*outIface = (*creator->second)(outer);
-			return *outIface != nullptr;
+			COM::iUnknown* instance = (*creator->second)(outer);
+			if (instance)
+			{
+				COM::Result result = instance->QueryInterface(id, outIface);
+				instance->Release();
+				return result;
+			}
 		}
 	}
-	return false;
+	return COM::kInvalidParameter;
 }

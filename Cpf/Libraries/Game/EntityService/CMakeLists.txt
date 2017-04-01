@@ -94,7 +94,7 @@ target_include_directories (s_EntityService
 )
 target_link_libraries (s_EntityService
 	LINK_PUBLIC
-		Configuration s_Collections RefCount Logging s_Hash Math s_MultiCore
+		Configuration s_Collections COM Logging s_Hash Math s_MultiCore
 )
 set_property (TARGET s_EntityService PROPERTY FOLDER Libraries/Static/Game)
 

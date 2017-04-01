@@ -24,7 +24,7 @@ namespace Cpf
 			~TransformComponent() override;
 
 			//
-			bool QueryInterface(InterfaceID id, void**) override;
+			COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 
 			// Component overrides.
 			ComponentID GetID() const override;

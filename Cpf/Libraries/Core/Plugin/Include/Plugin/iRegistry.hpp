@@ -1,22 +1,22 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Plugin
 	{
-		struct CPF_EXPORT iRegistry : iUnknown
+		struct CPF_EXPORT iRegistry : COM::iUnknown
 		{
-			static constexpr InterfaceID kIID = InterfaceID("iRegistry"_crc64);
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iRegistry"_crc64);
 
-			using Creator = void*(*)(iUnknown*);
+			using Creator = COM::iUnknown*(*)(COM::iUnknown*);
 
-			virtual bool CPF_STDCALL Load(const char* const) = 0;
-			virtual bool CPF_STDCALL Install(InterfaceID, Creator) = 0;
-			virtual bool CPF_STDCALL Remove(InterfaceID) = 0;
-			virtual bool CPF_STDCALL Exists(InterfaceID) = 0;
-			virtual bool CPF_STDCALL Create(iUnknown*, InterfaceID, void**) = 0;
+			virtual COM::Result CPF_STDCALL Load(const char* const) = 0;
+			virtual COM::Result CPF_STDCALL Install(COM::ClassID cid, Creator creator) = 0;
+			virtual COM::Result CPF_STDCALL Remove(COM::ClassID cid) = 0;
+			virtual COM::Result CPF_STDCALL Exists(COM::ClassID cid) = 0;
+			virtual COM::Result CPF_STDCALL Create(COM::iUnknown* outer, COM::ClassID cid, COM::InterfaceID iid, void** result) = 0;
 		};
 	}
 }

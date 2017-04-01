@@ -30,18 +30,18 @@ iComponent* MoverSystem::MoverComponent::Create(MultiCore::System* system)
 	return static_cast<iComponent*>(new MoverComponent(system));
 }
 
-bool MoverSystem::MoverComponent::QueryInterface(InterfaceID id, void** outPtr)
+COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
 {
 	if (id.GetID() == iMoverComponent::kIID.GetID())
 	{
 		iMoverComponent* mover = static_cast<iMoverComponent*>(this);
 		mover->AddRef();
 		*outPtr = mover;
-		return true;
+		return COM::kOK;
 	}
 
 	*outPtr = nullptr;
-	return false;
+	return COM::kUnknownInterface;
 }
 
 

@@ -10,7 +10,7 @@ namespace Cpf
 	{
 		struct iTransformComponent : iComponent
 		{
-			static constexpr auto kIID = InterfaceID("Transform Component Interface"_crc64);
+			static constexpr auto kIID = COM::InterfaceID("Transform Component Interface"_crc64);
 
 			// Local transform interface.
 			virtual iTransformComponent* GetParent() const = 0;

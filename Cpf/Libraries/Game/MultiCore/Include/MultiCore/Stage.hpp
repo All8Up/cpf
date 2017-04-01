@@ -3,7 +3,7 @@
 #include "Pair.hpp"
 #include "Vector.hpp"
 #include "String.hpp"
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 #include "Hash/Crc.hpp"
 #include "MultiCore/Types.hpp"
 #include "Concurrency/Scheduler.hpp"

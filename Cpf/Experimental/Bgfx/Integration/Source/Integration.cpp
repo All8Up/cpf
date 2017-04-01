@@ -385,6 +385,7 @@ int BgfxIntegration::Start(const CommandLine&)
 				}
 			}
 
+			// Simple test of nvg.
 			nvgBeginFrame(mNvg, mWindowSize.x, mWindowSize.y, 1.0f);
 			{
 				nvgBeginPath(mNvg);
@@ -412,6 +413,7 @@ int BgfxIntegration::Start(const CommandLine&)
 			}
 			nvgEndFrame(mNvg);
 
+			// Simple test of imgui.
 			imguiBeginFrame(0, 0, 0, 0, uint16_t(mWindowSize.x), uint16_t(mWindowSize.y));
 			{
 				imguiBeginScrollArea("Settings", mWindowSize.x - mWindowSize.x / 5 - 10, 10, mWindowSize.x / 5, mWindowSize.y / 2, &mScrollArea);

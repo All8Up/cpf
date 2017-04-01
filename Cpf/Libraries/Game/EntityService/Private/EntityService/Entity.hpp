@@ -17,10 +17,10 @@ namespace Cpf
 		{
 		public:
 			static constexpr int kMaxComponents = 32;
-			using ComponentPair = Pair<InterfaceID, IntrusivePtr<iComponent>>;
+			using ComponentPair = Pair<COM::InterfaceID, IntrusivePtr<iComponent>>;
 
 			// iUnknown interface.
-			bool QueryInterface(InterfaceID id, void**) override;
+			COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 
 			// Object interface.
 			static bool Create(EntityID id, iEntity**);
@@ -35,13 +35,13 @@ namespace Cpf
 
 			const EntityID& GetID() const override;
 
-			void AddComponent(InterfaceID id, iComponent* component) override;
-			iComponent* GetComponent(InterfaceID id) override;
-			const iComponent* GetComponent(InterfaceID id) const override;
+			void AddComponent(COM::InterfaceID id, iComponent* component) override;
+			iComponent* GetComponent(COM::InterfaceID id) override;
+			const iComponent* GetComponent(COM::InterfaceID id) const override;
 		
-			static bool Install(InterfaceID iid, ComponentCreator creator);
-			static bool Remove(InterfaceID iid);
-			static iComponent* CreateComponent(InterfaceID iid, MultiCore::System*);
+			static bool Install(COM::InterfaceID iid, ComponentCreator creator);
+			static bool Remove(COM::InterfaceID iid);
+			static iComponent* CreateComponent(COM::InterfaceID iid, MultiCore::System*);
 
 		private:
 			// Not intended for direct creation.
@@ -49,7 +49,7 @@ namespace Cpf
 			~Entity();
 
 			//
-			int _GetComponentIndex(InterfaceID id) const;
+			int _GetComponentIndex(COM::InterfaceID id) const;
 
 			// Implementation data.
 			iManager* mpManager;
@@ -58,7 +58,7 @@ namespace Cpf
 			ComponentPair mComponents[kMaxComponents];
 			bool mActive;
 
-			using ComponentMap = UnorderedMap<InterfaceID, ComponentCreator>;
+			using ComponentMap = UnorderedMap<COM::InterfaceID, ComponentCreator>;
 			static ComponentMap mComponentCreators;
 		};
 	}

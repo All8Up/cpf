@@ -11,7 +11,7 @@ set (INCLUDE_PLATFORM_FILES
 )
 
 add_library (Plugin INTERFACE)
-target_link_libraries (Plugin INTERFACE Configuration RefCount)
+target_link_libraries (Plugin INTERFACE Configuration COM)
 
 target_include_directories (Plugin INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

@@ -13,7 +13,7 @@ namespace Cpf
 	{
 		struct iEntity;
 
-		struct iManager : iUnknown
+		struct iManager : COM::iUnknown
 		{
 			virtual MultiCore::Pipeline* GetPipeline() const = 0;
 

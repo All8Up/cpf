@@ -35,8 +35,6 @@ namespace Cpf
 
 			void operator ()(Concurrency::Scheduler&);
 
-			const Concurrency::Scheduler::Queue& GetQueue() const { return mQueue; }
-
 			const Vector<String>& GetQueueInfo() const { return mQueueInfo; }
 
 		private:

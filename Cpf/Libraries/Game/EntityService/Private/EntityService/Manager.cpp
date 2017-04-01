@@ -23,9 +23,9 @@ Manager::Manager()
 Manager::~Manager()
 {}
 
-bool Manager::QueryInterface(InterfaceID id, void**)
+COM::Result Manager::QueryInterface(COM::InterfaceID id, void**)
 {
-	return false;
+	return COM::kUnimplemented;
 }
 
 iEntity* Manager::CreateEntity(EntityID id)

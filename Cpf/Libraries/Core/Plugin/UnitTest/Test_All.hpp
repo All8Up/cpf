@@ -45,8 +45,8 @@ TEST(Plugin, Register)
 	Cpf::PluginHost::CreateRegistry(registry.AsTypePP());
 	EXPECT_TRUE(bool(registry));
 
-	EXPECT_TRUE(registry->Load("./plugins/TestPlugin.cfp"));
-	EXPECT_TRUE(registry->Exists(Cpf::iTestPlugin::kIID));
+	EXPECT_TRUE(Cpf::COM::Succeeded(registry->Load("./plugins/TestPlugin.cfp")));
+	EXPECT_TRUE(Cpf::COM::Succeeded(registry->Exists(Cpf::kTestPluginCID)));
 
 	registry.Release();
 	EXPECT_FALSE(bool(registry));
@@ -58,16 +58,17 @@ TEST(Plugin, CreateAndCall)
 	Cpf::PluginHost::CreateRegistry(registry.AsTypePP());
 	EXPECT_TRUE(bool(registry));
 
-	EXPECT_TRUE(registry->Load("./plugins/TestPlugin.cfp"));
-	EXPECT_TRUE(registry->Exists(Cpf::iTestPlugin::kIID));
+	EXPECT_TRUE(Cpf::COM::Succeeded(registry->Load("./plugins/TestPlugin.cfp")));
+	EXPECT_TRUE(Cpf::COM::Succeeded(registry->Exists(Cpf::kTestPluginCID)));
 
 	Cpf::IntrusivePtr<Cpf::iTestPlugin> testPlugin;
-	EXPECT_TRUE(registry->Create(nullptr, Cpf::iTestPlugin::kIID, testPlugin.AsVoidPP()));
+	EXPECT_TRUE(Cpf::COM::Succeeded(registry->Create(nullptr, Cpf::kTestPluginCID, Cpf::iTestPlugin::kIID, testPlugin.AsVoidPP())));
 	EXPECT_TRUE(bool(testPlugin));
 
 	EXPECT_TRUE(0 == testPlugin->Test());
 
 	testPlugin.Release();
+	EXPECT_FALSE(bool(testPlugin));
 	registry.Release();
 	EXPECT_FALSE(bool(registry));
 }

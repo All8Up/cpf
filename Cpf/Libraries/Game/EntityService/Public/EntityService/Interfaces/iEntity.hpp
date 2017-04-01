@@ -9,11 +9,11 @@ namespace Cpf
 		struct iComponent;
 
 		using ComponentCreator = iComponent* (*)(MultiCore::System*);
-		bool ComponentFactoryInstall(InterfaceID iid, ComponentCreator creator);
-		bool ComponentFactoryRemove(InterfaceID iid);
-		iComponent* ComponentFactoryCreate(InterfaceID iid, MultiCore::System*);
+		bool ComponentFactoryInstall(COM::InterfaceID iid, ComponentCreator creator);
+		bool ComponentFactoryRemove(COM::InterfaceID iid);
+		iComponent* ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::System*);
 
-		struct iEntity : iUnknown
+		struct iEntity : COM::iUnknown
 		{
 			virtual void Initialize(iManager*) = 0;
 			virtual void Shutdown() = 0;
@@ -25,9 +25,9 @@ namespace Cpf
 
 			virtual const EntityID& GetID() const = 0;
 
-			virtual void AddComponent(InterfaceID id, iComponent* component) = 0;
-			virtual iComponent* GetComponent(InterfaceID id) = 0;
-			virtual const iComponent* GetComponent(InterfaceID id) const = 0;
+			virtual void AddComponent(COM::InterfaceID id, iComponent* component) = 0;
+			virtual iComponent* GetComponent(COM::InterfaceID id) = 0;
+			virtual const iComponent* GetComponent(COM::InterfaceID id) const = 0;
 
 			// Utilities.
 			template <typename TYPE>
@@ -64,7 +64,7 @@ namespace Cpf
 			TYPE* result = nullptr;
 			if (created)
 			{
-				if (created->QueryInterface(TYPE::kIID, reinterpret_cast<void**>(&result)))
+				if (Succeeded(created->QueryInterface(TYPE::kIID, reinterpret_cast<void**>(&result))))
 					AddComponent<TYPE>(result);
 				created->Release();
 			}

@@ -49,7 +49,7 @@ target_include_directories (s_MultiCore
 )
 target_link_libraries (s_MultiCore
 	LINK_PUBLIC
-		Configuration s_Collections RefCount Logging s_Hash s_Concurrency
+		Configuration s_Collections COM Logging s_Hash s_Concurrency
 )
 set_property (TARGET s_MultiCore PROPERTY FOLDER Libraries/Static/Game)
 

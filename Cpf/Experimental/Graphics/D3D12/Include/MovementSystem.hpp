@@ -77,7 +77,7 @@ namespace Cpf
 		//////////////////////////////////////////////////////////////////////////
 		MoverComponent(System* owner);
 
-		bool QueryInterface(InterfaceID id, void**) override;
+		COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 
 		//////////////////////////////////////////////////////////////////////////
 		EntityService::ComponentID GetID() const;
