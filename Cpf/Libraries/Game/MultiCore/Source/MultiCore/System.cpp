@@ -17,22 +17,86 @@ System::System(iPipeline* owner, const char* name)
 System::~System()
 {}
 
-iPipeline* System::GetOwner() const
+COM::Result CPF_STDCALL System::Initialize(iPipeline* owner, const char* name)
+{
+	if (owner && name)
+	{
+		mpOwner = owner;
+		mID = SystemID(name, strlen(name));
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL System::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iSystem::kIID.GetID():
+			*outIface = static_cast<iSystem*>(this);
+			break;
+		default:
+			return COM::kNotImplemented;
+		}
+
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+
+iPipeline* CPF_STDCALL System::GetOwner() const
 {
 	return mpOwner;
 }
 
-Stage* System::GetStage(StageID id) const
+COM::Result CPF_STDCALL System::GetStage(StageID id, Stage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
 		if (stage->GetID() == id)
 		{
 			stage->AddRef();
-			return stage;
+			*outStage = stage;
+			return COM::kOK;
 		}
 	}
-	return nullptr;
+	return COM::kInvalid;
+}
+
+COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* instructions)
+{
+	if (count)
+	{
+		Instructions result;
+		for (const auto& stage : mStages)
+		{
+			if (stage->IsEnabled())
+			{
+				const auto& stageInstructions = stage->GetInstructions(GetID());
+				result.insert(result.end(), stageInstructions.begin(), stageInstructions.end());
+			}
+		}
+		if (instructions)
+		{
+			if (*count >= result.size())
+			{
+				int32_t index = 0;
+				for (auto& inst : result)
+					instructions[index++] = inst;
+				return COM::kOK;
+			}
+			return COM::kNotEnoughSpace;
+		}
+		*count = int32_t(result.size());
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 bool System::AddStage(Stage* stage)
@@ -59,64 +123,54 @@ bool System::RemoveStage(StageID id)
 	return false;
 }
 
-SystemID System::GetID() const
+SystemID CPF_STDCALL System::GetID() const
 {
 	return mID;
 }
 
-const StageVector& System::GetStages() const
+void CPF_STDCALL System::AddDependency(BlockDependency dep)
 {
-	return mStages;
+	mDependencies.push_back(dep);
 }
 
-Instructions System::GetInstructions() const
+COM::Result CPF_STDCALL System::GetDependencies(int32_t* count, BlockDependency* deps)
 {
-	Instructions result;
-	for (const auto& stage : mStages)
+	if (count)
 	{
-		if (stage->IsEnabled())
+		BlockDependencies result;
+		for (const auto& dep : mDependencies)
 		{
-			const auto& instructions = stage->GetInstructions(GetID());
-			result.insert(result.end(), instructions.begin(), instructions.end());
+			Stage* depStage = nullptr;
+			GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
+			Stage* targetStage = nullptr;
+			GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
+			if (depStage && depStage->IsEnabled() &&
+				targetStage && targetStage->IsEnabled())
+			{
+				result.push_back(dep);
+			}
+			else
+			{
+				CPF_LOG(MultiCore, Info) << "Dropped disabled dependency.";
+			}
 		}
-	}
-	return result;
-}
 
-/**
- @brief Adds a fully described dependency.
- @param dependency The dependency between fully identified blocks.
- */
-void System::AddDependency(const BlockDependency& dependency)
-{
-	mDependencies.emplace_back(dependency);
-}
-
-/**
- @brief Gets the dependencies.
- @return The dependency vector.
- */
-BlockDependencies System::GetDependencies() const
-{
-	BlockDependencies result;
-	for (const auto& dep : mDependencies)
-	{
-		Stage* depStage = nullptr;
-		GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
-		Stage* targetStage = nullptr;
-		GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
-		if (depStage && depStage->IsEnabled() &&
-			targetStage && targetStage->IsEnabled())
+		if (deps)
 		{
-			result.push_back(dep);
+			int32_t index = 0;
+			for (const auto& dep : result)
+				deps[index++] = dep;
+			return COM::kOK;
 		}
 		else
 		{
-			CPF_LOG(MultiCore, Info) << "Dropped disabled dependency.";
+			*count = int32_t(result.size());
+			return COM::kOK;
 		}
 	}
-	return result;
+	return COM::kInvalidParameter;
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 namespace

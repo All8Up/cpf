@@ -20,10 +20,10 @@ bool RenderSystem::Remove()
 	return System::Remove(kID);
 }
 
-bool RenderSystem::Configure()
+COM::Result RenderSystem::Configure()
 {
 	mpTimer = GetSystem<Timer>(GetOwner(), mDesc.mTimer.GetString());
-	return mpTimer != nullptr;
+	return mpTimer != nullptr ? COM::kOK : COM::kInvalid;
 }
 
 bool RenderSystem::Initialize(iWindow* window, Resources::Locator* locator)

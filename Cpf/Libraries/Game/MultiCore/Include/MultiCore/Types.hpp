@@ -68,6 +68,7 @@ namespace Cpf
 
 		struct BlockDependency
 		{
+			BlockDependency() {};
 			BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy = DependencyPolicy::eBarrier);
 
 			SSBID mDependent;

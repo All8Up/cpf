@@ -36,7 +36,7 @@ namespace Cpf
 
 		MoverSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc);
 		InstanceSystem* GetInstanceSystem() const;
-		bool Configure() override;
+		COM::Result Configure() override;
 		static bool Install();
 		static bool Remove();
 		void EnableMovement(bool flag);

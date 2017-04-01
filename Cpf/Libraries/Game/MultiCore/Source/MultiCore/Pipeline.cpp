@@ -77,14 +77,21 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 		System* systemPtr = nullptr;
 		if (COM::Succeeded(GetSystem(system.first, &systemPtr)))
 		{
-			for (auto& instruction : systemPtr->GetInstructions())
+			int32_t instructionCount = 0;
+			systemPtr->GetInstructions(&instructionCount, nullptr);
+			Vector<Instruction> instructions(instructionCount);
+			systemPtr->GetInstructions(&instructionCount, instructions.data());
+			for (auto& instruction : instructions)
 			{
 				builder.Add(instruction);
 			}
 		}
 
 		// Add dependencies between blocks.
-		BlockDependencies dependencies = system.second->GetDependencies();
+		int32_t depCount = 0;
+		system.second->GetDependencies(&depCount, nullptr);
+		BlockDependencies dependencies(depCount);
+		system.second->GetDependencies(&depCount, dependencies.data());
 		if (!dependencies.empty())
 			builder.Add(dependencies);
 	}
@@ -114,7 +121,7 @@ bool Pipeline::_ConfigureSystems() const
 	// Let the systems configure to the new pipeline.
 	for (const auto& system : mSystemMap)
 	{
-		if (!system.second->Configure())
+		if (COM::Succeeded(system.second->Configure()))
 			result = false;
 	}
 
@@ -148,17 +155,21 @@ COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, System** out
 
 COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, Stage** outStage)
 {
-	System* system = nullptr;
-	if (COM::Succeeded(GetSystem(systemID, &system)))
+	if (outStage)
 	{
-		if (system)
+		System* system = nullptr;
+		if (COM::Succeeded(GetSystem(systemID, &system)))
 		{
-			Stage* result = nullptr;
-			*outStage = system->GetStage(stageID);
-			return COM::kOK;
+			if (system)
+			{
+				Stage* result = nullptr;
+				if (COM::Succeeded(system->GetStage(stageID, &result)))
+					return COM::kOK;
+			}
 		}
+		return COM::kInvalid;
 	}
-	return COM::kInvalid;
+	return COM::kInvalidParameter;
 }
 
 void CPF_STDCALL Pipeline::Submit(Concurrency::Scheduler* scheduler)

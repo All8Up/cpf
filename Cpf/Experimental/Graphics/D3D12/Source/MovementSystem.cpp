@@ -75,12 +75,12 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 	return mpInstances;
 }
 
-bool MoverSystem::Configure()
+COM::Result MoverSystem::Configure()
 {
 	if (COM::Succeeded(GetOwner()->GetSystem(mClockID, &reinterpret_cast<MultiCore::System*>(mpTime))) &&
 		COM::Succeeded(GetOwner()->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::System*>(mpInstances))))
-		return true;
-	return false;
+		return COM::kOK;
+	return COM::kInvalid;
 }
 
 bool MoverSystem::Install()

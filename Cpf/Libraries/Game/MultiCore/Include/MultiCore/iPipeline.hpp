@@ -1,13 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Types.hpp"
-#include "UnorderedMap.hpp"
-#include "RefCounted.hpp"
-#include "String.hpp"
-#include "Vector.hpp"
-#include "Concurrency/Scheduler.hpp"
 #include "COM/iUnknown.hpp"
-
 
 namespace Cpf
 {
@@ -28,9 +22,6 @@ namespace Cpf
 			virtual void CPF_STDCALL Submit(Concurrency::Scheduler*) = 0;
 			virtual COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) = 0;
 			virtual COM::Result CPF_STDCALL EnumerateSystems(void* context, bool (CPF_STDCALL *)(void *, SystemID, IntrusivePtr<System>)) = 0;
-
-			/*
-			*/
 		};
 
 		template <typename TYPE>

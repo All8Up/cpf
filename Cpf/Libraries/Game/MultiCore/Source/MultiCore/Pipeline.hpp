@@ -2,6 +2,7 @@
 #pragma once
 #include "MultiCore/iPipeline.hpp"
 #include "Plugin/iClassInstance.hpp"
+#include "UnorderedMap.hpp"
 
 namespace Cpf
 {
@@ -38,6 +39,8 @@ namespace Cpf
 			Vector<String> mQueueInfo;
 		};
 
+
+		/** @brief Class instance object for registry installation. */
 		class PipelineClass : public tRefCounted<Plugin::iClassInstance>
 		{
 		public:

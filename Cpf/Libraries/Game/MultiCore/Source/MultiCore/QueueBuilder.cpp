@@ -52,8 +52,11 @@ void QueueBuilder::_GatherStageDependencies()
 {
 	mpPipeline->EnumerateSystems(this, [](void* context, SystemID id, IntrusivePtr<System> ptr) -> bool {
 		QueueBuilder* self = reinterpret_cast<QueueBuilder*>(context);
-		for (const auto& stage : ptr->GetStages())
+
+		int32_t stageCount = ptr->GetStageCount();
+		for (int32_t i=0; i<stageCount; ++i)
 		{
+			Stage* stage = ptr->GetStage(i);
 			auto dependencies = stage->GetDependencies(id);
 			if (!dependencies.empty())
 				self->Add(dependencies);

@@ -34,6 +34,7 @@ namespace Cpf
 		static constexpr Result kUnknownClass = CreateResult(1, 0, 4);
 		static constexpr Result kNotImplemented = CreateResult(1, 0, 5);
 		static constexpr Result kInvalid = CreateResult(1, 0, 6);
+		static constexpr Result kNotEnoughSpace = CreateResult(1, 0, 7);
 
 		//////////////////////////////////////////////////////////////////////////
 		struct CPF_EXPORT iUnknown : iRefCounted

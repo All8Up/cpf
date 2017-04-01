@@ -23,7 +23,7 @@ namespace Cpf
 		static bool Install();
 		static bool Remove();
 
-		bool Configure() override;
+		COM::Result Configure() override;
 
 		bool Initialize(iWindow*, Resources::Locator*);
 		bool Shutdown();
