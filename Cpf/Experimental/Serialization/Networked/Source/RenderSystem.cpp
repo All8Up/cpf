@@ -82,10 +82,10 @@ DebugUI& RenderSystem::GetDebugUI()
 
 
 RenderSystem::RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc)
-	: System(pipeline, name)
-	, mpTimer(nullptr)
+	: mpTimer(nullptr)
 	, mDesc(*desc)
 {
+	System::Initialize(pipeline, name);
 }
 
 RenderSystem::~RenderSystem()

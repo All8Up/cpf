@@ -18,8 +18,9 @@ bool NetworkSystem::Remove()
 
 //////////////////////////////////////////////////////////////////////////
 NetworkSystem::NetworkSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc*)
-	: System(pipeline, name)
 {
+	System::Initialize(pipeline, name);
+
 	IntrusivePtr<SingleUpdateStage> updateStage(Stage::Create<SingleUpdateStage>(this, Stage::kExecute.GetString()));
 	updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
 	AddStage(updateStage);

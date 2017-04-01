@@ -5,11 +5,12 @@
 using namespace Cpf;
 
 InstanceSystem::InstanceSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
-	: System(owner, name)
-	, mpApp(desc->mpApplication)
+	: mpApp(desc->mpApplication)
 	, mRenderID(desc->mRenderSystemID)
 	, mpInstances(nullptr)
 {
+	System::Initialize(owner, name);
+
 	// Build the stages and set the update function.
 	IntrusivePtr<MultiCore::SingleUpdateStage> instanceBegin(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kBegin.GetString()));
 	instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);

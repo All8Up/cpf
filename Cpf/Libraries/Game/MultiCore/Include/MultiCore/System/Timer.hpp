@@ -9,6 +9,16 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
+		struct iTimer : iSystem
+		{
+			virtual Time::Value GetTime() = 0;
+			virtual float GetDeltaTime() = 0;
+			virtual bool IsPaused() = 0;
+			virtual void SetPause(bool flag) = 0;
+			virtual void Pause() = 0;
+			virtual void Resume() = 0;
+		};
+
 		class CPF_EXPORT_MULTICORE Timer : public System
 		{
 		public:

@@ -17,10 +17,11 @@ bool RenderSystem::Remove()
 }
 
 RenderSystem::RenderSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
-	: System(owner, name)
-	, mpApp(desc->mpApplication)
+	: mpApp(desc->mpApplication)
 	, mCurrentBackBuffer(0)
 {
+	System::Initialize(owner, name);
+
 	// Build the stages and set the update function for each.
 	// NOTE: While there are 6 stages which must operate in order, there will only
 	// be two required barrier groups since the only thing required is that they

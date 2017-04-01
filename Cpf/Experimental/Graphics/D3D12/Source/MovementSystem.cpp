@@ -47,8 +47,7 @@ COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, voi
 
 
 MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
-	: System(owner, name)
-	, mpApp(nullptr)
+	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
 	, mClockID(desc->mTimerID)
@@ -56,6 +55,8 @@ MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const De
 	, mEnableMovement(true)
 	, mUseEBus(false)
 {
+	System::Initialize(owner, name);
+
 	mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
 	// Build the stages.

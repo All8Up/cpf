@@ -22,10 +22,10 @@ System* Timer::Creator(MultiCore::iPipeline* owner, const char* name, const Desc
 
 //////////////////////////////////////////////////////////////////////////
 Timer::Timer(iPipeline* owner, const char* name)
-	: System(owner, name)
-	, mPaused(false)
+	: mPaused(false)
 	, mpUpdate(nullptr)
 {
+	Initialize(owner, name);
 	mStart = Time::Now();
 	mTime = mStart;
 
