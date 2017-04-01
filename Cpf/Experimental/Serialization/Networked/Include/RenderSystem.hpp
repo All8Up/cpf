@@ -33,10 +33,10 @@ namespace Cpf
 		Graphics::DebugUI& GetDebugUI();
 
 	private:
-		RenderSystem(MultiCore::Pipeline* pipeline, const char* name, const Desc* desc);
+		RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc);
 		~RenderSystem() override;
 
-		static System* _Create(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc);
+		static System* _Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();

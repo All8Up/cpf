@@ -15,13 +15,13 @@ bool Timer::Remove()
 	return System::Remove(kID);
 }
 
-System* Timer::Creator(MultiCore::Pipeline* owner, const char* name, const Desc*)
+System* Timer::Creator(MultiCore::iPipeline* owner, const char* name, const Desc*)
 {
 	return new Timer(owner, name);
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(Pipeline* owner, const char* name)
+Timer::Timer(iPipeline* owner, const char* name)
 	: System(owner, name)
 	, mPaused(false)
 	, mpUpdate(nullptr)

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Export.hpp"
+#include "Plugin/iRegistry.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
@@ -10,7 +11,7 @@ namespace Cpf
 	//////////////////////////////////////////////////////////////////////////
 	struct MultiCoreInitializer
 	{
-		CPF_EXPORT_MULTICORE static int Install();
+		CPF_EXPORT_MULTICORE static int Install(Plugin::iRegistry*);
 		CPF_EXPORT_MULTICORE static int Remove();
 
 	private:

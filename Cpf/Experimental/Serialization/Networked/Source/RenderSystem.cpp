@@ -2,7 +2,7 @@
 #include "RenderSystem.hpp"
 #include "Graphics.hpp"
 #include "MultiCore/Stage.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"
 
@@ -22,7 +22,7 @@ bool RenderSystem::Remove()
 
 bool RenderSystem::Configure()
 {
-	mpTimer = GetOwner()->GetSystem<Timer>(mDesc.mTimer.GetString());
+	mpTimer = GetSystem<Timer>(GetOwner(), mDesc.mTimer.GetString());
 	return mpTimer != nullptr;
 }
 
@@ -81,7 +81,7 @@ DebugUI& RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem(Pipeline* pipeline, const char* name, const Desc* desc)
+RenderSystem::RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc)
 	: System(pipeline, name)
 	, mpTimer(nullptr)
 	, mDesc(*desc)
@@ -91,7 +91,7 @@ RenderSystem::RenderSystem(Pipeline* pipeline, const char* name, const Desc* des
 RenderSystem::~RenderSystem()
 {}
 
-System* RenderSystem::_Create(Pipeline* owner, const char* name, const System::Desc* desc)
+System* RenderSystem::_Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new RenderSystem(owner, name, reinterpret_cast<const Desc*>(desc));
 }

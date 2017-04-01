@@ -6,7 +6,7 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class Pipeline;
+		struct iPipeline;
 	}
 
 	namespace EntityService
@@ -15,7 +15,7 @@ namespace Cpf
 
 		struct iManager : COM::iUnknown
 		{
-			virtual MultiCore::Pipeline* GetPipeline() const = 0;
+			virtual MultiCore::iPipeline* GetPipeline() const = 0;
 
 			virtual iEntity* CreateEntity(EntityID id = kInvalidEntityID) = 0;
 			virtual void Remove(iEntity*) = 0;

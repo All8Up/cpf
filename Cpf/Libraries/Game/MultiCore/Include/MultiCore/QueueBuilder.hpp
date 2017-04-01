@@ -13,7 +13,7 @@ namespace Cpf
 		class QueueBuilder
 		{
 		public:
-			QueueBuilder(Pipeline* pipeline);
+			QueueBuilder(iPipeline* pipeline);
 			~QueueBuilder();
 
 			void Add(const Instruction& instructions);
@@ -52,7 +52,7 @@ namespace Cpf
 			//
 			Concurrency::Scheduler::Queue mResultQueue;
 
-			Pipeline* mpPipeline;
+			iPipeline* mpPipeline;
 
 			Vector<String> mQueueInfo;
 		};

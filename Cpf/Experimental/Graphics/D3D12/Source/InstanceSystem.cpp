@@ -4,7 +4,7 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc)
+InstanceSystem::InstanceSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
 	: System(owner, name)
 	, mpApp(desc->mpApplication)
 	, mRenderID(desc->mRenderSystemID)

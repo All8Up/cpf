@@ -28,11 +28,11 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			Timer(Pipeline* owner, const char* name);
+			Timer(iPipeline* owner, const char* name);
 			~Timer() override;
 
 			//
-			static System* Creator(Pipeline* owner, const char* name, const Desc*);
+			static System* Creator(iPipeline* owner, const char* name, const Desc*);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

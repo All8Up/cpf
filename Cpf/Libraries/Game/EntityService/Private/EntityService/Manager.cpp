@@ -25,7 +25,7 @@ Manager::~Manager()
 
 COM::Result Manager::QueryInterface(COM::InterfaceID id, void**)
 {
-	return COM::kUnimplemented;
+	return COM::kNotImplemented;
 }
 
 iEntity* Manager::CreateEntity(EntityID id)

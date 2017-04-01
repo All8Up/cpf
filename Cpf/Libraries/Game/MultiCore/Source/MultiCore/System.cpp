@@ -1,14 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "UnorderedMap.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(Pipeline* owner, const char* name)
+System::System(iPipeline* owner, const char* name)
 	: mpOwner(owner)
 	, mID(name, strlen(name))
 {
@@ -17,7 +17,7 @@ System::System(Pipeline* owner, const char* name)
 System::~System()
 {}
 
-Pipeline* System::GetOwner() const
+iPipeline* System::GetOwner() const
 {
 	return mpOwner;
 }
@@ -101,8 +101,10 @@ BlockDependencies System::GetDependencies() const
 	BlockDependencies result;
 	for (const auto& dep : mDependencies)
 	{
-		Stage* depStage = GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage);
-		Stage* targetStage = GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage);
+		Stage* depStage = nullptr;
+		GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
+		Stage* targetStage = nullptr;
+		GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
 		if (depStage && depStage->IsEnabled() &&
 			targetStage && targetStage->IsEnabled())
 		{
@@ -123,7 +125,7 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(Pipeline* owner, SystemID id, const char* name, const Desc* desc)
+System* System::_Create(iPipeline* owner, SystemID id, const char* name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())

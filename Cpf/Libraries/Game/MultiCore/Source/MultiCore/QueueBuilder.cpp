@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/QueueBuilder.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
 #include "Logging/Logging.hpp"
@@ -17,7 +17,7 @@ bool QueueBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) cons
 
 //////////////////////////////////////////////////////////////////////////
 
-QueueBuilder::QueueBuilder(Pipeline* pipeline)
+QueueBuilder::QueueBuilder(iPipeline* pipeline)
 	: mpPipeline(pipeline)
 {}
 
@@ -50,15 +50,16 @@ void QueueBuilder::Add(const BlockDependencies& dependencies)
 
 void QueueBuilder::_GatherStageDependencies()
 {
-	for (const auto& system : mpPipeline->GetSystems())
-	{
-		for (const auto& stage : system.second->GetStages())
+	mpPipeline->EnumerateSystems(this, [](void* context, SystemID id, IntrusivePtr<System> ptr) -> bool {
+		QueueBuilder* self = reinterpret_cast<QueueBuilder*>(context);
+		for (const auto& stage : ptr->GetStages())
 		{
-			auto dependencies = stage->GetDependencies(system.first);
+			auto dependencies = stage->GetDependencies(id);
 			if (!dependencies.empty())
-				Add(dependencies);
+				self->Add(dependencies);
 		}
-	}
+		return true;
+	});
 }
 
 bool QueueBuilder::Solve()

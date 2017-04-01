@@ -4,7 +4,7 @@
 #include "UnorderedMap.hpp"
 #include "RefCounted.hpp"
 #include "Functional.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 
 namespace Cpf
@@ -28,7 +28,7 @@ namespace Cpf
 			COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 
 			// 
-			MultiCore::Pipeline* GetPipeline() const { return mpPipeline; }
+			MultiCore::iPipeline* GetPipeline() const { return mpPipeline; }
 
 			// Service interface.
 			iEntity* CreateEntity(EntityID id = kInvalidEntityID);
@@ -39,7 +39,7 @@ namespace Cpf
 			//
 			static EntityID mNextID;
 			EntityIDMap mEntityIDMap;
-			MultiCore::Pipeline* mpPipeline;
+			MultiCore::iPipeline* mpPipeline;
 		};
 	}
 }

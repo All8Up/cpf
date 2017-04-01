@@ -7,7 +7,7 @@
 #include "EntityService/Interfaces/iManager.hpp"
 #include "Threading/Reactor.hpp"
 #include "Graphics/DebugUI.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "MovementSystem.hpp"
 
 //
@@ -101,7 +101,7 @@ namespace Cpf
 		float mAspectRatio;
 
 		//
-		IntrusivePtr<MultiCore::Pipeline> mpMultiCore;
+		IntrusivePtr<MultiCore::iPipeline> mpMultiCore;
 
 		// Per thread data.
 		struct ThreadData

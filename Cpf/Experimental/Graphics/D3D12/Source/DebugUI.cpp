@@ -16,7 +16,10 @@ void ExperimentalD3D12::_UpdatePipelineDisplay()
 		delete[] mpInstructionList;
 	}
 
-	const Vector<String> queueInfo = mpMultiCore->GetQueueInfo();
+	const char* tempString = nullptr;
+	Vector<String> queueInfo;
+	for (int index = 0; mpMultiCore->GetQueueInfo(index, &tempString) == COM::kOK; ++index)
+		queueInfo.push_back(tempString);
 	mInstructionCount = int(queueInfo.size());
 
 	mpInstructionList = new char*[mInstructionCount];

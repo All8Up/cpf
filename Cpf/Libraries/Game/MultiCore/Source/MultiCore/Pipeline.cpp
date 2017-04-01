@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "MultiCore/Pipeline.hpp"
+#include "Pipeline.hpp"
 #include "MultiCore/System.hpp"
 #include "MultiCore/Stage.hpp"
 #include "Logging/Logging.hpp"
@@ -8,6 +8,7 @@
 
 using namespace Cpf;
 using namespace MultiCore;
+
 
 //////////////////////////////////////////////////////////////////////////
 Pipeline::Pipeline()
@@ -20,18 +21,26 @@ Pipeline::Pipeline()
 Pipeline::~Pipeline()
 {}
 
-bool Pipeline::Create(Pipeline** pipeline)
+COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** iface)
 {
-	if (pipeline)
+	if (iface)
 	{
-		*pipeline = new Pipeline();
-		if (*pipeline)
-			return true;
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*iface = static_cast<COM::iUnknown*>(this);
+			AddRef();
+			return COM::kOK;
+		case iPipeline::kID.GetID():
+			*iface = static_cast<iPipeline*>(this);
+			AddRef();
+			return COM::kOK;
+		}
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 
-System* Pipeline::Install(System* system)
+System* CPF_STDCALL Pipeline::Install(System* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -46,28 +55,32 @@ System* Pipeline::Install(System* system)
 	return nullptr;
 }
 
-bool Pipeline::Remove(System* system)
+COM::Result CPF_STDCALL Pipeline::Remove(System* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
-		return false;
+		return COM::kInvalidParameter;
 #ifdef CPF_DEBUG
 	mChanged = true;
 #endif
 	mSystemMap.erase(id);
-	return true;
+	return COM::kOK;
 }
 
-bool Pipeline::Configure()
+COM::Result CPF_STDCALL Pipeline::Configure()
 {
 	// Iterate the systems and setup the queue builder.
 	QueueBuilder builder(this);
 	for (auto& system : mSystemMap)
 	{
 		// Iterate and add all blocks.
-		for (auto& instruction : GetSystem(system.first)->GetInstructions())
+		System* systemPtr = nullptr;
+		if (COM::Succeeded(GetSystem(system.first, &systemPtr)))
 		{
-			builder.Add(instruction);
+			for (auto& instruction : systemPtr->GetInstructions())
+			{
+				builder.Add(instruction);
+			}
 		}
 
 		// Add dependencies between blocks.
@@ -91,7 +104,7 @@ bool Pipeline::Configure()
 #endif
 
 	mQueueInfo = builder.GetQueueInfo();
-	return result;
+	return result ? COM::kOK : kConfigurationError;
 }
 
 bool Pipeline::_ConfigureSystems() const
@@ -108,35 +121,78 @@ bool Pipeline::_ConfigureSystems() const
 	return result;
 }
 
-System* Pipeline::GetSystem(SystemID id) const
+COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, System** system) const
 {
-	auto result = mSystemMap.find(id);
-	if (result != mSystemMap.end())
-	{
-		result->second->AddRef();
-		return result->second;
-	}
-	return nullptr;
-}
-
-System* Pipeline::GetSystem(const String& name) const
-{
-	return GetSystem(SystemID(name.c_str(), name.size()));
-}
-
-Stage* Pipeline::GetStage(SystemID systemID, StageID stageID)
-{
-	System* system = GetSystem(systemID);
 	if (system)
-		return system->GetStage(stageID);
-	return nullptr;
+	{
+		auto result = mSystemMap.find(id);
+		if (result != mSystemMap.end())
+		{
+			result->second->AddRef();
+			*system = result->second;
+			return COM::kOK;
+		}
+		return COM::kInvalid;
+	}
+	return COM::kInvalidParameter;
 }
 
-void Pipeline::operator ()(Concurrency::Scheduler& scheduler)
+COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, System** outSystem) const
+{
+	if (outSystem)
+	{
+		return GetSystem(SystemID(name, strlen(name)), outSystem);
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, Stage** outStage)
+{
+	System* system = nullptr;
+	if (COM::Succeeded(GetSystem(systemID, &system)))
+	{
+		if (system)
+		{
+			Stage* result = nullptr;
+			*outStage = system->GetStage(stageID);
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalid;
+}
+
+void CPF_STDCALL Pipeline::Submit(Concurrency::Scheduler* scheduler)
 {
 #ifdef CPF_DEBUG
 	// Asserts can be enabled in release mode.
 	CPF_ASSERT(mChanged == false);
 #endif
-	scheduler.Execute(mQueue, false);
+	scheduler->Execute(mQueue, false);
+}
+
+COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outString)
+{
+	if (outString)
+	{
+		if (idx < mQueueInfo.size())
+		{
+			*outString = mQueueInfo[idx].c_str();
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL Pipeline::EnumerateSystems(void* context, bool(CPF_STDCALL *callback)(void*, SystemID, IntrusivePtr<System>))
+{
+	if (callback)
+	{
+		for (auto pair : mSystemMap)
+		{
+			if (!callback(context, pair.first, pair.second))
+				break;
+		}
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }

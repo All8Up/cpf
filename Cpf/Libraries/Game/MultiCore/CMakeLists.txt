@@ -8,7 +8,7 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Stage.hpp
 	Include/MultiCore/Container.hpp
 	Include/MultiCore/Partitioning.hpp
-	Include/MultiCore/Pipeline.hpp
+	Include/MultiCore/iPipeline.hpp
 	Include/MultiCore/System.hpp
 	Include/MultiCore/QueueBuilder.hpp
 )
@@ -22,6 +22,7 @@ set (SOURCE_FILES
 set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Types.cpp
 	Source/MultiCore/Stage.cpp
+	Source/MultiCore/Pipeline.hpp
 	Source/MultiCore/Pipeline.cpp
 	Source/MultiCore/System.cpp
 	Source/MultiCore/QueueBuilder.cpp
@@ -49,9 +50,33 @@ target_include_directories (s_MultiCore
 )
 target_link_libraries (s_MultiCore
 	LINK_PUBLIC
-		Configuration s_Collections COM Logging s_Hash s_Concurrency
+		Configuration s_Collections COM Logging s_Hash s_Concurrency Plugin
 )
 set_property (TARGET s_MultiCore PROPERTY FOLDER Libraries/Static/Game)
+
+
+# ###############################################
+add_library (MultiCore STATIC
+	${INCLUDE_FILES}
+	${MULTICORE_INCLUDE_FILES}
+	${MULTICORE_SYSTEM_INCLUDE_FILES}
+	${SOURCE_FILES}
+	${MULTICORE_SOURCE_FILES}
+	${MULTICORE_SYSTEM_SOURCE_FILES}
+)
+target_compile_definitions (MultiCore
+	PRIVATE CPF_BUILD_MULTICORE
+)
+target_include_directories (MultiCore
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<INSTALL_INTERFACE:Include>
+)
+target_link_libraries (MultiCore
+	LINK_PUBLIC
+		Configuration s_Collections Plugin COM Logging Hash s_Concurrency
+)
+set_property (TARGET MultiCore PROPERTY FOLDER Libraries/Plugin/Game)
 
 # ###############################################
 source_group (Headers FILES ${INCLUDE_FILES})

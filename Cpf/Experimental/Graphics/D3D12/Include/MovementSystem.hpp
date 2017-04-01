@@ -34,7 +34,7 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc);
+		MoverSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc);
 		InstanceSystem* GetInstanceSystem() const;
 		bool Configure() override;
 		static bool Install();
@@ -43,13 +43,13 @@ namespace Cpf
 		void UseEBus(bool flag);
 
 	private:
-		static System* _Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc);
+		static System* _Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 
 		ExperimentalD3D12* mpApp;
 
 		// system interdependencies.
 		InstanceSystem* mpInstances;
-		const MultiCore::Timer* mpTime;	// The clock this mover is attached to.
+		MultiCore::Timer* mpTime;	// The clock this mover is attached to.
 		EntityService::EntityStage* mpThreadStage;
 		EntityService::EntityStage* mpEBusStage;
 		MultiCore::SystemID mClockID;

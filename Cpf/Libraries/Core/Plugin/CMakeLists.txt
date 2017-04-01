@@ -5,6 +5,7 @@ set (INCLUDE_FILES
 set (INCLUDE_PLUGIN_FILES
 	Include/Plugin/Library.hpp
 	Include/Plugin/iRegistry.hpp
+	Include/Plugin/iClassInstance.hpp
 )
 set (INCLUDE_PLATFORM_FILES
 	Include/${CPF_TARGET_OS}/Platform/SharedLibrary.hpp

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Adapter/WindowedApp.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "MultiCore/System/Timer.hpp"
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
@@ -34,7 +34,7 @@ namespace Cpf
 		Concurrency::ThreadPool mThreadPool;
 		Concurrency::LoadBalancer mLoadBalancer;
 
-		IntrusivePtr<MultiCore::Pipeline> mpPipeline;
+		IntrusivePtr<MultiCore::iPipeline> mpPipeline;
 		IntrusivePtr<MultiCore::Timer> mpTimer;
 
 		IntrusivePtr<Resources::Locator> mpLocator;

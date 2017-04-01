@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include "MultiCore/Export.hpp"
 #include "Vector.hpp"
 #include "IntrusivePtr.hpp"
 #include "Hash/HashID.hpp"
@@ -11,18 +12,18 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class Pipeline;
+		struct iPipeline;
 
-		struct SystemID_tag {};
-		using SystemID = Hash::HashString<SystemID_tag>;
-		class System;
+		struct CPF_EXPORT_MULTICORE SystemID_tag {};
+		using SystemID = CPF_EXPORT_MULTICORE Hash::HashString<SystemID_tag>;
+		class CPF_EXPORT_MULTICORE System;
 
-		struct StageID_tag {};
+		struct CPF_EXPORT_MULTICORE StageID_tag {};
 		using StageID = Hash::HashString<StageID_tag>;
-		class Stage;
+		class CPF_EXPORT_MULTICORE Stage;
 		using StageVector = Vector<IntrusivePtr<Stage>>;
 
-		struct BlockID_tag {};
+		struct CPF_EXPORT_MULTICORE BlockID_tag {};
 		using BlockID = Hash::HashString<BlockID_tag>;
 
 		enum class BlockOpcode

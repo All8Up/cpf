@@ -2,7 +2,7 @@
 #include "MovementSystem.hpp"
 #include "InstanceSystem.hpp"
 #include "ExperimentalD3D12.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "Math/Vector3v.hpp"
 #include "Math/Matrix33v.hpp"
 
@@ -46,7 +46,7 @@ COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, voi
 
 
 
-MoverSystem::MoverSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc)
+MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
 	: System(owner, name)
 	, mpApp(nullptr)
 	, mpInstances(nullptr)
@@ -77,10 +77,10 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 
 bool MoverSystem::Configure()
 {
-	mpTime = static_cast<MultiCore::Timer*>(GetOwner()->GetSystem(mClockID));
-	mpInstances = static_cast<InstanceSystem*>(GetOwner()->GetSystem(mInstanceID));
-
-	return mpTime && mpInstances;
+	if (COM::Succeeded(GetOwner()->GetSystem(mClockID, &reinterpret_cast<MultiCore::System*>(mpTime))) &&
+		COM::Succeeded(GetOwner()->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::System*>(mpInstances))))
+		return true;
+	return false;
 }
 
 bool MoverSystem::Install()
@@ -108,7 +108,7 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::System* MoverSystem::_Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::System* MoverSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new MoverSystem(owner, name, static_cast<const Desc*>(desc));
 }

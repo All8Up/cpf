@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Hash/Hash.hpp"
 #include "Hash/Crc.hpp"
 #include "Functional.hpp"
 
@@ -8,11 +9,11 @@ namespace Cpf
 	namespace Hash
 	{
 		//////////////////////////////////////////////////////////////////////////
-		struct BaseHashString_Tag {};
+		struct CPF_EXPORT_HASH BaseHashString_Tag {};
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TAG = BaseHashString_Tag>
-		class HashString
+		class CPF_EXPORT_HASH HashString
 		{
 		public:
 			constexpr HashString();

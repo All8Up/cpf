@@ -2,7 +2,7 @@
 #include "Logging/Logging.hpp"
 #include "MultiCore.hpp"
 #include "MultiCore/System.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "MultiCore/Stage.hpp"
 #include "Adapter/D3D12.hpp"
 #include "NetworkSystem.hpp"
@@ -35,14 +35,14 @@ int Networked::Start(const CommandLine&)
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<MultiCoreInitializer> multicoreInit;
+	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 	ScopedInitializer<Adapter::D3D12Initializer> d3d12Init;
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())
 	{
 		if (_InitializeResources() && _InitializePipeline())
 		{
-			if (_ConfigurePipeline())
+			if (COM::Succeeded(_ConfigurePipeline()))
 			{
 				_ConfigureDebugUI();
 
@@ -53,7 +53,7 @@ int Networked::Start(const CommandLine&)
 				while (IsRunning())
 				{
 					Poll();
-					(*mpPipeline)(mLoopScheduler);
+					mpPipeline->Submit(&mLoopScheduler);
 					mLoopScheduler.Submit(complete);
 					complete.Acquire();
 
@@ -180,7 +180,7 @@ bool Networked::_ShutdownMultiCore()
 
 bool Networked::_InitializePipeline()
 {
-	if(Pipeline::Create(mpPipeline.AsTypePP()))
+	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
 	{
 		mpTimer.Adopt(static_cast<Timer*>(mpPipeline->Install(System::Create<Timer>(mpPipeline, "Timer", nullptr))));
 		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(mpPipeline, "Networking", nullptr))));
@@ -200,11 +200,11 @@ bool Networked::_InitializePipeline()
 	return false;
 }
 
-bool Networked::_ConfigurePipeline()
+COM::Result Networked::_ConfigurePipeline()
 {
 	if (mpPipeline)
 		return mpPipeline->Configure();
-	return false;
+	return COM::kInvalid;
 }
 
 bool Networked::_ShutdownPipeline()

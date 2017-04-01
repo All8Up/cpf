@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "MultiCore/Export.hpp"
 #include "MultiCore/Types.hpp"
 #include "RefCounted.hpp"
 #include "String.hpp"
@@ -9,23 +10,23 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class System : public tRefCounted<iRefCounted>
+		class CPF_EXPORT_MULTICORE System : public tRefCounted<iRefCounted>
 		{
 		public:
 			// Empty base class for system descriptors.
 			struct Desc
 			{};
 
-			using Creator = System* (*)(Pipeline* owner, const char*, const Desc*);
+			using Creator = System* (*)(iPipeline* owner, const char*, const Desc*);
 
 			// System factory.
 			template <typename TYPE>
-			static TYPE* Create(Pipeline* owner, const char*, const Desc* = nullptr);
+			static TYPE* Create(iPipeline* owner, const char*, const Desc* = nullptr);
 			static bool Install(SystemID id, Creator);
 			static bool Remove(SystemID id);
 
 			// System interface.
-			Pipeline* GetOwner() const;
+			iPipeline* GetOwner() const;
 			Stage* GetStage(StageID id) const;
 
 			SystemID GetID() const;
@@ -40,7 +41,7 @@ namespace Cpf
 
 		protected:
 			// Implementation interface.
-			System(Pipeline* owner, const char* name);
+			System(iPipeline* owner, const char* name);
 			virtual ~System();
 
 			bool AddStage(Stage*);
@@ -48,10 +49,10 @@ namespace Cpf
 
 		private:
 			// Untyped factory interface.
-			static System* _Create(Pipeline* owner, SystemID, const char*, const Desc* desc);
+			static System* _Create(iPipeline* owner, SystemID, const char*, const Desc* desc);
 
 			// Implementation data.
-			Pipeline* mpOwner;
+			iPipeline* mpOwner;
 			StageVector mStages;
 			SystemID mID;
 			BlockDependencies mDependencies;
@@ -59,7 +60,7 @@ namespace Cpf
 
 		// Typed system factory.
 		template <typename TYPE>
-		TYPE* System::Create(Pipeline* owner, const char* name, const Desc* desc)
+		TYPE* System::Create(iPipeline* owner, const char* name, const Desc* desc)
 		{
 			return static_cast<TYPE*>(_Create(owner, TYPE::kID, name, desc));
 		}

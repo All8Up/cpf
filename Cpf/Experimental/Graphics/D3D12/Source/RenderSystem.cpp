@@ -16,7 +16,7 @@ bool RenderSystem::Remove()
 	return System::Remove(kID);
 }
 
-RenderSystem::RenderSystem(MultiCore::Pipeline* owner, const char* name, const Desc* desc)
+RenderSystem::RenderSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
 	: System(owner, name)
 	, mpApp(desc->mpApplication)
 	, mCurrentBackBuffer(0)
@@ -125,7 +125,7 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::System* RenderSystem::Creator(MultiCore::Pipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::System* RenderSystem::Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new RenderSystem(owner, name, static_cast<const Desc*>(desc));
 }

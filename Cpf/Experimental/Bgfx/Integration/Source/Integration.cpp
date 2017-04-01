@@ -176,7 +176,7 @@ bool BgfxIntegration::_InitializePipeline()
 	if (Timer::Install() &&
 		SingleUpdateStage::Install())
 	{
-		if (Pipeline::Create(mpPipeline.AsTypePP()))
+		if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
 		{
 			mpTimer.Adopt(static_cast<Timer*>(mpPipeline->Install(System::Create<Timer>(mpPipeline, "Timer", nullptr))));
 			return bool(mpTimer);
@@ -245,7 +245,7 @@ int BgfxIntegration::Start(const CommandLine&)
 	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
-	ScopedInitializer<MultiCoreInitializer> multicoreInit;
+	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
@@ -311,7 +311,7 @@ int BgfxIntegration::Start(const CommandLine&)
 			Poll();
 
 			mLoadBalancer.Balance();
-			(*mpPipeline)(mScheduler);
+			mpPipeline->Submit(&mScheduler);
 			mScheduler.Submit(pipelineComplete);
 			pipelineComplete.Acquire();
 

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "PluginHost/Registry.hpp"
 #include "Plugin/Library.hpp"
+#include "Plugin/iClassInstance.hpp"
 #include "Move.hpp"
 #include "UnorderedMap.hpp"
 
@@ -21,7 +22,7 @@ public:
 
 	// iRegistry overrides.
 	COM::Result CPF_STDCALL Load(const char* const) override;
-	COM::Result CPF_STDCALL Install(COM::ClassID, Creator) override;
+	COM::Result CPF_STDCALL Install(COM::ClassID, Plugin::iClassInstance*) override;
 	COM::Result CPF_STDCALL Remove(COM::ClassID) override;
 	COM::Result CPF_STDCALL Exists(COM::ClassID id) override;
 	COM::Result CPF_STDCALL Create(COM::iUnknown*, COM::ClassID, COM::InterfaceID, void**) override;
@@ -30,7 +31,7 @@ private:
 	int32_t mRefCount;
 
 	using LibraryMap = Cpf::UnorderedMap<String, Plugin::Library>;
-	using CreationMap = Cpf::UnorderedMap<COM::ClassID, Creator>;
+	using CreationMap = Cpf::UnorderedMap<COM::ClassID, IntrusivePtr<Plugin::iClassInstance>>;
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
@@ -124,12 +125,12 @@ COM::Result CPF_STDCALL Registry::Load(const char* const name)
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Registry::Install(COM::ClassID id, Creator creator)
+COM::Result CPF_STDCALL Registry::Install(COM::ClassID id, Plugin::iClassInstance* clsInst)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists == mCreationMap.end())
 	{
-		mCreationMap.insert(CreationMap::value_type{id, creator});
+		mCreationMap.insert(CreationMap::value_type{id, clsInst});
 		return COM::kOK;
 	}
 	return COM::kUnknownClass;
@@ -159,7 +160,8 @@ COM::Result CPF_STDCALL Registry::Create(COM::iUnknown* outer, COM::ClassID cid,
 		auto creator = mCreationMap.find(cid);
 		if (creator != mCreationMap.end())
 		{
-			COM::iUnknown* instance = (*creator->second)(outer);
+			COM::iUnknown* instance;
+			creator->second->CreateInstance(outer, &instance);
 			if (instance)
 			{
 				COM::Result result = instance->QueryInterface(id, outIface);

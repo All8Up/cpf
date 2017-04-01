@@ -60,7 +60,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
 	ScopedInitializer<EntityServiceInitializer> goInit;
-	ScopedInitializer<MultiCoreInitializer> multicoreInit;
+	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;
@@ -77,7 +77,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	MoverSystem::MoverComponent::Install();
 	
 	//////////////////////////////////////////////////////////////////////////
-	MultiCore::Pipeline::Create(mpMultiCore.AsTypePP());
+	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpMultiCore.AsVoidPP());
 
 	// Install the stage types.
 	MultiCore::SingleUpdateStage::Install();
@@ -89,8 +89,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<MultiCore::Timer>
-		gameTime(MultiCore::System::Create<MultiCore::Timer>(mpMultiCore, "Game Time"));
+	IntrusivePtr<MultiCore::Timer> gameTime(MultiCore::System::Create<MultiCore::Timer>(mpMultiCore, "Game Time"));
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.
@@ -296,7 +295,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 						//////////////////////////////////////////////////////////////////////////
 						// Issue all the stages.
-						(*mpMultiCore)(mScheduler);
+						mpMultiCore->Submit(&mScheduler);
 
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Adapter/WindowedApp.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/iPipeline.hpp"
 #include "RenderSystem.hpp"
 #include "NetworkSystem.hpp"
 #include "Concurrency/ThreadPool.hpp"
@@ -28,7 +28,7 @@ namespace Cpf
 		bool _InitializeMultiCore();
 		bool _ShutdownMultiCore();
 		bool _InitializePipeline();
-		bool _ConfigurePipeline();
+		COM::Result _ConfigurePipeline();
 		bool _ShutdownPipeline();
 
 		// Debug panels.
@@ -43,7 +43,7 @@ namespace Cpf
 		Concurrency::LoadBalancer mLoadBalancer;
 		IntrusivePtr<Resources::Locator> mpLocator;
 
-		IntrusivePtr<MultiCore::Pipeline> mpPipeline;
+		IntrusivePtr<MultiCore::iPipeline> mpPipeline;
 		IntrusivePtr<MultiCore::Timer> mpTimer;
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
