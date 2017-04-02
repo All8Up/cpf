@@ -43,13 +43,13 @@ namespace Cpf
 		void UseEBus(bool flag);
 
 	private:
-		static System* _Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
+		static iSystem* _Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 
 		ExperimentalD3D12* mpApp;
 
 		// system interdependencies.
 		InstanceSystem* mpInstances;
-		MultiCore::Timer* mpTime;	// The clock this mover is attached to.
+		MultiCore::iTimer* mpTime;	// The clock this mover is attached to.
 		EntityService::EntityStage* mpThreadStage;
 		EntityService::EntityStage* mpEBusStage;
 		MultiCore::SystemID mClockID;
@@ -72,10 +72,10 @@ namespace Cpf
 		//
 		static bool Install();
 		static bool Remove();
-		static iComponent* Create(System*);
+		static iComponent* Create(iSystem*);
 
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent(System* owner);
+		MoverComponent(iSystem* owner);
 
 		COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 
@@ -86,8 +86,8 @@ namespace Cpf
 		void Deactivate() override;
 
 	private:
-		static void _Threaded(System* system, EntityService::iEntity* object);
-		static void _EBus(System* system, EntityService::iEntity* object);
+		static void _Threaded(iSystem* system, EntityService::iEntity* object);
+		static void _EBus(iSystem* system, EntityService::iEntity* object);
 
 		MoverSystem* mpMover;
 	};

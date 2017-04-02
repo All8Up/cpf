@@ -7,7 +7,7 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(MultiCore::System* owner, const char* name)
+EntityStage::EntityStage(MultiCore::iSystem* owner, const char* name)
 {
 	Initialize(owner, name);
 }
@@ -22,19 +22,19 @@ bool EntityStage::Remove()
 	return Stage::Remove(kID);
 }
 
-MultiCore::Stage* EntityStage::_Creator(Plugin::iRegistry* rgy, MultiCore::System* owner, const char* name)
+MultiCore::Stage* EntityStage::_Creator(Plugin::iRegistry* rgy, MultiCore::iSystem* owner, const char* name)
 {
 	return new EntityStage(owner, name);
 }
 
-void EntityStage::AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
+void EntityStage::AddUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
 	mWork.Add({ s, o, f });
 	mWork.Release();
 }
 
-void EntityStage::RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
+void EntityStage::RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
 	mWork.Remove({ s, o, f });

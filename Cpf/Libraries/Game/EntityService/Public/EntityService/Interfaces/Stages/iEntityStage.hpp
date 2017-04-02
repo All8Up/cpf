@@ -14,11 +14,11 @@ namespace Cpf
 
 		struct iEntityStage : iStage
 		{
-			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
+			using UpdateFunc = void(*)(MultiCore::iSystem*, iEntity*);
 
 			// Interface.
-			virtual void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f) = 0;
-			virtual void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f) = 0;
+			virtual void AddUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f) = 0;
+			virtual void RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f) = 0;
 		};
 
 		class EntityStage
@@ -28,7 +28,7 @@ namespace Cpf
 		public:
 			static constexpr MultiCore::StageID kID = Hash::Create<MultiCore::StageID_tag>("Object Stage"_hashString);
 
-			using UpdateFunc = void(*)(MultiCore::System*, iEntity*);
+			using UpdateFunc = void(*)(MultiCore::iSystem*, iEntity*);
 
 			static bool Install();
 			static bool Remove();
@@ -36,20 +36,20 @@ namespace Cpf
 			COM::Result QueryInterface(COM::InterfaceID, void**) { return COM::kNotImplemented; }
 
 			// Interface.
-			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
-			void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
+			void AddUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f);
+			void RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f);
 
 			COM::Result GetDependencies(MultiCore::SystemID sid, int32_t*, MultiCore::BlockDependency*) override;
 			COM::Result GetInstructions(MultiCore::SystemID sid, int32_t*, MultiCore::Instruction*) override;
 			MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
 
 		private:
-			EntityStage(MultiCore::System* owner, const char* name);
+			EntityStage(MultiCore::iSystem* owner, const char* name);
 
-			static MultiCore::Stage* _Creator(Plugin::iRegistry*, MultiCore::System*, const char* name);
+			static MultiCore::Stage* _Creator(Plugin::iRegistry*, MultiCore::iSystem*, const char* name);
 
 			// Implementation definitions.
-			using UpdateTuple_t = Tuple<MultiCore::System*, iEntity*, UpdateFunc>;
+			using UpdateTuple_t = Tuple<MultiCore::iSystem*, iEntity*, UpdateFunc>;
 			struct Compare
 			{
 				bool operator ()(const UpdateTuple_t& lhs, const UpdateTuple_t& rhs) const;
@@ -64,7 +64,7 @@ namespace Cpf
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 			static void _End(Concurrency::ThreadContext& tc, void* context);
 
-			MultiCore::System* mpSystem;
+			MultiCore::iSystem* mpSystem;
 			Caller mCaller;
 		};
 	}

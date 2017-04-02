@@ -9,45 +9,28 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class CPF_EXPORT_MULTICORE Timer : public System
+		static constexpr COM::ClassID kTimerClass = COM::ClassID("TimerClass"_crc64);
+
+		struct iTimer : iSystem
 		{
-		public:
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iTimer"_crc64);
+
+			virtual Time::Value CPF_STDCALL GetTime() const = 0;
+			virtual float CPF_STDCALL GetDeltaTime() const = 0;
+			virtual bool CPF_STDCALL IsPaused() const = 0;
+			virtual void CPF_STDCALL SetPause(bool flag) = 0;
+			virtual void CPF_STDCALL Pause() = 0;
+			virtual void CPF_STDCALL Resume() = 0;
+
+			// TODO: Temporary hackery to get rid of concrete class below.
 			static constexpr SystemID kID = Hash::Create<SystemID_tag>("Timer System"_hashString);
 
 			// Registration.
 			static bool Install();
 			static bool Remove();
 
-			// System overrides.
-			COM::Result CPF_STDCALL Initialize(iPipeline* owner, const char* name) override;
-
-			// Timer interface.
-			Time::Value GetTime() const;
-			float GetDeltaTime() const;
-			bool IsPaused() const;
-			void SetPause(bool flag);
-			void Pause();
-			void Resume();
-
-		private:
-			// Construction/Destruction.
-			Timer();
-			~Timer() override;
-
 			//
-			static System* Creator(iPipeline* owner, const char* name, const Desc*);
-
-			// Internal update function.
-			static void _Update(Concurrency::ThreadContext&, void*);
-
-			// Implementation data.
-			Time::Value mTime;
-			Time::Value mStart;
-			Time::Value mDelta;
-			bool mPaused;
-
-			// The internal update stage.
-			IntrusivePtr<SingleUpdateStage> mpUpdate;
+			static iSystem* Creator(iPipeline* owner, const char* name, const Desc*);
 		};
 	}
 }

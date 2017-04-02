@@ -182,7 +182,7 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-System* System::_Create(iPipeline* owner, SystemID id, const char* name, const Desc* desc)
+iSystem* System::_Create(iPipeline* owner, SystemID id, const char* name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())

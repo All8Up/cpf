@@ -15,7 +15,7 @@ bool TransformComponent::Remove()
 	return Entity::Remove(iTransformComponent::kIID);
 }
 
-iComponent* TransformComponent::Creator(MultiCore::System* system)
+iComponent* TransformComponent::Creator(MultiCore::iSystem* system)
 {
 	return static_cast<iComponent*>(new TransformComponent(system));
 }
@@ -45,7 +45,7 @@ COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPt
 }
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent(MultiCore::System*)
+TransformComponent::TransformComponent(MultiCore::iSystem*)
 	: mpParent(nullptr)
 {}
 

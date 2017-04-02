@@ -8,10 +8,10 @@ namespace Cpf
 	{
 		struct iComponent;
 
-		using ComponentCreator = iComponent* (*)(MultiCore::System*);
+		using ComponentCreator = iComponent* (*)(MultiCore::iSystem*);
 		bool ComponentFactoryInstall(COM::InterfaceID iid, ComponentCreator creator);
 		bool ComponentFactoryRemove(COM::InterfaceID iid);
-		iComponent* ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::System*);
+		iComponent* ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::iSystem*);
 
 		struct iEntity : COM::iUnknown
 		{
@@ -31,7 +31,7 @@ namespace Cpf
 
 			// Utilities.
 			template <typename TYPE>
-			TYPE* CreateComponent(MultiCore::System*);
+			TYPE* CreateComponent(MultiCore::iSystem*);
 
 			template <typename TYPE>
 			TYPE* GetComponent();
@@ -58,7 +58,7 @@ namespace Cpf
 		}
 
 		template <typename TYPE>
-		TYPE* iEntity::CreateComponent(MultiCore::System* system)
+		TYPE* iEntity::CreateComponent(MultiCore::iSystem* system)
 		{
 			iComponent* created = ComponentFactoryCreate(TYPE::kIID, system);
 			TYPE* result = nullptr;

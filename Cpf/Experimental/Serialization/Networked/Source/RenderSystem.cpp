@@ -22,7 +22,7 @@ bool RenderSystem::Remove()
 
 COM::Result RenderSystem::Configure()
 {
-	mpTimer = GetSystem<Timer>(GetOwner(), mDesc.mTimer.GetString());
+	mpTimer = GetSystem<iTimer>(GetOwner(), mDesc.mTimer.GetString());
 	return mpTimer != nullptr ? COM::kOK : COM::kInvalid;
 }
 
@@ -91,7 +91,7 @@ RenderSystem::RenderSystem(MultiCore::iPipeline* pipeline, const char* name, con
 RenderSystem::~RenderSystem()
 {}
 
-System* RenderSystem::_Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+iSystem* RenderSystem::_Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new RenderSystem(owner, name, reinterpret_cast<const Desc*>(desc));
 }

@@ -52,7 +52,7 @@ void QueueBuilder::_GatherStageDependencies()
 {
 	int32_t systemCount = 0;
 	mpPipeline->GetSystems(&systemCount, nullptr);
-	Vector<System*> systems(systemCount);
+	Vector<iSystem*> systems(systemCount);
 	mpPipeline->GetSystems(&systemCount, systems.data());
 
 	for (auto system : systems)

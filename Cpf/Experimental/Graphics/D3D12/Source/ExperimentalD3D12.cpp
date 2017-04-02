@@ -89,7 +89,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<MultiCore::Timer> gameTime(MultiCore::System::Create<MultiCore::Timer>(mpMultiCore, "Game Time"));
+	IntrusivePtr<MultiCore::iTimer> gameTime(MultiCore::System::Create<MultiCore::iTimer>(mpMultiCore, "Game Time"));
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.

@@ -5,6 +5,7 @@
 #include "String.hpp"
 #include "COM/iUnknown.hpp"
 #include "MultiCore/Types.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Plugin/iRegistry.hpp"
 
 namespace Cpf
@@ -24,8 +25,8 @@ namespace Cpf
 			static constexpr BlockID kExecute = Hash::Create<BlockID_tag>("Execute"_hashString);
 			static constexpr BlockID kEnd = Hash::Create<BlockID_tag>("End"_hashString);
 
-			virtual COM::Result CPF_STDCALL Initialize(System*, const char* const name) = 0;
-			virtual System* CPF_STDCALL GetSystem() const = 0;
+			virtual COM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) = 0;
+			virtual iSystem* CPF_STDCALL GetSystem() const = 0;
 			virtual StageID CPF_STDCALL GetID() const = 0;
 			virtual bool CPF_STDCALL IsEnabled() const = 0;
 			virtual void CPF_STDCALL SetEnabled(bool flag) = 0;
@@ -40,16 +41,16 @@ namespace Cpf
 		{
 		public:
 			// Factory.
-			using Creator = Stage* (*)(Plugin::iRegistry*, System*, const char* name);
+			using Creator = Stage* (*)(Plugin::iRegistry*, iSystem*, const char* name);
 
-			static Stage* Create(StageID type, Plugin::iRegistry*, System* owner, const char* name);
+			static Stage* Create(StageID type, Plugin::iRegistry*, iSystem* owner, const char* name);
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
 			//
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
-			COM::Result CPF_STDCALL Initialize(System*, const char* const name) override;
-			System* CPF_STDCALL GetSystem() const override;
+			COM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) override;
+			iSystem* CPF_STDCALL GetSystem() const override;
 			StageID CPF_STDCALL GetID() const override;
 			bool CPF_STDCALL IsEnabled() const override;
 			void CPF_STDCALL SetEnabled(bool flag) override;
@@ -66,7 +67,7 @@ namespace Cpf
 		private:
 
 			// Implementation data.
-			System* mpSystem;
+			iSystem* mpSystem;
 			StageID mID;
 			bool mEnabled;
 		};
@@ -98,9 +99,9 @@ namespace Cpf
 			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
 
 		private:
-			SingleUpdateStage(System* owner, const char* name);
+			SingleUpdateStage(iSystem* owner, const char* name);
 
-			static Stage* _Creator(Plugin::iRegistry*, System*, const char* name);
+			static Stage* _Creator(Plugin::iRegistry*, iSystem*, const char* name);
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 
 			Function<void(Concurrency::ThreadContext&, void*)> mpUpdate;

@@ -33,7 +33,7 @@ bool Stage::Remove(StageID id)
 	return false;
 }
 
-Stage* Stage::Create(StageID type, Plugin::iRegistry* rgy, System* owner, const char* name)
+Stage* Stage::Create(StageID type, Plugin::iRegistry* rgy, iSystem* owner, const char* name)
 {
 	if (s_StageMap.find(type) != s_StageMap.end())
 	{
@@ -72,7 +72,7 @@ COM::Result CPF_STDCALL Stage::QueryInterface(COM::InterfaceID id, void** outIfa
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Stage::Initialize(System* system, const char* const name)
+COM::Result CPF_STDCALL Stage::Initialize(iSystem* system, const char* const name)
 {
 	if (system && name)
 	{
@@ -83,7 +83,7 @@ COM::Result CPF_STDCALL Stage::Initialize(System* system, const char* const name
 	return COM::kInvalidParameter;
 }
 
-System* Stage::GetSystem() const
+iSystem* Stage::GetSystem() const
 {
 	return mpSystem;
 }
@@ -161,7 +161,7 @@ COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(SystemID sid, int32_t
 }
 
 
-SingleUpdateStage::SingleUpdateStage(System* owner, const char* name)
+SingleUpdateStage::SingleUpdateStage(iSystem* owner, const char* name)
 	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)
@@ -169,7 +169,7 @@ SingleUpdateStage::SingleUpdateStage(System* owner, const char* name)
 	Initialize(owner, name);
 }
 
-Stage* SingleUpdateStage::_Creator(Plugin::iRegistry*, System* owner, const char* name)
+Stage* SingleUpdateStage::_Creator(Plugin::iRegistry*, iSystem* owner, const char* name)
 {
 	return new SingleUpdateStage(owner, name);
 }

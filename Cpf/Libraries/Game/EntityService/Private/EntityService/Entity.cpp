@@ -18,7 +18,7 @@ bool EntityService::ComponentFactoryRemove(COM::InterfaceID iid)
 	return Entity::Remove(iid);
 }
 
-iComponent* EntityService::ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::System* system)
+iComponent* EntityService::ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::iSystem* system)
 {
 	return Entity::CreateComponent(iid, system);
 }
@@ -47,7 +47,7 @@ bool Entity::Remove(COM::InterfaceID iid)
 	return false;
 }
 
-iComponent* Entity::CreateComponent(COM::InterfaceID iid, MultiCore::System* system)
+iComponent* Entity::CreateComponent(COM::InterfaceID iid, MultiCore::iSystem* system)
 {
 	iComponent* result = nullptr;
 	const auto& creator = mComponentCreators.find(iid);

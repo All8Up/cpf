@@ -44,7 +44,7 @@ namespace Cpf
 		IntrusivePtr<Resources::Locator> mpLocator;
 
 		IntrusivePtr<MultiCore::iPipeline> mpPipeline;
-		IntrusivePtr<MultiCore::Timer> mpTimer;
+		IntrusivePtr<MultiCore::iTimer> mpTimer;
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
 

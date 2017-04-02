@@ -25,7 +25,7 @@ bool MoverSystem::MoverComponent::Remove()
 	return ComponentFactoryRemove(iMoverComponent::kIID);
 }
 
-iComponent* MoverSystem::MoverComponent::Create(MultiCore::System* system)
+iComponent* MoverSystem::MoverComponent::Create(MultiCore::iSystem* system)
 {
 	return static_cast<iComponent*>(new MoverComponent(system));
 }
@@ -78,8 +78,8 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 
 COM::Result MoverSystem::Configure()
 {
-	if (COM::Succeeded(GetOwner()->GetSystem(mClockID, &reinterpret_cast<MultiCore::System*>(mpTime))) &&
-		COM::Succeeded(GetOwner()->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::System*>(mpInstances))))
+	if (COM::Succeeded(GetOwner()->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
+		COM::Succeeded(GetOwner()->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
 		return COM::kOK;
 	return COM::kInvalid;
 }
@@ -109,14 +109,14 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::System* MoverSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::iSystem* MoverSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new MoverSystem(owner, name, static_cast<const Desc*>(desc));
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(MultiCore::System* owner)
+MoverSystem::MoverComponent::MoverComponent(MultiCore::iSystem* owner)
 	: mpMover(static_cast<MoverSystem*>(owner))
 {}
 
@@ -138,10 +138,10 @@ void MoverSystem::MoverComponent::Deactivate()
 	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
-void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
+void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
-	const MultiCore::Timer* timer = mover->mpTime;
+	const MultiCore::iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -173,12 +173,12 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 	instances[i].mTranslation = Vector3f(pos.xyz);
 }
 
-void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
+void MoverSystem::MoverComponent::_EBus(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	Threading::ScopedLock<Threading::Mutex> lock(mover->mMutex);
 
-	const MultiCore::Timer* timer = mover->mpTime;
+	const MultiCore::iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;

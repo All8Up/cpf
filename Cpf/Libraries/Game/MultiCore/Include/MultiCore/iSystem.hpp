@@ -47,7 +47,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL Configure() { return COM::kOK; }
 
 
-			using Creator = System* (*)(iPipeline* owner, const char*, const Desc*);
+			using Creator = iSystem* (*)(iPipeline* owner, const char*, const Desc*);
 
 			// System factory.
 			template <typename TYPE>
@@ -65,7 +65,7 @@ namespace Cpf
 
 		private:
 			// Untyped factory interface.
-			static System* _Create(iPipeline* owner, SystemID, const char*, const Desc* desc);
+			static iSystem* _Create(iPipeline* owner, SystemID, const char*, const Desc* desc);
 
 			// Implementation data.
 			iPipeline* mpOwner;

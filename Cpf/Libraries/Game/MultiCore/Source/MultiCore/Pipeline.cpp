@@ -40,7 +40,7 @@ COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** ifa
 	return COM::kInvalidParameter;
 }
 
-System* CPF_STDCALL Pipeline::Install(System* system)
+iSystem* CPF_STDCALL Pipeline::Install(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -55,7 +55,7 @@ System* CPF_STDCALL Pipeline::Install(System* system)
 	return nullptr;
 }
 
-COM::Result CPF_STDCALL Pipeline::Remove(System* system)
+COM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -74,7 +74,7 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 	for (auto& system : mSystemMap)
 	{
 		// Iterate and add all blocks.
-		System* systemPtr = nullptr;
+		iSystem* systemPtr = nullptr;
 		if (COM::Succeeded(GetSystem(system.first, &systemPtr)))
 		{
 			int32_t instructionCount = 0;
@@ -128,7 +128,7 @@ bool Pipeline::_ConfigureSystems() const
 	return result;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, System** system) const
+COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
 {
 	if (system)
 	{
@@ -144,7 +144,7 @@ COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, System** system) const
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, System** outSystem) const
+COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** outSystem) const
 {
 	if (outSystem)
 	{
@@ -157,7 +157,7 @@ COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, S
 {
 	if (outStage)
 	{
-		System* system = nullptr;
+		iSystem* system = nullptr;
 		if (COM::Succeeded(GetSystem(systemID, &system)))
 		{
 			if (system)
@@ -194,7 +194,7 @@ COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outStri
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, System** systems)
+COM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, iSystem** systems)
 {
 	if (count)
 	{

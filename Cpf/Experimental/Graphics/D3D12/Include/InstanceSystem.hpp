@@ -40,7 +40,7 @@ namespace Cpf
 		}
 
 	private:
-		static System* _Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+		static iSystem* _Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 		{
 			return new InstanceSystem(owner, name, static_cast<const Desc*>(desc));
 		}

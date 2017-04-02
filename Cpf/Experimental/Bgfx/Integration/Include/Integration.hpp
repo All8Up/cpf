@@ -35,7 +35,7 @@ namespace Cpf
 		Concurrency::LoadBalancer mLoadBalancer;
 
 		IntrusivePtr<MultiCore::iPipeline> mpPipeline;
-		IntrusivePtr<MultiCore::Timer> mpTimer;
+		IntrusivePtr<MultiCore::iTimer> mpTimer;
 
 		IntrusivePtr<Resources::Locator> mpLocator;
 

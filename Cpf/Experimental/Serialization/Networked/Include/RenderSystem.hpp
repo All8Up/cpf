@@ -36,7 +36,7 @@ namespace Cpf
 		RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc);
 		~RenderSystem() override;
 
-		static System* _Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
+		static iSystem* _Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();
@@ -50,7 +50,7 @@ namespace Cpf
 		static constexpr int kBufferCount = 3;
 
 		Desc mDesc;
-		MultiCore::Timer* mpTimer;
+		MultiCore::iTimer* mpTimer;
 
 		IntrusivePtr<Graphics::iInstance> mpInstance;
 		IntrusivePtr<Graphics::iAdapter> mpAdapter;

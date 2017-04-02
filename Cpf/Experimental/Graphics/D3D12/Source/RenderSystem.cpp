@@ -126,7 +126,7 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::System* RenderSystem::Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::iSystem* RenderSystem::Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new RenderSystem(owner, name, static_cast<const Desc*>(desc));
 }

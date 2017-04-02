@@ -25,7 +25,7 @@ NetworkSystem::NetworkSystem(MultiCore::iPipeline* pipeline, const char* name, c
 	AddStage(updateStage);
 }
 
-System* NetworkSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+iSystem* NetworkSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
 	return new NetworkSystem(owner, name, static_cast<const Desc*>(desc));
 }

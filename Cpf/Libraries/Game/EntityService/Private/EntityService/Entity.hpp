@@ -41,7 +41,7 @@ namespace Cpf
 		
 			static bool Install(COM::InterfaceID iid, ComponentCreator creator);
 			static bool Remove(COM::InterfaceID iid);
-			static iComponent* CreateComponent(COM::InterfaceID iid, MultiCore::System*);
+			static iComponent* CreateComponent(COM::InterfaceID iid, MultiCore::iSystem*);
 
 		private:
 			// Not intended for direct creation.

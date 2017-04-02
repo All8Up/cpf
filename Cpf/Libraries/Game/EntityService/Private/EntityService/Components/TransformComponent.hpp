@@ -18,9 +18,9 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			static iComponent* Creator(MultiCore::System*);
+			static iComponent* Creator(MultiCore::iSystem*);
 
-			TransformComponent(MultiCore::System*);
+			TransformComponent(MultiCore::iSystem*);
 			~TransformComponent() override;
 
 			//
