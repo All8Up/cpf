@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "MultiCore/System.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/iStage.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "UnorderedMap.hpp"
 #include "Logging/Logging.hpp"

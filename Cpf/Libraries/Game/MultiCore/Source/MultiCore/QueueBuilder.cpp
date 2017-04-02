@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/QueueBuilder.hpp"
 #include "MultiCore/iPipeline.hpp"
-#include "MultiCore/System.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;

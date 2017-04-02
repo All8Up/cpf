@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "EntityService/Types.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Hash/HashString.hpp"
 #include "Graphics/Interfaces/iCommandBuffer.hpp"
 

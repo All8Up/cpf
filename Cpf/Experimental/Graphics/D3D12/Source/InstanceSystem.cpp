@@ -12,10 +12,10 @@ InstanceSystem::InstanceSystem(MultiCore::iPipeline* owner, const char* name, co
 	System::Initialize(owner, name);
 
 	// Build the stages and set the update function.
-	IntrusivePtr<MultiCore::SingleUpdateStage> instanceBegin(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kBegin.GetString())));
+	IntrusivePtr<MultiCore::SingleUpdateStage> instanceBegin(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kBegin.GetString())));
 	instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);
 
-	IntrusivePtr<MultiCore::SingleUpdateStage> instanceEnd(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kEnd.GetString())));
+	IntrusivePtr<MultiCore::SingleUpdateStage> instanceEnd(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kEnd.GetString())));
 	instanceEnd->SetUpdate(&InstanceSystem::_End, this, MultiCore::BlockOpcode::eLast);
 
 	// Add the stages to this system.

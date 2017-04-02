@@ -2,7 +2,7 @@
 #include "EntityService.hpp"
 #include "EntityService/Components/TransformComponent.hpp"
 #include "EntityService/Interfaces/Stages/iEntityStage.hpp"
-#include "MultiCore/System/Timer.hpp"
+#include "MultiCore/System/iTimer.hpp"
 
 using namespace Cpf;
 

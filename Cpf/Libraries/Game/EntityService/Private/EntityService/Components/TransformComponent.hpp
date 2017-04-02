@@ -3,7 +3,7 @@
 #include "EntityService/Interfaces/iComponent.hpp"
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 #include "EntityService/Helpers/ComponentBase.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 
 namespace Cpf
 {

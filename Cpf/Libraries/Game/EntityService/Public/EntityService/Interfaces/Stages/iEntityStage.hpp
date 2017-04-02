@@ -2,7 +2,7 @@
 #pragma once
 #include "Tuple.hpp"
 #include "Hash/Crc.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iStage.hpp"
 #include "MultiCore/Container.hpp"
 #include "EntityService/Interfaces/iStage.hpp"
 
@@ -46,7 +46,7 @@ namespace Cpf
 		private:
 			EntityStage(MultiCore::System* owner, const char* name);
 
-			static MultiCore::Stage* _Creator(MultiCore::System*, const char* name);
+			static MultiCore::Stage* _Creator(Plugin::iRegistry*, MultiCore::System*, const char* name);
 
 			// Implementation definitions.
 			using UpdateTuple_t = Tuple<MultiCore::System*, iEntity*, UpdateFunc>;

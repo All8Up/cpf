@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/System.hpp"
-#include "MultiCore/System/Timer.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/System/iTimer.hpp"
 #include "EntityService/Interfaces/iComponent.hpp"
 #include "EntityService/Helpers/ComponentBase.hpp"
 #include "EntityService/Interfaces/Stages/iEntityStage.hpp"

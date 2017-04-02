@@ -5,15 +5,15 @@ set (INCLUDE_FILES
 set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Export.hpp
 	Include/MultiCore/Types.hpp
-	Include/MultiCore/Stage.hpp
+	Include/MultiCore/iStage.hpp
 	Include/MultiCore/Container.hpp
 	Include/MultiCore/Partitioning.hpp
 	Include/MultiCore/iPipeline.hpp
-	Include/MultiCore/System.hpp
+	Include/MultiCore/iSystem.hpp
 	Include/MultiCore/QueueBuilder.hpp
 )
 set (MULTICORE_SYSTEM_INCLUDE_FILES
-	Include/MultiCore/System/Timer.hpp
+	Include/MultiCore/System/iTimer.hpp
 )
 
 set (SOURCE_FILES
@@ -21,13 +21,16 @@ set (SOURCE_FILES
 )
 set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Types.cpp
+	Source/MultiCore/Stage.hpp
 	Source/MultiCore/Stage.cpp
 	Source/MultiCore/Pipeline.hpp
 	Source/MultiCore/Pipeline.cpp
+	Source/MultiCore/System.hpp
 	Source/MultiCore/System.cpp
 	Source/MultiCore/QueueBuilder.cpp
 )
 set (MULTICORE_SYSTEM_SOURCE_FILES
+	Source/MultiCore/System/Timer.hpp
 	Source/MultiCore/System/Timer.cpp
 )
 

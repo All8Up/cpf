@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "NetworkSystem.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iStage.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -20,7 +20,7 @@ bool NetworkSystem::Remove()
 NetworkSystem::NetworkSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc*)
 {
 	System::Initialize(pipeline, name);
-	IntrusivePtr<SingleUpdateStage> updateStage(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, Stage::kExecute.GetString())));
+	IntrusivePtr<SingleUpdateStage> updateStage(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, Stage::kExecute.GetString())));
 	updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
 	AddStage(updateStage);
 }

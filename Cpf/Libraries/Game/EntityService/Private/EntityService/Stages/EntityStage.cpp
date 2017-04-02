@@ -22,7 +22,7 @@ bool EntityStage::Remove()
 	return Stage::Remove(kID);
 }
 
-MultiCore::Stage* EntityStage::_Creator(MultiCore::System* owner, const char* name)
+MultiCore::Stage* EntityStage::_Creator(Plugin::iRegistry* rgy, MultiCore::System* owner, const char* name)
 {
 	return new EntityStage(owner, name);
 }

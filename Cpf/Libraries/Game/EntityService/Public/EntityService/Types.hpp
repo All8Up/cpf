@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Hash/HashID.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iStage.hpp"
 
 namespace Cpf
 {

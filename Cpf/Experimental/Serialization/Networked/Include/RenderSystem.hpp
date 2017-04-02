@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Graphics/DebugUI.hpp"
 #include "Graphics/Interfaces/iInstance.hpp"
 #include "Graphics/Interfaces/iDevice.hpp"
 #include "Graphics/Interfaces/iSwapChain.hpp"
-#include "MultiCore/System/Timer.hpp"
+#include "MultiCore/System/iTimer.hpp"
 
 
 namespace Cpf

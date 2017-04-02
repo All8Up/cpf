@@ -4,7 +4,7 @@
 #include "RefCount.hpp"
 #include "UnorderedMap.hpp"
 #include "Pair.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Manager.hpp"
 #include "EntityService/Interfaces/iEntity.hpp"
 

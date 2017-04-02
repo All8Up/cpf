@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Export.hpp"
-#include "MultiCore/System.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/iStage.hpp"
 
 
 namespace Cpf

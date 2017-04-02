@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "asio.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 
 namespace Cpf
 {

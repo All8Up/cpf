@@ -6,7 +6,7 @@
 #include "NetworkSystem.hpp"
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
-#include "MultiCore/System/Timer.hpp"
+#include "MultiCore/System/iTimer.hpp"
 
 namespace Cpf
 {

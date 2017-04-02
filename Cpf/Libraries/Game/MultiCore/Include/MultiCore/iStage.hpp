@@ -4,8 +4,8 @@
 #include "Vector.hpp"
 #include "String.hpp"
 #include "COM/iUnknown.hpp"
-#include "Hash/Crc.hpp"
 #include "MultiCore/Types.hpp"
+#include "Plugin/iRegistry.hpp"
 
 namespace Cpf
 {
@@ -16,13 +16,13 @@ namespace Cpf
 		static constexpr COM::ClassID kStageClass = COM::ClassID("StageClass"_crc64);
 		struct iStage : COM::iUnknown
 		{
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iStage"_crc64);
+
 			// Standard blocks.
 			static constexpr StageID kStageID = Hash::Create<StageID_tag>("Stage Update"_hashString);
 			static constexpr BlockID kBegin = Hash::Create<BlockID_tag>("Begin"_hashString);
 			static constexpr BlockID kExecute = Hash::Create<BlockID_tag>("Execute"_hashString);
 			static constexpr BlockID kEnd = Hash::Create<BlockID_tag>("End"_hashString);
-
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iStage"_crc64);
 
 			virtual COM::Result CPF_STDCALL Initialize(System*, const char* const name) = 0;
 			virtual System* CPF_STDCALL GetSystem() const = 0;
@@ -40,9 +40,9 @@ namespace Cpf
 		{
 		public:
 			// Factory.
-			using Creator = Stage* (*)(System*, const char* name);
+			using Creator = Stage* (*)(Plugin::iRegistry*, System*, const char* name);
 
-			static Stage* Create(StageID type, System* owner, const char* name);
+			static Stage* Create(StageID type, Plugin::iRegistry*, System* owner, const char* name);
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
@@ -73,6 +73,13 @@ namespace Cpf
 
 
 		// TODO: Move out to it's own location.
+		struct iSingleUpdateStage : iStage
+		{
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iSingleUpdateStage"_crc64);
+
+			virtual void CPF_STDCALL SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst) = 0;
+		};
+
 		static constexpr COM::ClassID kSingleUpdateStageCID = COM::ClassID("SingleUpdateStageClass"_crc64);
 
 		class SingleUpdateStage : public Stage
@@ -83,15 +90,17 @@ namespace Cpf
 			static bool Install();
 			static bool Remove();
 
-			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
-
+			// iStage overrides.
 			COM::Result CPF_STDCALL GetInstructions(SystemID, int32_t*, Instruction*) override;
-			BlockID GetDefaultBlock() const override { return kExecute; }
+			BlockID CPF_STDCALL GetDefaultBlock() const override { return kExecute; }
+
+			// iSingleUpdateStage overrides.
+			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
 
 		private:
 			SingleUpdateStage(System* owner, const char* name);
 
-			static Stage* _Creator(System*, const char* name);
+			static Stage* _Creator(Plugin::iRegistry*, System*, const char* name);
 			static void _Update(Concurrency::ThreadContext& tc, void* context);
 
 			Function<void(Concurrency::ThreadContext&, void*)> mpUpdate;

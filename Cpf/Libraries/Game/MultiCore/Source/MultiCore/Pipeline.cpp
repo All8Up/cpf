@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Pipeline.hpp"
-#include "MultiCore/System.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
 #include "MultiCore/QueueBuilder.hpp"

@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "MultiCore/System/Timer.hpp"
+#include "MultiCore/System/iTimer.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -42,7 +42,7 @@ COM::Result CPF_STDCALL Timer::Initialize(iPipeline* owner, const char* name)
 		mStart = Time::Now();
 		mTime = mStart;
 
-		mpUpdate.Adopt(reinterpret_cast<SingleUpdateStage*>(Stage::Create(SingleUpdateStage::kID, this, Stage::kExecute.GetString())));
+		mpUpdate.Adopt(reinterpret_cast<SingleUpdateStage*>(Stage::Create(SingleUpdateStage::kID, nullptr, this, Stage::kExecute.GetString())));
 		mpUpdate->SetUpdate(&Timer::_Update, this);
 		AddStage(mpUpdate);
 		return COM::kOK;
