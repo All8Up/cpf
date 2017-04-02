@@ -3,14 +3,14 @@
 #include "MultiCore/Export.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
-
+#include "MultiCore/System/iTimer.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 namespace Cpf
 {
 	namespace MultiCore
 	{
-
-		class CPF_EXPORT_MULTICORE Timer : public System
+		class CPF_EXPORT_MULTICORE Timer : public tRefCounted<iTimer>
 		{
 		public:
 			// Construction/Destruction.
@@ -33,12 +33,12 @@ namespace Cpf
 			COM::Result CPF_STDCALL Configure();
 
 			// Timer interface.
-			Time::Value GetTime() const;
-			float GetDeltaTime() const;
-			bool IsPaused() const;
-			void SetPause(bool flag);
-			void Pause();
-			void Resume();
+			Time::Value CPF_STDCALL GetTime() const override;
+			float CPF_STDCALL GetDeltaTime() const override;
+			bool CPF_STDCALL IsPaused() const override;
+			void CPF_STDCALL SetPause(bool flag) override;
+			void CPF_STDCALL Pause() override;
+			void CPF_STDCALL Resume() override;
 
 		private:
 			bool AddStage(Stage*);
@@ -60,6 +60,21 @@ namespace Cpf
 			StageVector mStages;
 			SystemID mID;
 			BlockDependencies mDependencies;
+		};
+
+		class TimerClass : public tRefCounted<Plugin::iClassInstance>
+		{
+		public:
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+			{
+				if (outIface)
+				{
+					*outIface = new Timer();
+					return *outIface ? COM::kOK : COM::kOutOfMemory;
+				}
+				return COM::kInvalidParameter;
+			}
 		};
 	}
 }

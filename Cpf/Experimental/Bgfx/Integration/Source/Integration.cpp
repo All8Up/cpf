@@ -173,12 +173,12 @@ bool BgfxIntegration::_InitializeConcurrency()
 
 bool BgfxIntegration::_InitializePipeline()
 {
-	if (iTimer::Install() &&
-		SingleUpdateStage::Install())
+	if (SingleUpdateStage::Install())
 	{
 		if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
 		{
-			mpTimer.Adopt(static_cast<iTimer*>(mpPipeline->Install(System::Create<iTimer>(mpPipeline, "Timer", nullptr))));
+			GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
+			mpTimer->Initialize(mpPipeline, "Game Time");
 			return bool(mpTimer);
 		}
 	}

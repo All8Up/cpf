@@ -2,6 +2,7 @@
 #include "MultiCore.hpp"
 #include "Logging/Logging.hpp"
 #include "MultiCore/Pipeline.hpp"
+#include "MultiCore/System/Timer.hpp"
 
 using namespace Cpf;
 
@@ -22,6 +23,7 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* regist
 		CPF_INIT_LOG(MultiCore);
 		CPF_LOG(MultiCore, Trace) << "Initialized multicore library.";
 		spRegistry->Install(MultiCore::kPipelineCID, new MultiCore::PipelineClass());
+		spRegistry->Install(MultiCore::kTimerCID, new MultiCore::TimerClass());
 	}
 	return s_RefCount;
 }
@@ -31,9 +33,11 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
 	if (--s_RefCount == 0)
 	{
 		CPF_ASSERT(spRegistry != nullptr);
+		spRegistry->Remove(MultiCore::kTimerCID);
 		spRegistry->Remove(MultiCore::kPipelineCID);
 		CPF_LOG(MultiCore, Trace) << "Shutdown multicore library.";
 		CPF_DROP_LOG(MultiCore);
+		spRegistry = nullptr;
 	}
 	return s_RefCount;
 }

@@ -44,7 +44,7 @@ namespace Cpf
 		class PipelineClass : public tRefCounted<Plugin::iClassInstance>
 		{
 		public:
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void**) override { return COM::kNotImplemented; }
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
 			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
 			{
 				if (outIface)

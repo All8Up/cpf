@@ -8,24 +8,6 @@ using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-bool iTimer::Install()
-{
-	return System::Install(kID, &iTimer::Creator);
-}
-
-bool iTimer::Remove()
-{
-	return System::Remove(kID);
-}
-
-iSystem* iTimer::Creator(MultiCore::iPipeline* owner, const char* name, const iTimer::Desc*)
-{
-	auto result =  new Timer();
-	result->Initialize(owner, name);
-	return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
 Timer::Timer()
 	: mPaused(false)
 	, mpUpdate(nullptr)
@@ -48,13 +30,14 @@ COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIfa
 			break;
 
 		case iTimer::kIID.GetID():
-			CPF_ASSERT_ALWAYS;
-//			*outIface = static_cast<iTimer*>(this);
+			*outIface = static_cast<iTimer*>(this);
 			break;
 
 		default:
 			return COM::kUnknownInterface;
 		}
+		AddRef();
+		return COM::kOK;
 	}
 	return COM::kInvalidParameter;
 }

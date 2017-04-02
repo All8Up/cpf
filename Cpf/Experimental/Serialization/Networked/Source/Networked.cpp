@@ -127,7 +127,6 @@ bool Networked::_CreateWindow()
 bool Networked::_Install()
 {
 	return (
-		iTimer::Install() &&
 		SingleUpdateStage::Install() &&
 		NetworkSystem::Install() &&
 		RenderSystem::Install()
@@ -139,8 +138,7 @@ bool Networked::_Remove()
 	return (
 		RenderSystem::Remove() &&
 		NetworkSystem::Remove() &&
-		SingleUpdateStage::Remove() &&
-		iTimer::Remove()
+		SingleUpdateStage::Remove()
 		);
 }
 
@@ -182,7 +180,10 @@ bool Networked::_InitializePipeline()
 {
 	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
 	{
-		mpTimer.Adopt(static_cast<iTimer*>(mpPipeline->Install(System::Create<iTimer>(mpPipeline, "Timer", nullptr))));
+		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
+		mpTimer->Initialize(mpPipeline, "Game Time");
+		mpPipeline->Install(mpTimer);
+
 		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(mpPipeline, "Networking", nullptr))));
 
 		RenderSystem::Desc renderDesc;

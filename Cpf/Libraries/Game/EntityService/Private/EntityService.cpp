@@ -17,7 +17,6 @@ CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Install()
 	{
 		EntityService::TransformComponent::Install();
 		EntityService::EntityStage::Install();
-		MultiCore::iTimer::Install();
 	}
 	return s_RefCount;
 }
@@ -26,7 +25,6 @@ CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Remove()
 {
 	if (--s_RefCount == 0)
 	{
-		MultiCore::iTimer::Remove();
 		EntityService::EntityStage::Remove();
 		EntityService::TransformComponent::Remove();
 	}
