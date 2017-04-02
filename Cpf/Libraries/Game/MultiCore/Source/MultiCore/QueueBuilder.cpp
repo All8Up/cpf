@@ -50,19 +50,26 @@ void QueueBuilder::Add(const BlockDependencies& dependencies)
 
 void QueueBuilder::_GatherStageDependencies()
 {
-	mpPipeline->EnumerateSystems(this, [](void* context, SystemID id, IntrusivePtr<System> ptr) -> bool {
-		QueueBuilder* self = reinterpret_cast<QueueBuilder*>(context);
+	int32_t systemCount = 0;
+	mpPipeline->GetSystems(&systemCount, nullptr);
+	Vector<System*> systems(systemCount);
+	mpPipeline->GetSystems(&systemCount, systems.data());
 
-		int32_t stageCount = ptr->GetStageCount();
-		for (int32_t i=0; i<stageCount; ++i)
+	for (auto system : systems)
+	{
+		int32_t stageCount = system->GetStageCount();
+		for (int32_t i = 0; i < stageCount; ++i)
 		{
-			Stage* stage = ptr->GetStage(i);
-			auto dependencies = stage->GetDependencies(id);
+			Stage* stage = system->GetStage(i);
+			int32_t depCount = 0;
+			stage->GetDependencies(system->GetID(), &depCount, nullptr);
+			Vector<MultiCore::BlockDependency> dependencies(depCount);
+			stage->GetDependencies(system->GetID(), &depCount, dependencies.data());
+
 			if (!dependencies.empty())
-				self->Add(dependencies);
+				Add(dependencies);
 		}
-		return true;
-	});
+	}
 }
 
 bool QueueBuilder::Solve()

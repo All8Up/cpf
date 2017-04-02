@@ -24,7 +24,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, Stage**) override;
 			void CPF_STDCALL Submit(Concurrency::Scheduler*) override;
 			COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) override;
-			COM::Result CPF_STDCALL EnumerateSystems(void* context, bool(CPF_STDCALL *)(void*, SystemID, IntrusivePtr<System>)) override;
+			COM::Result CPF_STDCALL GetSystems(int32_t* count, System**) override;
 
 		private:
 			bool _ConfigureSystems() const;

@@ -39,9 +39,9 @@ namespace Cpf
 			void AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 			void RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f);
 
-			MultiCore::BlockDependencies GetDependencies(MultiCore::SystemID sid) const override;
-			MultiCore::Instructions GetInstructions(MultiCore::SystemID sid) override;
-			const MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
+			COM::Result GetDependencies(MultiCore::SystemID sid, int32_t*, MultiCore::BlockDependency*) override;
+			COM::Result GetInstructions(MultiCore::SystemID sid, int32_t*, MultiCore::Instruction*) override;
+			MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
 
 		private:
 			EntityStage(MultiCore::System* owner, const char* name);

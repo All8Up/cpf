@@ -37,6 +37,7 @@ namespace Cpf
 		static constexpr Result kNotEnoughSpace = CreateResult(1, 0, 7);
 
 		//////////////////////////////////////////////////////////////////////////
+		// TODO: This won't be an export in the future.
 		struct CPF_EXPORT iUnknown : iRefCounted
 		{
 			static constexpr InterfaceID kIID = InterfaceID("iUnknown Interface"_crc64);

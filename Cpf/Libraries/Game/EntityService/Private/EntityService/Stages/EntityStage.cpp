@@ -41,29 +41,45 @@ void EntityStage::RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
 	mWork.Release();
 }
 
-MultiCore::BlockDependencies EntityStage::GetDependencies(MultiCore::SystemID sid) const
+COM::Result CPF_STDCALL EntityStage::GetDependencies(MultiCore::SystemID sid, int32_t* count, MultiCore::BlockDependency* deps)
 {
-	return MultiCore::BlockDependencies({
+	if (count)
+	{
+		*count = 2;
+		if (deps)
 		{
-			{sid, GetID(), Stage::kEnd},
-			{sid, GetID(), Stage::kExecute},
-			MultiCore::DependencyPolicy::eAfter
-		},
-		{
-			{sid, GetID(), Stage::kExecute},
-			{sid, GetID(), Stage::kBegin},
-			MultiCore::DependencyPolicy::eBarrier
+			deps[0] = {
+				{ sid, GetID(), Stage::kEnd },
+				{ sid, GetID(), Stage::kExecute },
+				MultiCore::DependencyPolicy::eAfter
+			};
+			deps[1] = {
+				{ sid, GetID(), Stage::kExecute },
+				{ sid, GetID(), Stage::kBegin },
+				MultiCore::DependencyPolicy::eBarrier
+			};
 		}
-	});
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
-MultiCore::Instructions EntityStage::GetInstructions(MultiCore::SystemID sid)
+COM::Result EntityStage::GetInstructions(MultiCore::SystemID sid, int32_t* count, MultiCore::Instruction* instructions)
 {
-	MultiCore::Instructions result;
-	result.push_back({ { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this });
-	result.push_back({ { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this });
-	result.push_back({ { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this });
-	return result;
+	if (count)
+	{
+		if (instructions)
+		{
+			*count = 3;
+			instructions[0] = { { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this };
+			instructions[1] = { { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this };
+			instructions[2] = { { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this };
+			return COM::kOK;
+		}
+		*count = 3;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 void EntityStage::_Begin(Concurrency::ThreadContext& tc, void* context)

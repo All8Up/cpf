@@ -14,15 +14,31 @@ namespace Cpf
 	{
 		class QueueBuilder;
 
-		class Stage : public tRefCounted<iRefCounted>
+		static constexpr COM::ClassID kStageClass = COM::ClassID("StageClass"_crc64);
+		struct iStage : COM::iUnknown
 		{
-		public:
 			// Standard blocks.
 			static constexpr StageID kStageID = Hash::Create<StageID_tag>("Stage Update"_hashString);
 			static constexpr BlockID kBegin = Hash::Create<BlockID_tag>("Begin"_hashString);
 			static constexpr BlockID kExecute = Hash::Create<BlockID_tag>("Execute"_hashString);
 			static constexpr BlockID kEnd = Hash::Create<BlockID_tag>("End"_hashString);
 
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iStage"_crc64);
+
+			virtual System* CPF_STDCALL GetSystem() const = 0;
+			virtual StageID CPF_STDCALL GetID() const = 0;
+			virtual bool CPF_STDCALL IsEnabled() const = 0;
+			virtual void CPF_STDCALL SetEnabled(bool flag) = 0;
+			virtual COM::Result CPF_STDCALL GetInstructions(SystemID, int32_t*, Instruction*) = 0;
+			virtual COM::Result CPF_STDCALL GetDependencies(SystemID, int32_t*, BlockDependency*) = 0;
+			virtual BlockID CPF_STDCALL GetDefaultBlock() const = 0;
+			virtual BlockID CPF_STDCALL GetBeginBlock() const = 0;
+			virtual BlockID CPF_STDCALL GetEndBlock() const = 0;
+		};
+
+		class Stage : public tRefCounted<iStage>
+		{
+		public:
 			// Factory.
 			using Creator = Stage* (*)(System*, const char* name);
 
@@ -31,20 +47,16 @@ namespace Cpf
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
-			// Accessors.
-			System* GetSystem() const;
-			StageID GetID() const;
-
 			//
-			bool IsEnabled() const;
-			void SetEnabled(bool flag);
-
-			//
-			virtual Instructions GetInstructions(SystemID sid) = 0;
-			virtual BlockDependencies GetDependencies(SystemID sid) const = 0;
-			virtual const BlockID GetDefaultBlock() const = 0;
-			virtual const BlockID GetBeginBlock() const { return GetDefaultBlock(); }
-			virtual const BlockID GetEndBlock() const { return GetDefaultBlock(); }
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			System* CPF_STDCALL GetSystem() const override;
+			StageID CPF_STDCALL GetID() const override;
+			bool CPF_STDCALL IsEnabled() const override;
+			void CPF_STDCALL SetEnabled(bool flag) override;
+			COM::Result CPF_STDCALL GetInstructions(SystemID, int32_t*, Instruction*) override;
+			COM::Result CPF_STDCALL GetDependencies(SystemID, int32_t*, BlockDependency*) override;
+			virtual BlockID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
+			virtual BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
 
 		protected:
 			// Construction/Destruction.
@@ -79,9 +91,8 @@ namespace Cpf
 
 			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
 
-			BlockDependencies GetDependencies(SystemID) const override { return BlockDependencies(); }
-			Instructions GetInstructions(SystemID sid) override;
-			const BlockID GetDefaultBlock() const override { return kExecute; }
+			COM::Result CPF_STDCALL GetInstructions(SystemID, int32_t*, Instruction*) override;
+			BlockID GetDefaultBlock() const override { return kExecute; }
 
 		private:
 			SingleUpdateStage(System* owner, const char* name);

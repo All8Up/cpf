@@ -17,12 +17,33 @@ Stage::Stage(System* service, const char* name)
 Stage::~Stage()
 {}
 
+COM::Result CPF_STDCALL Stage::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iStage::kIID.GetID():
+			*outIface = static_cast<iStage*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 System* Stage::GetSystem() const
 {
 	return mpSystem;
 }
 
-StageID Stage::GetID() const
+StageID CPF_STDCALL Stage::GetID() const
 {
 	return mID;
 }
@@ -74,9 +95,34 @@ void Stage::SetEnabled(bool flag)
 	mEnabled = flag;
 }
 
-Instructions Stage::GetInstructions(SystemID)
+COM::Result CPF_STDCALL Stage::GetInstructions(SystemID, int32_t* count, Instruction* instructions)
 {
-	return Instructions();
+	if (count)
+	{
+		if (instructions)
+		{
+			*count = 0;
+			return COM::kOK;
+		}
+		*count = 0;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL Stage::GetDependencies(SystemID, int32_t* count, BlockDependency* dependencies)
+{
+	if (count)
+	{
+		if (dependencies)
+		{
+			*count = 0;
+			return COM::kOK;
+		}
+		*count = 0;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 
@@ -99,11 +145,20 @@ void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, voi
 	mpContext = context;
 }
 
-Instructions SingleUpdateStage::GetInstructions(SystemID sid)
+COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(SystemID sid, int32_t* c, Instruction* i)
 {
-	Instructions result;
-	result.push_back({ {sid, GetID(), kExecute}, mOpcode, &SingleUpdateStage::_Update, this });
-	return result;
+	if (c)
+	{
+		if (i)
+		{
+			*c = 1;
+			i[0] = { { sid, GetID(), kExecute }, mOpcode, &SingleUpdateStage::_Update, this };
+			return COM::kOK;
+		}
+		*c = 1;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 

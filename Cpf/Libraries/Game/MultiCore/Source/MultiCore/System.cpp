@@ -78,8 +78,11 @@ COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* ins
 		{
 			if (stage->IsEnabled())
 			{
-				const auto& stageInstructions = stage->GetInstructions(GetID());
-				result.insert(result.end(), stageInstructions.begin(), stageInstructions.end());
+				int32_t instructionCount = 0;
+				stage->GetInstructions(GetID(), &instructionCount, nullptr);
+				Vector<Instruction> instructions(instructionCount);
+				stage->GetInstructions(GetID(), &instructionCount, instructions.data());
+				result.insert(result.end(), instructions.begin(), instructions.end());
 			}
 		}
 		if (instructions)

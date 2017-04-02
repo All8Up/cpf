@@ -121,7 +121,7 @@ bool Pipeline::_ConfigureSystems() const
 	// Let the systems configure to the new pipeline.
 	for (const auto& system : mSystemMap)
 	{
-		if (COM::Succeeded(system.second->Configure()))
+		if (COM::Failed(system.second->Configure()))
 			result = false;
 	}
 
@@ -194,15 +194,23 @@ COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outStri
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::EnumerateSystems(void* context, bool(CPF_STDCALL *callback)(void*, SystemID, IntrusivePtr<System>))
+COM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, System** systems)
 {
-	if (callback)
+	if (count)
 	{
-		for (auto pair : mSystemMap)
+		if (systems)
 		{
-			if (!callback(context, pair.first, pair.second))
-				break;
+			if (*count >= mSystemMap.size())
+			{
+				int32_t index = 0;
+				for (const auto& pair : mSystemMap)
+				{
+					systems[index++] = pair.second;
+				}
+			}
+			return COM::kNotEnoughSpace;
 		}
+		*count = int32_t(mSystemMap.size());
 		return COM::kOK;
 	}
 	return COM::kInvalidParameter;
