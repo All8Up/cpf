@@ -6,7 +6,6 @@
 #include "COM/iUnknown.hpp"
 #include "Hash/Crc.hpp"
 #include "MultiCore/Types.hpp"
-#include "Concurrency/Scheduler.hpp"
 
 namespace Cpf
 {
@@ -25,6 +24,7 @@ namespace Cpf
 
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iStage"_crc64);
 
+			virtual COM::Result CPF_STDCALL Initialize(System*, const char* const name) = 0;
 			virtual System* CPF_STDCALL GetSystem() const = 0;
 			virtual StageID CPF_STDCALL GetID() const = 0;
 			virtual bool CPF_STDCALL IsEnabled() const = 0;
@@ -42,13 +42,13 @@ namespace Cpf
 			// Factory.
 			using Creator = Stage* (*)(System*, const char* name);
 
-			template <typename TYPE>
-			static TYPE* Create(System* owner, const char* name);
+			static Stage* Create(StageID type, System* owner, const char* name);
 			static bool Install(StageID, Creator);
 			static bool Remove(StageID);
 
 			//
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			COM::Result CPF_STDCALL Initialize(System*, const char* const name) override;
 			System* CPF_STDCALL GetSystem() const override;
 			StageID CPF_STDCALL GetID() const override;
 			bool CPF_STDCALL IsEnabled() const override;
@@ -60,11 +60,10 @@ namespace Cpf
 
 		protected:
 			// Construction/Destruction.
-			Stage(System* system, const char* name);
+			Stage();
 			virtual ~Stage();
 
 		private:
-			static Stage* _Create(StageID type, System* owner, const char* name);
 
 			// Implementation data.
 			System* mpSystem;
@@ -72,15 +71,10 @@ namespace Cpf
 			bool mEnabled;
 		};
 
-		//
-		template <typename TYPE>
-		TYPE* Stage::Create(System* owner, const char* name)
-		{
-			return static_cast<TYPE*>(_Create(TYPE::kID, owner, name));
-		}
-
 
 		// TODO: Move out to it's own location.
+		static constexpr COM::ClassID kSingleUpdateStageCID = COM::ClassID("SingleUpdateStageClass"_crc64);
+
 		class SingleUpdateStage : public Stage
 		{
 		public:

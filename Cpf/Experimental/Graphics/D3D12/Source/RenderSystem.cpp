@@ -25,19 +25,19 @@ RenderSystem::RenderSystem(MultiCore::iPipeline* owner, const char* name, const 
 	// NOTE: While there are 6 stages which must operate in order, there will only
 	// be two required barrier groups since the only thing required is that they
 	// run in order which is accomplished via series of eLast types.
-	IntrusivePtr<MultiCore::SingleUpdateStage> beginFrame(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kBeginFrame.GetString()));
+	IntrusivePtr<MultiCore::SingleUpdateStage> beginFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kBeginFrame.GetString())));
 	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, MultiCore::BlockOpcode::eFirst);
 	// Paired in a group ^
-	IntrusivePtr<MultiCore::SingleUpdateStage> clearBuffers(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kClearBuffers.GetString()));
+	IntrusivePtr<MultiCore::SingleUpdateStage> clearBuffers(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kClearBuffers.GetString())));
 	clearBuffers->SetUpdate(&RenderSystem::_Clear, this, MultiCore::BlockOpcode::eLast);
 
-	IntrusivePtr<MultiCore::SingleUpdateStage> drawInstances(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kDrawInstances.GetString()));
+	IntrusivePtr<MultiCore::SingleUpdateStage> drawInstances(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kDrawInstances.GetString())));
 	drawInstances->SetUpdate(&RenderSystem::_Draw, this, MultiCore::BlockOpcode::eLast);
-	IntrusivePtr<MultiCore::SingleUpdateStage> debugUI(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kDebugUI.GetString()));
+	IntrusivePtr<MultiCore::SingleUpdateStage> debugUI(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kDebugUI.GetString())));
 	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, MultiCore::BlockOpcode::eLast);
-	IntrusivePtr<MultiCore::SingleUpdateStage> preparePresent(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kPreparePresent.GetString()));
+	IntrusivePtr<MultiCore::SingleUpdateStage> preparePresent(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kPreparePresent.GetString())));
 	preparePresent->SetUpdate(&RenderSystem::_PreparePresent, this, MultiCore::BlockOpcode::eLast);
-	IntrusivePtr<MultiCore::SingleUpdateStage> endFrame(MultiCore::Stage::Create<MultiCore::SingleUpdateStage>(this, kEndFrame.GetString()));
+	IntrusivePtr<MultiCore::SingleUpdateStage> endFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, kEndFrame.GetString())));
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, MultiCore::BlockOpcode::eLast);
 
 	// Add the stages.

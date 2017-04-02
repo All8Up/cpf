@@ -8,8 +8,8 @@ using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
 EntityStage::EntityStage(MultiCore::System* owner, const char* name)
-	: Stage(owner, name)
 {
+	Initialize(owner, name);
 }
 
 bool EntityStage::Install()

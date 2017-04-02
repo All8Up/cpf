@@ -6,10 +6,8 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-Stage::Stage(System* service, const char* name)
-	: mpSystem(service)
-	, mID(name, strlen(name))
-	, mEnabled(true)
+Stage::Stage()
+	: mEnabled(true)
 {
 	
 }
@@ -33,6 +31,17 @@ COM::Result CPF_STDCALL Stage::QueryInterface(COM::InterfaceID id, void** outIfa
 			return COM::kUnknownInterface;
 		}
 		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL Stage::Initialize(System* system, const char* const name)
+{
+	if (system && name)
+	{
+		mpSystem = system;
+		mID = StageID(name, strlen(name));
 		return COM::kOK;
 	}
 	return COM::kInvalidParameter;
@@ -76,7 +85,7 @@ bool Stage::Remove(StageID id)
 	return false;
 }
 
-Stage* Stage::_Create(StageID type, System* owner, const char* name)
+Stage* Stage::Create(StageID type, System* owner, const char* name)
 {
 	if (s_StageMap.find(type) != s_StageMap.end())
 	{
@@ -163,11 +172,12 @@ COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(SystemID sid, int32_t
 
 
 SingleUpdateStage::SingleUpdateStage(System* owner, const char* name)
-	: Stage(owner, name)
-	, mpUpdate(nullptr)
+	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)
-{}
+{
+	Initialize(owner, name);
+}
 
 Stage* SingleUpdateStage::_Creator(System* owner, const char* name)
 {

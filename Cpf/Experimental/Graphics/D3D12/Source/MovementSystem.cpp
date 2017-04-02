@@ -59,8 +59,8 @@ MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const De
 	mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
 	// Build the stages.
-	mpThreadStage = MultiCore::Stage::Create<EntityStage>(this, kUpdate.GetString());
-	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, kUpdateEBus.GetString());
+	mpThreadStage = reinterpret_cast<EntityStage*>(MultiCore::Stage::Create(EntityStage::kID, this, kUpdate.GetString()));
+	mpEBusStage = reinterpret_cast<EntityStage*>(MultiCore::Stage::Create(EntityStage::kID, this, kUpdateEBus.GetString()));
 
 	// Add the stages to this system.
 	AddStage(mpThreadStage);

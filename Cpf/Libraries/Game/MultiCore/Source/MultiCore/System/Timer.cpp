@@ -29,7 +29,7 @@ Timer::Timer(iPipeline* owner, const char* name)
 	mStart = Time::Now();
 	mTime = mStart;
 
-	mpUpdate.Adopt(Stage::Create<SingleUpdateStage>(this, Stage::kExecute.GetString()));
+	mpUpdate.Adopt(reinterpret_cast<SingleUpdateStage*>(Stage::Create(SingleUpdateStage::kID, this, Stage::kExecute.GetString())));
 	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);
 }

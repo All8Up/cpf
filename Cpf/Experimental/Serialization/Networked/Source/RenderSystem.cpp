@@ -98,15 +98,15 @@ System* RenderSystem::_Create(MultiCore::iPipeline* owner, const char* name, con
 
 void RenderSystem::_CreateStages()
 {
-	IntrusivePtr<SingleUpdateStage> beginFrame(Stage::Create<SingleUpdateStage>(this, "Begin Frame"));
+	IntrusivePtr<SingleUpdateStage> beginFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, "Begin Frame")));
 	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, BlockOpcode::eFirst);
 	AddStage(beginFrame);
 
-	IntrusivePtr<SingleUpdateStage> debugUI(Stage::Create<SingleUpdateStage>(this, "DebugUI"));
+	IntrusivePtr<SingleUpdateStage> debugUI(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, "DebugUI")));
 	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eLast);
 	AddStage(debugUI);
 
-	IntrusivePtr<SingleUpdateStage> endFrame(Stage::Create<SingleUpdateStage>(this, "End Frame"));
+	IntrusivePtr<SingleUpdateStage> endFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, this, "End Frame")));
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, BlockOpcode::eLast);
 	AddStage(endFrame);
 
