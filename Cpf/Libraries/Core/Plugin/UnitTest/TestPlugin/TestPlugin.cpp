@@ -49,7 +49,7 @@ struct TestPluginClassInstance : public Plugin::iClassInstance
 		return mRefCount;
 	}
 
-	COM::Result CPF_STDCALL CreateInstance(COM::iUnknown*, COM::iUnknown** outIface) override
+	COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
 	{
 		if (outIface)
 		{

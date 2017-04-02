@@ -17,26 +17,37 @@ bool Timer::Remove()
 
 System* Timer::Creator(MultiCore::iPipeline* owner, const char* name, const Desc*)
 {
-	return new Timer(owner, name);
+	auto result =  new Timer();
+	result->Initialize(owner, name);
+	return result;
 }
 
 //////////////////////////////////////////////////////////////////////////
-Timer::Timer(iPipeline* owner, const char* name)
-	: System(owner, name)
-	, mPaused(false)
+Timer::Timer()
+	: mPaused(false)
 	, mpUpdate(nullptr)
 {
-	mStart = Time::Now();
-	mTime = mStart;
-
-	mpUpdate.Adopt(reinterpret_cast<SingleUpdateStage*>(Stage::Create(SingleUpdateStage::kID, this, Stage::kExecute.GetString())));
-	mpUpdate->SetUpdate(&Timer::_Update, this);
-	AddStage(mpUpdate);
 }
 
 Timer::~Timer()
 {
 	RemoveStage(mpUpdate->GetID());
+}
+
+COM::Result CPF_STDCALL Timer::Initialize(iPipeline* owner, const char* name)
+{
+	COM::Result result = System::Initialize(owner, name);
+	if (COM::Succeeded(result))
+	{
+		mStart = Time::Now();
+		mTime = mStart;
+
+		mpUpdate.Adopt(reinterpret_cast<SingleUpdateStage*>(Stage::Create(SingleUpdateStage::kID, this, Stage::kExecute.GetString())));
+		mpUpdate->SetUpdate(&Timer::_Update, this);
+		AddStage(mpUpdate);
+		return COM::kOK;
+	}
+	return result;
 }
 
 Time::Value Timer::GetTime() const

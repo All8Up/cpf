@@ -57,7 +57,7 @@ namespace Cpf
 
 		protected:
 			// Implementation interface.
-			System(iPipeline* owner, const char* name);
+			System();
 			virtual ~System();
 
 			bool AddStage(Stage*);

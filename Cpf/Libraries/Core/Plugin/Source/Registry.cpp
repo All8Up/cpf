@@ -161,7 +161,7 @@ COM::Result CPF_STDCALL Registry::Create(COM::iUnknown* outer, COM::ClassID cid,
 		if (creator != mCreationMap.end())
 		{
 			COM::iUnknown* instance;
-			creator->second->CreateInstance(outer, &instance);
+			creator->second->CreateInstance(static_cast<Plugin::iRegistry*>(this), outer, &instance);
 			if (instance)
 			{
 				COM::Result result = instance->QueryInterface(id, outIface);

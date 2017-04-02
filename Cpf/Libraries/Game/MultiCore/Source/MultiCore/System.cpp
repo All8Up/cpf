@@ -8,9 +8,8 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-System::System(iPipeline* owner, const char* name)
-	: mpOwner(owner)
-	, mID(name, strlen(name))
+System::System()
+	: mpOwner(nullptr)
 {
 }
 
@@ -23,6 +22,7 @@ COM::Result CPF_STDCALL System::Initialize(iPipeline* owner, const char* name)
 	{
 		mpOwner = owner;
 		mID = SystemID(name, strlen(name));
+		return COM::kOK;
 	}
 	return COM::kInvalidParameter;
 }
