@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "EntityStage.hpp"
 #include "MultiCore/Partitioning.hpp"
-#include "MultiCore/QueueBuilder.hpp"
 
 using namespace Cpf;
 using namespace EntityService;

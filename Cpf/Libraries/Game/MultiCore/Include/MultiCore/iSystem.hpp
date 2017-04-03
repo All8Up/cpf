@@ -35,28 +35,9 @@ namespace Cpf
 			struct Desc
 			{};
 
-			virtual COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) = 0;
+			virtual COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) = 0;
 			virtual SystemID CPF_STDCALL GetID() const = 0;
 			virtual COM::Result CPF_STDCALL Configure(iPipeline*) = 0;
-
-			//////////////////////////////////////////////////////////////////////////
-			// System factory.
-			using Creator = iSystem* (*)(Plugin::iRegistry*, const char*, const Desc*);
-
-			template <typename TYPE>
-			static TYPE* Create(Plugin::iRegistry*, const char*, const Desc* = nullptr);
-			static bool Install(SystemID id, Creator);
-			static bool Remove(SystemID id);
-
-			// Untyped factory interface.
-			static iSystem* _Create(Plugin::iRegistry*, SystemID, const char*, const Desc* desc);
 		};
-
-		// Typed system factory.
-		template <typename TYPE>
-		TYPE* iSystem::Create(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
-		{
-			return static_cast<TYPE*>(_Create(rgy, TYPE::kID, name, desc));
-		}
 	}
 }

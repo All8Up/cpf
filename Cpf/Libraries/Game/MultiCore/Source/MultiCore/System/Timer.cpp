@@ -59,7 +59,7 @@ COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIfa
  @param name The name of the timer.
  @return Success/failure code.
  */
-COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* name)
+COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* name, const Desc*)
 {
 	mID = SystemID(name, strlen(name));
 

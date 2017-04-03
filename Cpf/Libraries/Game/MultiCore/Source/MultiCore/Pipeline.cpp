@@ -4,7 +4,7 @@
 #include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
-#include "MultiCore/QueueBuilder.hpp"
+#include "QueueBuilder.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;

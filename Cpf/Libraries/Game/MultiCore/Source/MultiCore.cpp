@@ -47,3 +47,35 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
 	}
 	return s_RefCount;
 }
+
+#ifndef CPF_STATIC_MULTICORE
+extern "C"
+COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		if (MultiCoreInitializer::Install(registry) > 0)
+			return COM::kOK;
+		return COM::kError;
+	}
+	return COM::kInvalidParameter;
+}
+
+extern "C"
+bool CPF_EXPORT CanUnload()
+{
+	return s_RefCount == 0;
+}
+
+extern "C"
+COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		if (MultiCoreInitializer::Remove() == 0)
+			return COM::kOK;
+		return COM::kInUse;
+	}
+	return COM::kInvalidParameter;
+}
+#endif

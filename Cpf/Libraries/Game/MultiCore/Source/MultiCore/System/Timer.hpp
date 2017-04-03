@@ -21,7 +21,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			// System overrides.
-			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) override;
 			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			SystemID CPF_STDCALL GetID() const override;
 			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;

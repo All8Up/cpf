@@ -10,7 +10,6 @@ set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Partitioning.hpp
 	Include/MultiCore/iPipeline.hpp
 	Include/MultiCore/iSystem.hpp
-	Include/MultiCore/QueueBuilder.hpp
 )
 set (MULTICORE_SYSTEM_INCLUDE_FILES
 	Include/MultiCore/System/iTimer.hpp
@@ -27,6 +26,7 @@ set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Pipeline.cpp
 	Source/MultiCore/System.hpp
 	Source/MultiCore/System.cpp
+	Source/MultiCore/QueueBuilder.hpp
 	Source/MultiCore/QueueBuilder.cpp
 )
 set (MULTICORE_SYSTEM_SOURCE_FILES

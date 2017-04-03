@@ -11,15 +11,23 @@
 namespace Cpf
 {
 	class ExperimentalD3D12;
+	class MoverSystem;
 
 	class iMoverComponent : public EntityService::iComponent
 	{
 	public:
+		virtual void SetSystem(MoverSystem*) = 0;
+		virtual MoverSystem* GetSystem() = 0;
 	};
+
+	static constexpr COM::ClassID kMoverSystemCID = COM::ClassID("MoverSystemClass"_crc64);
+	static constexpr COM::ClassID kMoverComponentCID = COM::ClassID("MoverSystem::MoverComponent"_crc64);
 
 	class MoverSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("iMoverSystem"_crc64);
+
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Mover System"_hashString);
 		static constexpr MultiCore::StageID kUpdate = Hash::Create<MultiCore::StageID_tag>("Update"_hashString);
 		static constexpr MultiCore::StageID kUpdateEBus = Hash::Create<MultiCore::StageID_tag>("Update EBus"_hashString);
@@ -31,14 +39,15 @@ namespace Cpf
 			MultiCore::SystemID mInstanceID;
 		};
 
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
+
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc);
+		MoverSystem();
 		InstanceSystem* GetInstanceSystem() const;
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
-		static bool Install();
-		static bool Remove();
 		void EnableMovement(bool flag);
 		void UseEBus(bool flag);
 
@@ -46,7 +55,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
 		// COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
 
@@ -61,8 +70,6 @@ namespace Cpf
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 	private:
-		static iSystem* _Creator(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc);
-
 		ExperimentalD3D12* mpApp;
 
 		// system interdependencies.
@@ -83,20 +90,23 @@ namespace Cpf
 	};
 
 
-	class MoverSystem::MoverComponent
-		: public EntityService::ComponentBase<iMoverComponent>
+	class MoverSystem::MoverComponent : public EntityService::ComponentBase<iMoverComponent>
 	{
 	public:
 		//////////////////////////////////////////////////////////////////////////
 		static constexpr EntityService::ComponentID kID = EntityService::ComponentID("Mover Component"_crc64);
 
 		//
-		static bool Install();
-		static bool Remove();
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
 		static iComponent* Create(iSystem*);
 
+		//
+		void SetSystem(MoverSystem* system) override { mpMover = system; }
+		MoverSystem* GetSystem() override { return mpMover; }
+
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent(iSystem* owner);
+		MoverComponent();
 
 		COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 

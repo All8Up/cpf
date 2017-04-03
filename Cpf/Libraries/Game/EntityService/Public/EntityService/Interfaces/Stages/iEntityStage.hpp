@@ -11,11 +11,11 @@ namespace Cpf
 	{
 		struct iEntity;
 
-		static constexpr COM::ClassID kEntityStageCID = COM::ClassID("EntityStageClass"_crc64);
+		static constexpr COM::ClassID kEntityStageCID = COM::ClassID("EntityService::EntityStageClass"_crc64);
 
 		struct iEntityStage : MultiCore::iStage
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iEntityStage"_crc64);
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("EntityService::iEntityStage"_crc64);
 
 			using UpdateFunc = void(*)(MultiCore::iSystem*, iEntity*);
 

@@ -4,36 +4,8 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
-	: mpApp(desc->mpApplication)
-	, mRenderID(desc->mRenderSystemID)
-	, mpInstances(nullptr)
-{
-	Initialize(rgy, name);
-
-	// Build the stages and set the update function.
-	IntrusivePtr<MultiCore::iSingleUpdateStage> instanceBegin;
-	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceBegin.AsVoidPP());
-	instanceBegin->Initialize(this, kBegin.GetString());
-	instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);
-
-	IntrusivePtr<MultiCore::iSingleUpdateStage> instanceEnd;
-	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceEnd.AsVoidPP());
-	instanceEnd->Initialize(this, kEnd.GetString());
-	instanceEnd->SetUpdate(&InstanceSystem::_End, this, MultiCore::BlockOpcode::eLast);
-
-	// Add the stages to this system.
-	AddStage(instanceBegin);
-	AddStage(instanceEnd);
-
-	// Add the default dependencies.
-	AddDependency({
-		{ GetID(), instanceEnd->GetID(), MultiCore::iStage::kExecute },
-		{ GetID(), instanceBegin->GetID(), MultiCore::iStage::kExecute },
-		MultiCore::DependencyPolicy::eAfter
-	});
-}
-
+InstanceSystem::InstanceSystem()
+{}
 
 void InstanceSystem::_Begin(Concurrency::ThreadContext&, void* context)
 {
@@ -49,18 +21,61 @@ void InstanceSystem::_End(Concurrency::ThreadContext&, void* context)
 
 
 // iUnknown
-COM::Result CPF_STDCALL InstanceSystem::QueryInterface(COM::InterfaceID, void**)
+COM::Result CPF_STDCALL InstanceSystem::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return COM::kNotImplemented;
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case InstanceSystem::kIID.GetID():
+			*outIface = static_cast<InstanceSystem*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 // iSystem
-COM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const char* name)
+COM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const MultiCore::iSystem::Desc* desc)
 {
 	if (rgy && name)
 	{
+		const InstanceSystem::Desc* theDesc = static_cast<const InstanceSystem::Desc*>(desc);
+		mpApp = theDesc->mpApplication;
+		mRenderID = theDesc->mRenderSystemID;
+		mpInstances = nullptr;
 		mID = MultiCore::SystemID(name, strlen(name));
 		auto result = rgy->Create(nullptr, MultiCore::kStageListCID, MultiCore::iStageList::kIID, mpStages.AsVoidPP());
+
+		// Build the stages and set the update function.
+		IntrusivePtr<MultiCore::iSingleUpdateStage> instanceBegin;
+		rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceBegin.AsVoidPP());
+		instanceBegin->Initialize(this, kBegin.GetString());
+		instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);
+
+		IntrusivePtr<MultiCore::iSingleUpdateStage> instanceEnd;
+		rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceEnd.AsVoidPP());
+		instanceEnd->Initialize(this, kEnd.GetString());
+		instanceEnd->SetUpdate(&InstanceSystem::_End, this, MultiCore::BlockOpcode::eLast);
+
+		// Add the stages to this system.
+		AddStage(instanceBegin);
+		AddStage(instanceEnd);
+
+		// Add the default dependencies.
+		AddDependency({
+			{ GetID(), instanceEnd->GetID(), MultiCore::iStage::kExecute },
+			{ GetID(), instanceBegin->GetID(), MultiCore::iStage::kExecute },
+			MultiCore::DependencyPolicy::eAfter
+		});
+
 		return result;
 	}
 	return COM::kInvalidParameter;

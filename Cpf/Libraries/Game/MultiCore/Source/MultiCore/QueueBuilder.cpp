@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "MultiCore/QueueBuilder.hpp"
+#include "QueueBuilder.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"

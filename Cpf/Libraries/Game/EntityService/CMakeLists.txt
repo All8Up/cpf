@@ -37,6 +37,9 @@ set (PRIVATE_HEADERS_ENTITYSERVICE
 set (PRIVATE_HEADERS_ENTITYSERVICE_STAGES
 	Private/EntityService/Stages/EntityStage.hpp
 )
+set (PRIVATE_HEADERS_ENTITYSERVICE_COMPONENTS
+	Private/EntityService/Components/TransformComponent.hpp
+)
 set (PRIVATE_HEADERS_ENTITYSERVICE_SYSTEMS
 )
 

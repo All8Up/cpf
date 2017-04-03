@@ -2,7 +2,7 @@
 #pragma once
 #include "Vector.hpp"
 #include "Hash/HashID.hpp"
-#include "iStage.hpp"
+#include "MultiCore/iStage.hpp"
 #include "Set.hpp"
 #include "Map.hpp"
 

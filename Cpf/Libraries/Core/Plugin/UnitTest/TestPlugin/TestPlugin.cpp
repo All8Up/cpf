@@ -74,19 +74,19 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-bool CPF_EXPORT CanUnload()
+COM::Result CPF_EXPORT CanUnload()
 {
-	return sRefCount == 0;
+	return (sRefCount == 0) ? COM::kOK : COM::kInUse;
 }
 
 extern "C"
-bool CPF_EXPORT Remove(Plugin::iRegistry* registry)
+COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		registry->Remove(kTestPluginCID);
+		return registry->Remove(kTestPluginCID);
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 
 

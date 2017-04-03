@@ -15,7 +15,7 @@ TEST(Plugin, GetAddress)
 {
 	Cpf::Plugin::Library testLib;
 	EXPECT_TRUE(testLib.Load("./plugins/TestPlugin.cfp"));
-	void* addr = testLib.GetAddress("Install");
+	void* addr = testLib.GetAddress(kPluginAPIInstall);
 	EXPECT_TRUE(addr != nullptr);
 	EXPECT_TRUE(testLib.Unload());
 }
@@ -25,7 +25,7 @@ TEST(Plugin, GetAddressTyped)
 	Cpf::Plugin::Library testLib;
 	EXPECT_TRUE(testLib.Load("./plugins/TestPlugin.cfp"));
 	using RegType = int32_t(*)(Cpf::Plugin::iRegistry* registry);
-	RegType addr = testLib.GetAddress<RegType>("Install");
+	RegType addr = testLib.GetAddress<RegType>(kPluginAPIInstall);
 	EXPECT_TRUE(addr != nullptr);
 	EXPECT_TRUE(testLib.Unload());
 }

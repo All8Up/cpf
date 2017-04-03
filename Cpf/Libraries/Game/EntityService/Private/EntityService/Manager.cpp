@@ -7,13 +7,6 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-iManager* EntityService::CreateManager()
-{
-	return new Manager();
-}
-
-
-//////////////////////////////////////////////////////////////////////////
 EntityID Manager::mNextID = EntityID(0);
 
 //////////////////////////////////////////////////////////////////////////
@@ -23,9 +16,27 @@ Manager::Manager()
 Manager::~Manager()
 {}
 
-COM::Result Manager::QueryInterface(COM::InterfaceID id, void**)
+COM::Result Manager::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return COM::kNotImplemented;
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+
+		case iManager::kIID.GetID():
+			*outIface = static_cast<iManager*>(this);
+			break;
+
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 iEntity* Manager::CreateEntity(EntityID id)

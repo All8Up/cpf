@@ -70,25 +70,25 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
-	mpEntityManager = EntityService::CreateManager();
+	GetRegistry()->Create(nullptr, EntityService::kManagerCID, EntityService::iManager::kIID, mpEntityManager.AsVoidPP());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Install object components.
-	MoverSystem::MoverComponent::Install();
+	MoverSystem::MoverComponent::Install(GetRegistry());
 	
 	//////////////////////////////////////////////////////////////////////////
 	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpMultiCore.AsVoidPP());
 
 	// Install the systems this will use.
-	RenderSystem::Install();
-	InstanceSystem::Install();
-	MoverSystem::Install();
+	RenderSystem::Install(GetRegistry());
+	InstanceSystem::Install(GetRegistry());
+	MoverSystem::Install(GetRegistry());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
 	IntrusivePtr<MultiCore::iTimer> gameTime;
 	GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, gameTime.AsVoidPP());
-	gameTime->Initialize(GetRegistry(), "Game Time");
+	gameTime->Initialize(GetRegistry(), "Game Time", nullptr);
 
 	mpMultiCore->Install(gameTime);
 
@@ -96,14 +96,18 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	RenderSystem::Desc renderDesc;
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
-	IntrusivePtr<RenderSystem> renderSystem(MultiCore::iSystem::Create<RenderSystem>(GetRegistry(), "Render System", &renderDesc));
+	IntrusivePtr<RenderSystem> renderSystem;
+	GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, renderSystem.AsVoidPP());
+	renderSystem->Initialize(GetRegistry(), "Render System", &renderDesc);
 	mpMultiCore->Install(renderSystem);
 
 	// Create the instance management system.
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::iSystem::Create<InstanceSystem>(GetRegistry(), "Instance System", &instanceDesc));
+	IntrusivePtr<InstanceSystem> instanceSystem;
+	GetRegistry()->Create(nullptr, kInstanceSystemCID, InstanceSystem::kIID, instanceSystem.AsVoidPP());
+	instanceSystem->Initialize(GetRegistry(), "Instance System", &instanceDesc);
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
@@ -111,7 +115,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	moverDesc.mpApplication = this;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::iSystem::Create<MoverSystem>(GetRegistry(), "Mover", &moverDesc));
+	GetRegistry()->Create(nullptr, kMoverSystemCID, MoverSystem::kIID, mpMoverSystem.AsVoidPP());
+	mpMoverSystem->Initialize(GetRegistry(), "Mover", &moverDesc);
 	mpMultiCore->Install(mpMoverSystem);
 
 	//////////////////////////////////////////////////////////////////////////
@@ -173,8 +178,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<EntityService::iEntity> entity(mpEntityManager->CreateEntity());
-		entity->CreateComponent<EntityService::iTransformComponent>(nullptr);
-		entity->CreateComponent<iMoverComponent>(mpMoverSystem);
+		entity->CreateComponent<EntityService::iTransformComponent>(GetRegistry(), EntityService::kTransformComponentCID);
+		entity->CreateComponent<iMoverComponent>(GetRegistry(), kMoverComponentCID);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

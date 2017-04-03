@@ -5,14 +5,19 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "Hash/HashString.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 namespace Cpf
 {
 	class ExperimentalD3D12;
 
+	static constexpr COM::ClassID kInstanceSystemCID = COM::ClassID("InstanceSystem"_crc64);
+
 	class InstanceSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("iInstanceSystem"_crc64);
+
 		using StageID = EntityService::StageID;
 
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Instance Manager"_hashString);
@@ -26,7 +31,7 @@ namespace Cpf
 			ExperimentalD3D12* mpApplication;
 		};
 
-		InstanceSystem(Plugin::iRegistry*, const char* name, const Desc* desc);
+		InstanceSystem();
 
 		Instance* GetInstances() const { return mpInstances; }
 
@@ -34,7 +39,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
 
@@ -48,21 +53,30 @@ namespace Cpf
 		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
-		static bool Install()
+		static COM::Result Install(Plugin::iRegistry* regy)
 		{
-			return iSystem::Install(kID, &InstanceSystem::_Creator);
+			class ClassInstance : public tRefCounted<Plugin::iClassInstance>
+			{
+			public:
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+				COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+				{
+					if (outIface)
+					{
+						*outIface = new InstanceSystem();
+						return *outIface ? COM::kOK : COM::kOutOfMemory;
+					}
+					return COM::kInvalidParameter;
+				}
+			};
+			return regy->Install(kInstanceSystemCID, new ClassInstance());
 		}
-		static bool Remove()
+		static COM::Result Remove(Plugin::iRegistry* regy)
 		{
-			return iSystem::Remove(kID);
+			return regy->Remove(kInstanceSystemCID);
 		}
 
 	private:
-		static iSystem* _Creator(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
-		{
-			return new InstanceSystem(rgy, name, static_cast<const Desc*>(desc));
-		}
-
 		static void _Begin(Concurrency::ThreadContext&, void* context);
 		static void _End(Concurrency::ThreadContext&, void* context);
 

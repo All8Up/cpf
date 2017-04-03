@@ -10,9 +10,13 @@
 
 namespace Cpf
 {
+	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("Render System Class"_crc64);
+
 	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("RenderSystem"_crc64);
+
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
 		struct Desc : iSystem::Desc
@@ -20,8 +24,8 @@ namespace Cpf
 			MultiCore::SystemID mTimer;
 		};
 
-		static bool Install();
-		static bool Remove();
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
 
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
@@ -36,7 +40,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
 //		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
 
@@ -52,10 +56,9 @@ namespace Cpf
 
 
 	private:
-		RenderSystem(Plugin::iRegistry*, const char* name, const Desc* desc);
+		RenderSystem();
 		~RenderSystem() override;
 
-		static iSystem* _Create(Plugin::iRegistry*, const char* name, const iSystem::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();

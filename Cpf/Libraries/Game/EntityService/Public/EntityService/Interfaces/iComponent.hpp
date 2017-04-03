@@ -11,7 +11,7 @@ namespace Cpf
 
 		struct iComponent : public COM::iUnknown
 		{
-			static constexpr auto kIID = COM::InterfaceID("iComponent Interface"_crc64);
+			static constexpr auto kIID = COM::InterfaceID("EntityService::iComponent"_crc64);
 
 			virtual iEntity* GetEntity() const = 0;
 			virtual void SetEntity(iEntity* entity) = 0;

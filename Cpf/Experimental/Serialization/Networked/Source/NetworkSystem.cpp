@@ -1,35 +1,39 @@
 //////////////////////////////////////////////////////////////////////////
 #include "NetworkSystem.hpp"
 #include "MultiCore/iStage.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-bool NetworkSystem::Install()
+COM::Result NetworkSystem::Install(Plugin::iRegistry* regy)
 {
-	return iSystem::Install(kID, &NetworkSystem::_Creator);
+	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
+	{
+	public:
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+		{
+			if (outIface)
+			{
+				*outIface = new NetworkSystem();
+				return *outIface ? COM::kOK : COM::kOutOfMemory;
+			}
+			return COM::kInvalidParameter;
+		}
+	};
+	return regy->Install(kNetworkSystemCID, new ClassInstance());
 }
 
-bool NetworkSystem::Remove()
+COM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)
 {
-	return iSystem::Remove(kID);
+	return regy->Remove(kNetworkSystemCID);
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem(Plugin::iRegistry* rgy, const char* name, const Desc*)
+NetworkSystem::NetworkSystem()
 {
-	Initialize(rgy, name);
-	IntrusivePtr<iSingleUpdateStage> updateStage;
-	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, updateStage.AsVoidPP());
-	updateStage->Initialize(this, iStage::kExecute.GetString());
-	updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
-	AddStage(updateStage);
-}
-
-iSystem* NetworkSystem::_Creator(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
-{
-	return new NetworkSystem(rgy, name, static_cast<const Desc*>(desc));
 }
 
 void NetworkSystem::_Update(Concurrency::ThreadContext&, void* context)
@@ -51,6 +55,9 @@ COM::Result CPF_STDCALL NetworkSystem::QueryInterface(COM::InterfaceID id, void*
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);
 			break;
+		case NetworkSystem::kIID.GetID():
+			*outIface = static_cast<NetworkSystem*>(this);
+			break;
 		default:
 			return COM::kNotImplemented;
 		}
@@ -61,7 +68,7 @@ COM::Result CPF_STDCALL NetworkSystem::QueryInterface(COM::InterfaceID id, void*
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL NetworkSystem::Initialize(Plugin::iRegistry* rgy, const char* name)
+COM::Result CPF_STDCALL NetworkSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc*)
 {
 	(void)rgy;
 	if (name)
@@ -69,7 +76,15 @@ COM::Result CPF_STDCALL NetworkSystem::Initialize(Plugin::iRegistry* rgy, const 
 		mID = SystemID(name, strlen(name));
 		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 		if (COM::Succeeded(result))
+		{
+			IntrusivePtr<iSingleUpdateStage> updateStage;
+			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, updateStage.AsVoidPP());
+			updateStage->Initialize(this, iStage::kExecute.GetString());
+			updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
+			AddStage(updateStage);
+
 			return COM::kOK;
+		}
 		return result;
 	}
 	return COM::kInvalidParameter;

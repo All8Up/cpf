@@ -39,8 +39,6 @@ namespace Cpf
 			iComponent* GetComponent(COM::InterfaceID id) override;
 			const iComponent* GetComponent(COM::InterfaceID id) const override;
 		
-			static bool Install(COM::InterfaceID iid, ComponentCreator creator);
-			static bool Remove(COM::InterfaceID iid);
 			static iComponent* CreateComponent(COM::InterfaceID iid, MultiCore::iSystem*);
 
 		private:
@@ -57,9 +55,6 @@ namespace Cpf
 			int mComponentCount;
 			ComponentPair mComponents[kMaxComponents];
 			bool mActive;
-
-			using ComponentMap = UnorderedMap<COM::InterfaceID, ComponentCreator>;
-			static ComponentMap mComponentCreators;
 		};
 	}
 }

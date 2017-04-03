@@ -5,13 +5,17 @@
 
 namespace Cpf
 {
+	static constexpr COM::ClassID kNetworkSystemCID = COM::ClassID("NetworkSystemCID"_crc64);
+
 	class NetworkSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("NetworkSystem"_crc64);
+
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Network System"_hashString);
 
-		static bool Install();
-		static bool Remove();
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
 
 		struct Desc : public iSystem::Desc
 		{};
@@ -20,7 +24,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
 
@@ -35,8 +39,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 	private:
-		NetworkSystem(Plugin::iRegistry* rgy, const char* name, const Desc*);
-		static iSystem* _Creator(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc);
+		NetworkSystem();
 
 		static void _Update(Concurrency::ThreadContext&, void*);
 

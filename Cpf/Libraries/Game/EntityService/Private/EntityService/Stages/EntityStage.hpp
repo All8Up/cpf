@@ -13,8 +13,6 @@ namespace Cpf
 		class EntityStage : public tRefCounted<iEntityStage>
 		{
 		public:
-			static constexpr MultiCore::StageID kID = Hash::Create<MultiCore::StageID_tag>("Object Stage"_hashString);
-
 			EntityStage();
 
 			// iUnknown overrides.

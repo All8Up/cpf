@@ -5,19 +5,34 @@
 #include "MultiCore/iPipeline.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 using namespace Graphics;
 
-bool RenderSystem::Install()
+COM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
-	return iSystem::Install(kID, &RenderSystem::_Create);
+	class RenderSystemClass : public tRefCounted<Plugin::iClassInstance>
+	{
+	public:
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+		{
+			if (outIface)
+			{
+				*outIface = new RenderSystem();
+				return *outIface ? COM::kOK : COM::kOutOfMemory;
+			}
+			return COM::kInvalidParameter;
+		}
+	};
+	return regy->Install(kRenderSystemCID, new RenderSystemClass());
 }
 
-bool RenderSystem::Remove()
+COM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 {
-	return iSystem::Remove(kID);
+	return regy->Remove(kRenderSystemCID);
 }
 
 COM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
@@ -81,21 +96,14 @@ DebugUI& RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
+RenderSystem::RenderSystem()
 	: mpTimer(nullptr)
-	, mDesc(*desc)
-	, mpRegistry(rgy)
+	, mpRegistry(nullptr)
 {
-	Initialize(rgy, name);
 }
 
 RenderSystem::~RenderSystem()
 {}
-
-iSystem* RenderSystem::_Create(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
-{
-	return new RenderSystem(rgy, name, reinterpret_cast<const Desc*>(desc));
-}
 
 void RenderSystem::_CreateStages()
 {
@@ -321,6 +329,9 @@ COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void**
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);
 			break;
+		case RenderSystem::kIID.GetID():
+			*outIface = static_cast<RenderSystem*>(this);
+			break;
 		default:
 			return COM::kNotImplemented;
 		}
@@ -331,11 +342,12 @@ COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void**
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name)
+COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
 {
-	(void)rgy;
+	mpRegistry = rgy; (void)desc;
 	if (name)
 	{
+		mDesc = *static_cast<const Desc*>(desc);
 		mID = SystemID(name, strlen(name));
 		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 		if (COM::Succeeded(result))

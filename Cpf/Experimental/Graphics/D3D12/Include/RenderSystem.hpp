@@ -13,9 +13,12 @@ namespace Cpf
 
 	class ExperimentalD3D12;
 
+	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("RenderSystemCID"_crc64);
+
 	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("RenderSystem"_crc64);
 		//
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
@@ -27,8 +30,8 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Registration.
-		static bool Install();
-		static bool Remove();
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
 
 		struct Desc : iSystem::Desc
 		{
@@ -40,7 +43,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
 
@@ -56,7 +59,7 @@ namespace Cpf
 
 	private:
 		// Construction/Destruction.
-		RenderSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc);
+		RenderSystem();
 		~RenderSystem() override;
 
 		//
@@ -68,9 +71,6 @@ namespace Cpf
 		static void _DebugUI(Concurrency::ThreadContext& tc, void* context);
 		static void _PreparePresent(Concurrency::ThreadContext& tc, void* context);
 		static void _EndFrame(Concurrency::ThreadContext& tc, void* context);
-
-		//
-		static iSystem* Creator(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc);
 
 		ExperimentalD3D12* mpApp;
 

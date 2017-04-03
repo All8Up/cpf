@@ -9,18 +9,15 @@ namespace Cpf
 {
 	namespace EntityService
 	{
-		class TransformComponent
-			: private ComponentBase<iTransformComponent>
+		class TransformComponent : private ComponentBase<iTransformComponent>
 		{
 		public:
-			static constexpr auto kID = ComponentID("Component Implementation"_crc64);
+			static constexpr auto kID = ComponentID("iTransformComponent"_crc64);
 
-			static bool Install();
-			static bool Remove();
+			static COM::Result Install(Plugin::iRegistry*);
+			static COM::Result Remove(Plugin::iRegistry*);
 
-			static iComponent* Creator(MultiCore::iSystem*);
-
-			TransformComponent(MultiCore::iSystem*);
+			TransformComponent();
 			~TransformComponent() override;
 
 			//
