@@ -1,10 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Tuple.hpp"
-#include "Hash/Crc.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/Container.hpp"
-#include "EntityService/Interfaces/iStage.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 namespace Cpf
 {
@@ -12,8 +11,12 @@ namespace Cpf
 	{
 		struct iEntity;
 
+		static constexpr COM::ClassID kEntityStageCID = COM::ClassID("EntityStageClass"_crc64);
+
 		struct iEntityStage : MultiCore::iStage
 		{
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iEntityStage"_crc64);
+
 			using UpdateFunc = void(*)(MultiCore::iSystem*, iEntity*);
 
 			// Interface.
@@ -21,19 +24,17 @@ namespace Cpf
 			virtual void RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f) = 0;
 		};
 
-		class EntityStage
-			: tRefCounted<iEntityStage>
+		class EntityStage : public tRefCounted<iEntityStage>
 		{
 		public:
 			static constexpr MultiCore::StageID kID = Hash::Create<MultiCore::StageID_tag>("Object Stage"_hashString);
 
-			using UpdateFunc = void(*)(MultiCore::iSystem*, iEntity*);
+			EntityStage();
 
-			static bool Install();
-			static bool Remove();
+			// iUnknown overrides.
+			COM::Result QueryInterface(COM::InterfaceID, void**) override;
 
-			COM::Result QueryInterface(COM::InterfaceID, void**) { return COM::kNotImplemented; }
-
+			// iStage overrides.
 			COM::Result CPF_STDCALL Initialize(MultiCore::iSystem*, const char* const name) override;
 			MultiCore::iSystem* CPF_STDCALL GetSystem() const override;
 			MultiCore::StageID CPF_STDCALL GetID() const override;
@@ -50,10 +51,6 @@ namespace Cpf
 			void RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f);
 
 		private:
-			EntityStage(MultiCore::iSystem* owner, const char* name);
-
-			static MultiCore::iStage* _Creator(Plugin::iRegistry*, MultiCore::iSystem*, const char* name);
-
 			// Implementation definitions.
 			using UpdateTuple_t = Tuple<MultiCore::iSystem*, iEntity*, UpdateFunc>;
 			struct Compare
@@ -75,6 +72,22 @@ namespace Cpf
 
 			MultiCore::StageID mID;
 			bool mEnabled;
+		};
+
+
+		class EntityStageClass : public tRefCounted<Plugin::iClassInstance>
+		{
+		public:
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+			{
+				if (outIface)
+				{
+					*outIface = new EntityStage();
+					return *outIface ? COM::kOK : COM::kOutOfMemory;
+				}
+				return COM::kInvalidParameter;
+			}
 		};
 	}
 }

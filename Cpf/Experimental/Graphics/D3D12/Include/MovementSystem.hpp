@@ -50,8 +50,8 @@ namespace Cpf
 		// system interdependencies.
 		InstanceSystem* mpInstances;
 		MultiCore::iTimer* mpTime;	// The clock this mover is attached to.
-		EntityService::iEntityStage* mpThreadStage;
-		EntityService::iEntityStage* mpEBusStage;
+		IntrusivePtr<EntityService::iEntityStage> mpThreadStage;
+		IntrusivePtr<EntityService::iEntityStage> mpEBusStage;
 		MultiCore::SystemID mClockID;
 		MultiCore::SystemID mInstanceID;
 

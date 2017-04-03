@@ -35,14 +35,6 @@ namespace Cpf
 			virtual BlockID CPF_STDCALL GetDefaultBlock() const = 0;
 			virtual BlockID CPF_STDCALL GetBeginBlock() const = 0;
 			virtual BlockID CPF_STDCALL GetEndBlock() const = 0;
-
-			// TODO: Temporary...
-			// Factory.
-			using Creator = iStage* (*)(Plugin::iRegistry*, iSystem*, const char* name);
-
-			static iStage* Create(StageID type, Plugin::iRegistry*, iSystem* owner, const char* name);
-			static bool Install(StageID, Creator);
-			static bool Remove(StageID);
 		};
 
 

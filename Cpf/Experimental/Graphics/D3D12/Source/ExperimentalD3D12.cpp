@@ -59,7 +59,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
-	ScopedInitializer<EntityServiceInitializer> goInit;
+	ScopedInitializer<EntityServiceInitializer, Plugin::iRegistry*> goInit(GetRegistry());
 	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 
 	// Hack: Setup the view all cheezy like.

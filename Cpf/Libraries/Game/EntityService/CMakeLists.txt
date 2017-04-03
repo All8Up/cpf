@@ -11,8 +11,6 @@ set (PUBLIC_HEADERS_ENTITYSERVICE_HELPERS
 	Public/EntityService/Helpers/ComponentBase.hpp
 )
 set (PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES
-	Public/EntityService/Interfaces/iStage.hpp
-	Public/EntityService/Interfaces/iSystem.hpp
 	Public/EntityService/Interfaces/iEntity.hpp
 	Public/EntityService/Interfaces/iManager.hpp
 	Public/EntityService/Interfaces/iComponent.hpp

@@ -7,25 +7,8 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(MultiCore::iSystem* owner, const char* name)
+EntityStage::EntityStage()
 {
-	Initialize(owner, name);
-}
-
-bool EntityStage::Install()
-{
-	return iStage::Install(kID, &EntityStage::_Creator);
-}
-
-bool EntityStage::Remove()
-{
-	return iStage::Remove(kID);
-}
-
-MultiCore::iStage* EntityStage::_Creator(Plugin::iRegistry* rgy, MultiCore::iSystem* owner, const char* name)
-{
-	(void)rgy;
-	return new EntityStage(owner, name);
 }
 
 void EntityStage::AddUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
@@ -40,6 +23,30 @@ void EntityStage::RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 	mWork.Acquire();
 	mWork.Remove({ s, o, f });
 	mWork.Release();
+}
+
+COM::Result CPF_STDCALL EntityStage::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iStage::kIID.GetID():
+			*outIface = static_cast<iStage*>(this);
+			break;
+		case iEntityStage::kIID.GetID():
+			*outIface = static_cast<iEntityStage*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 COM::Result CPF_STDCALL EntityStage::Initialize(MultiCore::iSystem* owner, const char* const name)

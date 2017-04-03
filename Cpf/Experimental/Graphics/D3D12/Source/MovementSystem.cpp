@@ -60,8 +60,11 @@ MoverSystem::MoverSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, co
 	mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
 	// Build the stages.
-	mpThreadStage = reinterpret_cast<iEntityStage*>(MultiCore::iStage::Create(EntityStage::kID, nullptr, this, kUpdate.GetString()));
-	mpEBusStage = reinterpret_cast<iEntityStage*>(MultiCore::iStage::Create(EntityStage::kID, nullptr, this, kUpdateEBus.GetString()));
+	rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpThreadStage.AsVoidPP());
+	mpThreadStage->Initialize(this, kUpdate.GetString());
+
+	rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpEBusStage.AsVoidPP());
+	mpEBusStage->Initialize(this, kUpdateEBus.GetString());
 
 	// Add the stages to this system.
 	AddStage(mpThreadStage);

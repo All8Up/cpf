@@ -62,8 +62,8 @@ namespace Cpf
 
 		enum class DependencyPolicy
 		{
-			eBarrier,		// Must be separated by a barrier.
-			eAfter			// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
+			eBarrier,	// Must be separated by a barrier.
+			eAfter		// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
 		};
 
 		struct BlockDependency
