@@ -11,15 +11,45 @@ namespace Cpf
 	{
 		static constexpr COM::ClassID kTimerCID = COM::ClassID("TimerClass"_crc64);
 
+		/**
+		 @brief A game timer system.
+		 */
 		struct iTimer : iSystem
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iTimer"_crc64);
 
-			virtual Time::Value CPF_STDCALL GetTime() const = 0;
-			virtual float CPF_STDCALL GetDeltaTime() const = 0;
-			virtual bool CPF_STDCALL IsPaused() const = 0;
+			/**
+			 @brief Gets the time.
+			 @return The time.
+			 */
+			virtual Time::Value CPF_STDCALL GetTime() = 0;
+
+			/**
+			 @brief Gets delta time.
+			 @return The delta time.
+			 */
+			virtual float CPF_STDCALL GetDeltaTime() = 0;
+
+			/**
+			 @brief Returns if the timer is paused.
+			 @return True/false based on state.
+			 */
+			virtual bool CPF_STDCALL IsPaused() = 0;
+
+			/**
+			 @brief Sets the timer pause state.
+			 @param flag True to flag.
+			 */
 			virtual void CPF_STDCALL SetPause(bool flag) = 0;
+
+			/**
+			 @brief Pauses the timer.
+			 */
 			virtual void CPF_STDCALL Pause() = 0;
+
+			/**
+			 @brief Resumes the timer.
+			 */
 			virtual void CPF_STDCALL Resume() = 0;
 		};
 	}

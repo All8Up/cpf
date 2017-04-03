@@ -21,7 +21,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL Configure() override;
 			COM::Result CPF_STDCALL GetSystem(SystemID id, iSystem**) const override;
 			COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const override;
-			COM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, Stage**) override;
+			COM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, iStage**) override;
 			void CPF_STDCALL Submit(Concurrency::Scheduler*) override;
 			COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) override;
 			COM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) override;

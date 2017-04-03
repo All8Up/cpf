@@ -4,18 +4,22 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+InstanceSystem::InstanceSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const Desc* desc)
 	: mpApp(desc->mpApplication)
 	, mRenderID(desc->mRenderSystemID)
 	, mpInstances(nullptr)
 {
-	System::Initialize(owner, name);
+	System::Initialize(rgy, owner, name);
 
 	// Build the stages and set the update function.
-	IntrusivePtr<MultiCore::SingleUpdateStage> instanceBegin(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kBegin.GetString())));
+	IntrusivePtr<MultiCore::iSingleUpdateStage> instanceBegin;
+	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceBegin.AsVoidPP());
+	instanceBegin->Initialize(this, kBegin.GetString());
 	instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);
 
-	IntrusivePtr<MultiCore::SingleUpdateStage> instanceEnd(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kEnd.GetString())));
+	IntrusivePtr<MultiCore::iSingleUpdateStage> instanceEnd;
+	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceEnd.AsVoidPP());
+	instanceEnd->Initialize(this, kEnd.GetString());
 	instanceEnd->SetUpdate(&InstanceSystem::_End, this, MultiCore::BlockOpcode::eLast);
 
 	// Add the stages to this system.
@@ -24,8 +28,8 @@ InstanceSystem::InstanceSystem(MultiCore::iPipeline* owner, const char* name, co
 
 	// Add the default dependencies.
 	AddDependency({
-		{ GetID(), instanceEnd->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), instanceBegin->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), instanceEnd->GetID(), MultiCore::iStage::kExecute },
+		{ GetID(), instanceBegin->GetID(), MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 }

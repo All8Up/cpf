@@ -81,50 +81,57 @@ DebugUI& RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc)
+RenderSystem::RenderSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* pipeline, const char* name, const Desc* desc)
 	: mpTimer(nullptr)
 	, mDesc(*desc)
+	, mpRegistry(rgy)
 {
-	System::Initialize(pipeline, name);
+	System::Initialize(rgy, pipeline, name);
 }
 
 RenderSystem::~RenderSystem()
 {}
 
-iSystem* RenderSystem::_Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+iSystem* RenderSystem::_Create(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new RenderSystem(owner, name, reinterpret_cast<const Desc*>(desc));
+	return new RenderSystem(rgy, owner, name, reinterpret_cast<const Desc*>(desc));
 }
 
 void RenderSystem::_CreateStages()
 {
-	IntrusivePtr<SingleUpdateStage> beginFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, "Begin Frame")));
+	IntrusivePtr<iSingleUpdateStage> beginFrame;
+	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, beginFrame.AsVoidPP());
+	beginFrame->Initialize(this, "Begin Frame");
 	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, BlockOpcode::eFirst);
 	AddStage(beginFrame);
 
-	IntrusivePtr<SingleUpdateStage> debugUI(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, "DebugUI")));
+	IntrusivePtr<iSingleUpdateStage> debugUI;
+	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, debugUI.AsVoidPP());
+	debugUI->Initialize(this, "DebugUI");
 	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eLast);
 	AddStage(debugUI);
 
-	IntrusivePtr<SingleUpdateStage> endFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, "End Frame")));
+	IntrusivePtr<iSingleUpdateStage> endFrame;
+	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, endFrame.AsVoidPP());
+	endFrame->Initialize(this, "End Frame");
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, BlockOpcode::eLast);
 	AddStage(endFrame);
 
 	//////////////////////////////////////////////////////////////////////////
 	AddDependency({
-		{GetID(), endFrame->GetID(), Stage::kExecute},
-		{GetID(), beginFrame->GetID(), Stage::kExecute},
+		{GetID(), endFrame->GetID(), iStage::kExecute},
+		{GetID(), beginFrame->GetID(), iStage::kExecute},
 		DependencyPolicy::eAfter
 	});
 
 	AddDependency({
-		{ GetID(), debugUI->GetID(), Stage::kExecute },
-		{ GetID(), beginFrame->GetID(), Stage::kExecute },
+		{ GetID(), debugUI->GetID(), iStage::kExecute },
+		{ GetID(), beginFrame->GetID(), iStage::kExecute },
 		DependencyPolicy::eAfter
 	});
 	AddDependency({
-		{ GetID(), endFrame->GetID(), Stage::kExecute },
-		{ GetID(), debugUI->GetID(), Stage::kExecute },
+		{ GetID(), endFrame->GetID(), iStage::kExecute },
+		{ GetID(), debugUI->GetID(), iStage::kExecute },
 		DependencyPolicy::eBarrier
 	});
 }

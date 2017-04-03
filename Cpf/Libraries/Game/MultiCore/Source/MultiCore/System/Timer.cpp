@@ -7,18 +7,29 @@
 using namespace Cpf;
 using namespace MultiCore;
 
-//////////////////////////////////////////////////////////////////////////
+/**
+ Default constructor.
+ */
 Timer::Timer()
 	: mPaused(false)
 	, mpUpdate(nullptr)
 {
 }
 
+/**
+ Destructor.
+ */
 Timer::~Timer()
 {
 	RemoveStage(mpUpdate->GetID());
 }
 
+/**
+ Queries for a desired interface.
+ @param id The interface id.
+ @param [in,out] outIface The output interface pointer.
+ @return Success/failure code.
+ */
 COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIface)
 {
 	if (outIface)
@@ -42,7 +53,13 @@ COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIfa
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Timer::Initialize(iPipeline* owner, const char* name)
+/**
+ Initializes this object.
+ @param [in,out] owner The pipeline that owns this object.
+ @param name The name of the timer.
+ @return Success/failure code.
+ */
+COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name)
 {
 	mpOwner = owner;
 	mID = SystemID(name, strlen(name));
@@ -50,18 +67,23 @@ COM::Result CPF_STDCALL Timer::Initialize(iPipeline* owner, const char* name)
 	mStart = Time::Now();
 	mTime = mStart;
 
-	mpUpdate.Adopt(reinterpret_cast<SingleUpdateStage*>(Stage::Create(SingleUpdateStage::kID, nullptr, this, Stage::kExecute.GetString())));
+	rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, mpUpdate.AsVoidPP());
+	mpUpdate->Initialize(this, iStage::kExecute.GetString());
 	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);
 	return COM::kOK;
 }
 
+/**
+ Gets the owning pipeline.
+ @return The owner.
+ */
 iPipeline* CPF_STDCALL Timer::GetOwner() const
 {
 	return mpOwner;
 }
 
-COM::Result CPF_STDCALL Timer::GetStage(StageID id, Stage** outStage) const
+COM::Result CPF_STDCALL Timer::GetStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
@@ -85,7 +107,7 @@ int32_t CPF_STDCALL Timer::GetStageCount() const
 	return int32_t(mStages.size());
 }
 
-Stage* CPF_STDCALL Timer::GetStage(int32_t index)
+iStage* CPF_STDCALL Timer::GetStage(int32_t index)
 {
 	return mStages[index];
 }
@@ -135,9 +157,9 @@ COM::Result CPF_STDCALL Timer::GetDependencies(int32_t* count, BlockDependency* 
 		BlockDependencies result;
 		for (const auto& dep : mDependencies)
 		{
-			Stage* depStage = nullptr;
+			iStage* depStage = nullptr;
 			GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
-			Stage* targetStage = nullptr;
+			iStage* targetStage = nullptr;
 			GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
 			if (depStage && depStage->IsEnabled() &&
 				targetStage && targetStage->IsEnabled())
@@ -172,22 +194,22 @@ COM::Result CPF_STDCALL Timer::Configure()
 }
 
 //////////////////////////////////////////////////////////////////////////
-Time::Value Timer::GetTime() const
+Time::Value CPF_STDCALL Timer::GetTime()
 {
 	return mTime - mStart;
 }
 
-float Timer::GetDeltaTime() const
+float CPF_STDCALL Timer::GetDeltaTime()
 {
 	return float(Time::Seconds(mDelta));
 }
 
-bool Timer::IsPaused() const
+bool CPF_STDCALL Timer::IsPaused()
 {
 	return mPaused;
 }
 
-void Timer::SetPause(bool flag)
+void CPF_STDCALL Timer::SetPause(bool flag)
 {
 	if (!flag && flag)
 	{
@@ -197,12 +219,12 @@ void Timer::SetPause(bool flag)
 	mPaused = flag;
 }
 
-void Timer::Pause()
+void CPF_STDCALL Timer::Pause()
 {
 	mPaused = true;
 }
 
-void Timer::Resume()
+void CPF_STDCALL Timer::Resume()
 {
 	SetPause(false);
 }
@@ -220,7 +242,7 @@ void Timer::_Update(Concurrency::ThreadContext&, void* context)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool Timer::AddStage(Stage* stage)
+bool Timer::AddStage(iStage* stage)
 {
 	if (stage && stage->IsEnabled())
 	{

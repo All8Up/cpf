@@ -17,8 +17,8 @@ namespace Cpf
 		{};
 
 	private:
-		NetworkSystem(MultiCore::iPipeline*, const char* name, const Desc*);
-		static iSystem* _Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
+		NetworkSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline*, const char* name, const Desc*);
+		static iSystem* _Creator(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 
 		static void _Update(Concurrency::ThreadContext&, void*);
 

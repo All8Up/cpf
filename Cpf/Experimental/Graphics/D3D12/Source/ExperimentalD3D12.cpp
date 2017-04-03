@@ -77,10 +77,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	MoverSystem::MoverComponent::Install();
 	
 	//////////////////////////////////////////////////////////////////////////
-	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpMultiCore.AsVoidPP());
-
-	// Install the stage types.
-	MultiCore::SingleUpdateStage::Install();
+	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpMultiCore.AsVoidPP());
 
 	// Install the systems this will use.
 	RenderSystem::Install();
@@ -91,7 +88,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Create the primary game timer.
 	IntrusivePtr<MultiCore::iTimer> gameTime;
 	GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, gameTime.AsVoidPP());
-	gameTime->Initialize(mpMultiCore, "Game Time");
+	gameTime->Initialize(GetRegistry(), mpMultiCore, "Game Time");
 
 	mpMultiCore->Install(gameTime);
 
@@ -99,14 +96,14 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	RenderSystem::Desc renderDesc;
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
-	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(mpMultiCore, "Render System", &renderDesc));
+	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(GetRegistry(), mpMultiCore, "Render System", &renderDesc));
 	mpMultiCore->Install(renderSystem);
 
 	// Create the instance management system.
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(mpMultiCore, "Instance System", &instanceDesc));
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(GetRegistry(), mpMultiCore, "Instance System", &instanceDesc));
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
@@ -114,56 +111,56 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	moverDesc.mpApplication = this;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(mpMultiCore, "Mover", &moverDesc));
+	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(GetRegistry(), mpMultiCore, "Mover", &moverDesc));
 	mpMultiCore->Install(mpMoverSystem);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Add the required inter-system dependencies.
 	// Render system needs to draw after instancing is complete.
 	renderSystem->AddDependency({
-		{ renderSystem->GetID(), RenderSystem::kDrawInstances, MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
+		{ renderSystem->GetID(), RenderSystem::kDrawInstances, MultiCore::iStage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 
 	// Instance system needs to begin after render system begin.
 	// Instance system needs to end after movement update.
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
-		{ renderSystem->GetID(), RenderSystem::kBeginFrame, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
+		{ renderSystem->GetID(), RenderSystem::kBeginFrame, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 
 	// Mover updates must happen after game time update and instance begin.
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::Stage::kStageID, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
+		{ gameTime->GetID(), MultiCore::iStage::kStageID, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::Stage::kStageID, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
+		{ gameTime->GetID(), MultiCore::iStage::kStageID, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 

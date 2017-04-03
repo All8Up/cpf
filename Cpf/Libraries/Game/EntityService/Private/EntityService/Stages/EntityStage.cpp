@@ -14,16 +14,17 @@ EntityStage::EntityStage(MultiCore::iSystem* owner, const char* name)
 
 bool EntityStage::Install()
 {
-	return Stage::Install(kID, &EntityStage::_Creator);
+	return iStage::Install(kID, &EntityStage::_Creator);
 }
 
 bool EntityStage::Remove()
 {
-	return Stage::Remove(kID);
+	return iStage::Remove(kID);
 }
 
-MultiCore::Stage* EntityStage::_Creator(Plugin::iRegistry* rgy, MultiCore::iSystem* owner, const char* name)
+MultiCore::iStage* EntityStage::_Creator(Plugin::iRegistry* rgy, MultiCore::iSystem* owner, const char* name)
 {
+	(void)rgy;
 	return new EntityStage(owner, name);
 }
 
@@ -41,6 +42,37 @@ void EntityStage::RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 	mWork.Release();
 }
 
+COM::Result CPF_STDCALL EntityStage::Initialize(MultiCore::iSystem* owner, const char* const name)
+{
+	if (owner && name)
+	{
+		mpSystem = owner;
+		mID = MultiCore::StageID(name, strlen(name));
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+MultiCore::iSystem* CPF_STDCALL EntityStage::GetSystem() const
+{
+	return mpSystem;
+}
+
+MultiCore::StageID CPF_STDCALL EntityStage::GetID() const
+{
+	return mID;
+}
+
+bool CPF_STDCALL EntityStage::IsEnabled() const
+{
+	return mEnabled;
+}
+
+void CPF_STDCALL EntityStage::SetEnabled(bool flag)
+{
+	mEnabled = flag;
+}
+
 COM::Result CPF_STDCALL EntityStage::GetDependencies(MultiCore::SystemID sid, int32_t* count, MultiCore::BlockDependency* deps)
 {
 	if (count)
@@ -49,13 +81,13 @@ COM::Result CPF_STDCALL EntityStage::GetDependencies(MultiCore::SystemID sid, in
 		if (deps)
 		{
 			deps[0] = {
-				{ sid, GetID(), Stage::kEnd },
-				{ sid, GetID(), Stage::kExecute },
+				{ sid, GetID(), iStage::kEnd },
+				{ sid, GetID(), iStage::kExecute },
 				MultiCore::DependencyPolicy::eAfter
 			};
 			deps[1] = {
-				{ sid, GetID(), Stage::kExecute },
-				{ sid, GetID(), Stage::kBegin },
+				{ sid, GetID(), iStage::kExecute },
+				{ sid, GetID(), iStage::kBegin },
 				MultiCore::DependencyPolicy::eBarrier
 			};
 		}
@@ -84,6 +116,7 @@ COM::Result EntityStage::GetInstructions(MultiCore::SystemID sid, int32_t* count
 
 void EntityStage::_Begin(Concurrency::ThreadContext& tc, void* context)
 {
+	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	self.mWork.Begin();
 }
@@ -96,6 +129,7 @@ void EntityStage::_Update(Concurrency::ThreadContext& tc, void* context)
 
 void EntityStage::_End(Concurrency::ThreadContext& tc, void* context)
 {
+	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	self.mWork.End();
 }

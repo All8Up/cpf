@@ -16,7 +16,7 @@ System::System()
 System::~System()
 {}
 
-COM::Result CPF_STDCALL System::Initialize(iPipeline* owner, const char* name)
+COM::Result CPF_STDCALL System::Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name)
 {
 	if (owner && name)
 	{
@@ -55,7 +55,7 @@ iPipeline* CPF_STDCALL System::GetOwner() const
 	return mpOwner;
 }
 
-COM::Result CPF_STDCALL System::GetStage(StageID id, Stage** outStage) const
+COM::Result CPF_STDCALL System::GetStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
@@ -102,7 +102,7 @@ COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* ins
 	return COM::kInvalidParameter;
 }
 
-bool System::AddStage(Stage* stage)
+bool System::AddStage(iStage* stage)
 {
 	if (stage && stage->IsEnabled())
 	{
@@ -143,9 +143,9 @@ COM::Result CPF_STDCALL System::GetDependencies(int32_t* count, BlockDependency*
 		BlockDependencies result;
 		for (const auto& dep : mDependencies)
 		{
-			Stage* depStage = nullptr;
+			iStage* depStage = nullptr;
 			GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
-			Stage* targetStage = nullptr;
+			iStage* targetStage = nullptr;
 			GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
 			if (depStage && depStage->IsEnabled() &&
 				targetStage && targetStage->IsEnabled())
@@ -182,11 +182,11 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-iSystem* System::_Create(iPipeline* owner, SystemID id, const char* name, const Desc* desc)
+iSystem* System::_Create(Plugin::iRegistry* rgy, iPipeline* owner, SystemID id, const char* name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
-		return (*it->second)(owner, name, desc);
+		return (*it->second)(rgy, owner, name, desc);
 	return nullptr;
 }
 

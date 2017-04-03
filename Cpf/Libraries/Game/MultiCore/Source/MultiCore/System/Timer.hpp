@@ -10,7 +10,7 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class CPF_EXPORT_MULTICORE Timer : public tRefCounted<iTimer>
+		class Timer : public tRefCounted<iTimer>
 		{
 		public:
 			// Construction/Destruction.
@@ -21,27 +21,27 @@ namespace Cpf
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
 
 			// System overrides.
-			COM::Result CPF_STDCALL Initialize(iPipeline* owner, const char* name) override;
+			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name) override;
 			iPipeline* CPF_STDCALL GetOwner() const override;
-			COM::Result CPF_STDCALL GetStage(StageID id, Stage** outStage) const override;
+			COM::Result CPF_STDCALL GetStage(StageID id, iStage** outStage) const override;
 			SystemID CPF_STDCALL GetID() const override;
 			int32_t CPF_STDCALL GetStageCount() const override;
-			Stage* CPF_STDCALL GetStage(int32_t index) override;
+			iStage* CPF_STDCALL GetStage(int32_t index) override;
 			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			void CPF_STDCALL AddDependency(BlockDependency dep) override;
 			COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
 			COM::Result CPF_STDCALL Configure();
 
 			// Timer interface.
-			Time::Value CPF_STDCALL GetTime() const override;
-			float CPF_STDCALL GetDeltaTime() const override;
-			bool CPF_STDCALL IsPaused() const override;
+			Time::Value CPF_STDCALL GetTime() override;
+			float CPF_STDCALL GetDeltaTime() override;
+			bool CPF_STDCALL IsPaused() override;
 			void CPF_STDCALL SetPause(bool flag) override;
 			void CPF_STDCALL Pause() override;
 			void CPF_STDCALL Resume() override;
 
 		private:
-			bool AddStage(Stage*);
+			bool AddStage(iStage*);
 			bool RemoveStage(StageID);
 
 			// Internal update function.
@@ -54,7 +54,7 @@ namespace Cpf
 			bool mPaused;
 
 			// The internal update stage.
-			IntrusivePtr<SingleUpdateStage> mpUpdate;
+			IntrusivePtr<iSingleUpdateStage> mpUpdate;
 
 			iPipeline* mpOwner;
 			StageVector mStages;

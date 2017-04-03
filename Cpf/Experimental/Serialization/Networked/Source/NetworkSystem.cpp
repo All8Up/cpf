@@ -17,17 +17,19 @@ bool NetworkSystem::Remove()
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc*)
+NetworkSystem::NetworkSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* pipeline, const char* name, const Desc*)
 {
-	System::Initialize(pipeline, name);
-	IntrusivePtr<SingleUpdateStage> updateStage(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, Stage::kExecute.GetString())));
+	System::Initialize(rgy, pipeline, name);
+	IntrusivePtr<iSingleUpdateStage> updateStage;
+	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, updateStage.AsVoidPP());
+	updateStage->Initialize(this, iStage::kExecute.GetString());
 	updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
 	AddStage(updateStage);
 }
 
-iSystem* NetworkSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+iSystem* NetworkSystem::_Creator(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new NetworkSystem(owner, name, static_cast<const Desc*>(desc));
+	return new NetworkSystem(rgy, owner, name, static_cast<const Desc*>(desc));
 }
 
 void NetworkSystem::_Update(Concurrency::ThreadContext&, void* context)

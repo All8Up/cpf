@@ -33,10 +33,10 @@ namespace Cpf
 		Graphics::DebugUI& GetDebugUI();
 
 	private:
-		RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc);
+		RenderSystem(Plugin::iRegistry*, MultiCore::iPipeline* pipeline, const char* name, const Desc* desc);
 		~RenderSystem() override;
 
-		static iSystem* _Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
+		static iSystem* _Create(Plugin::iRegistry*, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();
@@ -51,6 +51,7 @@ namespace Cpf
 
 		Desc mDesc;
 		MultiCore::iTimer* mpTimer;
+		Plugin::iRegistry* mpRegistry;
 
 		IntrusivePtr<Graphics::iInstance> mpInstance;
 		IntrusivePtr<Graphics::iAdapter> mpAdapter;

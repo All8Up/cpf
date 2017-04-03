@@ -127,7 +127,6 @@ bool Networked::_CreateWindow()
 bool Networked::_Install()
 {
 	return (
-		SingleUpdateStage::Install() &&
 		NetworkSystem::Install() &&
 		RenderSystem::Install()
 		);
@@ -137,8 +136,7 @@ bool Networked::_Remove()
 {
 	return (
 		RenderSystem::Remove() &&
-		NetworkSystem::Remove() &&
-		SingleUpdateStage::Remove()
+		NetworkSystem::Remove()
 		);
 }
 
@@ -178,17 +176,17 @@ bool Networked::_ShutdownMultiCore()
 
 bool Networked::_InitializePipeline()
 {
-	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
+	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
 	{
 		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
-		mpTimer->Initialize(mpPipeline, "Game Time");
+		mpTimer->Initialize(GetRegistry(), mpPipeline, "Game Time");
 		mpPipeline->Install(mpTimer);
 
-		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(mpPipeline, "Networking", nullptr))));
+		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(GetRegistry(), mpPipeline, "Networking", nullptr))));
 
 		RenderSystem::Desc renderDesc;
 		renderDesc.mTimer = mpTimer->GetID();
-		mpRenderSystem.Adopt(static_cast<RenderSystem*>(mpPipeline->Install(System::Create<RenderSystem>(mpPipeline, "Rendering", &renderDesc))));
+		mpRenderSystem.Adopt(static_cast<RenderSystem*>(mpPipeline->Install(System::Create<RenderSystem>(GetRegistry(), mpPipeline, "Rendering", &renderDesc))));
 		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(mpWindow, mpLocator))
 		{
 			return (

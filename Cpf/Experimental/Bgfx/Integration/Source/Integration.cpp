@@ -173,14 +173,11 @@ bool BgfxIntegration::_InitializeConcurrency()
 
 bool BgfxIntegration::_InitializePipeline()
 {
-	if (SingleUpdateStage::Install())
+	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
 	{
-		if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
-		{
-			GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
-			mpTimer->Initialize(mpPipeline, "Game Time");
-			return bool(mpTimer);
-		}
+		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
+		mpTimer->Initialize(GetRegistry(), mpPipeline, "Game Time");
+		return bool(mpTimer);
 	}
 	return false;
 }

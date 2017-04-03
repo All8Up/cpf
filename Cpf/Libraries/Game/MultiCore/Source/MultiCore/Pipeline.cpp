@@ -31,7 +31,7 @@ COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** ifa
 			*iface = static_cast<COM::iUnknown*>(this);
 			AddRef();
 			return COM::kOK;
-		case iPipeline::kID.GetID():
+		case iPipeline::kIID.GetID():
 			*iface = static_cast<iPipeline*>(this);
 			AddRef();
 			return COM::kOK;
@@ -153,7 +153,7 @@ COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** ou
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, Stage** outStage)
+COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, iStage** outStage)
 {
 	if (outStage)
 	{
@@ -162,7 +162,7 @@ COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, S
 		{
 			if (system)
 			{
-				Stage* result = nullptr;
+				iStage* result = nullptr;
 				if (COM::Succeeded(system->GetStage(stageID, &result)))
 					return COM::kOK;
 			}

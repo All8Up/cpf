@@ -46,7 +46,7 @@ COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, voi
 
 
 
-MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+MoverSystem::MoverSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const Desc* desc)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -55,13 +55,13 @@ MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const De
 	, mEnableMovement(true)
 	, mUseEBus(false)
 {
-	System::Initialize(owner, name);
+	System::Initialize(rgy, owner, name);
 
 	mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
 	// Build the stages.
-	mpThreadStage = reinterpret_cast<EntityStage*>(MultiCore::Stage::Create(EntityStage::kID, nullptr, this, kUpdate.GetString()));
-	mpEBusStage = reinterpret_cast<EntityStage*>(MultiCore::Stage::Create(EntityStage::kID, nullptr, this, kUpdateEBus.GetString()));
+	mpThreadStage = reinterpret_cast<iEntityStage*>(MultiCore::iStage::Create(EntityStage::kID, nullptr, this, kUpdate.GetString()));
+	mpEBusStage = reinterpret_cast<iEntityStage*>(MultiCore::iStage::Create(EntityStage::kID, nullptr, this, kUpdateEBus.GetString()));
 
 	// Add the stages to this system.
 	AddStage(mpThreadStage);
@@ -109,9 +109,9 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::iSystem* MoverSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::iSystem* MoverSystem::_Creator(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new MoverSystem(owner, name, static_cast<const Desc*>(desc));
+	return new MoverSystem(rgy, owner, name, static_cast<const Desc*>(desc));
 }
 
 
@@ -141,7 +141,7 @@ void MoverSystem::MoverComponent::Deactivate()
 void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
-	const MultiCore::iTimer* timer = mover->mpTime;
+	MultiCore::iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -178,7 +178,7 @@ void MoverSystem::MoverComponent::_EBus(iSystem* system, iEntity* object)
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	Threading::ScopedLock<Threading::Mutex> lock(mover->mMutex);
 
-	const MultiCore::iTimer* timer = mover->mpTime;
+	MultiCore::iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;

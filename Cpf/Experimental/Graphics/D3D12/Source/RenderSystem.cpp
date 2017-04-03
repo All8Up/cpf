@@ -5,6 +5,7 @@
 
 using namespace Cpf;
 using namespace Concurrency;
+using namespace MultiCore;
 
 bool RenderSystem::Install()
 {
@@ -16,29 +17,45 @@ bool RenderSystem::Remove()
 	return System::Remove(kID);
 }
 
-RenderSystem::RenderSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+RenderSystem::RenderSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const Desc* desc)
 	: mpApp(desc->mpApplication)
 	, mCurrentBackBuffer(0)
 {
-	System::Initialize(owner, name);
+	System::Initialize(rgy, owner, name);
 
 	// Build the stages and set the update function for each.
 	// NOTE: While there are 6 stages which must operate in order, there will only
 	// be two required barrier groups since the only thing required is that they
 	// run in order which is accomplished via series of eLast types.
-	IntrusivePtr<MultiCore::SingleUpdateStage> beginFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kBeginFrame.GetString())));
+	IntrusivePtr<MultiCore::iSingleUpdateStage> beginFrame;
+	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, beginFrame.AsVoidPP());
+	beginFrame->Initialize(this, kBeginFrame.GetString());
 	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, MultiCore::BlockOpcode::eFirst);
+
 	// Paired in a group ^
-	IntrusivePtr<MultiCore::SingleUpdateStage> clearBuffers(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kClearBuffers.GetString())));
+	IntrusivePtr<MultiCore::iSingleUpdateStage> clearBuffers;
+	rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, clearBuffers.AsVoidPP());
+	clearBuffers->Initialize(this, kClearBuffers.GetString());
 	clearBuffers->SetUpdate(&RenderSystem::_Clear, this, MultiCore::BlockOpcode::eLast);
 
-	IntrusivePtr<MultiCore::SingleUpdateStage> drawInstances(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kDrawInstances.GetString())));
+	IntrusivePtr<MultiCore::iSingleUpdateStage> drawInstances;
+	rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, drawInstances.AsVoidPP());
+	drawInstances->Initialize(this, kDrawInstances.GetString());
 	drawInstances->SetUpdate(&RenderSystem::_Draw, this, MultiCore::BlockOpcode::eLast);
-	IntrusivePtr<MultiCore::SingleUpdateStage> debugUI(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kDebugUI.GetString())));
+
+	IntrusivePtr<MultiCore::iSingleUpdateStage> debugUI;
+	rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, debugUI.AsVoidPP());
+	debugUI->Initialize(this, kDebugUI.GetString());
 	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, MultiCore::BlockOpcode::eLast);
-	IntrusivePtr<MultiCore::SingleUpdateStage> preparePresent(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kPreparePresent.GetString())));
+
+	IntrusivePtr<MultiCore::iSingleUpdateStage> preparePresent;
+	rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, preparePresent.AsVoidPP());
+	preparePresent->Initialize(this, kPreparePresent.GetString());
 	preparePresent->SetUpdate(&RenderSystem::_PreparePresent, this, MultiCore::BlockOpcode::eLast);
-	IntrusivePtr<MultiCore::SingleUpdateStage> endFrame(reinterpret_cast<MultiCore::SingleUpdateStage*>(MultiCore::Stage::Create(MultiCore::SingleUpdateStage::kID, nullptr, this, kEndFrame.GetString())));
+
+	IntrusivePtr<MultiCore::iSingleUpdateStage> endFrame;
+	rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, endFrame.AsVoidPP());
+	endFrame->Initialize(this, kEndFrame.GetString());
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, MultiCore::BlockOpcode::eLast);
 
 	// Add the stages.
@@ -51,28 +68,28 @@ RenderSystem::RenderSystem(MultiCore::iPipeline* owner, const char* name, const 
 
 	// Add the default set of dependencies.
 	AddDependency({
-		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), beginFrame->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), clearBuffers->GetID(), MultiCore::iStage::kExecute },
+		{ GetID(), beginFrame->GetID(), MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
-		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), clearBuffers->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
+		{ GetID(), clearBuffers->GetID(), MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
-		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), drawInstances->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
+		{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
-		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), debugUI->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), preparePresent->GetID(), MultiCore::iStage::kExecute },
+		{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	AddDependency({
-		{ GetID(), endFrame->GetID(), MultiCore::Stage::kExecute },
-		{ GetID(), preparePresent->GetID(), MultiCore::Stage::kExecute },
+		{ GetID(), endFrame->GetID(), MultiCore::iStage::kExecute },
+		{ GetID(), preparePresent->GetID(), MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 
@@ -126,7 +143,7 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::iSystem* RenderSystem::Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::iSystem* RenderSystem::Creator(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
 {
-	return new RenderSystem(owner, name, static_cast<const Desc*>(desc));
+	return new RenderSystem(rgy, owner, name, static_cast<const Desc*>(desc));
 }

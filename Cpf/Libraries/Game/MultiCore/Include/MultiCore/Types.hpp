@@ -14,16 +14,16 @@ namespace Cpf
 	{
 		struct iPipeline;
 
-		struct CPF_EXPORT_MULTICORE SystemID_tag {};
-		using SystemID = CPF_EXPORT_MULTICORE Hash::HashString<SystemID_tag>;
-		class CPF_EXPORT_MULTICORE System;
+		struct SystemID_tag {};
+		using SystemID = Hash::HashString<SystemID_tag>;
+		struct iSystem;
 
-		struct CPF_EXPORT_MULTICORE StageID_tag {};
+		struct StageID_tag {};
 		using StageID = Hash::HashString<StageID_tag>;
-		class CPF_EXPORT_MULTICORE Stage;
-		using StageVector = Vector<IntrusivePtr<Stage>>;
+		struct iStage;
+		using StageVector = Vector<IntrusivePtr<iStage>>;
 
-		struct CPF_EXPORT_MULTICORE BlockID_tag {};
+		struct BlockID_tag {};
 		using BlockID = Hash::HashString<BlockID_tag>;
 
 		enum class BlockOpcode

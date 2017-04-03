@@ -7,8 +7,5 @@ namespace Cpf
 {
 	namespace EntityService
 	{
-		struct iStage : COM::iUnknown
-		{
-		};
 	}
 }
