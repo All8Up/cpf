@@ -30,7 +30,7 @@ namespace Cpf
 		static bool Install();
 		static bool Remove();
 
-		struct Desc : System::Desc
+		struct Desc : iSystem::Desc
 		{
 			MultiCore::SystemID mTimerID;
 			ExperimentalD3D12* mpApplication;

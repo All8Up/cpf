@@ -2,6 +2,7 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/iPipeline.hpp"
+#include "System.hpp"
 #include "UnorderedMap.hpp"
 #include "Logging/Logging.hpp"
 
@@ -18,6 +19,7 @@ System::~System()
 
 COM::Result CPF_STDCALL System::Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name)
 {
+	(void)rgy;
 	if (owner && name)
 	{
 		mpOwner = owner;
@@ -80,9 +82,9 @@ COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* ins
 			{
 				int32_t instructionCount = 0;
 				stage->GetInstructions(GetID(), &instructionCount, nullptr);
-				Vector<Instruction> instructions(instructionCount);
-				stage->GetInstructions(GetID(), &instructionCount, instructions.data());
-				result.insert(result.end(), instructions.begin(), instructions.end());
+				Vector<Instruction> instrs(instructionCount);
+				stage->GetInstructions(GetID(), &instructionCount, instrs.data());
+				result.insert(result.end(), instrs.begin(), instrs.end());
 			}
 		}
 		if (instructions)
@@ -182,7 +184,7 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-iSystem* System::_Create(Plugin::iRegistry* rgy, iPipeline* owner, SystemID id, const char* name, const Desc* desc)
+iSystem* iSystem::_Create(Plugin::iRegistry* rgy, iPipeline* owner, SystemID id, const char* name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
@@ -190,7 +192,7 @@ iSystem* System::_Create(Plugin::iRegistry* rgy, iPipeline* owner, SystemID id, 
 	return nullptr;
 }
 
-bool System::Install(SystemID id, Creator creator)
+bool iSystem::Install(SystemID id, Creator creator)
 {
 	if (s_SystemMap.find(id) != s_SystemMap.end())
 		return false;
@@ -198,7 +200,7 @@ bool System::Install(SystemID id, Creator creator)
 	return true;
 }
 
-bool System::Remove(SystemID id)
+bool iSystem::Remove(SystemID id)
 {
 	if (s_SystemMap.find(id) == s_SystemMap.end())
 		return false;

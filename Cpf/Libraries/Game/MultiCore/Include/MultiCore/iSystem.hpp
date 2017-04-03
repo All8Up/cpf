@@ -29,7 +29,27 @@ namespace Cpf
 			virtual void CPF_STDCALL AddDependency(BlockDependency dep) = 0;
 			virtual COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) = 0;
 			virtual COM::Result CPF_STDCALL Configure() = 0;
+
+			//////////////////////////////////////////////////////////////////////////
+			// System factory.
+			using Creator = iSystem* (*)(Plugin::iRegistry*, iPipeline* owner, const char*, const Desc*);
+
+			template <typename TYPE>
+			static TYPE* Create(Plugin::iRegistry*, iPipeline* owner, const char*, const Desc* = nullptr);
+			static bool Install(SystemID id, Creator);
+			static bool Remove(SystemID id);
+
+			// Untyped factory interface.
+			static iSystem* _Create(Plugin::iRegistry*, iPipeline* owner, SystemID, const char*, const Desc* desc);
 		};
+
+		// Typed system factory.
+		template <typename TYPE>
+		TYPE* iSystem::Create(Plugin::iRegistry* rgy, iPipeline* owner, const char* name, const Desc* desc)
+		{
+			return static_cast<TYPE*>(_Create(rgy, owner, TYPE::kID, name, desc));
+		}
+
 
 		class System : public tRefCounted<iSystem>
 		{
@@ -47,15 +67,6 @@ namespace Cpf
 			COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
 			COM::Result CPF_STDCALL Configure() { return COM::kOK; }
 
-
-			using Creator = iSystem* (*)(Plugin::iRegistry*, iPipeline* owner, const char*, const Desc*);
-
-			// System factory.
-			template <typename TYPE>
-			static TYPE* Create(Plugin::iRegistry*, iPipeline* owner, const char*, const Desc* = nullptr);
-			static bool Install(SystemID id, Creator);
-			static bool Remove(SystemID id);
-
 		protected:
 			// Implementation interface.
 			System();
@@ -65,21 +76,11 @@ namespace Cpf
 			bool RemoveStage(StageID);
 
 		private:
-			// Untyped factory interface.
-			static iSystem* _Create(Plugin::iRegistry*, iPipeline* owner, SystemID, const char*, const Desc* desc);
-
 			// Implementation data.
 			iPipeline* mpOwner;
 			StageVector mStages;
 			SystemID mID;
 			BlockDependencies mDependencies;
 		};
-
-		// Typed system factory.
-		template <typename TYPE>
-		TYPE* System::Create(Plugin::iRegistry* rgy, iPipeline* owner, const char* name, const Desc* desc)
-		{
-			return static_cast<TYPE*>(_Create(rgy, owner, TYPE::kID, name, desc));
-		}
 	}
 }
