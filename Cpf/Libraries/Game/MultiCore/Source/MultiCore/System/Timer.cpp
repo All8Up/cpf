@@ -83,7 +83,7 @@ iPipeline* CPF_STDCALL Timer::GetOwner() const
 	return mpOwner;
 }
 
-COM::Result CPF_STDCALL Timer::GetStage(StageID id, iStage** outStage) const
+COM::Result CPF_STDCALL Timer::FindStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
@@ -102,14 +102,26 @@ SystemID CPF_STDCALL Timer::GetID() const
 	return mID;
 }
 
-int32_t CPF_STDCALL Timer::GetStageCount() const
+COM::Result CPF_STDCALL Timer::GetStages(int32_t* count, iStage** outStages) const
 {
-	return int32_t(mStages.size());
-}
-
-iStage* CPF_STDCALL Timer::GetStage(int32_t index)
-{
-	return mStages[index];
+	if (count)
+	{
+		if (outStages)
+		{
+			if (int32_t(mStages.size()) > *count)
+				return COM::kNotEnoughSpace;
+			int32_t index = 0;
+			for (auto stage : mStages)
+				outStages[index++] = stage;
+			return COM::kOK;
+		}
+		else
+		{
+			*count = int32_t(mStages.size());
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalidParameter;
 }
 
 COM::Result CPF_STDCALL Timer::GetInstructions(int32_t* count, Instruction* instructions)
@@ -242,27 +254,27 @@ void Timer::_Update(Concurrency::ThreadContext&, void* context)
 
 
 //////////////////////////////////////////////////////////////////////////
-bool Timer::AddStage(iStage* stage)
+COM::Result Timer::AddStage(iStage* stage)
 {
 	if (stage && stage->IsEnabled())
 	{
 		stage->AddRef();
 		mStages.emplace_back(stage);
-		return true;
+		return COM::kOK;
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 
-bool Timer::RemoveStage(StageID id)
+COM::Result Timer::RemoveStage(StageID id)
 {
 	for (int i = 0; i < mStages.size(); ++i)
 	{
 		if (mStages[i]->GetID() == id)
 		{
 			mStages.erase(mStages.begin() + i);
-			return true;
+			return COM::kOK;
 		}
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 

@@ -163,7 +163,7 @@ COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, i
 			if (system)
 			{
 				iStage* result = nullptr;
-				if (COM::Succeeded(system->GetStage(stageID, &result)))
+				if (COM::Succeeded(system->FindStage(stageID, &result)))
 					return COM::kOK;
 			}
 		}

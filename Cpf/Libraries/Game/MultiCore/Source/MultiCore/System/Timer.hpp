@@ -23,10 +23,9 @@ namespace Cpf
 			// System overrides.
 			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name) override;
 			iPipeline* CPF_STDCALL GetOwner() const override;
-			COM::Result CPF_STDCALL GetStage(StageID id, iStage** outStage) const override;
+			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			SystemID CPF_STDCALL GetID() const override;
-			int32_t CPF_STDCALL GetStageCount() const override;
-			iStage* CPF_STDCALL GetStage(int32_t index) override;
+			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
 			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			void CPF_STDCALL AddDependency(BlockDependency dep) override;
 			COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
@@ -40,9 +39,10 @@ namespace Cpf
 			void CPF_STDCALL Pause() override;
 			void CPF_STDCALL Resume() override;
 
+			COM::Result CPF_STDCALL AddStage(iStage*);
+			COM::Result CPF_STDCALL RemoveStage(StageID);
+
 		private:
-			bool AddStage(iStage*);
-			bool RemoveStage(StageID);
 
 			// Internal update function.
 			static void _Update(Concurrency::ThreadContext&, void*);

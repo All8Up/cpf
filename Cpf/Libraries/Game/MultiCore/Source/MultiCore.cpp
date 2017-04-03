@@ -4,6 +4,7 @@
 #include "MultiCore/Pipeline.hpp"
 #include "MultiCore/System/Timer.hpp"
 #include "MultiCore/Stage.hpp"
+#include "MultiCore/System.hpp"
 
 using namespace Cpf;
 
@@ -26,6 +27,7 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* regist
 		spRegistry->Install(MultiCore::kPipelineCID, new MultiCore::PipelineClass());
 		spRegistry->Install(MultiCore::kTimerCID, new MultiCore::TimerClass());
 		spRegistry->Install(MultiCore::kSingleUpdateStageCID, new MultiCore::SingleUpdateStageClass());
+		spRegistry->Install(MultiCore::kStageListCID, new MultiCore::StageListClass());
 	}
 	return s_RefCount;
 }
@@ -35,6 +37,7 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
 	if (--s_RefCount == 0)
 	{
 		CPF_ASSERT(spRegistry != nullptr);
+		spRegistry->Remove(MultiCore::kStageListCID);
 		spRegistry->Remove(MultiCore::kSingleUpdateStageCID);
 		spRegistry->Remove(MultiCore::kTimerCID);
 		spRegistry->Remove(MultiCore::kPipelineCID);

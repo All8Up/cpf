@@ -9,6 +9,73 @@
 using namespace Cpf;
 using namespace MultiCore;
 
+//////////////////////////////////////////////////////////////////////////
+COM::Result CPF_STDCALL StageList::FindStage(StageID id, iStage** outStage) const
+{
+	for (const auto& stage : mStages)
+	{
+		if (stage->GetID() == id)
+		{
+			stage->AddRef();
+			*outStage = stage;
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalid;
+}
+
+COM::Result CPF_STDCALL StageList::GetStages(int32_t* count, iStage** outStages) const
+{
+	if (count)
+	{
+		if (outStages)
+		{
+			if (int32_t(mStages.size()) > *count)
+				return COM::kNotEnoughSpace;
+			int32_t index = 0;
+			for (auto stage : mStages)
+				outStages[index++] = stage;
+			return COM::kOK;
+		}
+		else
+		{
+			*count = int32_t(mStages.size());
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
+void CPF_STDCALL StageList::AddDependency(BlockDependency dep)
+{
+	mDependencies.push_back(dep);
+}
+
+COM::Result CPF_STDCALL StageList::AddStage(iStage* stage)
+{
+	if (stage)
+	{
+		stage->AddRef();
+		mStages.emplace_back(stage);
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL StageList::RemoveStage(StageID id)
+{
+	for (int i = 0; i < mStages.size(); ++i)
+	{
+		if (mStages[i]->GetID() == id)
+		{
+			mStages.erase(mStages.begin() + i);
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
+//////////////////////////////////////////////////////////////////////////
 System::System()
 	: mpOwner(nullptr)
 {
@@ -57,7 +124,7 @@ iPipeline* CPF_STDCALL System::GetOwner() const
 	return mpOwner;
 }
 
-COM::Result CPF_STDCALL System::GetStage(StageID id, iStage** outStage) const
+COM::Result CPF_STDCALL System::FindStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
@@ -104,28 +171,50 @@ COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* ins
 	return COM::kInvalidParameter;
 }
 
-bool System::AddStage(iStage* stage)
+COM::Result CPF_STDCALL System::GetStages(int32_t* count, iStage** outStages) const
 {
-	if (stage && stage->IsEnabled())
+	if (count)
+	{
+		if (outStages)
+		{
+			if (int32_t(mStages.size()) > *count)
+				return COM::kNotEnoughSpace;
+			int32_t index = 0;
+			for (auto stage : mStages)
+				outStages[index++] = stage;
+			return COM::kOK;
+		}
+		else
+		{
+			*count = int32_t(mStages.size());
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result System::AddStage(iStage* stage)
+{
+	if (stage)
 	{
 		stage->AddRef();
 		mStages.emplace_back(stage);
-		return true;
+		return COM::kOK;
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 
-bool System::RemoveStage(StageID id)
+COM::Result System::RemoveStage(StageID id)
 {
 	for (int i = 0; i < mStages.size(); ++i)
 	{
 		if (mStages[i]->GetID() == id)
 		{
 			mStages.erase(mStages.begin() + i);
-			return true;
+			return COM::kOK;
 		}
 	}
-	return false;
+	return COM::kInvalidParameter;
 }
 
 SystemID CPF_STDCALL System::GetID() const
