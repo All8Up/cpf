@@ -25,10 +25,6 @@ set (PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_COMPONENTS
 	Public/EntityService/Interfaces/Components/iTransformComponent.hpp
 	Public/EntityService/Interfaces/Components/iAwarenessComponent.hpp
 )
-set (PRIVATE_HEADERS_ENTITYSERVICE_SYSTEMS
-)
-set (PRIVATE_HEADERS_ENTITYSERVICE_STAGES
-)
 
 # ###############################################
 # Private headers.
@@ -37,6 +33,9 @@ set (PRIVATE_HEADERS
 set (PRIVATE_HEADERS_ENTITYSERVICE
 	Private/EntityService/Entity.hpp
 	Private/EntityService/Manager.hpp
+)
+set (PRIVATE_HEADERS_ENTITYSERVICE_STAGES
+	Private/EntityService/Stages/EntityStage.hpp
 )
 set (PRIVATE_HEADERS_ENTITYSERVICE_SYSTEMS
 )

@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "EntityService/Interfaces/Stages/iEntityStage.hpp"
+#include "EntityStage.hpp"
 #include "MultiCore/Partitioning.hpp"
 #include "MultiCore/QueueBuilder.hpp"
 
