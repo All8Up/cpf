@@ -42,13 +42,11 @@ namespace Cpf
 
 			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
-			void CPF_STDCALL AddDependency(BlockDependency dep) override;
 			COM::Result CPF_STDCALL AddStage(iStage* stage) override;
 			COM::Result CPF_STDCALL RemoveStage(StageID id) override;
 
 		private:
 			StageVector mStages;
-			BlockDependencies mDependencies;
 		};
 
 		class StageListClass : public tRefCounted<Plugin::iClassInstance>

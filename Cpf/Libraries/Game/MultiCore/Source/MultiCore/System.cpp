@@ -46,11 +46,6 @@ COM::Result CPF_STDCALL StageList::GetStages(int32_t* count, iStage** outStages)
 	return COM::kInvalidParameter;
 }
 
-void CPF_STDCALL StageList::AddDependency(BlockDependency dep)
-{
-	mDependencies.push_back(dep);
-}
-
 COM::Result CPF_STDCALL StageList::AddStage(iStage* stage)
 {
 	if (stage)

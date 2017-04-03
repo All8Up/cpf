@@ -20,7 +20,6 @@ namespace Cpf
 
 			virtual COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const = 0;
 			virtual COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const = 0;
-			virtual void CPF_STDCALL AddDependency(BlockDependency dep) = 0;
 			virtual COM::Result CPF_STDCALL AddStage(iStage* stage) = 0;
 			virtual COM::Result CPF_STDCALL RemoveStage(StageID id) = 0;
 		};
@@ -38,6 +37,7 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL Configure() = 0;
 
 			virtual COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) = 0;
+			virtual void CPF_STDCALL AddDependency(BlockDependency dep) = 0;
 			virtual COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) = 0;
 
 			//////////////////////////////////////////////////////////////////////////
