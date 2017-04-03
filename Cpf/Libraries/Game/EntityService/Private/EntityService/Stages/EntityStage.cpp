@@ -80,7 +80,7 @@ void CPF_STDCALL EntityStage::SetEnabled(bool flag)
 	mEnabled = flag;
 }
 
-COM::Result CPF_STDCALL EntityStage::GetDependencies(MultiCore::SystemID sid, int32_t* count, MultiCore::BlockDependency* deps)
+COM::Result CPF_STDCALL EntityStage::GetDependencies(int32_t* count, MultiCore::BlockDependency* deps)
 {
 	if (count)
 	{
@@ -88,13 +88,13 @@ COM::Result CPF_STDCALL EntityStage::GetDependencies(MultiCore::SystemID sid, in
 		if (deps)
 		{
 			deps[0] = {
-				{ sid, GetID(), iStage::kEnd },
-				{ sid, GetID(), iStage::kExecute },
+				{ mpSystem->GetID(), GetID(), iStage::kEnd },
+				{ mpSystem->GetID(), GetID(), iStage::kExecute },
 				MultiCore::DependencyPolicy::eAfter
 			};
 			deps[1] = {
-				{ sid, GetID(), iStage::kExecute },
-				{ sid, GetID(), iStage::kBegin },
+				{ mpSystem->GetID(), GetID(), iStage::kExecute },
+				{ mpSystem->GetID(), GetID(), iStage::kBegin },
 				MultiCore::DependencyPolicy::eBarrier
 			};
 		}
@@ -103,16 +103,16 @@ COM::Result CPF_STDCALL EntityStage::GetDependencies(MultiCore::SystemID sid, in
 	return COM::kInvalidParameter;
 }
 
-COM::Result EntityStage::GetInstructions(MultiCore::SystemID sid, int32_t* count, MultiCore::Instruction* instructions)
+COM::Result EntityStage::GetInstructions(int32_t* count, MultiCore::Instruction* instructions)
 {
 	if (count)
 	{
 		if (instructions)
 		{
 			*count = 3;
-			instructions[0] = { { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this };
-			instructions[1] = { { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this };
-			instructions[2] = { { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this };
+			instructions[0] = { { mpSystem->GetID(), GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this };
+			instructions[1] = { { mpSystem->GetID(), GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this };
+			instructions[2] = { { mpSystem->GetID(), GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this };
 			return COM::kOK;
 		}
 		*count = 3;

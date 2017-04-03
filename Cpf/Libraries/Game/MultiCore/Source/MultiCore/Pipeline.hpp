@@ -27,7 +27,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) override;
 
 		private:
-			bool _ConfigureSystems() const;
+			bool _ConfigureSystems();
 
 			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<iSystem>>;
 			SystemMap mSystemMap;

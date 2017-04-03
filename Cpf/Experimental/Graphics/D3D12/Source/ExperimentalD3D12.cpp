@@ -88,7 +88,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	// Create the primary game timer.
 	IntrusivePtr<MultiCore::iTimer> gameTime;
 	GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, gameTime.AsVoidPP());
-	gameTime->Initialize(GetRegistry(), mpMultiCore, "Game Time");
+	gameTime->Initialize(GetRegistry(), "Game Time");
 
 	mpMultiCore->Install(gameTime);
 
@@ -96,14 +96,14 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	RenderSystem::Desc renderDesc;
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
-	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(GetRegistry(), mpMultiCore, "Render System", &renderDesc));
+	IntrusivePtr<RenderSystem> renderSystem(MultiCore::iSystem::Create<RenderSystem>(GetRegistry(), "Render System", &renderDesc));
 	mpMultiCore->Install(renderSystem);
 
 	// Create the instance management system.
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(GetRegistry(), mpMultiCore, "Instance System", &instanceDesc));
+	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::iSystem::Create<InstanceSystem>(GetRegistry(), "Instance System", &instanceDesc));
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
@@ -111,7 +111,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	moverDesc.mpApplication = this;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(GetRegistry(), mpMultiCore, "Mover", &moverDesc));
+	mpMoverSystem.Adopt(MultiCore::iSystem::Create<MoverSystem>(GetRegistry(), "Mover", &moverDesc));
 	mpMultiCore->Install(mpMoverSystem);
 
 	//////////////////////////////////////////////////////////////////////////

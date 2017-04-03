@@ -65,9 +65,9 @@ void QueueBuilder::_GatherStageDependencies()
 		for (auto stage : stages)
 		{
 			int32_t depCount = 0;
-			stage->GetDependencies(system->GetID(), &depCount, nullptr);
+			stage->GetDependencies(&depCount, nullptr);
 			Vector<MultiCore::BlockDependency> dependencies(depCount);
-			stage->GetDependencies(system->GetID(), &depCount, dependencies.data());
+			stage->GetDependencies(&depCount, dependencies.data());
 
 			if (!dependencies.empty())
 				Add(dependencies);

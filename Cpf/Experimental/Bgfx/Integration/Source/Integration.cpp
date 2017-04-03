@@ -176,7 +176,7 @@ bool BgfxIntegration::_InitializePipeline()
 	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
 	{
 		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
-		mpTimer->Initialize(GetRegistry(), mpPipeline, "Game Time");
+		mpTimer->Initialize(GetRegistry(), "Game Time");
 		return bool(mpTimer);
 	}
 	return false;

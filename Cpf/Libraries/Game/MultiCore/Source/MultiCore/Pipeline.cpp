@@ -89,9 +89,9 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 
 		// Add dependencies between blocks.
 		int32_t depCount = 0;
-		system.second->GetDependencies(&depCount, nullptr);
+		system.second->GetDependencies(this, &depCount, nullptr);
 		BlockDependencies dependencies(depCount);
-		system.second->GetDependencies(&depCount, dependencies.data());
+		system.second->GetDependencies(this, &depCount, dependencies.data());
 		if (!dependencies.empty())
 			builder.Add(dependencies);
 	}
@@ -114,14 +114,14 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 	return result ? COM::kOK : kConfigurationError;
 }
 
-bool Pipeline::_ConfigureSystems() const
+bool Pipeline::_ConfigureSystems()
 {
 	bool result = true;
 
 	// Let the systems configure to the new pipeline.
 	for (const auto& system : mSystemMap)
 	{
-		if (COM::Failed(system.second->Configure()))
+		if (COM::Failed(system.second->Configure(this)))
 			result = false;
 	}
 

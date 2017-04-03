@@ -30,8 +30,8 @@ namespace Cpf
 			StageID CPF_STDCALL GetID() const override;
 			bool CPF_STDCALL IsEnabled() const override;
 			void CPF_STDCALL SetEnabled(bool flag) override;
-			COM::Result CPF_STDCALL GetInstructions(SystemID, int32_t*, Instruction*) override;
-			COM::Result CPF_STDCALL GetDependencies(SystemID, int32_t*, BlockDependency*) override;
+			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
+			COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
 			BlockID CPF_STDCALL GetDefaultBlock() const { return kExecute; };
 			BlockID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
 			BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }

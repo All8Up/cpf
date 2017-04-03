@@ -9,19 +9,19 @@ using namespace MultiCore;
 
 bool RenderSystem::Install()
 {
-	return System::Install(kID, &RenderSystem::Creator);
+	return iSystem::Install(kID, &RenderSystem::Creator);
 }
 
 bool RenderSystem::Remove()
 {
-	return System::Remove(kID);
+	return iSystem::Remove(kID);
 }
 
-RenderSystem::RenderSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+RenderSystem::RenderSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
 	: mpApp(desc->mpApplication)
 	, mCurrentBackBuffer(0)
 {
-	System::Initialize(rgy, owner, name);
+	Initialize(rgy, name);
 
 	// Build the stages and set the update function for each.
 	// NOTE: While there are 6 stages which must operate in order, there will only
@@ -143,7 +143,85 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 	self->mpApp->_EndFrame(tc);
 }
 
-MultiCore::iSystem* RenderSystem::Creator(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::iSystem* RenderSystem::Creator(Plugin::iRegistry* rgy,const char* name, const iSystem::Desc* desc)
 {
-	return new RenderSystem(rgy, owner, name, static_cast<const Desc*>(desc));
+	return new RenderSystem(rgy, name, static_cast<const Desc*>(desc));
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iSystem::kIID.GetID():
+			*outIface = static_cast<iSystem*>(this);
+			break;
+		default:
+			return COM::kNotImplemented;
+		}
+
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name)
+{
+	(void)rgy;
+	if (name)
+	{
+		mID = SystemID(name, strlen(name));
+		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		if (COM::Succeeded(result))
+			return COM::kOK;
+		return result;
+	}
+	return COM::kInvalidParameter;
+}
+
+SystemID CPF_STDCALL RenderSystem::GetID() const
+{
+	return mID;
+}
+
+COM::Result CPF_STDCALL RenderSystem::FindStage(StageID id, iStage** outStage) const
+{
+	return mpStages->FindStage(id, outStage);
+}
+
+COM::Result CPF_STDCALL RenderSystem::GetInstructions(int32_t* count, Instruction* instructions)
+{
+	return mpStages->GetInstructions(count, instructions);
+}
+
+COM::Result CPF_STDCALL RenderSystem::GetStages(int32_t* count, iStage** outStages) const
+{
+	return mpStages->GetStages(count, outStages);
+}
+
+COM::Result CPF_STDCALL RenderSystem::AddStage(iStage* stage)
+{
+	return mpStages->AddStage(stage);
+}
+
+COM::Result CPF_STDCALL RenderSystem::RemoveStage(StageID id)
+{
+	return mpStages->RemoveStage(id);
+}
+
+void CPF_STDCALL RenderSystem::AddDependency(BlockDependency dep)
+{
+	mpStages->AddDependency(dep);
+}
+
+COM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+{
+	return mpStages->GetDependencies(owner, count, deps);
 }

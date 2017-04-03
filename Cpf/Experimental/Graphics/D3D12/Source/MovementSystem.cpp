@@ -14,6 +14,7 @@ using namespace Cpf;
 using namespace Math;
 using namespace Platform;
 using namespace EntityService;
+using namespace MultiCore;
 
 bool MoverSystem::MoverComponent::Install()
 {
@@ -46,7 +47,7 @@ COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, voi
 
 
 
-MoverSystem::MoverSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+MoverSystem::MoverSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -55,7 +56,7 @@ MoverSystem::MoverSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, co
 	, mEnableMovement(true)
 	, mUseEBus(false)
 {
-	System::Initialize(rgy, owner, name);
+	Initialize(rgy, name);
 
 	mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
@@ -79,21 +80,21 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 	return mpInstances;
 }
 
-COM::Result MoverSystem::Configure()
+COM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
 {
-	if (COM::Succeeded(GetOwner()->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
-		COM::Succeeded(GetOwner()->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
+	if (COM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
+		COM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
 		return COM::kOK;
 	return COM::kInvalid;
 }
 
 bool MoverSystem::Install()
 {
-	return System::Install(kID, &MoverSystem::_Creator);
+	return iSystem::Install(kID, &MoverSystem::_Creator);
 }
 bool MoverSystem::Remove()
 {
-	return System::Remove(kID);
+	return iSystem::Remove(kID);
 }
 
 void MoverSystem::EnableMovement(bool flag)
@@ -112,9 +113,9 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::iSystem* MoverSystem::_Creator(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
+MultiCore::iSystem* MoverSystem::_Creator(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
 {
-	return new MoverSystem(rgy, owner, name, static_cast<const Desc*>(desc));
+	return new MoverSystem(rgy, name, static_cast<const Desc*>(desc));
 }
 
 
@@ -208,4 +209,82 @@ void MoverSystem::MoverComponent::_EBus(iSystem* system, iEntity* object)
 	instances[i].mOrientation1 = Vector3f(orientation[1].xyz);
 	instances[i].mOrientation2 = Vector3f(orientation[2].xyz);
 	instances[i].mTranslation = Vector3f(pos.xyz);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+COM::Result CPF_STDCALL MoverSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iSystem::kIID.GetID():
+			*outIface = static_cast<iSystem*>(this);
+			break;
+		default:
+			return COM::kNotImplemented;
+		}
+
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const char* name)
+{
+	(void)rgy;
+	if (name)
+	{
+		mID = SystemID(name, strlen(name));
+		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		if (COM::Succeeded(result))
+			return COM::kOK;
+		return result;
+	}
+	return COM::kInvalidParameter;
+}
+
+SystemID CPF_STDCALL MoverSystem::GetID() const
+{
+	return mID;
+}
+
+COM::Result CPF_STDCALL MoverSystem::FindStage(StageID id, iStage** outStage) const
+{
+	return mpStages->FindStage(id, outStage);
+}
+
+COM::Result CPF_STDCALL MoverSystem::GetInstructions(int32_t* count, Instruction* instructions)
+{
+	return mpStages->GetInstructions(count, instructions);
+}
+
+COM::Result CPF_STDCALL MoverSystem::GetStages(int32_t* count, iStage** outStages) const
+{
+	return mpStages->GetStages(count, outStages);
+}
+
+COM::Result CPF_STDCALL MoverSystem::AddStage(iStage* stage)
+{
+	return mpStages->AddStage(stage);
+}
+
+COM::Result CPF_STDCALL MoverSystem::RemoveStage(StageID id)
+{
+	return mpStages->RemoveStage(id);
+}
+
+void CPF_STDCALL MoverSystem::AddDependency(BlockDependency dep)
+{
+	mpStages->AddDependency(dep);
+}
+
+COM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+{
+	return mpStages->GetDependencies(owner, count, deps);
 }

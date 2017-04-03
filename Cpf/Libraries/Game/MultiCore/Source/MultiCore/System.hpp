@@ -16,37 +16,20 @@ namespace Cpf
 		class StageList : public tRefCounted<iStageList>
 		{
 		public:
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override
-			{
-				if (outIface)
-				{
-					switch (id.GetID())
-					{
-					case COM::iUnknown::kIID.GetID():
-						*outIface = static_cast<COM::iUnknown*>(this);
-						break;
-
-					case iStageList::kIID.GetID():
-						*outIface = static_cast<iStageList*>(this);
-						break;
-
-					default:
-						*outIface = nullptr;
-						return COM::kUnknownInterface;
-					}
-					AddRef();
-					return COM::kOK;
-				}
-				return COM::kUnknownInterface;
-			}
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
 			COM::Result CPF_STDCALL AddStage(iStage* stage) override;
 			COM::Result CPF_STDCALL RemoveStage(StageID id) override;
 
+			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
+			void CPF_STDCALL AddDependency(BlockDependency dep) override;
+			COM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
+
 		private:
 			StageVector mStages;
+			BlockDependencies mDependencies;
 		};
 
 		class StageListClass : public tRefCounted<Plugin::iClassInstance>
@@ -62,6 +45,39 @@ namespace Cpf
 				}
 				return COM::kInvalidParameter;
 			}
+		};
+
+		// TODO: This can go away..
+		class System : public tRefCounted<iSystem>
+		{
+		public:
+			// iUnknown
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
+
+			// iSystem
+			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+			SystemID CPF_STDCALL GetID() const override;
+			COM::Result CPF_STDCALL Configure(iPipeline*) override { return COM::kOK; }
+
+			// iStageList
+			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
+			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
+			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
+			void CPF_STDCALL AddDependency(BlockDependency dep) override;
+			COM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
+
+			COM::Result CPF_STDCALL AddStage(iStage*) override;
+			COM::Result CPF_STDCALL RemoveStage(StageID) override;
+
+		protected:
+			// Implementation interface.
+			System();
+			virtual ~System();
+
+		private:
+			// Implementation data.
+			SystemID mID;
+			IntrusivePtr<iStageList> mpStages;
 		};
 	}
 }

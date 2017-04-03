@@ -4,12 +4,12 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(Plugin::iRegistry* rgy, MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+InstanceSystem::InstanceSystem(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
 	: mpApp(desc->mpApplication)
 	, mRenderID(desc->mRenderSystemID)
 	, mpInstances(nullptr)
 {
-	System::Initialize(rgy, owner, name);
+	Initialize(rgy, name);
 
 	// Build the stages and set the update function.
 	IntrusivePtr<MultiCore::iSingleUpdateStage> instanceBegin;
@@ -45,4 +45,64 @@ void InstanceSystem::_End(Concurrency::ThreadContext&, void* context)
 {
 	InstanceSystem* system = static_cast<InstanceSystem*>(context);
 	system->mpApp->GetCurrentInstanceBuffer()->Unmap();
+}
+
+
+// iUnknown
+COM::Result CPF_STDCALL InstanceSystem::QueryInterface(COM::InterfaceID, void**)
+{
+	return COM::kNotImplemented;
+}
+
+// iSystem
+COM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const char* name)
+{
+	if (rgy && name)
+	{
+		mID = MultiCore::SystemID(name, strlen(name));
+		auto result = rgy->Create(nullptr, MultiCore::kStageListCID, MultiCore::iStageList::kIID, mpStages.AsVoidPP());
+		return result;
+	}
+	return COM::kInvalidParameter;
+}
+
+MultiCore::SystemID CPF_STDCALL InstanceSystem::GetID() const
+{
+	return mID;
+}
+
+// iStageList
+COM::Result CPF_STDCALL InstanceSystem::FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const
+{
+	return mpStages->FindStage(id, outStage);
+}
+
+COM::Result CPF_STDCALL InstanceSystem::GetStages(int32_t* count, MultiCore::iStage** outStages) const
+{
+	return mpStages->GetStages(count, outStages);
+}
+
+COM::Result CPF_STDCALL InstanceSystem::GetInstructions(int32_t* count, MultiCore::Instruction* instrs)
+{
+	return mpStages->GetInstructions(count, instrs);
+}
+
+void CPF_STDCALL InstanceSystem::AddDependency(MultiCore::BlockDependency dep)
+{
+	mpStages->AddDependency(dep);
+}
+
+COM::Result CPF_STDCALL InstanceSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, MultiCore::BlockDependency* deps)
+{
+	return mpStages->GetDependencies(owner, count, deps);
+}
+
+COM::Result CPF_STDCALL InstanceSystem::AddStage(MultiCore::iStage* stage)
+{
+	return mpStages->AddStage(stage);
+}
+
+COM::Result CPF_STDCALL InstanceSystem::RemoveStage(MultiCore::StageID id)
+{
+	return mpStages->RemoveStage(id);
 }

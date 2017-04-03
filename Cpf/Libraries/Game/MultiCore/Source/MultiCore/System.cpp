@@ -10,6 +10,30 @@ using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
+COM::Result CPF_STDCALL StageList::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+
+		case iStageList::kIID.GetID():
+			*outIface = static_cast<iStageList*>(this);
+			break;
+
+		default:
+			*outIface = nullptr;
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kUnknownInterface;
+}
+
 COM::Result CPF_STDCALL StageList::FindStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
@@ -70,70 +94,7 @@ COM::Result CPF_STDCALL StageList::RemoveStage(StageID id)
 	return COM::kInvalidParameter;
 }
 
-//////////////////////////////////////////////////////////////////////////
-System::System()
-	: mpOwner(nullptr)
-{
-}
-
-System::~System()
-{}
-
-COM::Result CPF_STDCALL System::Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name)
-{
-	(void)rgy;
-	if (owner && name)
-	{
-		mpOwner = owner;
-		mID = SystemID(name, strlen(name));
-		return COM::kOK;
-	}
-	return COM::kInvalidParameter;
-}
-
-COM::Result CPF_STDCALL System::QueryInterface(COM::InterfaceID id, void** outIface)
-{
-	if (outIface)
-	{
-		switch (id.GetID())
-		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
-			break;
-		case iSystem::kIID.GetID():
-			*outIface = static_cast<iSystem*>(this);
-			break;
-		default:
-			return COM::kNotImplemented;
-		}
-
-		AddRef();
-		return COM::kOK;
-	}
-	return COM::kInvalidParameter;
-}
-
-
-iPipeline* CPF_STDCALL System::GetOwner() const
-{
-	return mpOwner;
-}
-
-COM::Result CPF_STDCALL System::FindStage(StageID id, iStage** outStage) const
-{
-	for (const auto& stage : mStages)
-	{
-		if (stage->GetID() == id)
-		{
-			stage->AddRef();
-			*outStage = stage;
-			return COM::kOK;
-		}
-	}
-	return COM::kInvalid;
-}
-
-COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* instructions)
+COM::Result CPF_STDCALL StageList::GetInstructions(int32_t* count, Instruction* instructions)
 {
 	if (count)
 	{
@@ -143,9 +104,9 @@ COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* ins
 			if (stage->IsEnabled())
 			{
 				int32_t instructionCount = 0;
-				stage->GetInstructions(GetID(), &instructionCount, nullptr);
+				stage->GetInstructions(&instructionCount, nullptr);
 				Vector<Instruction> instrs(instructionCount);
-				stage->GetInstructions(GetID(), &instructionCount, instrs.data());
+				stage->GetInstructions(&instructionCount, instrs.data());
 				result.insert(result.end(), instrs.begin(), instrs.end());
 			}
 		}
@@ -166,63 +127,12 @@ COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* ins
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL System::GetStages(int32_t* count, iStage** outStages) const
-{
-	if (count)
-	{
-		if (outStages)
-		{
-			if (int32_t(mStages.size()) > *count)
-				return COM::kNotEnoughSpace;
-			int32_t index = 0;
-			for (auto stage : mStages)
-				outStages[index++] = stage;
-			return COM::kOK;
-		}
-		else
-		{
-			*count = int32_t(mStages.size());
-			return COM::kOK;
-		}
-	}
-	return COM::kInvalidParameter;
-}
-
-COM::Result System::AddStage(iStage* stage)
-{
-	if (stage)
-	{
-		stage->AddRef();
-		mStages.emplace_back(stage);
-		return COM::kOK;
-	}
-	return COM::kInvalidParameter;
-}
-
-COM::Result System::RemoveStage(StageID id)
-{
-	for (int i = 0; i < mStages.size(); ++i)
-	{
-		if (mStages[i]->GetID() == id)
-		{
-			mStages.erase(mStages.begin() + i);
-			return COM::kOK;
-		}
-	}
-	return COM::kInvalidParameter;
-}
-
-SystemID CPF_STDCALL System::GetID() const
-{
-	return mID;
-}
-
-void CPF_STDCALL System::AddDependency(BlockDependency dep)
+void CPF_STDCALL StageList::AddDependency(BlockDependency dep)
 {
 	mDependencies.push_back(dep);
 }
 
-COM::Result CPF_STDCALL System::GetDependencies(int32_t* count, BlockDependency* deps)
+COM::Result CPF_STDCALL StageList::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	if (count)
 	{
@@ -230,9 +140,9 @@ COM::Result CPF_STDCALL System::GetDependencies(int32_t* count, BlockDependency*
 		for (const auto& dep : mDependencies)
 		{
 			iStage* depStage = nullptr;
-			GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
+			owner->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
 			iStage* targetStage = nullptr;
-			GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
+			owner->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
 			if (depStage && depStage->IsEnabled() &&
 				targetStage && targetStage->IsEnabled())
 			{
@@ -260,6 +170,90 @@ COM::Result CPF_STDCALL System::GetDependencies(int32_t* count, BlockDependency*
 	return COM::kInvalidParameter;
 }
 
+//////////////////////////////////////////////////////////////////////////
+System::System()
+{
+}
+
+System::~System()
+{}
+
+COM::Result CPF_STDCALL System::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iSystem::kIID.GetID():
+			*outIface = static_cast<iSystem*>(this);
+			break;
+		default:
+			return COM::kNotImplemented;
+		}
+
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL System::Initialize(Plugin::iRegistry* rgy, const char* name)
+{
+	(void)rgy;
+	if (name)
+	{
+		mID = SystemID(name, strlen(name));
+		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		if (COM::Succeeded(result))
+			return COM::kOK;
+		return result;
+	}
+	return COM::kInvalidParameter;
+}
+
+SystemID CPF_STDCALL System::GetID() const
+{
+	return mID;
+}
+
+COM::Result CPF_STDCALL System::FindStage(StageID id, iStage** outStage) const
+{
+	return mpStages->FindStage(id, outStage);
+}
+
+COM::Result CPF_STDCALL System::GetInstructions(int32_t* count, Instruction* instructions)
+{
+	return mpStages->GetInstructions(count, instructions);
+}
+
+COM::Result CPF_STDCALL System::GetStages(int32_t* count, iStage** outStages) const
+{
+	return mpStages->GetStages(count, outStages);
+}
+
+COM::Result CPF_STDCALL System::AddStage(iStage* stage)
+{
+	return mpStages->AddStage(stage);
+}
+
+COM::Result CPF_STDCALL System::RemoveStage(StageID id)
+{
+	return mpStages->RemoveStage(id);
+}
+
+void CPF_STDCALL System::AddDependency(BlockDependency dep)
+{
+	mpStages->AddDependency(dep);
+}
+
+COM::Result CPF_STDCALL System::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
+{
+	return mpStages->GetDependencies(owner, count, deps);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 namespace
@@ -268,11 +262,11 @@ namespace
 	SystemMap s_SystemMap;
 }
 
-iSystem* iSystem::_Create(Plugin::iRegistry* rgy, iPipeline* owner, SystemID id, const char* name, const Desc* desc)
+iSystem* iSystem::_Create(Plugin::iRegistry* rgy, SystemID id, const char* name, const Desc* desc)
 {
 	auto it = s_SystemMap.find(id);
 	if (it != s_SystemMap.end())
-		return (*it->second)(rgy, owner, name, desc);
+		return (*it->second)(rgy, name, desc);
 	return nullptr;
 }
 

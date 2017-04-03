@@ -30,8 +30,8 @@ namespace Cpf
 			virtual StageID CPF_STDCALL GetID() const = 0;
 			virtual bool CPF_STDCALL IsEnabled() const = 0;
 			virtual void CPF_STDCALL SetEnabled(bool flag) = 0;
-			virtual COM::Result CPF_STDCALL GetInstructions(SystemID, int32_t*, Instruction*) = 0;
-			virtual COM::Result CPF_STDCALL GetDependencies(SystemID, int32_t*, BlockDependency*) = 0;
+			virtual COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) = 0;
+			virtual COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) = 0;
 			virtual BlockID CPF_STDCALL GetDefaultBlock() const = 0;
 			virtual BlockID CPF_STDCALL GetBeginBlock() const = 0;
 			virtual BlockID CPF_STDCALL GetEndBlock() const = 0;

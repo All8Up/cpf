@@ -10,12 +10,12 @@
 
 namespace Cpf
 {
-	class RenderSystem : public MultiCore::System
+	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
-		struct Desc : System::Desc
+		struct Desc : iSystem::Desc
 		{
 			MultiCore::SystemID mTimer;
 		};
@@ -23,7 +23,7 @@ namespace Cpf
 		static bool Install();
 		static bool Remove();
 
-		COM::Result Configure() override;
+		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
 		bool Initialize(iWindow*, Resources::Locator*);
 		bool Shutdown();
@@ -32,11 +32,30 @@ namespace Cpf
 
 		Graphics::DebugUI& GetDebugUI();
 
+		// iUnknown
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+		// iSystem
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
+		MultiCore::SystemID CPF_STDCALL GetID() const override;
+//		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
+
+		// iStageList
+		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
+		COM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
+		COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
+		COM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+
+		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
+		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
+
+
 	private:
-		RenderSystem(Plugin::iRegistry*, MultiCore::iPipeline* pipeline, const char* name, const Desc* desc);
+		RenderSystem(Plugin::iRegistry*, const char* name, const Desc* desc);
 		~RenderSystem() override;
 
-		static iSystem* _Create(Plugin::iRegistry*, MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
+		static iSystem* _Create(Plugin::iRegistry*, const char* name, const iSystem::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();
@@ -74,5 +93,8 @@ namespace Cpf
 
 		int mScheduleIndex = 0;
 		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];
+
+		MultiCore::SystemID mID;
+		IntrusivePtr<MultiCore::iStageList> mpStages;
 	};
 }

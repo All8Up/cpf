@@ -59,9 +59,8 @@ COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIfa
  @param name The name of the timer.
  @return Success/failure code.
  */
-COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name)
+COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* name)
 {
-	mpOwner = owner;
 	mID = SystemID(name, strlen(name));
 
 	mStart = Time::Now();
@@ -72,15 +71,6 @@ COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, iPipeline* own
 	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);
 	return COM::kOK;
-}
-
-/**
- Gets the owning pipeline.
- @return The owner.
- */
-iPipeline* CPF_STDCALL Timer::GetOwner() const
-{
-	return mpOwner;
 }
 
 COM::Result CPF_STDCALL Timer::FindStage(StageID id, iStage** outStage) const
@@ -134,9 +124,9 @@ COM::Result CPF_STDCALL Timer::GetInstructions(int32_t* count, Instruction* inst
 			if (stage->IsEnabled())
 			{
 				int32_t instructionCount = 0;
-				stage->GetInstructions(GetID(), &instructionCount, nullptr);
+				stage->GetInstructions(&instructionCount, nullptr);
 				Vector<Instruction> insts(instructionCount);
-				stage->GetInstructions(GetID(), &instructionCount, insts.data());
+				stage->GetInstructions(&instructionCount, insts.data());
 				result.insert(result.end(), insts.begin(), insts.end());
 			}
 		}
@@ -162,7 +152,7 @@ void CPF_STDCALL Timer::AddDependency(BlockDependency dep)
 	mDependencies.push_back(dep);
 }
 
-COM::Result CPF_STDCALL Timer::GetDependencies(int32_t* count, BlockDependency* deps)
+COM::Result CPF_STDCALL Timer::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	if (count)
 	{
@@ -170,9 +160,9 @@ COM::Result CPF_STDCALL Timer::GetDependencies(int32_t* count, BlockDependency* 
 		for (const auto& dep : mDependencies)
 		{
 			iStage* depStage = nullptr;
-			GetOwner()->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
+			owner->GetStage(dep.mDependent.mSystem, dep.mDependent.mStage, &depStage);
 			iStage* targetStage = nullptr;
-			GetOwner()->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
+			owner->GetStage(dep.mTarget.mSystem, dep.mTarget.mStage, &targetStage);
 			if (depStage && depStage->IsEnabled() &&
 				targetStage && targetStage->IsEnabled())
 			{
@@ -200,7 +190,7 @@ COM::Result CPF_STDCALL Timer::GetDependencies(int32_t* count, BlockDependency* 
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Timer::Configure()
+COM::Result CPF_STDCALL Timer::Configure(iPipeline*)
 {
 	return COM::kOK;
 }

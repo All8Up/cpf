@@ -70,14 +70,14 @@ void SingleUpdateStage::SetEnabled(bool flag)
 {
 	mEnabled = flag;
 }
-COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(SystemID sid, int32_t* c, Instruction* i)
+COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(int32_t* c, Instruction* i)
 {
 	if (c)
 	{
 		if (i)
 		{
 			*c = 1;
-			i[0] = { { sid, GetID(), kExecute }, mOpcode, &SingleUpdateStage::_Update, this };
+			i[0] = { { mpSystem->GetID(), GetID(), kExecute }, mOpcode, &SingleUpdateStage::_Update, this };
 			return COM::kOK;
 		}
 		*c = 1;
@@ -86,7 +86,7 @@ COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(SystemID sid, int32_t
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(SystemID, int32_t* count, BlockDependency* dependencies)
+COM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, BlockDependency* dependencies)
 {
 	(void)dependencies;
 	if (count)

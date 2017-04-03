@@ -18,18 +18,17 @@ namespace Cpf
 			~Timer() override;
 
 			// iUnknown overrides.
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			// System overrides.
-			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, iPipeline* owner, const char* name) override;
-			iPipeline* CPF_STDCALL GetOwner() const override;
+			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name) override;
 			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			SystemID CPF_STDCALL GetID() const override;
 			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
 			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			void CPF_STDCALL AddDependency(BlockDependency dep) override;
-			COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
-			COM::Result CPF_STDCALL Configure();
+			COM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
+			COM::Result CPF_STDCALL Configure(iPipeline*) override;
 
 			// Timer interface.
 			Time::Value CPF_STDCALL GetTime() override;

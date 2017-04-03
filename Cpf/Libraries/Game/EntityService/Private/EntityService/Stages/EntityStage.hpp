@@ -26,8 +26,8 @@ namespace Cpf
 			MultiCore::StageID CPF_STDCALL GetID() const override;
 			bool CPF_STDCALL IsEnabled() const override;
 			void CPF_STDCALL SetEnabled(bool flag) override;
-			COM::Result CPF_STDCALL GetInstructions(MultiCore::SystemID sid, int32_t*, MultiCore::Instruction*) override;
-			COM::Result CPF_STDCALL GetDependencies(MultiCore::SystemID sid, int32_t*, MultiCore::BlockDependency*) override;
+			COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+			COM::Result CPF_STDCALL GetDependencies(int32_t*, MultiCore::BlockDependency*) override;
 			MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
 			MultiCore::BlockID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
 			MultiCore::BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
