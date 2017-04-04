@@ -11,6 +11,7 @@ EntityID Manager::mNextID = EntityID(0);
 
 //////////////////////////////////////////////////////////////////////////
 Manager::Manager()
+	: mpPipeline(nullptr)
 {}
 
 Manager::~Manager()

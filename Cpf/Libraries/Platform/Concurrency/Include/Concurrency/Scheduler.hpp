@@ -20,7 +20,7 @@ namespace Cpf
 
 
 		/** @brief Scheduler for multi-core distribution. */
-		class Scheduler
+		class CPF_EXPORT_CONCURRENCY Scheduler
 		{
 		public:
 			//
@@ -159,7 +159,7 @@ namespace Cpf
 #define SCHEDULED_CALL(t, f) ThreadedCall<t, __COUNTER__>(f)
 
 
-		class Scheduler::Semaphore
+		class CPF_EXPORT_CONCURRENCY Scheduler::Semaphore
 		{
 		public:
 			Semaphore(int32_t value=0);

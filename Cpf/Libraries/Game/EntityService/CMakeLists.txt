@@ -98,6 +98,50 @@ target_link_libraries (s_EntityService
 )
 set_property (TARGET s_EntityService PROPERTY FOLDER Libraries/Static/Game)
 
+add_library (EntityService SHARED
+	${PUBLIC_HEADERS}
+	${PUBLIC_HEADERS_ENTITYSERVICE}
+	${PUBLIC_HEADERS_ENTITYSERVICE_HELPERS}
+	${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES}
+	${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_STAGES}
+	${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_SYSTEMS}
+	${PUBLIC_HEADERS_ENTITYSERVICE_INTERFACES_COMPONENTS}
+
+	${PRIVATE_HEADERS}
+	${PRIVATE_SOURCES}
+	${PRIVATE_HEADERS_ENTITYSERVICE}
+	${PRIVATE_SOURCES_ENTITYSERVICE}
+	${PRIVATE_HEADERS_ENTITYSERVICE_COMPONENTS}
+	${PRIVATE_SOURCES_ENTITYSERVICE_COMPONENTS}
+	${PRIVATE_HEADERS_ENTITYSERVICE_STAGES}
+	${PRIVATE_SOURCES_ENTITYSERVICE_STAGES}
+	${PRIVATE_HEADERS_ENTITYSERVICE_SYSTEMS}
+	${PRIVATE_SOURCES_ENTITYSERVICE_SYSTEMS}
+)
+# ###############################################
+target_compile_definitions (EntityService
+	PRIVATE CPF_BUILD_ENTITYSERVICE
+)
+target_include_directories (EntityService
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Public>
+		$<INSTALL_INTERFACE:Public>
+)
+target_link_libraries (EntityService
+	PUBLIC
+		Configuration s_Collections COM Logging s_Hash Math Plugin Concurrency MultiCore_Interface
+)
+set_property (TARGET EntityService PROPERTY FOLDER Libraries/Plugin/Game)
+
+# ###############################################
+add_library (EntityService_Interface INTERFACE)
+target_link_libraries (EntityService_Interface INTERFACE MultiCore_Interface)
+target_include_directories (EntityService_Interface
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Public>
+		$<INSTALL_INTERFACE:Public>
+)
+
 # ###############################################
 source_group (Public FILES ${PUBLIC_HEADERS})
 source_group (Public\\EntityService FILES ${PUBLIC_HEADERS_ENTITYSERVICE})

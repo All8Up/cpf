@@ -10,7 +10,7 @@ namespace Cpf
 	namespace Concurrency
 	{
 		/** @brief Execution queue for the scheduler. */
-		class Scheduler::Queue
+		class CPF_EXPORT_CONCURRENCY Scheduler::Queue
 		{
 		public:
 			// Declaration types.

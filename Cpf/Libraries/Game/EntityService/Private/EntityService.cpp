@@ -13,7 +13,7 @@ namespace
 	Plugin::iRegistry* spRegistry = nullptr;
 }
 
-CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Install(Plugin::iRegistry* registry)
+int EntityServiceInitializer::Install(Plugin::iRegistry* registry)
 {
 	if (++s_RefCount == 1)
 	{
@@ -26,7 +26,7 @@ CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Install(Plugin::iRegistry
 	return s_RefCount;
 }
 
-CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Remove()
+int EntityServiceInitializer::Remove()
 {
 	if (--s_RefCount == 0)
 	{
@@ -38,3 +38,42 @@ CPF_EXPORT_ENTITYSERVICE int EntityServiceInitializer::Remove()
 	}
 	return s_RefCount;
 }
+
+
+
+#ifndef CPF_STATIC_ENTITYSERVICE
+#include "Plugin/iRegistry.hpp"
+extern "C"
+COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		TimeInitializer::Install();
+		if (EntityServiceInitializer::Install(registry) > 0)
+			return COM::kOK;
+		return COM::kError;
+	}
+	return COM::kInvalidParameter;
+}
+
+extern "C"
+bool CPF_EXPORT CanUnload()
+{
+	return s_RefCount == 0;
+}
+
+extern "C"
+COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		if (EntityServiceInitializer::Remove() == 0)
+		{
+			TimeInitializer::Remove();
+			return COM::kOK;
+		}
+		return COM::kInUse;
+	}
+	return COM::kInvalidParameter;
+}
+#endif

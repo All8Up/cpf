@@ -7,8 +7,8 @@ namespace Cpf
 {
 	struct EntityServiceInitializer
 	{
-		CPF_EXPORT_ENTITYSERVICE static int Install(Plugin::iRegistry* registry);
-		CPF_EXPORT_ENTITYSERVICE static int Remove();
+		static int Install(Plugin::iRegistry* registry);
+		static int Remove();
 
 	private:
 		EntityServiceInitializer() = delete;

@@ -47,13 +47,6 @@ target_compile_definitions (s_Concurrency
 	PRIVATE
 		CPF_BUILD_CONCURRENCY
 )
-source_group (Headers FILES ${INCLUDE_FILES})
-source_group (Sources FILES ${SOURCE_FILES})
-source_group (Headers\\Dispatch FILES ${DISPATCH_INCLUDE})
-source_group (Sources\\Dispatch FILES ${DISPATCH_SOURCE})
-source_group (Headers\\Collections FILES ${COLLECTIONS_INCLUDE})
-source_group (Sources\\Collections FILES ${COLLECTIONS_SOURCE})
-
 target_link_libraries (s_Concurrency Configuration Atomic s_Threading Logging VTune)
 
 target_include_directories (s_Concurrency PUBLIC
@@ -62,6 +55,36 @@ target_include_directories (s_Concurrency PUBLIC
 )
 
 set_property (TARGET s_Concurrency PROPERTY FOLDER Libraries/Static/Platform)
+
+add_library (Concurrency SHARED
+	${INCLUDE_FILES}
+	${DISPATCH_INCLUDE}
+	${COLLECTIONS_INCLUDE}
+	${SOURCE_FILES}
+	${DISPATCH_SOURCE}
+	${COLLECTIONS_SOURCE}
+)
+
+target_compile_definitions (Concurrency
+	PRIVATE
+		CPF_BUILD_CONCURRENCY
+)
+target_link_libraries (Concurrency Configuration Atomic Threading Logging VTune)
+
+target_include_directories (Concurrency PUBLIC
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+	$<INSTALL_INTERFACE:Include>
+)
+
+set_property (TARGET Concurrency PROPERTY FOLDER Libraries/Shared/Platform)
+
+source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Sources FILES ${SOURCE_FILES})
+source_group (Headers\\Dispatch FILES ${DISPATCH_INCLUDE})
+source_group (Sources\\Dispatch FILES ${DISPATCH_SOURCE})
+source_group (Headers\\Collections FILES ${COLLECTIONS_INCLUDE})
+source_group (Sources\\Collections FILES ${COLLECTIONS_SOURCE})
+
 
 #[[
 install (DIRECTORY Include/Concurrency

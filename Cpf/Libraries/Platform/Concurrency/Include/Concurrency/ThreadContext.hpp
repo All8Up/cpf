@@ -7,7 +7,7 @@ namespace Cpf
 {
 	namespace Concurrency
 	{
-		class ThreadContext
+		class CPF_EXPORT_CONCURRENCY ThreadContext
 		{
 		public:
 			ThreadContext(Scheduler&, int, void* userData=nullptr);

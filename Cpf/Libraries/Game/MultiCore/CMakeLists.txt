@@ -59,7 +59,7 @@ set_property (TARGET s_MultiCore PROPERTY FOLDER Libraries/Static/Game)
 
 
 # ###############################################
-add_library (MultiCore STATIC
+add_library (MultiCore SHARED
 	${INCLUDE_FILES}
 	${MULTICORE_INCLUDE_FILES}
 	${MULTICORE_SYSTEM_INCLUDE_FILES}
@@ -80,6 +80,14 @@ target_link_libraries (MultiCore
 		Configuration s_Collections Plugin COM Logging Hash s_Concurrency
 )
 set_property (TARGET MultiCore PROPERTY FOLDER Libraries/Plugin/Game)
+
+# ###############################################
+add_library (MultiCore_Interface INTERFACE)
+target_include_directories (MultiCore_Interface
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<INSTALL_INTERFACE:Include>
+)
 
 # ###############################################
 source_group (Headers FILES ${INCLUDE_FILES})

@@ -46,10 +46,29 @@ namespace Cpf
 			SystemID mSystem;
 			StageID mStage;
 			BlockID mBlock;
-
-			bool operator <(const SSBID& rhs) const;
-			bool operator ==(const SSBID& rhs) const;
 		};
+
+		inline bool operator <(const SSBID& lhs, const SSBID& rhs)
+		{
+			if (lhs.mSystem < rhs.mSystem)
+				return true;
+			if (lhs.mSystem == rhs.mSystem)
+			{
+				if (lhs.mStage < rhs.mStage)
+					return true;
+				if (lhs.mStage == rhs.mStage)
+				{
+					if (lhs.mBlock < rhs.mBlock)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		inline bool operator ==(const SSBID& lhs, const SSBID& rhs)
+		{
+			return lhs.mSystem == rhs.mSystem && lhs.mStage == rhs.mStage && lhs.mBlock == rhs.mBlock;
+		}
 
 		struct Instruction
 		{
@@ -69,7 +88,11 @@ namespace Cpf
 		struct BlockDependency
 		{
 			BlockDependency() {};
-			BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy = DependencyPolicy::eBarrier);
+			BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy = DependencyPolicy::eBarrier)
+				: mDependent(dependent)
+				, mTarget(target)
+				, mPolicy(policy)
+			{}
 
 			SSBID mDependent;
 			SSBID mTarget;
