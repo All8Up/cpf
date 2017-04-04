@@ -178,8 +178,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<EntityService::iEntity> entity(mpEntityManager->CreateEntity());
-		entity->CreateComponent<EntityService::iTransformComponent>(GetRegistry(), EntityService::kTransformComponentCID);
-		entity->CreateComponent<iMoverComponent>(GetRegistry(), kMoverComponentCID);
+		entity->CreateComponent<EntityService::iTransformComponent>(GetRegistry(), EntityService::kTransformComponentCID, nullptr);
+		entity->CreateComponent<iMoverComponent>(GetRegistry(), kMoverComponentCID, mpMoverSystem);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

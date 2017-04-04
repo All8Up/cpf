@@ -30,7 +30,7 @@ namespace Cpf
 
 			// Utilities.
 			template <typename TYPE>
-			TYPE* CreateComponent(Plugin::iRegistry*, const COM::ClassID id);
+			TYPE* CreateComponent(Plugin::iRegistry*, const COM::ClassID id, MultiCore::iSystem* system);
 
 			template <typename TYPE>
 			TYPE* GetComponent();
@@ -57,12 +57,15 @@ namespace Cpf
 		}
 
 		template <typename TYPE>
-		TYPE* iEntity::CreateComponent(Plugin::iRegistry* regy, const COM::ClassID id)
+		TYPE* iEntity::CreateComponent(Plugin::iRegistry* regy, const COM::ClassID id, MultiCore::iSystem* system)
 		{
 			IntrusivePtr<TYPE> created;
 			regy->Create(nullptr, id, TYPE::kIID, created.AsVoidPP());
 			if (created)
+			{
+				created->SetOwner(system);
 				AddComponent<TYPE>(created);
+			}
 			return created;
 		}
 

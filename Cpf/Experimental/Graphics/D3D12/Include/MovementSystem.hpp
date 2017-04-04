@@ -16,8 +16,6 @@ namespace Cpf
 	class iMoverComponent : public EntityService::iComponent
 	{
 	public:
-		virtual void SetSystem(MoverSystem*) = 0;
-		virtual MoverSystem* GetSystem() = 0;
 	};
 
 	static constexpr COM::ClassID kMoverSystemCID = COM::ClassID("MoverSystemClass"_crc64);
@@ -102,8 +100,8 @@ namespace Cpf
 		static iComponent* Create(iSystem*);
 
 		//
-		void SetSystem(MoverSystem* system) override { mpMover = system; }
-		MoverSystem* GetSystem() override { return mpMover; }
+		void SetOwner(MultiCore::iSystem* system) override { mpMover = static_cast<MoverSystem*>(system); }
+		MultiCore::iSystem* GetOwner() override { return mpMover; }
 
 		//////////////////////////////////////////////////////////////////////////
 		MoverComponent();

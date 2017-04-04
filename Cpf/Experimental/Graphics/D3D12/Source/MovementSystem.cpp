@@ -40,14 +40,6 @@ COM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kMoverComponentCID);
 }
 
-iComponent* MoverSystem::MoverComponent::Create(MultiCore::iSystem* system)
-{
-	auto result = new MoverComponent();
-	if (result)
-		result->SetSystem(static_cast<MoverSystem*>(system));
-	return static_cast<iComponent*>(result);
-}
-
 COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
 {
 	if (id.GetID() == iMoverComponent::kIID.GetID())
