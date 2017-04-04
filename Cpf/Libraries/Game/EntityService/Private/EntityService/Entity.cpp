@@ -127,6 +127,7 @@ void Entity::AddComponent(COM::InterfaceID id, iComponent* component)
 		++i;
 	}
 	// Insert.
+	component->AddRef();
 	mComponents[i] = Move(ComponentPair(id, component));
 	++mComponentCount;
 	if (mActive)

@@ -101,6 +101,7 @@ SingleUpdateStage::SingleUpdateStage()
 	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)
+	, mEnabled(true)
 {
 }
 

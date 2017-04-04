@@ -7,6 +7,8 @@ using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
 EntityStage::EntityStage()
+	: mpSystem(nullptr)
+	, mEnabled(true)
 {
 }
 
