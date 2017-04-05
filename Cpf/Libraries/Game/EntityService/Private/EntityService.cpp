@@ -48,7 +48,6 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		TimeInitializer::Install();
 		if (EntityServiceInitializer::Install(registry) > 0)
 			return COM::kOK;
 		return COM::kError;
@@ -69,7 +68,6 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 	{
 		if (EntityServiceInitializer::Remove() == 0)
 		{
-			TimeInitializer::Remove();
 			return COM::kOK;
 		}
 		return COM::kInUse;

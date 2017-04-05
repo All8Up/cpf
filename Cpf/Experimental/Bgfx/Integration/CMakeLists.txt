@@ -32,17 +32,16 @@ target_include_directories (BgfxIntegration
 		${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>
 )
 target_link_libraries (BgfxIntegration
-	s_Concurrency
 	s_SDL2
 	Logging
 	s_ANSI_C_FileSystem
-	s_EntityService
 	s_Resources
 	bx
 	bgfx
 	s_NanoVG_BGFX
 	s_Imgui_BGFX
-	Plugin
+	Concurrency
+	EntityService_Interface
 )
 target_compile_definitions (BgfxIntegration PUBLIC)
 
@@ -85,3 +84,18 @@ foreach (file ${DataFiles})
 	)
 endforeach ()
 source_group (Data FILES ${DataFiles})
+
+if(MSVC)
+	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Experimental/Bgfx/Integration)
+else()
+	set (targetPath test/)
+endif()
+file (MAKE_DIRECTORY ${targetPath}/plugins)
+add_custom_command (
+	TARGET BgfxIntegration POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:EntityService> ${targetPath}/plugins/EntityService.cfp
+)
+add_custom_command (
+	TARGET BgfxIntegration POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
+)

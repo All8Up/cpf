@@ -141,6 +141,7 @@ void MoverSystem::MoverComponent::Deactivate()
 	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
+float gTime = 0.0f;
 void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
@@ -162,6 +163,7 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
+	(void)transform;
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
@@ -199,6 +201,7 @@ void MoverSystem::MoverComponent::_EBus(iSystem* system, iEntity* object)
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
+	(void)transform;
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);

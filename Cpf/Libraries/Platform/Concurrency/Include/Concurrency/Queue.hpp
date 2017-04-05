@@ -93,8 +93,10 @@ namespace Cpf
 			Queue& operator =(Queue&) = delete;
 
 			// Implementation data.
+			CPF_DLL_SAFE_BEGIN;
 			QueueType mQueue;
 			Threading::Semaphore mBarrier;
+			CPF_DLL_SAFE_END;
 		};
 	}
 }

@@ -54,20 +54,14 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	CPF_LOG_LEVEL(Experimental, Trace);
 
 	// Initialize the gfx library.
-	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
 
-#if CPF_USE_PLUGINS
-	GetRegistry()->Load("plugins/MultiCore.cfp");
-	GetRegistry()->Load("plugins/EntityService.cfp");
-#else
-	ScopedInitializer<EntityServiceInitializer, Plugin::iRegistry*> goInit(GetRegistry());
-	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
-#endif
+	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
+	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;

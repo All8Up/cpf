@@ -21,7 +21,6 @@ set (SOURCE_FILES
 )
 
 if (WIN32)
-	option(CPF_USE_PLUGINS "Use plugins in the D3D12 experiment." OFF)
 	add_executable (ExperimentalD3D12 WIN32
 		${HEADER_FILES}
 		${SOURCE_FILES}
@@ -30,54 +29,26 @@ if (WIN32)
 	target_include_directories (ExperimentalD3D12
 		PUBLIC Include
 	)
-	if (CPF_USE_PLUGINS)
-		set (multicoreLibs EntityService_Interface Concurrency)
-		set (multicoreFlags "-DCPF_USE_PLUGINS=1")
-	else ()
-		set (multicoreLibs s_MultiCore s_EntityService s_Concurrency)
-		set (multicoreFlags "-DCPF_USE_PLUGINS=0")
-	endif ()
+
 	target_link_libraries (ExperimentalD3D12
 		s_SDL2
-		Logging
 		s_ANSI_C_FileSystem
+
 		s_Resources
 		s_GraphicsDriver
 		s_AdapterD3D12
-		${multicoreLibs}
+
+#		s_Concurrency
+#		s_EntityService
+		EntityService_Interface
+		Concurrency
 	)
 
-	target_compile_definitions (ExperimentalD3D12 PUBLIC -DGFX_ADAPTER=D3D12 ${multicoreFlags})
+	target_compile_definitions (ExperimentalD3D12 PUBLIC -DGFX_ADAPTER=D3D12)
 
 	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)
 # WIN32
 endif ()
-
-#[[
-if (WIN32 OR UNIX AND NOT APPLE)
-	add_executable (ExperimentalVulkan WIN32
-		${HEADER_FILES}
-		${SOURCE_FILES}
-	)
-	target_include_directories (ExperimentalVulkan
-		PUBLIC Include
-	)
-	target_link_libraries (ExperimentalVulkan
-		s_PlatformLib
-		Concurrency
-		s_SDL2
-		Logging
-		s_ANSI_C_FileSystem
-		s_GraphicsDriver
-		s_GraphicsFactory
-		s_AdaptersVulkan
-	)
-	target_compile_definitions (ExperimentalVulkan PUBLIC -DGFX_ADAPTER=Vulkan )
-
-	set_property (TARGET ExperimentalVulkan PROPERTY FOLDER Experimental/Graphics/Adapters)
-# WIN32
-endif ()
-]]#
 
 
 if(MSVC)
@@ -114,10 +85,10 @@ add_custom_command (
 	TARGET ExperimentalD3D12 POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
 )
-add_custom_command (
-	TARGET ExperimentalD3D12 POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Concurrency> ${targetPath}/Concurrency.${CMAKE_SHARED_LIBRARY_SUFFIX}
-)
+#add_custom_command (
+#	TARGET ExperimentalD3D12 POST_BUILD
+#	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Concurrency> ${targetPath}/Concurrency.${CMAKE_SHARED_LIBRARY_SUFFIX}
+#)
 
 #[[
 if (WIN32)

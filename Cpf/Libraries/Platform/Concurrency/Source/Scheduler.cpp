@@ -55,7 +55,6 @@ Scheduler::Scheduler(void* outerContext, size_t queueSize)
 	// Queue must be power of 2.
 	CPF_ASSERT((queueSize&(queueSize - 1)) == 0);
 	_ClearRegisters();
-	TimeInitializer::Install();
 }
 
 
@@ -64,7 +63,6 @@ Scheduler::~Scheduler()
 {
 	// Check that we were shut down.
 	CPF_ASSERT(Atomic::Load(mThreadCount) == 0);
-	TimeInitializer::Remove();
 }
 
 

@@ -7,20 +7,6 @@
 using namespace Cpf;
 using namespace EntityService;
 
-iComponent* Entity::CreateComponent(COM::InterfaceID iid, MultiCore::iSystem* system)
-{
-	return nullptr;
-	/*
-	iComponent* result = nullptr;
-	const auto& creator = mComponentCreators.find(iid);
-	if (creator != mComponentCreators.end())
-	{
-		result = (*creator->second)(system);
-	}
-	return result;
-	*/
-}
-
 //////////////////////////////////////////////////////////////////////////
 bool Entity::Create(EntityID id, iEntity** outEntity)
 {

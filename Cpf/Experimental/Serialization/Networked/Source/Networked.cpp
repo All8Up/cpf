@@ -30,13 +30,13 @@ Networked::~Networked()
 int Networked::Start(const CommandLine&)
 {
 	// Initialize libraries.
-	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 	ScopedInitializer<Adapter::D3D12Initializer> d3d12Init;
+
+	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())
 	{
@@ -161,7 +161,8 @@ bool Networked::_InitializeMultiCore()
 	if (mLoopScheduler.Initialize(Move(Thread::Group(Thread::GetHardwareThreadCount()))) &&
 		mThreadPool.Initialize(Move(Thread::Group(Thread::GetHardwareThreadCount()))))
 	{
-		mLoadBalancer.SetSchedulers({&mLoopScheduler, &mThreadPool.GetScheduler()});
+		Concurrency::LoadBalancer::Schedulers schedulers{ &mLoopScheduler, &mThreadPool.GetScheduler() };
+		mLoadBalancer.SetSchedulers(&schedulers);
 		return true;
 	}
 	return false;

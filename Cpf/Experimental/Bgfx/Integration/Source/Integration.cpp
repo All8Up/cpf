@@ -165,7 +165,8 @@ bool BgfxIntegration::_InitializeConcurrency()
 	if (mScheduler.Initialize(Move(Thread::Group(targetThreads))) &&
 		mThreadPool.Initialize(Move(Thread::Group(targetThreads))))
 	{
-		mLoadBalancer.SetSchedulers({ &mScheduler, &mThreadPool.GetScheduler() });
+		Concurrency::LoadBalancer::Schedulers schedulers{ &mScheduler, &mThreadPool.GetScheduler() };
+		mLoadBalancer.SetSchedulers(&schedulers);
 		return true;
 	}
 	return false;
@@ -239,12 +240,12 @@ bool BgfxIntegration::_SelectRenderDevice()
 int BgfxIntegration::Start(const CommandLine&)
 {
 	// Initialize libraries.
-	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
-	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
+
+	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 
 	if (_InitializeResources() &&
 		_CreateWindow() &&

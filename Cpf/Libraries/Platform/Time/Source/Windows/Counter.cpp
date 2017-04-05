@@ -8,8 +8,20 @@ using namespace Cpf;
 
 namespace
 {
+	inline Time::Ratio Initialize()
+	{
+		Time::Ratio result;
+		LARGE_INTEGER freq;
+		if (::QueryPerformanceFrequency(&freq))
+		{
+			result.SetNumerator(1);
+			result.SetDenominator(freq.QuadPart);
+		}
+		return result;
+	}
+
 	/** @brief The os time ratio, retrieved at library startup. */
-	Time::Ratio TimeRatio;
+	Time::Ratio TimeRatio = Initialize();
 }
 
 

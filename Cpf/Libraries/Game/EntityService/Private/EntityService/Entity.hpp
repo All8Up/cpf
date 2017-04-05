@@ -39,8 +39,6 @@ namespace Cpf
 			iComponent* GetComponent(COM::InterfaceID id) override;
 			const iComponent* GetComponent(COM::InterfaceID id) const override;
 		
-			static iComponent* CreateComponent(COM::InterfaceID iid, MultiCore::iSystem*);
-
 		private:
 			// Not intended for direct creation.
 			Entity();

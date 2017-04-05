@@ -11,7 +11,7 @@ namespace Cpf
 		 * of maintaining the threads and waking/sleeping the threads while
 		 * this simply pushes work as first one instructions.
 		 */
-		class ThreadPool
+		class CPF_EXPORT_CONCURRENCY ThreadPool
 		{
 		public:
 			ThreadPool();
