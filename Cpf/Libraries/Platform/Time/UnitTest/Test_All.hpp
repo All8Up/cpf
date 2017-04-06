@@ -20,11 +20,9 @@ public:
 
 	virtual void SetUp() override
 	{
-		Cpf::TimeInitializer::Install();
 	}
 	virtual void TearDown() override
 	{
-		Cpf::TimeInitializer::Remove();
 	}
 
 	Cpf::Time::Ns oneNs;

@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
-#include "MultiCore/QueueBuilder.hpp"
+#include "QueueBuilder.hpp"
 #include "MultiCore/iPipeline.hpp"
-#include "MultiCore/System.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -50,19 +50,29 @@ void QueueBuilder::Add(const BlockDependencies& dependencies)
 
 void QueueBuilder::_GatherStageDependencies()
 {
-	mpPipeline->EnumerateSystems(this, [](void* context, SystemID id, IntrusivePtr<System> ptr) -> bool {
-		QueueBuilder* self = reinterpret_cast<QueueBuilder*>(context);
+	int32_t systemCount = 0;
+	mpPipeline->GetSystems(&systemCount, nullptr);
+	Vector<iSystem*> systems(systemCount);
+	mpPipeline->GetSystems(&systemCount, systems.data());
 
-		int32_t stageCount = ptr->GetStageCount();
-		for (int32_t i=0; i<stageCount; ++i)
+	for (auto system : systems)
+	{
+		int32_t stageCount = 0;
+		system->GetStages(&stageCount, nullptr);
+		Vector<iStage*> stages(stageCount);
+		system->GetStages(&stageCount, stages.data());
+
+		for (auto stage : stages)
 		{
-			Stage* stage = ptr->GetStage(i);
-			auto dependencies = stage->GetDependencies(id);
+			int32_t depCount = 0;
+			stage->GetDependencies(&depCount, nullptr);
+			Vector<MultiCore::BlockDependency> dependencies(depCount);
+			stage->GetDependencies(&depCount, dependencies.data());
+
 			if (!dependencies.empty())
-				self->Add(dependencies);
+				Add(dependencies);
 		}
-		return true;
-	});
+	}
 }
 
 bool QueueBuilder::Solve()

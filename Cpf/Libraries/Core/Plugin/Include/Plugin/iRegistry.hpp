@@ -6,9 +6,9 @@ namespace Cpf
 {
 	namespace Plugin
 	{
-		struct CPF_EXPORT iClassInstance;
+		struct iClassInstance;
 
-		struct CPF_EXPORT iRegistry : COM::iUnknown
+		struct iRegistry : COM::iUnknown
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iRegistry"_crc64);
 

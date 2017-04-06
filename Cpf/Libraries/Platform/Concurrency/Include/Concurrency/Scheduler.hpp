@@ -20,7 +20,7 @@ namespace Cpf
 
 
 		/** @brief Scheduler for multi-core distribution. */
-		class Scheduler
+		class CPF_EXPORT_CONCURRENCY Scheduler
 		{
 		public:
 			//
@@ -72,6 +72,7 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 			friend class Concurrency::ThreadContext;
 			friend struct Detail::Opcodes;
+			CPF_DLL_SAFE_BEGIN;
 
 			//////////////////////////////////////////////////////////////////////////
 			static const int kMaxBackoff;
@@ -133,6 +134,7 @@ namespace Cpf
 			void* mSharedAddressRegister[kRegisterCount];
 
 			ThreadTimeInfo mTimeInfo;
+			CPF_DLL_SAFE_END;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -159,7 +161,7 @@ namespace Cpf
 #define SCHEDULED_CALL(t, f) ThreadedCall<t, __COUNTER__>(f)
 
 
-		class Scheduler::Semaphore
+		class CPF_EXPORT_CONCURRENCY Scheduler::Semaphore
 		{
 		public:
 			Semaphore(int32_t value=0);

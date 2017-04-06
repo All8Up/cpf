@@ -10,7 +10,7 @@ namespace Cpf
 {
 	namespace Threading
 	{
-		class CPUUsage
+		class CPF_EXPORT_THREADING CPUUsage
 		{
 		public:
 			CPUUsage();

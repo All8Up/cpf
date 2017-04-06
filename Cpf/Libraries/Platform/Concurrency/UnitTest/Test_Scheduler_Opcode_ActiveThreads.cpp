@@ -21,7 +21,6 @@ TEST(Concurrency, ActiveChange)
 	using namespace Cpf;
 	using namespace Concurrency;
 	using namespace ConcurrencyTest;
-	ScopedInitializer<TimeInitializer> timeInit;
 
 	srand(int(Time::Value::Now().GetTicks()));
 

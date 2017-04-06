@@ -3,7 +3,6 @@ set (INCLUDE_FILES
 	Include/Adapter/SDL2.hpp
 	Include/Adapter/ConsoleApp.hpp
 	Include/Adapter/WindowedApp.hpp
-	Include/Adapter/PowerManagement.hpp
 	Include/Adapter/Window.hpp
 	Include/Adapter/GLContext.hpp
 )
@@ -11,7 +10,6 @@ set (SOURCE_FILES
 	Source/SDL2.cpp
 	Source/ConsoleApp.cpp
 	Source/WindowedApp.cpp
-	Source/PowerManagement.cpp
 	Source/Window.cpp
 	Source/GLContext.cpp
 )
@@ -32,10 +30,9 @@ source_group( Sources FILES ${SOURCE_FILES} )
 
 target_link_libraries (s_SDL2
 	Configuration
+	Logging
 	s_Application
 	Math
-	s_Time
-	s_Threading
 	SDL2-static
 )
 

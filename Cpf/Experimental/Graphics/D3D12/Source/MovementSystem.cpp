@@ -14,20 +14,30 @@ using namespace Cpf;
 using namespace Math;
 using namespace Platform;
 using namespace EntityService;
+using namespace MultiCore;
 
-bool MoverSystem::MoverComponent::Install()
+COM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
 {
-	return ComponentFactoryInstall(iMoverComponent::kIID, &MoverSystem::MoverComponent::Create);
+	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
+	{
+	public:
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+		{
+			if (outIface)
+			{
+				*outIface = new MoverSystem::MoverComponent();
+				return *outIface ? COM::kOK : COM::kOutOfMemory;
+			}
+			return COM::kInvalidParameter;
+		}
+	};
+	return regy->Install(kMoverComponentCID, new ClassInstance());
 }
 
-bool MoverSystem::MoverComponent::Remove()
+COM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
 {
-	return ComponentFactoryRemove(iMoverComponent::kIID);
-}
-
-iComponent* MoverSystem::MoverComponent::Create(MultiCore::System* system)
-{
-	return static_cast<iComponent*>(new MoverComponent(system));
+	return regy->Remove(kMoverComponentCID);
 }
 
 COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
@@ -46,29 +56,13 @@ COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, voi
 
 
 
-MoverSystem::MoverSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc)
+MoverSystem::MoverSystem()
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
-	, mClockID(desc->mTimerID)
-	, mInstanceID(desc->mInstanceID)
 	, mEnableMovement(true)
 	, mUseEBus(false)
 {
-	System::Initialize(owner, name);
-
-	mpApp = static_cast<const Desc*>(desc)->mpApplication;
-
-	// Build the stages.
-	mpThreadStage = MultiCore::Stage::Create<EntityStage>(this, kUpdate.GetString());
-	mpEBusStage = MultiCore::Stage::Create<EntityStage>(this, kUpdateEBus.GetString());
-
-	// Add the stages to this system.
-	AddStage(mpThreadStage);
-	AddStage(mpEBusStage);
-
-	// Disable the EBus comparison stage to start with.
-	mpEBusStage->SetEnabled(false);
 }
 
 InstanceSystem* MoverSystem::GetInstanceSystem() const
@@ -76,21 +70,35 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 	return mpInstances;
 }
 
-COM::Result MoverSystem::Configure()
+COM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
 {
-	if (COM::Succeeded(GetOwner()->GetSystem(mClockID, &reinterpret_cast<MultiCore::System*>(mpTime))) &&
-		COM::Succeeded(GetOwner()->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::System*>(mpInstances))))
+	if (COM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
+		COM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
 		return COM::kOK;
 	return COM::kInvalid;
 }
 
-bool MoverSystem::Install()
+COM::Result MoverSystem::Install(Plugin::iRegistry* regy)
 {
-	return System::Install(kID, &MoverSystem::_Creator);
+	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
+	{
+	public:
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+		{
+			if (outIface)
+			{
+				*outIface = new MoverSystem();
+				return *outIface ? COM::kOK : COM::kOutOfMemory;
+			}
+			return COM::kInvalidParameter;
+		}
+	};
+	return regy->Install(kMoverSystemCID, new ClassInstance());
 }
-bool MoverSystem::Remove()
+COM::Result MoverSystem::Remove(Plugin::iRegistry* regy)
 {
-	return System::Remove(kID);
+	return regy->Remove(kMoverSystemCID);
 }
 
 void MoverSystem::EnableMovement(bool flag)
@@ -109,15 +117,10 @@ void MoverSystem::UseEBus(bool flag)
 	EnableMovement(mEnableMovement);
 }
 
-MultiCore::System* MoverSystem::_Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc)
-{
-	return new MoverSystem(owner, name, static_cast<const Desc*>(desc));
-}
-
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(MultiCore::System* owner)
-	: mpMover(static_cast<MoverSystem*>(owner))
+MoverSystem::MoverComponent::MoverComponent()
+	: mpMover(nullptr)
 {}
 
 //////////////////////////////////////////////////////////////////////////
@@ -138,10 +141,11 @@ void MoverSystem::MoverComponent::Deactivate()
 	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
-void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
+float gTime = 0.0f;
+void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
-	const MultiCore::Timer* timer = mover->mpTime;
+	MultiCore::iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -159,6 +163,7 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
+	(void)transform;
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
@@ -173,12 +178,12 @@ void MoverSystem::MoverComponent::_Threaded(System* system, iEntity* object)
 	instances[i].mTranslation = Vector3f(pos.xyz);
 }
 
-void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
+void MoverSystem::MoverComponent::_EBus(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	Threading::ScopedLock<Threading::Mutex> lock(mover->mMutex);
 
-	const MultiCore::Timer* timer = mover->mpTime;
+	MultiCore::iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID().GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -196,6 +201,7 @@ void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
+	(void)transform;
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
@@ -205,4 +211,111 @@ void MoverSystem::MoverComponent::_EBus(System* system, iEntity* object)
 	instances[i].mOrientation1 = Vector3f(orientation[1].xyz);
 	instances[i].mOrientation2 = Vector3f(orientation[2].xyz);
 	instances[i].mTranslation = Vector3f(pos.xyz);
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+COM::Result CPF_STDCALL MoverSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iSystem::kIID.GetID():
+			*outIface = static_cast<iSystem*>(this);
+			break;
+		case MoverSystem::kIID.GetID():
+			*outIface = static_cast<MoverSystem*>(this);
+			break;
+		default:
+			return COM::kNotImplemented;
+		}
+
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* gdesc)
+{
+	(void)rgy;
+	if (name)
+	{
+		const Desc* desc = static_cast<const Desc*>(gdesc);
+		mpApp = nullptr;
+		mpInstances = nullptr;
+		mpTime = nullptr;
+		mClockID = desc->mTimerID;
+		mInstanceID = desc->mInstanceID;
+		mEnableMovement = true;
+		mUseEBus = false;
+
+		mID = SystemID(name, strlen(name));
+		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		if (COM::Succeeded(result))
+		{
+			mpApp = static_cast<const Desc*>(desc)->mpApplication;
+
+			// Build the stages.
+			rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpThreadStage.AsVoidPP());
+			mpThreadStage->Initialize(this, kUpdate.GetString());
+
+			rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpEBusStage.AsVoidPP());
+			mpEBusStage->Initialize(this, kUpdateEBus.GetString());
+
+			// Add the stages to this system.
+			AddStage(mpThreadStage);
+			AddStage(mpEBusStage);
+
+			// Disable the EBus comparison stage to start with.
+			mpEBusStage->SetEnabled(false);
+			return COM::kOK;
+		}
+		return result;
+	}
+	return COM::kInvalidParameter;
+}
+
+SystemID CPF_STDCALL MoverSystem::GetID() const
+{
+	return mID;
+}
+
+COM::Result CPF_STDCALL MoverSystem::FindStage(StageID id, iStage** outStage) const
+{
+	return mpStages->FindStage(id, outStage);
+}
+
+COM::Result CPF_STDCALL MoverSystem::GetInstructions(int32_t* count, Instruction* instructions)
+{
+	return mpStages->GetInstructions(count, instructions);
+}
+
+COM::Result CPF_STDCALL MoverSystem::GetStages(int32_t* count, iStage** outStages) const
+{
+	return mpStages->GetStages(count, outStages);
+}
+
+COM::Result CPF_STDCALL MoverSystem::AddStage(iStage* stage)
+{
+	return mpStages->AddStage(stage);
+}
+
+COM::Result CPF_STDCALL MoverSystem::RemoveStage(StageID id)
+{
+	return mpStages->RemoveStage(id);
+}
+
+void CPF_STDCALL MoverSystem::AddDependency(BlockDependency dep)
+{
+	mpStages->AddDependency(dep);
+}
+
+COM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+{
+	return mpStages->GetDependencies(owner, count, deps);
 }

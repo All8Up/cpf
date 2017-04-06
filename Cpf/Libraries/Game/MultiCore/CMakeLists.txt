@@ -5,15 +5,14 @@ set (INCLUDE_FILES
 set (MULTICORE_INCLUDE_FILES
 	Include/MultiCore/Export.hpp
 	Include/MultiCore/Types.hpp
-	Include/MultiCore/Stage.hpp
+	Include/MultiCore/iStage.hpp
 	Include/MultiCore/Container.hpp
 	Include/MultiCore/Partitioning.hpp
 	Include/MultiCore/iPipeline.hpp
-	Include/MultiCore/System.hpp
-	Include/MultiCore/QueueBuilder.hpp
+	Include/MultiCore/iSystem.hpp
 )
 set (MULTICORE_SYSTEM_INCLUDE_FILES
-	Include/MultiCore/System/Timer.hpp
+	Include/MultiCore/System/iTimer.hpp
 )
 
 set (SOURCE_FILES
@@ -21,13 +20,17 @@ set (SOURCE_FILES
 )
 set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Types.cpp
+	Source/MultiCore/Stage.hpp
 	Source/MultiCore/Stage.cpp
 	Source/MultiCore/Pipeline.hpp
 	Source/MultiCore/Pipeline.cpp
+	Source/MultiCore/System.hpp
 	Source/MultiCore/System.cpp
+	Source/MultiCore/QueueBuilder.hpp
 	Source/MultiCore/QueueBuilder.cpp
 )
 set (MULTICORE_SYSTEM_SOURCE_FILES
+	Source/MultiCore/System/Timer.hpp
 	Source/MultiCore/System/Timer.cpp
 )
 
@@ -56,7 +59,7 @@ set_property (TARGET s_MultiCore PROPERTY FOLDER Libraries/Static/Game)
 
 
 # ###############################################
-add_library (MultiCore STATIC
+add_library (MultiCore SHARED
 	${INCLUDE_FILES}
 	${MULTICORE_INCLUDE_FILES}
 	${MULTICORE_SYSTEM_INCLUDE_FILES}
@@ -77,6 +80,14 @@ target_link_libraries (MultiCore
 		Configuration s_Collections Plugin COM Logging Hash s_Concurrency
 )
 set_property (TARGET MultiCore PROPERTY FOLDER Libraries/Plugin/Game)
+
+# ###############################################
+add_library (MultiCore_Interface INTERFACE)
+target_include_directories (MultiCore_Interface
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<INSTALL_INTERFACE:Include>
+)
 
 # ###############################################
 source_group (Headers FILES ${INCLUDE_FILES})

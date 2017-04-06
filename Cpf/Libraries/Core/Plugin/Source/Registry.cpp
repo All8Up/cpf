@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "PluginHost/Registry.hpp"
-#include "Plugin/Library.hpp"
+#include "Plugin.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "Move.hpp"
 #include "UnorderedMap.hpp"
@@ -110,7 +110,7 @@ COM::Result CPF_STDCALL Registry::Load(const char* const name)
 			Plugin::Library library;
 			if (library.Load(name))
 			{
-				auto install = library.GetAddress<int32_t(*)(iRegistry*)>("Install");
+				auto install = library.GetAddress<int32_t(*)(iRegistry*)>(kPluginAPIInstall);
 				if (install)
 				{
 					if ((*install)(this) == 0)
@@ -161,7 +161,7 @@ COM::Result CPF_STDCALL Registry::Create(COM::iUnknown* outer, COM::ClassID cid,
 		if (creator != mCreationMap.end())
 		{
 			COM::iUnknown* instance;
-			creator->second->CreateInstance(outer, &instance);
+			creator->second->CreateInstance(static_cast<Plugin::iRegistry*>(this), outer, &instance);
 			if (instance)
 			{
 				COM::Result result = instance->QueryInterface(id, outIface);

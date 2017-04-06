@@ -1,73 +1,130 @@
 //////////////////////////////////////////////////////////////////////////
-#include "EntityService/Interfaces/Stages/iEntityStage.hpp"
+#include "EntityStage.hpp"
 #include "MultiCore/Partitioning.hpp"
-#include "MultiCore/QueueBuilder.hpp"
 
 using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(MultiCore::System* owner, const char* name)
-	: Stage(owner, name)
+EntityStage::EntityStage()
+	: mpSystem(nullptr)
+	, mEnabled(true)
 {
 }
 
-bool EntityStage::Install()
-{
-	return Stage::Install(kID, &EntityStage::_Creator);
-}
-
-bool EntityStage::Remove()
-{
-	return Stage::Remove(kID);
-}
-
-MultiCore::Stage* EntityStage::_Creator(MultiCore::System* owner, const char* name)
-{
-	return new EntityStage(owner, name);
-}
-
-void EntityStage::AddUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
+void EntityStage::AddUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
 	mWork.Add({ s, o, f });
 	mWork.Release();
 }
 
-void EntityStage::RemoveUpdate(MultiCore::System* s, iEntity* o, UpdateFunc f)
+void EntityStage::RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 {
 	mWork.Acquire();
 	mWork.Remove({ s, o, f });
 	mWork.Release();
 }
 
-MultiCore::BlockDependencies EntityStage::GetDependencies(MultiCore::SystemID sid) const
+COM::Result CPF_STDCALL EntityStage::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return MultiCore::BlockDependencies({
+	if (outIface)
+	{
+		switch (id.GetID())
 		{
-			{sid, GetID(), Stage::kEnd},
-			{sid, GetID(), Stage::kExecute},
-			MultiCore::DependencyPolicy::eAfter
-		},
-		{
-			{sid, GetID(), Stage::kExecute},
-			{sid, GetID(), Stage::kBegin},
-			MultiCore::DependencyPolicy::eBarrier
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iStage::kIID.GetID():
+			*outIface = static_cast<iStage*>(this);
+			break;
+		case iEntityStage::kIID.GetID():
+			*outIface = static_cast<iEntityStage*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
 		}
-	});
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
-MultiCore::Instructions EntityStage::GetInstructions(MultiCore::SystemID sid)
+COM::Result CPF_STDCALL EntityStage::Initialize(MultiCore::iSystem* owner, const char* const name)
 {
-	MultiCore::Instructions result;
-	result.push_back({ { sid, GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this });
-	result.push_back({ { sid, GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this });
-	result.push_back({ { sid, GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this });
-	return result;
+	if (owner && name)
+	{
+		mpSystem = owner;
+		mID = MultiCore::StageID(name, strlen(name));
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+MultiCore::iSystem* CPF_STDCALL EntityStage::GetSystem() const
+{
+	return mpSystem;
+}
+
+MultiCore::StageID CPF_STDCALL EntityStage::GetID() const
+{
+	return mID;
+}
+
+bool CPF_STDCALL EntityStage::IsEnabled() const
+{
+	return mEnabled;
+}
+
+void CPF_STDCALL EntityStage::SetEnabled(bool flag)
+{
+	mEnabled = flag;
+}
+
+COM::Result CPF_STDCALL EntityStage::GetDependencies(int32_t* count, MultiCore::BlockDependency* deps)
+{
+	if (count)
+	{
+		*count = 2;
+		if (deps)
+		{
+			deps[0] = {
+				{ mpSystem->GetID(), GetID(), iStage::kEnd },
+				{ mpSystem->GetID(), GetID(), iStage::kExecute },
+				MultiCore::DependencyPolicy::eAfter
+			};
+			deps[1] = {
+				{ mpSystem->GetID(), GetID(), iStage::kExecute },
+				{ mpSystem->GetID(), GetID(), iStage::kBegin },
+				MultiCore::DependencyPolicy::eBarrier
+			};
+		}
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result EntityStage::GetInstructions(int32_t* count, MultiCore::Instruction* instructions)
+{
+	if (count)
+	{
+		if (instructions)
+		{
+			*count = 3;
+			instructions[0] = { { mpSystem->GetID(), GetID(), kBegin }, MultiCore::BlockOpcode::eFirst, &EntityStage::_Begin, this };
+			instructions[1] = { { mpSystem->GetID(), GetID(), kExecute }, MultiCore::BlockOpcode::eAll, &EntityStage::_Update, this };
+			instructions[2] = { { mpSystem->GetID(), GetID(), kEnd }, MultiCore::BlockOpcode::eLast, &EntityStage::_End, this };
+			return COM::kOK;
+		}
+		*count = 3;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 void EntityStage::_Begin(Concurrency::ThreadContext& tc, void* context)
 {
+	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	self.mWork.Begin();
 }
@@ -80,6 +137,7 @@ void EntityStage::_Update(Concurrency::ThreadContext& tc, void* context)
 
 void EntityStage::_End(Concurrency::ThreadContext& tc, void* context)
 {
+	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	self.mWork.End();
 }

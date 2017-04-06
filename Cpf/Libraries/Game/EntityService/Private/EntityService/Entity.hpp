@@ -4,7 +4,7 @@
 #include "RefCount.hpp"
 #include "UnorderedMap.hpp"
 #include "Pair.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Manager.hpp"
 #include "EntityService/Interfaces/iEntity.hpp"
 
@@ -39,10 +39,6 @@ namespace Cpf
 			iComponent* GetComponent(COM::InterfaceID id) override;
 			const iComponent* GetComponent(COM::InterfaceID id) const override;
 		
-			static bool Install(COM::InterfaceID iid, ComponentCreator creator);
-			static bool Remove(COM::InterfaceID iid);
-			static iComponent* CreateComponent(COM::InterfaceID iid, MultiCore::System*);
-
 		private:
 			// Not intended for direct creation.
 			Entity();
@@ -57,9 +53,6 @@ namespace Cpf
 			int mComponentCount;
 			ComponentPair mComponents[kMaxComponents];
 			bool mActive;
-
-			using ComponentMap = UnorderedMap<COM::InterfaceID, ComponentCreator>;
-			static ComponentMap mComponentCreators;
 		};
 	}
 }

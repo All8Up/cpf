@@ -127,7 +127,7 @@ namespace Cpf
 		// If the multi-core side of things needs anything run on the main thread,
 		// feed it in this queue.
 		Threading::Reactor::WorkQueue mReactorQueue;
-		EntityService::iManager* mpEntityManager;
+		IntrusivePtr<EntityService::iManager> mpEntityManager;
 
 		Graphics::DebugUI mDebugUI;
 

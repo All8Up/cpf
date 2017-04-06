@@ -139,11 +139,11 @@ namespace Cpf
 		using Ns = UnitBase<int64_t, 1, 1000000000>;
 		using Us = UnitBase<int64_t, 1, 1000000>;
 		using Ms = UnitBase<int64_t, 1, 1000>;
-		using Seconds = UnitBase<float, 1, 1>;
-		using Minutes = UnitBase<float, 60, 1>;
-		using Hours = UnitBase<float, 60 * 60, 1>;
-		using Days = UnitBase<float, 24 * 60 * 60, 1>;
-		using Years = UnitBase<float, 365 * 24 * 60 * 60, 1>;
+		using Seconds = UnitBase<double, 1, 1>;
+		using Minutes = UnitBase<double, 60, 1>;
+		using Hours = UnitBase<double, 60 * 60, 1>;
+		using Days = UnitBase<double, 24 * 60 * 60, 1>;
+		using Years = UnitBase<double, 365 * 24 * 60 * 60, 1>;
 	}
 }
 

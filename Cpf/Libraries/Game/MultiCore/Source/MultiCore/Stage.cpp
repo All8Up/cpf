@@ -1,97 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
-#include "MultiCore/Stage.hpp"
-#include "MultiCore/QueueBuilder.hpp"
+#include "MultiCore/iStage.hpp"
+#include "Stage.hpp"
+#include "QueueBuilder.hpp"
 #include "UnorderedMap.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
-Stage::Stage(System* service, const char* name)
-	: mpSystem(service)
-	, mID(name, strlen(name))
-	, mEnabled(true)
-{
-	
-}
-
-Stage::~Stage()
-{}
-
-System* Stage::GetSystem() const
-{
-	return mpSystem;
-}
-
-StageID Stage::GetID() const
-{
-	return mID;
-}
-
-
 //////////////////////////////////////////////////////////////////////////
-namespace
-{
-	using StageMap = UnorderedMap<StageID, Stage::Creator>;
-	StageMap s_StageMap;
-}
-
-bool Stage::Install(StageID id, Creator creator)
-{
-	if (s_StageMap.find(id) == s_StageMap.end())
-	{
-		s_StageMap[id] = creator;
-		return true;
-	}
-	return false;
-}
-
-bool Stage::Remove(StageID id)
-{
-	if (s_StageMap.find(id) != s_StageMap.end())
-	{
-		s_StageMap.erase(id);
-		return true;
-	}
-	return false;
-}
-
-Stage* Stage::_Create(StageID type, System* owner, const char* name)
-{
-	if (s_StageMap.find(type) != s_StageMap.end())
-	{
-		return (*s_StageMap[type])(owner, name);
-	}
-	return nullptr;
-}
-
-bool Stage::IsEnabled() const
-{
-	return mEnabled;
-}
-
-void Stage::SetEnabled(bool flag)
-{
-	mEnabled = flag;
-}
-
-Instructions Stage::GetInstructions(SystemID)
-{
-	return Instructions();
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-
-bool SingleUpdateStage::Install()
-{
-	return Stage::Install(kID, &SingleUpdateStage::_Creator);
-}
-
-bool SingleUpdateStage::Remove()
-{
-	return Stage::Remove(kID);
-}
-
 void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode)
 {
 	mOpcode = opcode;
@@ -99,25 +15,96 @@ void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, voi
 	mpContext = context;
 }
 
-Instructions SingleUpdateStage::GetInstructions(SystemID sid)
+COM::Result CPF_STDCALL SingleUpdateStage::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	Instructions result;
-	result.push_back({ {sid, GetID(), kExecute}, mOpcode, &SingleUpdateStage::_Update, this });
-	return result;
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iStage::kIID.GetID():
+			*outIface = static_cast<iStage*>(this);
+			break;
+		case iSingleUpdateStage::kIID.GetID():
+			*outIface = static_cast<iSingleUpdateStage*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL SingleUpdateStage::Initialize(iSystem* system, const char* const name)
+{
+	if (system && name)
+	{
+		mpSystem = system;
+		mID = StageID(name, strlen(name));
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+iSystem* SingleUpdateStage::GetSystem() const
+{
+	return mpSystem;
+}
+
+StageID CPF_STDCALL SingleUpdateStage::GetID() const
+{
+	return mID;
 }
 
 
-SingleUpdateStage::SingleUpdateStage(System* owner, const char* name)
-	: Stage(owner, name)
-	, mpUpdate(nullptr)
+bool SingleUpdateStage::IsEnabled() const
+{
+	return mEnabled;
+}
+
+void SingleUpdateStage::SetEnabled(bool flag)
+{
+	mEnabled = flag;
+}
+COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(int32_t* c, Instruction* i)
+{
+	if (c)
+	{
+		if (i)
+		{
+			*c = 1;
+			i[0] = { { mpSystem->GetID(), GetID(), kExecute }, mOpcode, &SingleUpdateStage::_Update, this };
+			return COM::kOK;
+		}
+		*c = 1;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, BlockDependency* dependencies)
+{
+	(void)dependencies;
+	if (count)
+	{
+		*count = 0;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+SingleUpdateStage::SingleUpdateStage()
+	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)
-{}
-
-Stage* SingleUpdateStage::_Creator(System* owner, const char* name)
+	, mEnabled(true)
 {
-	return new SingleUpdateStage(owner, name);
 }
+
 void SingleUpdateStage::_Update(Concurrency::ThreadContext& tc, void* context)
 {
 	SingleUpdateStage* self = reinterpret_cast<SingleUpdateStage*>(context);

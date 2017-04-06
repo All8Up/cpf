@@ -12,8 +12,6 @@ TEST(Concurrency, All_Opcode)
 	using namespace Cpf;
 	using namespace Concurrency;
 
-	ScopedInitializer<TimeInitializer> timeInit;
-
 	//////////////////////////////////////////////////////////////////////////
 	auto scheduler = new Scheduler;
 	EXPECT_TRUE(scheduler != nullptr);

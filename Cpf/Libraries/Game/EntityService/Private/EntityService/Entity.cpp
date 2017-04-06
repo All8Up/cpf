@@ -8,57 +8,6 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-bool EntityService::ComponentFactoryInstall(COM::InterfaceID iid, ComponentCreator creator)
-{
-	return Entity::Install(iid, creator);
-}
-
-bool EntityService::ComponentFactoryRemove(COM::InterfaceID iid)
-{
-	return Entity::Remove(iid);
-}
-
-iComponent* EntityService::ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::System* system)
-{
-	return Entity::CreateComponent(iid, system);
-}
-
-//////////////////////////////////////////////////////////////////////////
-Entity::ComponentMap Entity::mComponentCreators;
-
-//////////////////////////////////////////////////////////////////////////
-bool Entity::Install(COM::InterfaceID iid, ComponentCreator creator)
-{
-	if (mComponentCreators.find(iid)==mComponentCreators.end())
-	{
-		mComponentCreators[iid] = creator;
-		return true;
-	}
-	return false;
-}
-
-bool Entity::Remove(COM::InterfaceID iid)
-{
-	if (mComponentCreators.find(iid) == mComponentCreators.end())
-	{
-		mComponentCreators.erase(iid);
-		return true;
-	}
-	return false;
-}
-
-iComponent* Entity::CreateComponent(COM::InterfaceID iid, MultiCore::System* system)
-{
-	iComponent* result = nullptr;
-	const auto& creator = mComponentCreators.find(iid);
-	if (creator != mComponentCreators.end())
-	{
-		result = (*creator->second)(system);
-	}
-	return result;
-}
-
-//////////////////////////////////////////////////////////////////////////
 bool Entity::Create(EntityID id, iEntity** outEntity)
 {
 	CPF_ASSERT(outEntity != nullptr);
@@ -164,6 +113,7 @@ void Entity::AddComponent(COM::InterfaceID id, iComponent* component)
 		++i;
 	}
 	// Insert.
+	component->AddRef();
 	mComponents[i] = Move(ComponentPair(id, component));
 	++mComponentCount;
 	if (mActive)

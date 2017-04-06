@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Pipeline.hpp"
-#include "MultiCore/System.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iSystem.hpp"
+#include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 #include "Hash/Crc.hpp"
-#include "MultiCore/QueueBuilder.hpp"
+#include "QueueBuilder.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -31,7 +31,7 @@ COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** ifa
 			*iface = static_cast<COM::iUnknown*>(this);
 			AddRef();
 			return COM::kOK;
-		case iPipeline::kID.GetID():
+		case iPipeline::kIID.GetID():
 			*iface = static_cast<iPipeline*>(this);
 			AddRef();
 			return COM::kOK;
@@ -40,7 +40,7 @@ COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** ifa
 	return COM::kInvalidParameter;
 }
 
-System* CPF_STDCALL Pipeline::Install(System* system)
+iSystem* CPF_STDCALL Pipeline::Install(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -55,7 +55,7 @@ System* CPF_STDCALL Pipeline::Install(System* system)
 	return nullptr;
 }
 
-COM::Result CPF_STDCALL Pipeline::Remove(System* system)
+COM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -74,7 +74,7 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 	for (auto& system : mSystemMap)
 	{
 		// Iterate and add all blocks.
-		System* systemPtr = nullptr;
+		iSystem* systemPtr = nullptr;
 		if (COM::Succeeded(GetSystem(system.first, &systemPtr)))
 		{
 			int32_t instructionCount = 0;
@@ -89,9 +89,9 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 
 		// Add dependencies between blocks.
 		int32_t depCount = 0;
-		system.second->GetDependencies(&depCount, nullptr);
+		system.second->GetDependencies(this, &depCount, nullptr);
 		BlockDependencies dependencies(depCount);
-		system.second->GetDependencies(&depCount, dependencies.data());
+		system.second->GetDependencies(this, &depCount, dependencies.data());
 		if (!dependencies.empty())
 			builder.Add(dependencies);
 	}
@@ -114,21 +114,21 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 	return result ? COM::kOK : kConfigurationError;
 }
 
-bool Pipeline::_ConfigureSystems() const
+bool Pipeline::_ConfigureSystems()
 {
 	bool result = true;
 
 	// Let the systems configure to the new pipeline.
 	for (const auto& system : mSystemMap)
 	{
-		if (COM::Succeeded(system.second->Configure()))
+		if (COM::Failed(system.second->Configure(this)))
 			result = false;
 	}
 
 	return result;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, System** system) const
+COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
 {
 	if (system)
 	{
@@ -144,7 +144,7 @@ COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, System** system) const
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, System** outSystem) const
+COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** outSystem) const
 {
 	if (outSystem)
 	{
@@ -153,17 +153,17 @@ COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, System** out
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, Stage** outStage)
+COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, iStage** outStage)
 {
 	if (outStage)
 	{
-		System* system = nullptr;
+		iSystem* system = nullptr;
 		if (COM::Succeeded(GetSystem(systemID, &system)))
 		{
 			if (system)
 			{
-				Stage* result = nullptr;
-				if (COM::Succeeded(system->GetStage(stageID, &result)))
+				iStage* result = nullptr;
+				if (COM::Succeeded(system->FindStage(stageID, &result)))
 					return COM::kOK;
 			}
 		}
@@ -194,15 +194,23 @@ COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outStri
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::EnumerateSystems(void* context, bool(CPF_STDCALL *callback)(void*, SystemID, IntrusivePtr<System>))
+COM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, iSystem** systems)
 {
-	if (callback)
+	if (count)
 	{
-		for (auto pair : mSystemMap)
+		if (systems)
 		{
-			if (!callback(context, pair.first, pair.second))
-				break;
+			if (*count >= mSystemMap.size())
+			{
+				int32_t index = 0;
+				for (const auto& pair : mSystemMap)
+				{
+					systems[index++] = pair.second;
+				}
+			}
+			return COM::kNotEnoughSpace;
 		}
+		*count = int32_t(mSystemMap.size());
 		return COM::kOK;
 	}
 	return COM::kInvalidParameter;

@@ -6,9 +6,11 @@ namespace Cpf
 {
 	namespace Plugin
 	{
-		struct CPF_EXPORT iClassInstance : COM::iUnknown
+		struct iRegistry;
+
+		struct iClassInstance : COM::iUnknown
 		{
-			virtual COM::Result CPF_STDCALL CreateInstance(COM::iUnknown*, COM::iUnknown**) = 0;
+			virtual COM::Result CPF_STDCALL CreateInstance(iRegistry*, COM::iUnknown*, COM::iUnknown**) = 0;
 		};
 	}
 }

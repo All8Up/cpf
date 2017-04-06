@@ -5,19 +5,28 @@
 using namespace Cpf;
 using namespace EntityService;
 
-bool TransformComponent::Install()
+COM::Result TransformComponent::Install(Plugin::iRegistry* regy)
 {
-	return Entity::Install(iTransformComponent::kIID, &TransformComponent::Creator);
+	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
+	{
+	public:
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+		{
+			if (outIface)
+			{
+				*outIface = new TransformComponent();
+				return *outIface ? COM::kOK : COM::kOutOfMemory;
+			}
+			return COM::kInvalidParameter;
+		}
+	};
+	return regy->Install(kTransformComponentCID, new ClassInstance());
 }
 
-bool TransformComponent::Remove()
+COM::Result TransformComponent::Remove(Plugin::iRegistry* regy)
 {
-	return Entity::Remove(iTransformComponent::kIID);
-}
-
-iComponent* TransformComponent::Creator(MultiCore::System* system)
-{
-	return static_cast<iComponent*>(new TransformComponent(system));
+	return regy->Remove(kTransformComponentCID);
 }
 
 COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
@@ -45,7 +54,7 @@ COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPt
 }
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent(MultiCore::System*)
+TransformComponent::TransformComponent()
 	: mpParent(nullptr)
 {}
 

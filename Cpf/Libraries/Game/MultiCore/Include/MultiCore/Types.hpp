@@ -14,16 +14,16 @@ namespace Cpf
 	{
 		struct iPipeline;
 
-		struct CPF_EXPORT_MULTICORE SystemID_tag {};
-		using SystemID = CPF_EXPORT_MULTICORE Hash::HashString<SystemID_tag>;
-		class CPF_EXPORT_MULTICORE System;
+		struct SystemID_tag {};
+		using SystemID = Hash::HashString<SystemID_tag>;
+		struct iSystem;
 
-		struct CPF_EXPORT_MULTICORE StageID_tag {};
+		struct StageID_tag {};
 		using StageID = Hash::HashString<StageID_tag>;
-		class CPF_EXPORT_MULTICORE Stage;
-		using StageVector = Vector<IntrusivePtr<Stage>>;
+		struct iStage;
+		using StageVector = Vector<IntrusivePtr<iStage>>;
 
-		struct CPF_EXPORT_MULTICORE BlockID_tag {};
+		struct BlockID_tag {};
 		using BlockID = Hash::HashString<BlockID_tag>;
 
 		enum class BlockOpcode
@@ -46,10 +46,29 @@ namespace Cpf
 			SystemID mSystem;
 			StageID mStage;
 			BlockID mBlock;
-
-			bool operator <(const SSBID& rhs) const;
-			bool operator ==(const SSBID& rhs) const;
 		};
+
+		inline bool operator <(const SSBID& lhs, const SSBID& rhs)
+		{
+			if (lhs.mSystem < rhs.mSystem)
+				return true;
+			if (lhs.mSystem == rhs.mSystem)
+			{
+				if (lhs.mStage < rhs.mStage)
+					return true;
+				if (lhs.mStage == rhs.mStage)
+				{
+					if (lhs.mBlock < rhs.mBlock)
+						return true;
+				}
+			}
+			return false;
+		}
+
+		inline bool operator ==(const SSBID& lhs, const SSBID& rhs)
+		{
+			return lhs.mSystem == rhs.mSystem && lhs.mStage == rhs.mStage && lhs.mBlock == rhs.mBlock;
+		}
 
 		struct Instruction
 		{
@@ -62,14 +81,18 @@ namespace Cpf
 
 		enum class DependencyPolicy
 		{
-			eBarrier,		// Must be separated by a barrier.
-			eAfter			// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
+			eBarrier,	// Must be separated by a barrier.
+			eAfter		// Does not require a barrier, just needs to be scheduled afterwards.  (Usually used with eLast types.)
 		};
 
 		struct BlockDependency
 		{
 			BlockDependency() {};
-			BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy = DependencyPolicy::eBarrier);
+			BlockDependency(SSBID dependent, SSBID target, DependencyPolicy policy = DependencyPolicy::eBarrier)
+				: mDependent(dependent)
+				, mTarget(target)
+				, mPolicy(policy)
+			{}
 
 			SSBID mDependent;
 			SSBID mTarget;

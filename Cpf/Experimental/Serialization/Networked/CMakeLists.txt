@@ -23,7 +23,6 @@ target_link_libraries (Networked
 	Logging
 	s_ANSI_C_FileSystem
 	s_MultiCore
-	s_EntityService
 	s_SDL2
 	s_Resources
 	s_AdapterD3D12

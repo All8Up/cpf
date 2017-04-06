@@ -10,7 +10,6 @@ TEST(Concurrency, First_Opcode)
 {
 	using namespace Cpf;
 	using namespace Concurrency;
-	ScopedInitializer<TimeInitializer> init;
 
 	for (auto i = 0; i < 10; ++i)
 	{

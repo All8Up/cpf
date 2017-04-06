@@ -1,29 +1,33 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Graphics/DebugUI.hpp"
 #include "Graphics/Interfaces/iInstance.hpp"
 #include "Graphics/Interfaces/iDevice.hpp"
 #include "Graphics/Interfaces/iSwapChain.hpp"
-#include "MultiCore/System/Timer.hpp"
+#include "MultiCore/System/iTimer.hpp"
 
 
 namespace Cpf
 {
-	class RenderSystem : public MultiCore::System
+	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("Render System Class"_crc64);
+
+	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("RenderSystem"_crc64);
+
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
-		struct Desc : System::Desc
+		struct Desc : iSystem::Desc
 		{
 			MultiCore::SystemID mTimer;
 		};
 
-		static bool Install();
-		static bool Remove();
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
 
-		COM::Result Configure() override;
+		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
 		bool Initialize(iWindow*, Resources::Locator*);
 		bool Shutdown();
@@ -32,11 +36,29 @@ namespace Cpf
 
 		Graphics::DebugUI& GetDebugUI();
 
+		// iUnknown
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+		// iSystem
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
+		MultiCore::SystemID CPF_STDCALL GetID() const override;
+//		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
+
+		// iStageList
+		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
+		COM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
+		COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
+		COM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+
+		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
+		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
+
+
 	private:
-		RenderSystem(MultiCore::iPipeline* pipeline, const char* name, const Desc* desc);
+		RenderSystem();
 		~RenderSystem() override;
 
-		static System* _Create(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 		void _CreateStages();
 
 		bool _SelectAdapter();
@@ -50,7 +72,8 @@ namespace Cpf
 		static constexpr int kBufferCount = 3;
 
 		Desc mDesc;
-		MultiCore::Timer* mpTimer;
+		MultiCore::iTimer* mpTimer;
+		Plugin::iRegistry* mpRegistry;
 
 		IntrusivePtr<Graphics::iInstance> mpInstance;
 		IntrusivePtr<Graphics::iAdapter> mpAdapter;
@@ -73,5 +96,8 @@ namespace Cpf
 
 		int mScheduleIndex = 0;
 		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];
+
+		MultiCore::SystemID mID;
+		IntrusivePtr<MultiCore::iStageList> mpStages;
 	};
 }

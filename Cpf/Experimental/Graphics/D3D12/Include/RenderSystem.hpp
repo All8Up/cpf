@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "EntityService/Types.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "Hash/HashString.hpp"
 #include "Graphics/Interfaces/iCommandBuffer.hpp"
 
@@ -13,9 +13,12 @@ namespace Cpf
 
 	class ExperimentalD3D12;
 
-	class RenderSystem : public MultiCore::System
+	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("RenderSystemCID"_crc64);
+
+	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("RenderSystem"_crc64);
 		//
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
@@ -27,18 +30,36 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Registration.
-		static bool Install();
-		static bool Remove();
+		static COM::Result Install(Plugin::iRegistry*);
+		static COM::Result Remove(Plugin::iRegistry*);
 
-		struct Desc : System::Desc
+		struct Desc : iSystem::Desc
 		{
 			MultiCore::SystemID mTimerID;
 			ExperimentalD3D12* mpApplication;
 		};
 
+		// iUnknown
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+		// iSystem
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
+		MultiCore::SystemID CPF_STDCALL GetID() const override;
+		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
+
+		// iStageList
+		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
+		COM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
+		COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
+		COM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+
+		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
+		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
+
 	private:
 		// Construction/Destruction.
-		RenderSystem(MultiCore::iPipeline* owner, const char* name, const Desc* desc);
+		RenderSystem();
 		~RenderSystem() override;
 
 		//
@@ -50,9 +71,6 @@ namespace Cpf
 		static void _DebugUI(Concurrency::ThreadContext& tc, void* context);
 		static void _PreparePresent(Concurrency::ThreadContext& tc, void* context);
 		static void _EndFrame(Concurrency::ThreadContext& tc, void* context);
-
-		//
-		static System* Creator(MultiCore::iPipeline* owner, const char* name, const System::Desc* desc);
 
 		ExperimentalD3D12* mpApp;
 
@@ -67,5 +85,8 @@ namespace Cpf
 		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[kBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[kBufferCount];
+
+		MultiCore::SystemID mID;
+		IntrusivePtr<MultiCore::iStageList> mpStages;
 	};
 }

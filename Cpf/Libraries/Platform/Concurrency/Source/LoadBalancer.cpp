@@ -13,9 +13,9 @@ LoadBalancer::LoadBalancer()
 LoadBalancer::~LoadBalancer()
 {}
 
-void LoadBalancer::SetSchedulers(Schedulers&& schedulers)
+void LoadBalancer::SetSchedulers(const Schedulers* schedulers)
 {
-	mSchedulers = Move(schedulers);
+	mSchedulers.insert(mSchedulers.begin(), schedulers->begin(), schedulers->end());
 	Balance();
 }
 

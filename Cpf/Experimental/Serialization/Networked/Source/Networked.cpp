@@ -1,9 +1,9 @@
 #include "Networked.hpp"
 #include "Logging/Logging.hpp"
 #include "MultiCore.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 #include "MultiCore/iPipeline.hpp"
-#include "MultiCore/Stage.hpp"
+#include "MultiCore/iStage.hpp"
 #include "Adapter/D3D12.hpp"
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
@@ -30,13 +30,13 @@ Networked::~Networked()
 int Networked::Start(const CommandLine&)
 {
 	// Initialize libraries.
-	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
 	ScopedInitializer<Adapter::D3D12Initializer> d3d12Init;
+
+	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())
 	{
@@ -127,20 +127,16 @@ bool Networked::_CreateWindow()
 bool Networked::_Install()
 {
 	return (
-		Timer::Install() &&
-		SingleUpdateStage::Install() &&
-		NetworkSystem::Install() &&
-		RenderSystem::Install()
+		COM::Succeeded(NetworkSystem::Install(GetRegistry())) &&
+		COM::Succeeded(RenderSystem::Install(GetRegistry()))
 		);
 }
 
 bool Networked::_Remove()
 {
 	return (
-		RenderSystem::Remove() &&
-		NetworkSystem::Remove() &&
-		SingleUpdateStage::Remove() &&
-		Timer::Remove()
+		COM::Succeeded(RenderSystem::Remove(GetRegistry())) &&
+		COM::Succeeded(NetworkSystem::Remove(GetRegistry()))
 		);
 }
 
@@ -165,7 +161,8 @@ bool Networked::_InitializeMultiCore()
 	if (mLoopScheduler.Initialize(Move(Thread::Group(Thread::GetHardwareThreadCount()))) &&
 		mThreadPool.Initialize(Move(Thread::Group(Thread::GetHardwareThreadCount()))))
 	{
-		mLoadBalancer.SetSchedulers({&mLoopScheduler, &mThreadPool.GetScheduler()});
+		Concurrency::LoadBalancer::Schedulers schedulers{ &mLoopScheduler, &mThreadPool.GetScheduler() };
+		mLoadBalancer.SetSchedulers(&schedulers);
 		return true;
 	}
 	return false;
@@ -180,14 +177,21 @@ bool Networked::_ShutdownMultiCore()
 
 bool Networked::_InitializePipeline()
 {
-	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpPipeline.AsVoidPP())))
+	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
 	{
-		mpTimer.Adopt(static_cast<Timer*>(mpPipeline->Install(System::Create<Timer>(mpPipeline, "Timer", nullptr))));
-		mpNetworkSystem.Adopt(static_cast<NetworkSystem*>(mpPipeline->Install(System::Create<NetworkSystem>(mpPipeline, "Networking", nullptr))));
+		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
+		mpTimer->Initialize(GetRegistry(), "Game Time", nullptr);
+		mpPipeline->Install(mpTimer);
+
+		GetRegistry()->Create(nullptr, kNetworkSystemCID, NetworkSystem::kIID, mpNetworkSystem.AsVoidPP());
+		mpNetworkSystem->Initialize(GetRegistry(), "Networking", nullptr);
+		mpPipeline->Install(mpNetworkSystem);
 
 		RenderSystem::Desc renderDesc;
 		renderDesc.mTimer = mpTimer->GetID();
-		mpRenderSystem.Adopt(static_cast<RenderSystem*>(mpPipeline->Install(System::Create<RenderSystem>(mpPipeline, "Rendering", &renderDesc))));
+		GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, mpRenderSystem.AsVoidPP());
+		mpRenderSystem->Initialize(GetRegistry(), "Rendering", &renderDesc);
+		mpPipeline->Install(mpRenderSystem);
 		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(mpWindow, mpLocator))
 		{
 			return (

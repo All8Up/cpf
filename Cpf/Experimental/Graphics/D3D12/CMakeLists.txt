@@ -29,47 +29,26 @@ if (WIN32)
 	target_include_directories (ExperimentalD3D12
 		PUBLIC Include
 	)
+
 	target_link_libraries (ExperimentalD3D12
-		s_Concurrency
 		s_SDL2
-		Logging
 		s_ANSI_C_FileSystem
-		s_EntityService
+
 		s_Resources
 		s_GraphicsDriver
 		s_AdapterD3D12
+
+#		s_Concurrency
+#		s_EntityService
+		EntityService_Interface
+		Concurrency
 	)
-	target_compile_definitions (ExperimentalD3D12 PUBLIC -DGFX_ADAPTER=D3D12 )
+
+	target_compile_definitions (ExperimentalD3D12 PUBLIC -DGFX_ADAPTER=D3D12)
 
 	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)
 # WIN32
 endif ()
-
-#[[
-if (WIN32 OR UNIX AND NOT APPLE)
-	add_executable (ExperimentalVulkan WIN32
-		${HEADER_FILES}
-		${SOURCE_FILES}
-	)
-	target_include_directories (ExperimentalVulkan
-		PUBLIC Include
-	)
-	target_link_libraries (ExperimentalVulkan
-		s_PlatformLib
-		s_Concurrency
-		s_SDL2
-		Logging
-		s_ANSI_C_FileSystem
-		s_GraphicsDriver
-		s_GraphicsFactory
-		s_AdaptersVulkan
-	)
-	target_compile_definitions (ExperimentalVulkan PUBLIC -DGFX_ADAPTER=Vulkan )
-
-	set_property (TARGET ExperimentalVulkan PROPERTY FOLDER Experimental/Graphics/Adapters)
-# WIN32
-endif ()
-]]#
 
 
 if(MSVC)
@@ -90,6 +69,26 @@ foreach (file ${DataFiles})
 	)
 endforeach ()
 source_group (Data FILES ${DataFiles})
+
+# ############################################
+if(MSVC)
+	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Experimental/Graphics/D3D12)
+else()
+	set (targetPath test/)
+endif()
+file (MAKE_DIRECTORY ${targetPath}/plugins)
+add_custom_command (
+	TARGET ExperimentalD3D12 POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:EntityService> ${targetPath}/plugins/EntityService.cfp
+)
+add_custom_command (
+	TARGET ExperimentalD3D12 POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
+)
+#add_custom_command (
+#	TARGET ExperimentalD3D12 POST_BUILD
+#	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Concurrency> ${targetPath}/Concurrency.${CMAKE_SHARED_LIBRARY_SUFFIX}
+#)
 
 #[[
 if (WIN32)

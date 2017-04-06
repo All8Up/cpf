@@ -3,24 +3,21 @@
 #include "EntityService/Interfaces/iComponent.hpp"
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 #include "EntityService/Helpers/ComponentBase.hpp"
-#include "MultiCore/System.hpp"
+#include "MultiCore/iSystem.hpp"
 
 namespace Cpf
 {
 	namespace EntityService
 	{
-		class TransformComponent
-			: private ComponentBase<iTransformComponent>
+		class TransformComponent : private ComponentBase<iTransformComponent>
 		{
 		public:
-			static constexpr auto kID = ComponentID("Component Implementation"_crc64);
+			static constexpr auto kID = ComponentID("iTransformComponent"_crc64);
 
-			static bool Install();
-			static bool Remove();
+			static COM::Result Install(Plugin::iRegistry*);
+			static COM::Result Remove(Plugin::iRegistry*);
 
-			static iComponent* Creator(MultiCore::System*);
-
-			TransformComponent(MultiCore::System*);
+			TransformComponent();
 			~TransformComponent() override;
 
 			//
@@ -30,6 +27,9 @@ namespace Cpf
 			ComponentID GetID() const override;
 
 			void Shutdown() override;
+
+			void SetOwner(MultiCore::iSystem*) override {}
+			MultiCore::iSystem* GetOwner() override { return nullptr; }
 
 			// Local transform interface.
 			iTransformComponent* GetParent() const;

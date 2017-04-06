@@ -54,13 +54,14 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	CPF_LOG_LEVEL(Experimental, Trace);
 
 	// Initialize the gfx library.
-	ScopedInitializer<TimeInitializer> timeInit;
 	ScopedInitializer<ThreadingInitializer> threadingInit;
+	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
-	ScopedInitializer<EntityServiceInitializer> goInit;
-	ScopedInitializer<MultiCoreInitializer, Plugin::iRegistry*> multicoreInit(static_cast<Plugin::iRegistry*>(GetRegistry()));
+
+	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
+	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;
@@ -70,40 +71,44 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
-	mpEntityManager = EntityService::CreateManager();
+	GetRegistry()->Create(nullptr, EntityService::kManagerCID, EntityService::iManager::kIID, mpEntityManager.AsVoidPP());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Install object components.
-	MoverSystem::MoverComponent::Install();
+	MoverSystem::MoverComponent::Install(GetRegistry());
 	
 	//////////////////////////////////////////////////////////////////////////
-	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kID, mpMultiCore.AsVoidPP());
-
-	// Install the stage types.
-	MultiCore::SingleUpdateStage::Install();
+	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpMultiCore.AsVoidPP());
 
 	// Install the systems this will use.
-	RenderSystem::Install();
-	InstanceSystem::Install();
-	MoverSystem::Install();
+	RenderSystem::Install(GetRegistry());
+	InstanceSystem::Install(GetRegistry());
+	MoverSystem::Install(GetRegistry());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
-	IntrusivePtr<MultiCore::Timer> gameTime(MultiCore::System::Create<MultiCore::Timer>(mpMultiCore, "Game Time"));
+	IntrusivePtr<MultiCore::iTimer> gameTime;
+	GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, gameTime.AsVoidPP());
+	gameTime->Initialize(GetRegistry(), "Game Time", nullptr);
+
 	mpMultiCore->Install(gameTime);
 
 	// Create the render system.
 	RenderSystem::Desc renderDesc;
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
-	IntrusivePtr<RenderSystem> renderSystem(MultiCore::System::Create<RenderSystem>(mpMultiCore, "Render System", &renderDesc));
+	IntrusivePtr<RenderSystem> renderSystem;
+	GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, renderSystem.AsVoidPP());
+	renderSystem->Initialize(GetRegistry(), "Render System", &renderDesc);
 	mpMultiCore->Install(renderSystem);
 
 	// Create the instance management system.
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem(MultiCore::System::Create<InstanceSystem>(mpMultiCore, "Instance System", &instanceDesc));
+	IntrusivePtr<InstanceSystem> instanceSystem;
+	GetRegistry()->Create(nullptr, kInstanceSystemCID, InstanceSystem::kIID, instanceSystem.AsVoidPP());
+	instanceSystem->Initialize(GetRegistry(), "Instance System", &instanceDesc);
 	mpMultiCore->Install(instanceSystem);
 
 	// Create the mover system.
@@ -111,56 +116,57 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	moverDesc.mpApplication = this;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	mpMoverSystem.Adopt(MultiCore::System::Create<MoverSystem>(mpMultiCore, "Mover", &moverDesc));
+	GetRegistry()->Create(nullptr, kMoverSystemCID, MoverSystem::kIID, mpMoverSystem.AsVoidPP());
+	mpMoverSystem->Initialize(GetRegistry(), "Mover", &moverDesc);
 	mpMultiCore->Install(mpMoverSystem);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Add the required inter-system dependencies.
 	// Render system needs to draw after instancing is complete.
 	renderSystem->AddDependency({
-		{ renderSystem->GetID(), RenderSystem::kDrawInstances, MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
+		{ renderSystem->GetID(), RenderSystem::kDrawInstances, MultiCore::iStage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 
 	// Instance system needs to begin after render system begin.
 	// Instance system needs to end after movement update.
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
-		{ renderSystem->GetID(), RenderSystem::kBeginFrame, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
+		{ renderSystem->GetID(), RenderSystem::kBeginFrame, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::Stage::kExecute },
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 
 	// Mover updates must happen after game time update and instance begin.
 	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::Stage::kStageID, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
+		{ gameTime->GetID(), MultiCore::iStage::kStageID, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
-		{ gameTime->GetID(), MultiCore::Stage::kStageID, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
+		{ gameTime->GetID(), MultiCore::iStage::kStageID, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eBarrier
 	});
 	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::Stage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::Stage::kExecute },
+		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
+		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
 
@@ -173,8 +179,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	for (int i = 0; i<kInstanceCount; ++i)
 	{
 		IntrusivePtr<EntityService::iEntity> entity(mpEntityManager->CreateEntity());
-		entity->CreateComponent<EntityService::iTransformComponent>(nullptr);
-		entity->CreateComponent<iMoverComponent>(mpMoverSystem);
+		entity->CreateComponent<EntityService::iTransformComponent>(GetRegistry(), EntityService::kTransformComponentCID, nullptr);
+		entity->CreateComponent<iMoverComponent>(GetRegistry(), kMoverComponentCID, mpMoverSystem);
 	}
 
 	//////////////////////////////////////////////////////////////////////////

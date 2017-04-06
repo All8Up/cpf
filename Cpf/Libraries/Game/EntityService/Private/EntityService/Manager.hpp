@@ -4,6 +4,7 @@
 #include "UnorderedMap.hpp"
 #include "RefCounted.hpp"
 #include "Functional.hpp"
+#include "Plugin/iClassInstance.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 
@@ -40,6 +41,21 @@ namespace Cpf
 			static EntityID mNextID;
 			EntityIDMap mEntityIDMap;
 			MultiCore::iPipeline* mpPipeline;
+		};
+
+		class ManagerClass : public tRefCounted<Plugin::iClassInstance>
+		{
+		public:
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+			{
+				if (outIface)
+				{
+					*outIface = new Manager;
+					return *outIface ? COM::kOK : COM::kOutOfMemory;
+				}
+				return COM::kInvalidParameter;
+			}
 		};
 	}
 }

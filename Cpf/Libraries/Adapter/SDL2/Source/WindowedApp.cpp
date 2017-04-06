@@ -63,7 +63,7 @@ bool WindowedApp::Poll()
 	if (IsRunning())
 	{
 		SDL_Event event;
-		while (SDL_PollEvent(&event))
+		while (SDL_PollEvent(&event)==1)
 		{
 			_HandleEvent(event);
 		}

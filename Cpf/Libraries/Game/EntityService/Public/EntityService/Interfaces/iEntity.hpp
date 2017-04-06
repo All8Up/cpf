@@ -8,13 +8,12 @@ namespace Cpf
 	{
 		struct iComponent;
 
-		using ComponentCreator = iComponent* (*)(MultiCore::System*);
-		bool ComponentFactoryInstall(COM::InterfaceID iid, ComponentCreator creator);
-		bool ComponentFactoryRemove(COM::InterfaceID iid);
-		iComponent* ComponentFactoryCreate(COM::InterfaceID iid, MultiCore::System*);
+		static constexpr COM::ClassID kEntityCID = COM::ClassID("EntityService::EntityClass"_crc64);
 
 		struct iEntity : COM::iUnknown
 		{
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("EntityService::iEntity"_crc64);
+
 			virtual void Initialize(iManager*) = 0;
 			virtual void Shutdown() = 0;
 
@@ -31,7 +30,7 @@ namespace Cpf
 
 			// Utilities.
 			template <typename TYPE>
-			TYPE* CreateComponent(MultiCore::System*);
+			TYPE* CreateComponent(Plugin::iRegistry*, const COM::ClassID id, MultiCore::iSystem* system);
 
 			template <typename TYPE>
 			TYPE* GetComponent();
@@ -58,17 +57,16 @@ namespace Cpf
 		}
 
 		template <typename TYPE>
-		TYPE* iEntity::CreateComponent(MultiCore::System* system)
+		TYPE* iEntity::CreateComponent(Plugin::iRegistry* regy, const COM::ClassID id, MultiCore::iSystem* system)
 		{
-			iComponent* created = ComponentFactoryCreate(TYPE::kIID, system);
-			TYPE* result = nullptr;
+			IntrusivePtr<TYPE> created;
+			regy->Create(nullptr, id, TYPE::kIID, created.AsVoidPP());
 			if (created)
 			{
-				if (Succeeded(created->QueryInterface(TYPE::kIID, reinterpret_cast<void**>(&result))))
-					AddComponent<TYPE>(result);
-				created->Release();
+				created->SetOwner(system);
+				AddComponent<TYPE>(created);
 			}
-			return result;
+			return created;
 		}
 
 
