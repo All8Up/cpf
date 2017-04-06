@@ -263,7 +263,7 @@ int BgfxIntegration::Start(const CommandLine&)
 			, 1.0f
 			, 0
 		);
-		mNvg = nvgCreate(1, 0);
+		mNvg = nvgCreate(1, 255);
 		IntrusivePtr<Platform::IO::Stream> roboto_reg_font(mpLocator->Open(RESOURCE_ID("font/", "roboto-regular.ttf")));
 		Vector<uint8_t> robotoData(Move(ReadBinary(roboto_reg_font)));
 		mFont = nvgCreateFontMem(mNvg, "roboto-regular", robotoData.data(), int(robotoData.size()), 0);
@@ -360,26 +360,29 @@ int BgfxIntegration::Start(const CommandLine&)
 			{
 				for (uint32_t xx = 0; xx < 11; ++xx)
 				{
-					Math::Matrix44fv rotX = Math::Matrix44fv::RotationX(time + xx*0.21f);
-					Math::Matrix44fv rotY = Math::Matrix44fv::RotationY(time + yy*0.37f);
-					Math::Matrix44fv rotation = rotY * rotX;
-					rotation[3] = { -15.0f + float(xx)*3.0f, -15.0f + float(yy)*3.0f, 0.0f, 1.0f };
+					for (uint32_t zz = 0; zz < 11; ++zz)
+					{
+						Math::Matrix44fv rotX = Math::Matrix44fv::RotationX(time + xx*0.21f);
+						Math::Matrix44fv rotY = Math::Matrix44fv::RotationY(time + yy*0.37f);
+						Math::Matrix44fv rotation = rotY * rotX;
+						rotation[3] = { -15.0f + float(xx)*3.0f, -15.0f + float(yy)*3.0f, 5.0f + float(zz) * 3.0f, 1.0f };
 
-					// Set model matrix for rendering.
-					bgfx::setTransform(rotation.Data());
+						// Set model matrix for rendering.
+						bgfx::setTransform(rotation.Data());
 
-					// Set vertex and index buffer.
-					bgfx::setVertexBuffer(m_vbh);
-					bgfx::setIndexBuffer(m_ibh);
+						// Set vertex and index buffer.
+						bgfx::setVertexBuffer(m_vbh);
+						bgfx::setIndexBuffer(m_ibh);
 
-					// Set render states.
-					bgfx::setState(0
-						| BGFX_STATE_DEFAULT
-						| BGFX_STATE_PT_TRISTRIP
-					);
+						// Set render states.
+						bgfx::setState(0
+							| BGFX_STATE_DEFAULT
+							| BGFX_STATE_PT_TRISTRIP
+						);
 
-					// Submit primitive for rendering to view 0.
-					bgfx::submit(0, m_program);
+						// Submit primitive for rendering to view 0.
+						bgfx::submit(0, m_program);
+					}
 				}
 			}
 
@@ -416,7 +419,10 @@ int BgfxIntegration::Start(const CommandLine&)
 			{
 				imguiBeginScrollArea("Settings", mWindowSize.x - mWindowSize.x / 5 - 10, 10, mWindowSize.x / 5, mWindowSize.y / 2, &mScrollArea);
 				imguiSeparatorLine();
-				imguiButton("Hello");
+				if (imguiButton("Hello"))
+				{
+					m_timeOffset = bx::getHPCounter();
+				}
 				imguiEndScrollArea();
 			}
 			imguiEndFrame();
