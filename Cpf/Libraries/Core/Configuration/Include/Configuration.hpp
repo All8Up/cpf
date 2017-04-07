@@ -16,12 +16,17 @@ namespace Cpf
 	using WChar_t = char16_t;
 
 	/** @brief Utility to scope initialization of libraries. */
-	template<typename TYPE, typename... ARGS>
+	template<typename TYPE, typename STATUS = int, typename... ARGS>
 	class ScopedInitializer
 	{
 	public:
-		ScopedInitializer(ARGS... args) { TYPE::Install(args...); }
-		~ScopedInitializer() { TYPE::Remove(); }
+		ScopedInitializer(ARGS... args) { mStatus = TYPE::Install(args...); }
+		~ScopedInitializer() { mStatus = TYPE::Remove(); }
+
+		explicit operator STATUS () const { return mStatus; }
+
+	private:
+		STATUS mStatus;
 	};
 }
 

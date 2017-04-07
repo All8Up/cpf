@@ -79,21 +79,11 @@ endif()
 file (MAKE_DIRECTORY ${targetPath}/plugins)
 add_custom_command (
 	TARGET ExperimentalD3D12 POST_BUILD
+	DEPENDS AllPlugins
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:EntityService> ${targetPath}/plugins/EntityService.cfp
 )
 add_custom_command (
 	TARGET ExperimentalD3D12 POST_BUILD
+	DEPENDS AllPlugins
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
 )
-#add_custom_command (
-#	TARGET ExperimentalD3D12 POST_BUILD
-#	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Concurrency> ${targetPath}/Concurrency.${CMAKE_SHARED_LIBRARY_SUFFIX}
-#)
-
-#[[
-if (WIN32)
-	add_custom_command (TARGET ExperimentalD3D12 POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy ${EXTERNAL_DIR}/bin/windows/lib64/nvToolsExt64_1.dll ${CMAKE_BINARY_DIR}/bin/$<CONFIG>
-	)
-endif ()
-]]#

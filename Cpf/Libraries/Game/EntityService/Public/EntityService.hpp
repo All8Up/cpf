@@ -17,7 +17,7 @@ namespace Cpf
 }
 
 #ifdef CPF_STATIC_ENTITYSERVICE
-#	define CPF_INIT_ENTITYSERVICE(reg, dir) ScopedInitializer<EntityServiceInitializer, Plugin::iRegistry*> entityServiceInit(reg);
+#	define CPF_INIT_ENTITYSERVICE(reg, dir) ScopedInitializer<EntityServiceInitializer, int, Plugin::iRegistry*> entityServiceInit(reg);
 #else
 #	define CPF_INIT_ENTITYSERVICE(reg, dir) reg->Load(dir "/EntityService.cfp");
 #endif

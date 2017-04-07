@@ -21,3 +21,10 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Core")
 		endif ()
 	endif ()
 endif ()
+
+# Make a custom target that represents all plugins.
+# This is a pretty shitty solution but the only one I know of to get dependencies sorted out.
+add_custom_target (AllPlugins DEPENDS
+	MultiCore
+	EntityService
+)

@@ -32,6 +32,7 @@ set( INCLUDE_FILES
 	Include/HandlePool.hpp
 	Include/Tuple.hpp
 	Include/BitSet.hpp
+	Include/EnumFlagType.hpp
 )
 set( SOURCE_FILES
 	Source/Collections.cpp
@@ -95,6 +96,7 @@ MakeUnitTests( LIBRARY Collections GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_HandlePool.hpp
+		UnitTest/Test_EnumFlagType.cpp
 		../Test/UnitTestMain.cpp
 	LINK_LIBRARIES
 		Atomic:interface

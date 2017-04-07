@@ -79,7 +79,7 @@ target_link_libraries (MultiCore
 	LINK_PUBLIC
 		Configuration s_Collections Plugin COM Logging Hash s_Concurrency
 )
-set_property (TARGET MultiCore PROPERTY FOLDER Libraries/Plugin/Game)
+set_property (TARGET MultiCore PROPERTY FOLDER Plugins/Game)
 
 # ###############################################
 add_library (MultiCore_Interface INTERFACE)

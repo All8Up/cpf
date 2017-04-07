@@ -131,7 +131,7 @@ target_link_libraries (EntityService
 	PUBLIC
 		Configuration s_Collections COM Logging s_Hash Math Plugin Concurrency MultiCore_Interface
 )
-set_property (TARGET EntityService PROPERTY FOLDER Libraries/Plugin/Game)
+set_property (TARGET EntityService PROPERTY FOLDER Plugins/Game)
 
 # ###############################################
 add_library (EntityService_Interface INTERFACE)
