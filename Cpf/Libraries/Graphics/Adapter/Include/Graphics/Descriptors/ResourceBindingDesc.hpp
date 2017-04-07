@@ -3,6 +3,7 @@
 #include "Graphics.hpp"
 #include <initializer_list>
 #include "Vector.hpp"
+#include "EnumFlagType.hpp"
 
 namespace Cpf
 {
@@ -19,28 +20,24 @@ namespace Cpf
 			eTexture
 		};
 
-		struct ParamVisibility
+		enum class ParamVisibility : int32_t
 		{
-			enum : int32_t
-			{
-				eVisibilityAll = 0,
-				eVertex = 1,
-				eHull = 2,
-				eDomain = 3,
-				eGeometry = 4,
-				ePixel = 5
-			};
+			eVisibilityAll = 0,
+			eVertex = 1,
+			eHull = 2,
+			eDomain = 3,
+			eGeometry = 4,
+			ePixel = 5
 		};
+		CPF_ENUM_FLAG_TYPE(ParamVisibility);
 
-		struct ParamFlags
+		enum class ParamFlags : int32_t
 		{
-			enum : int32_t
-			{
-				eVolatile = 0x02,
-				eStaticWhileSet = 0x04,
-				eStatic = 0x08
-			};
+			eVolatile = 0x02,
+			eStaticWhileSet = 0x04,
+			eStatic = 0x08
 		};
+		CPF_ENUM_FLAG_TYPE(ParamFlags);
 
 		//////////////////////////////////////////////////////////////////////////
 		// An entry in the resource binding.
@@ -53,13 +50,13 @@ namespace Cpf
 			{
 				int32_t mRegisterIndex;
 				int32_t mCount;
-				int32_t mVisibility;
+				ParamVisibility mVisibility;
 			};
 			struct ConstantBuffer
 			{
 				int32_t mRegisterIndex;
-				int32_t mFlags;
-				int32_t mVisibility;
+				ParamFlags mFlags;
+				ParamVisibility mVisibility;
 			};
 			struct SamplerBinding
 			{
@@ -71,8 +68,8 @@ namespace Cpf
 			};
 
 			BindingType GetType() const;
-			void SetConstants(int32_t regidx, int32_t count, int32_t visibility);
-			void SetConstantBuffer(int32_t regidx, int32_t flags, int32_t visibility);
+			void SetConstants(int32_t regidx, int32_t count, ParamVisibility visibility);
+			void SetConstantBuffer(int32_t regidx, ParamFlags flags, ParamVisibility visibility);
 			void SetSamplerBinding(int32_t regidx);
 			void SetTextureBinding(int32_t regidx);
 
@@ -95,8 +92,8 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		// Utilities to build parameter descriptors.
-		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstants(int32_t index, int32_t count, int32_t visibility);
-		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags = ParamFlags::eStatic);
+		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstants(int32_t index, int32_t count, ParamVisibility visibility);
+		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamConstantBuffer(int32_t index, ParamVisibility visibility, ParamFlags flags = ParamFlags::eStatic);
 		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamSampler(int32_t index);
 		CPF_EXPORT_GRAPHICS_DRIVER BindingParameter ParamTexture(int32_t index);
 

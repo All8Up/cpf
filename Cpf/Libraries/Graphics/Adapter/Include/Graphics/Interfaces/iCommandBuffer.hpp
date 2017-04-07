@@ -3,6 +3,7 @@
 #include "RefCounted.hpp"
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
+#include "EnumFlagType.hpp"
 
 namespace Cpf
 {
@@ -23,14 +24,12 @@ namespace Cpf
 		class iPipeline;
 		class iConstantBuffer;
 
-		struct DepthStencilClearFlag
+		enum class DepthStencilClearFlag : uint32_t
 		{
-			enum : uint32_t
-			{
-				eDepth = 1 << 0,
-				eStencil = 1 << 1
-			};
+			eDepth = 1 << 0,
+			eStencil = 1 << 1
 		};
+		CPF_ENUM_FLAG_TYPE(DepthStencilClearFlag);
 
 		enum class ResourceState : int32_t
 		{
@@ -101,7 +100,7 @@ namespace Cpf
 
 			virtual void SetRenderTargets(int32_t imageCount, iImageView** images, iImageView* depthView) = 0;
 			virtual void ClearRenderTargetView(iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) = 0;
-			virtual void ClearDepthStencilView(iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
+			virtual void ClearDepthStencilView(iImageView* view, DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
 		};
 	}
 }

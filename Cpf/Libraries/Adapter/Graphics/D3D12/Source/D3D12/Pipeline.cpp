@@ -35,7 +35,7 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 		stateDesc.BlendState.RenderTarget[i].DestBlendAlpha = D3D12_BLEND(target.mDstBlendAlpha);
 		stateDesc.BlendState.RenderTarget[i].BlendOpAlpha = D3D12_BLEND_OP(target.mBlendOpAlpha);
 		stateDesc.BlendState.RenderTarget[i].LogicOp = D3D12_LOGIC_OP(target.mLogicOp);
-		stateDesc.BlendState.RenderTarget[i].RenderTargetWriteMask = target.mWriteMask;
+		stateDesc.BlendState.RenderTarget[i].RenderTargetWriteMask = UINT8(target.mWriteMask);
 	}
 
 	stateDesc.SampleMask = state->GetSampleMask();

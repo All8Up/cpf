@@ -89,7 +89,7 @@ RenderTargetBlendStateDesc::Builder& RenderTargetBlendStateDesc::Builder::Logic(
 	return *this;
 }
 
-RenderTargetBlendStateDesc::Builder& RenderTargetBlendStateDesc::Builder::WriteMask(uint8_t mask)
+RenderTargetBlendStateDesc::Builder& RenderTargetBlendStateDesc::Builder::WriteMask(Graphics::WriteMask mask)
 {
 	mBlend.mWriteMask = mask;
 	return *this;

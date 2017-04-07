@@ -11,16 +11,13 @@ namespace Cpf
 	namespace Graphics
 	{
 		/** @brief Write mask for render targets. */
-		struct WriteMask
+		enum class WriteMask : uint8_t
 		{
-			enum : uint8_t
-			{
-				eRed = 1,
-				eGreen = 2,
-				eBlue = 4,
-				eAlpha = 8,
-				eAll = (eRed | eGreen | eBlue | eAlpha)
-			};
+			eRed = 1,
+			eGreen = 2,
+			eBlue = 4,
+			eAlpha = 8,
+			eAll = (eRed | eGreen | eBlue | eAlpha)
 		};
 
 		/** @brief Single render target blend states. */
@@ -40,7 +37,7 @@ namespace Cpf
 			BlendFunc mDstBlendAlpha;
 			BlendOp mBlendOpAlpha;
 			LogicOp mLogicOp;
-			uint8_t mWriteMask;
+			WriteMask mWriteMask;
 		};
 
 		/** @brief Helper to make RenderTargetBlendStateDesc's easier to build. */
@@ -57,7 +54,7 @@ namespace Cpf
 			Builder& DstAlpha(BlendFunc func);
 			Builder& OpAlpha(BlendOp op);
 			Builder& Logic(LogicOp op);
-			Builder& WriteMask(uint8_t mask);
+			Builder& WriteMask(Graphics::WriteMask mask);
 
 		private:
 			RenderTargetBlendStateDesc mBlend;

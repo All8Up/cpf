@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include "EnumFlagType.hpp"
 
 namespace Cpf
 {
@@ -22,17 +23,15 @@ namespace Cpf
 			eTexture2D = 3,
 			eTexture3D = 4
 		};
-		struct ResourceUsage
+		enum class ResourceUsage : int32_t
 		{
-			enum : int32_t
-			{
-				eNone = 0,
-				eRenderTarget = 0x01,
-				eDepthStencil = 0x02,
-				eUnorderedAccess = 0x04,
-				eSimultaneous = 0x20
-			};
+			eNone = 0,
+			eRenderTarget = 0x01,
+			eDepthStencil = 0x02,
+			eUnorderedAccess = 0x04,
+			eSimultaneous = 0x20
 		};
+		CPF_ENUM_FLAG_TYPE(ResourceUsage);
 
 		struct ResourceData
 		{

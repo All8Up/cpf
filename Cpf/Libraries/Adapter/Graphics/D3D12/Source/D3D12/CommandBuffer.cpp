@@ -223,11 +223,11 @@ void CommandBuffer::ClearRenderTargetView(Graphics::iImageView* view, Math::Vect
 		reinterpret_cast<const D3D12_RECT*>(rects));
 }
 
-void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, uint32_t flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects)
+void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects)
 {
 	D3D12_CLEAR_FLAGS d3dFlags = D3D12_CLEAR_FLAGS(0);
-	d3dFlags |= ((flags & Graphics::DepthStencilClearFlag::eDepth) == 0 ? D3D12_CLEAR_FLAGS(0) : D3D12_CLEAR_FLAG_DEPTH);
-	d3dFlags |= ((flags & Graphics::DepthStencilClearFlag::eStencil) == 0 ? D3D12_CLEAR_FLAGS(0) : D3D12_CLEAR_FLAG_STENCIL);
+	d3dFlags |= ((flags & Graphics::DepthStencilClearFlag::eDepth) == Graphics::DepthStencilClearFlag(0) ? D3D12_CLEAR_FLAGS(0) : D3D12_CLEAR_FLAG_DEPTH);
+	d3dFlags |= ((flags & Graphics::DepthStencilClearFlag::eStencil) == Graphics::DepthStencilClearFlag(0) ? D3D12_CLEAR_FLAGS(0) : D3D12_CLEAR_FLAG_STENCIL);
 	mpCommandList->ClearDepthStencilView(
 		static_cast<ImageView*>(view)->GetDescriptor(),
 		d3dFlags,

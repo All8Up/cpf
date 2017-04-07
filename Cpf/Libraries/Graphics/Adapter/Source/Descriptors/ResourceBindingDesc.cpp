@@ -6,14 +6,14 @@ using namespace Graphics;
 
 
 BindingType BindingParameter::GetType() const { return mType; }
-void BindingParameter::SetConstants(int32_t regidx, int32_t count, int32_t visibility)
+void BindingParameter::SetConstants(int32_t regidx, int32_t count, ParamVisibility visibility)
 {
 	CPF_ASSERT(mType == BindingType::eConstants);
 	mData.mConstants.mRegisterIndex = regidx;
 	mData.mConstants.mCount = count;
 	mData.mConstants.mVisibility = visibility;
 }
-void BindingParameter::SetConstantBuffer(int32_t regidx, int32_t flags, int32_t visibility)
+void BindingParameter::SetConstantBuffer(int32_t regidx, ParamFlags flags, ParamVisibility visibility)
 {
 	CPF_ASSERT(mType == BindingType::eConstantBuffer);
 	mData.mConstantBuffer.mRegisterIndex = regidx;
@@ -58,14 +58,14 @@ const BindingParameter::TextureBinding& BindingParameter::GetTextureBinding() co
 }
 
 //////////////////////////////////////////////////////////////////////////
-CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstants(int32_t index, int32_t count, int32_t visibility)
+CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstants(int32_t index, int32_t count, ParamVisibility visibility)
 {
 	BindingParameter result(BindingType::eConstants);
 	result.SetConstants(index, count, visibility);
 	return result;
 }
 
-CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstantBuffer(int32_t index, int32_t visibility, int32_t flags)
+CPF_EXPORT_GRAPHICS_DRIVER BindingParameter Graphics::ParamConstantBuffer(int32_t index, ParamVisibility visibility, ParamFlags flags)
 {
 	BindingParameter result(BindingType::eConstantBuffer);
 	result.SetConstantBuffer(index, flags, visibility);
