@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/Driver.hpp"
-#include "Graphics/Interfaces/iCommandBuffer.hpp"
+#include "Graphics/iCommandBuffer.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
 #include "Math/Rectangle.hpp"

@@ -19,37 +19,73 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/BufferUsage.hpp
 	Include/Graphics/DebugUI.hpp
 	Include/Graphics/Range.hpp
-)
-set (INCLUDE_GRAPHICS_DESCRIPTORS
-	Include/Graphics/Descriptors/BlendStateDesc.hpp
-	Include/Graphics/Descriptors/DepthStencilDesc.hpp
-	Include/Graphics/Descriptors/InputLayoutDesc.hpp
-	Include/Graphics/Descriptors/PipelineStateDesc.hpp
-	Include/Graphics/Descriptors/RasterizerStateDesc.hpp
-	Include/Graphics/Descriptors/SampleDesc.hpp
-	Include/Graphics/Descriptors/ResourceBindingDesc.hpp
-	Include/Graphics/Descriptors/ResourceDesc.hpp
-)
-set (INCLUDE_GRAPHICS_INTERFACES
-	Include/Graphics/Interfaces/iAdapter.hpp
-	Include/Graphics/Interfaces/iCommandBuffer.hpp
-	Include/Graphics/Interfaces/iCommandPool.hpp
-	Include/Graphics/Interfaces/iDevice.hpp
-	Include/Graphics/Interfaces/iImage.hpp
-	Include/Graphics/Interfaces/iImageView.hpp
-	Include/Graphics/Interfaces/iInstance.hpp
-	Include/Graphics/Interfaces/iSampler.hpp
-	Include/Graphics/Interfaces/iSwapChain.hpp
-	Include/Graphics/Interfaces/iOutput.hpp
-	Include/Graphics/Interfaces/iFence.hpp
-	Include/Graphics/Interfaces/iRenderPass.hpp
-	Include/Graphics/Interfaces/iShader.hpp
-	Include/Graphics/Interfaces/iPipeline.hpp
-	Include/Graphics/Interfaces/iResourceBinding.hpp
-	Include/Graphics/Interfaces/iResource.hpp
-	Include/Graphics/Interfaces/iIndexBuffer.hpp
-	Include/Graphics/Interfaces/iVertexBuffer.hpp
-	Include/Graphics/Interfaces/iConstantBuffer.hpp
+
+	Include/Graphics/iDevice.hpp
+	Include/Graphics/iAdapter.hpp
+	Include/Graphics/iInstance.hpp
+	Include/Graphics/iCommandBuffer.hpp
+	Include/Graphics/iCommandPool.hpp
+	Include/Graphics/iImage.hpp
+	Include/Graphics/iImageView.hpp
+	Include/Graphics/iSampler.hpp
+	Include/Graphics/iSwapChain.hpp
+	Include/Graphics/iOutput.hpp
+	Include/Graphics/iFence.hpp
+	Include/Graphics/iRenderPass.hpp
+	Include/Graphics/iShader.hpp
+	Include/Graphics/iPipeline.hpp
+	Include/Graphics/iResourceBinding.hpp
+	Include/Graphics/iResource.hpp
+	Include/Graphics/iIndexBuffer.hpp
+	Include/Graphics/iVertexBuffer.hpp
+	Include/Graphics/iConstantBuffer.hpp
+
+	Include/Graphics/BlendStateDesc.hpp
+	Include/Graphics/DepthStencilDesc.hpp
+	Include/Graphics/InputLayoutDesc.hpp
+	Include/Graphics/PipelineStateDesc.hpp
+	Include/Graphics/RasterizerStateDesc.hpp
+	Include/Graphics/SampleDesc.hpp
+	Include/Graphics/ResourceBindingDesc.hpp
+	Include/Graphics/ResourceDesc.hpp
+
+	Include/Graphics/LoadOp.hpp
+	Include/Graphics/StoreOp.hpp
+	Include/Graphics/PipelineBindPoint.hpp
+	Include/Graphics/AttachmentDesc.hpp
+	Include/Graphics/SubPassDesc.hpp
+	Include/Graphics/RenderPassDesc.hpp
+	Include/Graphics/FrameBufferDesc.hpp
+	Include/Graphics/RenderPassBeginDesc.hpp
+	Include/Graphics/ClearValue.hpp
+
+	Include/Graphics/DepthStencilClearFlag.hpp
+	Include/Graphics/ResourceState.hpp
+	Include/Graphics/Viewport.hpp
+	Include/Graphics/SubResource.hpp
+	Include/Graphics/WriteMask.hpp
+	Include/Graphics/ImageFlags.hpp
+	Include/Graphics/InputClassification.hpp
+	Include/Graphics/ScanlineOrder.hpp
+	Include/Graphics/ModeScaling.hpp
+	Include/Graphics/ModeRotation.hpp
+	Include/Graphics/EnumMode.hpp
+	Include/Graphics/OutputDesc.hpp
+	Include/Graphics/ModeDesc.hpp
+	Include/Graphics/SamplerDesc.hpp
+	Include/Graphics/WrapMode.hpp
+	Include/Graphics/FilterMode.hpp
+	Include/Graphics/ShaderType.hpp
+	Include/Graphics/SwapChainDesc.hpp
+	Include/Graphics/SwapEffect.hpp
+	Include/Graphics/BindingType.hpp
+	Include/Graphics/ParamVisibility.hpp
+	Include/Graphics/ParamFlags.hpp
+	Include/Graphics/ResourceData.hpp
+	Include/Graphics/ResourceUsage.hpp
+	Include/Graphics/ResourceType.hpp
+	Include/Graphics/HeapType.hpp
+	Include/Graphics/PrimitiveTopology.hpp
 )
 set (SOURCE_GRAPHICS_FILES
 	Source/BinaryBlob.cpp
@@ -57,6 +93,14 @@ set (SOURCE_GRAPHICS_FILES
 	Source/Format.cpp
 	Source/Ratio.cpp
 	Source/DebugUI.cpp
+	Source/BlendStateDesc.cpp
+	Source/DepthStencilDesc.cpp
+	Source/InputLayoutDesc.cpp
+	Source/PipelineStateDesc.cpp
+	Source/RasterizerStateDesc.cpp
+	Source/SampleDesc.cpp
+	Source/ResourceBindingDesc.cpp
+	Source/ResourceDesc.cpp
 )
 set (SOURCE_IMGUI_FILES
 	Source/imgui/imconfig.h
@@ -72,24 +116,13 @@ set (SOURCE_IMGUI_FILES
 	Source/imgui/stb_rect_pack.h
 )
 set (SOURCE_GRAPHICS_DESCRIPTORS
-	Source/Descriptors/BlendStateDesc.cpp
-	Source/Descriptors/DepthStencilDesc.cpp
-	Source/Descriptors/InputLayoutDesc.cpp
-	Source/Descriptors/PipelineStateDesc.cpp
-	Source/Descriptors/RasterizerStateDesc.cpp
-	Source/Descriptors/SampleDesc.cpp
-	Source/Descriptors/ResourceBindingDesc.cpp
-	Source/Descriptors/ResourceDesc.cpp
 )
 
 # ###############################################
 add_library (s_GraphicsDriver STATIC
 	Include/Graphics.hpp
 	${INCLUDE_GRAPHICS_FILES}
-	${INCLUDE_GRAPHICS_DESCRIPTORS}
-	${INCLUDE_GRAPHICS_INTERFACES}
 	${SOURCE_GRAPHICS_FILES}
-	${SOURCE_GRAPHICS_DESCRIPTORS}
 	${SOURCE_IMGUI_FILES}
 )
 
@@ -116,10 +149,7 @@ set_property (TARGET s_GraphicsDriver
 # ###############################################
 source_group (Headers FILES Include/Graphics.hpp)
 source_group (Headers\\Graphics FILES ${INCLUDE_GRAPHICS_FILES})
-source_group (Headers\\Graphics\\Descriptors FILES ${INCLUDE_GRAPHICS_DESCRIPTORS})
-source_group (Headers\\Graphics\\Interfaces FILES ${INCLUDE_GRAPHICS_INTERFACES})
 source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
-source_group (Sources\\Graphics\\Descriptors FILES ${SOURCE_GRAPHICS_DESCRIPTORS})
 source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})
 
 # ###############################################

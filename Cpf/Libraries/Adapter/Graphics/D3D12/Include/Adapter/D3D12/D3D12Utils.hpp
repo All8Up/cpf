@@ -8,9 +8,9 @@
 #include <d3d12sdklayers.h>
 #include "Adapter/D3D12/d3dx12.h"
 #include "Graphics/Format.hpp"
-#include "Graphics/Interfaces/iOutput.hpp"
-#include "Graphics/Interfaces/iSwapChain.hpp"
-#include "Graphics/Interfaces/iCommandBuffer.hpp"
+#include "Graphics/iOutput.hpp"
+#include "Graphics/iSwapChain.hpp"
+#include "Graphics/iCommandBuffer.hpp"
 
 #define SAFE_RELEASE(a) {if (a) a->Release();}
 
@@ -27,12 +27,12 @@ namespace Cpf
 		{
 			DXGI_FORMAT Convert(Graphics::Format pf);
 			Graphics::Format Convert(DXGI_FORMAT pf);
-			Graphics::ScanLineOrder Convert(DXGI_MODE_SCANLINE_ORDER order);
+			Graphics::ScanlineOrder Convert(DXGI_MODE_SCANLINE_ORDER order);
 			Graphics::ModeScaling Convert(DXGI_MODE_SCALING scaling);
 			DXGI_SWAP_EFFECT Convert(Graphics::SwapEffect swapEffect);
 			D3D12_RESOURCE_STATES Convert(Graphics::ResourceState resourceState);
 			UINT Convert(Graphics::SubResource sr);
-			UINT ConvertEnumMode(uint32_t mode);
+			UINT ConvertEnumMode(Graphics::EnumMode mode);
 			bool Convert(const Graphics::ResourceBindingDesc&, ID3DBlob** result);
 		}
 	}

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "Application/WindowFlags.hpp"
+#include "Graphics/ImageFlags.hpp"
 #include "Logging/Logging.hpp"
 #include "Math/Constants.hpp"
 
@@ -46,6 +47,7 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 		mpSwapChain->Resize(x, y);
 
 		// Recreate the depth buffers.
+		// TODO: There should only be a single depth buffer.
 		mpDepthBufferImages.clear();
 		mpDepthBufferImageViews.clear();
 		mpDepthBufferImages.resize(mBackBufferCount);

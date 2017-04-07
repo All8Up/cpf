@@ -1,8 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Graphics/Format.hpp"
-#include "Graphics/Interfaces/iOutput.hpp"
-#include "Graphics/Descriptors/ResourceBindingDesc.hpp"
+#include "Graphics/iOutput.hpp"
+#include "Graphics/ResourceBindingDesc.hpp"
+#include "Graphics/SubResource.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/ScanlineOrder.hpp"
+#include "Graphics/ModeScaling.hpp"
+#include "Graphics/EnumMode.hpp"
+#include "Graphics/SwapEffect.hpp"
+#include "Graphics/BindingType.hpp"
 #include <dxgi1_2.h>
 
 using namespace Cpf;
@@ -109,6 +116,8 @@ DXGI_FORMAT D3D12::Convert(const Format pf)
 	case Format::eRGBA32s:	return DXGI_FORMAT_R32G32B32A32_SINT;
 	case Format::eRGBA32f:	return DXGI_FORMAT_R32G32B32A32_FLOAT;
 
+	case Format::eR24G8:	return DXGI_FORMAT_R24G8_TYPELESS;
+	case Format::eD24unS8u:	return DXGI_FORMAT_D24_UNORM_S8_UINT;
 	case Format::eD32f:		return DXGI_FORMAT_D32_FLOAT;
 
 	/*
@@ -276,17 +285,17 @@ DXGI_SWAP_EFFECT D3D12::Convert(SwapEffect swapEffect)
 	return DXGI_SWAP_EFFECT(-1);
 }
 
-ScanLineOrder D3D12::Convert(DXGI_MODE_SCANLINE_ORDER order)
+ScanlineOrder D3D12::Convert(DXGI_MODE_SCANLINE_ORDER order)
 {
 	switch (order)
 	{
-	case DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED:			return ScanLineOrder::eUnspecified;
-	case DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE:			return ScanLineOrder::eProgressive;
-	case DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST:	return ScanLineOrder::eUpperFieldFirst;
-	case DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST:	return ScanLineOrder::eLowerFieldFirst;
+	case DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED:			return ScanlineOrder::eUnspecified;
+	case DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE:			return ScanlineOrder::eProgressive;
+	case DXGI_MODE_SCANLINE_ORDER_UPPER_FIELD_FIRST:	return ScanlineOrder::eUpperFieldFirst;
+	case DXGI_MODE_SCANLINE_ORDER_LOWER_FIELD_FIRST:	return ScanlineOrder::eLowerFieldFirst;
 	}
 	CPF_ASSERT_ALWAYS;
-	return ScanLineOrder::eUnspecified;
+	return ScanlineOrder::eUnspecified;
 }
 
 ModeScaling D3D12::Convert(DXGI_MODE_SCALING scaling)
@@ -301,13 +310,13 @@ ModeScaling D3D12::Convert(DXGI_MODE_SCALING scaling)
 	return ModeScaling::eUnspecified;
 }
 
-UINT D3D12::ConvertEnumMode(uint32_t mode)
+UINT D3D12::ConvertEnumMode(Graphics::EnumMode mode)
 {
 	UINT result = 0;
-	result |= (mode & EnumMode::eInterlaced) ? DXGI_ENUM_MODES_INTERLACED : 0;
-	result |= (mode & EnumMode::eScaling) ? DXGI_ENUM_MODES_SCALING : 0;
-	result |= (mode & EnumMode::eStereo) ? DXGI_ENUM_MODES_STEREO : 0;
-	result |= (mode & EnumMode::eDisabledStereo) ? DXGI_ENUM_MODES_DISABLED_STEREO : 0;
+	result |= (mode & EnumMode::eInterlaced) == EnumMode::eInterlaced ? DXGI_ENUM_MODES_INTERLACED : 0;
+	result |= (mode & EnumMode::eScaling) == EnumMode::eScaling ? DXGI_ENUM_MODES_SCALING : 0;
+	result |= (mode & EnumMode::eStereo) == EnumMode::eStereo ? DXGI_ENUM_MODES_STEREO : 0;
+	result |= (mode & EnumMode::eDisabledStereo) == EnumMode::eDisabledStereo ? DXGI_ENUM_MODES_DISABLED_STEREO : 0;
 	return result;
 }
 

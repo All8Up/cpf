@@ -6,7 +6,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		enum class DepthWriteMask : uint32_t
+		enum class DepthWriteMask : int32_t
 		{
 			eZero = 0,
 			eAll

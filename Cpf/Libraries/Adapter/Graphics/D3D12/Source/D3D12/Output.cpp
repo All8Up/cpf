@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Output.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
+#include "Graphics/OutputDesc.hpp"
+#include "Graphics/ModeDesc.hpp"
 #include "Vector.hpp"
 #include "Logging/Logging.hpp"
 
@@ -45,7 +47,7 @@ bool Output::GetDesc(OutputDesc* desc) const
 	return false;
 }
 
-bool Output::EnumerateModes(Graphics::Format format, uint32_t enumMode, int32_t& count, Graphics::ModeDesc* descs)
+bool Output::EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode, int32_t& count, Graphics::ModeDesc* descs)
 {
 	if (count != 0 && descs != nullptr)
 	{

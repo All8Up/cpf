@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Interfaces/iResource.hpp"
+#include "Graphics/iResource.hpp"
 #include "D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 

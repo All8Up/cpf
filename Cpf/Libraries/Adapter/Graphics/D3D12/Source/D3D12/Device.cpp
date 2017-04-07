@@ -273,6 +273,12 @@ bool Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler
 	return false;
 }
 
+bool Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DEF)
+{
+	(void)desc; (void)renderPass;
+	return false;
+}
+
 bool Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<IndexBuffer> result(new IndexBuffer(this, format, usage, byteSize, initData));

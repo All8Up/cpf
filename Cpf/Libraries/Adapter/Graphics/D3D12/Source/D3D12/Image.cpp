@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Image.hpp"
 #include "Adapter/D3D12/Device.hpp"
+#include "Graphics/ImageFlags.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -27,7 +28,7 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 			Convert(mDesc.mFormat),
 			{UINT(mDesc.mSamples.mCount), UINT(mDesc.mSamples.mQuality)},
 			D3D12_TEXTURE_LAYOUT_UNKNOWN,
-			(mDesc.mFlags == 0 ? D3D12_RESOURCE_FLAG_NONE : D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
+			(mDesc.mFlags == Graphics::ImageFlags::eNone ? D3D12_RESOURCE_FLAG_NONE : D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 		};
 		D3D12_HEAP_PROPERTIES heapProps =
 		{
@@ -38,7 +39,7 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 		};
 		D3D12_CLEAR_VALUE clearValue;
 		clearValue.Format = Convert(mDesc.mFormat);
-		if (mDesc.mFlags == 0)
+		if (mDesc.mFlags == Graphics::ImageFlags::eNone)
 		{
 			clearValue.Color[0] = 0.0f;
 			clearValue.Color[1] = 0.0f;
@@ -88,7 +89,7 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 			D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON);
 	}
 
-	if (!mDesc.mFlags)
+	if (mDesc.mFlags == Graphics::ImageFlags::eNone)
 	{
 		::memset(&mResourceView, 0, sizeof(mResourceView));
 		mResourceView.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

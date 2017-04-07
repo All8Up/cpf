@@ -12,8 +12,10 @@
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/ConstantBuffer.hpp"
+#include "Graphics/ResourceData.hpp"
 #include "Logging/Logging.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
+#include "Graphics/DepthStencilClearFlag.hpp"
 
 using namespace Cpf;
 using namespace Adapter;

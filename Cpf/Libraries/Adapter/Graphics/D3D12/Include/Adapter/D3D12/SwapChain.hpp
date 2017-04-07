@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/Driver.hpp"
-#include "Graphics/Interfaces/iSwapChain.hpp"
+#include "Graphics/iSwapChain.hpp"
+#include "Graphics/SwapChainDesc.hpp"
 #include "Vector.hpp"
 #include "RefCounted.hpp"
 #include "IntrusivePtr.hpp"

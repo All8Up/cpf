@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Interfaces/iAdapter.hpp"
+#include "Graphics/iAdapter.hpp"
 #include "IntrusivePtr.hpp"
 #include <dxgi1_4.h>
 

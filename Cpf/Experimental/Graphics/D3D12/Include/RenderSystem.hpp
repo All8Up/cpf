@@ -3,7 +3,7 @@
 #include "EntityService/Types.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "Hash/HashString.hpp"
-#include "Graphics/Interfaces/iCommandBuffer.hpp"
+#include "Graphics/iCommandBuffer.hpp"
 
 namespace Cpf
 {

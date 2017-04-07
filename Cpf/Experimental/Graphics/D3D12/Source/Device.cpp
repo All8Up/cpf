@@ -1,5 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Graphics/ImageFlags.hpp"
+#include "Graphics/OutputDesc.hpp"
+#include "Graphics/ModeRotation.hpp"
+#include "Graphics/EnumMode.hpp"
+#include "Graphics/ModeDesc.hpp"
+#include "Graphics/SwapChainDesc.hpp"
+#include "Graphics/SwapEffect.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -76,10 +83,10 @@ bool ExperimentalD3D12::_EnumerateOutputs(iAdapter* adapter)
 			//////////////////////////////////////////////////////////////////////////
 			// Enumerate modes for this output.
 			int32_t modeCount = 0;
-			output->EnumerateModes(Format::eRGBA8un, 0, modeCount, nullptr);
+			output->EnumerateModes(Format::eRGBA8un, EnumMode::eNone, modeCount, nullptr);
 			Vector<ModeDesc> modeDescs;
 			modeDescs.resize(modeCount);
-			output->EnumerateModes(Format::eRGBA8un, 0, modeCount, modeDescs.data());
+			output->EnumerateModes(Format::eRGBA8un, EnumMode::eNone, modeCount, modeDescs.data());
 
 			CPF_LOG(Experimental, Info) << "----------------------------------------";
 			for (int i = 0; i < modeCount; ++i)
@@ -107,6 +114,7 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 	mpDevice->CreateSwapChain(instance, mpWindow, &desc, mpSwapChain.AsTypePP() CPF_GFX_DEBUG_PARAMS);
 
 	// Create a set of depth buffers to go with the swap chain.
+	// TODO: There should really only be one shared depth buffer.
 	mpDepthBufferImages.resize(desc.mBackBufferCount);
 	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
 	ImageDesc depthBufferDesc

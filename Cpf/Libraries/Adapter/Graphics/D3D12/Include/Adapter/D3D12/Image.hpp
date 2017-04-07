@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/Driver.hpp"
-#include "Graphics/Interfaces/iImage.hpp"
-#include "Graphics/Interfaces/iImageView.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 #include "D3D12Utils.hpp"
 #include "DescriptorManager.hpp"
 #include "Move.hpp"

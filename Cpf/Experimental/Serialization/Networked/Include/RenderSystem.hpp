@@ -2,9 +2,9 @@
 #pragma once
 #include "MultiCore/iSystem.hpp"
 #include "Graphics/DebugUI.hpp"
-#include "Graphics/Interfaces/iInstance.hpp"
-#include "Graphics/Interfaces/iDevice.hpp"
-#include "Graphics/Interfaces/iSwapChain.hpp"
+#include "Graphics/iInstance.hpp"
+#include "Graphics/iDevice.hpp"
+#include "Graphics/iSwapChain.hpp"
 #include "MultiCore/System/iTimer.hpp"
 
 

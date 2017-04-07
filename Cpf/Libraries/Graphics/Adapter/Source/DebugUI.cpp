@@ -1,12 +1,20 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Graphics/DebugUI.hpp"
 #include "Graphics/BinaryBlob.hpp"
-#include "Graphics/Interfaces/iDevice.hpp"
-#include "Graphics/Interfaces/iShader.hpp"
-#include "Graphics/Interfaces/iSampler.hpp"
-#include "Graphics/Interfaces/iPipeline.hpp"
-#include "Graphics/Descriptors/PipelineStateDesc.hpp"
-#include "Graphics/Descriptors/ResourceBindingDesc.hpp"
+#include "Graphics/iDevice.hpp"
+#include "Graphics/iShader.hpp"
+#include "Graphics/iSampler.hpp"
+#include "Graphics/iPipeline.hpp"
+#include "Graphics/PipelineStateDesc.hpp"
+#include "Graphics/ResourceBindingDesc.hpp"
+#include "Graphics/Viewport.hpp"
+#include "Graphics/ImageFlags.hpp"
+#include "Graphics/FilterMode.hpp"
+#include "Graphics/SamplerDesc.hpp"
+#include "Graphics/ShaderType.hpp"
+#include "Graphics/WrapMode.hpp"
+#include "Graphics/ParamVisibility.hpp"
+#include "Graphics/PrimitiveTopology.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"
 #include "imgui/imgui.h"
@@ -181,7 +189,7 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 		atlasDesc.mDepth = 1;
 		atlasDesc.mMipLevels = 1;
 		atlasDesc.mSamples = SampleDesc(1, 0);
-		atlasDesc.mFlags = 0;
+		atlasDesc.mFlags = ImageFlags::eNone;
 		mpDevice->CreateImage2D(&atlasDesc, pixels, mpUIAtlas.AsTypePP());
 	}
 	if (!mpUIAtlas)

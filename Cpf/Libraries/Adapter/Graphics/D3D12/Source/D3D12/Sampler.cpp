@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Sampler.hpp"
 #include "Adapter/D3D12/Device.hpp"
+#include "Graphics/SamplerDesc.hpp"
 
 using namespace Cpf;
 using namespace Adapter;

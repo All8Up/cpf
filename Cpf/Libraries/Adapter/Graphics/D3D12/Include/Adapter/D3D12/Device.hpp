@@ -55,6 +55,7 @@ namespace Cpf
 				bool CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline** CPF_GFX_DEBUG_PARAM_DECL) override;
 				bool CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource CPF_GFX_DEBUG_PARAM_DECL) override;
 				bool CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler CPF_GFX_DEBUG_PARAM_DECL) override;
+				bool CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DECL) override;
 
 				bool CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DECL) override;
 				bool CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer CPF_GFX_DEBUG_PARAM_DECL) override;

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/ResourceBinding.hpp"
 #include "Adapter/D3D12/Device.hpp"
-#include "Graphics/Descriptors/ResourceBindingDesc.hpp"
+#include "Graphics/ResourceBindingDesc.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;

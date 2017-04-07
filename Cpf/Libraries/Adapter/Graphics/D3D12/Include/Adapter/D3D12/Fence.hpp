@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Interfaces/iFence.hpp"
+#include "Graphics/iFence.hpp"
 #include "D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 

@@ -82,6 +82,8 @@ size_t Graphics::GetFormatSize(Format format)
 		return 16;
 
 	case Format::eD32f:
+	case Format::eR24G8:
+	case Format::eD24unS8u:
 		return 4;
 	}
 	return size_t(-1);

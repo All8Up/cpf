@@ -1,11 +1,16 @@
 //////////////////////////////////////////////////////////////////////////
 #include "RenderSystem.hpp"
 #include "Graphics.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/SwapChainDesc.hpp"
+#include "Graphics/SwapEffect.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"
 #include "Plugin/iClassInstance.hpp"
+#include "Graphics/SubResource.hpp"
+#include "Graphics/ImageFlags.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -180,6 +185,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	mpDevice->CreateSwapChain(mpInstance, window, &desc, mpSwapChain.AsTypePP() CPF_GFX_DEBUG_PARAMS);
 
 	// Create a set of depth buffers to go with the swap chain.
+	// TODO: There should really only be one shared depth buffer.
 	mpDepthBufferImages.resize(desc.mBackBufferCount);
 	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
 	ImageDesc depthBufferDesc
@@ -187,7 +193,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		window->GetClientArea().x, window->GetClientArea().y,
 		1,
 		1,
-		Format::eD32f,
+		Format::eR32,
 		{ 1, 0 },
 		ImageFlags::eAllowDepthStencil
 	};

@@ -68,7 +68,9 @@ namespace Cpf
 			eRGBA32f,
 
 
-			eD32f
+			eD32f,
+			eR24G8,
+			eD24unS8u
 		};
 
 		size_t GetFormatSize(Format format);

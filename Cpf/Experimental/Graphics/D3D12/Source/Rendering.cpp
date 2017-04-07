@@ -1,6 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "Graphics/TopologyType.hpp"
+#include "Graphics/Viewport.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/SubResource.hpp"
+#include "Graphics/DepthStencilClearFlag.hpp"
+#include "Graphics/PrimitiveTopology.hpp"
 #include "Math/Vector4v.hpp"
 
 using namespace Cpf;
