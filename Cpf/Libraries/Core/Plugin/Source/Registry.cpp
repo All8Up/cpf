@@ -113,7 +113,7 @@ COM::Result CPF_STDCALL Registry::Load(const char* const name)
 				auto install = library.GetAddress<int32_t(*)(iRegistry*)>(kPluginAPIInstall);
 				if (install)
 				{
-					if ((*install)(this) == 0)
+					if ((*install)(this) != 0)
 					{
 						mLibraryMap.insert(LibraryMap::value_type{ String(name), Move(library) });
 						return COM::kOK;

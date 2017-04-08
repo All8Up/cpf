@@ -107,7 +107,7 @@ RenderSystem::RenderSystem()
 
 	//////////////////////////////////////////////////////////////////////////
 	IntrusivePtr<Graphics::iRenderPass> renderPass;
-	mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
+//	mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
 
 	//////////////////////////////////////////////////////////////////////////
 	Graphics::FrameBufferDesc frameBufferDesc;
@@ -115,15 +115,13 @@ RenderSystem::RenderSystem()
 	frameBufferDesc.mAttachmentCount = 2;
 	Graphics::iImageView* views[2] = {};
 	frameBufferDesc.mpAttachments = views;
-	/*
-	int32_t mWidth;
-	int32_t mHeight;
-	int32_t mLayers; // TODO: ?? What is the usage of this?
-	*/
+	frameBufferDesc.mWidth = 1024;
+	frameBufferDesc.mHeight = 768;
+	frameBufferDesc.mLayers = 1;
+
+	//////////////////////////////////////////////////////////////////////////
 	IntrusivePtr<Graphics::iFrameBuffer> frameBuffer;
-	/*
-	mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
-	*/
+//	mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
 }
 
 RenderSystem::~RenderSystem()

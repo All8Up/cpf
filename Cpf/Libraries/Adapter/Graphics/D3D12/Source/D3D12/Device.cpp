@@ -279,6 +279,12 @@ bool Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iR
 	return false;
 }
 
+bool Device::CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer)
+{
+	(void)desc; (void)frameBuffer;
+	return false;
+}
+
 bool Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DEF)
 {
 	IntrusivePtr<IndexBuffer> result(new IndexBuffer(this, format, usage, byteSize, initData));
