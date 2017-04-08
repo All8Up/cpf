@@ -16,7 +16,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		class iDevice;
+		struct iDevice;
 		class iAdapter;
 		class iSwapChain;
 		struct SwapChainDesc;
@@ -28,7 +28,7 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 			struct Instance : tRefCounted<Graphics::iInstance>
 			{
-				Instance(Plugin::iRegistry*);
+				Instance();
 				virtual ~Instance();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
@@ -41,7 +41,6 @@ namespace Cpf
 
 			private:
 				IntrusivePtr<IDXGIFactory2> mpDXGIFactory2;
-				Plugin::iRegistry* mpRegistry;
 
 #ifdef CPF_USE_D3D12_DEBUG_LAYER
 				IntrusivePtr<ID3D12Debug> mpDebugController;

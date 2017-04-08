@@ -20,7 +20,7 @@ namespace Cpf
 			class ResourceBinding : public tRefCounted<Graphics::iResourceBinding>
 			{
 			public:
-				ResourceBinding(Device* device, const Graphics::ResourceBindingDesc* desc CPF_GFX_DEBUG_PARAM_DECL);
+				ResourceBinding(Device* device, const Graphics::ResourceBindingDesc* desc);
 				~ResourceBinding() override;
 
 				ID3D12RootSignature* GetSignature() const { return mpSignature; }

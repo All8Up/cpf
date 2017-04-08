@@ -8,7 +8,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		class iDevice;
+		struct iDevice;
 		class iAdapter;
 		class iSwapChain;
 		struct SwapChainDesc;

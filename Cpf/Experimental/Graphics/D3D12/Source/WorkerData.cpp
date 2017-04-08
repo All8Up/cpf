@@ -10,9 +10,9 @@ void ExperimentalD3D12::_CreateWorkerData(Concurrency::ThreadContext& tc)
 
 	for (int i = 0; i < mBackBufferCount; ++i)
 	{
-		mpDevice->CreateCommandPool(td.mpCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandPool(td.mpCommandPool[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(td.mpCommandPool[i], td.mpCommandBuffer[i].AsTypePP());
-		mpDevice->CreateCommandPool(td.mpDebugUIPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandPool(td.mpDebugUIPool[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(td.mpDebugUIPool[i], td.mpDebugUIBuffer[i].AsTypePP());
 	}
 }

@@ -17,7 +17,7 @@ namespace Cpf
 			{
 			public:
 				Image(ID3D12Resource* resource);
-				Image(Device*, const void* initData, const Graphics::ImageDesc* desc CPF_GFX_DEBUG_PARAM_DECL);
+				Image(Device*, const void* initData, const Graphics::ImageDesc* desc);
 				~Image() override;
 
 				const Graphics::ImageDesc& GetDesc() const override;

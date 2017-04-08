@@ -21,7 +21,7 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
-CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* pool CPF_GFX_DEBUG_PARAM_DEF)
+CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* pool)
 	: mpDevice(static_cast<Device*>(device))
 	, mHeapsDirty(false)
 {
@@ -36,15 +36,6 @@ CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* 
 	mpCommandList->Close();
 
 	CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
-
-#ifdef CPF_GFX_TRACKING
-	if (dbgFilename)
-	{
-		std::wstringstream str;
-		str << dbgFilename << " : " << dbgLineNumber;
-		mpCommandList->SetName(str.str().c_str());
-	}
-#endif
 }
 
 CommandBuffer::~CommandBuffer()

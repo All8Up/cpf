@@ -7,8 +7,9 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		struct iDevice;
+
 		class BinaryBlob;
-		class iDevice;
 		enum class ShaderType : int32_t;
 
 		class iShader : public iRefCounted

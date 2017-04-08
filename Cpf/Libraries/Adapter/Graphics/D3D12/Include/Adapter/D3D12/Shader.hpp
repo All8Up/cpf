@@ -9,7 +9,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iDevice;
+		struct iDevice;
 	}
 	namespace Adapter
 	{

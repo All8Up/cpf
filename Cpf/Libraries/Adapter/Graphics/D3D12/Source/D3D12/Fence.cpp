@@ -7,21 +7,12 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
-Fence::Fence(Device* device, int64_t initValue CPF_GFX_DEBUG_PARAM_DEF)
+Fence::Fence(Device* device, int64_t initValue)
 {
 	device->GetD3DDevice()->CreateFence(initValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(mpFence.AsTypePP()));
 	mEvent = CreateEventEx(NULL, FALSE, FALSE, EVENT_ALL_ACCESS);
 
 	CPF_LOG(D3D12, Info) << "Created fence: " << intptr_t(this) << " - " << intptr_t(mpFence.Ptr());
-
-#ifdef CPF_GFX_TRACKING
-	if (dbgFilename)
-	{
-		std::wstringstream str;
-		str << dbgFilename << " : " << dbgLineNumber;
-		mpFence->SetName(str.str().c_str());
-	}
-#endif
 }
 
 Fence::~Fence()

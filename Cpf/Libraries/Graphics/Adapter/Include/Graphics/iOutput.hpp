@@ -11,7 +11,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iDevice;
+		struct iDevice;
 
 		enum class ScanlineOrder : int32_t;
 		enum class ModeScaling : int32_t;

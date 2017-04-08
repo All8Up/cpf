@@ -14,8 +14,9 @@ namespace Cpf
 		{
 			static constexpr COM::ClassID kFrameBufferCID = COM::ClassID("Adapter::D3D12::FrameBuffer"_crc64);
 
-			struct FrameBuffer : tRefCounted<Graphics::iFrameBuffer>
+			class FrameBuffer : public tRefCounted<Graphics::iFrameBuffer>
 			{
+			public:
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				COM::Result CPF_STDCALL Initialize(const Graphics::FrameBufferDesc* desc);

@@ -17,7 +17,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		class iDevice;
+		struct iDevice;
 	}
 
 	namespace Adapter
@@ -29,7 +29,7 @@ namespace Cpf
 			class SwapChain : public tRefCounted<Graphics::iSwapChain>
 			{
 			public:
-				SwapChain(Instance*, Graphics::iDevice*, iWindow*, const Graphics::SwapChainDesc* desc CPF_GFX_DEBUG_PARAM_DECL);
+				SwapChain(Instance*, Graphics::iDevice*, iWindow*, const Graphics::SwapChainDesc* desc);
 				~SwapChain() override;
 
 				void Present() override;

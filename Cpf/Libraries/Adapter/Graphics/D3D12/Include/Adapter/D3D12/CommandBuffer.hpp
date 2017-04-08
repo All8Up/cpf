@@ -16,6 +16,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
+		struct iDevice;
 		class iSampler;
 		class iConstantBuffer;
 		class iPipeline;
@@ -23,7 +24,6 @@ namespace Cpf
 		class iResourceBinding;
 		class iResource;
 		class iImageView;
-		class iDevice;
 		class iFence;
 		class iSwapChain;
 		class iCommandPool;

@@ -182,7 +182,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		kBufferCount,
 		true
 	};
-	mpDevice->CreateSwapChain(mpInstance, window, &desc, mpSwapChain.AsTypePP() CPF_GFX_DEBUG_PARAMS);
+	mpDevice->CreateSwapChain(mpInstance, window, &desc, mpSwapChain.AsTypePP());
 
 	// Create a set of depth buffers to go with the swap chain.
 	// TODO: There should really only be one shared depth buffer.
@@ -208,15 +208,15 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 
 bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locator)
 {
-	mpDevice->CreateFence(3, mpFence.AsTypePP() CPF_GFX_DEBUG_PARAMS);
+	mpDevice->CreateFence(3, mpFence.AsTypePP());
 	for (int i = 0; i < kBufferCount; ++i)
 	{
-		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
-		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
-		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
-		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
-		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
-		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP() CPF_GFX_DEBUG_PARAMS);
+		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
+		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP());
 	}
 	mpDebugUI.Adopt(new DebugUI());
 	mpDebugUI->Initialize(mpDevice, window, locator);

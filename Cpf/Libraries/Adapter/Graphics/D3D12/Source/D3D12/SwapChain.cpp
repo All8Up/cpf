@@ -22,7 +22,7 @@ SwapChain::SwapChain(
 	Graphics::iDevice* device,
 	iWindow* window,
 	const Graphics::SwapChainDesc* desc
-	CPF_GFX_DEBUG_PARAM_DEF)
+)
 	: mpDevice(static_cast<Device*>(device))
 	, mDesc(*desc)
 {
@@ -74,12 +74,6 @@ SwapChain::SwapChain(
 				mRenderTargetViews[i].Cast<ImageView>()->GetDescriptor()
 				);
 		}
-
-#ifdef CPF_GFX_TRACKING
-		std::stringstream str;
-		str << dbgFilename << " : " << dbgLineNumber;
-		mpSwapChain->SetPrivateData(WKPDID_D3DDebugObjectName, UINT(str.str().size() + 1), str.str().c_str());
-#endif
 	}
 	CPF_LOG(D3D12, Info) << "Created swapchain: " << intptr_t(this) << " - " << intptr_t(mpSwapChain.Ptr());
 }

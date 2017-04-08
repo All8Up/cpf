@@ -8,7 +8,7 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
-ResourceBinding::ResourceBinding(Device* device, const Graphics::ResourceBindingDesc* desc CPF_GFX_DEBUG_PARAM_DEF)
+ResourceBinding::ResourceBinding(Device* device, const Graphics::ResourceBindingDesc* desc)
 {
 	IntrusivePtr<ID3DBlob> signatureBlob;
 	if (_BuildSignature(desc, signatureBlob.AsTypePP()))
@@ -32,15 +32,6 @@ ResourceBinding::ResourceBinding(Device* device, const Graphics::ResourceBinding
 		CPF_LOG(D3D12, Info) << errors;
 		signatureBlob->Release();
 	}
-
-#ifdef CPF_GFX_TRACKING
-	if (dbgFilename)
-	{
-		std::wstringstream str;
-		str << dbgFilename << " : " << dbgLineNumber;
-		mpSignature->SetName(str.str().c_str());
-	}
-#endif
 }
 
 ResourceBinding::~ResourceBinding()

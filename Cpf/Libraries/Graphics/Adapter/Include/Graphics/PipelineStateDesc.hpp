@@ -14,7 +14,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iDevice;
+		struct iDevice;
 		class iShader;
 		class iPipeline;
 		class iResourceBinding;

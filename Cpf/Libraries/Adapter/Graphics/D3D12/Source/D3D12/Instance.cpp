@@ -11,6 +11,7 @@
 #include "Adapter/D3D12/FrameBuffer.hpp"
 
 #include "IntrusivePtr.hpp"
+#include "Adapter/D3D12/Plugin.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -18,8 +19,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
-Instance::Instance(Plugin::iRegistry* registry)
-	: mpRegistry(registry)
+Instance::Instance()
 {
 	UINT flags = 0;
 #ifdef CPF_USE_D3D12_DEBUG_LAYER
@@ -33,8 +33,8 @@ Instance::Instance(Plugin::iRegistry* registry)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Register D3D12 class types.
-	mpRegistry->Install(kRenderPassCID, new Plugin::tSimpleClassInstance<RenderPass>());
-	mpRegistry->Install(kFrameBufferCID, new Plugin::tSimpleClassInstance<FrameBuffer>());
+	gContext.GetRegistry()->Install(kRenderPassCID, new Plugin::tSimpleClassInstance<RenderPass>());
+	gContext.GetRegistry()->Install(kFrameBufferCID, new Plugin::tSimpleClassInstance<FrameBuffer>());
 	//////////////////////////////////////////////////////////////////////////
 
 	CPF_LOG(D3D12, Info) << "Created instance: " << intptr_t(this) << " - " << intptr_t(mpDXGIFactory2.Ptr());
@@ -114,7 +114,7 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 
 bool Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
 {
-	Graphics::iDevice* result = new Device(mpRegistry, adapter);
+	Graphics::iDevice* result = new Device(adapter);
 	if (result && result->Initialize())
 	{
 		*device = result;

@@ -34,42 +34,46 @@ namespace Cpf
 			class IndexBuffer;
 			class VertexBuffer;
 
-			CPF_EXPORT_ADAPTER_D3D12 class Device : public tRefCounted<Graphics::iDevice>
+			class CPF_EXPORT_ADAPTER_D3D12 Device : public tRefCounted<Graphics::iDevice>
 			{
 			public:
-				Device(Plugin::iRegistry* regy, Graphics::iAdapter* dev);
+				Device(Graphics::iAdapter* dev);
 				virtual ~Device();
 
-				bool Initialize() override;
-				bool Shutdown() override;
+				// Overrides from iUnknown.
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				void BeginFrame(Graphics::iCommandBuffer*) override;
-				void EndFrame(Graphics::iCommandBuffer*) override;
-				void Finalize() override;
+				// Overrides from iDevice.
+				bool CPF_STDCALL Initialize() override;
+				bool CPF_STDCALL Shutdown() override;
 
-				bool CreateSwapChain(Graphics::iInstance*, iWindow*, const Graphics::SwapChainDesc*, Graphics::iSwapChain** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateCommandPool(Graphics::iCommandPool** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateCommandBuffer(Graphics::iCommandPool*, Graphics::iCommandBuffer** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateFence(int64_t initValue, Graphics::iFence** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateShader(Graphics::BinaryBlob* blob, Graphics::iShader**) override;
-				bool CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline** CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler CPF_GFX_DEBUG_PARAM_DECL) override;
-				COM::Result CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DECL) override;
-				COM::Result CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
+				void CPF_STDCALL BeginFrame(Graphics::iCommandBuffer*) override;
+				void CPF_STDCALL EndFrame(Graphics::iCommandBuffer*) override;
+				void CPF_STDCALL Finalize() override;
 
-				bool CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer** CPF_GFX_DEBUG_PARAM_DECL) override;
+				bool CPF_STDCALL CreateSwapChain(Graphics::iInstance*, iWindow*, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
+				bool CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
+				bool CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::iCommandBuffer**) override;
+				bool CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
+				bool CPF_STDCALL CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
+				bool CPF_STDCALL CreateShader(Graphics::BinaryBlob* blob, Graphics::iShader**) override;
+				bool CPF_STDCALL CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
+				bool CPF_STDCALL CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;
+				bool CPF_STDCALL CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource) override;
+				bool CPF_STDCALL CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler) override;
+				COM::Result CPF_STDCALL CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass) override;
+				COM::Result CPF_STDCALL CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
 
-				bool CompileToByteCode(const String& entryPoint, Graphics::ShaderType type, size_t size, char* source, Graphics::BinaryBlob**) override;
+				bool CPF_STDCALL CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer) override;
+				bool CPF_STDCALL CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer) override;
+				bool CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer**) override;
 
-				bool CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView** CPF_GFX_DEBUG_PARAM_DECL) override;
+				bool CPF_STDCALL CompileToByteCode(const String& entryPoint, Graphics::ShaderType type, size_t size, char* source, Graphics::BinaryBlob**) override;
 
-				bool Signal(Graphics::iFence*, int64_t value) override;
-				void Submit(int32_t count, Graphics::iCommandBuffer**) override;
+				bool CPF_STDCALL CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView**) override;
+
+				bool CPF_STDCALL Signal(Graphics::iFence*, int64_t value) override;
+				void CPF_STDCALL Submit(int32_t count, Graphics::iCommandBuffer**) override;
 
 				//////////////////////////////////////////////////////////////////////////
 				void QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
@@ -88,7 +92,6 @@ namespace Cpf
 				DescriptorManager& GetDepthStencilViewDescriptors();
 
 			private:
-				Plugin::iRegistry* mpRegistry;
 				IntrusivePtr<ID3D12Device> mpDevice;
 
 				// TODO: Should probably be it's own class?

@@ -17,7 +17,7 @@ namespace Cpf
 			class CommandPool : public tRefCounted<Graphics::iCommandPool>
 			{
 			public:
-				CommandPool(Device* device CPF_GFX_DEBUG_PARAM_DECL);
+				CommandPool(Device* device);
 				~CommandPool() override;
 
 				void Reset() override;

@@ -8,9 +8,9 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		struct iDevice;
 		enum class PrimitiveTopology;
 		struct ResourceData;
-		class iDevice;
 		class iSwapChain;
 		class iCommandPool;
 		class iImage;
