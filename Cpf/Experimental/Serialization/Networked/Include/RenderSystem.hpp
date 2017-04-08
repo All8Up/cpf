@@ -57,7 +57,7 @@ namespace Cpf
 
 	private:
 		RenderSystem();
-		~RenderSystem() override;
+		virtual ~RenderSystem();
 
 		void _CreateStages();
 

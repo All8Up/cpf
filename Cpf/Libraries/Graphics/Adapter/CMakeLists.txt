@@ -39,6 +39,7 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/iIndexBuffer.hpp
 	Include/Graphics/iVertexBuffer.hpp
 	Include/Graphics/iConstantBuffer.hpp
+	Include/Graphics/iFrameBuffer.hpp
 
 	Include/Graphics/BlendStateDesc.hpp
 	Include/Graphics/DepthStencilDesc.hpp

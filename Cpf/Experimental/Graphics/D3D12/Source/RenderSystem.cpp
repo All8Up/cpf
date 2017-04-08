@@ -6,6 +6,7 @@
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/iRenderPass.hpp"
 #include "Graphics/FrameBufferDesc.hpp"
+#include "Graphics/iFrameBuffer.hpp"
 
 using namespace Cpf;
 using namespace Concurrency;
@@ -106,7 +107,7 @@ RenderSystem::RenderSystem()
 
 	//////////////////////////////////////////////////////////////////////////
 	IntrusivePtr<Graphics::iRenderPass> renderPass;
-	// TODO: Create the render pass.
+	mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
 
 	//////////////////////////////////////////////////////////////////////////
 	Graphics::FrameBufferDesc frameBufferDesc;
@@ -118,6 +119,10 @@ RenderSystem::RenderSystem()
 	int32_t mWidth;
 	int32_t mHeight;
 	int32_t mLayers; // TODO: ?? What is the usage of this?
+	*/
+	IntrusivePtr<Graphics::iFrameBuffer> frameBuffer;
+	/*
+	mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
 	*/
 }
 

@@ -13,7 +13,7 @@ class Registry : public Plugin::iRegistry
 public:
 	//
 	Registry();
-	virtual ~Registry() override;
+	virtual ~Registry();
 
 	// iUnknown overrides.
 	int32_t CPF_STDCALL AddRef() override;

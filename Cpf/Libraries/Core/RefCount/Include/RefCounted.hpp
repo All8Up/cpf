@@ -8,13 +8,10 @@
 namespace Cpf
 {
 	//////////////////////////////////////////////////////////////////////////
-	struct CPF_EXPORT CPF_NOVTABLE iRefCounted
+	struct CPF_NOVTABLE iRefCounted
 	{
 		virtual int32_t CPF_STDCALL AddRef() = 0;
 		virtual int32_t CPF_STDCALL Release() = 0;
-
-	protected:
-		virtual ~iRefCounted() {};
 	};
 
 	//////////////////////////////////////////////////////////////////////////

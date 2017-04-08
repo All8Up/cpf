@@ -60,7 +60,7 @@ namespace Cpf
 	private:
 		// Construction/Destruction.
 		RenderSystem();
-		~RenderSystem() override;
+		virtual ~RenderSystem();
 
 		//
 		void _AllocateBuffers();

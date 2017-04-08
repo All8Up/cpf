@@ -15,7 +15,7 @@ namespace Cpf
 		public:
 			// Construction/Destruction.
 			Timer();
-			~Timer() override;
+			virtual ~Timer();
 
 			// iUnknown overrides.
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;

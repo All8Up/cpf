@@ -34,7 +34,7 @@ namespace Cpf
 
 			private:
 				FileSystem(const String& relRoot);
-				~FileSystem() override;
+				virtual ~FileSystem();
 
 				using EntryMap = UnorderedMap<uint32_t, String>;
 				struct DirectoryMap

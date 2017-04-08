@@ -23,7 +23,7 @@ namespace Cpf
 
 			//
 			Manager();
-			~Manager() override;
+			virtual ~Manager();
 
 			//
 			COM::Result QueryInterface(COM::InterfaceID id, void**) override;

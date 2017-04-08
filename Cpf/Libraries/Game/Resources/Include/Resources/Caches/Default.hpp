@@ -30,7 +30,7 @@ namespace Cpf
 			private:
 				// Construction/Destruction.
 				Default();
-				~Default() override;
+				virtual ~Default();
 
 				// Implementation types.
 				using ResourceMap = UnorderedMap<uint64_t, ResourceBase*>;

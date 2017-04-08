@@ -1,16 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCounted.hpp"
-#include "Graphics/SubPassDesc.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iRenderPass : public iRefCounted
+		class iFrameBuffer : public iRefCounted
 		{
 		public:
-			virtual ~iRenderPass() = 0;
+			virtual ~iFrameBuffer() = 0;
 		};
 	}
 }

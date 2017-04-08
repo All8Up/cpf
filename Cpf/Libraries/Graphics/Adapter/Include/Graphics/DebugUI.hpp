@@ -34,7 +34,7 @@ namespace Cpf
 		{
 		public:
 			DebugUI();
-			~DebugUI() override;
+			virtual ~DebugUI();
 
 			bool Initialize(iDevice*, iWindow* window, Resources::Locator*);
 			void Shutdown();
