@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include "Plugin/iRegistry.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 #ifdef CPF_TARGET_WINDOWS
@@ -28,7 +29,7 @@ namespace Cpf
 	{
 		struct D3D12Initializer
 		{
-			CPF_EXPORT_ADAPTER_D3D12 static int Install();
+			CPF_EXPORT_ADAPTER_D3D12 static int Install(Plugin::iRegistry* regy);
 			CPF_EXPORT_ADAPTER_D3D12 static int Remove();
 
 		private:

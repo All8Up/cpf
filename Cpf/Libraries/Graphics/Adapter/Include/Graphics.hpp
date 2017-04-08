@@ -22,11 +22,6 @@
 #endif // CPF_TARGET_WINDOWS
 
 #include "Graphics/Driver.hpp"
+#include "COM/iUnknown.hpp"
 
-namespace Cpf
-{
-	namespace Graphics
-	{
-		CPF_EXPORT_GRAPHICS_DRIVER bool Create(int64_t id, iInstance** instance);
-	}
-}
+static constexpr Cpf::COM::ClassID kD3D12InstanceCID = Cpf::COM::ClassID("Adapter::D3D12::iInstance"_crc64);

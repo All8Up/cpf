@@ -1,16 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 #include "Graphics/SubPassDesc.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iRenderPass : public iRefCounted
+		struct iRenderPass : COM::iUnknown
 		{
-		public:
-			virtual ~iRenderPass() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iRenderPass"_crc64);
 		};
 	}
 }

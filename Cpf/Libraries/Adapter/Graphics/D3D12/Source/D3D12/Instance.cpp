@@ -4,6 +4,12 @@
 #include "Adapter/D3D12/Adapter.hpp"
 #include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/SwapChain.hpp"
+
+#include "Plugin/iClassInstance.hpp"
+
+#include "Adapter/D3D12/RenderPass.hpp"
+#include "Adapter/D3D12/FrameBuffer.hpp"
+
 #include "IntrusivePtr.hpp"
 #include "Logging/Logging.hpp"
 
@@ -12,12 +18,8 @@ using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
-void* Instance::Create()
-{
-	return new Instance();
-}
-
-Instance::Instance()
+Instance::Instance(Plugin::iRegistry* registry)
+	: mpRegistry(registry)
 {
 	UINT flags = 0;
 #ifdef CPF_USE_D3D12_DEBUG_LAYER
@@ -29,12 +31,39 @@ Instance::Instance()
 #endif
 	CreateDXGIFactory2(flags, IID_PPV_ARGS(mpDXGIFactory2.AsTypePP()));
 
+	//////////////////////////////////////////////////////////////////////////
+	// Register D3D12 class types.
+	mpRegistry->Install(kRenderPassCID, new Plugin::tSimpleClassInstance<RenderPass>());
+	mpRegistry->Install(kFrameBufferCID, new Plugin::tSimpleClassInstance<FrameBuffer>());
+	//////////////////////////////////////////////////////////////////////////
+
 	CPF_LOG(D3D12, Info) << "Created instance: " << intptr_t(this) << " - " << intptr_t(mpDXGIFactory2.Ptr());
 }
 
 Instance::~Instance()
 {
 	CPF_LOG(D3D12, Info) << "Destroyed instance: " << intptr_t(this) << " - " << intptr_t(mpDXGIFactory2.Ptr());
+}
+
+COM::Result CPF_STDCALL Instance::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iInstance::kIID.GetID():
+			*outIface = static_cast<iInstance*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
@@ -85,7 +114,7 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 
 bool Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
 {
-	Graphics::iDevice* result = new Device(adapter);
+	Graphics::iDevice* result = new Device(mpRegistry, adapter);
 	if (result && result->Initialize())
 	{
 		*device = result;

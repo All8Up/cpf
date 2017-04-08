@@ -27,6 +27,8 @@ set (INCLUDE_ADAPTER_D3D12_FILES
 	Include/Adapter/D3D12/VertexBuffer.hpp
 	Include/Adapter/D3D12/ConstantBuffer.hpp
 	Include/Adapter/D3D12/Sampler.hpp
+	Include/Adapter/D3D12/RenderPass.hpp
+	Include/Adapter/D3D12/FrameBuffer.hpp
 )
 set (SOURCE_ADAPTER_D3D12_FILES
 	Source/D3D12/Instance.cpp
@@ -48,6 +50,8 @@ set (SOURCE_ADAPTER_D3D12_FILES
 	Source/D3D12/VertexBuffer.cpp
 	Source/D3D12/ConstantBuffer.cpp
 	Source/D3D12/Sampler.cpp
+	Source/D3D12/RenderPass.cpp
+	Source/D3D12/FrameBuffer.cpp
 )
 
 

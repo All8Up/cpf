@@ -34,7 +34,8 @@ int Networked::Start(const CommandLine&)
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<Adapter::D3D12Initializer> d3d12Init;
+
+	ScopedInitializer<Adapter::D3D12Initializer, int, Plugin::iRegistry*> d3d12Init(GetRegistry());
 
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 
@@ -192,7 +193,7 @@ bool Networked::_InitializePipeline()
 		GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, mpRenderSystem.AsVoidPP());
 		mpRenderSystem->Initialize(GetRegistry(), "Rendering", &renderDesc);
 		mpPipeline->Install(mpRenderSystem);
-		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(mpWindow, mpLocator))
+		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(GetRegistry(), mpWindow, mpLocator))
 		{
 			return (
 				mpTimer &&

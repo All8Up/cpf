@@ -17,14 +17,14 @@ namespace Cpf
 		class iAdapter;
 		class iCommandPool;
 		class iCommandBuffer;
-		class iInstance;
+		struct iInstance;
 		class iSwapChain;
 		struct SwapChainDesc;
 		struct PipelineStateDesc;
 		class ResourceBindingDesc;
 		class iResourceBinding;
 		class iPipeline;
-		class iFrameBuffer;
+		struct iFrameBuffer;
 		struct FrameBufferDesc;
 	}
 	namespace Adapter
@@ -37,7 +37,7 @@ namespace Cpf
 			CPF_EXPORT_ADAPTER_D3D12 class Device : public tRefCounted<Graphics::iDevice>
 			{
 			public:
-				Device(Graphics::iAdapter* dev);
+				Device(Plugin::iRegistry* regy, Graphics::iAdapter* dev);
 				virtual ~Device();
 
 				bool Initialize() override;
@@ -57,8 +57,8 @@ namespace Cpf
 				bool CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline** CPF_GFX_DEBUG_PARAM_DECL) override;
 				bool CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource CPF_GFX_DEBUG_PARAM_DECL) override;
 				bool CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DECL) override;
-				bool CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
+				COM::Result CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DECL) override;
+				COM::Result CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
 
 				bool CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DECL) override;
 				bool CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer CPF_GFX_DEBUG_PARAM_DECL) override;
@@ -88,6 +88,7 @@ namespace Cpf
 				DescriptorManager& GetDepthStencilViewDescriptors();
 
 			private:
+				Plugin::iRegistry* mpRegistry;
 				IntrusivePtr<ID3D12Device> mpDevice;
 
 				// TODO: Should probably be it's own class?

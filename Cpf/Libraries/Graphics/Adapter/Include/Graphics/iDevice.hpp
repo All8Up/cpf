@@ -18,7 +18,7 @@ namespace Cpf
 		class iConstantBuffer;
 		class iResource;
 		class ResourceDesc;
-		class iInstance;
+		struct iInstance;
 		class iFence;
 		class iImage;
 		class iImageView;
@@ -37,8 +37,8 @@ namespace Cpf
 		class iResourceBinding;
 		class iPipeline;
 		struct RenderPassDesc;
-		class iRenderPass;
-		class iFrameBuffer;
+		struct iRenderPass;
+		struct iFrameBuffer;
 		struct FrameBufferDesc;
 
 		class iDevice : public iRefCounted
@@ -63,8 +63,8 @@ namespace Cpf
 			virtual bool CreatePipeline(const PipelineStateDesc* desc, iResourceBinding*, iPipeline** CPF_GFX_DEBUG_PARAM_DECL) = 0;
 			virtual bool CreateResource(const ResourceDesc* desc, iResource** CPF_GFX_DEBUG_PARAM_DECL) = 0;
 			virtual bool CreateSampler(const SamplerDesc* desc, iSampler** CPF_GFX_DEBUG_PARAM_DECL) = 0;
-			virtual bool CreateRenderPass(const RenderPassDesc* desc, iRenderPass** CPF_GFX_DEBUG_PARAM_DECL) = 0;
-			virtual bool CreateFrameBuffer(const FrameBufferDesc* desc, iFrameBuffer** frameBuffer) = 0;
+			virtual COM::Result CreateRenderPass(const RenderPassDesc* desc, iRenderPass** CPF_GFX_DEBUG_PARAM_DECL) = 0;
+			virtual COM::Result CreateFrameBuffer(const FrameBufferDesc* desc, iFrameBuffer** frameBuffer) = 0;
 
 			virtual bool CreateIndexBuffer(Format format, BufferUsage usage, size_t byteSize, const void* initData, iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DECL) = 0;
 			virtual bool CreateVertexBuffer(BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, iVertexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DECL) = 0;

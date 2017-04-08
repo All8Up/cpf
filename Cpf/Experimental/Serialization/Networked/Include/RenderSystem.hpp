@@ -29,7 +29,7 @@ namespace Cpf
 
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
-		bool Initialize(iWindow*, Resources::Locator*);
+		bool Initialize(Plugin::iRegistry* registry, iWindow*, Resources::Locator*);
 		bool Shutdown();
 
 		void Resize(int32_t, int32_t);

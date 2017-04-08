@@ -24,7 +24,7 @@ namespace Cpf
 	{
 		namespace D3D12
 		{
-			class Instance;
+			struct Instance;
 
 			class SwapChain : public tRefCounted<Graphics::iSwapChain>
 			{

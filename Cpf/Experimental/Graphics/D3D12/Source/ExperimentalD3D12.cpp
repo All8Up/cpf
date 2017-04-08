@@ -28,6 +28,12 @@
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 #include "MultiCore.hpp"
 
+#include "Graphics/RenderPassDesc.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/iRenderPass.hpp"
+#include "Graphics/FrameBufferDesc.hpp"
+#include "Graphics/iFrameBuffer.hpp"
+
 using namespace Cpf;
 using namespace Math;
 using namespace Graphics;
@@ -58,7 +64,8 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<Adapter::GFX_INITIALIZER> gfxInit;
+
+	ScopedInitializer<Adapter::GFX_INITIALIZER, int, Plugin::iRegistry*> gfxInit(GetRegistry());
 
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
@@ -198,7 +205,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 		// Get an instance of the installed device from the graphics factory.
 		{
 			IntrusivePtr<iInstance> gfxInstance;
-			Graphics::Create(1, gfxInstance.AsTypePP());
+			GetRegistry()->Create(nullptr, kD3D12InstanceCID, Graphics::iInstance::kIID, gfxInstance.AsVoidPP());
 			if (gfxInstance)
 			{
 				IntrusivePtr<iAdapter> adapter;
@@ -236,6 +243,98 @@ int ExperimentalD3D12::Start(const CommandLine&)
 				{
 					// Do something with the error.
 				}
+
+				//////////////////////////////////////////////////////////////////////////
+				//////////////////////////////////////////////////////////////////////////
+				//////////////////////////////////////////////////////////////////////////
+				// TODO: Testing for render pass setup.
+				Graphics::AttachmentDesc attachments[2] = {};
+
+				//////////////////////////////////////////////////////////////////////////
+				// Color buffer.
+				attachments[0].mFlags = 0;
+				attachments[0].mFormat = Graphics::Format::eRGBA8un;
+				attachments[0].mSamples = Graphics::SampleDesc{ 1, 0 };
+				attachments[0].mLoadOp = Graphics::LoadOp::eClear;
+				attachments[0].mStoreOp = Graphics::StoreOp::eStore;
+				attachments[0].mStencilLoadOp = Graphics::LoadOp::eDontCare;
+				attachments[0].mStencilStoreOp = Graphics::StoreOp::eDontCare;
+				// TODO: Figure out what makes the most sense.
+				attachments[0].mStartState = Graphics::ResourceState::ePresent;
+				attachments[0].mFinalState = Graphics::ResourceState::ePresent;
+
+				///
+				Graphics::AttachmentRef colorAttachment = {};
+				colorAttachment.mIndex = 0;
+				colorAttachment.mState = Graphics::ResourceState::eRenderTarget;
+
+				//////////////////////////////////////////////////////////////////////////
+				// Depth buffer.
+				attachments[1].mFlags = 0;
+				attachments[1].mFormat = Graphics::Format::eD32f;
+				attachments[1].mSamples = Graphics::SampleDesc{ 1, 0 };
+				attachments[1].mLoadOp = Graphics::LoadOp::eClear;
+				attachments[1].mStoreOp = Graphics::StoreOp::eStore;
+				attachments[1].mStencilLoadOp = Graphics::LoadOp::eLoad;
+				attachments[1].mStencilStoreOp = Graphics::StoreOp::eStore;
+				// TODO: Figure out what makes the most sense.
+				attachments[1].mStartState = Graphics::ResourceState::ePresent;
+				attachments[1].mFinalState = Graphics::ResourceState::ePresent;
+
+				///
+				Graphics::AttachmentRef depthAttachment = {};
+				depthAttachment.mIndex = 1;
+				depthAttachment.mState = Graphics::ResourceState::eDepthWrite;
+
+				//////////////////////////////////////////////////////////////////////////
+				Graphics::SubPassDesc subPass = {};
+				subPass.mBindPoint = Graphics::PipelineBindPoint::eGraphic;
+				// No inputs.
+				subPass.mInputCount = 0;
+				subPass.mpInputAttachments = nullptr;
+				// 1 color output.
+				subPass.mColorCount = 1;
+				subPass.mpColorAttachments = &colorAttachment;
+				// No resolves.
+				subPass.mResolveCount = 0;
+				subPass.mpResolveAttachments = nullptr;
+				// 1 depth buffer.
+				subPass.mDepthStencilCount = 1;
+				subPass.mpDepthStencilAttachments = &depthAttachment;
+				// No preservation.
+				subPass.mPreserveCount = 0;
+				subPass.mpPreserveAttachments = nullptr;
+
+				//////////////////////////////////////////////////////////////////////////
+				Graphics::RenderPassDesc renderPassDesc;
+				renderPassDesc.mAttachmentCount = 2;
+				renderPassDesc.mpAttachments = attachments;
+				renderPassDesc.mSubPassCount = 1;
+				renderPassDesc.mpSubPasses = &subPass;
+				renderPassDesc.mDependencyCount = 0;
+				renderPassDesc.mpDependencies = nullptr;
+
+				//////////////////////////////////////////////////////////////////////////
+				IntrusivePtr<Graphics::iRenderPass> renderPass;
+				mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
+
+				//////////////////////////////////////////////////////////////////////////
+				Graphics::FrameBufferDesc frameBufferDesc;
+				frameBufferDesc.mpRenderPass = renderPass;
+				frameBufferDesc.mAttachmentCount = 2;
+				Graphics::iImageView* views[2] = {};
+				frameBufferDesc.mpAttachments = views;
+				frameBufferDesc.mWidth = 1024;
+				frameBufferDesc.mHeight = 768;
+				frameBufferDesc.mLayers = 1;
+
+				//////////////////////////////////////////////////////////////////////////
+				IntrusivePtr<Graphics::iFrameBuffer> frameBuffer;
+				mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
+
+				//////////////////////////////////////////////////////////////////////////
+				//////////////////////////////////////////////////////////////////////////
+				//////////////////////////////////////////////////////////////////////////
 
 				//////////////////////////////////////////////////////////////////////////
 				// Start up the threading system.

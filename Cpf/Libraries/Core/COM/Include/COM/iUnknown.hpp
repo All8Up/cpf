@@ -36,6 +36,8 @@ namespace Cpf
 		static constexpr Result kInvalid = CreateResult(1, "Core"_crc16, 6);
 		static constexpr Result kNotEnoughSpace = CreateResult(1, "Core"_crc16, 7);
 		static constexpr Result kInUse = CreateResult(0, "Core"_crc16, 8);
+		static constexpr Result kNotInitialized = CreateResult(1, "Core"_crc16, 9);
+		static constexpr Result kInitializationFailure = CreateResult(1, "Core"_crc16, 10);
 
 		//////////////////////////////////////////////////////////////////////////
 		// TODO: This won't be an export in the future.
@@ -43,7 +45,7 @@ namespace Cpf
 		{
 			static constexpr InterfaceID kIID = InterfaceID("iUnknown Interface"_crc64);
 
-			virtual Result CPF_STDCALL QueryInterface(InterfaceID id, void**) = 0;
+			virtual Result CPF_STDCALL QueryInterface(InterfaceID id, void** outIface) = 0;
 		};
 	}
 }

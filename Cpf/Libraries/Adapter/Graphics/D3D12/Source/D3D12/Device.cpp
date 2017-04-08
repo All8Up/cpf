@@ -16,6 +16,10 @@
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
 #include "Graphics/BinaryBlob.hpp"
+
+#include "Adapter/D3D12/RenderPass.hpp"
+#include "Adapter/D3D12/FrameBuffer.hpp"
+
 #include "Logging/Logging.hpp"
 #include "String.hpp"
 
@@ -24,7 +28,8 @@ using namespace Adapter;
 using namespace D3D12;
 
 
-Device::Device(Graphics::iAdapter* adapter)
+Device::Device(Plugin::iRegistry* regy, Graphics::iAdapter* adapter)
+	: mpRegistry(regy)
 {
 #ifdef CPF_DEBUG
 	ID3D12Debug* debugController = nullptr;
@@ -183,7 +188,7 @@ bool Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::iComman
 	if (result)
 	{
 		*buffer = result;
-		return true;
+return true;
 	}
 	return false;
 }
@@ -273,16 +278,45 @@ bool Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler
 	return false;
 }
 
-bool Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DEF)
+COM::Result Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass CPF_GFX_DEBUG_PARAM_DEF)
 {
-	(void)desc; (void)renderPass;
-	return false;
+	if (mpRegistry == nullptr)
+		return COM::kNotInitialized;
+	if (desc == nullptr)
+		return COM::kInvalidParameter;
+	if (renderPass == nullptr)
+		return COM::kInvalidParameter;
+
+	if (COM::Succeeded(mpRegistry->Create(nullptr, kRenderPassCID, Graphics::iRenderPass::kIID, reinterpret_cast<void**>(renderPass))))
+	{
+		if (COM::Succeeded(static_cast<RenderPass*>(*renderPass)->Initialize(desc)))
+			return COM::kOK;
+		(*renderPass)->Release();
+		*renderPass = nullptr;
+		return COM::kInitializationFailure;
+	}
+
+	return COM::kUnknownClass;
 }
 
-bool Device::CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer)
+COM::Result Device::CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer)
 {
-	(void)desc; (void)frameBuffer;
-	return false;
+	if (mpRegistry == nullptr)
+		return COM::kNotInitialized;
+	if (desc == nullptr)
+		return COM::kInvalidParameter;
+	if (frameBuffer == nullptr)
+		return COM::kInvalidParameter;
+
+	if (COM::Succeeded(mpRegistry->Create(nullptr, kFrameBufferCID, Graphics::iFrameBuffer::kIID, reinterpret_cast<void**>(frameBuffer))))
+	{
+		if (COM::Succeeded(static_cast<FrameBuffer*>(*frameBuffer)->Initialize(desc)))
+			return COM::kOK;
+		(*frameBuffer)->Release();
+		*frameBuffer = nullptr;
+		return COM::kInitializationFailure;
+	}
+	return COM::kUnknownClass;
 }
 
 bool Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer CPF_GFX_DEBUG_PARAM_DEF)

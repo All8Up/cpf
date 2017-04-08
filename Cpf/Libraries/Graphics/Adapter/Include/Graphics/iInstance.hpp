@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -13,13 +13,13 @@ namespace Cpf
 		class iSwapChain;
 		struct SwapChainDesc;
 
-		class iInstance : public iRefCounted
+		struct iInstance : COM::iUnknown
 		{
 		public:
-			virtual ~iInstance() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iInstance"_crc64);
 
-			virtual bool EnumerateAdapters(int& count, iAdapter** adapters) = 0;
-			virtual bool CreateDevice(iAdapter*, iDevice**) = 0;
+			virtual bool CPF_STDCALL EnumerateAdapters(int& count, iAdapter** adapters) = 0;
+			virtual bool CPF_STDCALL CreateDevice(iAdapter*, iDevice**) = 0;
 		};
 	}
 }

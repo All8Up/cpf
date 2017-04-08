@@ -1,15 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iFrameBuffer : public iRefCounted
+		struct iFrameBuffer : COM::iUnknown
 		{
-		public:
-			virtual ~iFrameBuffer() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iFrameBuffer"_crc64);
 		};
 	}
 }
