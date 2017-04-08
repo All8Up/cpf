@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 #include "Graphics/iOutput.hpp"
 
 namespace Cpf
@@ -9,19 +9,18 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		class iAdapter : public iRefCounted
+		struct iAdapter : COM::iUnknown
 		{
-		public:
-			virtual ~iAdapter() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iAdapter"_crc64);
 
-			virtual const char* GetDescription() const = 0;
-			virtual size_t GetVideoMemory() const = 0;
-			virtual size_t GetSystemMemory() const = 0;
-			virtual size_t GetSharedMemory() const = 0;
-			virtual bool IsSoftware() const = 0;
-			virtual bool IsRemote() const = 0;
+			virtual const char* CPF_STDCALL GetDescription() const = 0;
+			virtual size_t CPF_STDCALL GetVideoMemory() const = 0;
+			virtual size_t CPF_STDCALL GetSystemMemory() const = 0;
+			virtual size_t CPF_STDCALL GetSharedMemory() const = 0;
+			virtual bool CPF_STDCALL IsSoftware() const = 0;
+			virtual bool CPF_STDCALL IsRemote() const = 0;
 
-			virtual bool EnumerateOutputs(int32_t& count, iOutput**) const = 0;
+			virtual bool CPF_STDCALL EnumerateOutputs(int32_t& count, iOutput**) const = 0;
 		};
 	}
 }

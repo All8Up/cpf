@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Instance.hpp"
-#include "Adapter/D3D12/Adapter.hpp"
-#include "Adapter/D3D12/Device.hpp"
-#include "Adapter/D3D12/SwapChain.hpp"
-
 #include "Plugin/iClassInstance.hpp"
 
+#include "Adapter/D3D12/D3D12Utils.hpp"
+#include "Adapter/D3D12/SwapChain.hpp"
+
+#include "Adapter/D3D12/Device.hpp"
+#include "Adapter/D3D12/Adapter.hpp"
 #include "Adapter/D3D12/RenderPass.hpp"
 #include "Adapter/D3D12/FrameBuffer.hpp"
 
@@ -33,6 +33,8 @@ Instance::Instance()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Register D3D12 class types.
+	gContext.GetRegistry()->Install(kDeviceCID, new Plugin::tSimpleClassInstance<Device>());
+	gContext.GetRegistry()->Install(kAdapterCID, new Plugin::tSimpleClassInstance<Adapter>());
 	gContext.GetRegistry()->Install(kRenderPassCID, new Plugin::tSimpleClassInstance<RenderPass>());
 	gContext.GetRegistry()->Install(kFrameBufferCID, new Plugin::tSimpleClassInstance<FrameBuffer>());
 	//////////////////////////////////////////////////////////////////////////
@@ -83,8 +85,13 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 						DXGI_ADAPTER_DESC2 desc2;
 						if (SUCCEEDED(adapter2->GetDesc2(&desc2)))
 						{
-							Graphics::iAdapter* d3dAdapter = new Adapter(adapter2);
-							adapters[i] = d3dAdapter;
+							Graphics::iAdapter* adapterIface;
+							if (Succeeded(gContext.GetRegistry()->Create(nullptr, kAdapterCID, Graphics::iAdapter::kIID, reinterpret_cast<void**>(&adapterIface))))
+							{
+								D3D12::Adapter* d3dAdapter = static_cast<D3D12::Adapter*>(adapterIface);
+								d3dAdapter->Initialize(adapter2);
+								adapters[i] = d3dAdapter;
+							}
 						}
 						else
 							return false;
@@ -112,14 +119,20 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 }
 
 
-bool Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
+COM::Result Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
 {
-	Graphics::iDevice* result = new Device(adapter);
-	if (result && result->Initialize())
+	if (adapter && device)
 	{
-		*device = result;
-		return true;
+		if (Succeeded(gContext.GetRegistry()->Create(nullptr, kDeviceCID, Graphics::iDevice::kIID, reinterpret_cast<void**>(device))))
+		{
+			Device* dev = static_cast<Device*>(*device);
+			if (Succeeded(dev->Initialize(adapter)) && Succeeded(dev->Initialize()))
+				return COM::kOK;
+			(*device)->Release();
+			*device = nullptr;
+			return COM::kInitializationFailure;
+		}
+		return COM::kOutOfMemory;
 	}
-
-	return false;
+	return COM::kInvalidParameter;
 }

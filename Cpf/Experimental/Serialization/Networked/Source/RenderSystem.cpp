@@ -51,7 +51,7 @@ bool RenderSystem::Initialize(Plugin::iRegistry* registry, iWindow* window, Reso
 	if (Succeeded(registry->Create(nullptr, kD3D12InstanceCID, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
 	{
 		if (_SelectAdapter() &&
-			mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP()) &&
+			COM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
 			_CreateSwapChain(window) &&
 			_CreateRenderData(window, locator)
 			)

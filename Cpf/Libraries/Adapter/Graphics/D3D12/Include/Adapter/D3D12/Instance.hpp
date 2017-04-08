@@ -17,7 +17,7 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
-		class iAdapter;
+		struct iAdapter;
 		class iSwapChain;
 		struct SwapChainDesc;
 	}
@@ -34,7 +34,7 @@ namespace Cpf
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				bool CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
-				bool CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;
+				COM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;
 
 				//
 				IDXGIFactory2* GetFactory() const { return mpDXGIFactory2; }

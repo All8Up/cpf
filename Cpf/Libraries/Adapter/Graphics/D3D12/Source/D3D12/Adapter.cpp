@@ -10,9 +10,19 @@ using namespace Cpf;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-D3D12::Adapter::Adapter(IDXGIAdapter2* adapter)
-	: mpAdapter(adapter)
+D3D12::Adapter::Adapter()
+	: mpAdapter(nullptr)
 {
+}
+
+D3D12::Adapter::~Adapter()
+{
+	CPF_LOG(D3D12, Info) << "Destroyed adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
+}
+
+COM::Result D3D12::Adapter::Initialize(IDXGIAdapter2* adapter)
+{
+	mpAdapter.Adopt(adapter);
 	mpAdapter->AddRef();
 	mpAdapter->GetDesc2(&mDesc);
 
@@ -21,44 +31,62 @@ D3D12::Adapter::Adapter(IDXGIAdapter2* adapter)
 		mDescription[i] = char(mDesc.Description[i]);
 
 	CPF_LOG(D3D12, Info) << "Created adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
+	return COM::kOK;
 }
 
-D3D12::Adapter::~Adapter()
+COM::Result CPF_STDCALL D3D12::Adapter::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	CPF_LOG(D3D12, Info) << "Destroyed adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case Graphics::iAdapter::kIID.GetID():
+			*outIface = static_cast<Graphics::iAdapter*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
-const char* D3D12::Adapter::GetDescription() const
+
+const char* CPF_STDCALL D3D12::Adapter::GetDescription() const
 {
 	return mDescription;
 }
 
-size_t D3D12::Adapter::GetVideoMemory() const
+size_t CPF_STDCALL D3D12::Adapter::GetVideoMemory() const
 {
 	return mDesc.DedicatedVideoMemory;
 }
 
-size_t D3D12::Adapter::GetSystemMemory() const
+size_t CPF_STDCALL D3D12::Adapter::GetSystemMemory() const
 {
 	return mDesc.DedicatedSystemMemory;
 }
 
-size_t D3D12::Adapter::GetSharedMemory() const
+size_t CPF_STDCALL D3D12::Adapter::GetSharedMemory() const
 {
 	return mDesc.SharedSystemMemory;
 }
 
-bool D3D12::Adapter::IsSoftware() const
+bool CPF_STDCALL D3D12::Adapter::IsSoftware() const
 {
 	return (mDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0;
 }
 
-bool D3D12::Adapter::IsRemote() const
+bool CPF_STDCALL D3D12::Adapter::IsRemote() const
 {
 	return (mDesc.Flags & DXGI_ADAPTER_FLAG_REMOTE) != 0;
 }
 
-bool D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
+bool CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
 {
 	if (outputs && count != 0)
 	{

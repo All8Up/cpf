@@ -52,3 +52,5 @@ namespace Cpf
 		};
 	}
 }
+
+#define CPF_CLASSINSTANCE_ACCESS(name) friend struct Cpf::Plugin::tSimpleClassInstance<name>;
