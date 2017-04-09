@@ -18,7 +18,9 @@ namespace Cpf
 			{
 			public:
 				Sampler(Device*, const Graphics::SamplerDesc* desc);
-				~Sampler() override;
+				virtual ~Sampler();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				Descriptor& GetDescriptor() { return mDescriptor; }
 

@@ -18,7 +18,8 @@ namespace Cpf
 	{
 		struct iDevice;
 		struct iAdapter;
-		class iSwapChain;
+		struct iSwapChain;
+
 		struct SwapChainDesc;
 	}
 	namespace Adapter

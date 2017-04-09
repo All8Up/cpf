@@ -11,7 +11,7 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct PipelineStateDesc;
-		class iPipeline;
+		struct iPipeline;
 	}
 
 	namespace Adapter
@@ -26,7 +26,9 @@ namespace Cpf
 			{
 			public:
 				Pipeline(Device*, const Graphics::PipelineStateDesc*, const ResourceBinding* CPF_GFX_DEBUG_PARAM_DECL);
-				~Pipeline() override;
+				virtual ~Pipeline();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				ID3D12PipelineState* GetPipelineState() const { return mpPipelineState; }
 

@@ -19,7 +19,9 @@ namespace Cpf
 			{
 			public:
 				Shader();
-				~Shader() override;
+				virtual ~Shader();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				bool LoadFrom(Graphics::iDevice* device, const Graphics::BinaryBlob*) override;
 

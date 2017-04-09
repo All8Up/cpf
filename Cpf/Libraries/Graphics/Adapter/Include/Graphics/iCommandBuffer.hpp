@@ -13,16 +13,16 @@ namespace Cpf
 		struct iResource;
 		struct iIndexBuffer;
 		struct iVertexBuffer;
+		struct iImage;
+		struct iImageView;
+		struct iSwapChain;
+		struct iCommandPool;
+		struct iSampler;
+		struct iResourceBinding;
+		struct iPipeline;
 
 		enum class PrimitiveTopology;
 		struct ResourceData;
-		class iSwapChain;
-		struct iCommandPool;
-		class iImage;
-		class iSampler;
-		class iImageView;
-		class iResourceBinding;
-		class iPipeline;
 		struct Viewport;
 		enum class SubResource : int32_t;
 		enum class ResourceState : int32_t;

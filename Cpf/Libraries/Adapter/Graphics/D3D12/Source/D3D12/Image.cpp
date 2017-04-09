@@ -107,6 +107,27 @@ Image::~Image()
 	CPF_LOG(D3D12, Info) << "Destroyed image: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }
 
+COM::Result CPF_STDCALL Image::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iImage::kIID.GetID():
+			*outIface = static_cast<iImage*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 const Graphics::ImageDesc& Image::GetDesc() const
 {
 	return mDesc;
@@ -130,4 +151,25 @@ ImageView::ImageView(Device* device, Image* image, const Graphics::DepthStencilV
 		pd3dDesc = &d3dDesc;
 	}
 	device->GetD3DDevice()->CreateDepthStencilView(image->GetResource(), pd3dDesc, mDescriptor);
+}
+
+COM::Result CPF_STDCALL ImageView::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iImageView::kIID.GetID():
+			*outIface = static_cast<iImageView*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }

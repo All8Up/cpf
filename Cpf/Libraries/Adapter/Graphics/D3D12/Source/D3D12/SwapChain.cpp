@@ -87,6 +87,27 @@ SwapChain::~SwapChain()
 	CPF_LOG(D3D12, Info) << "Destroyed swapchain: " << intptr_t(this) << " - " << intptr_t(mpSwapChain.Ptr());
 }
 
+COM::Result CPF_STDCALL SwapChain::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iSwapChain::kIID.GetID():
+			*outIface = static_cast<iSwapChain*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 void SwapChain::Present()
 {
 	mpSwapChain->Present(0, 0 /* DXGI_PRESENT_ALLOW_TEARING */);

@@ -1,35 +1,17 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
-#include "Graphics/SampleDesc.hpp"
-#include "Graphics/Format.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
 		enum class ImageFlags : int32_t;
-		struct ImageDesc
+		struct ImageDesc;
+
+		struct iImage : COM::iUnknown
 		{
-			int32_t mWidth;
-			int32_t mHeight;
-			int32_t mDepth;
-			int32_t mMipLevels;
-			Format mFormat;
-			SampleDesc mSamples;
-			ImageFlags mFlags;
-		};
-
-		struct ImageViewDesc
-		{};
-
-		struct DepthStencilViewDesc
-		{};
-
-		class iImage : public iRefCounted
-		{
-		public:
-			virtual ~iImage() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iImage"_crc64);
 
 			virtual const ImageDesc& GetDesc() const = 0;
 		};

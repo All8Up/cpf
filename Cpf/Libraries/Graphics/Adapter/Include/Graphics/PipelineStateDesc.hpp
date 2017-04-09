@@ -15,9 +15,9 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
-		class iShader;
-		class iPipeline;
-		class iResourceBinding;
+		struct iShader;
+		struct iPipeline;
+		struct iResourceBinding;
 
 		struct PipelineStateDesc
 		{

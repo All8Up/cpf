@@ -17,16 +17,16 @@ namespace Cpf
 		struct iInstance;
 		struct iAdapter;
 		struct iCommandPool;
-
-		class iFence;
 		struct iCommandBuffer;
-		class iSwapChain;
+		struct iFence;
+		struct iSwapChain;
+		struct iResourceBinding;
+		struct iPipeline;
+		struct iFrameBuffer;
+
 		struct SwapChainDesc;
 		struct PipelineStateDesc;
 		class ResourceBindingDesc;
-		class iResourceBinding;
-		class iPipeline;
-		struct iFrameBuffer;
 		struct FrameBufferDesc;
 	}
 	namespace Adapter

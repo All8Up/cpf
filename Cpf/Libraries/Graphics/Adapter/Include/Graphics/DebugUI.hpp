@@ -24,12 +24,11 @@ namespace Cpf
 		struct iConstantBuffer;
 		struct iIndexBuffer;
 		struct iVertexBuffer;
-
-		class iImage;
-		class iShader;
-		class iSampler;
-		class iPipeline;
-		class iResourceBinding;
+		struct iImage;
+		struct iShader;
+		struct iSampler;
+		struct iPipeline;
+		struct iResourceBinding;
 
 		class DebugUI : public tRefCounted<iRefCounted>
 		{

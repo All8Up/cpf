@@ -4,6 +4,7 @@
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/SwapChainDesc.hpp"
 #include "Graphics/SwapEffect.hpp"
+#include "Graphics/ImageDesc.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "Application/Application.hpp"

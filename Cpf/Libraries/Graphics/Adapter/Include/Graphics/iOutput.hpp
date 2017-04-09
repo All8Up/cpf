@@ -1,10 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
-#include "Graphics/Format.hpp"
-#include "Graphics/Ratio.hpp"
-#include "Math/Rectangle.hpp"
-#include "EnumFlagType.hpp"
+#include "COM/iUnknown.hpp"
 
 
 namespace Cpf
@@ -17,13 +13,13 @@ namespace Cpf
 		enum class ModeScaling : int32_t;
 		enum class ModeRotation : int32_t;
 		enum class EnumMode : int32_t;
+		enum class Format : int32_t;
 		struct OutputDesc;
 		struct ModeDesc;
 
-		class iOutput : public iRefCounted
+		struct iOutput : COM::iUnknown
 		{
-		public:
-			virtual ~iOutput() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iOutput"_crc64);
 
 			virtual bool GetDesc(OutputDesc*) const = 0;
 			virtual bool EnumerateModes(Format format, EnumMode enumMode, int32_t& count, ModeDesc*) = 0;

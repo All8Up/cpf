@@ -2,6 +2,7 @@
 #pragma once
 #include "Graphics/Driver.hpp"
 #include "Graphics/iImage.hpp"
+#include "Graphics/ImageDesc.hpp"
 #include "Graphics/iImageView.hpp"
 #include "D3D12Utils.hpp"
 #include "DescriptorManager.hpp"
@@ -18,7 +19,9 @@ namespace Cpf
 			public:
 				Image(ID3D12Resource* resource);
 				Image(Device*, const void* initData, const Graphics::ImageDesc* desc);
-				~Image() override;
+				virtual ~Image();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				const Graphics::ImageDesc& GetDesc() const override;
 
@@ -38,6 +41,8 @@ namespace Cpf
 			public:
 				ImageView(Descriptor&& desc) : mDescriptor(Move(desc)) {}
 				ImageView(Device*, Image*, const Graphics::DepthStencilViewDesc*);
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				Descriptor& GetDescriptor() { return mDescriptor; }
 

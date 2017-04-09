@@ -16,7 +16,9 @@ namespace Cpf
 			{
 			public:
 				Fence(Device*, int64_t initValue);
-				~Fence() override;
+				virtual ~Fence();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				uint64_t GetValue() const override;
 				void WaitFor(uint64_t value) override;

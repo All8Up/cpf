@@ -10,7 +10,8 @@ namespace Cpf
 	{
 		struct iDevice;
 		struct iAdapter;
-		class iSwapChain;
+		struct iSwapChain;
+
 		struct SwapChainDesc;
 
 		struct iInstance : COM::iUnknown

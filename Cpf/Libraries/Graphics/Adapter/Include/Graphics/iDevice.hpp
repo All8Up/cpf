@@ -15,16 +15,15 @@ namespace Cpf
 		struct iResource;
 		struct iIndexBuffer;
 		struct iVertexBuffer;
-
-		class iFence;
-		class iImage;
-		class iImageView;
-		class iSwapChain;
-		class iShader;
-		class iSampler;
+		struct iFence;
+		struct iImage;
+		struct iImageView;
+		struct iSwapChain;
+		struct iShader;
+		struct iSampler;
 		struct iCommandBuffer;
-		class iResourceBinding;
-		class iPipeline;
+		struct iResourceBinding;
+		struct iPipeline;
 		struct iRenderPass;
 		struct iFrameBuffer;
 

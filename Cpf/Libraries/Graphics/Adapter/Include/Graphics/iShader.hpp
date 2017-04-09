@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 
 namespace Cpf
@@ -12,10 +12,9 @@ namespace Cpf
 		class BinaryBlob;
 		enum class ShaderType : int32_t;
 
-		class iShader : public iRefCounted
+		struct iShader : COM::iUnknown
 		{
-		public:
-			virtual ~iShader() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iShader"_crc64);
 
 			virtual bool LoadFrom(iDevice* device, const BinaryBlob*) = 0;
 		};

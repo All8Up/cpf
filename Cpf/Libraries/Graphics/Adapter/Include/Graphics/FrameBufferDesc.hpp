@@ -6,7 +6,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iImageView;
+		struct iImageView;
 
 		struct FrameBufferDesc
 		{

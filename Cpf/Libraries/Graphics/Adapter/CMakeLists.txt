@@ -42,6 +42,9 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/RenderPassDesc.hpp
 	Include/Graphics/FrameBufferDesc.hpp
 	Include/Graphics/RenderPassBeginDesc.hpp
+	Include/Graphics/ImageDesc.hpp
+	Include/Graphics/ImageViewDesc.hpp
+	Include/Graphics/DepthStencilViewDesc.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	Include/Graphics/ResourceData.hpp

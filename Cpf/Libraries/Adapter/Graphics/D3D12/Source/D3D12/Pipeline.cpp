@@ -133,3 +133,24 @@ Pipeline::~Pipeline()
 {
 	CPF_LOG(D3D12, Info) << "Destroyed pipeline: " << intptr_t(this) << " - " << intptr_t(mpPipelineState.Ptr());
 }
+
+COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iPipeline::kIID.GetID():
+			*outIface = static_cast<iPipeline*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}

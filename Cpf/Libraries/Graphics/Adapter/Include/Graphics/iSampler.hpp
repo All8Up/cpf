@@ -1,16 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iSampler : public tRefCounted<iRefCounted>
+		struct iSampler : COM::iUnknown
 		{
-		public:
-			virtual ~iSampler() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iSampler"_crc64);
 		};
 	}
 }

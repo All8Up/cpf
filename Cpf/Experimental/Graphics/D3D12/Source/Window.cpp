@@ -4,6 +4,7 @@
 #include "Graphics/ImageFlags.hpp"
 #include "Logging/Logging.hpp"
 #include "Math/Constants.hpp"
+#include "Graphics/ImageDesc.hpp"
 
 using namespace Cpf;
 

@@ -2,6 +2,7 @@
 #include "ExperimentalD3D12.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/OutputDesc.hpp"
+#include "Graphics/ImageDesc.hpp"
 #include "Graphics/ModeRotation.hpp"
 #include "Graphics/EnumMode.hpp"
 #include "Graphics/ModeDesc.hpp"

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 #include "Graphics/Driver.hpp"
 #include "Graphics/Format.hpp"
 #include "iImage.hpp"
@@ -13,10 +13,9 @@ namespace Cpf
 		enum class SwapEffect : int32_t;
 		struct SwapChainDesc;
 
-		class iSwapChain : public iRefCounted
+		struct iSwapChain : COM::iUnknown
 		{
-		public:
-			virtual ~iSwapChain() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iSwapChain"_crc64);
 
 			virtual void Present() = 0;
 			virtual void Resize(int32_t x, int32_t y) = 0;

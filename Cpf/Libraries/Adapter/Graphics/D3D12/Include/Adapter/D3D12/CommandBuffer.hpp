@@ -20,14 +20,13 @@ namespace Cpf
 		struct iCommandPool;
 		struct iConstantBuffer;
 		struct iResource;
-
-		class iSampler;
-		class iPipeline;
-		class iVertexBufferView;
-		class iResourceBinding;
-		class iImageView;
-		class iFence;
-		class iSwapChain;
+		struct iFence;
+		struct iImageView;
+		struct iSampler;
+		struct iPipeline;
+		struct iVertexBufferView;
+		struct iResourceBinding;
+		struct iSwapChain;
 		struct ResourceData;
 	}
 

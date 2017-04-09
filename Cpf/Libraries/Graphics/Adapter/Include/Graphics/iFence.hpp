@@ -1,15 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iFence : public iRefCounted
+		struct iFence : COM::iUnknown
 		{
-		public:
-			virtual ~iFence() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iFence"_crc64);
 
 			virtual uint64_t GetValue() const = 0;
 			virtual void WaitFor(uint64_t value) = 0;

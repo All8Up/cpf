@@ -5,6 +5,7 @@
 #include "Graphics/iShader.hpp"
 #include "Graphics/iSampler.hpp"
 #include "Graphics/iPipeline.hpp"
+#include "Graphics/ImageDesc.hpp"
 #include "Graphics/PipelineStateDesc.hpp"
 #include "Graphics/ResourceBindingDesc.hpp"
 #include "Graphics/Viewport.hpp"

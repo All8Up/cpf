@@ -6,10 +6,9 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iImageView : public iRefCounted
+		struct iImageView : COM::iUnknown
 		{
-		public:
-			virtual ~iImageView() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iImageView"_crc64);
 		};
 	}
 }

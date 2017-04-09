@@ -21,6 +21,27 @@ Fence::~Fence()
 	CPF_LOG(D3D12, Info) << "Destroyed fence: " << intptr_t(this) << " - " << intptr_t(mpFence.Ptr());
 }
 
+COM::Result CPF_STDCALL Fence::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iFence::kIID.GetID():
+			*outIface = static_cast<iFence*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 uint64_t Fence::GetValue() const
 {
 	return mpFence->GetCompletedValue();

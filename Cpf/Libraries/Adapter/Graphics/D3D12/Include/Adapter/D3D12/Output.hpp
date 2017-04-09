@@ -19,7 +19,9 @@ namespace Cpf
 			{
 			public:
 				Output(IDXGIOutput4* output);
-				~Output() override;
+				virtual ~Output();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				bool GetDesc(Graphics::OutputDesc*) const override;
 				bool EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode, int32_t& count, Graphics::ModeDesc*) override;

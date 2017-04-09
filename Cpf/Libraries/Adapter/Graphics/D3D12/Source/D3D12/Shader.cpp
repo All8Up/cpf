@@ -22,6 +22,27 @@ Shader::~Shader()
 	CPF_LOG(D3D12, Info) << "Destroyed shader: " << intptr_t(this);
 }
 
+COM::Result CPF_STDCALL Shader::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iShader::kIID.GetID():
+			*outIface = static_cast<iShader*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 bool Shader::LoadFrom(Graphics::iDevice*, const Graphics::BinaryBlob* blob)
 {
 	if (blob && blob->GetSize() > 0)

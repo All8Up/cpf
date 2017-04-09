@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "Graphics/Ratio.hpp"
 
 namespace Cpf
 {

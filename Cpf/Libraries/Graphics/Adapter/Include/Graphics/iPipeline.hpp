@@ -1,17 +1,16 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iShader;
+		struct iShader;
 
-		class iPipeline : public iRefCounted
+		struct iPipeline : COM::iUnknown
 		{
-		public:
-			virtual ~iPipeline() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iPipeline"_crc64);
 		};
 	}
 }
