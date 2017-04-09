@@ -110,6 +110,7 @@ set (SOURCE_GRAPHICS_FILES
 	Source/SampleDesc.cpp
 	Source/ResourceBindingDesc.cpp
 	Source/ResourceDesc.cpp
+	Source/Graphics.cpp
 )
 set (SOURCE_IMGUI_FILES
 	Source/imgui/imconfig.h
@@ -123,8 +124,6 @@ set (SOURCE_IMGUI_FILES
 	Source/imgui/stb_textedit.h
 	Source/imgui/stb_truetype.h
 	Source/imgui/stb_rect_pack.h
-)
-set (SOURCE_GRAPHICS_DESCRIPTORS
 )
 
 # ###############################################

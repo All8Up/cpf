@@ -200,7 +200,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		window->GetClientArea().x, window->GetClientArea().y,
 		1,
 		1,
-		Format::eR32,
+		Format::eD32f,
 		{ 1, 0 },
 		ImageFlags::eAllowDepthStencil
 	};
