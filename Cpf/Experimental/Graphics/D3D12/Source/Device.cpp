@@ -8,6 +8,9 @@
 #include "Graphics/ModeDesc.hpp"
 #include "Graphics/SwapChainDesc.hpp"
 #include "Graphics/SwapEffect.hpp"
+#include "Graphics/Format.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;

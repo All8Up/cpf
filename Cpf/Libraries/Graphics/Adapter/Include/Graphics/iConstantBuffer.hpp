@@ -6,8 +6,6 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iCommandBuffer;
-
 		struct iConstantBuffer : iResource
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iConstantBuffer"_crc64);

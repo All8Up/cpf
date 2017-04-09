@@ -2,6 +2,8 @@
 #include "RenderSystem.hpp"
 #include "ExperimentalD3D12.hpp"
 #include "MultiCore/iStage.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 
 using namespace Cpf;
 using namespace Concurrency;

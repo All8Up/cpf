@@ -71,7 +71,7 @@ COM::Result CPF_STDCALL Instance::QueryInterface(COM::InterfaceID id, void** out
 	return COM::kInvalidParameter;
 }
 
-bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
+COM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 {
 	if (mpDXGIFactory2)
 	{
@@ -97,13 +97,13 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 							}
 						}
 						else
-							return false;
+							return COM::kUnknownInterface;
 					}
 				}
 				else
-					return false;
+					return COM::kUnknownInterface;
 			}
-			return true;
+			return COM::kOK;
 		}
 
 		for (int i = 0;; ++i)
@@ -115,10 +115,10 @@ bool Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 				break;
 			}
 		}
-		return true;
+		return COM::kOK;
 	}
 
-	return false;
+	return COM::kNotInitialized;
 }
 
 

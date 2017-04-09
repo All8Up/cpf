@@ -5,6 +5,7 @@
 #include "MultiCore/iPipeline.hpp"
 #include "Math/Vector3v.hpp"
 #include "Math/Matrix33v.hpp"
+#include "Graphics/iImageView.hpp"
 
 #include "EntityService/Interfaces/iEntity.hpp"
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"

@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics.hpp"
 #include "COM/iUnknown.hpp"
 #include "Vector.hpp"
 

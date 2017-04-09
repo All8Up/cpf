@@ -33,6 +33,8 @@
 #include "Graphics/iRenderPass.hpp"
 #include "Graphics/FrameBufferDesc.hpp"
 #include "Graphics/iFrameBuffer.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 
 using namespace Cpf;
 using namespace Math;

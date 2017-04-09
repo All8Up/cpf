@@ -2,16 +2,12 @@
 #pragma once
 #include "COM/iUnknown.hpp"
 
-
 namespace Cpf
 {
 	namespace Graphics
 	{
 		struct iDevice;
 
-		enum class ScanlineOrder : int32_t;
-		enum class ModeScaling : int32_t;
-		enum class ModeRotation : int32_t;
 		enum class EnumMode : int32_t;
 		enum class Format : int32_t;
 		struct OutputDesc;

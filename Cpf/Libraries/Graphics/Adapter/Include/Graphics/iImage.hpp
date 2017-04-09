@@ -6,7 +6,6 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		enum class ImageFlags : int32_t;
 		struct ImageDesc;
 
 		struct iImage : COM::iUnknown

@@ -6,6 +6,8 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		enum class ModeRotation : int32_t;
+
 		struct OutputDesc
 		{
 			char mName[32];

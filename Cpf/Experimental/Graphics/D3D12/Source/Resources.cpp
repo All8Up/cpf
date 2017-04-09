@@ -10,6 +10,8 @@
 #include "Graphics/PipelineStateDesc.hpp"
 #include "Graphics/ShaderType.hpp"
 #include "Graphics/ParamVisibility.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Matrix44v.hpp"
 

@@ -6,6 +6,9 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		enum class ScanlineOrder : int32_t;
+		enum class ModeScaling : int32_t;
+
 		struct ModeDesc
 		{
 			int32_t mWidth;

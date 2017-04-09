@@ -5,8 +5,6 @@
 
 namespace Cpf
 {
-	class iWindow;
-
 	namespace Graphics
 	{
 		struct iAdapter : COM::iUnknown
@@ -20,7 +18,7 @@ namespace Cpf
 			virtual bool CPF_STDCALL IsSoftware() const = 0;
 			virtual bool CPF_STDCALL IsRemote() const = 0;
 
-			virtual bool CPF_STDCALL EnumerateOutputs(int32_t& count, iOutput**) const = 0;
+			virtual COM::Result CPF_STDCALL EnumerateOutputs(int32_t& count, iOutput**) const = 0;
 		};
 	}
 }

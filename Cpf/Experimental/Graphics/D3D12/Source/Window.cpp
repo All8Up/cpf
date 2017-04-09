@@ -5,6 +5,7 @@
 #include "Logging/Logging.hpp"
 #include "Math/Constants.hpp"
 #include "Graphics/ImageDesc.hpp"
+#include "Graphics/Format.hpp"
 
 using namespace Cpf;
 

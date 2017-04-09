@@ -9,6 +9,8 @@
 #include "Graphics/DebugUI.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "MovementSystem.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 
 //
 namespace Cpf

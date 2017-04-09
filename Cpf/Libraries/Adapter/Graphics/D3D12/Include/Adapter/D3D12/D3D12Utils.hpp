@@ -19,6 +19,8 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		enum class ModeScaling : int32_t;
+		enum class ScanlineOrder : int32_t;
 		class ResourceBindingDesc;
 	}
 	namespace Adapter

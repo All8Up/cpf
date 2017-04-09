@@ -6,6 +6,8 @@
 #include "Graphics/SubResource.hpp"
 #include "Graphics/DepthStencilClearFlag.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 #include "Math/Vector4v.hpp"
 
 using namespace Cpf;

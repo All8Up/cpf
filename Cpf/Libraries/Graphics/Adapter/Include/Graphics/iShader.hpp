@@ -8,9 +8,7 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
-
 		class BinaryBlob;
-		enum class ShaderType : int32_t;
 
 		struct iShader : COM::iUnknown
 		{

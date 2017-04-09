@@ -6,8 +6,6 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iShader;
-
 		struct iPipeline : COM::iUnknown
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iPipeline"_crc64);

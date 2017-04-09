@@ -15,6 +15,7 @@
 #include "Graphics/ShaderType.hpp"
 #include "Graphics/WrapMode.hpp"
 #include "Graphics/ParamVisibility.hpp"
+#include "Graphics/iImage.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"

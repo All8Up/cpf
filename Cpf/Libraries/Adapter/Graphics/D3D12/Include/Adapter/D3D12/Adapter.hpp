@@ -30,7 +30,7 @@ namespace Cpf
 				bool CPF_STDCALL IsSoftware() const override;
 				bool CPF_STDCALL IsRemote() const override;
 
-				bool CPF_STDCALL EnumerateOutputs(int32_t& count, Graphics::iOutput**) const;
+				COM::Result CPF_STDCALL EnumerateOutputs(int32_t& count, Graphics::iOutput**) const override;
 
 				IDXGIAdapter2* GetD3DAdapter() const { return mpAdapter; }
 

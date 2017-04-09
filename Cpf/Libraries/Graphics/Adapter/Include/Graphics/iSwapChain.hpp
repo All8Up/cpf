@@ -1,15 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "COM/iUnknown.hpp"
-#include "Graphics/Driver.hpp"
-#include "Graphics/Format.hpp"
-#include "iImage.hpp"
-#include "iImageView.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
+		struct iImage;
+		struct iImageView;
+
 		enum class SwapEffect : int32_t;
 		struct SwapChainDesc;
 

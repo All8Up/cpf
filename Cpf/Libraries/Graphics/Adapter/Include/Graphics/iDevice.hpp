@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "COM/iUnknown.hpp"
-#include "Graphics/Driver.hpp"
 
 namespace Cpf
 {

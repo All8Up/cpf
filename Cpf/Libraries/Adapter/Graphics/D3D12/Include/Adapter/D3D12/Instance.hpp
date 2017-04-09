@@ -34,7 +34,7 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				bool CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
+				COM::Result CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
 				COM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;
 
 				//

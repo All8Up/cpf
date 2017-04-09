@@ -1,5 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iImageView.hpp"
 #include "Std/Std.hpp"
 
 using namespace Cpf;
