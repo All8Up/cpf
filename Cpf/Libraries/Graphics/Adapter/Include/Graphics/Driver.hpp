@@ -4,7 +4,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 #include "Graphics/Range.hpp"
-#include "Graphics/BinaryBlob.hpp"
+#include "Graphics/iBlob.hpp"
 #include "Graphics/BufferUsage.hpp"
 
 #include "Graphics/iInstance.hpp"

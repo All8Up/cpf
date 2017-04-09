@@ -20,7 +20,6 @@
 #include "IO/IO.hpp"
 
 #include "MovementSystem.hpp"
-#include "Adapter/D3D12/Instance.hpp"
 #include "RenderSystem.hpp"
 
 #include "EntityService.hpp"
@@ -45,8 +44,6 @@ using namespace Concurrency;
 
 //////////////////////////////////////////////////////////////////////////
 #define GFX_INITIALIZER CPF_CONCAT(GFX_ADAPTER, Initializer)
-#define INCLUDE_GFX Adapter/## CPF_CONCAT(GFX_ADAPTER, .hpp)
-#include CPF_STRINGIZE(INCLUDE_GFX)
 #define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
 
 
@@ -67,7 +64,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
-	ScopedInitializer<Adapter::GFX_INITIALIZER, int, Plugin::iRegistry*> gfxInit(GetRegistry());
+	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");

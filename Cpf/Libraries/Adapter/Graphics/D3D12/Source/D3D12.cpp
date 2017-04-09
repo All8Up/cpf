@@ -11,7 +11,7 @@ using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
 
-CPF_EXPORT_ADAPTER_D3D12 int D3D12Initializer::Install(Plugin::iRegistry* regy)
+int D3D12Initializer::Install(Plugin::iRegistry* regy)
 {
 	if (D3D12::gContext.AddRef() == 1)
 	{
@@ -24,7 +24,7 @@ CPF_EXPORT_ADAPTER_D3D12 int D3D12Initializer::Install(Plugin::iRegistry* regy)
 	return D3D12::gContext.GetRefCount();
 }
 
-CPF_EXPORT_ADAPTER_D3D12 int D3D12Initializer::Remove()
+int D3D12Initializer::Remove()
 {
 	if (D3D12::gContext.Release() == 0)
 	{
@@ -34,4 +34,33 @@ CPF_EXPORT_ADAPTER_D3D12 int D3D12Initializer::Remove()
 		D3D12::gContext.SetRegistry(nullptr);
 	}
 	return D3D12::gContext.GetRefCount();
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+extern "C"
+COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		return D3D12Initializer::Install(registry) > 0 ? COM::kOK : COM::kInitializationFailure;
+	}
+	return COM::kInvalidParameter;
+}
+
+extern "C"
+COM::Result CPF_EXPORT CanUnload()
+{
+	return (D3D12::gContext.GetRefCount() == 0) ? COM::kOK : COM::kInUse;
+}
+
+extern "C"
+COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		D3D12Initializer::Remove();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }

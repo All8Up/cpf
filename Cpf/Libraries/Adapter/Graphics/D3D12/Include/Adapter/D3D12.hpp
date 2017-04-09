@@ -29,8 +29,8 @@ namespace Cpf
 	{
 		struct D3D12Initializer
 		{
-			CPF_EXPORT_ADAPTER_D3D12 static int Install(Plugin::iRegistry* regy);
-			CPF_EXPORT_ADAPTER_D3D12 static int Remove();
+			static int Install(Plugin::iRegistry* regy);
+			static int Remove();
 
 		private:
 			D3D12Initializer() = delete;

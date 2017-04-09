@@ -27,14 +27,14 @@ bool ExperimentalD3D12::_CreateResources()
 	{
 		IO::Stream* vertexShaderHlsl = mpLocator->Open(RESOURCE_ID("shaders/", "basic_vs.hlsl"));
 		IO::Stream* pixelShaderHlsl = mpLocator->Open(RESOURCE_ID("shaders/", "basic_ps.hlsl"));
-		IntrusivePtr<BinaryBlob> vertexShaderByteCode;
+		IntrusivePtr<iBlob> vertexShaderByteCode;
 		{
 			auto vertexShaderSrc = ReadText(vertexShaderHlsl);
 			mpDevice->CompileToByteCode("main", ShaderType::eVertex, vertexShaderSrc.size(), vertexShaderSrc.data(), vertexShaderByteCode.AsTypePP());
 		}
 		mpDevice->CreateShader(vertexShaderByteCode, mpVertexShader.AsTypePP());
 
-		IntrusivePtr<BinaryBlob> pixelShaderByteCode;
+		IntrusivePtr<iBlob> pixelShaderByteCode;
 		{
 			auto pixelShaderSrc = ReadText(pixelShaderHlsl);
 			mpDevice->CompileToByteCode("main", ShaderType::ePixel, pixelShaderSrc.size(), pixelShaderSrc.data(), pixelShaderByteCode.AsTypePP());

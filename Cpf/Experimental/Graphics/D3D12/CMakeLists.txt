@@ -36,7 +36,6 @@ if (WIN32)
 
 		s_Resources
 		s_GraphicsDriver
-		s_AdapterD3D12
 
 #		s_Concurrency
 #		s_EntityService
@@ -86,4 +85,9 @@ add_custom_command (
 	TARGET ExperimentalD3D12 POST_BUILD
 	DEPENDS AllPlugins
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
+)
+add_custom_command (
+	TARGET ExperimentalD3D12 POST_BUILD
+	DEPENDS AllPlugins
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${targetPath}/plugins/AdapterD3D12.cfp
 )

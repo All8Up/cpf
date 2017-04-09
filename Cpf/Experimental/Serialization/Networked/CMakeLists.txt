@@ -25,7 +25,7 @@ target_link_libraries (Networked
 	s_MultiCore
 	s_SDL2
 	s_Resources
-	s_AdapterD3D12
+	s_GraphicsDriver
 	cereal
 	asio
 )
@@ -50,3 +50,15 @@ foreach (file ${DataFiles})
 	)
 endforeach ()
 source_group (Data FILES ${DataFiles})
+
+if(MSVC)
+	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Experimental/Serialization/Networked)
+else()
+	set (targetPath test/)
+endif()
+file (MAKE_DIRECTORY ${targetPath}/plugins)
+add_custom_command (
+	TARGET Networked POST_BUILD
+	DEPENDS AllPlugins
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${targetPath}/plugins/AdapterD3D12.cfp
+)

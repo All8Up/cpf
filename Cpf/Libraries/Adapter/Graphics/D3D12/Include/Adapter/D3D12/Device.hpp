@@ -4,7 +4,7 @@
 #include "Adapter/D3D12.hpp"
 #include "Adapter/D3D12/DescriptorManager.hpp"
 #include "Graphics/Driver.hpp"
-#include "Graphics/BinaryBlob.hpp"
+#include "Graphics/iBlob.hpp"
 #include <d3d12.h>
 #include "String.hpp"
 #include "Plugin/iClassInstance.hpp"
@@ -38,7 +38,7 @@ namespace Cpf
 
 			static constexpr COM::ClassID kDeviceCID = COM::ClassID("Adapter::D3D12::Device"_crc64);
 
-			class CPF_EXPORT_ADAPTER_D3D12 Device : public tRefCounted<Graphics::iDevice>
+			class Device : public tRefCounted<Graphics::iDevice>
 			{
 			public:
 				// Internal.
@@ -55,12 +55,12 @@ namespace Cpf
 				void CPF_STDCALL EndFrame(Graphics::iCommandBuffer*) override;
 				void CPF_STDCALL Finalize() override;
 
-				COM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, iWindow*, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
+				COM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
 				COM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
 				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::iCommandBuffer**) override;
 				COM::Result CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
 				COM::Result CPF_STDCALL CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
-				COM::Result CPF_STDCALL CreateShader(Graphics::BinaryBlob* blob, Graphics::iShader**) override;
+				COM::Result CPF_STDCALL CreateShader(Graphics::iBlob* blob, Graphics::iShader**) override;
 				COM::Result CPF_STDCALL CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
 				COM::Result CPF_STDCALL CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;
 				COM::Result CPF_STDCALL CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource) override;
@@ -72,7 +72,9 @@ namespace Cpf
 				COM::Result CPF_STDCALL CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer) override;
 				COM::Result CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer**) override;
 
-				COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::BinaryBlob**) override;
+				COM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, Graphics::iBlob**) override;
+
+				COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::iBlob**) override;
 
 				COM::Result CPF_STDCALL CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView**) override;
 
@@ -82,7 +84,7 @@ namespace Cpf
 				//////////////////////////////////////////////////////////////////////////
 				// Internal
 				void CPF_STDCALL QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
-				void CPF_STDCALL QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::BinaryBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
+				void CPF_STDCALL QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::iBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
 
 				ID3D12Device* CPF_STDCALL GetD3DDevice() const { return mpDevice; }
 				ID3D12CommandQueue* CPF_STDCALL GetD3DQueue() const { return mpQueue; }
@@ -133,7 +135,7 @@ namespace Cpf
 						{
 							ID3D12Resource* mpSource;
 							ID3D12Resource* mpDestination;
-							Graphics::BinaryBlob* mpBlob;
+							Graphics::iBlob* mpBlob;
 							D3D12_SUBRESOURCE_DATA mData;
 							D3D12_RESOURCE_STATES mDstStartState;
 							D3D12_RESOURCE_STATES mDstEndState;

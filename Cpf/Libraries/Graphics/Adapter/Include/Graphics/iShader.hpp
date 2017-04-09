@@ -8,13 +8,13 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
-		class BinaryBlob;
+		struct iBlob;
 
 		struct iShader : COM::iUnknown
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iShader"_crc64);
 
-			virtual bool LoadFrom(iDevice* device, const BinaryBlob*) = 0;
+			virtual bool LoadFrom(iDevice* device, iBlob*) = 0;
 		};
 	}
 }

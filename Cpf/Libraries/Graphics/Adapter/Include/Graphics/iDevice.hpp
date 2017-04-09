@@ -4,8 +4,6 @@
 
 namespace Cpf
 {
-	class iWindow;
-
 	namespace Graphics
 	{
 		struct iInstance;
@@ -25,8 +23,9 @@ namespace Cpf
 		struct iPipeline;
 		struct iRenderPass;
 		struct iFrameBuffer;
+		struct iBlob;
 
-		class BinaryBlob;
+		struct WindowData;
 
 		struct SamplerDesc;
 		class ResourceDesc;
@@ -53,12 +52,12 @@ namespace Cpf
 			virtual void CPF_STDCALL EndFrame(iCommandBuffer*) = 0;
 			virtual void CPF_STDCALL Finalize() = 0;
 
-			virtual COM::Result CPF_STDCALL CreateSwapChain(iInstance*, iWindow*, const SwapChainDesc*, iSwapChain**) = 0;
+			virtual COM::Result CPF_STDCALL CreateSwapChain(iInstance*, const WindowData*, int32_t w, int32_t h, const SwapChainDesc*, iSwapChain**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandPool(iCommandPool**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandBuffer(iCommandPool*, iCommandBuffer**) = 0;
 			virtual COM::Result CPF_STDCALL CreateFence(int64_t initValue, iFence**) = 0;
 			virtual COM::Result CPF_STDCALL CreateImage2D(const ImageDesc* desc, const void* initData, iImage**) = 0;
-			virtual COM::Result CPF_STDCALL CreateShader(BinaryBlob* blob, iShader**) = 0;
+			virtual COM::Result CPF_STDCALL CreateShader(iBlob* blob, iShader**) = 0;
 			virtual COM::Result CPF_STDCALL CreateResourceBinding(const ResourceBindingDesc*, iResourceBinding**) = 0;
 			virtual COM::Result CPF_STDCALL CreatePipeline(const PipelineStateDesc* desc, iResourceBinding*, iPipeline**) = 0;
 			virtual COM::Result CPF_STDCALL CreateResource(const ResourceDesc* desc, iResource**) = 0;
@@ -70,8 +69,10 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL CreateVertexBuffer(BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, iVertexBuffer** indexBuffer) = 0;
 			virtual COM::Result CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, iConstantBuffer** CPF_GFX_DEBUG_PARAM_DECL) = 0;
 
+			virtual COM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, iBlob**) = 0;
+
 			// TODO: Probably temp.
-			virtual COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, BinaryBlob**) = 0;
+			virtual COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, iBlob**) = 0;
 
 			virtual COM::Result CPF_STDCALL CreateDepthStencilView(iImage*, const DepthStencilViewDesc*, iImageView**) = 0;
 

@@ -30,6 +30,7 @@ set (INCLUDE_ADAPTER_D3D12_FILES
 	Include/Adapter/D3D12/RenderPass.hpp
 	Include/Adapter/D3D12/FrameBuffer.hpp
 	Include/Adapter/D3D12/Plugin.hpp
+	Include/Adapter/D3D12/Blob.hpp
 )
 set (SOURCE_ADAPTER_D3D12_FILES
 	Source/D3D12/Instance.cpp
@@ -54,11 +55,12 @@ set (SOURCE_ADAPTER_D3D12_FILES
 	Source/D3D12/RenderPass.cpp
 	Source/D3D12/FrameBuffer.cpp
 	Source/D3D12/Plugin.cpp
+	Source/D3D12/Blob.cpp
 )
 
 
 # ###############################################
-add_library (s_AdapterD3D12 STATIC
+add_library (AdapterD3D12 SHARED
 	${INCLUDE_ADAPTER_FILES}
 	${SOURCE_ADAPTER_FILES}
 	${INCLUDE_ADAPTER_D3D12_FILES}
@@ -66,22 +68,18 @@ add_library (s_AdapterD3D12 STATIC
 )
 
 # ###############################################
-target_compile_definitions (s_AdapterD3D12
-	PUBLIC CPF_STATIC_ADAPTER_D3D12
-	PRIVATE CPF_BUILD_ADAPTER_D3D12
-)
-target_include_directories (s_AdapterD3D12
+target_include_directories (AdapterD3D12
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
 )
-target_link_libraries (s_AdapterD3D12
+target_link_libraries (AdapterD3D12
 	PUBLIC
-		Configuration RefCount Math s_IO s_GraphicsDriver DXGI.lib d3d12.lib D3DCompiler.lib Logging
+		Configuration RefCount Math s_IO Logging GraphicsDriver_Interface DXGI.lib d3d12.lib D3DCompiler.lib
 )
 
 # ###############################################
-set_property (TARGET s_AdapterD3D12
+set_property (TARGET AdapterD3D12
 	PROPERTY FOLDER Libraries/Static/Adapter/Graphics
 )
 
@@ -93,7 +91,7 @@ source_group (Sources\\D3D12 FILES ${SOURCE_ADAPTER_D3D12_FILES})
 
 # ###############################################
 #[[
-install (TARGETS s_AdapterD3D12
+install (TARGETS AdapterD3D12
 	EXPORT AdapterD3D12Config
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
@@ -103,10 +101,9 @@ install (TARGETS s_AdapterD3D12
 
 # ###############################################
 install (EXPORT AdapterD3D12Config DESTINATION CMake)
-#]]
 
 # ###############################################
-MakeUnitTest( LIBRARY s_AdapterD3D12 GROUP Adapter
+MakeUnitTest( LIBRARY AdapterD3D12 GROUP Adapter
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		../../../Core/Test/UnitTestMain.cpp
@@ -115,4 +112,5 @@ MakeUnitTest( LIBRARY s_AdapterD3D12 GROUP Adapter
 )
 
 # WIN32
+#]]
 endif ()

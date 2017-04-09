@@ -15,7 +15,7 @@
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
-#include "Graphics/BinaryBlob.hpp"
+#include "Adapter/D3D12/Blob.hpp"
 
 #include "Adapter/D3D12/RenderPass.hpp"
 #include "Adapter/D3D12/FrameBuffer.hpp"
@@ -190,9 +190,9 @@ void CPF_STDCALL Device::Finalize()
 	mReleaseQueue.clear();
 }
 
-COM::Result CPF_STDCALL Device::CreateSwapChain(Graphics::iInstance* instance, iWindow* window, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain)
+COM::Result CPF_STDCALL Device::CreateSwapChain(Graphics::iInstance* instance, const Graphics::WindowData* winData, int32_t w, int32_t h, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain)
 {
-	Graphics::iSwapChain* result = new SwapChain(static_cast<Instance*>(instance), this, window, desc);
+	Graphics::iSwapChain* result = new SwapChain(static_cast<Instance*>(instance), this, winData, w, h, desc);
 	if (result)
 	{
 		*swapChain = result;
@@ -255,7 +255,7 @@ COM::Result CPF_STDCALL Device::CreateImage2D(const Graphics::ImageDesc* desc, c
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateShader(Graphics::BinaryBlob* blob, Graphics::iShader** shader)
+COM::Result CPF_STDCALL Device::CreateShader(Graphics::iBlob* blob, Graphics::iShader** shader)
 {
 	IntrusivePtr<Shader> result(new Shader());
 	if (result)
@@ -395,7 +395,19 @@ COM::Result CPF_STDCALL Device::CreateConstantBuffer(size_t bufferSize, const vo
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::BinaryBlob** outBlob)
+COM::Result CPF_STDCALL Device::CreateBlob(int64_t size, const void* data, Graphics::iBlob** blob)
+{
+	IntrusivePtr<Graphics::iBlob> result(new Blob(size, data));
+	if (result)
+	{
+		*blob = result;
+		result->AddRef();
+		return COM::kOK;
+	}
+	return COM::kError;
+}
+
+COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::iBlob** outBlob)
 {
 	if (size > 0 && source)
 	{
@@ -430,7 +442,7 @@ COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphi
 			errorBlob.AsTypePP()
 		)))
 		{
-			Graphics::BinaryBlob::Create(blob->GetBufferSize(), blob->GetBufferPointer(), outBlob);
+			CreateBlob(blob->GetBufferSize(), blob->GetBufferPointer(), outBlob);
 			return COM::kOK;
 		}
 		if (errorBlob)
@@ -502,7 +514,7 @@ void CPF_STDCALL Device::QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D
 	mUploadQueue.push_back(entry);
 }
 
-void CPF_STDCALL Device::QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::BinaryBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState)
+void CPF_STDCALL Device::QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::iBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState)
 {
 	WorkEntry entry;
 	entry.mType = WorkType::eUpdateSubResource;

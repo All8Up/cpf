@@ -4,7 +4,6 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "MultiCore/iStage.hpp"
-#include "Adapter/D3D12.hpp"
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
 #include "Resources/ResourceConfig.hpp"
@@ -35,8 +34,7 @@ int Networked::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
-	ScopedInitializer<Adapter::D3D12Initializer, int, Plugin::iRegistry*> d3d12Init(GetRegistry());
-
+	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())

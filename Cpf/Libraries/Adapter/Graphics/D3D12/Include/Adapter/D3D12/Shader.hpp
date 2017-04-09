@@ -23,7 +23,7 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				bool LoadFrom(Graphics::iDevice* device, const Graphics::BinaryBlob*) override;
+				bool LoadFrom(Graphics::iDevice* device, Graphics::iBlob*) override;
 
 				D3D12_SHADER_BYTECODE GetByteCode() const;
 

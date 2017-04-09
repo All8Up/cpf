@@ -27,4 +27,6 @@ endif ()
 add_custom_target (AllPlugins DEPENDS
 	MultiCore
 	EntityService
+	AdapterD3D12
 )
+set_property (TARGET AllPlugins PROPERTY FOLDER Plugins)

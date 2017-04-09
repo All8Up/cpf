@@ -23,6 +23,7 @@ set (INCLUDE_GRAPHICS_FILES_INTERFACES
 	Include/Graphics/iVertexBuffer.hpp
 	Include/Graphics/iConstantBuffer.hpp
 	Include/Graphics/iFrameBuffer.hpp
+	Include/Graphics/iBlob.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/BlendStateDesc.hpp
@@ -48,11 +49,11 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	Include/Graphics/ResourceData.hpp
-	Include/Graphics/BinaryBlob.hpp
 	Include/Graphics/Ratio.hpp
 	Include/Graphics/Range.hpp
 	Include/Graphics/Viewport.hpp
 	Include/Graphics/ClearValue.hpp
+	Include/Graphics/WindowData.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_FLAGS
 	Include/Graphics/BlendFunc.hpp
@@ -97,7 +98,6 @@ set (INCLUDE_GRAPHICS_FILES_FLAGS
 )
 
 set (SOURCE_GRAPHICS_FILES
-	Source/BinaryBlob.cpp
 	Source/Driver.cpp
 	Source/Format.cpp
 	Source/Ratio.cpp
@@ -168,6 +168,15 @@ source_group (Headers\\Graphics\\Structures FILES ${INCLUDE_GRAPHICS_FILES_STRUC
 source_group (Headers\\Graphics\\Flags FILES ${INCLUDE_GRAPHICS_FILES_FLAGS})
 source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
 source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})
+
+# ###############################################
+add_library (GraphicsDriver_Interface INTERFACE)
+target_include_directories (GraphicsDriver_Interface
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<INSTALL_INTERFACE:Include>
+)
+target_link_libraries (GraphicsDriver_Interface INTERFACE Plugin)
 
 # ###############################################
 #[[

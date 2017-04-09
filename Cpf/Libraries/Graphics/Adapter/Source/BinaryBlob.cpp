@@ -2,7 +2,20 @@
 #include "Graphics/BinaryBlob.hpp"
 
 using namespace Cpf;
-using namespace Graphics;
+
+class BinaryBlob : public Cpf::Graphics::iBlob
+{
+public:
+	COM::Result Initialize(const void* data, int64_t size) override;
+	void* CPF_STDCALL GetData() override;
+	int64_t CPF_STDCALL GetSize() override;
+
+private:
+	BinaryBlob(size_t size, const void* data);
+	~BinaryBlob();
+
+	Cpf::Vector<uint8_t> mData;
+};
 
 
 BinaryBlob::BinaryBlob(size_t size, const void* data)
@@ -13,24 +26,26 @@ BinaryBlob::BinaryBlob(size_t size, const void* data)
 BinaryBlob::~BinaryBlob()
 {}
 
-bool BinaryBlob::Create(size_t size, const void* data, BinaryBlob** blob)
+COM::Result BinaryBlob::Initialize(const void* data, int64_t size)
 {
-	BinaryBlob* result = new BinaryBlob(size, data);
-	if (result)
+	if (data)
 	{
-		*blob = result;
-		return true;
+		Cpf::Vector<uint8_t> empty;
+		mData.swap(empty);
+		mData.resize(size);
+		for (int i = 0; i < size; ++i)
+			mData[i] = reinterpret_cast<const uint8_t*>(data)[i];
+		return COM::kOK;
 	}
-	*blob = nullptr;
-	return false;
+	return COM::kInvalidParameter;
 }
 
-const void* BinaryBlob::GetData() const
+void* BinaryBlob::GetData()
 {
-	return mData.data();
+	return reinterpret_cast<void*>(mData.data());
 }
 
-size_t BinaryBlob::GetSize() const
+int64_t BinaryBlob::GetSize()
 {
-	return mData.size();
+	return int64_t(mData.size());
 }

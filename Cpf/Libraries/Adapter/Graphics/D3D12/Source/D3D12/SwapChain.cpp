@@ -4,8 +4,7 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Image.hpp"
-#include "Application/Application.hpp"
-#include "Application/Window.hpp"
+#include "Graphics/WindowData.hpp"
 #include "Logging/Logging.hpp"
 #include "Move.hpp"
 
@@ -20,24 +19,25 @@ using namespace D3D12;
 SwapChain::SwapChain(
 	Instance* instance,
 	Graphics::iDevice* device,
-	iWindow* window,
+	const Graphics::WindowData* windowData,
+	int32_t w,
+	int32_t h,
 	const Graphics::SwapChainDesc* desc
 )
 	: mpDevice(static_cast<Device*>(device))
 	, mDesc(*desc)
 {
-	if (window && instance && instance->GetFactory() && device && mpDevice->GetD3DDevice() && mpDevice->GetD3DQueue())
+	if (windowData && instance && instance->GetFactory() && device && mpDevice->GetD3DDevice() && mpDevice->GetD3DQueue())
 	{
 		HRESULT hr;
 		IDXGIFactory2* dxgiFactory = instance->GetFactory();
 		ID3D12Device* d3d12Device = mpDevice->GetD3DDevice();
 		ID3D12CommandQueue* d3d12CommandQueue = mpDevice->GetD3DQueue();
-		OSWindowData osWindowData = window->GetOSWindowData();
 
 		DXGI_SWAP_CHAIN_DESC1 sd;
 		ZeroMemory(&sd, sizeof(sd));
-		sd.Width = window->GetClientArea().x;
-		sd.Height = window->GetClientArea().y;
+		sd.Width = w;
+		sd.Height = h;
 		sd.Format = Convert(mDesc.mFormat);
 		sd.SampleDesc.Count = mDesc.mMultiSample.mCount;
 		sd.SampleDesc.Quality = mDesc.mMultiSample.mQuality;
@@ -47,7 +47,7 @@ SwapChain::SwapChain(
 		sd.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 		IDXGISwapChain1* tempSwapChain;
-		hr = dxgiFactory->CreateSwapChainForHwnd(d3d12CommandQueue, osWindowData.mHwnd, &sd, nullptr, nullptr, &tempSwapChain);
+		hr = dxgiFactory->CreateSwapChainForHwnd(d3d12CommandQueue, windowData->mHWnd, &sd, nullptr, nullptr, &tempSwapChain);
 		if (SUCCEEDED(hr))
 		{
 			if (SUCCEEDED(tempSwapChain->QueryInterface(__uuidof(IDXGISwapChain), mpSwapChain.AsVoidPP())))
@@ -55,9 +55,9 @@ SwapChain::SwapChain(
 				tempSwapChain->Release();
 
 				if (mDesc.mAllowFullscreen)
-					dxgiFactory->MakeWindowAssociation(osWindowData.mHwnd, 0);
+					dxgiFactory->MakeWindowAssociation(windowData->mHWnd, 0);
 				else
-					dxgiFactory->MakeWindowAssociation(osWindowData.mHwnd, DXGI_MWA_NO_ALT_ENTER);
+					dxgiFactory->MakeWindowAssociation(windowData->mHWnd, DXGI_MWA_NO_ALT_ENTER);
 			}
 		}
 		

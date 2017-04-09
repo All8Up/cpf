@@ -13,11 +13,10 @@
 
 namespace Cpf
 {
-	class iWindow;
-
 	namespace Graphics
 	{
 		struct iDevice;
+		struct WindowData;
 	}
 
 	namespace Adapter
@@ -29,7 +28,7 @@ namespace Cpf
 			class SwapChain : public tRefCounted<Graphics::iSwapChain>
 			{
 			public:
-				SwapChain(Instance*, Graphics::iDevice*, iWindow*, const Graphics::SwapChainDesc* desc);
+				SwapChain(Instance*, Graphics::iDevice*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc* desc);
 				virtual ~SwapChain();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;

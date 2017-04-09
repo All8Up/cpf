@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Shader.hpp"
-#include "Graphics/BinaryBlob.hpp"
+#include "Graphics/iBlob.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -43,7 +43,7 @@ COM::Result CPF_STDCALL Shader::QueryInterface(COM::InterfaceID id, void** outIf
 	return COM::kInvalidParameter;
 }
 
-bool Shader::LoadFrom(Graphics::iDevice*, const Graphics::BinaryBlob* blob)
+bool Shader::LoadFrom(Graphics::iDevice*, Graphics::iBlob* blob)
 {
 	if (blob && blob->GetSize() > 0)
 	{

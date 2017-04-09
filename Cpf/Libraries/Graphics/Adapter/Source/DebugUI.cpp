@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Graphics/DebugUI.hpp"
-#include "Graphics/BinaryBlob.hpp"
+#include "Graphics/iBlob.hpp"
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iShader.hpp"
 #include "Graphics/iSampler.hpp"
@@ -58,14 +58,14 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 
 		if (vertexShaderHlsl && pixelShaderHlsl)
 		{
-			IntrusivePtr<BinaryBlob> vertexShaderByteCode;
+			IntrusivePtr<iBlob> vertexShaderByteCode;
 			{
 				auto vertexShaderSrc = ReadText(vertexShaderHlsl);
 				mpDevice->CompileToByteCode("main", ShaderType::eVertex, vertexShaderSrc.size(), vertexShaderSrc.data(), vertexShaderByteCode.AsTypePP());
 			}
 			mpDevice->CreateShader(vertexShaderByteCode, mpVertexShader.AsTypePP());
 
-			IntrusivePtr<BinaryBlob> pixelShaderByteCode;
+			IntrusivePtr<iBlob> pixelShaderByteCode;
 			{
 				auto pixelShaderSrc = ReadText(pixelShaderHlsl);
 				mpDevice->CompileToByteCode("main", ShaderType::ePixel, pixelShaderSrc.size(), pixelShaderSrc.data(), pixelShaderByteCode.AsTypePP());

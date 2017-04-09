@@ -15,6 +15,7 @@
 #include "Plugin/iClassInstance.hpp"
 #include "Graphics/SubResource.hpp"
 #include "Graphics/ImageFlags.hpp"
+#include "Graphics/WindowData.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -186,7 +187,9 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		kBufferCount,
 		true
 	};
-	mpDevice->CreateSwapChain(mpInstance, window, &desc, mpSwapChain.AsTypePP());
+	WindowData winData;
+	winData.mHWnd = window->GetOSWindowData().mHwnd;
+	mpDevice->CreateSwapChain(mpInstance, &winData, window->GetClientArea().x, window->GetClientArea().y, &desc, mpSwapChain.AsTypePP());
 
 	// Create a set of depth buffers to go with the swap chain.
 	// TODO: There should really only be one shared depth buffer.
