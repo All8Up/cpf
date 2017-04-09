@@ -2,7 +2,6 @@
 #pragma once
 #include "COM/iUnknown.hpp"
 #include "Graphics/Driver.hpp"
-#include "String.hpp"
 
 namespace Cpf
 {
@@ -10,19 +9,20 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		class iIndexBuffer;
-		class iVertexBuffer;
-		class iConstantBuffer;
-		class iResource;
 		struct iInstance;
+		struct iCommandPool;
+		struct iConstantBuffer;
+		struct iResource;
+		struct iIndexBuffer;
+		struct iVertexBuffer;
+
 		class iFence;
 		class iImage;
 		class iImageView;
 		class iSwapChain;
 		class iShader;
 		class iSampler;
-		class iCommandPool;
-		class iCommandBuffer;
+		struct iCommandBuffer;
 		class iResourceBinding;
 		class iPipeline;
 		struct iRenderPass;
@@ -73,7 +73,7 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, iConstantBuffer** CPF_GFX_DEBUG_PARAM_DECL) = 0;
 
 			// TODO: Probably temp.
-			virtual COM::Result CPF_STDCALL CompileToByteCode(const String& entryPoint, ShaderType type, size_t size, char* source, BinaryBlob**) = 0;
+			virtual COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, BinaryBlob**) = 0;
 
 			virtual COM::Result CPF_STDCALL CreateDepthStencilView(iImage*, const DepthStencilViewDesc*, iImageView**) = 0;
 

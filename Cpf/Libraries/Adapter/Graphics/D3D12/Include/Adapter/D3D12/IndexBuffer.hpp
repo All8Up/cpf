@@ -18,7 +18,9 @@ namespace Cpf
 			{
 			public:
 				IndexBuffer(Device* device, Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData);
-				~IndexBuffer() override;
+				virtual ~IndexBuffer();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				bool Map(void**, Graphics::Range*) override;
 				void Unmap(Graphics::Range*) override;

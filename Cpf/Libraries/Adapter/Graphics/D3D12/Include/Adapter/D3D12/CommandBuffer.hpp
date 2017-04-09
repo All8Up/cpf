@@ -17,16 +17,17 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
+		struct iCommandPool;
+		struct iConstantBuffer;
+		struct iResource;
+
 		class iSampler;
-		class iConstantBuffer;
 		class iPipeline;
 		class iVertexBufferView;
 		class iResourceBinding;
-		class iResource;
 		class iImageView;
 		class iFence;
 		class iSwapChain;
-		class iCommandPool;
 		struct ResourceData;
 	}
 
@@ -34,11 +35,18 @@ namespace Cpf
 	{
 		namespace D3D12
 		{
+			static constexpr COM::ClassID kCommandBufferCID = COM::ClassID("Adapter::D3D12::CommandBuffer"_crc64);
+
 			class CommandBuffer : public tRefCounted<Graphics::iCommandBuffer>
 			{
 			public:
-				CommandBuffer(Graphics::iDevice*, Graphics::iCommandPool* CPF_GFX_DEBUG_PARAM_DECL);
-				~CommandBuffer() override;
+				CommandBuffer();
+				virtual ~CommandBuffer();
+
+				//
+				COM::Result CPF_STDCALL Initialize(Graphics::iDevice*, Graphics::iCommandPool*);
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				void Begin() override;
 				void End() override;

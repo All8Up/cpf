@@ -21,13 +21,22 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
-CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* pool)
-	: mpDevice(static_cast<Device*>(device))
+CommandBuffer::CommandBuffer()
+	: mpDevice(nullptr)
 	, mHeapsDirty(false)
 {
-	Device* d3dDevice = static_cast<Device*>(device);
+}
+
+CommandBuffer::~CommandBuffer()
+{
+	CPF_LOG(D3D12, Info) << "Destroyed command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
+}
+
+COM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Graphics::iCommandPool* pool)
+{
+	mpDevice = static_cast<Device*>(device);
 	CommandPool* d3dPool = static_cast<CommandPool*>(pool);
-	d3dDevice->GetD3DDevice()->CreateCommandList(
+	mpDevice->GetD3DDevice()->CreateCommandList(
 		0,
 		D3D12_COMMAND_LIST_TYPE_DIRECT,
 		d3dPool->GetCommandAllocator(),
@@ -36,11 +45,28 @@ CommandBuffer::CommandBuffer(Graphics::iDevice* device, Graphics::iCommandPool* 
 	mpCommandList->Close();
 
 	CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
+	return COM::kOK;
 }
 
-CommandBuffer::~CommandBuffer()
+COM::Result CPF_STDCALL CommandBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	CPF_LOG(D3D12, Info) << "Destroyed command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iCommandBuffer::kIID.GetID():
+			*outIface = static_cast<iCommandBuffer*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 void CommandBuffer::Begin()

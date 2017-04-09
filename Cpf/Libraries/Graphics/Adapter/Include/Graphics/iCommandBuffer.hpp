@@ -9,28 +9,28 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
+		struct iConstantBuffer;
+		struct iResource;
+		struct iIndexBuffer;
+		struct iVertexBuffer;
+
 		enum class PrimitiveTopology;
 		struct ResourceData;
 		class iSwapChain;
-		class iCommandPool;
+		struct iCommandPool;
 		class iImage;
 		class iSampler;
 		class iImageView;
-		class iResource;
 		class iResourceBinding;
-		class iIndexBuffer;
-		class iVertexBuffer;
 		class iPipeline;
-		class iConstantBuffer;
 		struct Viewport;
 		enum class SubResource : int32_t;
 		enum class ResourceState : int32_t;
 		enum class DepthStencilClearFlag : int32_t;
 
-		class iCommandBuffer : public iRefCounted
+		struct iCommandBuffer : COM::iUnknown
 		{
-		public:
-			virtual ~iCommandBuffer() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iCommandBuffer"_crc64);
 
 			virtual void Begin() = 0;
 			virtual void End() = 0;

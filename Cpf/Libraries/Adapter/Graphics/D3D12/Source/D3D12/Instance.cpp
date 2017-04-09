@@ -5,8 +5,9 @@
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/SwapChain.hpp"
 
-#include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/Adapter.hpp"
+#include "Adapter/D3D12/Device.hpp"
+#include "Adapter/D3D12/CommandBuffer.hpp"
 #include "Adapter/D3D12/RenderPass.hpp"
 #include "Adapter/D3D12/FrameBuffer.hpp"
 
@@ -33,8 +34,10 @@ Instance::Instance()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Register D3D12 class types.
-	gContext.GetRegistry()->Install(kDeviceCID, new Plugin::tSimpleClassInstance<Device>());
+	// TODO: Should likely be in the normal plugin install and not part of instance.
 	gContext.GetRegistry()->Install(kAdapterCID, new Plugin::tSimpleClassInstance<Adapter>());
+	gContext.GetRegistry()->Install(kDeviceCID, new Plugin::tSimpleClassInstance<Device>());
+	gContext.GetRegistry()->Install(kCommandBufferCID, new Plugin::tSimpleClassInstance<CommandBuffer>());
 	gContext.GetRegistry()->Install(kRenderPassCID, new Plugin::tSimpleClassInstance<RenderPass>());
 	gContext.GetRegistry()->Install(kFrameBufferCID, new Plugin::tSimpleClassInstance<FrameBuffer>());
 	//////////////////////////////////////////////////////////////////////////

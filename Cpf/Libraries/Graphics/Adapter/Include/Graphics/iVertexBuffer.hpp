@@ -8,10 +8,9 @@ namespace Cpf
 	{
 		struct Range;
 
-		class iVertexBuffer : public iResource
+		struct iVertexBuffer : iResource
 		{
-		public:
-			virtual ~iVertexBuffer() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iVertexBuffer"_crc64);
 
 			virtual bool Map(void**, const Range* = nullptr) = 0;
 			virtual void Unmap(const Range* = nullptr) = 0;

@@ -1,15 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iResource : public tRefCounted<iRefCounted>
+		struct iResource : COM::iUnknown
 		{
-		public:
-			virtual ~iResource() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iResource"_crc64);
 		};
 	}
 }

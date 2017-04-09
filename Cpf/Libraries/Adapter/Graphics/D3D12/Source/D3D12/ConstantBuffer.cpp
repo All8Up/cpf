@@ -59,6 +59,27 @@ ConstantBuffer::~ConstantBuffer()
 	CPF_LOG(D3D12, Info) << "Destroyed constant buffer: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr()) << " - " << intptr_t(mpBuffer);
 }
 
+COM::Result CPF_STDCALL ConstantBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iConstantBuffer::kIID.GetID():
+			*outIface = static_cast<iConstantBuffer*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 void ConstantBuffer::Update(size_t offset, size_t size, const void* data)
 {
 	CPF_ASSERT(mpBuffer);

@@ -111,6 +111,25 @@ IndexBuffer::~IndexBuffer()
 {
 }
 
+COM::Result CPF_STDCALL IndexBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iIndexBuffer::kIID.GetID():
+			*outIface = static_cast<iIndexBuffer*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
 bool IndexBuffer::Map(void** mapping, Graphics::Range* range)
 {
 	D3D12_RANGE* prange = nullptr;

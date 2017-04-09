@@ -6,12 +6,11 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iCommandBuffer;
+		struct iCommandBuffer;
 
-		class iConstantBuffer : public iResource
+		struct iConstantBuffer : iResource
 		{
-		public:
-			virtual ~iConstantBuffer() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iConstantBuffer"_crc64);
 
 			virtual void Update(size_t offset, size_t size, const void* data) = 0;
 		};

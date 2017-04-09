@@ -14,12 +14,12 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		struct iInstance;
 		struct iAdapter;
+		struct iCommandPool;
 
 		class iFence;
-		class iCommandPool;
-		class iCommandBuffer;
-		struct iInstance;
+		struct iCommandBuffer;
 		class iSwapChain;
 		struct SwapChainDesc;
 		struct PipelineStateDesc;
@@ -72,7 +72,7 @@ namespace Cpf
 				COM::Result CPF_STDCALL CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer) override;
 				COM::Result CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer**) override;
 
-				COM::Result CPF_STDCALL CompileToByteCode(const String& entryPoint, Graphics::ShaderType type, size_t size, char* source, Graphics::BinaryBlob**) override;
+				COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::BinaryBlob**) override;
 
 				COM::Result CPF_STDCALL CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView**) override;
 

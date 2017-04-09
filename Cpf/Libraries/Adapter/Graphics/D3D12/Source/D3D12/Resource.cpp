@@ -56,6 +56,27 @@ Resource::~Resource()
 	CPF_LOG(D3D12, Info) << "Destroyed resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }
 
+COM::Result CPF_STDCALL Resource::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iResource::kIID.GetID():
+			*outIface = static_cast<iResource*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 D3D12_GPU_VIRTUAL_ADDRESS Resource::GetGPUAddress() const
 {
 	return mpResource->GetGPUVirtualAddress();

@@ -20,14 +20,15 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct iDevice;
-		class iCommandBuffer;
+		struct iCommandBuffer;
+		struct iConstantBuffer;
+		struct iIndexBuffer;
+		struct iVertexBuffer;
+
 		class iImage;
 		class iShader;
 		class iSampler;
 		class iPipeline;
-		class iIndexBuffer;
-		class iVertexBuffer;
-		class iConstantBuffer;
 		class iResourceBinding;
 
 		class DebugUI : public tRefCounted<iRefCounted>

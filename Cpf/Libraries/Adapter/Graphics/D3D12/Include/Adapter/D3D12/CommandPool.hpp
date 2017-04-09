@@ -17,8 +17,12 @@ namespace Cpf
 			class CommandPool : public tRefCounted<Graphics::iCommandPool>
 			{
 			public:
-				CommandPool(Device* device);
-				~CommandPool() override;
+				CommandPool();
+				virtual ~CommandPool();
+
+				COM::Result CPF_STDCALL Initialize(Device* device);
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
 
 				void Reset() override;
 

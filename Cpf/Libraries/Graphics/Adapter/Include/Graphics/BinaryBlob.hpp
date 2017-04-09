@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "Graphics.hpp"
+#include "COM/iUnknown.hpp"
 #include "Vector.hpp"
 
 namespace Cpf

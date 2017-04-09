@@ -1,25 +1,8 @@
 # ###############################################
 set (INCLUDE_GRAPHICS_FILES
-	Include/Graphics/BinaryBlob.hpp
-	Include/Graphics/BlendFunc.hpp
-	Include/Graphics/BlendOp.hpp
-	Include/Graphics/ComparisonFunc.hpp
-	Include/Graphics/ConservativeRasterization.hpp
-	Include/Graphics/CullMode.hpp
-	Include/Graphics/DepthWriteMask.hpp
-	Include/Graphics/Driver.hpp
-	Include/Graphics/FillMode.hpp
-	Include/Graphics/Format.hpp
-	Include/Graphics/IndexStripCut.hpp
-	Include/Graphics/LogicOp.hpp
-	Include/Graphics/TopologyType.hpp
-	Include/Graphics/Ratio.hpp
-	Include/Graphics/StencilOp.hpp
-	Include/Graphics/WindingOrder.hpp
-	Include/Graphics/BufferUsage.hpp
 	Include/Graphics/DebugUI.hpp
-	Include/Graphics/Range.hpp
-
+)
+set (INCLUDE_GRAPHICS_FILES_INTERFACES
 	Include/Graphics/iDevice.hpp
 	Include/Graphics/iAdapter.hpp
 	Include/Graphics/iInstance.hpp
@@ -40,7 +23,8 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/iVertexBuffer.hpp
 	Include/Graphics/iConstantBuffer.hpp
 	Include/Graphics/iFrameBuffer.hpp
-
+)
+set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/BlendStateDesc.hpp
 	Include/Graphics/DepthStencilDesc.hpp
 	Include/Graphics/InputLayoutDesc.hpp
@@ -49,20 +33,45 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/SampleDesc.hpp
 	Include/Graphics/ResourceBindingDesc.hpp
 	Include/Graphics/ResourceDesc.hpp
-
-	Include/Graphics/LoadOp.hpp
-	Include/Graphics/StoreOp.hpp
-	Include/Graphics/PipelineBindPoint.hpp
+	Include/Graphics/OutputDesc.hpp
+	Include/Graphics/ModeDesc.hpp
+	Include/Graphics/SamplerDesc.hpp
+	Include/Graphics/SwapChainDesc.hpp
 	Include/Graphics/AttachmentDesc.hpp
 	Include/Graphics/SubPassDesc.hpp
 	Include/Graphics/RenderPassDesc.hpp
 	Include/Graphics/FrameBufferDesc.hpp
 	Include/Graphics/RenderPassBeginDesc.hpp
+)
+set (INCLUDE_GRAPHICS_FILES_STRUCTURES
+	Include/Graphics/ResourceData.hpp
+	Include/Graphics/BinaryBlob.hpp
+	Include/Graphics/Ratio.hpp
+	Include/Graphics/Range.hpp
+	Include/Graphics/Viewport.hpp
 	Include/Graphics/ClearValue.hpp
-
+)
+set (INCLUDE_GRAPHICS_FILES_FLAGS
+	Include/Graphics/BlendFunc.hpp
+	Include/Graphics/BlendOp.hpp
+	Include/Graphics/ComparisonFunc.hpp
+	Include/Graphics/ConservativeRasterization.hpp
+	Include/Graphics/CullMode.hpp
+	Include/Graphics/DepthWriteMask.hpp
+	Include/Graphics/Driver.hpp
+	Include/Graphics/FillMode.hpp
+	Include/Graphics/Format.hpp
+	Include/Graphics/IndexStripCut.hpp
+	Include/Graphics/LogicOp.hpp
+	Include/Graphics/TopologyType.hpp
+	Include/Graphics/StencilOp.hpp
+	Include/Graphics/WindingOrder.hpp
+	Include/Graphics/BufferUsage.hpp
+	Include/Graphics/LoadOp.hpp
+	Include/Graphics/StoreOp.hpp
+	Include/Graphics/PipelineBindPoint.hpp
 	Include/Graphics/DepthStencilClearFlag.hpp
 	Include/Graphics/ResourceState.hpp
-	Include/Graphics/Viewport.hpp
 	Include/Graphics/SubResource.hpp
 	Include/Graphics/WriteMask.hpp
 	Include/Graphics/ImageFlags.hpp
@@ -71,23 +80,19 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/ModeScaling.hpp
 	Include/Graphics/ModeRotation.hpp
 	Include/Graphics/EnumMode.hpp
-	Include/Graphics/OutputDesc.hpp
-	Include/Graphics/ModeDesc.hpp
-	Include/Graphics/SamplerDesc.hpp
 	Include/Graphics/WrapMode.hpp
 	Include/Graphics/FilterMode.hpp
 	Include/Graphics/ShaderType.hpp
-	Include/Graphics/SwapChainDesc.hpp
 	Include/Graphics/SwapEffect.hpp
 	Include/Graphics/BindingType.hpp
 	Include/Graphics/ParamVisibility.hpp
 	Include/Graphics/ParamFlags.hpp
-	Include/Graphics/ResourceData.hpp
 	Include/Graphics/ResourceUsage.hpp
 	Include/Graphics/ResourceType.hpp
 	Include/Graphics/HeapType.hpp
 	Include/Graphics/PrimitiveTopology.hpp
 )
+
 set (SOURCE_GRAPHICS_FILES
 	Source/BinaryBlob.cpp
 	Source/Driver.cpp
@@ -123,6 +128,10 @@ set (SOURCE_GRAPHICS_DESCRIPTORS
 add_library (s_GraphicsDriver STATIC
 	Include/Graphics.hpp
 	${INCLUDE_GRAPHICS_FILES}
+	${INCLUDE_GRAPHICS_FILES_INTERFACES}
+	${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
+	${INCLUDE_GRAPHICS_FILES_STRUCTURES}
+	${INCLUDE_GRAPHICS_FILES_FLAGS}
 	${SOURCE_GRAPHICS_FILES}
 	${SOURCE_IMGUI_FILES}
 )
@@ -150,6 +159,10 @@ set_property (TARGET s_GraphicsDriver
 # ###############################################
 source_group (Headers FILES Include/Graphics.hpp)
 source_group (Headers\\Graphics FILES ${INCLUDE_GRAPHICS_FILES})
+source_group (Headers\\Graphics\\Interfaces FILES ${INCLUDE_GRAPHICS_FILES_INTERFACES})
+source_group (Headers\\Graphics\\Descriptors FILES ${INCLUDE_GRAPHICS_FILES_DESCRIPTORS})
+source_group (Headers\\Graphics\\Structures FILES ${INCLUDE_GRAPHICS_FILES_STRUCTURES})
+source_group (Headers\\Graphics\\Flags FILES ${INCLUDE_GRAPHICS_FILES_FLAGS})
 source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
 source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})
 

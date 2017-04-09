@@ -62,7 +62,6 @@ install (TARGETS s_SDL2
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT SDL2Config DESTINATION CMake)
-]]#
 
 # ###############################################
 MakeUnitTest (LIBRARY s_SDL2 GROUP Adapter
@@ -72,3 +71,4 @@ MakeUnitTest (LIBRARY s_SDL2 GROUP Adapter
 	LINK_LIBRARIES
 		Configuration
 )
+]]#

@@ -1,15 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		class iCommandPool : public iRefCounted
+		struct iCommandPool : COM::iUnknown
 		{
-		public:
-			virtual ~iCommandPool() = 0;
+			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iCommandPool"_crc64);
 
 			virtual void Reset() = 0;
 		};

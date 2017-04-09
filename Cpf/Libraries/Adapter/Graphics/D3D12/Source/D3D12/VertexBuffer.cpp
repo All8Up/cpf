@@ -113,6 +113,27 @@ VertexBuffer::~VertexBuffer()
 {
 }
 
+COM::Result CPF_STDCALL VertexBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iVertexBuffer::kIID.GetID():
+			*outIface = static_cast<iVertexBuffer*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 bool VertexBuffer::Map(void** mapping, const Graphics::Range* range)
 {
 	D3D12_RANGE* prange = nullptr;

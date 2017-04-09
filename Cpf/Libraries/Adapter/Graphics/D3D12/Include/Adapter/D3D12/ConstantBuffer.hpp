@@ -20,7 +20,9 @@ namespace Cpf
 			{
 			public:
 				ConstantBuffer(Device* device, size_t size, const void* initData);
-				~ConstantBuffer() override;
+				virtual ~ConstantBuffer();
+
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				void Update(size_t offset, size_t size, const void* data) override;
 

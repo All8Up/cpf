@@ -203,22 +203,32 @@ COM::Result CPF_STDCALL Device::CreateSwapChain(Graphics::iInstance* instance, i
 
 COM::Result CPF_STDCALL Device::CreateCommandPool(Graphics::iCommandPool** pool)
 {
-	CommandPool* result = new CommandPool(this);
+	CommandPool* result = new CommandPool();
 	if (pool)
 	{
-		*pool = result;
-		return COM::kOK;
+		if (COM::Succeeded(result->Initialize(this)))
+		{
+			*pool = result;
+			return COM::kOK;
+		}
+		*pool = nullptr;
+		return COM::kInitializationFailure;
 	}
 	return COM::kError;
 }
 
 COM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::iCommandBuffer** buffer)
 {
-	CommandBuffer* result = new CommandBuffer(this, pool);
+	CommandBuffer* result = new CommandBuffer();
 	if (result)
 	{
-		*buffer = result;
-		return COM::kOK;
+		if (Succeeded(result->Initialize(this, pool)))
+		{
+			*buffer = result;
+			return COM::kOK;
+		}
+		*buffer = nullptr;
+		return COM::kInitializationFailure;
 	}
 	return COM::kError;
 }
@@ -385,7 +395,7 @@ COM::Result CPF_STDCALL Device::CreateConstantBuffer(size_t bufferSize, const vo
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CompileToByteCode(const String& entryPoint, Graphics::ShaderType type, size_t size, char* source, Graphics::BinaryBlob** outBlob)
+COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::BinaryBlob** outBlob)
 {
 	if (size > 0 && source)
 	{
@@ -412,7 +422,7 @@ COM::Result CPF_STDCALL Device::CompileToByteCode(const String& entryPoint, Grap
 			nullptr,
 			nullptr,
 			nullptr,
-			entryPoint.c_str(),
+			entryPoint,
 			shaderTypes[size_t(type)],
 			compileFlags, // Flags1
 			0, // Flags2
