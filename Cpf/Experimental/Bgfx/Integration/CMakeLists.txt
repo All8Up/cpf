@@ -43,7 +43,11 @@ target_link_libraries (BgfxIntegration
 	Concurrency
 	EntityService_Interface
 )
-target_compile_definitions (BgfxIntegration PUBLIC)
+target_compile_definitions (BgfxIntegration
+	PUBLIC
+		-DCPF_COMMON_RESOURCES="${CPF_COMMON_RESOURCES}"
+		-DCPF_COMMON_PLUGINS="${CPF_COMMON_PLUGINS}"
+)
 
 source_group (Shaders FILES ${SHADER_FILES})
 set_property (TARGET BgfxIntegration PROPERTY FOLDER Experimental/Bgfx)
@@ -84,18 +88,3 @@ foreach (file ${DataFiles})
 	)
 endforeach ()
 source_group (Data FILES ${DataFiles})
-
-if(MSVC)
-	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Experimental/Bgfx/Integration)
-else()
-	set (targetPath test/)
-endif()
-file (MAKE_DIRECTORY ${targetPath}/plugins)
-add_custom_command (
-	TARGET BgfxIntegration POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:EntityService> ${targetPath}/plugins/EntityService.cfp
-)
-add_custom_command (
-	TARGET BgfxIntegration POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
-)

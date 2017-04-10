@@ -36,8 +36,8 @@ int Networked::Start(const CommandLine&)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
-	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
-	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
+	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())
 	{

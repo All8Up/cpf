@@ -134,6 +134,13 @@ target_link_libraries (EntityService
 set_property (TARGET EntityService PROPERTY FOLDER Plugins/Game)
 
 # ###############################################
+# Copy as a plugin.
+add_custom_command (
+	TARGET EntityService POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:EntityService> ${CPF_COMMON_PLUGINS}/EntityService.cfp
+)
+
+# ###############################################
 add_library (EntityService_Interface INTERFACE)
 target_link_libraries (EntityService_Interface INTERFACE MultiCore_Interface)
 target_include_directories (EntityService_Interface

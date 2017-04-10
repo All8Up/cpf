@@ -16,6 +16,12 @@ add_executable (Networked WIN32
 	${SOURCE_FILES}
 	${DataFiles}
 )
+target_compile_definitions (Networked
+	PUBLIC
+		-DCPF_COMMON_RESOURCES="${CPF_COMMON_RESOURCES}"
+		-DCPF_COMMON_PLUGINS="${CPF_COMMON_PLUGINS}"
+)
+
 target_include_directories (Networked
 	PUBLIC Include
 )
@@ -50,15 +56,3 @@ foreach (file ${DataFiles})
 	)
 endforeach ()
 source_group (Data FILES ${DataFiles})
-
-if(MSVC)
-	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Experimental/Serialization/Networked)
-else()
-	set (targetPath test/)
-endif()
-file (MAKE_DIRECTORY ${targetPath}/plugins)
-add_custom_command (
-	TARGET Networked POST_BUILD
-	DEPENDS AllPlugins AdapterD3D12
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${targetPath}/plugins/AdapterD3D12.cfp
-)

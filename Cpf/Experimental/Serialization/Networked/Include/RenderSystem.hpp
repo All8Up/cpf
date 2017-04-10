@@ -55,8 +55,9 @@ namespace Cpf
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 
-	private:
 		RenderSystem();
+
+	private:
 		virtual ~RenderSystem();
 
 		void _CreateStages();

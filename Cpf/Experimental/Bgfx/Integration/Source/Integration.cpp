@@ -245,7 +245,7 @@ int BgfxIntegration::Start(const CommandLine&)
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
-	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
+	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
 
 	if (_InitializeResources() &&
 		_CreateWindow() &&

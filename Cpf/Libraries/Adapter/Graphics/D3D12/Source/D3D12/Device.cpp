@@ -524,5 +524,6 @@ void CPF_STDCALL Device::QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resou
 	entry.UpdateSubResource.mData = data;
 	entry.UpdateSubResource.mDstStartState = dstStartState;
 	entry.UpdateSubResource.mDstEndState = dstEndState;
+	blob->AddRef();
 	mUploadQueue.push_back(entry);
 }

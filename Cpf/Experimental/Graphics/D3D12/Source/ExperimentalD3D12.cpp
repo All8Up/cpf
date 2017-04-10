@@ -65,10 +65,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
-	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
-
-	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
-	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
+	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
+	CPF_INIT_ENTITYSERVICE(GetRegistry(), CPF_COMMON_PLUGINS);
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;

@@ -81,6 +81,14 @@ target_link_libraries (MultiCore
 )
 set_property (TARGET MultiCore PROPERTY FOLDER Plugins/Game)
 
+
+# ###############################################
+# Copy as a plugin.
+add_custom_command (
+	TARGET MultiCore POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${CPF_COMMON_PLUGINS}/MultiCore.cfp
+)
+
 # ###############################################
 add_library (MultiCore_Interface INTERFACE)
 target_include_directories (MultiCore_Interface

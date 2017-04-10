@@ -80,7 +80,7 @@ target_link_libraries (AdapterD3D12
 
 # ###############################################
 set_property (TARGET AdapterD3D12
-	PROPERTY FOLDER Libraries/Static/Adapter/Graphics
+	PROPERTY FOLDER Plugins/Adapter/Graphics
 )
 
 # ###############################################
@@ -88,6 +88,13 @@ source_group (Headers FILES ${INCLUDE_ADAPTER_FILES})
 source_group (Headers\\D3D12 FILES ${INCLUDE_ADAPTER_D3D12_FILES})
 source_group (Sources FILES ${SOURCE_ADAPTER_FILES})
 source_group (Sources\\D3D12 FILES ${SOURCE_ADAPTER_D3D12_FILES})
+
+# ###############################################
+# Copy as a plugin.
+add_custom_command (
+	TARGET AdapterD3D12 POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${CPF_COMMON_PLUGINS}/AdapterD3D12.cfp
+)
 
 # ###############################################
 #[[
