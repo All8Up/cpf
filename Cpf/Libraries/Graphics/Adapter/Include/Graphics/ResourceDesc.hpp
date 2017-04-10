@@ -32,5 +32,14 @@ namespace Cpf
 			int32_t mUsage;
 			int32_t mWidth;
 		};
+
+		inline ResourceDesc::ResourceDesc(ResourceType type, HeapType heapType, ResourceState state, int32_t usage, int32_t w)
+			: mType(type)
+			, mHeapType(heapType)
+			, mState(state)
+			, mUsage(usage)
+			, mWidth(w)
+		{
+		}
 	}
 }

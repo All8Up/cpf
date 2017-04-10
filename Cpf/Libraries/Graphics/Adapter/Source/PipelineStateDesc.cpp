@@ -164,7 +164,7 @@ PipelineStateDesc::Builder& PipelineStateDesc::Builder::DepthStencil(DepthStenci
 
 PipelineStateDesc::Builder& PipelineStateDesc::Builder::InputLayout(std::initializer_list<ElementDesc> initList)
 {
-	mState.mInputLayout = InputLayoutDesc(initList);
+	mState.mInputLayout = cInputLayoutDesc(initList);
 	return *this;
 }
 

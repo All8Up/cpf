@@ -9,6 +9,7 @@
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
 #include "Application/WindowFlags.hpp"
+#include "Graphics.hpp"
 
 using namespace Cpf;
 using namespace Platform;
@@ -33,6 +34,7 @@ int Networked::Start(const CommandLine&)
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
+	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
@@ -75,12 +77,12 @@ int Networked::Start(const CommandLine&)
 
 void Networked::_ConfigureDebugUI()
 {
-	Graphics::DebugUI& debugUI = mpRenderSystem->GetDebugUI();
-	debugUI.Add(&Networked::_PerformanceUI, this);
+	Graphics::iDebugUI* debugUI = mpRenderSystem->GetDebugUI();
+	debugUI->Add(&Networked::_PerformanceUI, this);
 	mLastTime = Time::Now();
 }
 
-void Networked::_PerformanceUI(Graphics::DebugUI* ui, void* context)
+void Networked::_PerformanceUI(Graphics::iDebugUI* ui, void* context)
 {
 	Networked& self = *reinterpret_cast<Networked*>(context);
 

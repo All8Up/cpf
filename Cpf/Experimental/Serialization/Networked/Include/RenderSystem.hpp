@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/iSystem.hpp"
-#include "Graphics/DebugUI.hpp"
+#include "Graphics/iDebugUI.hpp"
 #include "Graphics/iInstance.hpp"
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iSwapChain.hpp"
@@ -34,7 +34,7 @@ namespace Cpf
 
 		void Resize(int32_t, int32_t);
 
-		Graphics::DebugUI& GetDebugUI();
+		Graphics::iDebugUI* GetDebugUI();
 
 		// iUnknown
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
@@ -81,7 +81,7 @@ namespace Cpf
 		IntrusivePtr<Graphics::iSwapChain> mpSwapChain;
 		Vector<IntrusivePtr<Graphics::iImage>> mpDepthBufferImages;
 		Vector<IntrusivePtr<Graphics::iImageView>> mpDepthBufferImageViews;
-		IntrusivePtr<Graphics::DebugUI> mpDebugUI;
+		IntrusivePtr<Graphics::iDebugUI> mpDebugUI;
 
 		int mBufferIndex = 0;
 		int mSwapIndex = 0;

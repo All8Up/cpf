@@ -6,7 +6,7 @@
 #include "Resources/Locator.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 #include "Threading/Reactor.hpp"
-#include "Graphics/DebugUI.hpp"
+#include "Graphics/iDebugUI.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "MovementSystem.hpp"
 #include "Graphics/iImage.hpp"
@@ -131,7 +131,7 @@ namespace Cpf
 		Threading::Reactor::WorkQueue mReactorQueue;
 		IntrusivePtr<EntityService::iManager> mpEntityManager;
 
-		Graphics::DebugUI mDebugUI;
+		IntrusivePtr<Graphics::iDebugUI> mpDebugUI;
 
 		int mSelectedInstruction;
 		char** mpInstructionList;

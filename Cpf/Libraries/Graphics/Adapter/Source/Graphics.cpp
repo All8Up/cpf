@@ -1,5 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Graphics.hpp"
+#include "DebugUI.hpp"
+#include "Graphics/Plugin.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
@@ -7,10 +10,21 @@ using namespace Graphics;
 
 int CPF_EXPORT_GRAPHICS_DRIVER GraphicsInitializer::Install(Plugin::iRegistry* regy)
 {
-	return 0;
+	if (gContext.AddRef() == 1)
+	{
+		gContext.SetRegistry(regy);
+		regy->Install(kDebugUICID, new Plugin::tSimpleClassInstance<DebugUI>());
+	}
+	return gContext.GetRefCount();
 }
 
 int CPF_EXPORT_GRAPHICS_DRIVER GraphicsInitializer::Remove()
 {
-	return 0;
+	if (gContext.Release() == 0)
+	{
+		gContext.GetRegistry()->Remove(kDebugUICID);
+		gContext.SetRegistry(nullptr);
+		return 0;
+	}
+	return gContext.GetRefCount();
 }

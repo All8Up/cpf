@@ -100,9 +100,9 @@ void RenderSystem::Resize(int32_t w, int32_t h)
 		mpDebugUI->SetWindowSize(w, h);
 }
 
-DebugUI& RenderSystem::GetDebugUI()
+iDebugUI* RenderSystem::GetDebugUI()
 {
-	return *mpDebugUI;
+	return mpDebugUI;
 }
 
 
@@ -225,7 +225,7 @@ bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locato
 		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP());
 	}
-	mpDebugUI.Adopt(new DebugUI());
+	mpRegistry->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
 	mpDebugUI->Initialize(mpDevice, window, locator);
 	return true;
 }

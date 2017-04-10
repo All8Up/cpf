@@ -1,0 +1,10 @@
+//////////////////////////////////////////////////////////////////////////
+#include "Graphics/Plugin.hpp"
+
+namespace Cpf
+{
+	namespace Graphics
+	{
+		Plugin::Context gContext;
+	}
+}

@@ -32,7 +32,7 @@ namespace Cpf
 		bool _ShutdownPipeline();
 
 		// Debug panels.
-		static void _PerformanceUI(Graphics::DebugUI*, void*);
+		static void _PerformanceUI(Graphics::iDebugUI*, void*);
 
 		void _Resize(int32_t width, int32_t height);
 

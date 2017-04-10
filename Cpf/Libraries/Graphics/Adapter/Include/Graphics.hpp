@@ -28,18 +28,15 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	namespace Graphics
+	struct GraphicsInitializer
 	{
-		struct GraphicsInitializer
-		{
-			static int CPF_EXPORT_GRAPHICS_DRIVER Install(Plugin::iRegistry* regy);
-			static int CPF_EXPORT_GRAPHICS_DRIVER Remove();
+		static int CPF_EXPORT_GRAPHICS_DRIVER Install(Plugin::iRegistry* regy);
+		static int CPF_EXPORT_GRAPHICS_DRIVER Remove();
 
-		private:
-			GraphicsInitializer() = delete;
-			~GraphicsInitializer() = delete;
-		};
-	}
+	private:
+		GraphicsInitializer() = delete;
+		~GraphicsInitializer() = delete;
+	};
 }
 
 

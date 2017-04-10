@@ -90,13 +90,13 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 	{
 		const auto desc = inputLayout.GetElementDescs()[i];
 		auto& out = inputDescs[i];
-		out.SemanticName = desc.GetSemantic();
-		out.SemanticIndex = desc.GetIndex();
-		out.Format = Convert(desc.GetFormat());
-		out.InputSlot = desc.GetSlot();
-		out.AlignedByteOffset = desc.GetOffset();
-		out.InputSlotClass = D3D12_INPUT_CLASSIFICATION(desc.GetClassification());
-		out.InstanceDataStepRate = desc.GetStepping();
+		out.SemanticName = desc.mpSemantic;
+		out.SemanticIndex = desc.mIndex;
+		out.Format = Convert(desc.mFormat);
+		out.InputSlot = desc.mSlot;
+		out.AlignedByteOffset = desc.mOffset;
+		out.InputSlotClass = D3D12_INPUT_CLASSIFICATION(desc.mClass);
+		out.InstanceDataStepRate = desc.mInstanceStepping;
 	}
 	stateDesc.InputLayout = D3D12_INPUT_LAYOUT_DESC
 	{

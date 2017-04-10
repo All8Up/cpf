@@ -11,11 +11,22 @@ namespace Cpf
 	namespace Graphics
 	{
 		/* @brief: Element description. */
-		class ElementDesc
+		struct ElementDesc
+		{
+			const char* mpSemantic;
+			int32_t mIndex;
+			Format mFormat;
+			int32_t mSlot;
+			int32_t mOffset;
+			InputClassification mClass;
+			int32_t mInstanceStepping;
+		};
+
+		class cElementDesc : public ElementDesc
 		{
 		public:
-			ElementDesc();
-			ElementDesc(const char* semantic, Format format, InputClassification classification = InputClassification::ePerVertex, int32_t stepping = 0);
+			cElementDesc();
+			cElementDesc(const char* semantic, Format format, InputClassification classification = InputClassification::ePerVertex, int32_t stepping = 0);
 
 			const char* GetSemantic() const;
 			int32_t GetIndex() const;
@@ -27,124 +38,121 @@ namespace Cpf
 			int32_t GetStepping() const;
 
 		private:
-			friend class InputLayoutDesc;
-
-			const char* mpSemantic;
-			int32_t mIndex;
-			Format mFormat;
-			int32_t mSlot;
-			int32_t mOffset;
-			InputClassification mClass;
-			int32_t mInstanceStepping;
+			friend class cInputLayoutDesc;
 		};
 
-		class InputLayoutDesc
+		struct InputLayoutDesc
+		{
+			int32_t mCount;
+			ElementDesc* mpElements;
+		};
+
+		class cInputLayoutDesc : public InputLayoutDesc
 		{
 		public:
-			InputLayoutDesc();
-			InputLayoutDesc(const InputLayoutDesc& rhs) noexcept;
-			InputLayoutDesc(std::initializer_list<ElementDesc>);
-			~InputLayoutDesc();
+			cInputLayoutDesc();
+			cInputLayoutDesc(const cInputLayoutDesc& rhs) noexcept;
+			cInputLayoutDesc(std::initializer_list<ElementDesc>);
+			~cInputLayoutDesc();
 
-			InputLayoutDesc& operator =(const InputLayoutDesc& rhs);
+			cInputLayoutDesc& operator =(const cInputLayoutDesc& rhs);
 
 			size_t GetCount() const;
 			const ElementDesc* GetElementDescs() const;
-
-		private:
-			int32_t mCount;
-			ElementDesc* mpElements;
 		};
 
 
 		//////////////////////////////////////////////////////////////////////////
 
 		inline
-		ElementDesc::ElementDesc()
-			: mpSemantic(nullptr)
-			, mIndex(-1)
-			, mFormat(Format::eNone)
-			, mSlot(0)
-			, mOffset(-1)
-			, mClass(InputClassification::ePerVertex)
-			, mInstanceStepping(0)
+		cElementDesc::cElementDesc()
+			: ElementDesc
+		{
+			nullptr,
+			-1,
+			Format::eNone,
+			0,
+			-1,
+			InputClassification::ePerVertex,
+			0
+		}
 		{
 		}
 
 		inline
-		ElementDesc::ElementDesc(const char* semantic, Format format, InputClassification classification, int32_t stepping)
-			: mpSemantic(semantic)
-			, mIndex(-1) // Compute during build.
-			, mFormat(format)
-			, mSlot(0)
-			, mOffset(-1) // Compute during build.
-			, mClass(classification)
-			, mInstanceStepping(stepping)
+		cElementDesc::cElementDesc(const char* semantic, Format format, InputClassification classification, int32_t stepping)
+			: ElementDesc
+		{
+			semantic,
+			-1,
+			format,
+			0,
+			-1,
+			classification,
+			stepping
+		}
 		{
 		}
 
 		inline
-		const char* ElementDesc::GetSemantic() const
+		const char* cElementDesc::GetSemantic() const
 		{
 			return mpSemantic;
 		}
 
 		inline
-		int32_t ElementDesc::GetIndex() const
+		int32_t cElementDesc::GetIndex() const
 		{
 			return mIndex;
 		}
 
 		inline
-		Format ElementDesc::GetFormat() const
+		Format cElementDesc::GetFormat() const
 		{
 			return mFormat;
 		}
 
 		inline
-		int32_t ElementDesc::GetSlot() const
+		int32_t cElementDesc::GetSlot() const
 		{
 			return mSlot;
 		}
 
 		inline
-		int32_t ElementDesc::GetOffset() const
+		int32_t cElementDesc::GetOffset() const
 		{
 			return mOffset;
 		}
 
 		inline
-		InputClassification ElementDesc::GetClassification() const
+		InputClassification cElementDesc::GetClassification() const
 		{
 			return mClass;
 		}
 
 		inline
-		int32_t ElementDesc::GetStepping() const
+		int32_t cElementDesc::GetStepping() const
 		{
 			return mInstanceStepping;
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 		inline
-		InputLayoutDesc::InputLayoutDesc()
-			: mCount(0)
-			, mpElements(nullptr)
+		cInputLayoutDesc::cInputLayoutDesc()
+			: InputLayoutDesc{ 0, nullptr }
 		{}
 
 		inline
-		InputLayoutDesc::InputLayoutDesc(const InputLayoutDesc& rhs) noexcept
-			: mCount(rhs.mCount)
-			, mpElements(new ElementDesc[rhs.mCount])
+		cInputLayoutDesc::cInputLayoutDesc(const cInputLayoutDesc& rhs) noexcept
+			: InputLayoutDesc{ rhs.mCount, new ElementDesc[rhs.mCount] }
 		{
 			for (int i = 0; i < mCount; ++i)
 				mpElements[i] = rhs.mpElements[i];
 		}
 
 		inline
-		InputLayoutDesc::InputLayoutDesc(std::initializer_list<ElementDesc> elements)
-			: mCount(int32_t(elements.size()))
-			, mpElements(nullptr)
+		cInputLayoutDesc::cInputLayoutDesc(std::initializer_list<ElementDesc> elements)
+			: InputLayoutDesc{ int32_t(elements.size()), nullptr }
 		{
 			// TODO: Likely need to make copies of the semantic names.
 
@@ -162,58 +170,58 @@ namespace Cpf
 				{
 					auto& elementRef = mpElements[current++];
 
-					if (element.GetSlot() != lastSlot)
+					if (element.mSlot != lastSlot)
 					{
 						// Reset tracking data between slots (i.e. streams).
 						offset = 0;
-						lastSlot = element.GetSlot();
+						lastSlot = element.mSlot;
 					}
 
 					// Handle semantic name and index.
-					if (semanticMap.find(element.GetSemantic()) == semanticMap.end())
+					if (semanticMap.find(element.mpSemantic) == semanticMap.end())
 					{
 						// Semantic not in map, this is index 0.
-						semanticMap[element.GetSemantic()] = 0;
-						elementRef.mpSemantic = element.GetSemantic();
+						semanticMap[element.mpSemantic] = 0;
+						elementRef.mpSemantic = element.mpSemantic;
 						elementRef.mIndex = 0;
 					}
 					else
 					{
-						int32_t index = semanticMap[element.GetSemantic()] + 1;
-						semanticMap[element.GetSemantic()] = index;
-						elementRef.mpSemantic = element.GetSemantic();
+						int32_t index = semanticMap[element.mpSemantic] + 1;
+						semanticMap[element.mpSemantic] = index;
+						elementRef.mpSemantic = element.mpSemantic;
 						elementRef.mIndex = index;
 					}
 
-					elementRef.mFormat = element.GetFormat();
-					elementRef.mSlot = element.GetSlot();
-					elementRef.mOffset = (element.GetOffset() == -1) ? offset : element.GetOffset();
+					elementRef.mFormat = element.mFormat;
+					elementRef.mSlot = element.mSlot;
+					elementRef.mOffset = (element.mOffset == -1) ? offset : element.mOffset;
 					// Define all offsets or no offsets, mixing and matching is not allowed.
-					CPF_ASSERT(offset == -1 ? element.GetOffset() == -1 : true);
-					elementRef.mClass = element.GetClassification();
-					elementRef.mInstanceStepping = element.GetStepping();
+					CPF_ASSERT(offset == -1 ? element.mOffset == -1 : true);
+					elementRef.mClass = element.mClass;
+					elementRef.mInstanceStepping = element.mInstanceStepping;
 
 					// Handle offset tracking.
 					if (offset != -1)
 					{
-						if (element.GetOffset() != -1)
+						if (element.mOffset!= -1)
 							offset = -1;
 						else
-							offset += int32_t(GetFormatSize(element.GetFormat()));
+							offset += int32_t(GetFormatSize(element.mFormat));
 					}
 				}
 			}
 		}
 
 		inline
-		InputLayoutDesc::~InputLayoutDesc()
+		cInputLayoutDesc::~cInputLayoutDesc()
 		{
 			if (mpElements)
 				delete[] mpElements;
 		}
 
 		inline
-		InputLayoutDesc& InputLayoutDesc::operator =(const InputLayoutDesc& rhs)
+		cInputLayoutDesc& cInputLayoutDesc::operator =(const cInputLayoutDesc& rhs)
 		{
 			if (mpElements)
 				delete[] mpElements;
@@ -225,13 +233,13 @@ namespace Cpf
 		}
 
 		inline
-		size_t InputLayoutDesc::GetCount() const
+		size_t cInputLayoutDesc::GetCount() const
 		{
 			return mCount;
 		}
 
 		inline
-		const ElementDesc* InputLayoutDesc::GetElementDescs() const
+		const ElementDesc* cInputLayoutDesc::GetElementDescs() const
 		{
 			return mpElements;
 		}

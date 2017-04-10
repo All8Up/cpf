@@ -10,7 +10,7 @@
 #include "Time.hpp"
 
 #include "Graphics/Driver.hpp"
-#include "Graphics/DebugUI.hpp"
+#include "Graphics/iDebugUI.hpp"
 
 #include "Math/Vector4v.hpp"
 
@@ -63,6 +63,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
+	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 
@@ -243,6 +244,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					// Do something with the error.
 				}
 
+				//
+				GetRegistry()->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
+
 				//////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////
@@ -357,12 +361,12 @@ int ExperimentalD3D12::Start(const CommandLine&)
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
 				{
-					if (!mDebugUI.Initialize(mpDevice, mpWindow, mpLocator))
+					if (!mpDebugUI->Initialize(mpDevice, mpWindow, mpLocator))
 					{
 						CPF_LOG(Experimental, Info) << "Failed to initialize the debug UI.";
 					}
-					mDebugUI.SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
-					AddRawInputHook(&DebugUI::HandleRawInput, &mDebugUI);
+					mpDebugUI->SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
+					AddRawInputHook(&iDebugUI::HandleRawInput, mpDebugUI);
 
 					//
 					_UpdatePipelineDisplay();
@@ -408,7 +412,7 @@ int ExperimentalD3D12::Start(const CommandLine&)
 
 					// Guarantee last frame is complete before we tear everything down.
 					frameSemaphore.Acquire();
-					mDebugUI.Shutdown();
+					mpDebugUI->Shutdown();
 				}
 
 				// Destroy all the resources.

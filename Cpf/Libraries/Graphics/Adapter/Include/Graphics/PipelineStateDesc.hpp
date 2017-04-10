@@ -44,7 +44,7 @@ namespace Cpf
 
 			const RasterizerStateDesc& GetRasterizationState() const { return mRasterizerState; }
 			const DepthStencilStateDesc& GetDepthStencilState() const { return mDepthStencil; }
-			const InputLayoutDesc& GetInputLayoutState() const { return mInputLayout; }
+			const cInputLayoutDesc& GetInputLayoutState() const { return mInputLayout; }
 			IndexStripCut GetIndexStripCut() const { return mIndexStripCut; }
 			TopologyType GetTopology() const { return mTopology; }
 			int32_t GetRenderTargetCount() const { return mRenderTargetCount; }
@@ -63,7 +63,7 @@ namespace Cpf
 			uint32_t mSampleMask;
 			RasterizerStateDesc mRasterizerState;
 			DepthStencilStateDesc mDepthStencil;
-			InputLayoutDesc mInputLayout;
+			cInputLayoutDesc mInputLayout;
 			IndexStripCut mIndexStripCut;
 			TopologyType mTopology;
 			int32_t mRenderTargetCount;

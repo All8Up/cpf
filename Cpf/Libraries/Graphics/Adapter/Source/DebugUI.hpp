@@ -1,41 +1,20 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
-#include "Math/Vector2v.hpp"
-#include "Math/Vector4v.hpp"
-#include "Math/Constants.hpp"
-#include "Pair.hpp"
-#include "Vector.hpp"
-
+#include "Graphics/iDebugUI.hpp"
 
 namespace Cpf
 {
-	class iWindow;
-
-	namespace Resources
-	{
-		class Locator;
-	}
-
 	namespace Graphics
 	{
-		struct iDevice;
-		struct iCommandBuffer;
-		struct iConstantBuffer;
-		struct iIndexBuffer;
-		struct iVertexBuffer;
-		struct iImage;
-		struct iShader;
-		struct iSampler;
-		struct iPipeline;
-		struct iResourceBinding;
-
-		class DebugUI : public tRefCounted<iRefCounted>
+		class DebugUI : public tRefCounted<iDebugUI>
 		{
 		public:
 			DebugUI();
 			virtual ~DebugUI();
 
+			COM::Result QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+			//
 			bool Initialize(iDevice*, iWindow* window, Resources::Locator*);
 			void Shutdown();
 			void BeginFrame(iCommandBuffer* commands, float deltaTime);
@@ -71,13 +50,12 @@ namespace Cpf
 				const Math::Vector2i = Math::Vector2i(0), int32_t stride = sizeof(float));
 
 			// List boxes.
-			void ListBox(const char* label, int32_t* selectedItem, const char** items, int32_t itemCount, int32_t itemHeight=-1);
+			void ListBox(const char* label, int32_t* selectedItem, const char** items, int32_t itemCount, int32_t itemHeight = -1);
 
 			// Rendering information.
 			void SetWindowSize(int32_t width, int32_t height);
 
 			// Debug list.
-			using DebugUICall = void(*)(DebugUI*, void* context);
 			void Add(DebugUICall call, void* context);
 			void Remove(DebugUICall call, void* context);
 			void Execute();

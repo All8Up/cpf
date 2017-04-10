@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Graphics/DebugUI.hpp"
+#include "DebugUI.hpp"
 #include "Graphics/iBlob.hpp"
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iShader.hpp"
@@ -34,12 +34,30 @@ using namespace Graphics;
 DebugUI::DebugUI()
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
-{
-
-}
+{}
 
 DebugUI::~DebugUI()
+{}
+
+COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
 {
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iDebugUI::kIID.GetID():
+			*outIface = static_cast<iDebugUI*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* locator)
@@ -112,9 +130,9 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 			)
 			.InputLayout(
 			{
-				ElementDesc("POSITION", Format::eRG32f),
-				ElementDesc("TEXCOORD", Format::eRG32f),
-				ElementDesc("COLOR", Format::eRGBA8un)
+				cElementDesc("POSITION", Format::eRG32f),
+				cElementDesc("TEXCOORD", Format::eRG32f),
+				cElementDesc("COLOR", Format::eRGBA8un)
 			})
 			.TargetBlend(0, RenderTargetBlendStateDesc::Build()
 				.Blending(true)
@@ -392,7 +410,7 @@ bool DebugUI::CheckBox(const char* label, bool* flag)
 	return ImGui::Checkbox(label, flag);
 }
 
-bool CheckBoxFlags(const char* label, uint32_t* flags, uint32_t flags_value)
+bool DebugUI::CheckBoxFlags(const char* label, uint32_t* flags, uint32_t flags_value)
 {
 	return ImGui::CheckboxFlags(label, flags, flags_value);
 }

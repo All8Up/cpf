@@ -69,13 +69,13 @@ bool ExperimentalD3D12::_CreateResources()
 		)
 		.InputLayout(
 		{
-			ElementDesc("POSITION", Format::eRGB32f),
-			ElementDesc("COLOR", Format::eRGBA32f),
-			ElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			ElementDesc("SCALE", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			ElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1)
+			cElementDesc("POSITION", Format::eRGB32f),
+			cElementDesc("COLOR", Format::eRGBA32f),
+			cElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			cElementDesc("SCALE", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			cElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			cElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
+			cElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1)
 		})
 		.RenderTargets({ Format::eRGBA8un })
 		.DepthStencilFormat(Format::eD32f)

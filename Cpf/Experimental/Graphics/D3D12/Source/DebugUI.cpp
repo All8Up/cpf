@@ -46,7 +46,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 	Graphics::iImageView* imageViews[] = { mpSwapChain->GetImageView(backBuffer) };
 	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferImageViews[backBuffer]);
 
-	mDebugUI.BeginFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer], float(Time::Seconds(mDeltaTime)));
+	mpDebugUI->BeginFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer], float(Time::Seconds(mDeltaTime)));
 	{
 		static constexpr int kHistorySize = 50;
 		static float history[kHistorySize];
@@ -69,34 +69,34 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 		float average = float(Time::Seconds(averageTicks));
 
 		static bool sShowPerformance = true;
-		mDebugUI.Begin("Performance", &sShowPerformance);
-		mDebugUI.PushItemWidth(300);
-		mDebugUI.Text("Instance Count: %d", kInstanceCount);
-		mDebugUI.Separator();
-		mDebugUI.Text("FPS: %d LOW: %d HIGH: %d", int(average), int(lowFPS), int(highFPS));
-		if (mDebugUI.Slider("Thread Count", &mThreadCount, 1, mScheduler.GetAvailableThreads()))
+		mpDebugUI->Begin("Performance", &sShowPerformance);
+		mpDebugUI->PushItemWidth(300);
+		mpDebugUI->Text("Instance Count: %d", kInstanceCount);
+		mpDebugUI->Separator();
+		mpDebugUI->Text("FPS: %d LOW: %d HIGH: %d", int(average), int(lowFPS), int(highFPS));
+		if (mpDebugUI->Slider("Thread Count", &mThreadCount, 1, mScheduler.GetAvailableThreads()))
 			mThreadCountChanged = true;
-		mDebugUI.Histogram("FPS Histogram", history, kHistorySize, 0, nullptr, lowFPS, highFPS);
+		mpDebugUI->Histogram("FPS Histogram", history, kHistorySize, 0, nullptr, lowFPS, highFPS);
 
 //		if (mGOService.GetStagesChanged())
 		{}
-		mDebugUI.ListBox("Thread Pipeline", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
+		mpDebugUI->ListBox("Thread Pipeline", &mSelectedInstruction, const_cast<const char**>(mpInstructionList), mInstructionCount);
 
-		mDebugUI.Separator();
+		mpDebugUI->Separator();
 		static bool movementEnabled = true;
-		if (mDebugUI.CheckBox("Enable Movement", &movementEnabled))
+		if (mpDebugUI->CheckBox("Enable Movement", &movementEnabled))
 		{
 			mpMoverSystem->EnableMovement(movementEnabled);
 		}
 		static bool usingEBus = false;
-		if (mDebugUI.CheckBox("Use EBus Approx", &usingEBus))
+		if (mpDebugUI->CheckBox("Use EBus Approx", &usingEBus))
 		{
 			mpMoverSystem->UseEBus(usingEBus);
 		}
 
-		mDebugUI.End();
+		mpDebugUI->End();
 	}
-	mDebugUI.EndFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer]);
+	mpDebugUI->EndFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer]);
 
 	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->End();
 	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpDebugUIBuffer[mCurrentBackbuffer];

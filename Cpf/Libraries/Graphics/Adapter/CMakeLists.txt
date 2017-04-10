@@ -1,8 +1,9 @@
 # ###############################################
 set (INCLUDE_GRAPHICS_FILES
-	Include/Graphics/DebugUI.hpp
+	Include/Graphics/Plugin.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_INTERFACES
+	Include/Graphics/iDebugUI.hpp
 	Include/Graphics/iDevice.hpp
 	Include/Graphics/iAdapter.hpp
 	Include/Graphics/iInstance.hpp
@@ -98,19 +99,12 @@ set (INCLUDE_GRAPHICS_FILES_FLAGS
 )
 
 set (SOURCE_GRAPHICS_FILES
-	Source/Driver.cpp
-	Source/Format.cpp
-	Source/Ratio.cpp
+	Source/DebugUI.hpp
 	Source/DebugUI.cpp
-	Source/BlendStateDesc.cpp
-	Source/DepthStencilDesc.cpp
-	Source/InputLayoutDesc.cpp
-	Source/PipelineStateDesc.cpp
-	Source/RasterizerStateDesc.cpp
-	Source/SampleDesc.cpp
-	Source/ResourceBindingDesc.cpp
-	Source/ResourceDesc.cpp
 	Source/Graphics.cpp
+	Source/PipelineStateDesc.cpp
+	Source/Plugin.cpp
+	Source/RasterizerStateDesc.cpp
 )
 set (SOURCE_IMGUI_FILES
 	Source/imgui/imconfig.h
