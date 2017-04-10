@@ -78,16 +78,16 @@ endif()
 file (MAKE_DIRECTORY ${targetPath}/plugins)
 add_custom_command (
 	TARGET ExperimentalD3D12 POST_BUILD
-	DEPENDS AllPlugins
+	DEPENDS AllPlugins EntityService
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:EntityService> ${targetPath}/plugins/EntityService.cfp
 )
 add_custom_command (
 	TARGET ExperimentalD3D12 POST_BUILD
-	DEPENDS AllPlugins
+	DEPENDS AllPlugins MultiCore
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
 )
 add_custom_command (TARGET ExperimentalD3D12 POST_BUILD
 	COMMENT "Copying AdapterD3D12"
-	DEPENDS AdapterD3D12
+	DEPENDS AllPlugins AdapterD3D12
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${targetPath}/plugins/AdapterD3D12.cfp
 )

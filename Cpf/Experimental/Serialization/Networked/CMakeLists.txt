@@ -59,6 +59,6 @@ endif()
 file (MAKE_DIRECTORY ${targetPath}/plugins)
 add_custom_command (
 	TARGET Networked POST_BUILD
-	DEPENDS AllPlugins
+	DEPENDS AllPlugins AdapterD3D12
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${targetPath}/plugins/AdapterD3D12.cfp
 )
