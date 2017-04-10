@@ -86,8 +86,8 @@ add_custom_command (
 	DEPENDS AllPlugins
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:MultiCore> ${targetPath}/plugins/MultiCore.cfp
 )
-add_custom_command (
-	TARGET ExperimentalD3D12 POST_BUILD
-	DEPENDS AllPlugins
+add_custom_command (TARGET ExperimentalD3D12 POST_BUILD
+	COMMENT "Copying AdapterD3D12"
+	DEPENDS AdapterD3D12
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${targetPath}/plugins/AdapterD3D12.cfp
 )

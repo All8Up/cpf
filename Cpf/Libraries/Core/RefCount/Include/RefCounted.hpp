@@ -37,6 +37,7 @@ namespace Cpf
 		template<typename... PARAMS>
 		tRefCounted(PARAMS... params) : BASE(params...), mRefCount(INITREF) {}
 		tRefCounted() : mRefCount(INITREF) {}
+		virtual ~tRefCounted() {}
 
 		virtual int32_t CPF_STDCALL AddRef() override
 		{
