@@ -60,20 +60,5 @@ namespace Cpf
 			SystemID mID;
 			BlockDependencies mDependencies;
 		};
-
-		class TimerClass : public tRefCounted<Plugin::iClassInstance>
-		{
-		public:
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-			{
-				if (outIface)
-				{
-					*outIface = new Timer();
-					return *outIface ? COM::kOK : COM::kOutOfMemory;
-				}
-				return COM::kInvalidParameter;
-			}
-		};
 	}
 }

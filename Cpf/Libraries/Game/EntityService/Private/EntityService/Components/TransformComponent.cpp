@@ -7,21 +7,7 @@ using namespace EntityService;
 
 COM::Result TransformComponent::Install(Plugin::iRegistry* regy)
 {
-	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
-	{
-	public:
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-		{
-			if (outIface)
-			{
-				*outIface = new TransformComponent();
-				return *outIface ? COM::kOK : COM::kOutOfMemory;
-			}
-			return COM::kInvalidParameter;
-		}
-	};
-	return regy->Install(kTransformComponentCID, new ClassInstance());
+	return regy->Install(kTransformComponentCID, new Plugin::tSimpleClassInstance<TransformComponent>());
 }
 
 COM::Result TransformComponent::Remove(Plugin::iRegistry* regy)

@@ -11,6 +11,8 @@ namespace Cpf
 		struct iClassInstance : COM::iUnknown
 		{
 			virtual COM::Result CPF_STDCALL CreateInstance(iRegistry*, COM::iUnknown*, COM::iUnknown**) = 0;
+			virtual int32_t CPF_STDCALL GetImplementsCount() = 0;
+			virtual COM::Result CPF_STDCALL GetImplements(int32_t, COM::InterfaceID*, COM::ClassID*) = 0;
 		};
 
 		template <typename TYPE>
@@ -45,6 +47,9 @@ namespace Cpf
 				}
 				return COM::kInvalidParameter;
 			}
+
+			int32_t CPF_STDCALL GetImplementsCount() override { return 0; }
+			COM::Result CPF_STDCALL GetImplements(int32_t, COM::InterfaceID*, COM::ClassID*) override { return COM::kOutOfRange; }
 
 		private:
 			int32_t mRefCount;

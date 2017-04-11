@@ -9,7 +9,7 @@ namespace Cpf
 	{
 		struct iEntity;
 
-		struct iComponent : public COM::iUnknown
+		struct iComponent : COM::iUnknown
 		{
 			static constexpr auto kIID = COM::InterfaceID("EntityService::iComponent"_crc64);
 

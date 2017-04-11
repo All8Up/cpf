@@ -38,6 +38,7 @@ namespace Cpf
 		static constexpr Result kInUse = CreateResult(0, "Core"_crc16, 8);
 		static constexpr Result kNotInitialized = CreateResult(1, "Core"_crc16, 9);
 		static constexpr Result kInitializationFailure = CreateResult(1, "Core"_crc16, 10);
+		static constexpr Result kOutOfRange = CreateResult(1, "Core"_crc16, 11);
 
 		//////////////////////////////////////////////////////////////////////////
 		// TODO: This won't be an export in the future.

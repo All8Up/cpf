@@ -9,7 +9,7 @@ namespace Cpf
 {
 	namespace EntityService
 	{
-		class TransformComponent : private ComponentBase<iTransformComponent>
+		class TransformComponent : public ComponentBase<iTransformComponent>
 		{
 		public:
 			static constexpr auto kID = ComponentID("iTransformComponent"_crc64);

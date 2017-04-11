@@ -38,22 +38,5 @@ namespace Cpf
 #endif
 			Vector<String> mQueueInfo;
 		};
-
-
-		/** @brief Class instance object for registry installation. */
-		class PipelineClass : public tRefCounted<Plugin::iClassInstance>
-		{
-		public:
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-			{
-				if (outIface)
-				{
-					*outIface = new Pipeline();
-					return *outIface ? COM::kOK : COM::kOutOfMemory;
-				}
-				return COM::kInvalidParameter;
-			}
-		};
 	}
 }

@@ -29,6 +29,10 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kPreparePresent = Hash::Create<MultiCore::BlockID_tag>("Prepare Present"_hashString);
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
+		// Construction/Destruction.
+		RenderSystem();
+		virtual ~RenderSystem();
+
 		// Registration.
 		static COM::Result Install(Plugin::iRegistry*);
 		static COM::Result Remove(Plugin::iRegistry*);
@@ -58,10 +62,6 @@ namespace Cpf
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 	private:
-		// Construction/Destruction.
-		RenderSystem();
-		virtual ~RenderSystem();
-
 		//
 		void _AllocateBuffers();
 

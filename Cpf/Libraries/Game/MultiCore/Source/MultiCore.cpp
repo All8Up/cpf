@@ -24,10 +24,10 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* regist
 		spRegistry = registry;
 		CPF_INIT_LOG(MultiCore);
 		CPF_LOG(MultiCore, Trace) << "Initialized multicore library.";
-		spRegistry->Install(MultiCore::kPipelineCID, new MultiCore::PipelineClass());
-		spRegistry->Install(MultiCore::kTimerCID, new MultiCore::TimerClass());
-		spRegistry->Install(MultiCore::kSingleUpdateStageCID, new MultiCore::SingleUpdateStageClass());
-		spRegistry->Install(MultiCore::kStageListCID, new MultiCore::StageListClass());
+		spRegistry->Install(MultiCore::kPipelineCID, new Plugin::tSimpleClassInstance<MultiCore::Pipeline>());
+		spRegistry->Install(MultiCore::kTimerCID, new Plugin::tSimpleClassInstance<MultiCore::Timer>());
+		spRegistry->Install(MultiCore::kSingleUpdateStageCID, new Plugin::tSimpleClassInstance<MultiCore::SingleUpdateStage>());
+		spRegistry->Install(MultiCore::kStageListCID, new Plugin::tSimpleClassInstance<MultiCore::StageList>());
 	}
 	return s_RefCount;
 }

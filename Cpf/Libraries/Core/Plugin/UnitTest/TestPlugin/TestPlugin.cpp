@@ -33,42 +33,12 @@ namespace
 	int32_t sRefCount = 0;
 }
 
-struct TestPluginClassInstance : public Plugin::iClassInstance
-{
-	TestPluginClassInstance() : mRefCount(1) {}
-
-	COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-	int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
-	int32_t CPF_STDCALL Release() override
-	{
-		if (--mRefCount == 0)
-		{
-			delete this;
-			return 0;
-		}
-		return mRefCount;
-	}
-
-	COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-	{
-		if (outIface)
-		{
-			++sRefCount;
-			*outIface = new TestPlugin;
-			return *outIface != nullptr ? COM::kOK : COM::kOutOfMemory;
-		}
-		return COM::kInvalidParameter;
-	}
-
-	int32_t mRefCount;
-};
-
 extern "C"
 COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return registry->Install(kTestPluginCID, new TestPluginClassInstance);
+		return registry->Install(kTestPluginCID, new Plugin::tSimpleClassInstance<TestPlugin>());
 	}
 	return COM::kInvalidParameter;
 }

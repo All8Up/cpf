@@ -57,21 +57,5 @@ namespace Cpf
 			MultiCore::StageID mID;
 			bool mEnabled;
 		};
-
-
-		class EntityStageClass : public tRefCounted<Plugin::iClassInstance>
-		{
-		public:
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-			{
-				if (outIface)
-				{
-					*outIface = new EntityStage();
-					return *outIface ? COM::kOK : COM::kOutOfMemory;
-				}
-				return COM::kInvalidParameter;
-			}
-		};
 	}
 }

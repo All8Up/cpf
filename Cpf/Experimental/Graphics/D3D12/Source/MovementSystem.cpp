@@ -19,21 +19,7 @@ using namespace MultiCore;
 
 COM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
 {
-	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
-	{
-	public:
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-		{
-			if (outIface)
-			{
-				*outIface = new MoverSystem::MoverComponent();
-				return *outIface ? COM::kOK : COM::kOutOfMemory;
-			}
-			return COM::kInvalidParameter;
-		}
-	};
-	return regy->Install(kMoverComponentCID, new ClassInstance());
+	return regy->Install(kMoverComponentCID, new Plugin::tSimpleClassInstance<MoverSystem::MoverComponent>());
 }
 
 COM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
@@ -81,21 +67,7 @@ COM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
 
 COM::Result MoverSystem::Install(Plugin::iRegistry* regy)
 {
-	class ClassInstance : public tRefCounted<Plugin::iClassInstance>
-	{
-	public:
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-		COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-		{
-			if (outIface)
-			{
-				*outIface = new MoverSystem();
-				return *outIface ? COM::kOK : COM::kOutOfMemory;
-			}
-			return COM::kInvalidParameter;
-		}
-	};
-	return regy->Install(kMoverSystemCID, new ClassInstance());
+	return regy->Install(kMoverSystemCID, new Plugin::tSimpleClassInstance<MoverSystem>());
 }
 COM::Result MoverSystem::Remove(Plugin::iRegistry* regy)
 {

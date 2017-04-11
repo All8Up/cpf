@@ -55,21 +55,7 @@ namespace Cpf
 
 		static COM::Result Install(Plugin::iRegistry* regy)
 		{
-			class ClassInstance : public tRefCounted<Plugin::iClassInstance>
-			{
-			public:
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-				COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-				{
-					if (outIface)
-					{
-						*outIface = new InstanceSystem();
-						return *outIface ? COM::kOK : COM::kOutOfMemory;
-					}
-					return COM::kInvalidParameter;
-				}
-			};
-			return regy->Install(kInstanceSystemCID, new ClassInstance());
+			return regy->Install(kInstanceSystemCID, new Plugin::tSimpleClassInstance<InstanceSystem>());
 		}
 		static COM::Result Remove(Plugin::iRegistry* regy)
 		{

@@ -38,9 +38,9 @@ namespace Cpf
 		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
-	private:
 		NetworkSystem();
 
+	private:
 		static void _Update(Concurrency::ThreadContext&, void*);
 
 		asio::io_service mASIO;
