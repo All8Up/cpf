@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/Vulkan/Adapter.hpp"
-#include "Adapters/Vulkan/SwapChain.hpp"
+#include "Adapter/Vulkan/Adapter.hpp"
+#include "Adapter/Vulkan/SwapChain.hpp"
 #include "IntrusivePtr.hpp"
 
 using namespace Cpf;

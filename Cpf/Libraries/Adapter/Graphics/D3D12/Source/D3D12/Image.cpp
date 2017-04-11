@@ -77,8 +77,6 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 
 		IntrusivePtr<Graphics::iBlob> blob;
 		device->CreateBlob(mDesc.mWidth * mDesc.mHeight * 4, initData, blob.AsTypePP());
-//		Graphics::iBlob* blob = nullptr;
-//		Graphics::iBlob::Create(mDesc.mWidth * mDesc.mHeight * 4, initData, &blob);
 
 		D3D12_SUBRESOURCE_DATA textureData = {};
 		textureData.pData = blob->GetData();

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Driver/iSwapChain.hpp"
+#include "Graphics/iSwapChain.hpp"
+#include "Graphics/SwapChainDesc.hpp"
 #include "RefCounted.hpp"
 #include "VulkanUtils.hpp"
 #include "Vector.hpp"
@@ -12,10 +13,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		namespace Driver
-		{
-			class iDevice;
-		}
+		class iDevice;
 	}
 
 	namespace Adapters
@@ -25,10 +23,10 @@ namespace Cpf
 			class Instance;
 			class Device;
 
-			class SwapChain : public tRefCounted<Graphics::Driver::iSwapChain>
+			class SwapChain : public tRefCounted<Graphics::iSwapChain>
 			{
 			public:
-				SwapChain(Instance*, Graphics::Driver::iDevice*, iWindow*, const Graphics::Driver::SwapChainDesc& desc);
+				SwapChain(Instance*, Graphics::iDevice*, iWindow*, const Graphics::SwapChainDesc& desc);
 				~SwapChain() override;
 
 				VkSwapchainKHR& GetSwapChain() { return mSwapChain; }
@@ -61,7 +59,7 @@ namespace Cpf
 				bool _CreateSemaphores(Device* device);
 
 				Device* mpDevice;
-				Graphics::Driver::SwapChainDesc mDesc;
+				Graphics::SwapChainDesc mDesc;
 				VkSurfaceKHR mPresentationSurface;
 				VkSurfaceFormatKHR mFormat;
 				VkSwapchainKHR mSwapChain;

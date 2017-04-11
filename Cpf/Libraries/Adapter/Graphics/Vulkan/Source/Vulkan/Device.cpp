@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/Vulkan/Device.hpp"
-#include "Adapters/Vulkan/Adapter.hpp"
-#include "Adapters/VUlkan/Instance.hpp"
-#include "Adapters/Vulkan/CommandPool.hpp"
-#include "Adapters/Vulkan/CommandBuffer.hpp"
+#include "Adapter/Vulkan/Device.hpp"
+#include "Adapter/Vulkan/Adapter.hpp"
+#include "Adapter/VUlkan/Instance.hpp"
+#include "Adapter/Vulkan/CommandPool.hpp"
+#include "Adapter/Vulkan/CommandBuffer.hpp"
 
 using namespace Cpf;
 using namespace Adapters;

@@ -124,3 +124,9 @@ else ()
 		set_property (TARGET Box2D PROPERTY FOLDER External)
 	endif ()
 endif ()
+
+# Vulkan
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK")
+	add_library (vulkan INTERFACE)
+	target_include_directories (vulkan INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK/1.0.46.0/Include")
+endif ()

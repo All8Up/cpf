@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Driver/iCommandPool.hpp"
+#include "Graphics/iCommandPool.hpp"
 #include "IntrusivePtr.hpp"
 #include "VulkanUtils.hpp"
 
@@ -12,7 +12,7 @@ namespace Cpf
 		{
 			class Device;
 
-			class CommandPool : public tRefCounted<Graphics::Driver::iCommandPool>
+			class CommandPool : public tRefCounted<Graphics::iCommandPool>
 			{
 			public:
 				CommandPool(Device* device);

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration/Configuration.hpp"
+#include "Configuration.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 #ifdef CPF_TARGET_WINDOWS
@@ -24,16 +24,13 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	namespace Adapters
+	struct VulkanInitializer
 	{
-		struct VulkanInitializer
-		{
-			CPF_EXPORT_ADAPTERS_VULKAN static int Install();
-			CPF_EXPORT_ADAPTERS_VULKAN static int Remove();
+		CPF_EXPORT_ADAPTERS_VULKAN static int Install();
+		CPF_EXPORT_ADAPTERS_VULKAN static int Remove();
 
-		private:
-			VulkanInitializer() = delete;
-			~VulkanInitializer() = delete;
-		};
-	}
+	private:
+		VulkanInitializer() = delete;
+		~VulkanInitializer() = delete;
+	};
 }

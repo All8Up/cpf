@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "VulkanUtils.hpp"
-#include "Graphics/Driver/iInstance.hpp"
+#include "Graphics/iInstance.hpp"
 #include "IntrusivePtr.hpp"
 
 namespace Cpf
@@ -10,27 +10,23 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		namespace Driver
-		{
-			class iDevice;
-			class iAdapter;
-			class iSwapChain;
-			struct SwapChainDesc;
-		}
+		struct iDevice;
+		struct iAdapter;
+		struct iSwapChain;
+		struct SwapChainDesc;
 	}
 	namespace Adapters
 	{
 		namespace Vulkan
 		{
 			//////////////////////////////////////////////////////////////////////////
-			class Instance : public tRefCounted<Graphics::Driver::iInstance>
+			class Instance : public tRefCounted<Graphics::iInstance>
 			{
 			public:
 				static void* Create();
 
-				bool EnumerateAdapters(int& count, Graphics::Driver::iAdapter** adapters) override;
-				bool CreateDevice(Graphics::Driver::iAdapter* adapter, Graphics::Driver::iDevice**) override;
-				bool CreateSwapChain(Graphics::Driver::iDevice*, iWindow*, const Graphics::Driver::SwapChainDesc&, Graphics::Driver::iSwapChain**) override;
+				COM::Result CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
+				COM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter*, Graphics::iDevice**) override;
 
 				VkInstance GetInstance() const { return mInstance; }
 

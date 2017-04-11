@@ -6,6 +6,9 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		enum class Format : int32_t;
+		enum class SwapEffect : int32_t;
+
 		struct SwapChainDesc
 		{
 			Format mFormat;

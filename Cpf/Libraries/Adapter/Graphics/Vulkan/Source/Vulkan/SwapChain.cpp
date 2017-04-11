@@ -1,9 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/Vulkan/SwapChain.hpp"
-#include "Adapters/Vulkan/Instance.hpp"
-#include "Adapters/Vulkan/Device.hpp"
-#include "Adapters/Vulkan/Adapter.hpp"
-#include "Application/Application.hpp"
+#include "Adapter/Vulkan/SwapChain.hpp"
+#include "Adapter/Vulkan/Instance.hpp"
+#include "Adapter/Vulkan/Device.hpp"
+#include "Adapter/Vulkan/Adapter.hpp"
 #include <iostream>
 
 using namespace Cpf;

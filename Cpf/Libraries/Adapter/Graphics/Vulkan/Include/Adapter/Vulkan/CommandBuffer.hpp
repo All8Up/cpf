@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Driver/iCommandBuffer.hpp"
+#include "Graphics/iCommandBuffer.hpp"
 #include "IntrusivePtr.hpp"
 #include "VulkanUtils.hpp"
 

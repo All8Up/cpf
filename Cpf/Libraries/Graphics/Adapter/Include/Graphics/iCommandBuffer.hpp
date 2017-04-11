@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
+#include "COM/iUnknown.hpp"
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
 

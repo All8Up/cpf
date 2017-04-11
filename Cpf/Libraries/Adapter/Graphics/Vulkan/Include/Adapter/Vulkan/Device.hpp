@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Adapters/Vulkan.hpp"
+#include "Adapter/Vulkan.hpp"
 #include "Graphics/Driver.hpp"
 #include "VulkanUtils.hpp"
 #include "Vector.hpp"

@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/Vulkan/CommandBuffer.hpp"
-#include "Adapters/Vulkan/CommandPool.hpp"
-#include "Adapters/Vulkan/Device.hpp"
-#include "Adapters/Vulkan/SwapChain.hpp"
+#include "Adapter/Vulkan/CommandBuffer.hpp"
+#include "Adapter/Vulkan/CommandPool.hpp"
+#include "Adapter/Vulkan/Device.hpp"
+#include "Adapter/Vulkan/SwapChain.hpp"
 
 using namespace Cpf;
 using namespace Adapters;

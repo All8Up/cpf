@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapters/Vulkan/CommandPool.hpp"
-#include "Adapters/Vulkan/Device.hpp"
+#include "Adapter/Vulkan/CommandPool.hpp"
+#include "Adapter/Vulkan/Device.hpp"
 
 using namespace Cpf;
 using namespace Adapters;
