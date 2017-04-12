@@ -38,8 +38,3 @@ namespace Cpf
 		~GraphicsInitializer() = delete;
 	};
 }
-
-
-//////////////////////////////////////////////////////////////////////////
-// The master list of graphics driver plugins.
-static constexpr Cpf::COM::ClassID kD3D12InstanceCID = Cpf::COM::ClassID("Adapter::D3D12::iInstance"_crc64);

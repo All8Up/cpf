@@ -188,12 +188,26 @@ bool Networked::_InitializePipeline()
 		mpNetworkSystem->Initialize(GetRegistry(), "Networking", nullptr);
 		mpPipeline->Install(mpNetworkSystem);
 
+		//////////////////////////////////////////////////////////////////////////
+		// Find graphics driver implementations.
+		int32_t typeCount = 0;
+		COM::ClassID selectedAPI;
+		if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
+		{
+			Vector<COM::ClassID> classes(typeCount);
+			if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
+			{
+				if (typeCount > 0)
+					selectedAPI = classes[0];
+			}
+		}
+
 		RenderSystem::Desc renderDesc;
 		renderDesc.mTimer = mpTimer->GetID();
 		GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, mpRenderSystem.AsVoidPP());
 		mpRenderSystem->Initialize(GetRegistry(), "Rendering", &renderDesc);
 		mpPipeline->Install(mpRenderSystem);
-		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(GetRegistry(), mpWindow, mpLocator))
+		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(GetRegistry(), selectedAPI, mpWindow, mpLocator))
 		{
 			return (
 				mpTimer &&

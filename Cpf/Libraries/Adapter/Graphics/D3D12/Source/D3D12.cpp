@@ -10,6 +10,80 @@ using namespace Cpf;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
+class D3D12Class : public tRefCounted<Plugin::iClassInstance>
+{
+public:
+	COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**)
+	{
+		return COM::kNotImplemented;
+	}
+
+	COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
+	{
+		if (outIface)
+		{
+			*outIface = new D3D12::Instance();
+			if (*outIface)
+			{
+				return COM::kOK;
+			}
+			return COM::kOutOfMemory;
+		}
+		return COM::kInvalidParameter;
+	}
+
+	COM::Result CPF_STDCALL GetInterfaces(int32_t* count, COM::InterfaceID* iidList) override
+	{
+		if (count)
+		{
+			if (iidList)
+			{
+				if (*count < 1)
+					return COM::kNotEnoughSpace;
+				*count = 1;
+				iidList[0] = Graphics::iInstance::kIID;
+				return COM::kOK;
+			}
+			else
+			{
+				*count = 1;
+				return COM::kOK;
+			}
+		}
+		return COM::kInvalidParameter;
+	}
+
+	COM::Result CPF_STDCALL GetClasses(COM::InterfaceID iid, int32_t* count, COM::ClassID* cidList) override
+	{
+		if (count)
+		{
+			if (cidList)
+			{
+				if (iid == Graphics::iInstance::kIID)
+				{
+					*count = 1;
+					cidList[0] = D3D12::kD3D12InstanceCID;
+					return COM::kOK;
+				}
+				*count = 0;
+				return COM::kOK;
+			}
+			else
+			{
+				if (iid == Graphics::iInstance::kIID)
+				{
+					*count = 1;
+					return COM::kOK;
+				}
+				*count = 0;
+				return COM::kOK;
+			}
+		}
+		return COM::kInvalidParameter;
+	}
+};
+
+//////////////////////////////////////////////////////////////////////////
 
 int D3D12Initializer::Install(Plugin::iRegistry* regy)
 {
@@ -19,7 +93,7 @@ int D3D12Initializer::Install(Plugin::iRegistry* regy)
 		D3D12::gContext.SetRegistry(regy);
 		CPF_INIT_LOG(D3D12);
 
-		regy->Install(kD3D12InstanceCID, new Plugin::tSimpleClassInstance<D3D12::Instance>());
+		regy->Install(D3D12::kD3D12InstanceCID, new D3D12Class());
 	}
 	return D3D12::gContext.GetRefCount();
 }
@@ -28,7 +102,7 @@ int D3D12Initializer::Remove()
 {
 	if (D3D12::gContext.Release() == 0)
 	{
-		D3D12::gContext.GetRegistry()->Remove(kD3D12InstanceCID);
+		D3D12::gContext.GetRegistry()->Remove(D3D12::kD3D12InstanceCID);
 		CPF_DROP_LOG(D3D12);
 
 		D3D12::gContext.SetRegistry(nullptr);

@@ -479,36 +479,36 @@ bool DebugUI::_HandleRawInput(const void* rawEvent)
 	switch (event->type)
 	{
 	case SDL_MOUSEWHEEL:
-	{
-		if (event->wheel.y > 0)
-			mMouseWheel = 1;
-		if (event->wheel.y < 0)
-			mMouseWheel = -1;
-		return io.WantCaptureMouse;
-	}
+		{
+			if (event->wheel.y > 0)
+				mMouseWheel = 1;
+			if (event->wheel.y < 0)
+				mMouseWheel = -1;
+			return io.WantCaptureMouse;
+		}
 	case SDL_MOUSEBUTTONDOWN:
-	{
-		if (event->button.button == SDL_BUTTON_LEFT) mMousePressed[0] = true;
-		if (event->button.button == SDL_BUTTON_RIGHT) mMousePressed[1] = true;
-		if (event->button.button == SDL_BUTTON_MIDDLE) mMousePressed[2] = true;
-		return io.WantCaptureMouse;
-	}
+		{
+			if (event->button.button == SDL_BUTTON_LEFT) mMousePressed[0] = true;
+			if (event->button.button == SDL_BUTTON_RIGHT) mMousePressed[1] = true;
+			if (event->button.button == SDL_BUTTON_MIDDLE) mMousePressed[2] = true;
+			return io.WantCaptureMouse;
+		}
 	case SDL_TEXTINPUT:
-	{
-		io.AddInputCharactersUTF8(event->text.text);
-		return io.WantTextInput;
-	}
+		{
+			io.AddInputCharactersUTF8(event->text.text);
+			return io.WantTextInput;
+		}
 	case SDL_KEYDOWN:
 	case SDL_KEYUP:
-	{
-		int key = event->key.keysym.sym & ~SDLK_SCANCODE_MASK;
-		io.KeysDown[key] = (event->type == SDL_KEYDOWN);
-		io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
-		io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
-		io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
-		io.KeySuper = ((SDL_GetModState() & KMOD_GUI) != 0);
-		return io.WantCaptureKeyboard;
-	}
+		{
+			int key = event->key.keysym.sym & ~SDLK_SCANCODE_MASK;
+			io.KeysDown[key] = (event->type == SDL_KEYDOWN);
+			io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
+			io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
+			io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
+			io.KeySuper = ((SDL_GetModState() & KMOD_GUI) != 0);
+			return io.WantCaptureKeyboard;
+		}
 	}
 	return false;
 }

@@ -41,7 +41,6 @@ namespace Cpf
 		static constexpr Result kOutOfRange = CreateResult(1, "Core"_crc16, 11);
 
 		//////////////////////////////////////////////////////////////////////////
-		// TODO: This won't be an export in the future.
 		struct iUnknown : iRefCounted
 		{
 			static constexpr InterfaceID kIID = InterfaceID("iUnknown Interface"_crc64);

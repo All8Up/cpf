@@ -3,6 +3,7 @@
 #include "Plugin.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "Move.hpp"
+#include "Vector.hpp"
 #include "UnorderedMap.hpp"
 
 using namespace Cpf;
@@ -27,7 +28,12 @@ public:
 	COM::Result CPF_STDCALL Exists(COM::ClassID id) override;
 	COM::Result CPF_STDCALL Create(COM::iUnknown*, COM::ClassID, COM::InterfaceID, void**) override;
 
+	COM::Result CPF_STDCALL GetClasses(COM::InterfaceID id, int32_t* count, COM::ClassID*) override;
+
 private:
+	COM::Result _AddClasses(Plugin::iClassInstance* ci);
+	COM::Result _RemoveClasses(Plugin::iClassInstance* ci);
+
 	int32_t mRefCount;
 
 	using LibraryMap = Cpf::UnorderedMap<String, Plugin::Library>;
@@ -35,6 +41,10 @@ private:
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
+
+	using ClassList = Cpf::Vector<COM::ClassID>;
+	using ClassMap = Cpf::UnorderedMap<COM::InterfaceID, ClassList>;
+	ClassMap mClasses;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -131,7 +141,7 @@ COM::Result CPF_STDCALL Registry::Install(COM::ClassID id, Plugin::iClassInstanc
 	if (exists == mCreationMap.end())
 	{
 		mCreationMap.insert(CreationMap::value_type{id, clsInst});
-		return COM::kOK;
+		return _AddClasses(clsInst);
 	}
 	return COM::kUnknownClass;
 }
@@ -141,8 +151,13 @@ COM::Result CPF_STDCALL Registry::Remove(COM::ClassID id)
 	auto exists = mCreationMap.find(id);
 	if (exists != mCreationMap.end())
 	{
-		mCreationMap.erase(id);
-		return COM::kOK;
+		COM::Result result;
+		if (COM::Succeeded((result = _RemoveClasses(exists->second))))
+		{
+			mCreationMap.erase(id);
+			return COM::kOK;
+		}
+		return result;
 	}
 	return COM::kUnknownClass;
 }
@@ -171,4 +186,113 @@ COM::Result CPF_STDCALL Registry::Create(COM::iUnknown* outer, COM::ClassID cid,
 		}
 	}
 	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL Registry::GetClasses(COM::InterfaceID id, int32_t* count, COM::ClassID* outClasses)
+{
+	if (count)
+	{
+		auto it = mClasses.find(id);
+		if (outClasses)
+		{
+			if (it != mClasses.end())
+			{
+				*count = int32_t(it->second.size());
+				int32_t idx = 0;
+				for (const auto& iid : it->second)
+					outClasses[idx++] = iid;
+				return COM::kOK;
+			}
+			else
+				*count = 0;
+			return COM::kOK;
+		}
+		else
+		{
+			if (it != mClasses.end())
+				*count = int32_t(it->second.size());
+			else
+				*count = 0;
+			return COM::kOK;
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result Registry::_AddClasses(Plugin::iClassInstance* ci)
+{
+	int32_t interfaceCount = 0;
+	int32_t classCount = 0;
+	if (COM::Succeeded(ci->GetInterfaces(&interfaceCount, nullptr)))
+	{
+		Cpf::Vector<COM::InterfaceID> interfaces(interfaceCount);
+		if (COM::Succeeded(ci->GetInterfaces(&interfaceCount, interfaces.data())))
+		{
+			for (const auto& iid : interfaces)
+			{
+				if (COM::Succeeded(ci->GetClasses(iid, &classCount, nullptr)))
+				{
+					Cpf::Vector<COM::ClassID> classes(classCount);
+					if (COM::Succeeded(ci->GetClasses(iid, &classCount, classes.data())))
+					{
+						auto it = mClasses.find(iid);
+						if (it == mClasses.end())
+						{
+							mClasses[iid] = ClassList();
+							it = mClasses.find(iid);
+						}
+
+						for (const auto& cid : classes)
+						{
+							it->second.push_back(cid);
+						}
+					}
+					return COM::kOK;
+				}
+			}
+		}
+	}
+
+	return COM::kOK;
+}
+
+COM::Result Registry::_RemoveClasses(Plugin::iClassInstance* ci)
+{
+	int32_t interfaceCount = 0;
+	int32_t classCount = 0;
+	if (COM::Succeeded(ci->GetInterfaces(&interfaceCount, nullptr)))
+	{
+		Cpf::Vector<COM::InterfaceID> interfaces(interfaceCount);
+		if (COM::Succeeded(ci->GetInterfaces(&interfaceCount, interfaces.data())))
+		{
+			for (const auto& iid : interfaces)
+			{
+				if (COM::Succeeded(ci->GetClasses(iid, &classCount, nullptr)))
+				{
+					Cpf::Vector<COM::ClassID> classes(classCount);
+					if (COM::Succeeded(ci->GetClasses(iid, &classCount, classes.data())))
+					{
+						auto it = mClasses.find(iid);
+						if (it == mClasses.end())
+							continue;
+
+						for (const auto& cid : classes)
+						{
+							for (auto ibegin = it->second.begin(), iend = it->second.end(); ibegin != iend; ++ibegin)
+							{
+								if (*ibegin == cid)
+								{
+									it->second.erase(ibegin);
+									break;
+								}
+							}
+						}
+					}
+					return COM::kOK;
+				}
+			}
+		}
+	}
+
+	return COM::kOK;
 }

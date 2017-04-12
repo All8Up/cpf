@@ -37,9 +37,9 @@ COM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
 	return mpTimer != nullptr ? COM::kOK : COM::kInvalid;
 }
 
-bool RenderSystem::Initialize(Plugin::iRegistry* registry, iWindow* window, Resources::Locator* locator)
+bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iWindow* window, Resources::Locator* locator)
 {
-	if (Succeeded(registry->Create(nullptr, kD3D12InstanceCID, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
+	if (Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
 	{
 		if (_SelectAdapter() &&
 			COM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&

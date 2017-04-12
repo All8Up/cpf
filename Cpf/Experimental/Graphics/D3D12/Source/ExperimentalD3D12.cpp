@@ -203,8 +203,22 @@ int ExperimentalD3D12::Start(const CommandLine&)
 		//////////////////////////////////////////////////////////////////////////
 		// Get an instance of the installed device from the graphics factory.
 		{
+			//////////////////////////////////////////////////////////////////////////
+			// Find graphics driver implementations.
+			int32_t typeCount = 0;
+			COM::ClassID selectedAPI;
+			if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
+			{
+				Vector<COM::ClassID> classes(typeCount);
+				if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
+				{
+					if (typeCount > 0)
+						selectedAPI = classes[0];
+				}
+			}
+
 			IntrusivePtr<iInstance> gfxInstance;
-			GetRegistry()->Create(nullptr, kD3D12InstanceCID, Graphics::iInstance::kIID, gfxInstance.AsVoidPP());
+			GetRegistry()->Create(nullptr, selectedAPI, Graphics::iInstance::kIID, gfxInstance.AsVoidPP());
 			if (gfxInstance)
 			{
 				IntrusivePtr<iAdapter> adapter;

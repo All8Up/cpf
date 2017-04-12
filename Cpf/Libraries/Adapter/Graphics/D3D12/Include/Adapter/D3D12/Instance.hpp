@@ -27,6 +27,9 @@ namespace Cpf
 		namespace D3D12
 		{
 			//////////////////////////////////////////////////////////////////////////
+			static constexpr Cpf::COM::ClassID kD3D12InstanceCID = Cpf::COM::ClassID("Adapter::D3D12::iInstance"_crc64);
+
+			//////////////////////////////////////////////////////////////////////////
 			struct Instance : tRefCounted<Graphics::iInstance>
 			{
 				Instance();
