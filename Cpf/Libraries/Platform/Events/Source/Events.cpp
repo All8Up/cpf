@@ -2,7 +2,6 @@
 #include "Events/Events.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 
 namespace
 {

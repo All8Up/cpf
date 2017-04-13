@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "EnumFlagType.hpp"
 
 namespace Cpf
 {
@@ -12,4 +12,5 @@ namespace Cpf
 		eX1,
 		eX2
 	};
+	CPF_ENUM_FLAG_TYPE(MouseButton);
 }

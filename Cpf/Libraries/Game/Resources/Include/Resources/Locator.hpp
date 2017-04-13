@@ -19,12 +19,12 @@ namespace Cpf
 		class Volume;
 		class Monitor;
 
-		class Locator : public tRefCounted<>, public Platform::Events::Emitter
+		class Locator : public tRefCounted<>, public Events::Emitter
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			using Mounted = Platform::Events::Event<0, Function<void(const char* const, Volume*)>>;
-			using Unmounted = Platform::Events::Event<1, Function<void(const char* const, Volume*)>>;
+			using Mounted = Events::Event<0, Function<void(const char* const, Volume*)>>;
+			using Unmounted = Events::Event<1, Function<void(const char* const, Volume*)>>;
 
 			//////////////////////////////////////////////////////////////////////////
 			struct LoaderInfo

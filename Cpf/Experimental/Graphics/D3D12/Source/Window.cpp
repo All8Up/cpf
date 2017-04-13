@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "Application/WindowFlags.hpp"
+#include "Application/WindowDesc.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Logging/Logging.hpp"
 #include "Math/Constants.hpp"

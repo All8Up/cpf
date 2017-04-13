@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Application/Application.hpp"
 #include "Application/WindowedApplication.hpp"
+#include "Application/WindowFlags.hpp"
+#include "Application/WindowDesc.hpp"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -12,10 +14,6 @@ Platform::iGLContext::~iGLContext()
 
 //////////////////////////////////////////////////////////////////////////
 const Math::Vector2i iWindow::Centered(0x2FFF0000, 0x2FFF0000);
-
-iWindow::~iWindow()
-{}
-
 
 //////////////////////////////////////////////////////////////////////////
 Application::Application()
@@ -49,7 +47,7 @@ WindowDesc::WindowDesc(WindowedApplication* app)
 	, mTitle("")
 	, mPosition(iWindow::Centered)
 	, mSize(Math::Vector2i(200, 200))
-	, mFlags(0)
+	, mFlags(WindowFlags::eNone)
 {}
 
 WindowDesc& WindowDesc::Title(const String& title)
@@ -70,7 +68,7 @@ WindowDesc& WindowDesc::Size(const Math::Vector2i& size)
 	return *this;
 }
 
-WindowDesc& WindowDesc::Flags(uint32_t flags)
+WindowDesc& WindowDesc::Flags(WindowFlags flags)
 {
 	mFlags = flags;
 	return *this;

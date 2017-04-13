@@ -4,29 +4,32 @@
 #include "Logging/Logging.hpp"
 #include "Application/MouseButton.hpp"
 #include "Application/WindowFlags.hpp"
+#include "Application/WindowDesc.hpp"
+#include "Adapter/Window.hpp"
+#include "Plugin/iClassInstance.hpp"
 #include "SDL_syswm.h"
 
 using namespace Cpf;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-int32_t WindowFlags(int32_t flags)
+int32_t WindowFlags(Cpf::WindowFlags flags)
 {
 	int32_t result = 0;
-	if (flags&WindowFlags::eFullscreen)			result |= SDL_WINDOW_FULLSCREEN;
-	if (flags&WindowFlags::eSupportOpenGL)		result |= SDL_WINDOW_OPENGL;
-	if (flags&WindowFlags::eShown)				result |= SDL_WINDOW_SHOWN;
-	if (flags&WindowFlags::eHidden)				result |= SDL_WINDOW_HIDDEN;
-	if (flags&WindowFlags::eBorderless)			result |= SDL_WINDOW_BORDERLESS;
-	if (flags&WindowFlags::eResizable)			result |= SDL_WINDOW_RESIZABLE;
-	if (flags&WindowFlags::eMinimized)			result |= SDL_WINDOW_MINIMIZED;
-	if (flags&WindowFlags::eMaximized)			result |= SDL_WINDOW_MAXIMIZED;
-	if (flags&WindowFlags::eInputGrabbed)		result |= SDL_WINDOW_INPUT_GRABBED;
-	if (flags&WindowFlags::eInputFocus)			result |= SDL_WINDOW_INPUT_FOCUS;
-	if (flags&WindowFlags::eMouseFocus)			result |= SDL_WINDOW_MOUSE_FOCUS;
-	if (flags&WindowFlags::eFullscreenDesktop)	result |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-	if (flags&WindowFlags::eAllowHDPI)			result |= SDL_WINDOW_ALLOW_HIGHDPI;
-	if (flags&WindowFlags::eMouseCapture)		result |= SDL_WINDOW_MOUSE_CAPTURE;
+	if ((flags&WindowFlags::eFullscreen) == WindowFlags::eFullscreen)				result |= SDL_WINDOW_FULLSCREEN;
+	if ((flags&WindowFlags::eSupportOpenGL) == WindowFlags::eSupportOpenGL)			result |= SDL_WINDOW_OPENGL;
+	if ((flags&WindowFlags::eShown) == WindowFlags::eShown)							result |= SDL_WINDOW_SHOWN;
+	if ((flags&WindowFlags::eHidden) == WindowFlags::eHidden)						result |= SDL_WINDOW_HIDDEN;
+	if ((flags&WindowFlags::eBorderless) == WindowFlags::eBorderless)				result |= SDL_WINDOW_BORDERLESS;
+	if ((flags&WindowFlags::eResizable) == WindowFlags::eResizable)					result |= SDL_WINDOW_RESIZABLE;
+	if ((flags&WindowFlags::eMinimized) == WindowFlags::eMinimized)					result |= SDL_WINDOW_MINIMIZED;
+	if ((flags&WindowFlags::eMaximized) == WindowFlags::eMaximized)					result |= SDL_WINDOW_MAXIMIZED;
+	if ((flags&WindowFlags::eInputGrabbed) == WindowFlags::eInputGrabbed)			result |= SDL_WINDOW_INPUT_GRABBED;
+	if ((flags&WindowFlags::eInputFocus) == WindowFlags::eInputFocus)				result |= SDL_WINDOW_INPUT_FOCUS;
+	if ((flags&WindowFlags::eMouseFocus) == WindowFlags::eMouseFocus)				result |= SDL_WINDOW_MOUSE_FOCUS;
+	if ((flags&WindowFlags::eFullscreenDesktop) == WindowFlags::eFullscreenDesktop)	result |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+	if ((flags&WindowFlags::eAllowHDPI) == WindowFlags::eAllowHDPI)					result |= SDL_WINDOW_ALLOW_HIGHDPI;
+	if ((flags&WindowFlags::eMouseCapture) == WindowFlags::eMouseCapture)			result |= SDL_WINDOW_MOUSE_CAPTURE;
 
 	return result;
 }
@@ -46,6 +49,8 @@ WindowedApp::WindowedApp()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	GetRegistry()->Install(kSDL2WindowCID, new Plugin::tSimpleClassInstance<Window>());
 }
 
 WindowedApp::~WindowedApp()
@@ -88,17 +93,16 @@ bool WindowedApp::Wait()
 
 bool WindowedApp::Create(const WindowDesc& desc, iWindow** outWindow)
 {
-	iWindow* win = new Window(
-		SDL_CreateWindow(
-			desc.mTitle.c_str(),
-			desc.mPosition.x,
-			desc.mPosition.y,
-			desc.mSize.x,
-			desc.mSize.y,
-			Uint32(desc.mFlags)
-		)
+	Window* win = new Window();
+	auto sdlwin = SDL_CreateWindow(
+		desc.mTitle.c_str(),
+		desc.mPosition.x,
+		desc.mPosition.y,
+		desc.mSize.x,
+		desc.mSize.y,
+		Uint32(desc.mFlags)
 	);
-	if (win)
+	if (win && sdlwin && win->Initialize(sdlwin))
 		*outWindow = win;
 	else
 		*outWindow = nullptr;

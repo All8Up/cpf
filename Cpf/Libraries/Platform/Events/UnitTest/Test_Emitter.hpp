@@ -5,14 +5,14 @@
 /// @cond
 namespace EventsBasic
 {
-	class Test : public Cpf::Platform::Events::Emitter
+	class Test : public Cpf::Events::Emitter
 	{
 	public:
-		typedef Cpf::Platform::Events::Event< 0, Cpf::Function< void(void) > > Event0;
-		typedef Cpf::Platform::Events::Event< 1, Cpf::Function< void(int32_t) > > Event1;
-		typedef Cpf::Platform::Events::Event< 2, Cpf::Function< void(int32_t, int32_t) > > Event2;
-		typedef Cpf::Platform::Events::Event< 3, Cpf::Function< void(void) > > Event3;
-		typedef Cpf::Platform::Events::Event< 4, Cpf::Function< void(void) > > Event4;
+		typedef Cpf::Events::Event< 0, Cpf::Function< void(void) > > Event0;
+		typedef Cpf::Events::Event< 1, Cpf::Function< void(int32_t) > > Event1;
+		typedef Cpf::Events::Event< 2, Cpf::Function< void(int32_t, int32_t) > > Event2;
+		typedef Cpf::Events::Event< 3, Cpf::Function< void(void) > > Event3;
+		typedef Cpf::Events::Event< 4, Cpf::Function< void(void) > > Event4;
 	};
 }
 
@@ -26,7 +26,7 @@ TEST(Events, Basics)
 	int32_t event4Fired = 0;
 
 	EventsBasic::Test test0;
-	Cpf::Platform::Events::Handle event0(test0.On<EventsBasic::Test::Event0>([&]() {
+	Cpf::Events::Handle event0(test0.On<EventsBasic::Test::Event0>([&]() {
 		++event0Fired;
 	}));
 
@@ -39,11 +39,11 @@ TEST(Events, Basics)
 	EXPECT_EQ(0, event2Fired);
 	EXPECT_EQ(0, event3Fired);
 
-	Cpf::Platform::Events::Handle event1(test0.On<EventsBasic::Test::Event1>([&](int32_t) {
+	Cpf::Events::Handle event1(test0.On<EventsBasic::Test::Event1>([&](int32_t) {
 		++event1Fired;
 	}));
 
-	Cpf::Platform::Events::Handle event2(test0.On<EventsBasic::Test::Event2>([&](int32_t, int32_t) {
+	Cpf::Events::Handle event2(test0.On<EventsBasic::Test::Event2>([&](int32_t, int32_t) {
 		++event2Fired;
 	}));
 
@@ -57,7 +57,7 @@ TEST(Events, Basics)
 	EXPECT_EQ(1, event2Fired);
 	EXPECT_EQ(0, event3Fired);
 
-	Cpf::Platform::Events::Handle event3(test0.On<EventsBasic::Test::Event3>([&]() {
+	Cpf::Events::Handle event3(test0.On<EventsBasic::Test::Event3>([&]() {
 		++event3Fired;
 		test0.Remove(event1);
 		test0.On<EventsBasic::Test::Event4>([&]() {

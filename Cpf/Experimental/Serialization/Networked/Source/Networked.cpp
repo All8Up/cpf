@@ -9,6 +9,7 @@
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
 #include "Application/WindowFlags.hpp"
+#include "Application/WindowDesc.hpp"
 #include "Graphics.hpp"
 
 using namespace Cpf;

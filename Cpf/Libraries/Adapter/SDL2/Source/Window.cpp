@@ -8,17 +8,44 @@ using namespace Cpf;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-Window::Window(SDL_Window* win)
-	: mpWindow(win)
+Window::Window()
+	: mpWindow(nullptr)
 {
 	CPF_LOG(Application, Info) << "Creating window.";
-	SDL_SetWindowData(win, "iWindow", this);
 }
 
 Window::~Window()
 {
 	CPF_LOG(Application, Info) << "Destroying window.";
 	SDL_DestroyWindow(mpWindow);
+}
+
+COM::Result CPF_STDCALL Window::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case COM::iUnknown::kIID.GetID():
+			*outIface = static_cast<COM::iUnknown*>(this);
+			break;
+		case iWindow::kIID.GetID():
+			*outIface = static_cast<iWindow*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+bool Window::Initialize(SDL_Window* win)
+{
+	mpWindow = win;
+	SDL_SetWindowData(win, "iWindow", this);
+	return win!=nullptr;
 }
 
 Math::Vector2i Window::GetClientArea() const

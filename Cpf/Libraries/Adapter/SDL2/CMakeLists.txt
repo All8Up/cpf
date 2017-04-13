@@ -49,26 +49,29 @@ target_include_directories (s_SDL2
 
 set_property (TARGET s_SDL2 PROPERTY FOLDER Libraries/Static/Adapter)
 
-#[[
-install (DIRECTORY Include/SDL2
-	DESTINATION Include/SDL2
-	PATTERN *
-)
-
-install (TARGETS s_SDL2
-	EXPORT SDL2Config
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
-install (EXPORT SDL2Config DESTINATION CMake)
-
 # ###############################################
-MakeUnitTest (LIBRARY s_SDL2 GROUP Adapter
-	TEST_FILES
-		UnitTest/Test_All.hpp
-		../../Core/Test/UnitTestMain.cpp
-	LINK_LIBRARIES
-		Configuration
+set (PLUGIN_INCLUDES
+	Include/Window.hpp
+	Include/SDL2.hpp
 )
-]]#
+set (PLUGIN_SOURCES
+	Source/Windowx.cpp
+	Source/SDL2.cpp
+)
+
+add_library (SDL2_plugin SHARED
+	${PLUGIN_INCLUDES}
+	${PLUGIN_SOURCES}
+)
+target_compile_definitions (SDL2_plugin
+	PRIVATE CPF_BUILD_SDL2
+)
+target_link_libraries (SDL2_plugin
+	Configuration
+	Logging
+	SDL2-static
+	i_Application
+)
+set_property (TARGET SDL2_plugin
+	PROPERTY FOLDER Plugins/Adapter
+)

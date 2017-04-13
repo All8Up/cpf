@@ -13,7 +13,7 @@
 namespace Cpf
 {
 	//////////////////////////////////////////////////////////////////////////
-	class Application : public Platform::Events::Emitter
+	class Application : public Events::Emitter
 	{
 	public:
 		//////////////////////////////////////////////////////////////////////////
@@ -31,7 +31,7 @@ namespace Cpf
 		void Quit();
 
 		//////////////////////////////////////////////////////////////////////////
-		using OnQuit = Platform::Events::Event< 0, std::function< bool() >, Platform::Events::AnyNotEqual<bool, true, true, false> >;
+		using OnQuit = Events::Event< 0, std::function< bool() >, Events::AnyNotEqual<bool, true, true, false> >;
 
 		//////////////////////////////////////////////////////////////////////////
 		CommandLine& GetCommandLine() { return mCommandLine; }

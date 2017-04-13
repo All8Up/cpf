@@ -27,26 +27,23 @@
 // Forward references.
 namespace Cpf
 {
-	namespace Platform
+	struct EventsInitializer
 	{
-		struct EventsInitializer
-		{
-			CPF_EXPORT_EVENTS static int Install();
-			CPF_EXPORT_EVENTS static int Remove();
+		CPF_EXPORT_EVENTS static int Install();
+		CPF_EXPORT_EVENTS static int Remove();
 
-		private:
-			EventsInitializer() = delete;
-			~EventsInitializer() = delete;
-		};
+	private:
+		EventsInitializer() = delete;
+		~EventsInitializer() = delete;
+	};
 
-		namespace Events
-		{
-			class EmitterBase;
-			class Emitter;
-			class DeferredEmitter;
-			class EventBase;
-			class HandleBase;
-			class Handle;
-		}
+	namespace Events
+	{
+		class EmitterBase;
+		class Emitter;
+		class DeferredEmitter;
+		class EventBase;
+		class HandleBase;
+		class Handle;
 	}
 }

@@ -6,6 +6,7 @@
 #include "MultiCore.hpp"
 
 #include "Application/WindowFlags.hpp"
+#include "Application/WindowDesc.hpp"
 
 #include "Math/Algorithm.hpp"
 #include "Math/Matrix44v.hpp"

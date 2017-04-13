@@ -1,13 +1,26 @@
 # ###############################################
+set (INTERFACE_FILES
+	Interface/Application/iWindow.hpp
+	Interface/Application/KeyCode.hpp
+	Interface/Application/MouseButton.hpp
+	Interface/Application/OSWindowData.hpp
+	Interface/Application/WindowDesc.hpp
+	Interface/Application/WindowFlags.hpp
+)
+add_library (i_Application INTERFACE)
+target_link_libraries (i_Application INTERFACE Configuration s_Events Plugin)
+target_include_directories (i_Application INTERFACE
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+	$<INSTALL_INTERFACE:Interface>
+)
+
+# ###############################################
 set( INCLUDE_FILES
 	Include/Application/Application.hpp
 	Include/Application/WindowedApplication.hpp
 	Include/Application/Window.hpp
 	Include/Application/Arguments.hpp
 	Include/Application/ConsoleCommands.hpp
-	Include/Application/KeyCode.hpp
-	Include/Application/MouseButton.hpp
-	Include/Application/WindowFlags.hpp
 
 	Include/Platform/Platform.hpp
 	Include/Platform/ConsoleApp.hpp
@@ -23,6 +36,7 @@ set( SOURCE_FILES
 )
 
 add_library( s_Application STATIC
+	${INTERFACE_FILES}
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
 )
@@ -30,10 +44,11 @@ target_compile_definitions( s_Application
 	PUBLIC CPF_STATIC_APPLICATION CPF_STATIC_PLATFORM
 	PRIVATE CPF_BUILD_PLATFORM
 )
+source_group (Interface FILES ${INTERFACE_FILES})
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( s_Application Configuration s_Memory s_Collections Math s_Events s_PluginHost )
+target_link_libraries( s_Application i_Application s_Memory s_Collections Math s_Events s_PluginHost )
 
 target_include_directories( s_Application PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -56,6 +71,12 @@ install( DIRECTORY Include/${CMAKE_SYSTEM_NAME}/Platform/Application
 
 
 install( TARGETS s_Application
+	EXPORT ApplicationConfig
+	CONFIGURATIONS Debug Release
+	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
+	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
+)
+install( TARGETS i_Application
 	EXPORT ApplicationConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
