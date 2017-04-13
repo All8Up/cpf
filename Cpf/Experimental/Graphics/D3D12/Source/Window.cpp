@@ -33,7 +33,7 @@ bool ExperimentalD3D12::_CreateWindow()
 
 	if (mpWindow)
 	{
-		mpWindow->GetEmitter().On<iWindow::OnResized>(Bind(&ExperimentalD3D12::_Resize, this, Placeholders::_1, Placeholders::_2));
+		mpWindow->GetEmitter().On<iWindow::OnResize>(Bind(&ExperimentalD3D12::_Resize, this, Placeholders::_1, Placeholders::_2));
 		return true;
 	}
 	return false;

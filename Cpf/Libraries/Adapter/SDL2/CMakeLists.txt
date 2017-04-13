@@ -1,17 +1,13 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/Adapter/SDL2.hpp
 	Include/Adapter/ConsoleApp.hpp
 	Include/Adapter/WindowedApp.hpp
 	Include/Adapter/Window.hpp
-	Include/Adapter/GLContext.hpp
 )
 set (SOURCE_FILES
-	Source/SDL2.cpp
 	Source/ConsoleApp.cpp
 	Source/WindowedApp.cpp
 	Source/Window.cpp
-	Source/GLContext.cpp
 )
 
 add_library (s_SDL2 STATIC
@@ -52,26 +48,29 @@ set_property (TARGET s_SDL2 PROPERTY FOLDER Libraries/Static/Adapter)
 # ###############################################
 set (PLUGIN_INCLUDES
 	Include/Window.hpp
-	Include/SDL2.hpp
+	Include/SDL2Application.hpp
 )
 set (PLUGIN_SOURCES
 	Source/Windowx.cpp
-	Source/SDL2.cpp
+	Source/SDL2Application.cpp
 )
 
-add_library (SDL2_plugin SHARED
+add_library (SDL2Application SHARED
 	${PLUGIN_INCLUDES}
 	${PLUGIN_SOURCES}
 )
-target_compile_definitions (SDL2_plugin
+target_compile_definitions (SDL2Application
 	PRIVATE CPF_BUILD_SDL2
 )
-target_link_libraries (SDL2_plugin
-	Configuration
-	Logging
-	SDL2-static
-	i_Application
+target_link_libraries (SDL2Application
+	PRIVATE
+		Configuration
+		Logging
+		SDL2-static
+		i_Application
 )
-set_property (TARGET SDL2_plugin
+set_property (TARGET SDL2Application
 	PROPERTY FOLDER Plugins/Adapter
 )
+source_group (Interfaces FILES ${PLUGIN_INCLUDES})
+source_group (Sources FILES ${PLUGIN_SOURCES})

@@ -24,7 +24,6 @@ set( INCLUDE_FILES
 
 	Include/Platform/Platform.hpp
 	Include/Platform/ConsoleApp.hpp
-	Include/Platform/iGLContext.hpp
 )
 set( SOURCE_FILES
 	Source/Application.cpp

@@ -29,7 +29,7 @@ namespace Cpf
 		using OnButtonUp = Events::Event<"OnButtonUp"_crc64, Function<void(MouseButton, int32_t, int32_t)> >;
 		using OnMouseWheel = Events::Event<"OnMouseWheel"_crc64, Function<void()> >;
 
-		using OnKeyDown = Events::Event <"OnKeyDown"_crc64, Function<void(KeyCode)> >;
-		using OnResized = Events::Event <"OnResize"_crc64, Function<void(int32_t, int32_t)> >;
+		using OnKeyDown = Events::Event<"OnKeyDown"_crc64, Function<void(KeyCode)> >;
+		using OnResize = Events::Event<"OnResize"_crc64, Function<void(int32_t, int32_t)> >;
 	};
 }

@@ -2,7 +2,6 @@
 #pragma once
 #include "Configuration.hpp"
 #include "Application/Arguments.hpp"
-#include "Platform/iGLContext.hpp"
 #include "Events/Emitter.hpp"
 #include "Math/Vector2v.hpp"
 #include "String.hpp"
@@ -44,11 +43,6 @@ namespace Cpf
 		CommandLine mCommandLine;
 		IntrusivePtr<Plugin::iRegistry> mpRegistry;
 	};
-
-
-	Platform::iGLContext* GLCreateContext(iWindow*);
-	void GLMakeCurrent(iWindow*, Platform::iGLContext*);
-	bool GLInitialize(iWindow*);
 }
 
 

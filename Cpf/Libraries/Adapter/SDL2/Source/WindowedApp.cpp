@@ -43,13 +43,6 @@ WindowedApp::WindowedApp()
 	SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 	SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
 
-	// TODO: Should move into the render device abstraction.  I.e. this should not be done for DX based devices.
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
 	GetRegistry()->Install(kSDL2WindowCID, new Plugin::tSimpleClassInstance<Window>());
 }
 
@@ -237,7 +230,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 		case SDL_WINDOWEVENT_RESIZED:
 		{
 			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
-			window->GetEmitter().Emit<iWindow::OnResized>(event.window.data1, event.window.data2);
+			window->GetEmitter().Emit<iWindow::OnResize>(event.window.data1, event.window.data2);
 		}
 		break;
 

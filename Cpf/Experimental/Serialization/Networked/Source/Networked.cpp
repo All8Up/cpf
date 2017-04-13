@@ -120,7 +120,7 @@ bool Networked::_CreateWindow()
 	if (mpWindow)
 	{
 		// Bind the window events.
-		mpWindow->GetEmitter().On<iWindow::OnResized>(Bind(&Networked::_Resize, this, Placeholders::_1, Placeholders::_2));
+		mpWindow->GetEmitter().On<iWindow::OnResize>(Bind(&Networked::_Resize, this, Placeholders::_1, Placeholders::_2));
 		return true;
 	}
 	return false;

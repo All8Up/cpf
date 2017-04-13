@@ -43,7 +43,6 @@ SchedulerPerformance::~SchedulerPerformance()
 
 //////////////////////////////////////////////////////////////////////////
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 using namespace Concurrency;
 

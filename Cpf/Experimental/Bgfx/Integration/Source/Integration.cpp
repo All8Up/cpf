@@ -148,7 +148,7 @@ bool BgfxIntegration::_CreateWindow()
 		.Size(mWindowSize)
 		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
-	mpWindow->GetEmitter().On<iWindow::OnResized>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
+	mpWindow->GetEmitter().On<iWindow::OnResize>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
 
 	return bool(mpWindow) && bgfxSetWindow(mpWindow);
 }
