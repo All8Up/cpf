@@ -3,6 +3,7 @@
 #include "Adapter/Window.hpp"
 #include "Logging/Logging.hpp"
 #include "SDL_syswm.h"
+#include "Application/OSWindowData.hpp"
 
 using namespace Cpf;
 using namespace Adapter;
@@ -48,31 +49,85 @@ bool Window::Initialize(SDL_Window* win)
 	return win!=nullptr;
 }
 
-Math::Vector2i Window::GetClientArea() const
+void CPF_STDCALL Window::SetTitle(const char* title)
 {
-	int hw, hh;
-	SDL_GL_GetDrawableSize(mpWindow, &hw, &hh);
-	return Math::Vector2i(hw, hh);
+	SDL_SetWindowTitle(mpWindow, title);
 }
 
-OSWindowData Window::GetOSWindowData() const
+void CPF_STDCALL Window::SetPosition(int32_t x, int32_t y)
 {
-	OSWindowData result;
-	SDL_SysWMinfo windowInfo;
+	SDL_SetWindowPosition(mpWindow, x, y);
+}
+
+void CPF_STDCALL Window::GetPosition(int32_t* x, int32_t* y)
+{
+	int xx, yy;
+	SDL_GetWindowPosition(mpWindow, &xx, &yy);
+	*x = xx;
+	*y = yy;
+}
+
+void CPF_STDCALL Window::SetSize(int32_t x, int32_t y)
+{
+	SDL_SetWindowSize(mpWindow, x, y);
+}
+
+void CPF_STDCALL Window::GetSize(int32_t* w, int32_t* h)
+{
+	int ww, hh;
+	SDL_GetWindowSize(mpWindow, &ww, &hh);
+	*w = ww;
+	*h = hh;
+}
+
+void CPF_STDCALL Window::Minimize()
+{
+	SDL_MinimizeWindow(mpWindow);
+}
+
+void CPF_STDCALL Window::Maximize()
+{
+	SDL_MaximizeWindow(mpWindow);
+}
+
+void CPF_STDCALL Window::Restore()
+{
+	SDL_RestoreWindow(mpWindow);
+}
+
+COM::Result CPF_STDCALL Window::GetClientAreaSize(int32_t* w, int32_t* h)
+{
+	if (w && h)
+	{
+		int hw, hh;
+		SDL_GL_GetDrawableSize(mpWindow, &hw, &hh);
+		*w = hw;
+		*h = hh;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL Window::GetOSData(OSWindowData* outData)
+{
+	if (outData)
+	{
+		SDL_SysWMinfo windowInfo;
 
 #if CPF_TARGET_WINDOWS
-	SDL_VERSION(&windowInfo.version);
-	SDL_GetWindowWMInfo(mpWindow, &windowInfo);
-	result.mHwnd = windowInfo.info.win.window;
-	result.mHDC = windowInfo.info.win.hdc;
+		SDL_VERSION(&windowInfo.version);
+		SDL_GetWindowWMInfo(mpWindow, &windowInfo);
+		outData->mHwnd = windowInfo.info.win.window;
+		outData->mHDC = windowInfo.info.win.hdc;
 #endif
 #if CPF_TARGET_DARWIN
-	SDL_VERSION(&windowInfo.version);
-	SDL_GetWindowWMInfo(mpWindow, &windowInfo);
-	result.mpView = windowInfo.info.cocoa.window;
+		SDL_VERSION(&windowInfo.version);
+		SDL_GetWindowWMInfo(mpWindow, &windowInfo);
+		result.mpView = windowInfo.info.cocoa.window;
 #endif
-
-	return result;
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 SDL_Window* Window::GetSDLWindow() const

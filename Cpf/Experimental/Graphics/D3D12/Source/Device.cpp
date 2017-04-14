@@ -12,6 +12,7 @@
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 #include "Graphics/WindowData.hpp"
+#include "Application/OSWindowData.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -117,8 +118,12 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		true
 	};
 	Graphics::WindowData winData;
-	winData.mHWnd = mpWindow->GetOSWindowData().mHwnd;
-	mpDevice->CreateSwapChain(instance, &winData, mpWindow->GetClientArea().x, mpWindow->GetClientArea().y, &desc, mpSwapChain.AsTypePP());
+	OSWindowData osData;
+	mpWindow->GetOSData(&osData);
+	winData.mHWnd = osData.mHwnd;
+	int32_t w, h;
+	mpWindow->GetClientAreaSize(&w, &h);
+	mpDevice->CreateSwapChain(instance, &winData, w, h, &desc, mpSwapChain.AsTypePP());
 
 	// Create a set of depth buffers to go with the swap chain.
 	// TODO: There should really only be one shared depth buffer.
@@ -126,7 +131,7 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
 	ImageDesc depthBufferDesc
 	{
-		mpWindow->GetClientArea().x, mpWindow->GetClientArea().y,
+		w, h,
 		1,
 		1,
 		Format::eD32f,

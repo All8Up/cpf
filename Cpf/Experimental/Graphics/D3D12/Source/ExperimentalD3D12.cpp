@@ -378,7 +378,9 @@ int ExperimentalD3D12::Start(const CommandLine&)
 					{
 						CPF_LOG(Experimental, Info) << "Failed to initialize the debug UI.";
 					}
-					mpDebugUI->SetWindowSize(mpWindow->GetClientArea().x, mpWindow->GetClientArea().y);
+					int32_t w, h;
+					mpWindow->GetClientAreaSize(&w, &h);
+					mpDebugUI->SetWindowSize(w, h);
 #pragma message("TODO: Input handling.")
 //					AddRawInputHook(&iDebugUI::HandleRawInput, mpDebugUI);
 

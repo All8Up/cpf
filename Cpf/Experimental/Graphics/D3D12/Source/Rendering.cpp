@@ -80,13 +80,15 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetResourceBinding(mpResourceBinding);
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetPipeline(mpPipeline);
 
+	int32_t w, h;
+	mpWindow->GetClientAreaSize(&w, &h);
 	Viewport viewport{
 		0.0f, 0.0f,
-		float(mpWindow->GetClientArea().x), float(mpWindow->GetClientArea().y),
+		float(w), float(h),
 		0.0f, 1.0f
 	};
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetViewports(1, &viewport);
-	Rectanglei scissor(0, mpWindow->GetClientArea().x, 0, mpWindow->GetClientArea().y);
+	Rectanglei scissor(0, w, 0, h);
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetScissorRects(1, &scissor);
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetTopology(PrimitiveTopology::eTriangleList);
 

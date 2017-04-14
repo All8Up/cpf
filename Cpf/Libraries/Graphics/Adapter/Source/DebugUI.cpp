@@ -19,6 +19,7 @@
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"
+#include "Application/OSWindowData.hpp"
 #include "imgui/imgui.h"
 #include "IO/Stream.hpp"
 #include "Resources/ID.hpp"
@@ -188,7 +189,8 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 	io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
 
 #ifdef _WIN32
-	OSWindowData osData = window->GetOSWindowData();
+	OSWindowData osData;
+	window->GetOSData(&osData);
 	io.ImeWindowHandle = osData.mHwnd;
 #else
 	(void)window;

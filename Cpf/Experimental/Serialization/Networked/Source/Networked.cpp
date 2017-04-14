@@ -112,7 +112,7 @@ bool Networked::_CreateWindow()
 	mpWindow.Adopt(
 		WindowDesc(this)
 		.Title("Network Test")
-		.Position(iWindow::Centered)
+		.Position({ iWindow::CenteredOn(0), iWindow::CenteredOn(0) })
 		.Size(mWindowSize)
 		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
@@ -120,7 +120,7 @@ bool Networked::_CreateWindow()
 	if (mpWindow)
 	{
 		// Bind the window events.
-		mpWindow->GetEmitter().On<iWindow::OnResize>(Bind(&Networked::_Resize, this, Placeholders::_1, Placeholders::_2));
+		mpWindow->GetEmitter()->On<iWindow::OnResize>(Bind(&Networked::_Resize, this, Placeholders::_1, Placeholders::_2));
 		return true;
 	}
 	return false;

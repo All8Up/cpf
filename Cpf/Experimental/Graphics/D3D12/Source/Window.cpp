@@ -26,14 +26,14 @@ bool ExperimentalD3D12::_CreateWindow()
 	mpWindow.Adopt(
 		WindowDesc(this)
 		.Title(WINDOW_TITLE)
-		.Position(iWindow::Centered)
+		.Position({ iWindow::CenteredOn(0), iWindow::CenteredOn(0) })
 		.Size(mWindowSize)
 		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
 
 	if (mpWindow)
 	{
-		mpWindow->GetEmitter().On<iWindow::OnResize>(Bind(&ExperimentalD3D12::_Resize, this, Placeholders::_1, Placeholders::_2));
+		mpWindow->GetEmitter()->On<iWindow::OnResize>(Bind(&ExperimentalD3D12::_Resize, this, Placeholders::_1, Placeholders::_2));
 		return true;
 	}
 	return false;

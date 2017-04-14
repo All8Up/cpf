@@ -86,19 +86,25 @@ bool WindowedApp::Wait()
 
 bool WindowedApp::Create(const WindowDesc& desc, iWindow** outWindow)
 {
-	Window* win = new Window();
-	auto sdlwin = SDL_CreateWindow(
-		desc.mTitle.c_str(),
-		desc.mPosition.x,
-		desc.mPosition.y,
-		desc.mSize.x,
-		desc.mSize.y,
-		Uint32(desc.mFlags)
-	);
-	if (win && sdlwin && win->Initialize(sdlwin))
-		*outWindow = win;
-	else
-		*outWindow = nullptr;
+	Window* win = nullptr;
+	if (COM::Succeeded(GetRegistry()->Create(nullptr, kSDL2WindowCID, iWindow::kIID, reinterpret_cast<void**>(&win))))
+	{
+		int px = (desc.mPosition.x & 0xFF100000) != 0xFF100000 ? desc.mPosition.x : SDL_WINDOWPOS_CENTERED_DISPLAY(desc.mPosition.x & 15);
+		int py = (desc.mPosition.y & 0xFF100000) != 0xFF100000 ? desc.mPosition.y : SDL_WINDOWPOS_CENTERED_DISPLAY(desc.mPosition.y & 15);
+
+		auto sdlwin = SDL_CreateWindow(
+			desc.mTitle.c_str(),
+			px,
+			py,
+			desc.mSize.x,
+			desc.mSize.y,
+			Uint32(desc.mFlags)
+		);
+		if (win && sdlwin && win->Initialize(sdlwin))
+			*outWindow = win;
+		else
+			*outWindow = nullptr;
+	}
 	return win != nullptr;
 }
 
@@ -132,83 +138,87 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 	switch (event.type)
 	{
 	case SDL_QUIT:
+		Quit();
 		break;
 
 	case SDL_MOUSEMOTION:
-	{
-		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.motion.windowID), "iWindow"));
-		window->GetEmitter().Emit<iWindow::OnMouseMove>(event.motion.x, event.motion.y);
-	}
-	break;
+		{
+			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.motion.windowID), "iWindow"));
+			window->GetEmitter()->Emit<iWindow::OnMouseMove>(event.motion.x, event.motion.y);
+		}
+		break;
 
 	case SDL_MOUSEBUTTONDOWN:
-	{
-		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.button.windowID), "iWindow"));
-		MouseButton id = MouseButton::eLeft;
-		switch (event.button.button)
 		{
-		case SDL_BUTTON_LEFT: id = MouseButton::eLeft; break;
-		case SDL_BUTTON_MIDDLE: id = MouseButton::eMiddle; break;
-		case SDL_BUTTON_RIGHT: id = MouseButton::eRight; break;
-		case SDL_BUTTON_X1: id = MouseButton::eX1; break;
-		case SDL_BUTTON_X2: id = MouseButton::eX2; break;
-		}
-		window->GetEmitter().Emit<iWindow::OnButtonDown>(id, event.button.x, event.button.y);
+			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.button.windowID), "iWindow"));
+			MouseButton id = MouseButton::eLeft;
+			switch (event.button.button)
+			{
+			case SDL_BUTTON_LEFT: id = MouseButton::eLeft; break;
+			case SDL_BUTTON_MIDDLE: id = MouseButton::eMiddle; break;
+			case SDL_BUTTON_RIGHT: id = MouseButton::eRight; break;
+			case SDL_BUTTON_X1: id = MouseButton::eX1; break;
+			case SDL_BUTTON_X2: id = MouseButton::eX2; break;
+			}
+			window->GetEmitter()->Emit<iWindow::OnButtonDown>(id, event.button.x, event.button.y);
 
-		char buffer[1024];
-		::sprintf(buffer, "Mouse button: Button(%d) X(%d) Y(%d)", event.button.button, event.button.x, event.button.y);
-		CPF_LOG(Application, Trace) << buffer;
-	}
-	break;
+			char buffer[1024];
+			::sprintf(buffer, "Mouse button: Button(%d) X(%d) Y(%d)", event.button.button, event.button.x, event.button.y);
+			CPF_LOG(Application, Trace) << buffer;
+		}
+		break;
 
 	case SDL_MOUSEBUTTONUP:
-	{
-		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.button.windowID), "iWindow"));
-		MouseButton id;
-		switch (event.button.button)
 		{
-		case SDL_BUTTON_LEFT: id = MouseButton::eLeft; break;
-		case SDL_BUTTON_MIDDLE: id = MouseButton::eMiddle; break;
-		case SDL_BUTTON_RIGHT: id = MouseButton::eRight; break;
-		case SDL_BUTTON_X1: id = MouseButton::eX1; break;
-		case SDL_BUTTON_X2: id = MouseButton::eX2; break;
-		default:
-			id = MouseButton::eLeft;
-			CPF_ASSERT_ALWAYS;
-			break;
-		}
-		window->GetEmitter().Emit<iWindow::OnButtonUp>(id, event.button.x, event.button.y);
+			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.button.windowID), "iWindow"));
+			MouseButton id;
+			switch (event.button.button)
+			{
+			case SDL_BUTTON_LEFT: id = MouseButton::eLeft; break;
+			case SDL_BUTTON_MIDDLE: id = MouseButton::eMiddle; break;
+			case SDL_BUTTON_RIGHT: id = MouseButton::eRight; break;
+			case SDL_BUTTON_X1: id = MouseButton::eX1; break;
+			case SDL_BUTTON_X2: id = MouseButton::eX2; break;
+			default:
+				id = MouseButton::eLeft;
+				CPF_ASSERT_ALWAYS;
+				break;
+			}
+			window->GetEmitter()->Emit<iWindow::OnButtonUp>(id, event.button.x, event.button.y);
 
-		char buffer[1024];
-		::sprintf(buffer, "Mouse up: Button(%d) X(%d) Y(%d)", event.button.button, event.button.x, event.button.y);
-		CPF_LOG(Application, Trace) << buffer;
-	}
-	break;
+			char buffer[1024];
+			::sprintf(buffer, "Mouse up: Button(%d) X(%d) Y(%d)", event.button.button, event.button.x, event.button.y);
+			CPF_LOG(Application, Trace) << buffer;
+		}
+		break;
 
 	case SDL_MOUSEWHEEL:
-	{
-		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.wheel.windowID), "iWindow"));
-		window->GetEmitter().Emit<iWindow::OnMouseWheel>();
+		{
+			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.wheel.windowID), "iWindow"));
+			window->GetEmitter()->Emit<iWindow::OnMouseWheel>();
 
-		char buffer[1024];
-		::sprintf(buffer, "Mouse up: Direction(%d) X(%d) Y(%d)", event.wheel.direction, event.wheel.x, event.wheel.y);
-		CPF_LOG(Application, Trace) << buffer;
-	}
-	break;
+			char buffer[1024];
+			::sprintf(buffer, "Mouse up: Direction(%d) X(%d) Y(%d)", event.wheel.direction, event.wheel.x, event.wheel.y);
+			CPF_LOG(Application, Trace) << buffer;
+		}
+		break;
 
 	case SDL_KEYDOWN:
-	{
-		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.key.windowID), "iWindow"));
-		window->GetEmitter().Emit<iWindow::OnKeyDown>((KeyCode)event.key.keysym.sym);
-	}
-	break;
+		{
+			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.key.windowID), "iWindow"));
+			window->GetEmitter()->Emit<iWindow::OnKeyDown>((KeyCode)event.key.keysym.sym);
+		}
+		break;
 
 	case SDL_WINDOWEVENT:
 	{
 		switch (event.window.event)
 		{
-		case SDL_WINDOWEVENT_CLOSE:
-			Quit();
+			case SDL_WINDOWEVENT_CLOSE:
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnClose>();
+			}
 			break;
 
 		case SDL_WINDOWEVENT_SHOWN:
@@ -224,46 +234,81 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 			break;
 
 		case SDL_WINDOWEVENT_MOVED:
-			CPF_LOG(Application, Trace) << "Window moved.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnMoved>(event.window.data1, event.window.data2);
+				CPF_LOG(Application, Trace) << "Window moved.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_RESIZED:
-		{
-			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
-			window->GetEmitter().Emit<iWindow::OnResize>(event.window.data1, event.window.data2);
-		}
-		break;
-
-		case SDL_WINDOWEVENT_SIZE_CHANGED:
-			CPF_LOG(Application, Trace) << "Window size changed.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnResize>(event.window.data1, event.window.data2);
+			}
 			break;
 
+		case SDL_WINDOWEVENT_SIZE_CHANGED:
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnResize>(event.window.data1, event.window.data2);
+				CPF_LOG(Application, Trace) << "Window size changed.";
+			}
+
 		case SDL_WINDOWEVENT_MINIMIZED:
-			CPF_LOG(Application, Trace) << "Window minimized.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnMinimized>();
+				CPF_LOG(Application, Trace) << "Window minimized.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_MAXIMIZED:
-			CPF_LOG(Application, Trace) << "Window maximized.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnMinimized>();
+				CPF_LOG(Application, Trace) << "Window minimized.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_RESTORED:
-			CPF_LOG(Application, Trace) << "Window restored.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnRestored>();
+				CPF_LOG(Application, Trace) << "Window restored.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_ENTER:
-			CPF_LOG(Application, Trace) << "Window entered.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnMouseEnter>();
+				CPF_LOG(Application, Trace) << "Mouse entered.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_LEAVE:
-			CPF_LOG(Application, Trace) << "Window left.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnMouseLeave>();
+				CPF_LOG(Application, Trace) << "Mouse left.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
-			CPF_LOG(Application, Trace) << "Window focus gained.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnFocusGained>();
+				CPF_LOG(Application, Trace) << "Focus gained.";
+			}
 			break;
 
 		case SDL_WINDOWEVENT_FOCUS_LOST:
-			CPF_LOG(Application, Trace) << "Window focus lost.";
+			{
+				iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
+				window->GetEmitter()->Emit<iWindow::OnFocusLost>();
+				CPF_LOG(Application, Trace) << "Focus lost.";
+			}
 			break;
 		}
 	}

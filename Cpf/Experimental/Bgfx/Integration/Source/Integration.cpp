@@ -7,6 +7,7 @@
 
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
+#include "Application/OSWindowData.hpp"
 
 #include "Math/Algorithm.hpp"
 #include "Math/Matrix44v.hpp"
@@ -99,7 +100,8 @@ static const uint16_t s_cubeTriStrip[] =
 //////////////////////////////////////////////////////////////////////////
 inline bool bgfxSetWindow(iWindow* _window)
 {
-	OSWindowData windowData = _window->GetOSWindowData();
+	OSWindowData windowData;
+	_window->GetOSData(&windowData);
 
 	bgfx::PlatformData pd;
 #	if BX_PLATFORM_LINUX || BX_PLATFORM_BSD
@@ -144,11 +146,11 @@ bool BgfxIntegration::_CreateWindow()
 	mpWindow.Adopt(
 		WindowDesc(this)
 		.Title("BGFX")
-		.Position(iWindow::Centered)
+		.Position({ iWindow::CenteredOn(0), iWindow::CenteredOn(0) })
 		.Size(mWindowSize)
 		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);
-	mpWindow->GetEmitter().On<iWindow::OnResize>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
+	mpWindow->GetEmitter()->On<iWindow::OnResize>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
 
 	return bool(mpWindow) && bgfxSetWindow(mpWindow);
 }

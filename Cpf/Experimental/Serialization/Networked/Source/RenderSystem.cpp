@@ -12,6 +12,7 @@
 #include "MultiCore/iPipeline.hpp"
 #include "Application/Application.hpp"
 #include "Application/Window.hpp"
+#include "Application/OSWindowData.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "Graphics/SubResource.hpp"
 #include "Graphics/ImageFlags.hpp"
@@ -47,7 +48,9 @@ bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iWi
 			_CreateRenderData(window, locator)
 			)
 		{
-			mpDebugUI->SetWindowSize(window->GetClientArea().x, window->GetClientArea().y);
+			int32_t w, h;
+			window->GetClientAreaSize(&w, &h);
+			mpDebugUI->SetWindowSize(w, h);
 			_CreateStages();
 			return true;
 		}
@@ -173,9 +176,13 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		kBufferCount,
 		true
 	};
+	OSWindowData osData;
+	window->GetOSData(&osData);
 	WindowData winData;
-	winData.mHWnd = window->GetOSWindowData().mHwnd;
-	mpDevice->CreateSwapChain(mpInstance, &winData, window->GetClientArea().x, window->GetClientArea().y, &desc, mpSwapChain.AsTypePP());
+	winData.mHWnd = osData.mHwnd;
+	int32_t w, h;
+	window->GetClientAreaSize(&w, &h);
+	mpDevice->CreateSwapChain(mpInstance, &winData, w, h, &desc, mpSwapChain.AsTypePP());
 
 	// Create a set of depth buffers to go with the swap chain.
 	// TODO: There should really only be one shared depth buffer.
@@ -183,7 +190,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
 	ImageDesc depthBufferDesc
 	{
-		window->GetClientArea().x, window->GetClientArea().y,
+		w, h,
 		1,
 		1,
 		Format::eD32f,

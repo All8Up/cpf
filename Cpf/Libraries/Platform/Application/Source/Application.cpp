@@ -9,9 +9,6 @@
 using namespace Cpf;
 
 //////////////////////////////////////////////////////////////////////////
-const Math::Vector2i iWindow::Centered(0x2FFF0000, 0x2FFF0000);
-
-//////////////////////////////////////////////////////////////////////////
 Application::Application()
 	: mRunning(true)
 //	, mCommandLine("Cpf::Application")
@@ -41,7 +38,7 @@ void Application::Quit()
 WindowDesc::WindowDesc(WindowedApplication* app)
 	: mpApplication(app)
 	, mTitle("")
-	, mPosition(iWindow::Centered)
+	, mPosition(iWindow::CenteredOn(0), iWindow::CenteredOn(0))
 	, mSize(Math::Vector2i(200, 200))
 	, mFlags(WindowFlags::eNone)
 {}
