@@ -26,7 +26,7 @@ bool ExperimentalD3D12::_CreateWindow()
 	mpWindow.Adopt(
 		WindowDesc(this)
 		.Title(WINDOW_TITLE)
-		.Position({ iWindow::CenteredOn(0), iWindow::CenteredOn(0) })
+		.Position({ iWindow::Centered(), iWindow::Centered() })
 		.Size(mWindowSize)
 		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);

@@ -18,7 +18,7 @@
 #include "Graphics/iImage.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Application/Application.hpp"
-#include "Application/Window.hpp"
+#include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
 #include "imgui/imgui.h"
 #include "IO/Stream.hpp"

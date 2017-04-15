@@ -5,15 +5,15 @@
 
 namespace Cpf
 {
-	struct OSWindowData;
-	enum class MouseButton : int32_t;
 	enum class KeyCode : int32_t;
+	enum class MouseButton : int32_t;
+	enum class WindowFlags : int32_t;
+	struct OSWindowData;
 
 	struct iWindow : COM::iUnknown
 	{
-		static constexpr COM::ClassID kIID = COM::ClassID("iWindow"_crc64);
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("iWindow"_crc64);
 
-		// Events.
 		using OnMouseMove = Events::Event<"OnMouseMove"_crc64, Function<void(int32_t, int32_t)>>;
 		using OnButtonDown = Events::Event<"OnButtonDown"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
 		using OnButtonUp = Events::Event<"OnButtonUp"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
@@ -22,14 +22,17 @@ namespace Cpf
 		using OnKeyUp = Events::Event<"OnKeyUp"_crc64, Function<void(KeyCode)>>;
 		using OnMoved = Events::Event<"OnMoved"_crc64, Function<void(int32_t, int32_t)>>;
 		using OnResize = Events::Event<"OnResize"_crc64, Function<void(int32_t, int32_t)>>;
-
-		/* Additional events to implement.
 		using OnClose = Events::Event<"OnClose"_crc64, Function<bool()>>;
 		using OnMouseEnter = Events::Event<"OnMouseEnter"_crc64, Function<void()>>;
 		using OnMouseLeave = Events::Event<"OnMouseLeave"_crc64, Function<void()>>;
-		*/
+		using OnMinimized = Events::Event<"OnMinimized"_crc64, Function<void()>>;
+		using OnMaximized = Events::Event<"OnMaximized"_crc64, Function<void()>>;
+		using OnRestored = Events::Event<"OnRestored"_crc64, Function<void()>>;
+		using OnFocusGained = Events::Event<"OnFocusGained"_crc64, Function<void()>>;
+		using OnFocusLost = Events::Event<"OnFocusLost"_crc64, Function<void()>>;
 
-		// Interface.
+		static constexpr int32_t Centered(int monitor = 0) { return monitor | 0xFF100000; }
+
 		virtual void CPF_STDCALL SetTitle(const char* title) = 0;
 		virtual void CPF_STDCALL SetPosition(int32_t, int32_t) = 0;
 		virtual void CPF_STDCALL GetPosition(int32_t*, int32_t*) = 0;
@@ -38,8 +41,8 @@ namespace Cpf
 		virtual void CPF_STDCALL Minimize() = 0;
 		virtual void CPF_STDCALL Maximize() = 0;
 		virtual void CPF_STDCALL Restore() = 0;
-		virtual void CPF_STDCALL GetClientArea(int32_t*, int32_t*) = 0;
-		virtual void CPF_STDCALL GetEmitter(Events::Emitter**) = 0;
-		virtual void CPF_STDCALL GetOSData(OSWindowData*) = 0;
+		virtual COM::Result CPF_STDCALL GetClientAreaSize(int32_t*, int32_t*) = 0;
+		virtual Events::Emitter* CPF_STDCALL GetEmitter() = 0;
+		virtual COM::Result CPF_STDCALL GetOSData(OSWindowData*) = 0;
 	};
 }

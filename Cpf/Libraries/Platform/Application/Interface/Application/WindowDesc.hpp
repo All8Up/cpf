@@ -7,7 +7,7 @@
 namespace Cpf
 {
 	class WindowedApplication;
-	class iWindow;
+	struct iWindow;
 	enum class WindowFlags : int32_t;
 
 	struct WindowDesc

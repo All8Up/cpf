@@ -18,7 +18,6 @@ target_include_directories (i_Application INTERFACE
 set( INCLUDE_FILES
 	Include/Application/Application.hpp
 	Include/Application/WindowedApplication.hpp
-	Include/Application/Window.hpp
 	Include/Application/Arguments.hpp
 	Include/Application/ConsoleCommands.hpp
 
@@ -27,10 +26,7 @@ set( INCLUDE_FILES
 )
 set( SOURCE_FILES
 	Source/Application.cpp
-	Source/Arguments.cpp
 	Source/ConsoleCommands.cpp
-	Source/Window.cpp
-	Source/WindowedApplication.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Main.cpp
 )
 

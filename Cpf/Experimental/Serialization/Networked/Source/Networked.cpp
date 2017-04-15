@@ -112,7 +112,7 @@ bool Networked::_CreateWindow()
 	mpWindow.Adopt(
 		WindowDesc(this)
 		.Title("Network Test")
-		.Position({ iWindow::CenteredOn(0), iWindow::CenteredOn(0) })
+		.Position({ iWindow::Centered(), iWindow::Centered() })
 		.Size(mWindowSize)
 		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
 	);

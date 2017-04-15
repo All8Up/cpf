@@ -38,7 +38,7 @@ void Application::Quit()
 WindowDesc::WindowDesc(WindowedApplication* app)
 	: mpApplication(app)
 	, mTitle("")
-	, mPosition(iWindow::CenteredOn(0), iWindow::CenteredOn(0))
+	, mPosition(iWindow::Centered(), iWindow::Centered())
 	, mSize(Math::Vector2i(200, 200))
 	, mFlags(WindowFlags::eNone)
 {}

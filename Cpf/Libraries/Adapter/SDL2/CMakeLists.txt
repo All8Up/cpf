@@ -62,15 +62,20 @@ add_library (SDL2Application SHARED
 target_compile_definitions (SDL2Application
 	PRIVATE CPF_BUILD_SDL2
 )
+target_include_directories (SDL2Application
+	PRIVATE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<INSTALL_INTERFACE:Include>
+)
 target_link_libraries (SDL2Application
 	PRIVATE
 		Configuration
 		Logging
 		SDL2-static
-		i_Application
+		s_Application
 )
 set_property (TARGET SDL2Application
 	PROPERTY FOLDER Plugins/Adapter
 )
-source_group (Interfaces FILES ${PLUGIN_INCLUDES})
+source_group (Headers FILES ${PLUGIN_INCLUDES})
 source_group (Sources FILES ${PLUGIN_SOURCES})

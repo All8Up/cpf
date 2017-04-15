@@ -10,7 +10,7 @@ namespace Cpf
 	{
 		static constexpr COM::ClassID kSDL2WindowCID = COM::ClassID("SDL2 Window"_crc64);
 
-		class Window : public iWindow
+		class Window : public tRefCounted<iWindow>
 		{
 		public:
 			Window();

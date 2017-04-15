@@ -10,7 +10,7 @@
 
 namespace Cpf
 {
-	class iWindow;
+	struct iWindow;
 
 	namespace Resources
 	{
