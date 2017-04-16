@@ -37,23 +37,30 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	mpRegistry = registry;
 	*appCid = SDL2::kWindowedApplicationCID;
 
+	IOInitializer::Install();
+	ThreadingInitializer::Install();
+	ConcurrencyInitializer::Install();
+	Resources::ResourcesInitializer::Install();
+	GraphicsInitializer::Install(registry);
+
 	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
 	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/MultiCore.cfp");
 	return COM::kOK;
+}
+
+void CPF_STDCALL Networked::Shutdown()
+{
+	GraphicsInitializer::Remove();
+	Resources::ResourcesInitializer::Remove();
+	ConcurrencyInitializer::Remove();
+	ThreadingInitializer::Remove();
+	IOInitializer::Remove();
 }
 
 COM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
 	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
-
-	// Initialize libraries.
-	ScopedInitializer<ThreadingInitializer> threadingInit;
-	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
-	ScopedInitializer<IOInitializer> ioInit;
-	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
-
-	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())
 	{
@@ -89,10 +96,6 @@ COM::Result CPF_STDCALL Networked::Main(iApplication* application)
 	// Destroy the window and exit.
 	mpWindow.Assign(nullptr);
 	return COM::kOK;
-}
-
-void CPF_STDCALL Networked::Shutdown()
-{
 }
 
 void Networked::_ConfigureDebugUI()

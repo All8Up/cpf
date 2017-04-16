@@ -24,4 +24,7 @@ set (CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget Cpu       : ${CPF_TARGET_CPU}")
 set (CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget Cpu Size  : ${CPF_TARGET_CPU_SIZE}")
 set (CPF_BUILD_INFO "${CPF_BUILD_INFO}\nTarget Cpu Dir   : ${CPF_TARGET_CPU_DIR}")
 
+set (CPF_BUILD_INFO "${CPF_BUILD_INFO}\n\nCMAKE binary dir  : ${CMAKE_BINARY_DIR}")
+set (CPF_BUILD_INFO "${CPF_BUILD_INFO}\n\n")
+
 message( STATUS ${CPF_BUILD_INFO} )
