@@ -31,6 +31,9 @@ namespace Cpf
 		using OnRestored = Events::Event<"OnRestored"_crc64, Function<void()>>;
 		using OnFocusGained = Events::Event<"OnFocusGained"_crc64, Function<void()>>;
 		using OnFocusLost = Events::Event<"OnFocusLost"_crc64, Function<void()>>;
+		using OnShow = Events::Event<"OnShow"_crc64, Function<void()>>;
+		using OnHide = Events::Event<"OnHide"_crc64, Function<void()>>;
+		using OnExposed = Events::Event<"OnExposed"_crc64, Function<void()>>;
 
 		static constexpr int32_t Centered(int monitor = 0) { return monitor | 0xFF100000; }
 
