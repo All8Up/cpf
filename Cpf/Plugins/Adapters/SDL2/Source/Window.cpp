@@ -55,6 +55,7 @@ bool Window::Initialize(const WindowDesc* desc)
 		Uint32(desc->mFlags)
 	);
 
+	SDL_SetWindowData(sdlwin, "iWindow", static_cast<iWindow*>(this));
 	mpWindow = sdlwin;
 	return mpWindow != nullptr;
 }

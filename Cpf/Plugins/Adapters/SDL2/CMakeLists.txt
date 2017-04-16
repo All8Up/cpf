@@ -26,7 +26,7 @@ target_link_libraries (Adapter_SDL2
 	Logging
 	i_Application
 	Math
-	SDL2-static
+	SDL2
 )
 target_include_directories (Adapter_SDL2
 	PUBLIC

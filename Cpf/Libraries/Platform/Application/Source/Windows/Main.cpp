@@ -27,7 +27,7 @@ namespace
 					if (Cpf::COM::Succeeded(result = registry->Create(nullptr, appId, Cpf::iApplication::kIID, app.AsVoidPP())))
 					{
 						if (Cpf::COM::Succeeded(app->Initialize(registry, appMain)))
-							result = appMain->Main(app);
+							result = app->Run();
 					}
 				}
 				appMain->Shutdown();
