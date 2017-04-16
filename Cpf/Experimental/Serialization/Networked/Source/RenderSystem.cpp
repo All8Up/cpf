@@ -10,7 +10,7 @@
 #include "Graphics/iImageView.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/iPipeline.hpp"
-#include "Application/Application.hpp"
+#include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
 #include "Plugin/iClassInstance.hpp"

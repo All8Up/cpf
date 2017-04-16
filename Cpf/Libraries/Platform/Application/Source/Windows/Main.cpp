@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Application/WindowedApplication.hpp"
+#include "Application/iWindowedApplication.hpp"
+#include "Application/iApplicationMain.hpp"
 #include "Application/Arguments.hpp"
 #include "String.hpp"
 #include "StringUtils.hpp"
@@ -25,7 +26,7 @@ namespace
 					Cpf::IntrusivePtr<Cpf::iApplication> app;
 					if (Cpf::COM::Succeeded(result = registry->Create(nullptr, appId, Cpf::iApplication::kIID, app.AsVoidPP())))
 					{
-						if (Cpf::COM::Succeeded(app->Initialize(appMain)))
+						if (Cpf::COM::Succeeded(app->Initialize(registry, appMain)))
 							result = appMain->Main(app);
 					}
 				}

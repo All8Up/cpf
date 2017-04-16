@@ -17,7 +17,7 @@
 #include "Graphics/ParamVisibility.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
-#include "Application/Application.hpp"
+#include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
 #include "imgui/imgui.h"

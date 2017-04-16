@@ -19,8 +19,6 @@ target_include_directories (i_Application INTERFACE
 
 # ###############################################
 set( INCLUDE_FILES
-	Include/Application/Application.hpp
-	Include/Application/WindowedApplication.hpp
 	Include/Application/Arguments.hpp
 	Include/Application/ConsoleCommands.hpp
 

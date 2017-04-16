@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Application/Application.hpp"
-#include "Application/WindowedApplication.hpp"
+#include "Application/iApplication.hpp"
+#include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
 
