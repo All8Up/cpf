@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Adapter/WindowedApp.hpp"
+#include "Application/iApplicationMain.hpp"
+#include "Application/iWindowedApplication.hpp"
+#include "Application/iWindow.hpp"
 #include "Graphics.hpp"
 #include "Concurrency/Scheduler.hpp"
 #include "Resources/Locator.hpp"
@@ -15,7 +17,7 @@
 //
 namespace Cpf
 {
-	class ExperimentalD3D12 : public Adapter::WindowedApp
+	class ExperimentalD3D12 : public tRefCounted<iApplicationMain>
 	{
 	public:
 		ExperimentalD3D12()
@@ -25,9 +27,17 @@ namespace Cpf
 			, mpInstructionList(nullptr)
 			, mInstructionCount(0)
 			, mpEntityManager(nullptr)
+			, mpRegistry(nullptr)
+			, mpApplication(nullptr)
 		{}
 
-		int Start(const CommandLine*) override;
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, COM::ClassID* appCid) override;
+		COM::Result CPF_STDCALL Main(iApplication* application) override;
+		void CPF_STDCALL Shutdown() override;
+
+		Plugin::iRegistry* GetRegistry() { return mpRegistry; }
 
 		static const int32_t kInstancesPerDimension = 50;
 		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
@@ -142,5 +152,8 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		IntrusivePtr<MoverSystem> mpMoverSystem;
+
+		Plugin::iRegistry* mpRegistry;
+		iWindowedApplication* mpApplication;
 	};
 }

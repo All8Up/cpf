@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 
-#include "Adapter/WindowedApp.hpp"
+#include "Application/iWindowedApplication.hpp"
 #include "Logging/Logging.hpp"
 
 #include "IntrusivePtr.hpp"
@@ -35,6 +35,8 @@
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 
+#include "SDL2/CIDs.hpp"
+
 using namespace Cpf;
 using namespace Math;
 using namespace Graphics;
@@ -52,8 +54,25 @@ void ExperimentalD3D12::ReconfigurePipeline()
 	mpMultiCore->Configure();
 }
 
-int ExperimentalD3D12::Start(const CommandLine*)
+COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registry, COM::ClassID* appCid)
 {
+	mpRegistry = registry;
+	*appCid = SDL2::kWindowedApplicationCID;
+
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
+	return COM::kOK;
+}
+
+void CPF_STDCALL ExperimentalD3D12::Shutdown()
+{
+
+}
+
+COM::Result ExperimentalD3D12::Main(iApplication* application)
+{
+	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpApplication));
+
 	// Initialize logging.
 	CPF_INIT_LOG(Experimental);
 	CPF_LOG_LEVEL(Experimental, Trace);
@@ -387,7 +406,7 @@ int ExperimentalD3D12::Start(const CommandLine*)
 					//
 					_UpdatePipelineDisplay();
 
-					while (IsRunning())
+					while (mpApplication->IsRunning())
 					{
 						//////////////////////////////////////////////////////////////////////////
 						// Wait for the last frame of processing.
@@ -403,7 +422,7 @@ int ExperimentalD3D12::Start(const CommandLine*)
 						// TODO: this is done in between frames so resize doesn't conflict.
 						// This will need to be overlap aware and that means that resize will need the ability
 						// to flush the pipeline.
-						Poll();
+						mpApplication->Poll();
 
 						// Handle any issued work from the scheduler side which needs to run in the main thread.
 						for (; mReactor.RunOne();)
@@ -437,7 +456,7 @@ int ExperimentalD3D12::Start(const CommandLine*)
 			gfxInstance.Assign(nullptr);
 		}
 	}
-	return 0;
+	return COM::kOK;
 }
 
-CPF_CREATE_APPLICATION(Cpf::ExperimentalD3D12);
+CPF_CREATE_APPMAIN(Cpf::ExperimentalD3D12);

@@ -8,6 +8,7 @@
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Application/iWindow.hpp"
 #include "Math/Vector4v.hpp"
 
 using namespace Cpf;

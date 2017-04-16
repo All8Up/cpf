@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
 #include "Graphics/ImageFlags.hpp"
@@ -16,7 +17,7 @@ bool ExperimentalD3D12::_CreateWindow()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Create the window.
-	GetEmitter()->On<OnQuit>([]() {
+	mpApplication->GetEmitter()->On<iApplication::OnQuit>([]() {
 		CPF_LOG(Experimental, Info) << "**** Quit requested.";
 		return true;
 	});
@@ -24,7 +25,7 @@ bool ExperimentalD3D12::_CreateWindow()
 	// Create the window.
 	Math::Vector2i mWindowSize(1920, 1080);
 	mpWindow.Adopt(
-		WindowDesc(this)
+		WindowDesc(mpApplication)
 		.Title(WINDOW_TITLE)
 		.Position({ iWindow::Centered(), iWindow::Centered() })
 		.Size(mWindowSize)
