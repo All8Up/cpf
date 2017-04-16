@@ -43,7 +43,7 @@ COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, voi
 
 
 
-MoverSystem::MoverSystem()
+MoverSystem::MoverSystem(COM::iUnknown*)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -92,7 +92,7 @@ void MoverSystem::UseEBus(bool flag)
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent()
+MoverSystem::MoverComponent::MoverComponent(COM::iUnknown*)
 	: mpMover(nullptr)
 {}
 

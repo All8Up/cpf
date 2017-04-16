@@ -16,7 +16,7 @@ namespace Cpf
 		BgfxIntegration();
 		~BgfxIntegration() override;
 
-		int Start(const CommandLine&) override;
+		int Start(const CommandLine*) override;
 
 	private:
 		bool _CreateWindow();

@@ -240,7 +240,7 @@ bool BgfxIntegration::_SelectRenderDevice()
 }
 
 
-int BgfxIntegration::Start(const CommandLine&)
+int BgfxIntegration::Start(const CommandLine*)
 {
 	// Initialize libraries.
 	ScopedInitializer<ThreadingInitializer> threadingInit;

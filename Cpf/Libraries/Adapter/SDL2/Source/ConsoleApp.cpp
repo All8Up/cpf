@@ -1,1 +1,0 @@
-#include "Adapter/ConsoleApp.hpp"

@@ -10,7 +10,7 @@ using namespace Cpf;
 class TestPlugin : public iTestPlugin
 {
 public:
-	TestPlugin();
+	TestPlugin(iUnknown* outer);
 	virtual ~TestPlugin();
 
 	// iRefCounted overrides.
@@ -61,7 +61,7 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 
 
 //////////////////////////////////////////////////////////////////////////
-TestPlugin::TestPlugin()
+TestPlugin::TestPlugin(iUnknown*)
 	: mRefCount(1)
 {}
 

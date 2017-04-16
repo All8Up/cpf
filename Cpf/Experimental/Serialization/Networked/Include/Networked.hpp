@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Adapter/WindowedApp.hpp"
+#include "Application/iApplicationMain.hpp"
+#include "Application/iWindowedApplication.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "RenderSystem.hpp"
 #include "NetworkSystem.hpp"
@@ -10,13 +11,19 @@
 
 namespace Cpf
 {
-	class Networked : public Adapter::WindowedApp
+	class Networked : public tRefCounted<iApplicationMain>
 	{
 	public:
 		Networked();
 		~Networked() override;
 
-		int Start(const CommandLine&) override;
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, COM::ClassID* appCid) override;
+		COM::Result CPF_STDCALL Main(iApplication* application) override;
+		void CPF_STDCALL Shutdown() override;
+
+		Plugin::iRegistry* GetRegistry() { return mpRegistry; }
 
 	private:
 		void _ConfigureDebugUI();
@@ -49,5 +56,8 @@ namespace Cpf
 		IntrusivePtr<RenderSystem> mpRenderSystem;
 
 		Time::Value mLastTime;
+
+		Plugin::iRegistry* mpRegistry;
+		iWindowedApplication* mpWindowedApplication;
 	};
 }

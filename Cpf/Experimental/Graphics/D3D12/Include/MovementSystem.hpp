@@ -43,7 +43,7 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem();
+		MoverSystem(COM::iUnknown*);
 		InstanceSystem* GetInstanceSystem() const;
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 		void EnableMovement(bool flag);
@@ -104,7 +104,7 @@ namespace Cpf
 		MultiCore::iSystem* GetOwner() override { return mpMover; }
 
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent();
+		MoverComponent(COM::iUnknown*);
 
 		COM::Result QueryInterface(COM::InterfaceID id, void**) override;
 

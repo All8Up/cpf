@@ -6,6 +6,7 @@ namespace Cpf
 {
 	namespace Plugin
 	{
+		struct IID_CID;
 		struct iClassInstance;
 
 		/**
@@ -24,6 +25,8 @@ namespace Cpf
 
 			virtual COM::Result CPF_STDCALL Create(COM::iUnknown* outer, COM::ClassID cid, COM::InterfaceID iid, void** result) = 0;
 
+			virtual COM::Result CPF_STDCALL FactoryInstall(int32_t count, const IID_CID* pairs) = 0;
+			virtual COM::Result CPF_STDCALL FactoryRemove(int32_t count, const IID_CID* pairs) = 0;
 			virtual COM::Result CPF_STDCALL GetClasses(COM::InterfaceID id, int32_t* count, COM::ClassID*) = 0;
 		};
 	}

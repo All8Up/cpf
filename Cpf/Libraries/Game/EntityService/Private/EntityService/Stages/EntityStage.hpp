@@ -13,7 +13,7 @@ namespace Cpf
 		class EntityStage : public tRefCounted<iEntityStage>
 		{
 		public:
-			EntityStage();
+			EntityStage(iUnknown*);
 
 			// iUnknown overrides.
 			COM::Result QueryInterface(COM::InterfaceID, void**) override;

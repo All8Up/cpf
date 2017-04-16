@@ -6,7 +6,7 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem()
+InstanceSystem::InstanceSystem(COM::iUnknown*)
 {}
 
 void InstanceSystem::_Begin(Concurrency::ThreadContext&, void* context)

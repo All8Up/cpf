@@ -16,6 +16,8 @@ namespace Cpf
 		class StageList : public tRefCounted<iStageList>
 		{
 		public:
+			StageList(iUnknown*) {}
+
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;

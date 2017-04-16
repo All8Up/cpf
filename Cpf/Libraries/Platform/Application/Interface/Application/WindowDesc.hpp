@@ -6,13 +6,13 @@
 
 namespace Cpf
 {
-	class WindowedApplication;
 	struct iWindow;
+	struct iWindowedApplication;
 	enum class WindowFlags : int32_t;
 
 	struct WindowDesc
 	{
-		WindowDesc(WindowedApplication* app);
+		WindowDesc(iWindowedApplication* app);
 
 		WindowDesc& Title(const String& title);
 		WindowDesc& Position(const Math::Vector2i& pos);
@@ -26,7 +26,7 @@ namespace Cpf
 		Math::Vector2i mSize;
 		WindowFlags mFlags;
 
-		WindowedApplication* mpApplication;
+		iWindowedApplication* mpApplication;
 	};
 
 	/*

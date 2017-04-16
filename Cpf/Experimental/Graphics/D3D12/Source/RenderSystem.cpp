@@ -19,7 +19,7 @@ COM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kRenderSystemCID);
 }
 
-RenderSystem::RenderSystem()
+RenderSystem::RenderSystem(COM::iUnknown*)
 {
 }
 

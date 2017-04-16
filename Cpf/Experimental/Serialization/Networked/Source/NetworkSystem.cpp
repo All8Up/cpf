@@ -18,7 +18,7 @@ COM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem()
+NetworkSystem::NetworkSystem(COM::iUnknown*)
 {
 }
 

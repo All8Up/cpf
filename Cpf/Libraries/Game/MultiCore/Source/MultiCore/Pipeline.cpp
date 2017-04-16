@@ -11,7 +11,7 @@ using namespace MultiCore;
 
 
 //////////////////////////////////////////////////////////////////////////
-Pipeline::Pipeline()
+Pipeline::Pipeline(iUnknown*)
 #ifdef CPF_DEBUG
 	: mChanged(false)
 #endif

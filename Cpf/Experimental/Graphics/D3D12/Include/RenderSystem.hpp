@@ -30,7 +30,7 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Construction/Destruction.
-		RenderSystem();
+		RenderSystem(COM::iUnknown*);
 		virtual ~RenderSystem();
 
 		// Registration.

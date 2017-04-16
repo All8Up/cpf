@@ -52,7 +52,7 @@ void ExperimentalD3D12::ReconfigurePipeline()
 	mpMultiCore->Configure();
 }
 
-int ExperimentalD3D12::Start(const CommandLine&)
+int ExperimentalD3D12::Start(const CommandLine*)
 {
 	// Initialize logging.
 	CPF_INIT_LOG(Experimental);

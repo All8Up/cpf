@@ -95,7 +95,7 @@ iDebugUI* RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem()
+RenderSystem::RenderSystem(COM::iUnknown*)
 	: mpTimer(nullptr)
 	, mpRegistry(nullptr)
 {

@@ -4,19 +4,51 @@
 #include "String.hpp"
 #include "StringUtils.hpp"
 #include <vector>
+#include "PluginHost/Registry.hpp"
 
 
-extern Cpf::Application::ApplicationCreate gs_ApplicationCreate;
+extern Cpf::iApplicationMain::AppMainCreate gs_AppMainCreate;
+
+namespace
+{
+	Cpf::COM::Result RunApplication(Cpf::iApplicationMain* appMain)
+	{
+		if (appMain)
+		{
+			Cpf::Plugin::iRegistry* registry = nullptr;
+			Cpf::COM::Result result;
+			if (Cpf::COM::Succeeded(result = Cpf::PluginHost::CreateRegistry(&registry)))
+			{
+				Cpf::COM::ClassID appId;
+				if (Cpf::COM::Succeeded(appMain->Initialize(registry, &appId)))
+				{
+					Cpf::IntrusivePtr<Cpf::iApplication> app;
+					if (Cpf::COM::Succeeded(result = registry->Create(nullptr, appId, Cpf::iApplication::kIID, app.AsVoidPP())))
+					{
+						if (Cpf::COM::Succeeded(app->Initialize(appMain)))
+							result = appMain->Main(app);
+					}
+				}
+				appMain->Shutdown();
+			}
+			appMain->Release();
+			return result;
+		}
+		return Cpf::COM::kOutOfMemory;
+	}
+}
+
 
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv;
-	auto app = gs_ApplicationCreate();
-//	app->GetCommandLine().parse(argc, argv);
-	auto result = app->Start(app->GetCommandLine());
-	delete app;
-
-	return result;
+	auto app = gs_AppMainCreate();
+	if (app)
+	{
+		auto result = RunApplication(app);
+		return Cpf::COM::Succeeded(result) ? 0 : -int(result.Value);
+	}
+	return -int(Cpf::COM::kOutOfMemory.Value);
 }
 
 
@@ -24,72 +56,12 @@ int main(int argc, char** argv)
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 {
 	(void)hInstance; (void)hPrevInstance;
-	auto app = gs_ApplicationCreate();
-
-	std::string argString(::GetCommandLineA());
-	std::vector<std::string> args;
-
-	for (auto it=argString.cbegin(); it!=argString.cend();)
+	auto app = gs_AppMainCreate();
+	if (app)
 	{
-		auto next = Cpf::FindAnyOf(it, argString.end(), std::string(" "));
-		if (it == next)
-			++it;
-		else
-			it = next;
+		auto result = RunApplication(app);
+		return Cpf::COM::Succeeded(result) ? 0 : -int(result.Value);
 	}
-//	app->CommandLine().parse(Cpf::String(::GetCommandLineA()));
-	auto result = app->Start(app->GetCommandLine());
-	delete app;
-
-	return result;
+	return -int(Cpf::COM::kOutOfMemory.Value);
 }
-
-
-bool Cpf::WindowedApplication::Poll()
-{
-	if (IsRunning())
-	{
-		MSG msg;
-		while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT)
-			{
-				Quit();
-			}
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-
-		return true;
-	}
-	return false;
-}
-
-
-bool Cpf::WindowedApplication::Wait()
-{
-	if (IsRunning())
-	{
-		MSG msg;
-		if (GetMessage(&msg, nullptr, NULL, NULL))
-		{
-			if (msg.message == WM_QUIT)
-			{
-				Quit();
-			}
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-
-		return true;
-	}
-	return false;
-}
-
 #endif

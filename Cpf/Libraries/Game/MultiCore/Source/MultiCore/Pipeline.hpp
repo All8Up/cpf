@@ -12,7 +12,7 @@ namespace Cpf
 		class Pipeline : public tRefCounted<iPipeline>
 		{
 		public:
-			Pipeline();
+			Pipeline(iUnknown*);
 			~Pipeline();
 
 			COM::Result QueryInterface(COM::InterfaceID id, void** iface) override;

@@ -16,7 +16,7 @@ bool ExperimentalD3D12::_CreateWindow()
 {
 	//////////////////////////////////////////////////////////////////////////
 	// Create the window.
-	On<OnQuit>([]() {
+	GetEmitter()->On<OnQuit>([]() {
 		CPF_LOG(Experimental, Info) << "**** Quit requested.";
 		return true;
 	});

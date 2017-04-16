@@ -8,8 +8,10 @@
 #include "RenderSystem.hpp"
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
+#include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
+#include "SDL2/CIDs.hpp"
 #include "Graphics.hpp"
 
 using namespace Cpf;
@@ -19,6 +21,8 @@ using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
 Networked::Networked()
+	: mpRegistry(nullptr)
+	, mpWindowedApplication(nullptr)
 {
 	CPF_INIT_LOG(Networked);
 }
@@ -28,8 +32,20 @@ Networked::~Networked()
 	CPF_DROP_LOG(Networked);
 }
 
-int Networked::Start(const CommandLine&)
+COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::ClassID* appCid)
 {
+	mpRegistry = registry;
+	*appCid = SDL2::kWindowedApplicationCID;
+
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
+	return COM::kOK;
+}
+
+COM::Result CPF_STDCALL Networked::Main(iApplication* application)
+{
+	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
+
 	// Initialize libraries.
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
@@ -37,7 +53,6 @@ int Networked::Start(const CommandLine&)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
 	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
 
 	if (_CreateWindow() && _Install() && _InitializeMultiCore())
@@ -52,9 +67,9 @@ int Networked::Start(const CommandLine&)
 				Concurrency::Scheduler::Semaphore complete;
 
 				// Run the event loop for the window.
-				while (IsRunning())
+				while (mpWindowedApplication->IsRunning())
 				{
-					Poll();
+					mpWindowedApplication->Poll();
 					mpPipeline->Submit(&mLoopScheduler);
 					mLoopScheduler.Submit(complete);
 					complete.Acquire();
@@ -73,7 +88,11 @@ int Networked::Start(const CommandLine&)
 
 	// Destroy the window and exit.
 	mpWindow.Assign(nullptr);
-	return 0;
+	return COM::kOK;
+}
+
+void CPF_STDCALL Networked::Shutdown()
+{
 }
 
 void Networked::_ConfigureDebugUI()
@@ -110,7 +129,7 @@ bool Networked::_CreateWindow()
 	// Create the main window.
 	Math::Vector2i mWindowSize(400, 400);
 	mpWindow.Adopt(
-		WindowDesc(this)
+		WindowDesc(mpWindowedApplication)
 		.Title("Network Test")
 		.Position({ iWindow::Centered(), iWindow::Centered() })
 		.Size(mWindowSize)
@@ -247,4 +266,4 @@ void Networked::_Resize(int32_t width, int32_t height)
 
 
 //////////////////////////////////////////////////////////////////////////
-CPF_CREATE_APPLICATION(Cpf::Networked);
+CPF_CREATE_APPMAIN(Cpf::Networked);

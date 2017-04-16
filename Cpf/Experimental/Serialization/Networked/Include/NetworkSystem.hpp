@@ -38,7 +38,7 @@ namespace Cpf
 		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
-		NetworkSystem();
+		NetworkSystem(COM::iUnknown*);
 
 	private:
 		static void _Update(Concurrency::ThreadContext&, void*);

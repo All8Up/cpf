@@ -1,13 +1,10 @@
+#[[
 # ###############################################
 set (INCLUDE_FILES
-	Include/Adapter/ConsoleApp.hpp
 	Include/Adapter/WindowedApp.hpp
-	Include/Adapter/Window.hpp
 )
 set (SOURCE_FILES
-	Source/ConsoleApp.cpp
 	Source/WindowedApp.cpp
-	Source/Window.cpp
 )
 
 add_library (s_SDL2 STATIC
@@ -44,38 +41,4 @@ target_include_directories (s_SDL2
 )
 
 set_property (TARGET s_SDL2 PROPERTY FOLDER Libraries/Static/Adapter)
-
-# ###############################################
-set (PLUGIN_INCLUDES
-	Include/Window.hpp
-	Include/SDL2Application.hpp
-)
-set (PLUGIN_SOURCES
-	Source/Windowx.cpp
-	Source/SDL2Application.cpp
-)
-
-add_library (SDL2Application SHARED
-	${PLUGIN_INCLUDES}
-	${PLUGIN_SOURCES}
-)
-target_compile_definitions (SDL2Application
-	PRIVATE CPF_BUILD_SDL2
-)
-target_include_directories (SDL2Application
-	PRIVATE
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<INSTALL_INTERFACE:Include>
-)
-target_link_libraries (SDL2Application
-	PRIVATE
-		Configuration
-		Logging
-		SDL2-static
-		s_Application
-)
-set_property (TARGET SDL2Application
-	PROPERTY FOLDER Plugins/Adapter
-)
-source_group (Headers FILES ${PLUGIN_INCLUDES})
-source_group (Sources FILES ${PLUGIN_SOURCES})
+]]#

@@ -10,7 +10,7 @@ using namespace EntityService;
 EntityID Manager::mNextID = EntityID(0);
 
 //////////////////////////////////////////////////////////////////////////
-Manager::Manager()
+Manager::Manager(iUnknown*)
 	: mpPipeline(nullptr)
 {}
 

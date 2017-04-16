@@ -128,9 +128,11 @@ MakeUnitTest (LIBRARY s_Concurrency GROUP Platform
 
 # ###############################################
 # Performance testing application.
+#[[
 add_executable( SchedulerPerformance
 	Performance/SchedulerPerformance.cpp
 )
 target_link_libraries( SchedulerPerformance Configuration Logging Math s_Application s_Concurrency )
 
 set_property( TARGET SchedulerPerformance PROPERTY FOLDER Performance/Concurrency )
+]]#

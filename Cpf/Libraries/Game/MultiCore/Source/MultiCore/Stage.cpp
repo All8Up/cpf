@@ -97,7 +97,7 @@ COM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, Block
 	return COM::kInvalidParameter;
 }
 
-SingleUpdateStage::SingleUpdateStage()
+SingleUpdateStage::SingleUpdateStage(iUnknown*)
 	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)

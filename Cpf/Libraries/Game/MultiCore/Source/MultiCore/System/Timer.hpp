@@ -14,7 +14,7 @@ namespace Cpf
 		{
 		public:
 			// Construction/Destruction.
-			Timer();
+			Timer(iUnknown*);
 			virtual ~Timer();
 
 			// iUnknown overrides.

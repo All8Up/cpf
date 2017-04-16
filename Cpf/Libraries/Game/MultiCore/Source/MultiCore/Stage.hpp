@@ -21,7 +21,7 @@ namespace Cpf
 		public:
 			static constexpr StageID kID = Hash::Create<StageID_tag>("Single Update Stage"_hashString);
 
-			SingleUpdateStage();
+			SingleUpdateStage(iUnknown*);
 
 			// iStage overrides.
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;

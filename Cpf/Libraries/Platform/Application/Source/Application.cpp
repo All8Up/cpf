@@ -4,38 +4,12 @@
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
 
-
 //////////////////////////////////////////////////////////////////////////
 using namespace Cpf;
 
-//////////////////////////////////////////////////////////////////////////
-Application::Application()
-	: mRunning(true)
-//	, mCommandLine("Cpf::Application")
-{
-	PluginHost::CreateRegistry(mpRegistry.AsTypePP());
-	CPF_ASSERT(bool(mpRegistry));
-}
-
-
-Application::~Application()
-{}
-
-
-bool Application::IsRunning() const
-{
-	return mRunning;
-}
-
-
-void Application::Quit()
-{
-	if (Emit<OnQuit>())
-		mRunning = false;
-}
 
 //////////////////////////////////////////////////////////////////////////
-WindowDesc::WindowDesc(WindowedApplication* app)
+WindowDesc::WindowDesc(iWindowedApplication* app)
 	: mpApplication(app)
 	, mTitle("")
 	, mPosition(iWindow::Centered(), iWindow::Centered())
@@ -70,7 +44,7 @@ WindowDesc& WindowDesc::Flags(WindowFlags flags)
 WindowDesc::operator iWindow* () const
 {
 	iWindow* result = nullptr;
-	if (mpApplication->Create(*this, &result))
+	if (Cpf::COM::Succeeded(mpApplication->Create(*this, &result)))
 		return result;
 	return nullptr;
 }

@@ -1,11 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/WindowedApp.hpp"
-#include "Adapter/Window.hpp"
 #include "Logging/Logging.hpp"
 #include "Application/MouseButton.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
-#include "Adapter/Window.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "SDL_syswm.h"
 
@@ -42,8 +40,6 @@ WindowedApp::WindowedApp()
 	SDL_InitSubSystem(SDL_INIT_AUDIO);
 	SDL_InitSubSystem(SDL_INIT_JOYSTICK);
 	SDL_InitSubSystem(SDL_INIT_GAMECONTROLLER);
-
-	GetRegistry()->Install(kSDL2WindowCID, new Plugin::tSimpleClassInstance<Window>());
 }
 
 WindowedApp::~WindowedApp()
@@ -86,21 +82,14 @@ bool WindowedApp::Wait()
 
 bool WindowedApp::Create(const WindowDesc& desc, iWindow** outWindow)
 {
-	Window* win = nullptr;
-	if (COM::Succeeded(GetRegistry()->Create(nullptr, kSDL2WindowCID, iWindow::kIID, reinterpret_cast<void**>(&win))))
+	iWindow* win = nullptr;
+	int32_t classCount = 0;
+	GetRegistry()->GetClasses(iWindow::kIID, &classCount, nullptr);
+	Vector<COM::ClassID> classes(classCount);
+	GetRegistry()->GetClasses(iWindow::kIID, &classCount, classes.data());
+	if (COM::Succeeded(GetRegistry()->Create(nullptr, classes[0], iWindow::kIID, reinterpret_cast<void**>(&win))))
 	{
-		int px = (desc.mPosition.x & 0xFF100000) != 0xFF100000 ? desc.mPosition.x : SDL_WINDOWPOS_CENTERED_DISPLAY(desc.mPosition.x & 15);
-		int py = (desc.mPosition.y & 0xFF100000) != 0xFF100000 ? desc.mPosition.y : SDL_WINDOWPOS_CENTERED_DISPLAY(desc.mPosition.y & 15);
-
-		auto sdlwin = SDL_CreateWindow(
-			desc.mTitle.c_str(),
-			px,
-			py,
-			desc.mSize.x,
-			desc.mSize.y,
-			Uint32(desc.mFlags)
-		);
-		if (win && sdlwin && win->Initialize(sdlwin))
+		if (win && win->Initialize(&desc))
 			*outWindow = win;
 		else
 			*outWindow = nullptr;
@@ -108,33 +97,8 @@ bool WindowedApp::Create(const WindowDesc& desc, iWindow** outWindow)
 	return win != nullptr;
 }
 
-void WindowedApp::AddRawInputHook(RawInputHook hook, void* userContext)
-{
-	mInputHooks.push_back(HookPair(hook, userContext));
-}
-
-void WindowedApp::RemoveRawInputHook(RawInputHook hook)
-{
-	for (auto ibegin = mInputHooks.begin(), iend = mInputHooks.end(); ibegin != iend; ++ibegin)
-	{
-		if (ibegin->first == hook)
-		{
-			mInputHooks.erase(ibegin);
-			return;
-		}
-	}
-}
-
 void WindowedApp::_HandleEvent(SDL_Event& event)
 {
-	for (auto& it : mInputHooks)
-	{
-		if ((*it.first)(it.second, &event))
-		{
-			// Input chain used the input.
-			return;
-		}
-	}
 	switch (event.type)
 	{
 	case SDL_QUIT:

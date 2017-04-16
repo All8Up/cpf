@@ -11,41 +11,33 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	//////////////////////////////////////////////////////////////////////////
-	class Application : public Events::Emitter
+	struct iApplication;
+
+	struct iApplicationMain : COM::iUnknown
 	{
-	public:
-		//////////////////////////////////////////////////////////////////////////
-		using ApplicationCreate = Application* (*)();
+		using AppMainCreate = iApplicationMain* (*)();
 
-		//////////////////////////////////////////////////////////////////////////
-		virtual int Start(const CommandLine&) = 0;
+		virtual COM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, COM::ClassID* appCid) = 0;
+		virtual COM::Result CPF_STDCALL Main(iApplication*) = 0;
+		virtual void CPF_STDCALL Shutdown() = 0;
+	};
 
-		//////////////////////////////////////////////////////////////////////////
-		Application();
-		virtual ~Application();
+	struct iApplication : COM::iUnknown
+	{
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iApplication"_crc64);
 
-		//////////////////////////////////////////////////////////////////////////
-		bool IsRunning() const;
-		void Quit();
-
-		//////////////////////////////////////////////////////////////////////////
 		using OnQuit = Events::Event< 0, std::function< bool() >, Events::AnyNotEqual<bool, true, true, false> >;
 
-		//////////////////////////////////////////////////////////////////////////
-		CommandLine& GetCommandLine() { return mCommandLine; }
+		virtual COM::Result CPF_STDCALL Initialize(iApplicationMain*) = 0;
+		virtual COM::Result CPF_STDCALL Run() = 0;
+		virtual COM::Result CPF_STDCALL Shutdown() = 0;
 
-		//////////////////////////////////////////////////////////////////////////
-		IntrusivePtr<Plugin::iRegistry> GetRegistry() { return mpRegistry; }
-
-	private:
-		bool mRunning;
-		CommandLine mCommandLine;
-		IntrusivePtr<Plugin::iRegistry> mpRegistry;
+		virtual Plugin::iRegistry* CPF_STDCALL GetRegistry() = 0;
+		virtual Events::Emitter* CPF_STDCALL GetEmitter() = 0;
 	};
 }
 
 
-#define CPF_CREATE_APPLICATION(appName)											\
-namespace { Cpf::Application* createApplication() { return new appName; } }		\
-Cpf::Application::ApplicationCreate gs_ApplicationCreate = createApplication;
+#define CPF_CREATE_APPMAIN(appName)												\
+namespace { Cpf::iApplicationMain* CreateAppMain() { return new appName; } }	\
+Cpf::iApplicationMain::AppMainCreate gs_AppMainCreate = CreateAppMain;

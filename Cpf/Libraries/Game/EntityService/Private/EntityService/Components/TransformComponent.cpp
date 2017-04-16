@@ -40,7 +40,7 @@ COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPt
 }
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent()
+TransformComponent::TransformComponent(COM::iUnknown*)
 	: mpParent(nullptr)
 {}
 

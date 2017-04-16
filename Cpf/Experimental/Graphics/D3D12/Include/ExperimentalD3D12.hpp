@@ -27,7 +27,7 @@ namespace Cpf
 			, mpEntityManager(nullptr)
 		{}
 
-		int Start(const CommandLine&) override;
+		int Start(const CommandLine*) override;
 
 		static const int32_t kInstancesPerDimension = 50;
 		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;

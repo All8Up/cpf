@@ -6,7 +6,7 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage()
+EntityStage::EntityStage(iUnknown*)
 	: mpSystem(nullptr)
 	, mEnabled(true)
 {

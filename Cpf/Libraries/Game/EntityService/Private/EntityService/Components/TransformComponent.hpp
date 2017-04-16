@@ -17,7 +17,7 @@ namespace Cpf
 			static COM::Result Install(Plugin::iRegistry*);
 			static COM::Result Remove(Plugin::iRegistry*);
 
-			TransformComponent();
+			TransformComponent(COM::iUnknown*);
 			~TransformComponent() override;
 
 			//

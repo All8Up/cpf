@@ -16,7 +16,7 @@ public:
 	SchedulerPerformance();
 	virtual ~SchedulerPerformance();
 
-	virtual int Start(const Cpf::CommandLine&) override;
+	virtual int Start(const Cpf::CommandLine*) override;
 
 private:
 	int64_t _InstructionRate(int threadCount);
@@ -46,7 +46,7 @@ using namespace Cpf;
 using namespace Threading;
 using namespace Concurrency;
 
-int SchedulerPerformance::Start(const Cpf::CommandLine&)
+int SchedulerPerformance::Start(const Cpf::CommandLine*)
 {
 	{
 		int threadCounts[] = {

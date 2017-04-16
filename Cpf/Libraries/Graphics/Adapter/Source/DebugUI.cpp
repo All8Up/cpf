@@ -26,13 +26,13 @@
 #include "Resources/Locator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
-#include "SDL.h"
+//#include "SDL.h"
 
 using namespace Cpf;
 using namespace Graphics;
 
 
-DebugUI::DebugUI()
+DebugUI::DebugUI(iUnknown*)
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
 {}
@@ -164,6 +164,7 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 
 	//////////////////////////////////////////////////////////////////////////
 	ImGuiIO& io = ImGui::GetIO();
+	/*
 	io.KeyMap[ImGuiKey_Tab] = SDLK_TAB;
 	io.KeyMap[ImGuiKey_LeftArrow] = SDL_SCANCODE_LEFT;
 	io.KeyMap[ImGuiKey_RightArrow] = SDL_SCANCODE_RIGHT;
@@ -183,7 +184,7 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 	io.KeyMap[ImGuiKey_X] = SDLK_x;
 	io.KeyMap[ImGuiKey_Y] = SDLK_y;
 	io.KeyMap[ImGuiKey_Z] = SDLK_z;
-
+	*/
 	io.RenderDrawListsFn = nullptr;
 	io.SetClipboardTextFn = &DebugUI::_SetClipboardText;
 	io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
@@ -255,6 +256,7 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
 
 	//
+	/*
 	int mx, my;
 	Uint32 mouseMask = SDL_GetMouseState(&mx, &my);
 	io.MousePos = ImVec2((float)mx, (float)my);
@@ -262,12 +264,12 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	io.MouseDown[1] = mMousePressed[1] || (mouseMask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;
 	io.MouseDown[2] = mMousePressed[2] || (mouseMask & SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0;
 	mMousePressed[0] = mMousePressed[1] = mMousePressed[2] = false;
-
+	*/
 	io.MouseWheel = mMouseWheel;
 	mMouseWheel = 0.0f;
 
 	// Hide OS mouse cursor if ImGui is drawing it
-	SDL_ShowCursor(io.MouseDrawCursor ? 0 : 1);
+//	SDL_ShowCursor(io.MouseDrawCursor ? 0 : 1);
 
 	// Start the frame
 	ImGui::NewFrame();
@@ -475,6 +477,7 @@ bool DebugUI::HandleRawInput(void* context, const void* data)
 
 bool DebugUI::_HandleRawInput(const void* rawEvent)
 {
+	/*
 	const SDL_Event* event = reinterpret_cast<const SDL_Event*>(rawEvent);
 	ImGuiIO& io = ImGui::GetIO();
 
@@ -512,15 +515,17 @@ bool DebugUI::_HandleRawInput(const void* rawEvent)
 			return io.WantCaptureKeyboard;
 		}
 	}
+	*/
 	return false;
 }
 
 const char* DebugUI::_GetClipboardText()
 {
-	return SDL_GetClipboardText();
+	return nullptr;
+//	return SDL_GetClipboardText();
 }
 
 void DebugUI::_SetClipboardText(const char* text)
 {
-	SDL_SetClipboardText(text);
+//	SDL_SetClipboardText(text);
 }

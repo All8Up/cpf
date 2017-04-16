@@ -9,7 +9,7 @@ namespace Cpf
 		class DebugUI : public tRefCounted<iDebugUI>
 		{
 		public:
-			DebugUI();
+			DebugUI(iUnknown* outer);
 			virtual ~DebugUI();
 
 			COM::Result QueryInterface(COM::InterfaceID id, void** outIface) override;

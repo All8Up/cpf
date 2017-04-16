@@ -9,7 +9,7 @@ namespace Cpf
 {
 	namespace Adapter
 	{
-		class WindowedApp : public WindowedApplication
+		class WindowedApp : public iWindowedApplication
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
@@ -21,14 +21,8 @@ namespace Cpf
 
 			bool Create(const WindowDesc& desc, iWindow**) override;
 
-			void AddRawInputHook(RawInputHook, void* userContext) override;
-			void RemoveRawInputHook(RawInputHook) override;
-
 		private:
 			void _HandleEvent(SDL_Event& event);
-			using HookPair = Pair<RawInputHook, void*>;
-			using HookVector = Vector<HookPair>;
-			HookVector mInputHooks;
 		};
 	}
 }

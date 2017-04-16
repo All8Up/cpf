@@ -9,10 +9,11 @@ namespace Cpf
 	enum class MouseButton : int32_t;
 	enum class WindowFlags : int32_t;
 	struct OSWindowData;
+	struct WindowDesc;
 
 	struct iWindow : COM::iUnknown
 	{
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("iWindow"_crc64);
+		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iWindow"_crc64);
 
 		using OnMouseMove = Events::Event<"OnMouseMove"_crc64, Function<void(int32_t, int32_t)>>;
 		using OnButtonDown = Events::Event<"OnButtonDown"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
@@ -33,6 +34,7 @@ namespace Cpf
 
 		static constexpr int32_t Centered(int monitor = 0) { return monitor | 0xFF100000; }
 
+		virtual bool CPF_STDCALL Initialize(const WindowDesc* desc) = 0;
 		virtual void CPF_STDCALL SetTitle(const char* title) = 0;
 		virtual void CPF_STDCALL SetPosition(int32_t, int32_t) = 0;
 		virtual void CPF_STDCALL GetPosition(int32_t*, int32_t*) = 0;

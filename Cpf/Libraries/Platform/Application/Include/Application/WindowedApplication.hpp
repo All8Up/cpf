@@ -8,17 +8,12 @@ namespace Cpf
 {
 	struct WindowDesc;
 
-	//////////////////////////////////////////////////////////////////////////
-	class WindowedApplication : public Application
+	struct iWindowedApplication : iApplication
 	{
-	public:
-		virtual bool Poll() = 0;
-		virtual bool Wait() = 0;
-
-		virtual bool Create(const WindowDesc&, iWindow**) = 0;
-
-		using RawInputHook = bool(*)(void* userContext, const void* event);
-		virtual void AddRawInputHook(RawInputHook, void* userContext) = 0;
-		virtual void RemoveRawInputHook(RawInputHook) = 0;
+		virtual bool CPF_STDCALL IsRunning() = 0;
+		virtual void CPF_STDCALL Quit() = 0;
+		virtual COM::Result CPF_STDCALL Poll() = 0;
+		virtual COM::Result CPF_STDCALL Wait() = 0;
+		virtual COM::Result CPF_STDCALL Create(const WindowDesc&, iWindow**) = 0;
 	};
 }

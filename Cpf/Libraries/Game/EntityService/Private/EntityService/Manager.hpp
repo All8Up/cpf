@@ -22,7 +22,7 @@ namespace Cpf
 			using EntityIDValue = EntityIDMap::value_type;
 
 			//
-			Manager();
+			Manager(iUnknown*);
 			virtual ~Manager();
 
 			//

@@ -29,9 +29,10 @@ target_link_libraries (Networked
 	Logging
 	s_ANSI_C_FileSystem
 	s_MultiCore
-	s_SDL2
 	s_Resources
 	s_GraphicsDriver
+	i_Application
+	i_Adapter_SDL2
 	cereal
 	asio
 )
