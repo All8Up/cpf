@@ -84,7 +84,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
 	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
 	CPF_INIT_ENTITYSERVICE(GetRegistry(), CPF_COMMON_PLUGINS);
 

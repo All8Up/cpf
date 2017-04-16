@@ -32,10 +32,13 @@ target_include_directories (BgfxIntegration
 		${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>
 )
 target_link_libraries (BgfxIntegration
-	s_SDL2
 	Logging
 	s_ANSI_C_FileSystem
 	s_Resources
+	i_Application
+	i_Adapter_SDL2
+	s_Application
+	Math
 	bx
 	bgfx
 	s_NanoVG_BGFX

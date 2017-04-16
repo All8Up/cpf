@@ -13,8 +13,8 @@
 #include "Math/Matrix44v.hpp"
 #include "Math/Vector2v.hpp"
 
-#include "SDL.h"
-#include "SDL_syswm.h"
+#include "SDL2/CIDs.hpp"
+
 #include <bx/bx.h>
 #include <bx/fpumath.h>
 #include <bx/timer.h>
@@ -130,6 +130,8 @@ BgfxIntegration::BgfxIntegration()
 	: mResetFlags(BGFX_RESET_MSAA_X8)
 	, mSelectedRenderDevice(-1)
 	, mNvg(nullptr)
+	, mpRegistry(nullptr)
+	, mpApplication(nullptr)
 {
 	CPF_INIT_LOG(Integration);
 }
@@ -144,7 +146,7 @@ bool BgfxIntegration::_CreateWindow()
 	mWindowSize.x = 1024;
 	mWindowSize.y = 768;
 	mpWindow.Adopt(
-		WindowDesc(this)
+		WindowDesc(mpApplication)
 		.Title("BGFX")
 		.Position({ iWindow::Centered(), iWindow::Centered() })
 		.Size(mWindowSize)
@@ -239,9 +241,21 @@ bool BgfxIntegration::_SelectRenderDevice()
 	return false;
 }
 
-
-int BgfxIntegration::Start(const CommandLine*)
+COM::Result CPF_STDCALL BgfxIntegration::Initialize(Plugin::iRegistry* registry, COM::ClassID* appCid)
 {
+	mpRegistry = registry;
+	*appCid = SDL2::kWindowedApplicationCID;
+	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
+	return COM::kOK;
+}
+
+void CPF_STDCALL BgfxIntegration::Shutdown()
+{}
+
+COM::Result CPF_STDCALL BgfxIntegration::Main(iApplication* application)
+{
+	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpApplication));
+
 	// Initialize libraries.
 	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
@@ -307,9 +321,9 @@ int BgfxIntegration::Start(const CommandLine*)
 		Concurrency::Scheduler::Semaphore pipelineComplete;
 		mpPipeline->Configure();
 		int64_t m_timeOffset = bx::getHPCounter();
-		while (IsRunning())
+		while (mpApplication->IsRunning())
 		{
-			Poll();
+			mpApplication->Poll();
 
 			mLoadBalancer.Balance();
 			mpPipeline->Submit(&mScheduler);
@@ -444,7 +458,7 @@ int BgfxIntegration::Start(const CommandLine*)
 		mpWindow.Adopt(nullptr);
 	}
 	mpLocator.Adopt(nullptr);
-	return 0;
+	return COM::kOK;
 }
 
 void BgfxIntegration::_Resize(int32_t width, int32_t height)
@@ -456,4 +470,4 @@ void BgfxIntegration::_Resize(int32_t width, int32_t height)
 
 
 //////////////////////////////////////////////////////////////////////////
-CPF_CREATE_APPLICATION(Cpf::BgfxIntegration);
+CPF_CREATE_APPMAIN(Cpf::BgfxIntegration);

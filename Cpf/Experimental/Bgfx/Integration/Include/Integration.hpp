@@ -1,22 +1,31 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Adapter/WindowedApp.hpp"
+#include "Application/iApplicationMain.hpp"
+#include "Application/iWindowedApplication.hpp"
+#include "Application/iWindow.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "MultiCore/System/iTimer.hpp"
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
 #include "Resources/Locator.hpp"
 #include "NanoVG/nanovg.h"
+#include "Math/Vector2v.hpp"
 
 namespace Cpf
 {
-	class BgfxIntegration : public Adapter::WindowedApp
+	class BgfxIntegration : public tRefCounted<iApplicationMain>
 	{
 	public:
 		BgfxIntegration();
-		~BgfxIntegration() override;
+		~BgfxIntegration();
 
-		int Start(const CommandLine*) override;
+		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+
+		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, COM::ClassID* appCid) override;
+		COM::Result CPF_STDCALL Main(iApplication* application) override;
+		void CPF_STDCALL Shutdown() override;
+
+		Plugin::iRegistry* GetRegistry() { return mpRegistry; }
 
 	private:
 		bool _CreateWindow();
@@ -45,5 +54,8 @@ namespace Cpf
 
 		NVGcontext* mNvg;
 		int mFont;
+
+		Plugin::iRegistry* mpRegistry;
+		iWindowedApplication* mpApplication;
 	};
 }
