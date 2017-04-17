@@ -31,6 +31,8 @@ namespace Cpf
 				 */
 
 				CPF_EXPORT_IO Stream* Create(const String& name, StreamAccess access, Error* error = nullptr);
+
+				String CPF_EXPORT_IO GetExecutableFilePath();
 			}
 		}
 	}

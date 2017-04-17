@@ -73,21 +73,15 @@ add_shader (f ${CMAKE_CURRENT_SOURCE_DIR}/Shaders/fs_cubes.sc ${CMAKE_CURRENT_SO
 add_shader (v ${CMAKE_CURRENT_SOURCE_DIR}/Shaders/vs_cubes.sc ${CMAKE_CURRENT_SOURCE_DIR}/Shaders/varying.def.sc ${CMAKE_CURRENT_SOURCE_DIR}/integration_res/vs_cubes.sc.bin)
 
 
-if(MSVC)
-	set (targetPath /Cpf/Experimental/Bgfx/Integration)
-else()
-	set (targetPath /)
-endif()
-file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/integration_res)
-file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/integration_res/shaders)
-
-foreach (file ${DataFiles})
-	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
-	set (target ${CMAKE_BINARY_DIR}${targetPath}/${relative})
-#	message ("src: ${file}  dst: ${target}")
-	add_custom_command (OUTPUT ${target}
-		COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
-		MAIN_DEPENDENCY ${file}
-	)
+foreach (config ${CMAKE_CONFIGURATION_TYPES})
+	foreach (file ${DataFiles})
+		file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
+		set (target "${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
+		message ("src: ${file}  dst: ${target}")
+		add_custom_command (OUTPUT ${target}
+			COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
+			MAIN_DEPENDENCY ${file}
+		)
+	endforeach ()
 endforeach ()
 source_group (Data FILES ${DataFiles})

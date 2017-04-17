@@ -16,11 +16,6 @@ add_executable (Networked WIN32
 	${SOURCE_FILES}
 	${DataFiles}
 )
-target_compile_definitions (Networked
-	PUBLIC
-		-DCPF_COMMON_RESOURCES="${CPF_COMMON_RESOURCES}"
-		-DCPF_COMMON_PLUGINS="${CPF_COMMON_PLUGINS}"
-)
 
 target_include_directories (Networked
 	PUBLIC Include
@@ -36,24 +31,17 @@ target_link_libraries (Networked
 	cereal
 	asio
 )
-
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
 
-if(MSVC)
-	set (targetPath /Cpf/Experimental/Serialization/Networked)
-else()
-	set (targetPath /)
-endif()
-file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/networked)
-file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/networked/shaders)
-
-foreach (file ${DataFiles})
-	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
-	set (target ${CMAKE_BINARY_DIR}${targetPath}/${relative})
-#	message ("src: ${file}  dst: ${target}")
-	add_custom_command (OUTPUT ${target}
-		COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
-		MAIN_DEPENDENCY ${file}
-	)
+foreach (config ${CMAKE_CONFIGURATION_TYPES})
+	foreach (file ${DataFiles})
+		file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
+		set (target "${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
+		message ("src: ${file}  dst: ${target}")
+		add_custom_command (OUTPUT ${target}
+			COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
+			MAIN_DEPENDENCY ${file}
+		)
+	endforeach ()
 endforeach ()
 source_group (Data FILES ${DataFiles})

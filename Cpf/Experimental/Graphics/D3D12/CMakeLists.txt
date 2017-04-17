@@ -51,22 +51,15 @@ if (WIN32)
 # WIN32
 endif ()
 
-
-if(MSVC)
-	set (targetPath /Cpf/Experimental/Graphics/D3D12)
-else()
-	set (targetPath /)
-endif()
-file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/Experimental)
-file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}${targetPath}/Experimental/shaders)
-
-foreach (file ${DataFiles})
-	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
-	set (target ${CMAKE_BINARY_DIR}${targetPath}/${relative})
-#	message ("src: ${file}  dst: ${target}")
-	add_custom_command (OUTPUT ${target}
-		COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
-		MAIN_DEPENDENCY ${file}
-	)
+foreach (config ${CMAKE_CONFIGURATION_TYPES})
+	foreach (file ${DataFiles})
+		file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
+		set (target "${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
+		message ("src: ${file}  dst: ${target}")
+		add_custom_command (OUTPUT ${target}
+			COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
+			MAIN_DEPENDENCY ${file}
+		)
+	endforeach ()
 endforeach ()
 source_group (Data FILES ${DataFiles})

@@ -1,6 +1,8 @@
 #include "Integration.hpp"
 #include "Logging/Logging.hpp"
 #include "IO/IO.hpp"
+#include "IO/File.hpp"
+#include "IO/Directory.hpp"
 #include "Resources/Resources.hpp"
 #include "Resources/ResourceConfig.hpp"
 #include "MultiCore.hpp"
@@ -245,7 +247,13 @@ COM::Result CPF_STDCALL BgfxIntegration::Initialize(Plugin::iRegistry* registry,
 {
 	mpRegistry = registry;
 	*appCid = SDL2::kWindowedApplicationCID;
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
+
+	// Setup initial working directory.
+	auto exePath = IO::File::GetExecutableFilePath();
+	exePath += "../resources/";
+	IO::Directory::SetWorkingDirectory(exePath);
+
+	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	return COM::kOK;
 }
 

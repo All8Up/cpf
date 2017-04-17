@@ -18,6 +18,8 @@
 #include "Math/Constants.hpp"
 #include "Math/Matrix33v.hpp"
 #include "IO/IO.hpp"
+#include "IO/File.hpp"
+#include "IO/Directory.hpp"
 
 #include "MovementSystem.hpp"
 #include "RenderSystem.hpp"
@@ -59,8 +61,13 @@ COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registr
 	mpRegistry = registry;
 	*appCid = SDL2::kWindowedApplicationCID;
 
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
+	// Setup initial working directory.
+	auto exePath = IO::File::GetExecutableFilePath();
+	exePath += "../resources/";
+	IO::Directory::SetWorkingDirectory(exePath);
+
+	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
+	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	return COM::kOK;
 }
 

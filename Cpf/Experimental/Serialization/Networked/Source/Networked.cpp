@@ -11,6 +11,8 @@
 #include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
+#include "IO/File.hpp"
+#include "IO/Directory.hpp"
 #include "SDL2/CIDs.hpp"
 #include "Graphics.hpp"
 
@@ -43,9 +45,15 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	Resources::ResourcesInitializer::Install();
 	GraphicsInitializer::Install(registry);
 
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/Adapter_SDL2.cfp");
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/AdapterD3D12.cfp");
-	GetRegistry()->Load(CPF_COMMON_PLUGINS "/MultiCore.cfp");
+	// Setup initial working directory.
+	auto exePath = IO::File::GetExecutableFilePath();
+	exePath += "../resources/";
+	IO::Directory::SetWorkingDirectory(exePath);
+
+	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
+	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
+	GetRegistry()->Load("plugins/MultiCore.cfp");
+
 	return COM::kOK;
 }
 
@@ -166,7 +174,7 @@ bool Networked::_Remove()
 
 bool Networked::_InitializeResources()
 {
-	mpLocator.Adopt(Resources::Configuration("./Networked/resource_config.json").GetLocator());
+	mpLocator.Adopt(Resources::Configuration("./networked/resource_config.json").GetLocator());
 	return bool(mpLocator);
 }
 

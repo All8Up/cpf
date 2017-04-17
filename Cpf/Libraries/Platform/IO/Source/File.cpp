@@ -162,3 +162,20 @@ CPF_EXPORT_IO Stream* File::Create(const String& name, StreamAccess access, Erro
 	}
 	return nullptr;
 }
+
+
+#if CPF_TARGET_WINDOWS
+String CPF_EXPORT_IO File::GetExecutableFilePath()
+{
+	HMODULE module = GetModuleHandle(nullptr);
+	CHAR path[MAX_PATH];
+	DWORD length = 0;
+	if ((length = GetModuleFileName(module, path, MAX_PATH)) > 0)
+	{
+		auto dir = Path::GetDirectory(path);
+		return dir;
+	}
+	return String();
+}
+#else
+#endif
