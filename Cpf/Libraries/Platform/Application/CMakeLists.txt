@@ -2,6 +2,7 @@
 set (INTERFACE_FILES
 	Interface/Application/iWindow.hpp
 	Interface/Application/KeyCode.hpp
+	Interface/Application/ScanCode.hpp
 	Interface/Application/MouseButton.hpp
 	Interface/Application/OSWindowData.hpp
 	Interface/Application/WindowDesc.hpp

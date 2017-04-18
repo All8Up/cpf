@@ -26,6 +26,9 @@
 #include "Resources/Locator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
+
+#include "Application/KeyCode.hpp"
+#include "Application/ScanCode.hpp"
 //#include "SDL.h"
 
 using namespace Cpf;
@@ -164,27 +167,25 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 
 	//////////////////////////////////////////////////////////////////////////
 	ImGuiIO& io = ImGui::GetIO();
-	/*
-	io.KeyMap[ImGuiKey_Tab] = SDLK_TAB;
-	io.KeyMap[ImGuiKey_LeftArrow] = SDL_SCANCODE_LEFT;
-	io.KeyMap[ImGuiKey_RightArrow] = SDL_SCANCODE_RIGHT;
-	io.KeyMap[ImGuiKey_UpArrow] = SDL_SCANCODE_UP;
-	io.KeyMap[ImGuiKey_DownArrow] = SDL_SCANCODE_DOWN;
-	io.KeyMap[ImGuiKey_PageUp] = SDL_SCANCODE_PAGEUP;
-	io.KeyMap[ImGuiKey_PageDown] = SDL_SCANCODE_PAGEDOWN;
-	io.KeyMap[ImGuiKey_Home] = SDL_SCANCODE_HOME;
-	io.KeyMap[ImGuiKey_End] = SDL_SCANCODE_END;
-	io.KeyMap[ImGuiKey_Delete] = SDLK_DELETE;
-	io.KeyMap[ImGuiKey_Backspace] = SDLK_BACKSPACE;
-	io.KeyMap[ImGuiKey_Enter] = SDLK_RETURN;
-	io.KeyMap[ImGuiKey_Escape] = SDLK_ESCAPE;
-	io.KeyMap[ImGuiKey_A] = SDLK_a;
-	io.KeyMap[ImGuiKey_C] = SDLK_c;
-	io.KeyMap[ImGuiKey_V] = SDLK_v;
-	io.KeyMap[ImGuiKey_X] = SDLK_x;
-	io.KeyMap[ImGuiKey_Y] = SDLK_y;
-	io.KeyMap[ImGuiKey_Z] = SDLK_z;
-	*/
+	io.KeyMap[ImGuiKey_Tab] = int(ScanCode::eTab);
+	io.KeyMap[ImGuiKey_LeftArrow] = int(ScanCode::eLeft);
+	io.KeyMap[ImGuiKey_RightArrow] = int(ScanCode::eRight);
+	io.KeyMap[ImGuiKey_UpArrow] = int(ScanCode::eUp);
+	io.KeyMap[ImGuiKey_DownArrow] = int(ScanCode::eDown);
+	io.KeyMap[ImGuiKey_PageUp] = int(ScanCode::ePageUp);
+	io.KeyMap[ImGuiKey_PageDown] = int(ScanCode::ePageDown);
+	io.KeyMap[ImGuiKey_Home] = int(ScanCode::eHome);
+	io.KeyMap[ImGuiKey_End] = int(ScanCode::eEnd);
+	io.KeyMap[ImGuiKey_Delete] = int(ScanCode::eDelete);
+	io.KeyMap[ImGuiKey_Backspace] = int(ScanCode::eBackspace);
+	io.KeyMap[ImGuiKey_Enter] = int(ScanCode::eReturn);
+	io.KeyMap[ImGuiKey_Escape] = int(ScanCode::eEscape);
+	io.KeyMap[ImGuiKey_A] = int(KeyCode::eA);
+	io.KeyMap[ImGuiKey_C] = int(KeyCode::eC);
+	io.KeyMap[ImGuiKey_V] = int(KeyCode::eV);
+	io.KeyMap[ImGuiKey_X] = int(KeyCode::eX);
+	io.KeyMap[ImGuiKey_Y] = int(KeyCode::eY);
+	io.KeyMap[ImGuiKey_Z] = int(KeyCode::eZ);
 	io.RenderDrawListsFn = nullptr;
 	io.SetClipboardTextFn = &DebugUI::_SetClipboardText;
 	io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
