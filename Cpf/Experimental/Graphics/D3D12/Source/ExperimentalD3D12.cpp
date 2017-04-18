@@ -47,8 +47,7 @@ using namespace Threading;
 using namespace Concurrency;
 
 //////////////////////////////////////////////////////////////////////////
-#define GFX_INITIALIZER CPF_CONCAT(GFX_ADAPTER, Initializer)
-#define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
+#define WINDOW_TITLE "Hello Triangle: D3D12"
 
 
 void ExperimentalD3D12::ReconfigurePipeline()
@@ -91,8 +90,8 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
-	CPF_INIT_MULTICORE(GetRegistry(), CPF_COMMON_PLUGINS);
-	CPF_INIT_ENTITYSERVICE(GetRegistry(), CPF_COMMON_PLUGINS);
+	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
+	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;

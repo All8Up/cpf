@@ -96,28 +96,4 @@ add_custom_command (
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterD3D12> ${CPF_COMMON_PLUGINS}/AdapterD3D12.cfp
 )
 
-# ###############################################
-#[[
-install (TARGETS AdapterD3D12
-	EXPORT AdapterD3D12Config
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
-
-
-# ###############################################
-install (EXPORT AdapterD3D12Config DESTINATION CMake)
-
-# ###############################################
-MakeUnitTest( LIBRARY AdapterD3D12 GROUP Adapter
-	TEST_FILES
-		UnitTest/Test_All.hpp
-		../../../Core/Test/UnitTestMain.cpp
-	LINK_LIBRARIES
-		Configuration Math
-)
-
-# WIN32
-#]]
 endif ()

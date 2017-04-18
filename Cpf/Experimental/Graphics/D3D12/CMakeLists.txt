@@ -40,26 +40,20 @@ if (WIN32)
 		Concurrency
 	)
 
-	target_compile_definitions (ExperimentalD3D12
-		PUBLIC
-			-DGFX_ADAPTER=D3D12
-			-DCPF_COMMON_RESOURCES="${CPF_COMMON_RESOURCES}"
-			-DCPF_COMMON_PLUGINS="${CPF_COMMON_PLUGINS}"
-	)
-
 	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)
 # WIN32
 endif ()
 
-foreach (config ${CMAKE_CONFIGURATION_TYPES})
-	foreach (file ${DataFiles})
-		file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
-		set (target "${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
-		message ("src: ${file}  dst: ${target}")
-		add_custom_command (OUTPUT ${target}
-			COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
-			MAIN_DEPENDENCY ${file}
-		)
-	endforeach ()
-endforeach ()
+add_custom_command (TARGET ExperimentalD3D12 POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_CURRENT_SOURCE_DIR}/Experimental
+	${CMAKE_BINARY_DIR}/$<CONFIG>/resources/experimental
+)
 source_group (Data FILES ${DataFiles})
+
+foreach (file ${DataFiles})
+	get_filename_component (ext "${file}" EXT)
+	if (${ext} STREQUAL ".hlsl")
+		set_source_files_properties (${file} PROPERTIES HEADER_FILE_ONLY TRUE)
+	endif ()
+endforeach ()

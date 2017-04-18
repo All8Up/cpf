@@ -23,7 +23,7 @@ target_include_directories (Networked
 target_link_libraries (Networked
 	Logging
 	s_ANSI_C_FileSystem
-	s_MultiCore
+	MultiCore
 	s_Resources
 	s_GraphicsDriver
 	i_Application
@@ -33,15 +33,34 @@ target_link_libraries (Networked
 )
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
 
-foreach (config ${CMAKE_CONFIGURATION_TYPES})
-	foreach (file ${DataFiles})
-		file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
-		set (target "${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
-		message ("src: ${file}  dst: ${target}")
-		add_custom_command (OUTPUT ${target}
-			COMMAND ${CMAKE_COMMAND} -E copy ${file} ${target}
-			MAIN_DEPENDENCY ${file}
-		)
+#[[
+foreach (file ${DataFiles})
+	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
+	set (target "${CMAKE_BINARY_DIR}/Debug/resources/${relative}")
+#	message ("src: ${file}  dst: ${target}")
+
+	set (copyCommands "")
+	foreach (config ${CMAKE_CONFIGURATION_TYPES})
+		set (copyCommands "${copyCommands}\nCOMMAND ${CMAKE_COMMAND} -E copy ${file} ${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
 	endforeach ()
+	message ("${copyCommands}")
+
+	add_custom_command (OUTPUT ${target}
+		${copyCommands}
+		DEPENDS ${file}
+	)
 endforeach ()
+]]#
+add_custom_command (TARGET Networked POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_CURRENT_SOURCE_DIR}/networked
+	${CMAKE_BINARY_DIR}/$<CONFIG>/resources/networked
+)
 source_group (Data FILES ${DataFiles})
+
+foreach (file ${DataFiles})
+	get_filename_component (ext "${file}" EXT)
+	if (${ext} STREQUAL ".hlsl")
+		set_source_files_properties (${file} PROPERTIES HEADER_FILE_ONLY TRUE)
+	endif ()
+endforeach ()

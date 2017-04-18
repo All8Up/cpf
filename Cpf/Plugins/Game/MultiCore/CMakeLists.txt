@@ -34,30 +34,6 @@ set (MULTICORE_SYSTEM_SOURCE_FILES
 	Source/MultiCore/System/Timer.cpp
 )
 
-add_library (s_MultiCore STATIC
-	${INCLUDE_FILES}
-	${MULTICORE_INCLUDE_FILES}
-	${MULTICORE_SYSTEM_INCLUDE_FILES}
-	${SOURCE_FILES}
-	${MULTICORE_SOURCE_FILES}
-	${MULTICORE_SYSTEM_SOURCE_FILES}
-)
-target_compile_definitions (s_MultiCore
-	PUBLIC CPF_STATIC_MULTICORE
-	PRIVATE CPF_BUILD_MULTICORE
-)
-target_include_directories (s_MultiCore
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<INSTALL_INTERFACE:Include>
-)
-target_link_libraries (s_MultiCore
-	LINK_PUBLIC
-		Configuration s_Collections COM Logging s_Hash s_Concurrency Plugin
-)
-set_property (TARGET s_MultiCore PROPERTY FOLDER Libraries/Static/Game)
-
-
 # ###############################################
 add_library (MultiCore SHARED
 	${INCLUDE_FILES}
@@ -76,8 +52,8 @@ target_include_directories (MultiCore
 		$<INSTALL_INTERFACE:Include>
 )
 target_link_libraries (MultiCore
-	LINK_PUBLIC
-		Configuration s_Collections Plugin COM Logging Hash s_Concurrency
+	PUBLIC
+		Configuration s_Collections Plugin COM Logging Hash Concurrency
 )
 set_property (TARGET MultiCore PROPERTY FOLDER Plugins/Game)
 
@@ -106,20 +82,11 @@ source_group (Sources\\MultiCore FILES ${MULTICORE_SOURCE_FILES})
 source_group (Sources\\MultiCore\\System FILES ${MULTICORE_SYSTEM_SOURCE_FILES})
 
 # ###############################################
-#[[
-install (TARGETS s_MultiCore
-	EXPORT MultiCoreSystemConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
-install (EXPORT MultiCoreSystemConfig DESTINATION CMake)
-]]#
-
-# ###############################################
-MakeUnitTest( LIBRARY s_MultiCore GROUP Game
+MakeUnitTest (LIBRARY MultiCore GROUP Game
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_QueueBuilder.hpp
-		../../Core/Test/UnitTestMain.cpp
+		../../../Libraries/Core/Test/UnitTestMain.cpp
+	LINK_LIBRARIES
+		s_Collections s_Hash MultiCore
 )

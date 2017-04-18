@@ -17,7 +17,7 @@ ConstantBuffer::ConstantBuffer(Device* device, size_t size, const void* initData
 	{
 		D3D12_RESOURCE_DIMENSION_BUFFER, // Dimension
 		0, // Alignment
-		UINT64(size), // Width
+		UINT64((sizeof(size) + 255) & ~255), // Width
 		1, // Height
 		1, // DepthOrArraySize
 		1, // MipLevels
