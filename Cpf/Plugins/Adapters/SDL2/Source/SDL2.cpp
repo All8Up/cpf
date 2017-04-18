@@ -3,6 +3,9 @@
 #include "Plugin/iClassInstance.hpp"
 #include "Window.hpp"
 #include "WindowedApplication.hpp"
+#include "InputManager.hpp"
+#include "MouseDevice.hpp"
+#include "KeyboardDevice.hpp"
 #include "SDL2/CIDs.hpp"
 
 using namespace Cpf;
@@ -19,46 +22,13 @@ namespace
 	Plugin::IID_CID sImplementations[] =
 	{
 		{ iWindowedApplication::kIID, SDL2::kWindowedApplicationCID },
-		{ iWindow::kIID, SDL2::kWindowCID }
+		{ iWindow::kIID, SDL2::kWindowCID },
+		{ iInputManager::kIID, SDL2::kInputManagerCID },
+		{ iMouseDevice::kIID, SDL2::kMouseDeviceCID },
+		{ iKeyboardDevice::kIID, SDL2::kKeyboardDeviceCID }
 	};
 }
 
-struct SDL2WindowClass : public Plugin::iClassInstance
-{
-	SDL2WindowClass(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
-
-	COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
-	int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
-	int32_t CPF_STDCALL Release() override
-	{
-		if (--mRefCount == 0)
-		{
-			delete this;
-			return 0;
-		}
-		return mRefCount;
-	}
-
-	COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown*, COM::iUnknown** outIface) override
-	{
-		if (outIface)
-		{
-			*outIface = new SDL2::Window();
-			if (*outIface)
-			{
-				if (mExternalRef)
-					++*mExternalRef;
-				return COM::kOK;
-			}
-			return COM::kOutOfMemory;
-		}
-		return COM::kInvalidParameter;
-	}
-
-private:
-	int32_t mRefCount;
-	int32_t* mExternalRef;
-};
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
@@ -69,8 +39,11 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 		if (SDL2::g_Context.AddRef() == 1)
 		{
 			SDL2::g_Context.SetRegistry(registry);
-			registry->Install(SDL2::kWindowCID, new SDL2WindowClass());
+			registry->Install(SDL2::kWindowCID, new Plugin::tSimpleClassInstance<SDL2::Window>());
 			registry->Install(SDL2::kWindowedApplicationCID, new Plugin::tSimpleClassInstance<SDL2::WindowedApp>());
+			registry->Install(SDL2::kInputManagerCID, new Plugin::tSimpleClassInstance<SDL2::InputManager>());
+			registry->Install(SDL2::kMouseDeviceCID, new Plugin::tSimpleClassInstance<SDL2::MouseDevice>());
+			registry->Install(SDL2::kKeyboardDeviceCID, new Plugin::tSimpleClassInstance<SDL2::KeyboardDevice>());
 
 			registry->FactoryInstall(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
 		}
@@ -93,6 +66,9 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 		if (SDL2::g_Context.Release() == 0)
 		{
 			registry->FactoryRemove(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
+			registry->Remove(SDL2::kKeyboardDeviceCID);
+			registry->Remove(SDL2::kMouseDeviceCID);
+			registry->Remove(SDL2::kInputManagerCID);
 			registry->Remove(SDL2::kWindowedApplicationCID);
 			registry->Remove(SDL2::kWindowCID);
 			SDL2::g_Context.SetRegistry(nullptr);

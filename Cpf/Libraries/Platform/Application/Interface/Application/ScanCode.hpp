@@ -24,6 +24,6 @@ namespace Cpf
 		eLeft = 80,
 		eDown = 81,
 		eUp = 82,
-		eBackspace = 187,
+		eKPBackspace = 187,
 	};
 }

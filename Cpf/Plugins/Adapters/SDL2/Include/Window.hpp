@@ -11,7 +11,7 @@ namespace Cpf
 		class Window : public tRefCounted<iWindow>
 		{
 		public:
-			Window();
+			Window(COM::iUnknown*);
 			virtual ~Window();
 
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;

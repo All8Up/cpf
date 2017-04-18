@@ -38,14 +38,14 @@ COM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
 	return mpTimer != nullptr ? COM::kOK : COM::kInvalid;
 }
 
-bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iWindow* window, Resources::Locator* locator)
+bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager* im, iWindow* window, Resources::Locator* locator)
 {
 	if (Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
 	{
 		if (_SelectAdapter() &&
 			COM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
 			_CreateSwapChain(window) &&
-			_CreateRenderData(window, locator)
+			_CreateRenderData(im, window, locator)
 			)
 		{
 			int32_t w, h;
@@ -206,7 +206,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	return mpSwapChain;
 }
 
-bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locator)
+bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resources::Locator* locator)
 {
 	mpDevice->CreateFence(3, mpFence.AsTypePP());
 	for (int i = 0; i < kBufferCount; ++i)
@@ -219,7 +219,7 @@ bool RenderSystem::_CreateRenderData(iWindow* window, Resources::Locator* locato
 		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP());
 	}
 	mpRegistry->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
-	mpDebugUI->Initialize(mpDevice, window, locator);
+	mpDebugUI->Initialize(mpDevice, im, window, locator);
 	return true;
 }
 

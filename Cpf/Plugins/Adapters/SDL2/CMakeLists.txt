@@ -6,11 +6,21 @@ set (INCLUDE_FILES
 	Include/SDL2.hpp
 	Include/Window.hpp
 	Include/WindowedApplication.hpp
+	Include/InputManager.hpp
+	Include/InputDevice.hpp
+	Include/MouseDevice.hpp
+	Include/KeyboardDevice.hpp
+	Include/JoystickDevice.hpp
 )
 set (SOURCE_FILES
 	Source/SDL2.cpp
 	Source/Window.cpp
 	Source/WindowedApplication.cpp
+	Source/InputDevice.cpp
+	Source/InputManager.cpp
+	Source/JoystickDevice.cpp
+	Source/KeyboardDevice.cpp
+	Source/MouseDevice.cpp
 )
 
 add_library (Adapter_SDL2 SHARED

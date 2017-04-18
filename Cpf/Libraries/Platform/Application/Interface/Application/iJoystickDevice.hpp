@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Plugin/Context.hpp"
+#include "Application/iInputDevice.hpp"
 
 namespace Cpf
 {
-	namespace SDL2
+	struct iJoystickDevice : iInputDevice
 	{
-		extern Plugin::Context g_Context;
-	}
+
+	};
 }

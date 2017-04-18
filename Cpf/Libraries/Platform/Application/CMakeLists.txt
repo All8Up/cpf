@@ -10,6 +10,11 @@ set (INTERFACE_FILES
 	Interface/Application/iApplication.hpp
 	Interface/Application/iApplicationMain.hpp
 	Interface/Application/iWindowedApplication.hpp
+	Interface/Application/iInputManager.hpp
+	Interface/Application/iInputDevice.hpp
+	Interface/Application/iMouseDevice.hpp
+	Interface/Application/iKeyboardDevice.hpp
+	Interface/Application/iJoystickDevice.hpp
 )
 add_library (i_Application INTERFACE)
 target_link_libraries (i_Application INTERFACE Configuration s_Events Plugin)

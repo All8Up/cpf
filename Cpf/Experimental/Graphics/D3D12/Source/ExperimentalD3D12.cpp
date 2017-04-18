@@ -398,7 +398,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
 				{
-					if (!mpDebugUI->Initialize(mpDevice, mpWindow, mpLocator))
+					if (!mpDebugUI->Initialize(mpDevice, mpApplication->GetInputManager(), mpWindow, mpLocator))
 					{
 						CPF_LOG(Experimental, Info) << "Failed to initialize the debug UI.";
 					}

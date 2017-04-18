@@ -17,5 +17,7 @@ namespace Cpf
 		virtual COM::Result CPF_STDCALL Poll() = 0;
 		virtual COM::Result CPF_STDCALL Wait() = 0;
 		virtual COM::Result CPF_STDCALL Create(const WindowDesc&, iWindow**) = 0;
+
+		virtual iInputManager* CPF_STDCALL GetInputManager() = 0;
 	};
 }

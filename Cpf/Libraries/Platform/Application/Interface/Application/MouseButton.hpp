@@ -6,6 +6,7 @@ namespace Cpf
 {
 	enum class MouseButton : int32_t
 	{
+		eNone = 0,
 		eLeft,
 		eMiddle,
 		eRight,

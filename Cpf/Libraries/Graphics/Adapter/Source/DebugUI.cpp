@@ -26,10 +26,14 @@
 #include "Resources/Locator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
+#include "Logging/Logging.hpp"
 
 #include "Application/KeyCode.hpp"
 #include "Application/ScanCode.hpp"
-//#include "SDL.h"
+#include "Application/MouseButton.hpp"
+#include "Application/iMouseDevice.hpp"
+#include "Application/iKeyboardDevice.hpp"
+#include "Application/iInputManager.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
@@ -38,10 +42,15 @@ using namespace Graphics;
 DebugUI::DebugUI(iUnknown*)
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
-{}
+{
+	CPF_INIT_LOG(DebugUI);
+	CPF_LOG_LEVEL(DebugUI, Trace);
+}
 
 DebugUI::~DebugUI()
-{}
+{
+	CPF_DROP_LOG(DebugUI);
+}
 
 COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
 {
@@ -64,12 +73,14 @@ COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
 	return COM::kInvalidParameter;
 }
 
-bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* locator)
+bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Resources::Locator* locator)
 {
 	CPF_ASSERT(device != nullptr);
 	CPF_ASSERT(locator != nullptr);
 	mpDevice = device;
 	mpLocator = locator;
+	im->GetDevice(iMouseDevice::kDefault, iMouseDevice::kIID, mpMouse.AsVoidPP());
+	im->GetDevice(iKeyboardDevice::kDefault, iKeyboardDevice::kIID, mpKeyboard.AsVoidPP());
 
 	// Load the shaders.
 	// TODO: Consider moving the debug UI out so we don't need a dependency on resources.
@@ -219,6 +230,13 @@ bool DebugUI::Initialize(iDevice* device, iWindow* window, Resources::Locator* l
 	if (!mpUIAtlas)
 		return false;
 
+	// Attach window events.
+	window->GetEmitter()->On<iWindow::OnMouseWheel>(Bind(&DebugUI::_OnMouseWheel, this, Placeholders::_1, Placeholders::_2));
+	window->GetEmitter()->On<iWindow::OnButtonDown>(Bind(&DebugUI::_OnMouseDown, this, Placeholders::_1, Placeholders::_2, Placeholders::_3));
+	window->GetEmitter()->On<iWindow::OnButtonUp>(Bind(&DebugUI::_OnMouseUp, this, Placeholders::_1, Placeholders::_2, Placeholders::_3));
+	window->GetEmitter()->On<iWindow::OnKeyDown>(Bind(&DebugUI::_OnKeyDown, this, Placeholders::_1));
+	window->GetEmitter()->On<iWindow::OnKeyUp>(Bind(&DebugUI::_OnKeyUp, this, Placeholders::_1));
+
 	// Create large buffers.
 	mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, kVertexBufferSize, sizeof(ImDrawVert), nullptr, mpVertexBuffer.AsTypePP());
 	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDynamic, kIndexBufferSize, nullptr, mpIndexBuffer.AsTypePP());
@@ -257,15 +275,22 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
 
 	//
-	/*
-	int mx, my;
-	Uint32 mouseMask = SDL_GetMouseState(&mx, &my);
+	int32_t mx, my;
+	mpMouse->GetPosition(&mx, &my);
 	io.MousePos = ImVec2((float)mx, (float)my);
-	io.MouseDown[0] = mMousePressed[0] || (mouseMask & SDL_BUTTON(SDL_BUTTON_LEFT)) != 0;
-	io.MouseDown[1] = mMousePressed[1] || (mouseMask & SDL_BUTTON(SDL_BUTTON_RIGHT)) != 0;
-	io.MouseDown[2] = mMousePressed[2] || (mouseMask & SDL_BUTTON(SDL_BUTTON_MIDDLE)) != 0;
+
+	MouseButton button;
+	mpMouse->GetButtonState(&button);
+	io.MouseDown[0] = mMousePressed[0] || (button & MouseButton::eLeft) != MouseButton::eNone;
+	io.MouseDown[1] = mMousePressed[1] || (button & MouseButton::eRight) != MouseButton::eNone;
+	io.MouseDown[2] = mMousePressed[2] || (button & MouseButton::eMiddle) != MouseButton::eNone;
 	mMousePressed[0] = mMousePressed[1] = mMousePressed[2] = false;
-	*/
+
+	if (button != MouseButton::eNone)
+		CPF_LOG(DebugUI, Trace) << "Got mouse button input.";
+	if (mMouseWheel != 0)
+		CPF_LOG(DebugUI, Trace) << "Got mouse wheel input.";
+
 	io.MouseWheel = mMouseWheel;
 	mMouseWheel = 0.0f;
 
@@ -469,6 +494,37 @@ void DebugUI::Execute()
 	{
 		(*it.first)(this, it.second);
 	}
+}
+
+void DebugUI::_OnMouseWheel(int32_t, int32_t y)
+{
+	if (y > 0)
+		mMouseWheel = 1;
+	if (y < 0)
+		mMouseWheel = -1;
+
+}
+
+void DebugUI::_OnMouseDown(MouseButton button, int32_t, int32_t)
+{
+	if ((button & MouseButton::eLeft) == MouseButton::eLeft)
+		mMousePressed[0] = true;
+	if ((button & MouseButton::eRight) == MouseButton::eRight)
+		mMousePressed[1] = true;
+	if ((button & MouseButton::eMiddle) == MouseButton::eMiddle)
+		mMousePressed[2] = true;
+}
+
+void DebugUI::_OnMouseUp(MouseButton, int32_t, int32_t)
+{
+}
+
+void DebugUI::_OnKeyDown(KeyCode)
+{
+}
+
+void DebugUI::_OnKeyUp(KeyCode)
+{
 }
 
 bool DebugUI::HandleRawInput(void* context, const void* data)

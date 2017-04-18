@@ -18,7 +18,7 @@ namespace Cpf
 		using OnMouseMove = Events::Event<"OnMouseMove"_crc64, Function<void(int32_t, int32_t)>>;
 		using OnButtonDown = Events::Event<"OnButtonDown"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
 		using OnButtonUp = Events::Event<"OnButtonUp"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
-		using OnMouseWheel = Events::Event<"OnMouseWheel"_crc64, Function<void()>>;
+		using OnMouseWheel = Events::Event<"OnMouseWheel"_crc64, Function<void(int32_t x, int32_t y)>>;
 		using OnKeyDown = Events::Event<"OnKeyDown"_crc64, Function<void(KeyCode)>>;
 		using OnKeyUp = Events::Event<"OnKeyUp"_crc64, Function<void(KeyCode)>>;
 		using OnMoved = Events::Event<"OnMoved"_crc64, Function<void(int32_t, int32_t)>>;

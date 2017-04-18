@@ -29,7 +29,7 @@ namespace Cpf
 
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
-		bool Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iWindow*, Resources::Locator*);
+		bool Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager*, iWindow*, Resources::Locator*);
 		bool Shutdown();
 
 		void Resize(int32_t, int32_t);
@@ -64,7 +64,7 @@ namespace Cpf
 
 		bool _SelectAdapter();
 		bool _CreateSwapChain(iWindow* window);
-		bool _CreateRenderData(iWindow*, Resources::Locator*);
+		bool _CreateRenderData(iInputManager*, iWindow*, Resources::Locator*);
 
 		static void _BeginFrame(Concurrency::ThreadContext&, void* context);
 		static void _DebugUI(Concurrency::ThreadContext&, void* context);

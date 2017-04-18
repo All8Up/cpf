@@ -11,6 +11,8 @@ namespace Cpf
 		using ClassID = Hash::HashID<uint64_t, class_tag>;
 		struct interface_tag;
 		using InterfaceID = Hash::HashID<uint64_t, interface_tag>;
+		struct instance_tag;
+		using InstanceID = Hash::HashID<uint64_t, instance_tag>;
 
 		using Result = struct Result {
 			uint32_t Error : 1; uint32_t SubSystem : 16; uint32_t Value : 15;

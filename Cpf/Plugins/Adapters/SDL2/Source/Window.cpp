@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace SDL2;
 
 //////////////////////////////////////////////////////////////////////////
-Window::Window()
+Window::Window(COM::iUnknown*)
 	: mpWindow(nullptr)
 {
 }

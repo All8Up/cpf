@@ -2,8 +2,10 @@
 #include "WindowedApplication.hpp"
 #include "Application/MouseButton.hpp"
 #include "Application/iApplicationMain.hpp"
+#include "Application/iInputManager.hpp"
 #include "Plugin/iRegistry.hpp"
 #include "Logging/Logging.hpp"
+#include "SDL2/CIDs.hpp"
 
 using namespace Cpf;
 using namespace SDL2;
@@ -60,6 +62,9 @@ COM::Result CPF_STDCALL WindowedApp::Initialize(Plugin::iRegistry* regy, iApplic
 	{
 		mpRegistry = regy;
 		mpApplicationMain = appMain;
+
+		regy->Create(nullptr, kInputManagerCID, iInputManager::kIID, mpInputManager.AsVoidPP());
+
 		return COM::kOK;
 	}
 	return COM::kInvalidParameter;
@@ -152,6 +157,11 @@ COM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc& desc, iWindow** ou
 	return (win != nullptr) ? COM::kOK : COM::kOutOfMemory;
 }
 
+iInputManager* CPF_STDCALL WindowedApp::GetInputManager()
+{
+	return mpInputManager;
+}
+
 void WindowedApp::_HandleEvent(SDL_Event& event)
 {
 	switch (event.type)
@@ -214,11 +224,9 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 	case SDL_MOUSEWHEEL:
 		{
 			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.wheel.windowID), "iWindow"));
-			window->GetEmitter()->Emit<iWindow::OnMouseWheel>();
-
-			char buffer[1024];
-			::sprintf(buffer, "Mouse up: Direction(%d) X(%d) Y(%d)", event.wheel.direction, event.wheel.x, event.wheel.y);
-			CPF_LOG(Application, Trace) << buffer;
+			int32_t x = event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -event.wheel.x : event.wheel.x;
+			int32_t y = event.wheel.direction == SDL_MOUSEWHEEL_FLIPPED ? -event.wheel.y : event.wheel.y;
+			window->GetEmitter()->Emit<iWindow::OnMouseWheel>(x, y);
 		}
 		break;
 

@@ -238,7 +238,7 @@ bool Networked::_InitializePipeline()
 		GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, mpRenderSystem.AsVoidPP());
 		mpRenderSystem->Initialize(GetRegistry(), "Rendering", &renderDesc);
 		mpPipeline->Install(mpRenderSystem);
-		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(GetRegistry(), selectedAPI, mpWindow, mpLocator))
+		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(GetRegistry(), selectedAPI, mpWindowedApplication->GetInputManager(), mpWindow, mpLocator))
 		{
 			return (
 				mpTimer &&

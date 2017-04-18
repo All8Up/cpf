@@ -4,6 +4,12 @@
 
 namespace Cpf
 {
+	struct iInputManager;
+	struct iMouseDevice;
+	struct iKeyboardDevice;
+	enum class MouseButton : int32_t;
+	enum class KeyCode : int32_t;
+
 	namespace Graphics
 	{
 		class DebugUI : public tRefCounted<iDebugUI>
@@ -15,7 +21,7 @@ namespace Cpf
 			COM::Result QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			//
-			bool Initialize(iDevice*, iWindow* window, Resources::Locator*);
+			bool Initialize(iDevice*, iInputManager* im, iWindow* window, Resources::Locator*);
 			void Shutdown();
 			void BeginFrame(iCommandBuffer* commands, float deltaTime);
 			void EndFrame(iCommandBuffer* commands);
@@ -64,7 +70,12 @@ namespace Cpf
 			static bool HandleRawInput(void* context, const void* data);
 
 		private:
-			bool DebugUI::_HandleRawInput(const void* rawEvent);
+			void _OnMouseWheel(int32_t, int32_t);
+			void _OnMouseDown(MouseButton, int32_t, int32_t);
+			void _OnMouseUp(MouseButton, int32_t, int32_t);
+			void _OnKeyDown(KeyCode);
+			void _OnKeyUp(KeyCode);
+			bool _HandleRawInput(const void* rawEvent);
 			static const char* _GetClipboardText();
 			static void _SetClipboardText(const char* text);
 
@@ -90,6 +101,10 @@ namespace Cpf
 			// Rendering information.
 			int32_t mWidth;
 			int32_t mHeight;
+
+			//
+			IntrusivePtr<iMouseDevice> mpMouse;
+			IntrusivePtr<iKeyboardDevice> mpKeyboard;
 
 			//
 			using DebugCallPair = Pair<DebugUICall, void*>;

@@ -13,6 +13,7 @@ namespace Cpf
 	}
 
 	struct iApplicationMain;
+	struct iInputManager;
 
 	struct iApplication : COM::iUnknown
 	{

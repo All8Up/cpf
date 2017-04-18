@@ -33,6 +33,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL Poll() override;
 			COM::Result CPF_STDCALL Wait() override;
 			COM::Result CPF_STDCALL Create(const WindowDesc&, iWindow**) override;
+			iInputManager* CPF_STDCALL GetInputManager() override;
 
 		private:
 			void _HandleEvent(SDL_Event& event);
@@ -40,6 +41,7 @@ namespace Cpf
 			iApplicationMain* mpApplicationMain;
 			Plugin::iRegistry* mpRegistry;
 			Events::Emitter mEmitter;
+			IntrusivePtr<iInputManager> mpInputManager;
 		};
 	}
 }
