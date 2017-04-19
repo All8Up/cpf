@@ -14,15 +14,21 @@ namespace Cpf
 			COM::ClassID mCID;
 		};
 
+		/** @brief The class instance interface.  Added to iRegistry to create component instances. */
 		struct iClassInstance : COM::iUnknown
 		{
 			virtual COM::Result CPF_STDCALL CreateInstance(iRegistry*, COM::iUnknown*, COM::iUnknown**) = 0;
 		};
 
+		/**
+		 * @brief A helper to create class instances.
+		 * @tparam TYPE Type of instance to create.
+		 */
 		template <typename TYPE>
-		struct tSimpleClassInstance : public iClassInstance
+		struct tClassInstance : public iClassInstance
 		{
-			tSimpleClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
+			tClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
+			virtual ~tClassInstance() {}
 
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
 			int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
@@ -59,4 +65,4 @@ namespace Cpf
 	}
 }
 
-#define CPF_CLASSINSTANCE_ACCESS(name) friend struct Cpf::Plugin::tSimpleClassInstance<name>;
+#define CPF_CLASSINSTANCE_ACCESS(name) friend struct Cpf::Plugin::tClassInstance<name>;

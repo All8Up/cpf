@@ -12,12 +12,41 @@ namespace Cpf
 	{
 		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iWindowedApplication"_crc64);
 
+		/**
+		 * @brief Determine if the application is supposed to still be running.
+		 * @return True if the application is still running, false if a quit request has been made.
+		 */
 		virtual bool CPF_STDCALL IsRunning() = 0;
-		virtual void CPF_STDCALL Quit() = 0;
-		virtual COM::Result CPF_STDCALL Poll() = 0;
-		virtual COM::Result CPF_STDCALL Wait() = 0;
-		virtual COM::Result CPF_STDCALL Create(const WindowDesc&, iWindow**) = 0;
 
+		/**
+		 * @brief Issues a quit request.
+		 */
+		virtual void CPF_STDCALL Quit() = 0;
+
+		/**
+		 * @brief Polls the application for events.
+		 * @return A result code.
+		 */
+		virtual COM::Result CPF_STDCALL Poll() = 0;
+
+		/**
+		 * @brief Waits for an application event.
+		 * @return A result code.
+		 */
+		virtual COM::Result CPF_STDCALL Wait() = 0;
+
+		/**
+		 * @brief Creates a new CPF_STDCALL.
+		 * @param desc The window descriptor.
+		 * @param [in,out] outWindow The window output variable.
+		 * @return A result code.
+		 */
+		virtual COM::Result CPF_STDCALL Create(const WindowDesc* desc, iWindow** outWindow) = 0;
+
+		/**
+		 * @brief Gets input manager.
+		 * @return The input manager.
+		 */
 		virtual iInputManager* CPF_STDCALL GetInputManager() = 0;
 	};
 }

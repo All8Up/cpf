@@ -13,7 +13,7 @@ int CPF_EXPORT_GRAPHICS_DRIVER GraphicsInitializer::Install(Plugin::iRegistry* r
 	if (gContext.AddRef() == 1)
 	{
 		gContext.SetRegistry(regy);
-		regy->Install(kDebugUICID, new Plugin::tSimpleClassInstance<DebugUI>());
+		regy->Install(kDebugUICID, new Plugin::tClassInstance<DebugUI>());
 	}
 	return gContext.GetRefCount();
 }

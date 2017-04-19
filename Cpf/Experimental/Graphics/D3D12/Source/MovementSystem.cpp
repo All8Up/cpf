@@ -19,7 +19,7 @@ using namespace MultiCore;
 
 COM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kMoverComponentCID, new Plugin::tSimpleClassInstance<MoverSystem::MoverComponent>());
+	return regy->Install(kMoverComponentCID, new Plugin::tClassInstance<MoverSystem::MoverComponent>());
 }
 
 COM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
@@ -67,7 +67,7 @@ COM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
 
 COM::Result MoverSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kMoverSystemCID, new Plugin::tSimpleClassInstance<MoverSystem>());
+	return regy->Install(kMoverSystemCID, new Plugin::tClassInstance<MoverSystem>());
 }
 COM::Result MoverSystem::Remove(Plugin::iRegistry* regy)
 {

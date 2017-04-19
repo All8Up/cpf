@@ -27,15 +27,9 @@ target_include_directories (i_Application INTERFACE
 
 # ###############################################
 set( INCLUDE_FILES
-	Include/Application/Arguments.hpp
-	Include/Application/ConsoleCommands.hpp
-
 	Include/Platform/Platform.hpp
-	Include/Platform/ConsoleApp.hpp
 )
 set( SOURCE_FILES
-	Source/Application.cpp
-	Source/ConsoleCommands.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Main.cpp
 )
 

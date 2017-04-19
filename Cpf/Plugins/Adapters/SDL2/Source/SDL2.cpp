@@ -41,13 +41,13 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 		if (SDL2::g_Context.AddRef() == 1)
 		{
 			SDL2::g_Context.SetRegistry(registry);
-			registry->Install(SDL2::kWindowCID, new Plugin::tSimpleClassInstance<SDL2::Window>());
-			registry->Install(SDL2::kWindowedApplicationCID, new Plugin::tSimpleClassInstance<SDL2::WindowedApp>());
-			registry->Install(SDL2::kInputManagerCID, new Plugin::tSimpleClassInstance<SDL2::InputManager>());
-			registry->Install(SDL2::kMouseDeviceCID, new Plugin::tSimpleClassInstance<SDL2::MouseDevice>());
-			registry->Install(SDL2::kKeyboardDeviceCID, new Plugin::tSimpleClassInstance<SDL2::KeyboardDevice>());
-			registry->Install(SDL2::kClipboardCID, new Plugin::tSimpleClassInstance<SDL2::Clipboard>());
-			registry->FactoryInstall(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
+			registry->Install(SDL2::kWindowCID, new Plugin::tClassInstance<SDL2::Window>());
+			registry->Install(SDL2::kWindowedApplicationCID, new Plugin::tClassInstance<SDL2::WindowedApp>());
+			registry->Install(SDL2::kInputManagerCID, new Plugin::tClassInstance<SDL2::InputManager>());
+			registry->Install(SDL2::kMouseDeviceCID, new Plugin::tClassInstance<SDL2::MouseDevice>());
+			registry->Install(SDL2::kKeyboardDeviceCID, new Plugin::tClassInstance<SDL2::KeyboardDevice>());
+			registry->Install(SDL2::kClipboardCID, new Plugin::tClassInstance<SDL2::Clipboard>());
+			registry->ClassInstall(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
 		}
 		return COM::kOK;
 	}
@@ -67,7 +67,7 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 	{
 		if (SDL2::g_Context.Release() == 0)
 		{
-			registry->FactoryRemove(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
+			registry->ClassRemove(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
 			registry->Remove(SDL2::kClipboardCID);
 			registry->Remove(SDL2::kKeyboardDeviceCID);
 			registry->Remove(SDL2::kMouseDeviceCID);

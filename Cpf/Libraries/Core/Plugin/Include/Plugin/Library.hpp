@@ -7,19 +7,52 @@ namespace Cpf
 {
 	namespace Plugin
 	{
+		/** @brief A general purpose shared library maintainer. */
 		class CPF_EXPORT Library : public tRefCounted<>
 		{
 		public:
+			/** @brief Default constructor. */
 			Library();
-			Library(Library&&);
+
+			/**
+			 * @brief Move constructor.
+			 * @param [in,out] rhs The source library.
+			 */
+			Library(Library&& rhs);
+			/** @brief Destructor. */
 			~Library();
 
+			/**
+			 * @brief Loads the given library.
+			 * @param name The path and name of the library to load.
+			 * @return True if it loads, false if there is an error.
+			 */
 			bool Load(const char* const name);
+
+			/**
+			 * @brief Unloads the library.
+			 * @return True if it succeeds, false if it fails.
+			 */
 			bool Unload();
 
+			/**
+			 * @brief Checks the status of the library.
+			 * @return If the library is loaded or not.
+			 */
 			operator bool() const;
 
+			/**
+			 * @brief Gets the address of an exported symbol.
+			 * @param symbol Name of the symbol to find.
+			 * @return The address of the symbol.
+			 */
 			void* GetAddress(const char* const symbol);
+
+			/**
+			 * @brief Gets the address of an exported symbol and cast it to the given type.
+			 * @param symbol The symbol name.
+			 * @return The address of the symbol.
+			 */
 			template <typename FUNCTYPE>
 			FUNCTYPE GetAddress(const char* const symbol)
 			{
@@ -27,9 +60,11 @@ namespace Cpf
 			}
 
 		private:
+			// Move only object.
 			Library(const Library&) = delete;
 			Library& operator = (const Library&) = delete;
 
+			// Handle to the library.
 			Platform::Library::Handle mHandle;
 		};
 

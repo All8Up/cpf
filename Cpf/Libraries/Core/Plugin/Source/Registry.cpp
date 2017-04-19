@@ -28,8 +28,8 @@ public:
 	COM::Result CPF_STDCALL Exists(COM::ClassID id) override;
 	COM::Result CPF_STDCALL Create(COM::iUnknown*, COM::ClassID, COM::InterfaceID, void**) override;
 
-	COM::Result CPF_STDCALL FactoryInstall(int32_t count, const Plugin::IID_CID* pairs) override;
-	COM::Result CPF_STDCALL FactoryRemove(int32_t count, const Plugin::IID_CID* pairs) override;
+	COM::Result CPF_STDCALL ClassInstall(int32_t count, const Plugin::IID_CID* pairs) override;
+	COM::Result CPF_STDCALL ClassRemove(int32_t count, const Plugin::IID_CID* pairs) override;
 
 	COM::Result CPF_STDCALL GetClasses(COM::InterfaceID id, int32_t* count, COM::ClassID*) override;
 
@@ -214,7 +214,7 @@ COM::Result CPF_STDCALL Registry::GetClasses(COM::InterfaceID id, int32_t* count
 	return COM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Registry::FactoryInstall(int32_t count, const Plugin::IID_CID* pairs)
+COM::Result CPF_STDCALL Registry::ClassInstall(int32_t count, const Plugin::IID_CID* pairs)
 {
 	if (pairs)
 	{
@@ -237,7 +237,7 @@ COM::Result CPF_STDCALL Registry::FactoryInstall(int32_t count, const Plugin::II
 	return COM::kOK;
 }
 
-COM::Result CPF_STDCALL Registry::FactoryRemove(int32_t count, const Plugin::IID_CID* pairs)
+COM::Result CPF_STDCALL Registry::ClassRemove(int32_t count, const Plugin::IID_CID* pairs)
 {
 	if (pairs)
 	{

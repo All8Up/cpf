@@ -6,6 +6,7 @@ namespace Cpf
 {
 	namespace Plugin
 	{
+		/** @brief A context object to store data for plugins. */
 		class Context
 		{
 		public:

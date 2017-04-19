@@ -43,15 +43,15 @@ COM::Result CPF_STDCALL Window::QueryInterface(COM::InterfaceID id, void** outIf
 
 bool Window::Initialize(const WindowDesc* desc)
 {
-	int px = (desc->mPosition.x & 0xFF100000) != 0xFF100000 ? desc->mPosition.x : SDL_WINDOWPOS_CENTERED_DISPLAY(desc->mPosition.x & 15);
-	int py = (desc->mPosition.y & 0xFF100000) != 0xFF100000 ? desc->mPosition.y : SDL_WINDOWPOS_CENTERED_DISPLAY(desc->mPosition.y & 15);
+	int px = (desc->mX & 0xFF100000) != 0xFF100000 ? desc->mX : SDL_WINDOWPOS_CENTERED_DISPLAY(desc->mX & 15);
+	int py = (desc->mY & 0xFF100000) != 0xFF100000 ? desc->mY : SDL_WINDOWPOS_CENTERED_DISPLAY(desc->mY & 15);
 
 	auto sdlwin = SDL_CreateWindow(
-		desc->mTitle.c_str(),
+		desc->mpTitle,
 		px,
 		py,
-		desc->mSize.x,
-		desc->mSize.y,
+		desc->mWidth,
+		desc->mHeight,
 		Uint32(desc->mFlags)
 	);
 

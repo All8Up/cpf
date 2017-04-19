@@ -55,7 +55,7 @@ namespace Cpf
 
 		static COM::Result Install(Plugin::iRegistry* regy)
 		{
-			return regy->Install(kInstanceSystemCID, new Plugin::tSimpleClassInstance<InstanceSystem>());
+			return regy->Install(kInstanceSystemCID, new Plugin::tClassInstance<InstanceSystem>());
 		}
 		static COM::Result Remove(Plugin::iRegistry* regy)
 		{

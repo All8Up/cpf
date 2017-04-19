@@ -11,6 +11,11 @@ namespace Cpf
 		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iKeyboardDevice"_crc64);
 		static constexpr COM::InstanceID kDefault = COM::InstanceID("Cpf::iKeyboardDevice::Default"_crc64);
 
-		virtual COM::Result CPF_STDCALL GetModifiers(KeyModifier*) = 0;
+		/**
+		 * @brief Gets the modifier keys currently set.
+		 * @param [in,out] modifiers The output to the modifier value.
+		 * @return The result code.
+		 */
+		virtual COM::Result CPF_STDCALL GetModifiers(KeyModifier* modifiers) = 0;
 	};
 }

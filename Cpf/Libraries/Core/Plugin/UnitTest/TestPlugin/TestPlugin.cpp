@@ -38,7 +38,7 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return registry->Install(kTestPluginCID, new Plugin::tSimpleClassInstance<TestPlugin>());
+		return registry->Install(kTestPluginCID, new Plugin::tClassInstance<TestPlugin>());
 	}
 	return COM::kInvalidParameter;
 }

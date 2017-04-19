@@ -24,7 +24,7 @@ using namespace Graphics;
 
 COM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kRenderSystemCID, new Plugin::tSimpleClassInstance<RenderSystem>());
+	return regy->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
 }
 
 COM::Result RenderSystem::Remove(Plugin::iRegistry* regy)

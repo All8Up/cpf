@@ -19,8 +19,8 @@ int EntityServiceInitializer::Install(Plugin::iRegistry* registry)
 	{
 		CPF_ASSERT(spRegistry == nullptr);
 		EntityService::TransformComponent::Install(registry);
-		registry->Install(EntityService::kManagerCID, new Plugin::tSimpleClassInstance<EntityService::Manager>());
-		registry->Install(EntityService::kEntityStageCID, new Plugin::tSimpleClassInstance<EntityService::EntityStage>());
+		registry->Install(EntityService::kManagerCID, new Plugin::tClassInstance<EntityService::Manager>());
+		registry->Install(EntityService::kEntityStageCID, new Plugin::tClassInstance<EntityService::EntityStage>());
 		spRegistry = registry;
 	}
 	return s_RefCount;

@@ -9,7 +9,7 @@ using namespace MultiCore;
 //////////////////////////////////////////////////////////////////////////
 COM::Result NetworkSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kNetworkSystemCID, new Plugin::tSimpleClassInstance<NetworkSystem>());
+	return regy->Install(kNetworkSystemCID, new Plugin::tClassInstance<NetworkSystem>());
 }
 
 COM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)

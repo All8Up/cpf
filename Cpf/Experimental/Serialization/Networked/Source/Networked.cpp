@@ -139,13 +139,14 @@ bool Networked::_CreateWindow()
 {
 	// Create the main window.
 	Math::Vector2i mWindowSize(400, 400);
-	mpWindow.Adopt(
-		WindowDesc(mpWindowedApplication)
-		.Title("Network Test")
-		.Position({ iWindow::Centered(), iWindow::Centered() })
-		.Size(mWindowSize)
-		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
-	);
+	WindowDesc windowDesc;
+	windowDesc.mpTitle = "Network Test";
+	windowDesc.mX = iWindow::Centered();
+	windowDesc.mY = iWindow::Centered();
+	windowDesc.mWidth = mWindowSize.x;
+	windowDesc.mHeight = mWindowSize.y;
+	windowDesc.mFlags = WindowFlags::eResizable | WindowFlags::eShown;
+	mpWindowedApplication->Create(&windowDesc, mpWindow.AsTypePP());
 
 	if (mpWindow)
 	{

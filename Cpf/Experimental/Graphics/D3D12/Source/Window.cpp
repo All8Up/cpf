@@ -24,13 +24,14 @@ bool ExperimentalD3D12::_CreateWindow()
 
 	// Create the window.
 	Math::Vector2i mWindowSize(1920, 1080);
-	mpWindow.Adopt(
-		WindowDesc(mpApplication)
-		.Title(WINDOW_TITLE)
-		.Position({ iWindow::Centered(), iWindow::Centered() })
-		.Size(mWindowSize)
-		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
-	);
+	WindowDesc windowDesc;
+	windowDesc.mpTitle = WINDOW_TITLE;
+	windowDesc.mX = iWindow::Centered();
+	windowDesc.mY = iWindow::Centered();
+	windowDesc.mWidth = mWindowSize.x;
+	windowDesc.mHeight = mWindowSize.y;
+	windowDesc.mFlags = WindowFlags::eResizable | WindowFlags::eShown;
+	mpApplication->Create(&windowDesc, mpWindow.AsTypePP());
 
 	if (mpWindow)
 	{

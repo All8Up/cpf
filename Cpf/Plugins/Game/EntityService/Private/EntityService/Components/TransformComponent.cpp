@@ -7,7 +7,7 @@ using namespace EntityService;
 
 COM::Result TransformComponent::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kTransformComponentCID, new Plugin::tSimpleClassInstance<TransformComponent>());
+	return regy->Install(kTransformComponentCID, new Plugin::tClassInstance<TransformComponent>());
 }
 
 COM::Result TransformComponent::Remove(Plugin::iRegistry* regy)

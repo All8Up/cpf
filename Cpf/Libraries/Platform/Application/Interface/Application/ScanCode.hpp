@@ -4,6 +4,7 @@
 
 namespace Cpf
 {
+	/** @brief Keyboard scan codes. */
 	enum class ScanCode : int32_t
 	{
 		e0 = '0',

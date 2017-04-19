@@ -35,11 +35,11 @@ Instance::Instance(COM::iUnknown*)
 	//////////////////////////////////////////////////////////////////////////
 	// Register D3D12 class types.
 	// TODO: Should likely be in the normal plugin install and not part of instance.
-	gContext.GetRegistry()->Install(kAdapterCID, new Plugin::tSimpleClassInstance<Adapter>());
-	gContext.GetRegistry()->Install(kDeviceCID, new Plugin::tSimpleClassInstance<Device>());
-	gContext.GetRegistry()->Install(kCommandBufferCID, new Plugin::tSimpleClassInstance<CommandBuffer>());
-	gContext.GetRegistry()->Install(kRenderPassCID, new Plugin::tSimpleClassInstance<RenderPass>());
-	gContext.GetRegistry()->Install(kFrameBufferCID, new Plugin::tSimpleClassInstance<FrameBuffer>());
+	gContext.GetRegistry()->Install(kAdapterCID, new Plugin::tClassInstance<Adapter>());
+	gContext.GetRegistry()->Install(kDeviceCID, new Plugin::tClassInstance<Device>());
+	gContext.GetRegistry()->Install(kCommandBufferCID, new Plugin::tClassInstance<CommandBuffer>());
+	gContext.GetRegistry()->Install(kRenderPassCID, new Plugin::tClassInstance<RenderPass>());
+	gContext.GetRegistry()->Install(kFrameBufferCID, new Plugin::tClassInstance<FrameBuffer>());
 	//////////////////////////////////////////////////////////////////////////
 
 	CPF_LOG(D3D12, Info) << "Created instance: " << intptr_t(this) << " - " << intptr_t(mpDXGIFactory2.Ptr());

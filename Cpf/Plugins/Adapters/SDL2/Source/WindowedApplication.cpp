@@ -140,7 +140,7 @@ COM::Result CPF_STDCALL WindowedApp::Wait()
 	return COM::kNotRunning;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc& desc, iWindow** outWindow)
+COM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc* desc, iWindow** outWindow)
 {
 	iWindow* win = nullptr;
 	int32_t classCount = 0;
@@ -149,7 +149,7 @@ COM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc& desc, iWindow** ou
 	GetRegistry()->GetClasses(iWindow::kIID, &classCount, classes.data());
 	if (COM::Succeeded(GetRegistry()->Create(nullptr, classes[0], iWindow::kIID, reinterpret_cast<void**>(&win))))
 	{
-		if (win && win->Initialize(&desc))
+		if (win && win->Initialize(desc))
 			*outWindow = win;
 		else
 			*outWindow = nullptr;

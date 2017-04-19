@@ -2,10 +2,10 @@
 set (INCLUDE_FILES
 	Include/COM.hpp
 	Include/COM/iUnknown.hpp
+	Include/COM/Result.hpp
 )
 
-add_library (COM INTERFACE
-)
+add_library (COM INTERFACE)
 target_link_libraries (COM INTERFACE Configuration RefCount)
 
 target_include_directories (COM INTERFACE

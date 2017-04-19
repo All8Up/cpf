@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Application/iWindowedApplication.hpp"
 #include "Application/iApplicationMain.hpp"
-#include "Application/Arguments.hpp"
 #include "String.hpp"
 #include "StringUtils.hpp"
 #include <vector>

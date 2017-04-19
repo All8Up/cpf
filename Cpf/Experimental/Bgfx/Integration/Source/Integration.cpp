@@ -147,13 +147,14 @@ bool BgfxIntegration::_CreateWindow()
 {
 	mWindowSize.x = 1024;
 	mWindowSize.y = 768;
-	mpWindow.Adopt(
-		WindowDesc(mpApplication)
-		.Title("BGFX")
-		.Position({ iWindow::Centered(), iWindow::Centered() })
-		.Size(mWindowSize)
-		.Flags(WindowFlags::eResizable | WindowFlags::eShown)
-	);
+	WindowDesc windowDesc;
+	windowDesc.mpTitle = "BGFX";
+	windowDesc.mX = iWindow::Centered();
+	windowDesc.mY = iWindow::Centered();
+	windowDesc.mWidth = mWindowSize.x;
+	windowDesc.mHeight = mWindowSize.y;
+	windowDesc.mFlags = WindowFlags::eResizable | WindowFlags::eShown;
+	mpApplication->Create(&windowDesc, mpWindow.AsTypePP());
 	mpWindow->GetEmitter()->On<iWindow::OnResize>(Bind(&BgfxIntegration::_Resize, this, Placeholders::_1, Placeholders::_2));
 
 	return bool(mpWindow) && bgfxSetWindow(mpWindow);

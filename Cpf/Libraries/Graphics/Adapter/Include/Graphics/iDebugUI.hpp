@@ -7,9 +7,9 @@
 #include "Pair.hpp"
 #include "Vector.hpp"
 
-
 namespace Cpf
 {
+	// Forward references.
 	struct iWindow;
 	struct iInputManager;
 
@@ -20,6 +20,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
+		// Forward references.
 		struct iDevice;
 		struct iCommandBuffer;
 		struct iConstantBuffer;
@@ -38,12 +39,13 @@ namespace Cpf
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iDebugUI"_crc64);
 
+			// Interfacing functionality.
 			virtual bool CPF_STDCALL Initialize(iDevice*, iInputManager*, iWindow* window, Resources::Locator*) = 0;
 			virtual void CPF_STDCALL Shutdown() = 0;
 			virtual void CPF_STDCALL BeginFrame(iCommandBuffer* commands, float deltaTime) = 0;
 			virtual void CPF_STDCALL EndFrame(iCommandBuffer* commands) = 0;
 
-			//
+			// Control methods.
 			virtual void CPF_STDCALL PushItemWidth(int32_t width) = 0;
 			virtual void CPF_STDCALL PopItemWidth() = 0;
 			virtual void CPF_STDCALL Separator() = 0;

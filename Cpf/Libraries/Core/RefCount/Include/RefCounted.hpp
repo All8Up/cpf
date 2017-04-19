@@ -15,6 +15,7 @@ namespace Cpf
 	};
 
 	//////////////////////////////////////////////////////////////////////////
+	// Utilities for ref counted objects.
 	inline int32_t SafeAddRef(iRefCounted* rc)
 	{
 		if (rc)
@@ -30,6 +31,7 @@ namespace Cpf
 
 
 	//////////////////////////////////////////////////////////////////////////
+	// Utility helper to implement ref counted objects.
 	template<typename BASE = iRefCounted, int32_t INITREF = 1>
 	class tRefCounted : public BASE
 	{

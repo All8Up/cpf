@@ -32,7 +32,7 @@ namespace Cpf
 			void CPF_STDCALL Quit() override;
 			COM::Result CPF_STDCALL Poll() override;
 			COM::Result CPF_STDCALL Wait() override;
-			COM::Result CPF_STDCALL Create(const WindowDesc&, iWindow**) override;
+			COM::Result CPF_STDCALL Create(const WindowDesc*, iWindow**) override;
 			iInputManager* CPF_STDCALL GetInputManager() override;
 
 		private:

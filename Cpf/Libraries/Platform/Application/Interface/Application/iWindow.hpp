@@ -16,7 +16,7 @@ namespace Cpf
 	{
 		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iWindow"_crc64);
 
-		using OnMouseMove = Events::Event<"OnMouseMove"_crc64, Function<void(int32_t, int32_t)>>;
+		using OnMouseMove = Events::Event<"OnMouseMove"_crc64, Function<void(int32_t x, int32_t y)>>;
 		using OnButtonDown = Events::Event<"OnButtonDown"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
 		using OnButtonUp = Events::Event<"OnButtonUp"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
 		using OnMouseWheel = Events::Event<"OnMouseWheel"_crc64, Function<void(int32_t x, int32_t y)>>;
@@ -36,6 +36,11 @@ namespace Cpf
 		using OnHide = Events::Event<"OnHide"_crc64, Function<void()>>;
 		using OnExposed = Events::Event<"OnExposed"_crc64, Function<void()>>;
 
+		/**
+		 * @brief Provides a value to center a window on the given monitor.
+		 * @param monitor (Optional) The monitor.
+		 * @return The specialized value to center on.
+		 */
 		static constexpr int32_t Centered(int monitor = 0) { return monitor | 0xFF100000; }
 
 		virtual bool CPF_STDCALL Initialize(const WindowDesc* desc) = 0;
