@@ -13,6 +13,8 @@ namespace Cpf
 			virtual ~KeyboardDevice();
 
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+			COM::Result CPF_STDCALL GetModifiers(KeyModifier*) override;
 		};
 	}
 }

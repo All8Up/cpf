@@ -7,8 +7,9 @@ namespace Cpf
 	struct iInputManager;
 	struct iMouseDevice;
 	struct iKeyboardDevice;
+	struct iClipboard;
 	enum class MouseButton : int32_t;
-	enum class KeyCode : int32_t;
+	enum class ScanCode : int32_t;
 
 	namespace Graphics
 	{
@@ -66,16 +67,12 @@ namespace Cpf
 			void Remove(DebugUICall call, void* context);
 			void Execute();
 
-			// Input attachment.
-			static bool HandleRawInput(void* context, const void* data);
-
 		private:
 			void _OnMouseWheel(int32_t, int32_t);
 			void _OnMouseDown(MouseButton, int32_t, int32_t);
-			void _OnMouseUp(MouseButton, int32_t, int32_t);
-			void _OnKeyDown(KeyCode);
-			void _OnKeyUp(KeyCode);
-			bool _HandleRawInput(const void* rawEvent);
+			void _OnKeyDown(ScanCode);
+			void _OnKeyUp(ScanCode);
+			void _HandleKey(bool, ScanCode);
 			static const char* _GetClipboardText();
 			static void _SetClipboardText(const char* text);
 

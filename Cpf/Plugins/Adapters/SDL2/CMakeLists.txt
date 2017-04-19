@@ -11,6 +11,7 @@ set (INCLUDE_FILES
 	Include/MouseDevice.hpp
 	Include/KeyboardDevice.hpp
 	Include/JoystickDevice.hpp
+	Include/Clipboard.hpp
 )
 set (SOURCE_FILES
 	Source/SDL2.cpp
@@ -21,6 +22,7 @@ set (SOURCE_FILES
 	Source/JoystickDevice.cpp
 	Source/KeyboardDevice.cpp
 	Source/MouseDevice.cpp
+	Source/Clipboard.cpp
 )
 
 add_library (Adapter_SDL2 SHARED

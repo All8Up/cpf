@@ -230,10 +230,17 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 		}
 		break;
 
+	case SDL_KEYUP:
+	{
+		iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.key.windowID), "iWindow"));
+		window->GetEmitter()->Emit<iWindow::OnKeyUp>((ScanCode)event.key.keysym.scancode);
+	}
+	break;
+
 	case SDL_KEYDOWN:
 		{
 			iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.key.windowID), "iWindow"));
-			window->GetEmitter()->Emit<iWindow::OnKeyDown>((KeyCode)event.key.keysym.sym);
+			window->GetEmitter()->Emit<iWindow::OnKeyDown>((ScanCode)event.key.keysym.scancode);
 		}
 		break;
 

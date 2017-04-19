@@ -6,6 +6,7 @@
 namespace Cpf
 {
 	enum class KeyCode : int32_t;
+	enum class ScanCode : int32_t;
 	enum class MouseButton : int32_t;
 	enum class WindowFlags : int32_t;
 	struct OSWindowData;
@@ -19,8 +20,8 @@ namespace Cpf
 		using OnButtonDown = Events::Event<"OnButtonDown"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
 		using OnButtonUp = Events::Event<"OnButtonUp"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
 		using OnMouseWheel = Events::Event<"OnMouseWheel"_crc64, Function<void(int32_t x, int32_t y)>>;
-		using OnKeyDown = Events::Event<"OnKeyDown"_crc64, Function<void(KeyCode)>>;
-		using OnKeyUp = Events::Event<"OnKeyUp"_crc64, Function<void(KeyCode)>>;
+		using OnKeyDown = Events::Event<"OnKeyDown"_crc64, Function<void(ScanCode)>>;
+		using OnKeyUp = Events::Event<"OnKeyUp"_crc64, Function<void(ScanCode)>>;
 		using OnMoved = Events::Event<"OnMoved"_crc64, Function<void(int32_t, int32_t)>>;
 		using OnResize = Events::Event<"OnResize"_crc64, Function<void(int32_t, int32_t)>>;
 		using OnClose = Events::Event<"OnClose"_crc64, Function<bool()>>;

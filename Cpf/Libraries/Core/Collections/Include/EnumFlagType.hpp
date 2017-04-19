@@ -26,7 +26,7 @@ namespace Cpf
 #define CPF_ENUM_FLAG_TYPE(type) \
 inline constexpr type operator | (type lhs, type rhs) { return type(((Cpf::SizedUInt<type>::Type)lhs) | ((Cpf::SizedUInt<type>::Type)rhs)); } \
 inline type& operator |= (type& lhs, type rhs) { lhs = (lhs | rhs); return lhs; } \
-inline constexpr type operator & (type lhs, type rhs) { return type(((Cpf::SizedUInt<type>::Type)lhs) | ((Cpf::SizedUInt<type>::Type)rhs)); } \
+inline constexpr type operator & (type lhs, type rhs) { return type(((Cpf::SizedUInt<type>::Type)lhs) & ((Cpf::SizedUInt<type>::Type)rhs)); } \
 inline type& operator &= (type& lhs, type rhs) { lhs = (lhs & rhs); return lhs; } \
 inline constexpr type operator ~ (type lhs) { return type(~(Cpf::SizedUInt<type>::Type)lhs); } \
 inline constexpr type operator ^ (type lhs, type rhs) { return type(((Cpf::SizedUInt<type>::Type)lhs) ^ ((Cpf::SizedUInt<type>::Type)rhs)); } \

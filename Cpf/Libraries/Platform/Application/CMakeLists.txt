@@ -3,6 +3,7 @@ set (INTERFACE_FILES
 	Interface/Application/iWindow.hpp
 	Interface/Application/KeyCode.hpp
 	Interface/Application/ScanCode.hpp
+	Interface/Application/KeyModifier.hpp
 	Interface/Application/MouseButton.hpp
 	Interface/Application/OSWindowData.hpp
 	Interface/Application/WindowDesc.hpp
@@ -15,6 +16,7 @@ set (INTERFACE_FILES
 	Interface/Application/iMouseDevice.hpp
 	Interface/Application/iKeyboardDevice.hpp
 	Interface/Application/iJoystickDevice.hpp
+	Interface/Application/iClipboard.hpp
 )
 add_library (i_Application INTERFACE)
 target_link_libraries (i_Application INTERFACE Configuration s_Events Plugin)

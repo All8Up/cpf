@@ -30,18 +30,23 @@
 
 #include "Application/KeyCode.hpp"
 #include "Application/ScanCode.hpp"
+#include "Application/KeyModifier.hpp"
 #include "Application/MouseButton.hpp"
 #include "Application/iMouseDevice.hpp"
 #include "Application/iKeyboardDevice.hpp"
 #include "Application/iInputManager.hpp"
+#include "Application/iClipboard.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
 
+IntrusivePtr<iClipboard> sClipboard;
+char sClipboardText[1024];
 
 DebugUI::DebugUI(iUnknown*)
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
+	, mMouseWheel(0.0f)
 {
 	CPF_INIT_LOG(DebugUI);
 	CPF_LOG_LEVEL(DebugUI, Trace);
@@ -81,6 +86,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	mpLocator = locator;
 	im->GetDevice(iMouseDevice::kDefault, iMouseDevice::kIID, mpMouse.AsVoidPP());
 	im->GetDevice(iKeyboardDevice::kDefault, iKeyboardDevice::kIID, mpKeyboard.AsVoidPP());
+	im->GetDevice(iClipboard::kDefault, iClipboard::kIID, sClipboard.AsVoidPP());
 
 	// Load the shaders.
 	// TODO: Consider moving the debug UI out so we don't need a dependency on resources.
@@ -191,12 +197,12 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	io.KeyMap[ImGuiKey_Backspace] = int(ScanCode::eBackspace);
 	io.KeyMap[ImGuiKey_Enter] = int(ScanCode::eReturn);
 	io.KeyMap[ImGuiKey_Escape] = int(ScanCode::eEscape);
-	io.KeyMap[ImGuiKey_A] = int(KeyCode::eA);
-	io.KeyMap[ImGuiKey_C] = int(KeyCode::eC);
-	io.KeyMap[ImGuiKey_V] = int(KeyCode::eV);
-	io.KeyMap[ImGuiKey_X] = int(KeyCode::eX);
-	io.KeyMap[ImGuiKey_Y] = int(KeyCode::eY);
-	io.KeyMap[ImGuiKey_Z] = int(KeyCode::eZ);
+	io.KeyMap[ImGuiKey_A] = int(ScanCode::eA);
+	io.KeyMap[ImGuiKey_C] = int(ScanCode::eC);
+	io.KeyMap[ImGuiKey_V] = int(ScanCode::eV);
+	io.KeyMap[ImGuiKey_X] = int(ScanCode::eX);
+	io.KeyMap[ImGuiKey_Y] = int(ScanCode::eY);
+	io.KeyMap[ImGuiKey_Z] = int(ScanCode::eZ);
 	io.RenderDrawListsFn = nullptr;
 	io.SetClipboardTextFn = &DebugUI::_SetClipboardText;
 	io.GetClipboardTextFn = &DebugUI::_GetClipboardText;
@@ -233,7 +239,6 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	// Attach window events.
 	window->GetEmitter()->On<iWindow::OnMouseWheel>(Bind(&DebugUI::_OnMouseWheel, this, Placeholders::_1, Placeholders::_2));
 	window->GetEmitter()->On<iWindow::OnButtonDown>(Bind(&DebugUI::_OnMouseDown, this, Placeholders::_1, Placeholders::_2, Placeholders::_3));
-	window->GetEmitter()->On<iWindow::OnButtonUp>(Bind(&DebugUI::_OnMouseUp, this, Placeholders::_1, Placeholders::_2, Placeholders::_3));
 	window->GetEmitter()->On<iWindow::OnKeyDown>(Bind(&DebugUI::_OnKeyDown, this, Placeholders::_1));
 	window->GetEmitter()->On<iWindow::OnKeyUp>(Bind(&DebugUI::_OnKeyUp, this, Placeholders::_1));
 
@@ -255,6 +260,7 @@ void DebugUI::Shutdown()
 	mpVertexBuffer.Assign(nullptr);
 	mpIndexBuffer.Assign(nullptr);
 	mpProjectionMatrix.Assign(nullptr);
+	sClipboard.Assign(nullptr);
 }
 
 void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
@@ -277,30 +283,35 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	//
 	int32_t mx, my;
 	mpMouse->GetPosition(&mx, &my);
-	io.MousePos = ImVec2((float)mx, (float)my);
+	if (mx<0 || mx>mWidth || my<0 || my>mHeight)
+		io.MousePos = ImVec2(-1.0f, -1.0f);
+	else
+		io.MousePos = ImVec2((float)mx, (float)my);
 
 	MouseButton button;
 	mpMouse->GetButtonState(&button);
-	io.MouseDown[0] = mMousePressed[0] || (button & MouseButton::eLeft) != MouseButton::eNone;
-	io.MouseDown[1] = mMousePressed[1] || (button & MouseButton::eRight) != MouseButton::eNone;
-	io.MouseDown[2] = mMousePressed[2] || (button & MouseButton::eMiddle) != MouseButton::eNone;
+	io.MouseDown[0] = mMousePressed[0] || ((button & MouseButton::eLeft) != MouseButton::eNone);
+	io.MouseDown[1] = mMousePressed[1] || ((button & MouseButton::eRight) != MouseButton::eNone);
+	io.MouseDown[2] = mMousePressed[2] || ((button & MouseButton::eMiddle) != MouseButton::eNone);
 	mMousePressed[0] = mMousePressed[1] = mMousePressed[2] = false;
-
-	if (button != MouseButton::eNone)
-		CPF_LOG(DebugUI, Trace) << "Got mouse button input.";
-	if (mMouseWheel != 0)
-		CPF_LOG(DebugUI, Trace) << "Got mouse wheel input.";
 
 	io.MouseWheel = mMouseWheel;
 	mMouseWheel = 0.0f;
-
-	// Hide OS mouse cursor if ImGui is drawing it
-//	SDL_ShowCursor(io.MouseDrawCursor ? 0 : 1);
 
 	// Start the frame
 	ImGui::NewFrame();
 
 //	ImGui::ShowTestWindow();
+
+	//////////////////////////////////////////////////////////////////////////
+	/* Input testing
+	Begin("Debug Info");
+	ImGui::Text("%d", int32_t(button));
+	ImGui::ColorButton(io.MouseDown[0] ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+	ImGui::ColorButton(io.MouseDown[1] ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+	ImGui::ColorButton(io.MouseDown[2] ? ImVec4(1.0f, 0.0f, 0.0f, 1.0f) : ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+	End();
+	*/
 }
 
 void DebugUI::EndFrame(iCommandBuffer* commands)
@@ -515,74 +526,37 @@ void DebugUI::_OnMouseDown(MouseButton button, int32_t, int32_t)
 		mMousePressed[2] = true;
 }
 
-void DebugUI::_OnMouseUp(MouseButton, int32_t, int32_t)
+void DebugUI::_OnKeyDown(ScanCode code)
 {
+	_HandleKey(true, code);
 }
 
-void DebugUI::_OnKeyDown(KeyCode)
+void DebugUI::_OnKeyUp(ScanCode code)
 {
+	_HandleKey(false, code);
 }
 
-void DebugUI::_OnKeyUp(KeyCode)
+void DebugUI::_HandleKey(bool down, ScanCode code)
 {
-}
-
-bool DebugUI::HandleRawInput(void* context, const void* data)
-{
-	return reinterpret_cast<DebugUI*>(context)->_HandleRawInput(data);
-}
-
-bool DebugUI::_HandleRawInput(const void* rawEvent)
-{
-	/*
-	const SDL_Event* event = reinterpret_cast<const SDL_Event*>(rawEvent);
 	ImGuiIO& io = ImGui::GetIO();
-
-	switch (event->type)
-	{
-	case SDL_MOUSEWHEEL:
-		{
-			if (event->wheel.y > 0)
-				mMouseWheel = 1;
-			if (event->wheel.y < 0)
-				mMouseWheel = -1;
-			return io.WantCaptureMouse;
-		}
-	case SDL_MOUSEBUTTONDOWN:
-		{
-			if (event->button.button == SDL_BUTTON_LEFT) mMousePressed[0] = true;
-			if (event->button.button == SDL_BUTTON_RIGHT) mMousePressed[1] = true;
-			if (event->button.button == SDL_BUTTON_MIDDLE) mMousePressed[2] = true;
-			return io.WantCaptureMouse;
-		}
-	case SDL_TEXTINPUT:
-		{
-			io.AddInputCharactersUTF8(event->text.text);
-			return io.WantTextInput;
-		}
-	case SDL_KEYDOWN:
-	case SDL_KEYUP:
-		{
-			int key = event->key.keysym.sym & ~SDLK_SCANCODE_MASK;
-			io.KeysDown[key] = (event->type == SDL_KEYDOWN);
-			io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
-			io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
-			io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
-			io.KeySuper = ((SDL_GetModState() & KMOD_GUI) != 0);
-			return io.WantCaptureKeyboard;
-		}
-	}
-	*/
-	return false;
+	int key = int(code);
+	KeyModifier mods;
+	mpKeyboard->GetModifiers(&mods);
+	io.KeysDown[key] = down;
+	io.KeyShift = (mods & KeyModifier::eShift) != KeyModifier::eNone;
+	io.KeyCtrl = (mods & KeyModifier::eControl) != KeyModifier::eNone;
+	io.KeyAlt = (mods & KeyModifier::eAlt) != KeyModifier::eNone;
+	io.KeySuper = (mods & KeyModifier::eOS) != KeyModifier::eNone;
 }
 
 const char* DebugUI::_GetClipboardText()
 {
-	return nullptr;
-//	return SDL_GetClipboardText();
+	int32_t length = 1024;
+	sClipboard->GetClipboardText(&length, sClipboardText);
+	return sClipboardText;
 }
 
 void DebugUI::_SetClipboardText(const char* text)
 {
-//	SDL_SetClipboardText(text);
+	sClipboard->SetClipboardText(text);
 }

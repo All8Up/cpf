@@ -6,6 +6,7 @@
 #include "InputManager.hpp"
 #include "MouseDevice.hpp"
 #include "KeyboardDevice.hpp"
+#include "Clipboard.hpp"
 #include "SDL2/CIDs.hpp"
 
 using namespace Cpf;
@@ -25,7 +26,8 @@ namespace
 		{ iWindow::kIID, SDL2::kWindowCID },
 		{ iInputManager::kIID, SDL2::kInputManagerCID },
 		{ iMouseDevice::kIID, SDL2::kMouseDeviceCID },
-		{ iKeyboardDevice::kIID, SDL2::kKeyboardDeviceCID }
+		{ iKeyboardDevice::kIID, SDL2::kKeyboardDeviceCID },
+		{ iClipboard::kIID, SDL2::kClipboardCID }
 	};
 }
 
@@ -44,7 +46,7 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 			registry->Install(SDL2::kInputManagerCID, new Plugin::tSimpleClassInstance<SDL2::InputManager>());
 			registry->Install(SDL2::kMouseDeviceCID, new Plugin::tSimpleClassInstance<SDL2::MouseDevice>());
 			registry->Install(SDL2::kKeyboardDeviceCID, new Plugin::tSimpleClassInstance<SDL2::KeyboardDevice>());
-
+			registry->Install(SDL2::kClipboardCID, new Plugin::tSimpleClassInstance<SDL2::Clipboard>());
 			registry->FactoryInstall(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
 		}
 		return COM::kOK;
@@ -66,6 +68,7 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 		if (SDL2::g_Context.Release() == 0)
 		{
 			registry->FactoryRemove(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
+			registry->Remove(SDL2::kClipboardCID);
 			registry->Remove(SDL2::kKeyboardDeviceCID);
 			registry->Remove(SDL2::kMouseDeviceCID);
 			registry->Remove(SDL2::kInputManagerCID);
