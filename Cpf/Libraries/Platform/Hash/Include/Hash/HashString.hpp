@@ -9,11 +9,11 @@ namespace Cpf
 	namespace Hash
 	{
 		//////////////////////////////////////////////////////////////////////////
-		struct CPF_EXPORT_HASH BaseHashString_Tag {};
+		struct BaseHashString_Tag {};
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TAG = BaseHashString_Tag>
-		class CPF_EXPORT_HASH HashString
+		class HashString
 		{
 		public:
 			constexpr HashString();

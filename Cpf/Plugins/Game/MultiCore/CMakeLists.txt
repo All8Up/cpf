@@ -88,5 +88,5 @@ MakeUnitTest (LIBRARY MultiCore GROUP Game
 		UnitTest/Test_QueueBuilder.hpp
 		../../../Libraries/Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		s_Collections s_Hash MultiCore
+		s_Collections Hash MultiCore
 )

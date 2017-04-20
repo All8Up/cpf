@@ -15,7 +15,7 @@ namespace Cpf
 			when not desired.
 		 */
 		template <typename TYPE, typename TAG>
-		struct CPF_EXPORT HashID
+		struct HashID
 		{
 			using TagType = TAG;
 

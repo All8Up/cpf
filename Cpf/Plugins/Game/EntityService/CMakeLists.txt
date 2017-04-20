@@ -94,7 +94,7 @@ target_include_directories (EntityService
 )
 target_link_libraries (EntityService
 	PUBLIC
-		Configuration s_Collections COM Logging s_Hash Math Plugin Concurrency MultiCore_Interface
+		Configuration s_Collections COM Logging Hash Math Plugin Concurrency MultiCore_Interface
 )
 set_property (TARGET EntityService PROPERTY FOLDER Plugins/Game)
 
