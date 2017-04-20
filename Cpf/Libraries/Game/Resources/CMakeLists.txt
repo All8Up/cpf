@@ -63,7 +63,7 @@ target_include_directories (s_Resources
 )
 target_link_libraries (s_Resources
 	LINK_PUBLIC
-		Configuration s_Collections RefCount s_IO Logging s_Events s_Hash rapidjson
+		Configuration s_Collections RefCount s_IO Logging Events s_Hash rapidjson
 )
 set_property (TARGET s_Resources PROPERTY FOLDER Libraries/Static/Game)
 
