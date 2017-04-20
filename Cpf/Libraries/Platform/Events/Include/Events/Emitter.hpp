@@ -1,14 +1,10 @@
-/**
- * @brief Event emitters.
- */
+//////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Events/Events.hpp"
 #include "Events/Id.hpp"
 #include "Events/Event.hpp"
 #include "Vector.hpp"
 
-
-//////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	namespace Events

@@ -6,8 +6,6 @@
 #include "UnorderedMap.hpp"
 #include "Functional.hpp"
 
-
-//////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
 	namespace Events
