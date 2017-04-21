@@ -4,6 +4,36 @@ set (INCLUDE_FILES
 )
 set (INCLUDE_SPINE_FILES
 	Include/spine/Animation.h
+	Include/spine/AnimationState.h
+	Include/spine/AnimationStateData.h
+	Include/spine/Atlas.h
+	Include/spine/AtlasAttachmentLoader.h
+	Include/spine/Attachment.h
+	Include/spine/AttachmentLoader.h
+	Include/spine/Bone.h
+	Include/spine/BoneData.h
+	Include/spine/BoundingBoxAttachment.h
+	Include/spine/Event.h
+	Include/spine/EventData.h
+	Include/spine/extension.h
+	Include/spine/IkConstraint.h
+	Include/spine/IkConstraintData.h
+	Include/spine/MeshAttachment.h
+	Include/spine/PathAttachment.h
+	Include/spine/PathConstraint.h
+	Include/spine/PathConstraintData.h
+	Include/spine/RegionAttachment.h
+	Include/spine/Skeleton.h
+	Include/spine/SkeletonBinary.h
+	Include/spine/SkeletonBounds.h
+	Include/spine/SkeletonData.h
+	Include/spine/SkeletonJson.h
+	Include/spine/Skin.h
+	Include/spine/Slot.h
+	Include/spine/spine.h
+	Include/spine/TransformConstraint.h
+	Include/spine/TransformConstraintData.h
+	Include/spine/VertexAttachment.h
 )
 set (INTERFACE_FILES
 	Interface/Spine2D.hpp
@@ -86,5 +116,7 @@ target_include_directories (i_Spine2D
 
 # ###############################################
 source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Headers\\spine FILES ${INCLUDE_SPINE_FILES})
 source_group (Interfaces FILES ${INTERFACE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
+source_group (Sources\\spine FILES ${SOURCE_SPINE_FILES})
