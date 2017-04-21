@@ -9,7 +9,6 @@ set (SOURCE_FILES
 
 
 add_library (s_Memory STATIC ${INCLUDE_FILES} ${SOURCE_FILES})
-add_library (Memory SHARED ${INCLUDE_FILES} ${SOURCE_FILES})
 
 
 target_compile_definitions( s_Memory
@@ -18,31 +17,20 @@ target_compile_definitions( s_Memory
 	PRIVATE
 		CPF_BUILD_MEMORY
 )
-target_compile_definitions( Memory
-	PRIVATE CPF_BUILD_MEMORY
-)
-
 
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
 
 target_link_libraries( s_Memory Configuration )
-target_link_libraries( Memory Configuration )
 
 
 target_include_directories( s_Memory PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
 )
-target_include_directories( Memory PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-	$<INSTALL_INTERFACE:Include>
-)
-
 
 set_property( TARGET s_Memory PROPERTY FOLDER Libraries/Static/Core )
-set_property( TARGET Memory PROPERTY FOLDER Libraries/Shared/Core )
 
 
 install( DIRECTORY Include/Memory
@@ -57,18 +45,14 @@ install( TARGETS s_Memory
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install( TARGETS Memory
-	EXPORT MemoryConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
 install( EXPORT MemoryConfig DESTINATION CMake )
 
 
 # ###############################################
+#[[
 MakeUnitTests( LIBRARY Memory GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		../Test/UnitTestMain.cpp
 )
+]]#

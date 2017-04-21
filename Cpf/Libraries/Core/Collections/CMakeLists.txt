@@ -46,42 +46,23 @@ target_compile_definitions( s_Collections
 	PUBLIC CPF_STATIC_COLLECTIONS
 	PRIVATE CPF_BUILD_COLLECTIONS
 )
-add_library( Collections SHARED
-	${INCLUDE_FILES}
-	${SOURCE_FILES}
-)
-target_compile_definitions( Collections
-	PRIVATE CPF_BUILD_COLLECTIONS
-)
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( Collections Configuration ${STL_LIB} Atomic )
 target_link_libraries( s_Collections Configuration ${STL_LIB} Atomic )
 
-target_include_directories( Collections PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-	$<INSTALL_INTERFACE:Include>
-)
 target_include_directories( s_Collections PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
 )
 
 set_property( TARGET s_Collections PROPERTY FOLDER Libraries/Static/Core )
-set_property( TARGET Collections PROPERTY FOLDER Libraries/Shared/Core )
 
 install( DIRECTORY Include
 	DESTINATION Include
 	PATTERN *
 )
 
-install( TARGETS Collections
-	EXPORT CollectionsConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
 install( TARGETS s_Collections
 	EXPORT CollectionsConfig
 	CONFIGURATIONS Debug Release
@@ -90,9 +71,9 @@ install( TARGETS s_Collections
 )
 install( EXPORT CollectionsConfig DESTINATION CMake )
 
-
+#[[
 # ###############################################
-MakeUnitTests( LIBRARY Collections GROUP Core
+MakeUnitTest( LIBRARY Collections GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_HandlePool.hpp
@@ -101,3 +82,4 @@ MakeUnitTests( LIBRARY Collections GROUP Core
 	LINK_LIBRARIES
 		Atomic:interface
 )
+]]#

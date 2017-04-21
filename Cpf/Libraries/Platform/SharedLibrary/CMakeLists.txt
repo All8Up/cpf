@@ -1,3 +1,4 @@
+#[[
 # ###############################################
 set( INCLUDE_FILES
 	Include/${CPF_TARGET_OS}/Platform/SharedLibrary.hpp
@@ -47,7 +48,6 @@ install( DIRECTORY Include/SharedLibrary
 	PATTERN *
 )
 
-#[[
 install( TARGETS SharedLibrary
 	EXPORT SharedLibraryConfig
 	CONFIGURATIONS Debug Release
@@ -61,7 +61,6 @@ install( TARGETS s_SharedLibrary
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install( EXPORT SharedLibraryConfig DESTINATION CMake )
-]]#
 
 # ###############################################
 MakeUnitTests( LIBRARY SharedLibrary GROUP Platform
@@ -69,3 +68,4 @@ MakeUnitTests( LIBRARY SharedLibrary GROUP Platform
 		UnitTest/Test_All.hpp
 		../../Core/Test/UnitTestMain.cpp
 )
+]]#

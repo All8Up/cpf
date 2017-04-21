@@ -58,7 +58,7 @@ source_group( Source FILES ${THREADING_SOURCE_FILES} )
 if (WIN32)
 	set (ADDITIONAL_LIBS "Pdh.lib")
 endif ()
-target_link_libraries( Threading Configuration Collections Time Atomic Logging ${ADDITIONAL_LIBS})
+target_link_libraries( Threading Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
 target_link_libraries( s_Threading Configuration s_Collections s_Time Atomic Logging ${ADDITIONAL_LIBS})
 
 target_include_directories( Threading PUBLIC
@@ -116,7 +116,7 @@ MakeUnitTests( LIBRARY Threading GROUP Platform
 		UnitTest/Test_Reactor.hpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Collections Time
+		Collections:static Time
 )
 
 option( CPF_THREADING_PROFILE_BUILD "" OFF )
