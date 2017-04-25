@@ -113,18 +113,6 @@ else ()
 	endif ()
 endif ()
 
-# Box2D
-if (NOT EXTERN_INLINE_BOX2D)
-else ()
-	if (IS_DIRECTORY "${BOX2D_SRC_DIR}")
-		set (BOX2D_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-		set (BOX2D_BUILD_STATIC ON CACHE BOOL "" FORCE)
-		set (BOX2D_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-		add_subdirectory (${BOX2D_SRC_DIR}/Box2D)
-		set_property (TARGET Box2D PROPERTY FOLDER External)
-	endif ()
-endif ()
-
 # Vulkan
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK")
 	add_library (vulkan INTERFACE)
