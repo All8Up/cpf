@@ -171,14 +171,8 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});
-	instanceSystem->AddDependency({
-		{ instanceSystem->GetID(), InstanceSystem::kEnd, MultiCore::iStage::kExecute },
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
-		MultiCore::DependencyPolicy::eAfter
-	});
 
 	// Mover updates must happen after game time update and instance begin.
-	// Currently there are two movers to test the differences between multicore and ebus.
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
 		{ gameTime->GetID(), MultiCore::iStage::kStageID, MultiCore::iStage::kExecute },
@@ -186,16 +180,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	});
 	mpMoverSystem->AddDependency({
 		{ mpMoverSystem->GetID(), MoverSystem::kUpdate, MultiCore::iStage::kExecute },
-		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
-		MultiCore::DependencyPolicy::eAfter
-	});
-	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
-		{ gameTime->GetID(), MultiCore::iStage::kStageID, MultiCore::iStage::kExecute },
-		MultiCore::DependencyPolicy::eBarrier
-	});
-	mpMoverSystem->AddDependency({
-		{ mpMoverSystem->GetID(), MoverSystem::kUpdateEBus, MultiCore::iStage::kExecute },
 		{ instanceSystem->GetID(), InstanceSystem::kBegin, MultiCore::iStage::kExecute },
 		MultiCore::DependencyPolicy::eAfter
 	});

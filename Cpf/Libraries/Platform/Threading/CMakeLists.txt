@@ -28,21 +28,6 @@ set( THREADING_SOURCE_FILES
 	Source/Reactor.cpp
 )
 
-add_library( s_Threading STATIC
-	${THREADING_INCLUDE_FILES}
-	${THREADING_PLATFORM_INCLUDE_FILES}
-	${THREADING_SOURCE_FILES}
-)
-target_compile_definitions( s_Threading
-	PUBLIC CPF_STATIC_THREADING
-	PRIVATE CPF_BUILD_THREADING
-)
-if(CPF_THREADING_DISABLE_PROFILING)
-	target_compile_definitions( s_Threading
-		PUBLIC CPF_THREADING_DISABLE_PROFILING
-	)
-endif()
-
 add_library( Threading SHARED
 	${THREADING_INCLUDE_FILES}
 	${THREADING_PLATFORM_INCLUDE_FILES}
@@ -59,7 +44,6 @@ if (WIN32)
 	set (ADDITIONAL_LIBS "Pdh.lib")
 endif ()
 target_link_libraries( Threading Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
-target_link_libraries( s_Threading Configuration s_Collections s_Time Atomic Logging ${ADDITIONAL_LIBS})
 
 target_include_directories( Threading PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -67,14 +51,7 @@ target_include_directories( Threading PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
 	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
 )
-target_include_directories( s_Threading PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-	$<INSTALL_INTERFACE:Include>
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
-	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
-)
 
-set_property( TARGET s_Threading PROPERTY FOLDER Libraries/Static/Platform )
 set_property( TARGET Threading PROPERTY FOLDER Libraries/Shared/Platform )
 
 #[[
@@ -94,17 +71,11 @@ install( TARGETS Threading
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install( TARGETS s_Threading
-	EXPORT ThreadingConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
 install( EXPORT ThreadingConfig DESTINATION CMake )
 ]]#
 
 # ###############################################
-MakeUnitTests( LIBRARY Threading GROUP Platform
+MakeUnitTest( LIBRARY Threading GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_ConditionVariable.hpp
@@ -116,7 +87,7 @@ MakeUnitTests( LIBRARY Threading GROUP Platform
 		UnitTest/Test_Reactor.hpp
 		../../Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Collections:static Time
+		s_Collections Time
 )
 
 option( CPF_THREADING_PROFILE_BUILD "" OFF )
@@ -125,9 +96,3 @@ if (CPF_THREADING_PROFILE_BUILD)
 else()
 	set(PROFILE_ON 0)
 endif()
-# Only profile in static link libraries.
-if (TARGET Test_s_Threading)
-	target_compile_definitions( Test_s_Threading
-		PUBLIC CPF_THREADING_PROFILE_BUILD=${PROFILE_ON}
-	)
-endif ()

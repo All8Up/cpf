@@ -20,15 +20,6 @@ set (TIME_SOURCE_FILES
 	Source/${CMAKE_SYSTEM_NAME}/Counter.cpp
 )
 
-add_library (s_Time STATIC
-	${INCLUDE_FILES}
-	${TIME_INCLUDE_FILES}
-	${TIME_SOURCE_FILES}
-)
-target_compile_definitions (s_Time
-	PUBLIC CPF_STATIC_TIME
-	PRIVATE CPF_BUILD_TIME
-)
 add_library (Time SHARED
 	${INCLUDE_FILES}
 	${TIME_INCLUDE_FILES}
@@ -42,20 +33,13 @@ source_group (Headers\\Time FILES ${TIME_INCLUDE_FILES})
 source_group (Sources FILES ${TIME_SOURCE_FILES})
 
 target_link_libraries (Time Configuration)
-target_link_libraries (s_Time Configuration)
 
 target_include_directories (Time
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
 )
-target_include_directories (s_Time
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<INSTALL_INTERFACE:Include>
-)
 
-set_property (TARGET s_Time PROPERTY FOLDER Libraries/Static/Platform )
 set_property (TARGET Time PROPERTY FOLDER Libraries/Shared/Platform )
 
 install (DIRECTORY Include/Time
@@ -69,17 +53,11 @@ install (TARGETS Time
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install (TARGETS s_Time
-	EXPORT TimeConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
 install (EXPORT TimeConfig DESTINATION CMake)
 
 
 # ###############################################
-MakeUnitTests (LIBRARY Time GROUP Platform
+MakeUnitTest (LIBRARY Time GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_Value.hpp

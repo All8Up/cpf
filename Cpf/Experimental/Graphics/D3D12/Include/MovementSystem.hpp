@@ -28,7 +28,6 @@ namespace Cpf
 
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Mover System"_hashString);
 		static constexpr MultiCore::StageID kUpdate = Hash::Create<MultiCore::StageID_tag>("Update"_hashString);
-		static constexpr MultiCore::StageID kUpdateEBus = Hash::Create<MultiCore::StageID_tag>("Update EBus"_hashString);
 
 		struct Desc : iSystem::Desc
 		{
@@ -47,7 +46,6 @@ namespace Cpf
 		InstanceSystem* GetInstanceSystem() const;
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 		void EnableMovement(bool flag);
-		void UseEBus(bool flag);
 
 		// iUnknown
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
@@ -74,13 +72,11 @@ namespace Cpf
 		InstanceSystem* mpInstances;
 		MultiCore::iTimer* mpTime;	// The clock this mover is attached to.
 		IntrusivePtr<EntityService::iEntityStage> mpThreadStage;
-		IntrusivePtr<EntityService::iEntityStage> mpEBusStage;
 		MultiCore::SystemID mClockID;
 		MultiCore::SystemID mInstanceID;
 
 		//
 		bool mEnableMovement;
-		bool mUseEBus;
 		Threading::Mutex mMutex;
 
 		MultiCore::SystemID mID;

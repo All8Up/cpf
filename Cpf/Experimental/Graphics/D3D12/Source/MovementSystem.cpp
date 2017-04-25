@@ -48,7 +48,6 @@ MoverSystem::MoverSystem(COM::iUnknown*)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
 	, mEnableMovement(true)
-	, mUseEBus(false)
 {
 }
 
@@ -78,16 +77,8 @@ void MoverSystem::EnableMovement(bool flag)
 {
 	mEnableMovement = flag;
 
-	mpThreadStage->SetEnabled(flag && !mUseEBus);
-	mpEBusStage->SetEnabled(flag && mUseEBus);
-
+	mpThreadStage->SetEnabled(flag);
 	mpApp->ReconfigurePipeline();
-}
-
-void MoverSystem::UseEBus(bool flag)
-{
-	mUseEBus = flag;
-	EnableMovement(mEnableMovement);
 }
 
 
@@ -105,16 +96,13 @@ ComponentID MoverSystem::MoverComponent::GetID() const
 void MoverSystem::MoverComponent::Activate()
 {
 	mpMover->mpThreadStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_Threaded);
-	mpMover->mpEBusStage->AddUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
 void MoverSystem::MoverComponent::Deactivate()
 {
 	mpMover->mpThreadStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_Threaded);
-	mpMover->mpEBusStage->RemoveUpdate(mpMover, GetEntity(), &MoverComponent::_EBus);
 }
 
-float gTime = 0.0f;
 void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
@@ -144,41 +132,6 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	CPF_ASSERT(instances != nullptr);
 
-	instances[i].mScale = Vector3f(1.0f);
-	instances[i].mOrientation0 = Vector3f(orientation[0].xyz);
-	instances[i].mOrientation1 = Vector3f(orientation[1].xyz);
-	instances[i].mOrientation2 = Vector3f(orientation[2].xyz);
-	instances[i].mTranslation = Vector3f(pos.xyz);
-}
-
-void MoverSystem::MoverComponent::_EBus(iSystem* system, iEntity* object)
-{
-	MoverSystem* mover = static_cast<MoverSystem*>(system);
-	Threading::ScopedLock<Threading::Mutex> lock(mover->mMutex);
-
-	MultiCore::iTimer* timer = mover->mpTime;
-
-	int i = int(object->GetID().GetID());
-	int count = ExperimentalD3D12::kInstancesPerDimension;
-	int xc = (i % count);
-	int yc = (i / count) % count;
-	int zc = (i / (count * count)) % count;
-
-	Vector3fv pos((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
-	float magnitude = Magnitude(pos + Vector3fv(0.0f, 50.0f, 0.0f)) * 0.03f;
-	magnitude *= magnitude;
-	float time = float(Time::Seconds(timer->GetTime()));
-	float angle = sinf(0.25f * time);
-	pos.x = sinf(angle * magnitude) * pos.x - cosf(angle * magnitude) * pos.z;
-	pos.y = (sinf(angle) + 0.5f) * pos.y * magnitude;
-	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
-
-	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
-	(void)transform;
-
-	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
-		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
-	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	instances[i].mScale = Vector3f(1.0f);
 	instances[i].mOrientation0 = Vector3f(orientation[0].xyz);
 	instances[i].mOrientation1 = Vector3f(orientation[1].xyz);
@@ -225,7 +178,6 @@ COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const ch
 		mClockID = desc->mTimerID;
 		mInstanceID = desc->mInstanceID;
 		mEnableMovement = true;
-		mUseEBus = false;
 
 		mID = SystemID(name, strlen(name));
 		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
@@ -237,15 +189,8 @@ COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const ch
 			rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpThreadStage.AsVoidPP());
 			mpThreadStage->Initialize(this, kUpdate.GetString());
 
-			rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpEBusStage.AsVoidPP());
-			mpEBusStage->Initialize(this, kUpdateEBus.GetString());
-
 			// Add the stages to this system.
 			AddStage(mpThreadStage);
-			AddStage(mpEBusStage);
-
-			// Disable the EBus comparison stage to start with.
-			mpEBusStage->SetEnabled(false);
 			return COM::kOK;
 		}
 		return result;
