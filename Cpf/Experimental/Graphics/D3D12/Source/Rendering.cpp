@@ -40,7 +40,7 @@ void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
 		ResourceState::eRenderTarget,
 		SubResource::eAll);
 	mpPreCommandBuffer[mCurrentBackbuffer]->ImageTransition(
-		mpDepthBufferImages[backBuffer],
+		mpDepthBuffer,
 		ResourceState::ePresent,
 		ResourceState::eDepthWrite,
 		SubResource::eAll
@@ -51,9 +51,9 @@ void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
 
 	// Clear the color and depth buffers.
 	iImageView* imageViews[] = { mpSwapChain->GetImageView(mCurrentBackbuffer) };
-	mpPreCommandBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferImageViews[backBuffer]);
+	mpPreCommandBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferView);
 	mpPreCommandBuffer[mCurrentBackbuffer]->ClearRenderTargetView(mpSwapChain->GetImageView(backBuffer), color, 0, nullptr);
-	mpPreCommandBuffer[mCurrentBackbuffer]->ClearDepthStencilView(mpDepthBufferImageViews[backBuffer], DepthStencilClearFlag::eDepth, 1.0f, 0, 0, nullptr);
+	mpPreCommandBuffer[mCurrentBackbuffer]->ClearDepthStencilView(mpDepthBufferView, DepthStencilClearFlag::eDepth, 1.0f, 0, 0, nullptr);
 
 	// End the command buffer prior to submission.
 	mpPreCommandBuffer[mCurrentBackbuffer]->End();
@@ -76,7 +76,7 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	*/
 	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
 	iImageView* imageViews[] = { mpSwapChain->GetImageView(backBuffer) };
-	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferImageViews[backBuffer]);
+	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferView);
 
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetResourceBinding(mpResourceBinding);
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetPipeline(mpPipeline);
@@ -116,7 +116,7 @@ void ExperimentalD3D12::_PreparePresent(Concurrency::ThreadContext&)
 	// Transition the back buffer and depth buffer to present.
 	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
 	mpPostCommandBuffer[mCurrentBackbuffer]->ImageTransition(mpSwapChain->GetImage(backBuffer), ResourceState::eRenderTarget, ResourceState::ePresent, SubResource::eAll);
-	mpPostCommandBuffer[mCurrentBackbuffer]->ImageTransition(mpDepthBufferImages[backBuffer], ResourceState::eDepthWrite, ResourceState::ePresent, SubResource::eAll);
+	mpPostCommandBuffer[mCurrentBackbuffer]->ImageTransition(mpDepthBuffer, ResourceState::eDepthWrite, ResourceState::ePresent, SubResource::eAll);
 
 	// Let the device take care of any final needed work, read backs for instance.
 	mpDevice->EndFrame(mpPostCommandBuffer[mCurrentBackbuffer]);

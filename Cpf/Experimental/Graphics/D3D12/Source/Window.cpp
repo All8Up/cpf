@@ -53,10 +53,8 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 
 		// Recreate the depth buffers.
 		// TODO: There should only be a single depth buffer.
-		mpDepthBufferImages.clear();
-		mpDepthBufferImageViews.clear();
-		mpDepthBufferImages.resize(mBackBufferCount);
-		mpDepthBufferImageViews.resize(mBackBufferCount);
+		mpDepthBuffer.Assign(nullptr);
+		mpDepthBufferView.Assign(nullptr);
 		Graphics::ImageDesc depthBufferDesc
 		{
 			x, y,
@@ -66,10 +64,7 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 			{ 1, 0 },
 			Graphics::ImageFlags::eAllowDepthStencil
 		};
-		for (int i = 0; i < mBackBufferCount; ++i)
-		{
-			mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBufferImages[i].AsTypePP());
-			mpDevice->CreateDepthStencilView(mpDepthBufferImages[i], nullptr, mpDepthBufferImageViews[i].AsTypePP());
-		}
+		mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+		mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 	}
 }

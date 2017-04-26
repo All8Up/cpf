@@ -127,8 +127,8 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 
 	// Create a set of depth buffers to go with the swap chain.
 	// TODO: There should really only be one shared depth buffer.
-	mpDepthBufferImages.resize(desc.mBackBufferCount);
-	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
+	mpDepthBuffer.Assign(nullptr);
+	mpDepthBufferView.Assign(nullptr);
 	ImageDesc depthBufferDesc
 	{
 		w, h,
@@ -138,11 +138,8 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		{ 1, 0 },
 		ImageFlags::eAllowDepthStencil
 	};
-	for (int i = 0; i < desc.mBackBufferCount; ++i)
-	{
-		mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBufferImages[i].AsTypePP());
-		mpDevice->CreateDepthStencilView(mpDepthBufferImages[i], nullptr, mpDepthBufferImageViews[i].AsTypePP());
-	}
+	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
 	return mpSwapChain;
 }

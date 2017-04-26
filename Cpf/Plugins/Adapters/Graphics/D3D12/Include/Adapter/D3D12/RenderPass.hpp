@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/iRenderPass.hpp"
+#include "Vector.hpp"
 
 namespace Cpf
 {
@@ -23,6 +24,11 @@ namespace Cpf
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 				COM::Result CPF_STDCALL Initialize(const Graphics::RenderPassDesc* desc);
+
+			private:
+				Vector<Graphics::SubPassDesc> mSubPasses;
+				Vector<Graphics::AttachmentDesc> mAttachments;
+				Vector<Vector<Graphics::AttachmentRef>> mAttachmentRefs;
 			};
 		}
 	}

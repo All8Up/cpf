@@ -44,7 +44,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 
 	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
 	Graphics::iImageView* imageViews[] = { mpSwapChain->GetImageView(backBuffer) };
-	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferImageViews[backBuffer]);
+	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferView);
 
 	mpDebugUI->BeginFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer], float(Time::Seconds(mDeltaTime)));
 	{

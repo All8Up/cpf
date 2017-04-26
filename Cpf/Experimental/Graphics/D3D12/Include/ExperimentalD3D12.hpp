@@ -77,8 +77,8 @@ namespace Cpf
 		IntrusivePtr<iWindow> mpWindow;
 		IntrusivePtr<Graphics::iDevice> mpDevice;
 		IntrusivePtr<Graphics::iSwapChain> mpSwapChain;
-		Vector<IntrusivePtr<Graphics::iImage>> mpDepthBufferImages;
-		Vector<IntrusivePtr<Graphics::iImageView>> mpDepthBufferImageViews;
+		IntrusivePtr<Graphics::iImage> mpDepthBuffer;
+		IntrusivePtr<Graphics::iImageView> mpDepthBufferView;
 		IntrusivePtr<Graphics::iResourceBinding> mpResourceBinding;
 		IntrusivePtr<Graphics::iConstantBuffer> mpViewProj;
 		IntrusivePtr<Graphics::iShader> mpVertexShader;
