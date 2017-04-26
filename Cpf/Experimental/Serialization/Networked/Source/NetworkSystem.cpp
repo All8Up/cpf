@@ -60,7 +60,7 @@ COM::Result CPF_STDCALL NetworkSystem::Initialize(Plugin::iRegistry* rgy, const 
 	if (name)
 	{
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 		if (COM::Succeeded(result))
 		{
 			IntrusivePtr<iSingleUpdateStage> updateStage;

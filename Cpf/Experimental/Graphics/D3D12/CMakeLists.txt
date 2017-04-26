@@ -36,7 +36,7 @@ if (WIN32)
 		i_Application
 		i_Adapter_SDL2
 		s_GraphicsDriver
-		EntityService_Interface
+		i_EntityService
 		Concurrency
 	)
 

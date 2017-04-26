@@ -107,7 +107,7 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 		mpApp = theDesc->mpApplication;
 		mCurrentBackBuffer = 0;
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 		if (COM::Succeeded(result))
 		{
 			// Build the stages and set the update function for each.

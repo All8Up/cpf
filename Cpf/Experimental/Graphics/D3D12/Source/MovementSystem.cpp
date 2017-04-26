@@ -124,11 +124,12 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	pos.z = cosf(angle * magnitude) * pos.x + sinf(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
-	(void)transform;
+	transform->GetTransform().SetTranslation(pos);
 
 	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
 		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
 
+	// TODO: Move into drawable component.
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	CPF_ASSERT(instances != nullptr);
 
@@ -180,7 +181,7 @@ COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const ch
 		mEnableMovement = true;
 
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 		if (COM::Succeeded(result))
 		{
 			mpApp = static_cast<const Desc*>(desc)->mpApplication;

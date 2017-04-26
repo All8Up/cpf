@@ -40,19 +40,24 @@ add_library (Concurrency SHARED
 	${DISPATCH_SOURCE}
 	${COLLECTIONS_SOURCE}
 )
-
 target_compile_definitions (Concurrency
 	PRIVATE
 		CPF_BUILD_CONCURRENCY
 )
 target_link_libraries (Concurrency Configuration Atomic Threading Logging VTune)
-
 target_include_directories (Concurrency PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
 )
-
 set_property (TARGET Concurrency PROPERTY FOLDER Libraries/Shared/Platform)
+
+add_library (i_Concurrency INTERFACE)
+target_link_libraries (i_Concurrency INTERFACE Configuration Atomic i_Threading)
+target_include_directories (i_Concurrency INTERFACE
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+	$<INSTALL_INTERFACE:Include>
+)
+
 
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})

@@ -66,8 +66,8 @@ add_custom_command (
 )
 
 # ###############################################
-add_library (MultiCore_Interface INTERFACE)
-target_include_directories (MultiCore_Interface
+add_library (i_MultiCore INTERFACE)
+target_include_directories (i_MultiCore
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>

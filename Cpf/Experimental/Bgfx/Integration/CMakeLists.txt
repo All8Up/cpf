@@ -44,7 +44,7 @@ target_link_libraries (BgfxIntegration
 	s_NanoVG_BGFX
 	s_Imgui_BGFX
 	Concurrency
-	EntityService_Interface
+	i_EntityService
 )
 target_compile_definitions (BgfxIntegration
 	PUBLIC

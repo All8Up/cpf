@@ -71,8 +71,8 @@ bool RenderSystem::Shutdown()
 	}
 	mpFence.Adopt(nullptr);
 
-	mpDepthBufferImages.clear();
-	mpDepthBufferImageViews.clear();
+	mpDepthBuffer.Adopt(nullptr);
+	mpDepthBufferView.Adopt(nullptr);
 
 	mpDebugUI.Adopt(nullptr);
 	mpSwapChain.Adopt(nullptr);
@@ -184,10 +184,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	window->GetClientAreaSize(&w, &h);
 	mpDevice->CreateSwapChain(mpInstance, &winData, w, h, &desc, mpSwapChain.AsTypePP());
 
-	// Create a set of depth buffers to go with the swap chain.
-	// TODO: There should really only be one shared depth buffer.
-	mpDepthBufferImages.resize(desc.mBackBufferCount);
-	mpDepthBufferImageViews.resize(desc.mBackBufferCount);
+	// Create a depth buffers to go with the swap chain.
 	ImageDesc depthBufferDesc
 	{
 		w, h,
@@ -197,11 +194,8 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		{ 1, 0 },
 		ImageFlags::eAllowDepthStencil
 	};
-	for (int i = 0; i < desc.mBackBufferCount; ++i)
-	{
-		mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBufferImages[i].AsTypePP());
-		mpDevice->CreateDepthStencilView(mpDepthBufferImages[i], nullptr, mpDepthBufferImageViews[i].AsTypePP());
-	}
+	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
 	return mpSwapChain;
 }
@@ -355,7 +349,7 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 	{
 		mDesc = *static_cast<const Desc*>(desc);
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(nullptr, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 		if (COM::Succeeded(result))
 			return COM::kOK;
 		return result;

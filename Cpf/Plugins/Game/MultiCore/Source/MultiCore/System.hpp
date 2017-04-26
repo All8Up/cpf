@@ -13,11 +13,13 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class StageList : public tRefCounted<iStageList>
+		class StageList : public iStageList
 		{
 		public:
-			StageList(iUnknown*) {}
+			StageList(iUnknown* outer) : mpOuter(outer), mRefCount(0) {}
 
+			int32_t CPF_STDCALL AddRef() override;
+			int32_t CPF_STDCALL Release() override;
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
@@ -30,6 +32,8 @@ namespace Cpf
 			COM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
 
 		private:
+			iUnknown* mpOuter;
+			int32_t mRefCount;
 			StageVector mStages;
 			BlockDependencies mDependencies;
 		};

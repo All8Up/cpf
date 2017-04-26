@@ -54,7 +54,7 @@ COM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const
 		mRenderID = theDesc->mRenderSystemID;
 		mpInstances = nullptr;
 		mID = MultiCore::SystemID(name, strlen(name));
-		auto result = rgy->Create(nullptr, MultiCore::kStageListCID, MultiCore::iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, MultiCore::kStageListCID, MultiCore::iStageList::kIID, mpStages.AsVoidPP());
 
 		// Build the stages and set the update function.
 		IntrusivePtr<MultiCore::iSingleUpdateStage> instanceBegin;

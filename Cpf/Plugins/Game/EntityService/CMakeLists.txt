@@ -94,7 +94,7 @@ target_include_directories (EntityService
 )
 target_link_libraries (EntityService
 	PUBLIC
-		Configuration s_Collections COM Logging Hash Math Plugin Concurrency MultiCore_Interface
+		Configuration s_Collections COM Logging Hash Math Plugin Concurrency i_MultiCore
 )
 set_property (TARGET EntityService PROPERTY FOLDER Plugins/Game)
 
@@ -106,9 +106,9 @@ add_custom_command (
 )
 
 # ###############################################
-add_library (EntityService_Interface INTERFACE)
-target_link_libraries (EntityService_Interface INTERFACE MultiCore_Interface)
-target_include_directories (EntityService_Interface
+add_library (i_EntityService INTERFACE)
+target_link_libraries (i_EntityService INTERFACE i_MultiCore)
+target_include_directories (i_EntityService
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Public>
 		$<INSTALL_INTERFACE:Public>

@@ -80,8 +80,8 @@ namespace Cpf
 		IntrusivePtr<Graphics::iAdapter> mpAdapter;
 		IntrusivePtr<Graphics::iDevice> mpDevice;
 		IntrusivePtr<Graphics::iSwapChain> mpSwapChain;
-		Vector<IntrusivePtr<Graphics::iImage>> mpDepthBufferImages;
-		Vector<IntrusivePtr<Graphics::iImageView>> mpDepthBufferImageViews;
+		IntrusivePtr<Graphics::iImage> mpDepthBuffer;
+		IntrusivePtr<Graphics::iImageView> mpDepthBufferView;
 		IntrusivePtr<Graphics::iDebugUI> mpDebugUI;
 
 		int mBufferIndex = 0;

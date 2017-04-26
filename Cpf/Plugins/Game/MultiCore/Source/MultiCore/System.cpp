@@ -16,22 +16,42 @@ COM::Result CPF_STDCALL StageList::QueryInterface(COM::InterfaceID id, void** ou
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
-			break;
-
 		case iStageList::kIID.GetID():
 			*outIface = static_cast<iStageList*>(this);
 			break;
 
 		default:
-			*outIface = nullptr;
-			return COM::kUnknownInterface;
+			CPF_ASSERT(mpOuter != nullptr);
+			return mpOuter->QueryInterface(id, outIface);
 		}
 		AddRef();
 		return COM::kOK;
 	}
 	return COM::kUnknownInterface;
+}
+
+int32_t CPF_STDCALL StageList::AddRef()
+{
+	if (mpOuter)
+		return mpOuter->AddRef();
+	return ++mRefCount;
+}
+
+int32_t CPF_STDCALL StageList::Release()
+{
+	if (mpOuter)
+	{
+		int32_t outer = mpOuter->Release();
+		if (outer > 0)
+			return outer;
+		mpOuter = nullptr;
+	}
+	if (--mRefCount == 0)
+	{
+		delete this;
+		return 0;
+	}
+	return mRefCount;
 }
 
 COM::Result CPF_STDCALL StageList::FindStage(StageID id, iStage** outStage) const

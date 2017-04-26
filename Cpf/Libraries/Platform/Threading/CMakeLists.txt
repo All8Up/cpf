@@ -37,6 +37,15 @@ target_compile_definitions( Threading
 	PRIVATE CPF_BUILD_THREADING
 )
 
+add_library (i_Threading INTERFACE)
+target_link_libraries (i_Threading INTERFACE Configuration Atomic Time)
+target_include_directories (i_Threading INTERFACE
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+	$<INSTALL_INTERFACE:Include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
+	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
+)
+
 source_group( Headers FILES ${THREADING_INCLUDE_FILES} ${THREADING_PLATFORM_INCLUDE_FILES} )
 source_group( Source FILES ${THREADING_SOURCE_FILES} )
 
