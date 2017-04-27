@@ -207,11 +207,9 @@ void ExperimentalD3D12::_DestroyResources()
 	mpIndexBuffer.Assign(nullptr);
 	mpViewProj.Assign(nullptr);
 	mpPipeline.Assign(nullptr);
-	mpDepthBufferImages.clear();
-	mpDepthBufferImageViews.clear();
+	mpDepthBuffer.Assign(nullptr);
+	mpDepthBufferView.Assign(nullptr);
 	mpSwapChain.Assign(nullptr);
-	mpDepthBufferImages.clear();
-	mpDepthBufferImageViews.clear();
 	mpFence.Assign(nullptr);
 	mpResourceBinding.Assign(nullptr);
 

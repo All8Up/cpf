@@ -5,6 +5,16 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
+FrameBuffer::FrameBuffer(COM::iUnknown*)
+	: mFrameBuffer{ 0 }
+{}
+
+FrameBuffer::~FrameBuffer()
+{
+	SafeRelease(mFrameBuffer.mpRenderPass);
+}
+
+
 COM::Result CPF_STDCALL FrameBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
 {
 	if (outIface)
@@ -28,8 +38,21 @@ COM::Result CPF_STDCALL FrameBuffer::QueryInterface(COM::InterfaceID id, void** 
 
 COM::Result CPF_STDCALL FrameBuffer::Initialize(const Graphics::FrameBufferDesc* desc)
 {
-	if (desc == nullptr)
-		return COM::kInvalidParameter;
+	if (desc)
+	{
+		// Copy the frame buffer data.
+		mFrameBuffer = *desc;
+		mFrameBuffer.mpRenderPass->AddRef();
 
-	return COM::kOK;
+		// Copy the attachments.  NOTE: Takes a ref count.
+		mAttachments.resize(desc->mAttachmentCount);
+		for (int i = 0; i < desc->mAttachmentCount; ++i)
+			mAttachments[i].Assign(desc->mpAttachments[i]);
+
+		// Make sure we don't reference the old pointer.
+		mFrameBuffer.mpAttachments = nullptr;
+
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }

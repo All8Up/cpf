@@ -311,6 +311,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				depthAttachment.mState = Graphics::ResourceState::eDepthWrite;
 
 				//////////////////////////////////////////////////////////////////////////
+				// Standard render to swap chain.
 				Graphics::SubPassDesc subPass = {};
 				subPass.mBindPoint = Graphics::PipelineBindPoint::eGraphic;
 				// No inputs.
@@ -338,23 +339,23 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				renderPassDesc.mDependencyCount = 0;
 				renderPassDesc.mpDependencies = nullptr;
 
-				//////////////////////////////////////////////////////////////////////////
 				IntrusivePtr<Graphics::iRenderPass> renderPass;
 				mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
+				//////////////////////////////////////////////////////////////////////////
 
 				//////////////////////////////////////////////////////////////////////////
 				Graphics::FrameBufferDesc frameBufferDesc;
 				frameBufferDesc.mpRenderPass = renderPass;
 				frameBufferDesc.mAttachmentCount = 2;
-				Graphics::iImageView* views[2] = {};
+				Graphics::iImageView* views[2] = {/* color buffer output view, depth buffer output view */};
 				frameBufferDesc.mpAttachments = views;
 				frameBufferDesc.mWidth = 1024;
 				frameBufferDesc.mHeight = 768;
 				frameBufferDesc.mLayers = 1;
 
-				//////////////////////////////////////////////////////////////////////////
 				IntrusivePtr<Graphics::iFrameBuffer> frameBuffer;
 				mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
+				//////////////////////////////////////////////////////////////////////////
 
 				//////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////
