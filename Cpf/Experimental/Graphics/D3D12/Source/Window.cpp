@@ -23,11 +23,11 @@ bool ExperimentalD3D12::_CreateWindow()
 	});
 
 	// Create the window.
-	Math::Vector2i mWindowSize(1920, 1080);
+	Math::Vector2i mWindowSize(1200, 800);
 	WindowDesc windowDesc;
 	windowDesc.mpTitle = WINDOW_TITLE;
-	windowDesc.mX = iWindow::Centered();
-	windowDesc.mY = iWindow::Centered();
+	windowDesc.mX = 0; // iWindow::Centered();
+	windowDesc.mY = 0; // iWindow::Centered();
 	windowDesc.mWidth = mWindowSize.x;
 	windowDesc.mHeight = mWindowSize.y;
 	windowDesc.mFlags = WindowFlags::eResizable | WindowFlags::eShown;
