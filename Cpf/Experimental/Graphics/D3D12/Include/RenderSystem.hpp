@@ -63,8 +63,6 @@ namespace Cpf
 
 	private:
 		//
-		void _AllocateBuffers();
-
 		static void _BeginFrame(Concurrency::ThreadContext& tc, void* context);
 		static void _Clear(Concurrency::ThreadContext& tc, void* context);
 		static void _Draw(Concurrency::ThreadContext& tc, void* context);

@@ -257,8 +257,8 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				{
 					mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
 					mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
-					mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
-					mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
+					mpDevice->CreateCommandBuffer(mpPreCommandPool[i], CommandBufferType::kPrimary, mpPreCommandBuffer[i].AsTypePP());
+					mpDevice->CreateCommandBuffer(mpPostCommandPool[i], CommandBufferType::kPrimary, mpPostCommandBuffer[i].AsTypePP());
 				}
 
 				if (!_CreateResources())
@@ -269,97 +269,8 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				//
 				GetRegistry()->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
 
-				//////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////////////////////////////////////////
-				// TODO: Testing for render pass setup.
-				AttachmentDesc attachments[2] = {};
-
-				//////////////////////////////////////////////////////////////////////////
-				// Color buffer.
-				attachments[0].mFlags = 0;
-				attachments[0].mFormat = Format::eRGBA8un;
-				attachments[0].mSamples = SampleDesc{ 1, 0 };
-				attachments[0].mLoadOp = LoadOp::eClear;
-				attachments[0].mStoreOp = StoreOp::eStore;
-				attachments[0].mStencilLoadOp = LoadOp::eDontCare;
-				attachments[0].mStencilStoreOp = StoreOp::eDontCare;
-				// TODO: Figure out what makes the most sense.
-				attachments[0].mStartState = ResourceState::ePresent;
-				attachments[0].mFinalState = ResourceState::ePresent;
-
-				///
-				AttachmentRef colorAttachment;
-				colorAttachment.mIndex = 0;
-				colorAttachment.mState = ResourceState::eRenderTarget;
-
-				//////////////////////////////////////////////////////////////////////////
-				// Depth buffer.
-				attachments[1].mFlags = 0;
-				attachments[1].mFormat = Format::eD32f;
-				attachments[1].mSamples = SampleDesc{ 1, 0 };
-				attachments[1].mLoadOp = LoadOp::eClear;
-				attachments[1].mStoreOp = StoreOp::eStore;
-				attachments[1].mStencilLoadOp = LoadOp::eLoad;
-				attachments[1].mStencilStoreOp = StoreOp::eStore;
-				// TODO: Figure out what makes the most sense.
-				attachments[1].mStartState = ResourceState::ePresent;
-				attachments[1].mFinalState = ResourceState::ePresent;
-
-				///
-				AttachmentRef depthAttachment;
-				depthAttachment.mIndex = 1;
-				depthAttachment.mState = ResourceState::eDepthWrite;
-
-				//////////////////////////////////////////////////////////////////////////
-				// Standard render to swap chain.
-				SubPassDesc subPass;
-				subPass.mBindPoint = PipelineBindPoint::eGraphic;
-				// No inputs.
-				subPass.mInputCount = 0;
-				subPass.mpInputAttachments = nullptr;
-				// 1 color output.
-				subPass.mColorCount = 1;
-				subPass.mpColorAttachments = &colorAttachment;
-				// No resolves.
-				subPass.mResolveCount = 0;
-				subPass.mpResolveAttachments = nullptr;
-				// 1 depth buffer.
-				subPass.mDepthStencilCount = 1;
-				subPass.mpDepthStencilAttachments = &depthAttachment;
-				// No preservation.
-				subPass.mPreserveCount = 0;
-				subPass.mpPreserveAttachments = nullptr;
-
-				//////////////////////////////////////////////////////////////////////////
-				RenderPassDesc renderPassDesc;
-				renderPassDesc.mAttachmentCount = 2;
-				renderPassDesc.mpAttachments = attachments;
-				renderPassDesc.mSubPassCount = 1;
-				renderPassDesc.mpSubPasses = &subPass;
-				renderPassDesc.mDependencyCount = 0;
-				renderPassDesc.mpDependencies = nullptr;
-
-				IntrusivePtr<iRenderPass> renderPass;
-				mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
-				//////////////////////////////////////////////////////////////////////////
-
-				//////////////////////////////////////////////////////////////////////////
-				FrameBufferDesc frameBufferDesc;
-				frameBufferDesc.mpRenderPass = renderPass;
-				frameBufferDesc.mAttachmentCount = 2;
-				iImageView* views[2] = {/* color buffer output view, depth buffer output view */};
-				frameBufferDesc.mpAttachments = views;
-				frameBufferDesc.mWidth = 1024;
-				frameBufferDesc.mHeight = 768;
-				frameBufferDesc.mLayers = 1;
-
-				IntrusivePtr<iFrameBuffer> frameBuffer;
-				// TODO: One per swap chain buffer.
-				mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
-				//////////////////////////////////////////////////////////////////////////
-				
-				RenderPassBeginDesc beginDesc = {};
+				/*
+				RenderPassBeginDesc beginDesc;
 				beginDesc.mpRenderPass = renderPass;
 				beginDesc.mpFrameBuffer = frameBuffer;
 				beginDesc.mClipRect = {0, 0, 0, 0};
@@ -373,7 +284,9 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				beginDesc.mpClearValues = &clearValue;
 
 				mpDevice->BeginRenderPass(mpPreCommandBuffer[0], &beginDesc);
+				//mpDevice->NextSubPass(mpPreCommandBuffer[0]);
 				mpDevice->EndRenderPass(mpPreCommandBuffer[0]);
+				*/
 				//////////////////////////////////////////////////////////////////////////
 
 

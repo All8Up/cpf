@@ -1,12 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "IntrusivePtr.hpp"
-#include "Adapter/D3D12.hpp"
 #include "Adapter/D3D12/DescriptorManager.hpp"
 #include "Graphics/Driver.hpp"
 #include "Graphics/iBlob.hpp"
 #include <d3d12.h>
-#include "String.hpp"
 #include "Plugin/iClassInstance.hpp"
 
 
@@ -27,6 +25,7 @@ namespace Cpf
 		struct SwapChainDesc;
 		struct PipelineStateDesc;
 		class ResourceBindingDesc;
+		struct RenderPassDesc;
 		struct FrameBufferDesc;
 	}
 	namespace Adapter
@@ -57,7 +56,7 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
 				COM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
-				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::iCommandBuffer**) override;
+				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::CommandBufferType type, Graphics::iCommandBuffer**) override;
 				COM::Result CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
 				COM::Result CPF_STDCALL CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
 				COM::Result CPF_STDCALL CreateShader(Graphics::iBlob* blob, Graphics::iShader**) override;
@@ -80,10 +79,6 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL Signal(Graphics::iFence*, int64_t value) override;
 				void CPF_STDCALL Submit(int32_t count, Graphics::iCommandBuffer**) override;
-
-				COM::Result CPF_STDCALL BeginRenderPass(Graphics::iCommandBuffer*, Graphics::RenderPassBeginDesc*) override;
-				COM::Result CPF_STDCALL NextSubPass(Graphics::iCommandBuffer*) override;
-				COM::Result CPF_STDCALL EndRenderPass(Graphics::iCommandBuffer*) override;
 
 				//////////////////////////////////////////////////////////////////////////
 				// Internal

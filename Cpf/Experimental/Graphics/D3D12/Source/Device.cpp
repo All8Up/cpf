@@ -9,9 +9,10 @@
 #include "Graphics/SwapChainDesc.hpp"
 #include "Graphics/SwapEffect.hpp"
 #include "Graphics/Format.hpp"
-#include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 #include "Graphics/WindowData.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/RenderPassDesc.hpp"
 #include "Application/OSWindowData.hpp"
 #include "Logging/Logging.hpp"
 
@@ -107,8 +108,85 @@ bool ExperimentalD3D12::_EnumerateOutputs(iAdapter* adapter)
 	return true;
 }
 
+#include "Graphics/FrameBufferDesc.hpp"
 bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 {
+	//////////////////////////////////////////////////////////////////////////
+	// Create a renderpass if it doesn't already exist.
+	// TODO: This is a lazy hack...
+	if (!mpRenderPass)
+	{
+		AttachmentDesc attachments[2] = {};
+
+		//////////////////////////////////////////////////////////////////////////
+		// Color buffer.
+		attachments[0].mFlags = 0;
+		attachments[0].mFormat = Format::eRGBA8un;
+		attachments[0].mSamples = SampleDesc{ 1, 0 };
+		attachments[0].mLoadOp = LoadOp::eClear;
+		attachments[0].mStoreOp = StoreOp::eStore;
+		attachments[0].mStencilLoadOp = LoadOp::eDontCare;
+		attachments[0].mStencilStoreOp = StoreOp::eDontCare;
+		// TODO: Figure out what makes the most sense.
+		attachments[0].mStartState = ResourceState::eCommon;
+		attachments[0].mFinalState = ResourceState::ePresent;
+
+		///
+		AttachmentRef colorAttachment;
+		colorAttachment.mIndex = 0;
+		colorAttachment.mState = ResourceState::eRenderTarget;
+
+		//////////////////////////////////////////////////////////////////////////
+		// Depth buffer.
+		attachments[1].mFlags = 0;
+		attachments[1].mFormat = Format::eD32f;
+		attachments[1].mSamples = SampleDesc{ 1, 0 };
+		attachments[1].mLoadOp = LoadOp::eClear;
+		attachments[1].mStoreOp = StoreOp::eStore;
+		attachments[1].mStencilLoadOp = LoadOp::eLoad;
+		attachments[1].mStencilStoreOp = StoreOp::eStore;
+		// TODO: Figure out what makes the most sense.
+		attachments[1].mStartState = ResourceState::eCommon;
+		attachments[1].mFinalState = ResourceState::eCommon;
+
+		///
+		AttachmentRef depthAttachment;
+		depthAttachment.mIndex = 1;
+		depthAttachment.mState = ResourceState::eDepthWrite;
+
+		//////////////////////////////////////////////////////////////////////////
+		// Standard render to swap chain.
+		SubPassDesc subPass;
+		subPass.mBindPoint = PipelineBindPoint::eGraphic;
+		// No inputs.
+		subPass.mInputCount = 0;
+		subPass.mpInputAttachments = nullptr;
+		// 1 color output.
+		subPass.mColorCount = 1;
+		subPass.mpColorAttachments = &colorAttachment;
+		// No resolves.
+		subPass.mResolveCount = 0;
+		subPass.mpResolveAttachments = nullptr;
+		// 1 depth buffer.
+		subPass.mDepthStencilCount = 1;
+		subPass.mpDepthStencilAttachments = &depthAttachment;
+		// No preservation.
+		subPass.mPreserveCount = 0;
+		subPass.mpPreserveAttachments = nullptr;
+
+		//////////////////////////////////////////////////////////////////////////
+		RenderPassDesc renderPassDesc;
+		renderPassDesc.mAttachmentCount = 2;
+		renderPassDesc.mpAttachments = attachments;
+		renderPassDesc.mSubPassCount = 1;
+		renderPassDesc.mpSubPasses = &subPass;
+		renderPassDesc.mDependencyCount = 0;
+		renderPassDesc.mpDependencies = nullptr;
+
+		mpDevice->CreateRenderPass(&renderPassDesc, mpRenderPass.AsTypePP());
+	}
+	//////////////////////////////////////////////////////////////////////////
+
 	// Create the swapchain attached to the window.
 	SwapChainDesc desc{
 		Format::eRGBA8un,
@@ -117,7 +195,7 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		mBackBufferCount,
 		true
 	};
-	Graphics::WindowData winData;
+	WindowData winData;
 	OSWindowData osData;
 	mpWindow->GetOSData(&osData);
 	winData.mHWnd = osData.mHwnd;
@@ -125,8 +203,24 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 	mpWindow->GetClientAreaSize(&w, &h);
 	mpDevice->CreateSwapChain(instance, &winData, w, h, &desc, mpSwapChain.AsTypePP());
 
-	// Create a set of depth buffers to go with the swap chain.
-	// TODO: There should really only be one shared depth buffer.
+	// Make a frame buffer for each target in the swap chain.
+	mpFrameBuffers.clear();
+	mpFrameBuffers.resize(mBackBufferCount);
+	for (int i=0; i<mBackBufferCount; ++i)
+	{
+		FrameBufferDesc frameBufferDesc;
+		frameBufferDesc.mpRenderPass = mpRenderPass;
+		frameBufferDesc.mAttachmentCount = 2;
+		iImageView* views[2] = { mpSwapChain->GetImageView(i), mpDepthBufferView };
+		frameBufferDesc.mpAttachments = views;
+		frameBufferDesc.mWidth = w;
+		frameBufferDesc.mHeight = h;
+		frameBufferDesc.mLayers = 1;
+
+		mpDevice->CreateFrameBuffer(&frameBufferDesc, mpFrameBuffers[i].AsTypePP());
+	}
+
+	// Create a depth buffer for rendering.
 	mpDepthBuffer.Assign(nullptr);
 	mpDepthBufferView.Assign(nullptr);
 	ImageDesc depthBufferDesc

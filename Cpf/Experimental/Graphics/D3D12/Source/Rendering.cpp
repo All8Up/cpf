@@ -6,8 +6,8 @@
 #include "Graphics/SubResource.hpp"
 #include "Graphics/DepthStencilClearFlag.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
-#include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Graphics/RenderPassBeginDesc.hpp"
 #include "Application/iWindow.hpp"
 #include "Math/Vector4v.hpp"
 
@@ -25,6 +25,20 @@ void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
 
 	// TODO: This will move into the render pass abstraction when it is ready.
 	mpDevice->BeginFrame(mpPreCommandBuffer[mCurrentBackbuffer]);
+
+	RenderPassBeginDesc beginDesc;
+	beginDesc.mpRenderPass = mpRenderPass;
+	beginDesc.mpFrameBuffer = mpFrameBuffers[mCurrentBackbuffer];
+	beginDesc.mClipRect = { 0, 0, 0, 0 };
+
+	ClearValue clearValue;
+	clearValue.mFormat = Format::eD32f;
+	clearValue.mDepthStencil.mDepth = 1.0f;
+	clearValue.mDepthStencil.mStencil = 0;
+
+	beginDesc.mClearValueCount = 1;
+	beginDesc.mpClearValues = &clearValue;
+	mpPreCommandBuffer[mCurrentBackbuffer]->BeginRenderPass(&beginDesc);
 }
 
 void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
@@ -124,6 +138,9 @@ void ExperimentalD3D12::_PreparePresent(Concurrency::ThreadContext&)
 
 void ExperimentalD3D12::_EndFrame(Concurrency::ThreadContext&)
 {
+	// End the render pass.
+	mpPostCommandBuffer[mCurrentBackbuffer]->EndRenderPass();
+
 	// End the command buffer prior to submission.
 	mpPostCommandBuffer[mCurrentBackbuffer]->End();
 

@@ -2,6 +2,7 @@
 #pragma once
 #include "Graphics/Driver.hpp"
 #include "Graphics/iCommandBuffer.hpp"
+#include "Graphics/RenderPassBeginDesc.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
 #include "Math/Rectangle.hpp"
@@ -76,6 +77,13 @@ namespace Cpf
 				void ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) override;
 				void ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
 
+				COM::Result CPF_STDCALL BeginRenderPass(Graphics::RenderPassBeginDesc*) override;
+				COM::Result CPF_STDCALL NextSubPass() override;
+				COM::Result CPF_STDCALL EndRenderPass() override;
+
+				//////////////////////////////////////////////////////////////////////////
+				// D3D12 specific implementation details.
+				void Submit(ID3D12CommandQueue* queue);
 				ID3D12GraphicsCommandList* GetCommandList() { return mpCommandList.Cast<ID3D12GraphicsCommandList>(); }
 
 			private:
@@ -85,8 +93,9 @@ namespace Cpf
 				// Temporary.
 				Device* mpDevice;
 
-				bool mHeapsDirty;
 				UnorderedSet<ID3D12DescriptorHeap*> mHeaps;
+
+				Graphics::RenderPassBeginDesc mRenderPass;
 			};
 		}
 	}

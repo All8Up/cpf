@@ -13,6 +13,8 @@
 #include "MovementSystem.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Graphics/iFrameBuffer.hpp"
+#include "Graphics/iRenderPass.hpp"
 
 //
 namespace Cpf
@@ -77,6 +79,8 @@ namespace Cpf
 		IntrusivePtr<iWindow> mpWindow;
 		IntrusivePtr<Graphics::iDevice> mpDevice;
 		IntrusivePtr<Graphics::iSwapChain> mpSwapChain;
+		IntrusivePtr<Graphics::iRenderPass> mpRenderPass;
+		Vector<IntrusivePtr<Graphics::iFrameBuffer>> mpFrameBuffers;
 		IntrusivePtr<Graphics::iImage> mpDepthBuffer;
 		IntrusivePtr<Graphics::iImageView> mpDepthBufferView;
 		IntrusivePtr<Graphics::iResourceBinding> mpResourceBinding;

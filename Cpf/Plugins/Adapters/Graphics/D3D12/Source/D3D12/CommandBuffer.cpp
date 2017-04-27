@@ -4,7 +4,6 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/SwapChain.hpp"
 #include "Adapter/D3D12/Image.hpp"
-#include "Adapter/D3D12/Fence.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Resource.hpp"
 #include "Adapter/D3D12/ResourceBinding.hpp"
@@ -12,10 +11,13 @@
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/ConstantBuffer.hpp"
+#include "Graphics/DepthStencilClearFlag.hpp"
+#include "Graphics/RenderPassBeginDesc.hpp"
 #include "Graphics/ResourceData.hpp"
+#include "Graphics/iRenderPass.hpp"
+#include "Graphics/iFrameBuffer.hpp"
 #include "Logging/Logging.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
-#include "Graphics/DepthStencilClearFlag.hpp"
 
 using namespace Cpf;
 using namespace Adapter;
@@ -23,7 +25,7 @@ using namespace D3D12;
 
 CommandBuffer::CommandBuffer(COM::iUnknown*)
 	: mpDevice(nullptr)
-	, mHeapsDirty(false)
+	, mRenderPass{0}
 {
 }
 
@@ -255,4 +257,68 @@ void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, Graphics::
 		count,
 		reinterpret_cast<const D3D12_RECT*>(rects)
 	);
+}
+
+COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBeginDesc* desc)
+{
+	// This abstraction over render passes is preferred to the set render target approach of D3D12
+	// since Vulkan is better designed for the needs of the hand held devices the system should
+	// eventually run on.  Additionally, with enough work, this solution let's some automated optimization
+	// of resource barriers take place.  Finally, the same basic solution is used in Metal for iOS.
+
+	// TODO: The primary difficulty for this in D3D12 is that under Vulkan the render pass and all
+	// TODO: rendering commands are expected in a single primary command buffer.  So the method it
+	// TODO: would work in Vulkan is "begin -> embed secondary lists -> next subpass -> more secondary
+	// TODO: -> end passes" submit single primary list.  D3D12 does not have a separation between
+	// TODO: primary and secondary, the closest thing is direct and bundle but that would be misusing
+	// TODO: the API in a bad manner, not to mention not all needed commands are available to bundles.
+	// TODO: So, the trick seems to be that a command buffer abstraction for D3D12 will likely need
+	// TODO: to be multiple direct command buffers gathered up and then issued as a single submission.
+	if (desc)
+	{
+		if (mRenderPass.mpRenderPass)
+		{
+			// Error, should not be in an active render pass.
+			return Graphics::kAlreadyInRenderPass;
+		}
+
+		Graphics::iRenderPass* renderPass = desc->mpRenderPass;
+		Graphics::iFrameBuffer* frameBuffer = desc->mpFrameBuffer;
+		if (renderPass && frameBuffer)
+		{
+			mRenderPass = *desc;
+			mRenderPass.mpRenderPass->AddRef();
+			mRenderPass.mpFrameBuffer->AddRef();
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
+COM::Result CPF_STDCALL CommandBuffer::NextSubPass()
+{
+	if (mRenderPass.mpRenderPass)
+	{
+		
+	}
+	return Graphics::kNotInRenderPass;
+}
+
+COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
+{
+	if (mRenderPass.mpRenderPass)
+	{
+		mRenderPass.mpFrameBuffer->Release();
+		mRenderPass.mpRenderPass->Release();
+		mRenderPass = { 0 };
+		return COM::kOK;
+	}
+	return Graphics::kNotInRenderPass;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+void CommandBuffer::Submit(ID3D12CommandQueue* queue)
+{
+	ID3D12CommandList* list[] = {mpCommandList};
+	queue->ExecuteCommandLists(1, list);
 }

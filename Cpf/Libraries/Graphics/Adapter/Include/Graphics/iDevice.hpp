@@ -41,6 +41,7 @@ namespace Cpf
 		enum class Format : int32_t;
 		enum class BufferUsage : int32_t;
 		enum class ShaderType : int32_t;
+		enum class CommandBufferType : int32_t;
 
 		struct iDevice : COM::iUnknown
 		{
@@ -55,7 +56,7 @@ namespace Cpf
 
 			virtual COM::Result CPF_STDCALL CreateSwapChain(iInstance*, const WindowData*, int32_t w, int32_t h, const SwapChainDesc*, iSwapChain**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandPool(iCommandPool**) = 0;
-			virtual COM::Result CPF_STDCALL CreateCommandBuffer(iCommandPool*, iCommandBuffer**) = 0;
+			virtual COM::Result CPF_STDCALL CreateCommandBuffer(iCommandPool*, CommandBufferType type, iCommandBuffer**) = 0;
 			virtual COM::Result CPF_STDCALL CreateFence(int64_t initValue, iFence**) = 0;
 			virtual COM::Result CPF_STDCALL CreateImage2D(const ImageDesc* desc, const void* initData, iImage**) = 0;
 			virtual COM::Result CPF_STDCALL CreateShader(iBlob* blob, iShader**) = 0;
@@ -77,11 +78,6 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL Signal(iFence*, int64_t value) = 0;
 
 			virtual void CPF_STDCALL Submit(int32_t count, iCommandBuffer**) = 0;
-
-			// TODO: Starting render pass api.
-			virtual COM::Result CPF_STDCALL BeginRenderPass(iCommandBuffer*, RenderPassBeginDesc*) = 0;
-			virtual COM::Result CPF_STDCALL NextSubPass(iCommandBuffer*) = 0;
-			virtual COM::Result CPF_STDCALL EndRenderPass(iCommandBuffer*) = 0;
 
 			// TODO: Probably temp.
 			virtual COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, iBlob**) = 0;

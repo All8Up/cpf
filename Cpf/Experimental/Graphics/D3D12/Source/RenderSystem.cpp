@@ -2,8 +2,6 @@
 #include "RenderSystem.hpp"
 #include "ExperimentalD3D12.hpp"
 #include "MultiCore/iStage.hpp"
-#include "Graphics/iImage.hpp"
-#include "Graphics/iImageView.hpp"
 
 using namespace Cpf;
 using namespace Concurrency;
@@ -20,24 +18,13 @@ COM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 }
 
 RenderSystem::RenderSystem(COM::iUnknown*)
+	: mpApp(nullptr)
+	, mCurrentBackBuffer(0)
 {
 }
 
 RenderSystem::~RenderSystem()
 {}
-
-void RenderSystem::_AllocateBuffers()
-{
-	/*
-	for (int i = 0; i < kBufferCount; ++i)
-	{
-		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
-	}
-	*/
-}
 
 void RenderSystem::_BeginFrame(ThreadContext& tc, void* context)
 {
@@ -180,7 +167,6 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 				MultiCore::DependencyPolicy::eAfter
 			});
 
-			_AllocateBuffers();
 			return COM::kOK;
 		}
 		return result;

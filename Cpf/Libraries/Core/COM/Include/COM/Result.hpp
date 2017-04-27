@@ -7,7 +7,7 @@ namespace Cpf
 	namespace COM
 	{
 		/** @brief A result code. */
-		using Result = struct Result
+		struct Result
 		{
 			uint32_t Error : 1;
 			uint32_t SubSystem : 16;

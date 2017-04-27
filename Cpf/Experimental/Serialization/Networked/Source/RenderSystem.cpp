@@ -207,10 +207,10 @@ bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resourc
 	{
 		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
 		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], mpPreCommandBuffer[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], mpPostCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], CommandBufferType::kPrimary, mpPreCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], CommandBufferType::kPrimary, mpPostCommandBuffer[i].AsTypePP());
 		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], mpDebugUIBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], CommandBufferType::kPrimary, mpDebugUIBuffer[i].AsTypePP());
 	}
 	mpRegistry->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
 	mpDebugUI->Initialize(mpDevice, im, window, locator);

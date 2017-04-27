@@ -16,11 +16,10 @@
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
 #include "Adapter/D3D12/Blob.hpp"
-
 #include "Adapter/D3D12/RenderPass.hpp"
 #include "Adapter/D3D12/FrameBuffer.hpp"
-
 #include "Adapter/D3D12/Plugin.hpp"
+
 #include "Logging/Logging.hpp"
 #include "String.hpp"
 
@@ -81,7 +80,8 @@ COM::Result Device::Initialize(Graphics::iAdapter* adapter)
 		}
 	}
 
-
+	//////////////////////////////////////////////////////////////////////////
+	// Consider if this should be moved to another object.
 	D3D12_COMMAND_QUEUE_DESC desc;
 	ZeroMemory(&desc, sizeof(desc));
 	desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
@@ -217,7 +217,7 @@ COM::Result CPF_STDCALL Device::CreateCommandPool(Graphics::iCommandPool** pool)
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::iCommandBuffer** buffer)
+COM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::CommandBufferType type, Graphics::iCommandBuffer** buffer)
 {
 	CommandBuffer* result = new CommandBuffer(nullptr);
 	if (result)
@@ -477,25 +477,8 @@ COM::Result CPF_STDCALL Device::Signal(Graphics::iFence* fence, int64_t value)
 
 void CPF_STDCALL Device::Submit(int32_t count, Graphics::iCommandBuffer** buffers)
 {
-	ID3D12CommandList* commands[64];
 	for (int i = 0; i < count; ++i)
-		commands[i] = static_cast<CommandBuffer*>(buffers[i])->GetCommandList();
-	mpQueue->ExecuteCommandLists(count, commands);
-}
-
-COM::Result CPF_STDCALL Device::BeginRenderPass(Graphics::iCommandBuffer*, Graphics::RenderPassBeginDesc*)
-{
-	return COM::kError;
-}
-
-COM::Result CPF_STDCALL Device::NextSubPass(Graphics::iCommandBuffer*)
-{
-	return COM::kError;
-}
-
-COM::Result CPF_STDCALL Device::EndRenderPass(Graphics::iCommandBuffer*)
-{
-	return COM::kError;
+		static_cast<CommandBuffer*>(buffers[i])->Submit(mpQueue);
 }
 
 DescriptorManager& CPF_STDCALL Device::GetShaderResourceDescriptors()

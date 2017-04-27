@@ -24,9 +24,21 @@ namespace Cpf
 		enum class PrimitiveTopology;
 		struct ResourceData;
 		struct Viewport;
+		struct RenderPassBeginDesc;
 		enum class SubResource : int32_t;
 		enum class ResourceState : int32_t;
 		enum class DepthStencilClearFlag : int32_t;
+
+		static constexpr COM::Result kAlreadyInRenderPass = COM::CreateResult(1, "Graphics"_crc16, "Already in render pass"_crc16);
+		static constexpr COM::Result kNotInRenderPass = COM::CreateResult(1, "Graphics"_crc16, "Not in a render pass"_crc16);
+
+		enum class CommandBufferType : int32_t
+		{
+			kPrimary = 0,
+			kSecondary = 1,
+			kCompute = 2,
+			kCopy = 3
+		};
 
 		struct iCommandBuffer : COM::iUnknown
 		{
@@ -61,10 +73,10 @@ namespace Cpf
 			virtual void ClearRenderTargetView(iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) = 0;
 			virtual void ClearDepthStencilView(iImageView* view, DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
 
-			/*
-			virtual bool BeginRenderPass(iRenderPass*) = 0;
-			virtual bool EndRenderPass(iRenderPass*) = 0;
-			*/
+			// TODO: Starting render pass api.
+			virtual COM::Result CPF_STDCALL BeginRenderPass(RenderPassBeginDesc*) = 0;
+			virtual COM::Result CPF_STDCALL NextSubPass() = 0;
+			virtual COM::Result CPF_STDCALL EndRenderPass() = 0;
 		};
 	}
 }
