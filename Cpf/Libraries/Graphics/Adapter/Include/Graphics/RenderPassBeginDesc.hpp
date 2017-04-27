@@ -8,8 +8,8 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		class iRenderPass;
-		class iFrameBuffer;
+		struct iRenderPass;
+		struct iFrameBuffer;
 
 		struct RenderPassBeginDesc
 		{

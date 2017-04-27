@@ -38,6 +38,7 @@
 #include "Graphics/iImageView.hpp"
 
 #include "SDL2/CIDs.hpp"
+#include "Graphics/RenderPassBeginDesc.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -272,48 +273,48 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				//////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////
 				// TODO: Testing for render pass setup.
-				Graphics::AttachmentDesc attachments[2] = {};
+				AttachmentDesc attachments[2] = {};
 
 				//////////////////////////////////////////////////////////////////////////
 				// Color buffer.
 				attachments[0].mFlags = 0;
-				attachments[0].mFormat = Graphics::Format::eRGBA8un;
-				attachments[0].mSamples = Graphics::SampleDesc{ 1, 0 };
-				attachments[0].mLoadOp = Graphics::LoadOp::eClear;
-				attachments[0].mStoreOp = Graphics::StoreOp::eStore;
-				attachments[0].mStencilLoadOp = Graphics::LoadOp::eDontCare;
-				attachments[0].mStencilStoreOp = Graphics::StoreOp::eDontCare;
+				attachments[0].mFormat = Format::eRGBA8un;
+				attachments[0].mSamples = SampleDesc{ 1, 0 };
+				attachments[0].mLoadOp = LoadOp::eClear;
+				attachments[0].mStoreOp = StoreOp::eStore;
+				attachments[0].mStencilLoadOp = LoadOp::eDontCare;
+				attachments[0].mStencilStoreOp = StoreOp::eDontCare;
 				// TODO: Figure out what makes the most sense.
-				attachments[0].mStartState = Graphics::ResourceState::ePresent;
-				attachments[0].mFinalState = Graphics::ResourceState::ePresent;
+				attachments[0].mStartState = ResourceState::ePresent;
+				attachments[0].mFinalState = ResourceState::ePresent;
 
 				///
-				Graphics::AttachmentRef colorAttachment = {};
+				AttachmentRef colorAttachment;
 				colorAttachment.mIndex = 0;
-				colorAttachment.mState = Graphics::ResourceState::eRenderTarget;
+				colorAttachment.mState = ResourceState::eRenderTarget;
 
 				//////////////////////////////////////////////////////////////////////////
 				// Depth buffer.
 				attachments[1].mFlags = 0;
-				attachments[1].mFormat = Graphics::Format::eD32f;
-				attachments[1].mSamples = Graphics::SampleDesc{ 1, 0 };
-				attachments[1].mLoadOp = Graphics::LoadOp::eClear;
-				attachments[1].mStoreOp = Graphics::StoreOp::eStore;
-				attachments[1].mStencilLoadOp = Graphics::LoadOp::eLoad;
-				attachments[1].mStencilStoreOp = Graphics::StoreOp::eStore;
+				attachments[1].mFormat = Format::eD32f;
+				attachments[1].mSamples = SampleDesc{ 1, 0 };
+				attachments[1].mLoadOp = LoadOp::eClear;
+				attachments[1].mStoreOp = StoreOp::eStore;
+				attachments[1].mStencilLoadOp = LoadOp::eLoad;
+				attachments[1].mStencilStoreOp = StoreOp::eStore;
 				// TODO: Figure out what makes the most sense.
-				attachments[1].mStartState = Graphics::ResourceState::ePresent;
-				attachments[1].mFinalState = Graphics::ResourceState::ePresent;
+				attachments[1].mStartState = ResourceState::ePresent;
+				attachments[1].mFinalState = ResourceState::ePresent;
 
 				///
-				Graphics::AttachmentRef depthAttachment = {};
+				AttachmentRef depthAttachment;
 				depthAttachment.mIndex = 1;
-				depthAttachment.mState = Graphics::ResourceState::eDepthWrite;
+				depthAttachment.mState = ResourceState::eDepthWrite;
 
 				//////////////////////////////////////////////////////////////////////////
 				// Standard render to swap chain.
-				Graphics::SubPassDesc subPass = {};
-				subPass.mBindPoint = Graphics::PipelineBindPoint::eGraphic;
+				SubPassDesc subPass;
+				subPass.mBindPoint = PipelineBindPoint::eGraphic;
 				// No inputs.
 				subPass.mInputCount = 0;
 				subPass.mpInputAttachments = nullptr;
@@ -331,7 +332,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				subPass.mpPreserveAttachments = nullptr;
 
 				//////////////////////////////////////////////////////////////////////////
-				Graphics::RenderPassDesc renderPassDesc;
+				RenderPassDesc renderPassDesc;
 				renderPassDesc.mAttachmentCount = 2;
 				renderPassDesc.mpAttachments = attachments;
 				renderPassDesc.mSubPassCount = 1;
@@ -339,23 +340,42 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				renderPassDesc.mDependencyCount = 0;
 				renderPassDesc.mpDependencies = nullptr;
 
-				IntrusivePtr<Graphics::iRenderPass> renderPass;
+				IntrusivePtr<iRenderPass> renderPass;
 				mpDevice->CreateRenderPass(&renderPassDesc, renderPass.AsTypePP());
 				//////////////////////////////////////////////////////////////////////////
 
 				//////////////////////////////////////////////////////////////////////////
-				Graphics::FrameBufferDesc frameBufferDesc;
+				FrameBufferDesc frameBufferDesc;
 				frameBufferDesc.mpRenderPass = renderPass;
 				frameBufferDesc.mAttachmentCount = 2;
-				Graphics::iImageView* views[2] = {/* color buffer output view, depth buffer output view */};
+				iImageView* views[2] = {/* color buffer output view, depth buffer output view */};
 				frameBufferDesc.mpAttachments = views;
 				frameBufferDesc.mWidth = 1024;
 				frameBufferDesc.mHeight = 768;
 				frameBufferDesc.mLayers = 1;
 
-				IntrusivePtr<Graphics::iFrameBuffer> frameBuffer;
+				IntrusivePtr<iFrameBuffer> frameBuffer;
+				// TODO: One per swap chain buffer.
 				mpDevice->CreateFrameBuffer(&frameBufferDesc, frameBuffer.AsTypePP());
 				//////////////////////////////////////////////////////////////////////////
+				
+				RenderPassBeginDesc beginDesc = {};
+				beginDesc.mpRenderPass = renderPass;
+				beginDesc.mpFrameBuffer = frameBuffer;
+				beginDesc.mClipRect = {0, 0, 0, 0};
+
+				ClearValue clearValue;
+				clearValue.mFormat = Format::eD32f;
+				clearValue.mDepthStencil.mDepth = 1.0f;
+				clearValue.mDepthStencil.mStencil = 0;
+
+				beginDesc.mClearValueCount = 1;
+				beginDesc.mpClearValues = &clearValue;
+
+				mpDevice->BeginRenderPass(mpPreCommandBuffer[0], &beginDesc);
+				mpDevice->EndRenderPass(mpPreCommandBuffer[0]);
+				//////////////////////////////////////////////////////////////////////////
+
 
 				//////////////////////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////////////////////

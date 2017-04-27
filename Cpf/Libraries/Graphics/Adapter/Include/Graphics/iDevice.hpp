@@ -6,6 +6,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		struct RenderPassBeginDesc;
 		struct iInstance;
 		struct iCommandPool;
 		struct iConstantBuffer;
@@ -71,14 +72,19 @@ namespace Cpf
 
 			virtual COM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, iBlob**) = 0;
 
-			// TODO: Probably temp.
-			virtual COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, iBlob**) = 0;
-
 			virtual COM::Result CPF_STDCALL CreateDepthStencilView(iImage*, const DepthStencilViewDesc*, iImageView**) = 0;
 
 			virtual COM::Result CPF_STDCALL Signal(iFence*, int64_t value) = 0;
 
 			virtual void CPF_STDCALL Submit(int32_t count, iCommandBuffer**) = 0;
+
+			// TODO: Starting render pass api.
+			virtual COM::Result CPF_STDCALL BeginRenderPass(iCommandBuffer*, RenderPassBeginDesc*) = 0;
+			virtual COM::Result CPF_STDCALL NextSubPass(iCommandBuffer*) = 0;
+			virtual COM::Result CPF_STDCALL EndRenderPass(iCommandBuffer*) = 0;
+
+			// TODO: Probably temp.
+			virtual COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, iBlob**) = 0;
 		};
 	}
 }

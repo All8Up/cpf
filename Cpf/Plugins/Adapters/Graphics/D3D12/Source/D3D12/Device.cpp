@@ -483,6 +483,21 @@ void CPF_STDCALL Device::Submit(int32_t count, Graphics::iCommandBuffer** buffer
 	mpQueue->ExecuteCommandLists(count, commands);
 }
 
+COM::Result CPF_STDCALL Device::BeginRenderPass(Graphics::iCommandBuffer*, Graphics::RenderPassBeginDesc*)
+{
+	return COM::kError;
+}
+
+COM::Result CPF_STDCALL Device::NextSubPass(Graphics::iCommandBuffer*)
+{
+	return COM::kError;
+}
+
+COM::Result CPF_STDCALL Device::EndRenderPass(Graphics::iCommandBuffer*)
+{
+	return COM::kError;
+}
+
 DescriptorManager& CPF_STDCALL Device::GetShaderResourceDescriptors()
 {
 	return mShaderResourceDescriptors;

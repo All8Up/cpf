@@ -81,6 +81,10 @@ namespace Cpf
 				COM::Result CPF_STDCALL Signal(Graphics::iFence*, int64_t value) override;
 				void CPF_STDCALL Submit(int32_t count, Graphics::iCommandBuffer**) override;
 
+				COM::Result CPF_STDCALL BeginRenderPass(Graphics::iCommandBuffer*, Graphics::RenderPassBeginDesc*) override;
+				COM::Result CPF_STDCALL NextSubPass(Graphics::iCommandBuffer*) override;
+				COM::Result CPF_STDCALL EndRenderPass(Graphics::iCommandBuffer*) override;
+
 				//////////////////////////////////////////////////////////////////////////
 				// Internal
 				void CPF_STDCALL QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
