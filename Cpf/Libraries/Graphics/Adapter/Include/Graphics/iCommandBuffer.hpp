@@ -77,6 +77,8 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL BeginRenderPass(RenderPassBeginDesc*) = 0;
 			virtual COM::Result CPF_STDCALL NextSubPass() = 0;
 			virtual COM::Result CPF_STDCALL EndRenderPass() = 0;
+
+			virtual COM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) = 0;
 		};
 	}
 }

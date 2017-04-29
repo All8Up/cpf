@@ -44,7 +44,7 @@ namespace Cpf
 				virtual ~CommandBuffer();
 
 				//
-				COM::Result CPF_STDCALL Initialize(Graphics::iDevice*, Graphics::iCommandPool*);
+				COM::Result CPF_STDCALL Initialize(Graphics::iDevice*, Graphics::CommandBufferType type, Graphics::iCommandPool*);
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
@@ -81,20 +81,29 @@ namespace Cpf
 				COM::Result CPF_STDCALL NextSubPass() override;
 				COM::Result CPF_STDCALL EndRenderPass() override;
 
+				COM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) override;
+
 				//////////////////////////////////////////////////////////////////////////
 				// D3D12 specific implementation details.
 				void Submit(ID3D12CommandQueue* queue);
-				ID3D12GraphicsCommandList* GetCommandList() { return mpCommandList.Cast<ID3D12GraphicsCommandList>(); }
+				ID3D12GraphicsCommandList* GetCommandList() { return _Current(); }
 
 			private:
-				friend class Device;
-				IntrusivePtr<ID3D12GraphicsCommandList> mpCommandList;
+				COM::Result _AddCommandList();
+				ID3D12GraphicsCommandList* _Current() { CPF_ASSERT(mCurrent >= 0); return mCommandLists[mCurrent][0]; }
 
-				// Temporary.
+				friend class Device;
+				using CommandListPtr = ID3D12GraphicsCommandList*;
+				using CommandListVector = Vector<CommandListPtr>;
+				using CommandListStack = Vector<CommandListVector>;
+
 				Device* mpDevice;
+				ID3D12CommandAllocator* mpAllocator;
+				CommandListStack mCommandLists;
+				int32_t mCurrent;
+				Graphics::CommandBufferType mType;
 
 				UnorderedSet<ID3D12DescriptorHeap*> mHeaps;
-
 				Graphics::RenderPassBeginDesc mRenderPass;
 			};
 		}

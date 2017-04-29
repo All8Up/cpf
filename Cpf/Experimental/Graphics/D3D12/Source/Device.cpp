@@ -211,8 +211,8 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		FrameBufferDesc frameBufferDesc;
 		frameBufferDesc.mpRenderPass = mpRenderPass;
 		frameBufferDesc.mAttachmentCount = 2;
-		iImageView* views[2] = { mpSwapChain->GetImageView(i), mpDepthBufferView };
-		frameBufferDesc.mpAttachments = views;
+		iImage* images[2] = { mpSwapChain->GetImage(i), mpDepthBuffer };
+		frameBufferDesc.mpAttachments = images;
 		frameBufferDesc.mWidth = w;
 		frameBufferDesc.mHeight = h;
 		frameBufferDesc.mLayers = 1;

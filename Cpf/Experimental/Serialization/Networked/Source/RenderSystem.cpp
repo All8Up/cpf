@@ -17,6 +17,11 @@
 #include "Graphics/SubResource.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/WindowData.hpp"
+#include "Graphics/AttachmentDesc.hpp"
+#include "Graphics/RenderPassDesc.hpp"
+#include "Graphics/SubPassDesc.hpp"
+#include "Graphics/FrameBufferDesc.hpp"
+#include "Graphics/RenderPassBeginDesc.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -44,6 +49,7 @@ bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iIn
 	{
 		if (_SelectAdapter() &&
 			COM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
+			_CreateRenderPass() &&
 			_CreateSwapChain(window) &&
 			_CreateRenderData(im, window, locator)
 			)
@@ -84,7 +90,13 @@ bool RenderSystem::Shutdown()
 
 void RenderSystem::Resize(int32_t w, int32_t h)
 {
+	mWidth = w;
+	mHeight = h;
+
 	mpSwapChain->Resize(w, h);
+	_CreateDepthBuffer(w, h);
+	_CreateFrameBuffers(w, h);
+
 	if (mpDebugUI)
 		mpDebugUI->SetWindowSize(w, h);
 }
@@ -98,6 +110,8 @@ iDebugUI* RenderSystem::GetDebugUI()
 RenderSystem::RenderSystem(COM::iUnknown*)
 	: mpTimer(nullptr)
 	, mpRegistry(nullptr)
+	, mWidth(0)
+	, mHeight(0)
 {
 }
 
@@ -166,6 +180,84 @@ bool RenderSystem::_SelectAdapter()
 	return bestAdapter != -1;
 }
 
+bool RenderSystem::_CreateRenderPass()
+{
+	// Attachments in use.
+	AttachmentDesc attachments[2];
+	{
+		// Color buffer.
+		attachments[0].mFlags = 0;
+		attachments[0].mFormat = Format::eRGBA8un;
+		attachments[0].mSamples = SampleDesc{ 1, 0 };
+		attachments[0].mLoadOp = LoadOp::eClear;
+		attachments[0].mStoreOp = StoreOp::eStore;
+		attachments[0].mStencilLoadOp = LoadOp::eDontCare;
+		attachments[0].mStencilStoreOp = StoreOp::eDontCare;
+		// TODO: Figure out what makes the most sense.
+		attachments[0].mStartState = ResourceState::eCommon;
+		attachments[0].mFinalState = ResourceState::ePresent;
+
+		// Depth buffer.
+		attachments[1].mFlags = 0;
+		attachments[1].mFormat = Format::eD32f;
+		attachments[1].mSamples = SampleDesc{ 1, 0 };
+		attachments[1].mLoadOp = LoadOp::eClear;
+		attachments[1].mStoreOp = StoreOp::eStore;
+		attachments[1].mStencilLoadOp = LoadOp::eLoad;
+		attachments[1].mStencilStoreOp = StoreOp::eStore;
+		// TODO: Figure out what makes the most sense.
+		attachments[1].mStartState = ResourceState::eCommon;
+		attachments[1].mFinalState = ResourceState::eCommon;
+	}
+	RenderPassDesc renderPassDesc;
+	{
+		// Create attachment references for the subpass.
+		AttachmentRef colorAttachment;
+		{
+			colorAttachment.mIndex = 0;
+			colorAttachment.mState = ResourceState::eRenderTarget;
+		}
+		AttachmentRef depthAttachment;
+		{
+			depthAttachment.mIndex = 1;
+			depthAttachment.mState = ResourceState::eDepthWrite;
+		}
+
+		// Standard render to swap chain.
+		SubPassDesc subPass;
+		{
+			subPass.mBindPoint = PipelineBindPoint::eGraphic;
+			// No inputs.
+			subPass.mInputCount = 0;
+			subPass.mpInputAttachments = nullptr;
+			// 1 color output.
+			subPass.mColorCount = 1;
+			subPass.mpColorAttachments = &colorAttachment;
+			// No resolves.
+			subPass.mResolveCount = 0;
+			subPass.mpResolveAttachments = nullptr;
+			// 1 depth buffer.
+			subPass.mDepthStencilCount = 1;
+			subPass.mpDepthStencilAttachments = &depthAttachment;
+			// No preservation.
+			subPass.mPreserveCount = 0;
+			subPass.mpPreserveAttachments = nullptr;
+		}
+
+		// Setup the render pass descriptor.
+		renderPassDesc.mAttachmentCount = 2;
+		renderPassDesc.mpAttachments = attachments;
+		renderPassDesc.mSubPassCount = 1;
+		renderPassDesc.mpSubPasses = &subPass;
+		renderPassDesc.mDependencyCount = 0;
+		renderPassDesc.mpDependencies = nullptr;
+	}
+	// Create the render pass.
+	mpDevice->CreateRenderPass(&renderPassDesc, mpRenderPass.AsTypePP());
+
+	return true;
+}
+
 bool RenderSystem::_CreateSwapChain(iWindow* window)
 {
 	// Create the swapchain attached to the window.
@@ -182,9 +274,24 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	winData.mHWnd = osData.mHwnd;
 	int32_t w, h;
 	window->GetClientAreaSize(&w, &h);
+	mWidth = w;
+	mHeight = h;
 	mpDevice->CreateSwapChain(mpInstance, &winData, w, h, &desc, mpSwapChain.AsTypePP());
 
-	// Create a depth buffers to go with the swap chain.
+	// Create the depth buffer.
+	_CreateDepthBuffer(w, h);
+	// Create the frame buffers.
+	_CreateFrameBuffers(w, h);
+
+	return mpSwapChain;
+}
+
+bool RenderSystem::_CreateDepthBuffer(int32_t w, int32_t h)
+{
+	mpDepthBuffer.Adopt(nullptr);
+	mpDepthBufferView.Adopt(nullptr);
+
+	// Create a depth buffer to go with the swap chain.
 	ImageDesc depthBufferDesc
 	{
 		w, h,
@@ -197,7 +304,29 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
 	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
-	return mpSwapChain;
+	return true;
+}
+
+bool RenderSystem::_CreateFrameBuffers(int32_t w, int32_t h)
+{
+	// Make a frame buffer for each target in the swap chain.
+	mpFrameBuffers.clear();
+	mpFrameBuffers.resize(kBufferCount);
+	for (int i = 0; i < kBufferCount; ++i)
+	{
+		FrameBufferDesc frameBufferDesc;
+		frameBufferDesc.mpRenderPass = mpRenderPass;
+		frameBufferDesc.mAttachmentCount = 2;
+		iImage* images[2] = { mpSwapChain->GetImage(i), mpDepthBuffer };
+		frameBufferDesc.mpAttachments = images;
+		frameBufferDesc.mWidth = w;
+		frameBufferDesc.mHeight = h;
+		frameBufferDesc.mLayers = 1;
+
+		mpDevice->CreateFrameBuffer(&frameBufferDesc, mpFrameBuffers[i].AsTypePP());
+	}
+
+	return true;
 }
 
 bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resources::Locator* locator)
@@ -214,6 +343,7 @@ bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resourc
 	}
 	mpRegistry->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
 	mpDebugUI->Initialize(mpDevice, im, window, locator);
+
 	return true;
 }
 
@@ -226,7 +356,7 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	self.mBufferIndex = (self.mBufferIndex + 1) % kBufferCount;
 	self.mSwapIndex = self.mpSwapChain->GetCurrentIndex();
 
-	// Can only have 3 frames outstanding at a time so hang out here if we get too far ahead.
+	// Can only have kBufferCount frames outstanding at a time so hang out here if we get too far ahead.
 	auto lastFence = self.mFenceTarget;
 	if (lastFence - self.mpFence->GetValue() >= kBufferCount)
 		self.mpFence->WaitFor(lastFence - (kBufferCount - 1));
@@ -239,13 +369,26 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	// TODO: This will move into the render pass abstraction when it is ready.
 	self.mpDevice->BeginFrame(self.mpPreCommandBuffer[self.mBufferIndex]);
 
-	// Transition the current back buffer and depth buffers to render targets.
-	// TODO: This will go away with the render pass abstraction.
-	self.mpPreCommandBuffer[self.mBufferIndex]->ImageTransition(
-		self.mpSwapChain->GetImage(self.mSwapIndex),
-		ResourceState::ePresent,
-		ResourceState::eRenderTarget,
-		SubResource::eAll);
+	// Begin the render pass.
+	RenderPassBeginDesc passBegin;
+	passBegin.mpRenderPass = self.mpRenderPass;
+	passBegin.mpFrameBuffer = self.mpFrameBuffers[self.mSwapIndex];
+	passBegin.mClipRect = Math::Rectanglei(0, self.mWidth, 0, self.mHeight);
+	passBegin.mClearValueCount = 2;
+
+	ClearValue clearValues[2];
+	clearValues[0].mFormat = Format::eRGBA8un;
+	clearValues[0].mColor[0] = 0.0f;
+	clearValues[0].mColor[0] = 0.0f;
+	clearValues[0].mColor[0] = 0.0f;
+	clearValues[0].mColor[0] = 1.0f;
+
+	clearValues[1].mFormat = Format::eD32f;
+	clearValues[1].mDepthStencil.mDepth = 1.0f;
+	clearValues[1].mDepthStencil.mStencil = 0;
+	passBegin.mpClearValues = clearValues;
+
+	self.mpPreCommandBuffer[self.mBufferIndex]->BeginRenderPass(&passBegin);
 
 	// Cycle the colors to make sure things are working.
 	Math::Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
@@ -290,7 +433,25 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)
 	self.mpPostCommandBuffer[self.mBufferIndex]->Begin();
 
 	// Transition the back buffer to present.
-	self.mpPostCommandBuffer[self.mBufferIndex]->ImageTransition(self.mpSwapChain->GetImage(self.mSwapIndex), ResourceState::eRenderTarget, ResourceState::ePresent, SubResource::eAll);
+	self.mpPostCommandBuffer[self.mBufferIndex]->ImageTransition(
+		self.mpSwapChain->GetImage(self.mSwapIndex),
+		ResourceState::eRenderTarget,
+		ResourceState::ePresent,
+		SubResource::eAll
+	);
+	self.mpPostCommandBuffer[self.mBufferIndex]->ImageTransition(
+		self.mpDepthBuffer,
+		ResourceState::eDepthWrite,
+		ResourceState::ePresent,
+		SubResource::eAll
+	);
+
+	// Insert the debug drawing buffers.
+	iCommandBuffer* debugBuffer[2] = { self.mpScheduledBuffers[1], self.mpPostCommandBuffer[self.mBufferIndex] };
+	self.mpPreCommandBuffer[self.mBufferIndex]->Insert(2, debugBuffer);
+
+	// End the render pass.
+	self.mpPreCommandBuffer[self.mBufferIndex]->EndRenderPass();
 
 	// Let the device take care of any final needed work, read backs for instance.
 	self.mpDevice->EndFrame(self.mpPostCommandBuffer[self.mBufferIndex]);

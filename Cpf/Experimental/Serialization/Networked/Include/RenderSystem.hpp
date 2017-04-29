@@ -5,6 +5,8 @@
 #include "Graphics/iInstance.hpp"
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iSwapChain.hpp"
+#include "Graphics/iRenderPass.hpp"
+#include "Graphics/iFrameBuffer.hpp"
 #include "MultiCore/System/iTimer.hpp"
 
 
@@ -42,7 +44,6 @@ namespace Cpf
 		// iSystem
 		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
-//		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
 
 		// iStageList
 		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
@@ -63,7 +64,10 @@ namespace Cpf
 		void _CreateStages();
 
 		bool _SelectAdapter();
+		bool _CreateRenderPass();
 		bool _CreateSwapChain(iWindow* window);
+		bool _CreateDepthBuffer(int32_t w, int32_t h);
+		bool _CreateFrameBuffers(int32_t w, int32_t h);
 		bool _CreateRenderData(iInputManager*, iWindow*, Resources::Locator*);
 
 		static void _BeginFrame(Concurrency::ThreadContext&, void* context);
@@ -75,6 +79,9 @@ namespace Cpf
 		Desc mDesc;
 		MultiCore::iTimer* mpTimer;
 		Plugin::iRegistry* mpRegistry;
+
+		int32_t mWidth;
+		int32_t mHeight;
 
 		IntrusivePtr<Graphics::iInstance> mpInstance;
 		IntrusivePtr<Graphics::iAdapter> mpAdapter;
@@ -94,6 +101,9 @@ namespace Cpf
 		IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[kBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpDebugUIBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iFence> mpFence;
+
+		IntrusivePtr<Graphics::iRenderPass> mpRenderPass;
+		Vector<IntrusivePtr<Graphics::iFrameBuffer>> mpFrameBuffers;
 
 		int mScheduleIndex = 0;
 		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];

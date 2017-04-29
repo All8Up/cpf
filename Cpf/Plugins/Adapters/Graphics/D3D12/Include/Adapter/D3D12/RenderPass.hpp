@@ -25,10 +25,19 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL Initialize(const Graphics::RenderPassDesc* desc);
 
+				using SubPassVector = Vector<Graphics::SubPassDesc>;
+				using AttachmentVector = Vector<Graphics::AttachmentDesc>;
+				using AttachmentRefVector = Vector<Graphics::AttachmentRef>;
+
+				int32_t GetSubPassCount() const { return int32_t(mSubPasses.size()); }
+				const SubPassVector& GetSubPasses() const { return mSubPasses; }
+				const AttachmentVector& GetAttachments() const { return mAttachments; }
+				const AttachmentRefVector& GetAttachments(int32_t index) const { return mAttachmentRefs[index]; }
+
 			private:
-				Vector<Graphics::SubPassDesc> mSubPasses;
-				Vector<Graphics::AttachmentDesc> mAttachments;
-				Vector<Vector<Graphics::AttachmentRef>> mAttachmentRefs;
+				SubPassVector mSubPasses;
+				AttachmentVector mAttachments;
+				Vector<AttachmentRefVector> mAttachmentRefs;
 			};
 		}
 	}

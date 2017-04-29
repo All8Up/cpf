@@ -11,11 +11,15 @@
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/ConstantBuffer.hpp"
+#include "Adapter/D3D12/RenderPass.hpp"
+#include "Adapter/D3D12/FrameBuffer.hpp"
 #include "Graphics/DepthStencilClearFlag.hpp"
 #include "Graphics/RenderPassBeginDesc.hpp"
 #include "Graphics/ResourceData.hpp"
 #include "Graphics/iRenderPass.hpp"
 #include "Graphics/iFrameBuffer.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/SubResource.hpp"
 #include "Logging/Logging.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
 
@@ -23,31 +27,41 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
+//////////////////////////////////////////////////////////////////////////
+
 CommandBuffer::CommandBuffer(COM::iUnknown*)
 	: mpDevice(nullptr)
+	, mpAllocator(nullptr)
+	, mCurrent(-1)
+	, mType(Graphics::CommandBufferType::kPrimary)
 	, mRenderPass{0}
 {
 }
 
 CommandBuffer::~CommandBuffer()
 {
-	CPF_LOG(D3D12, Info) << "Destroyed command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
+	for (auto& clv : mCommandLists)
+		clv[0]->Release();
+	CPF_LOG(D3D12, Info) << "Destroyed command buffer: " << intptr_t(this);
 }
 
-COM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Graphics::iCommandPool* pool)
+COM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Graphics::CommandBufferType type, Graphics::iCommandPool* pool)
 {
-	mpDevice = static_cast<Device*>(device);
-	CommandPool* d3dPool = static_cast<CommandPool*>(pool);
-	mpDevice->GetD3DDevice()->CreateCommandList(
-		0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		d3dPool->GetCommandAllocator(),
-		nullptr,
-		IID_PPV_ARGS(mpCommandList.AsTypePP()));
-	mpCommandList->Close();
+	if (device && pool)
+	{
+		mpDevice = static_cast<Device*>(device);
+		mpAllocator = static_cast<CommandPool*>(pool)->GetCommandAllocator();
+		mType = type;
 
-	CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this) << " - " << intptr_t(mpCommandList.Ptr());
-	return COM::kOK;
+		COM::Result result = _AddCommandList();
+		if (Succeeded(result))
+		{
+			CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this);
+			return COM::kOK;
+		}
+		return result;
+	}
+	return COM::kInvalidParameter;
 }
 
 COM::Result CPF_STDCALL CommandBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
@@ -76,22 +90,28 @@ void CommandBuffer::Begin()
 
 void CommandBuffer::End()
 {
-	mpCommandList->Close();
+	_Current()->Close();
 }
 
 void CommandBuffer::Reset(Graphics::iCommandPool* pool)
 {
 	// TODO: Consider if the pipeline can/should be passed in.  Probably would not work in Vulkan and/or Metal though.
 	CommandPool* d3dPool = static_cast<CommandPool*>(pool);
-	mpCommandList->Reset(d3dPool->GetCommandAllocator(), nullptr);
+	_Current()->Reset(d3dPool->GetCommandAllocator(), nullptr);
 	mHeaps.clear();
+
+	// Remove inserted references to other command lists but do not free the owned items.
+	for (CommandListVector& clv : mCommandLists)
+	{
+		clv.resize(1);
+	}
 }
 
 void CommandBuffer::UpdateSubResource(Graphics::iResource* src, Graphics::iResource* dst, const Graphics::ResourceData* data)
 {
 	D3D12_SUBRESOURCE_DATA resData = { data->mpData, LONG_PTR(data->mPitch), LONG_PTR(data->mSlicePitch) };
 	UpdateSubresources<1>(
-		mpCommandList,
+		_Current(),
 		static_cast<Resource*>(dst)->GetResource(),
 		static_cast<Resource*>(src)->GetResource(),
 		0, 0, 1, &resData);
@@ -101,7 +121,7 @@ void CommandBuffer::ResourceBarrier(Graphics::iResource* resource, Graphics::Res
 {
 	Resource* res = static_cast<Resource*>(resource);
 	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(res->GetResource(), D3D12_RESOURCE_STATES(startState), D3D12_RESOURCE_STATES(endState));
-	mpCommandList->ResourceBarrier(1, &barrier);
+	_Current()->ResourceBarrier(1, &barrier);
 }
 
 void CommandBuffer::ImageTransition(
@@ -119,24 +139,24 @@ void CommandBuffer::ImageTransition(
 	barrier.Transition.StateAfter = Convert(endState);
 	barrier.Transition.Subresource = Convert(subResources);
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-	mpCommandList->ResourceBarrier(1, &barrier);
+	_Current()->ResourceBarrier(1, &barrier);
 }
 
 void CommandBuffer::SetResourceBinding(Graphics::iResourceBinding* binding)
 {
 	ResourceBinding* resBinding = static_cast<ResourceBinding*>(binding);
-	mpCommandList->SetGraphicsRootSignature(resBinding->GetSignature());
+	_Current()->SetGraphicsRootSignature(resBinding->GetSignature());
 }
 
 void CommandBuffer::SetPipeline(Graphics::iPipeline* pipeline)
 {
 	Pipeline* pipe = static_cast<Pipeline*>(pipeline);
-	mpCommandList->SetPipelineState(pipe->GetPipelineState());
+	_Current()->SetPipelineState(pipe->GetPipelineState());
 }
 
 void CommandBuffer::SetViewports(int32_t count, const Graphics::Viewport* rects)
 {
-	mpCommandList->RSSetViewports(count, reinterpret_cast<const D3D12_VIEWPORT*>(rects));
+	_Current()->RSSetViewports(count, reinterpret_cast<const D3D12_VIEWPORT*>(rects));
 }
 
 void CommandBuffer::SetScissorRects(int32_t count, const Math::Rectanglei* rects)
@@ -149,12 +169,12 @@ void CommandBuffer::SetScissorRects(int32_t count, const Math::Rectanglei* rects
 		r[i].top = rects[i].Top();
 		r[i].bottom = rects[i].Bottom();
 	}
-	mpCommandList->RSSetScissorRects(UINT(count), r);
+	_Current()->RSSetScissorRects(UINT(count), r);
 }
 
 void CommandBuffer::SetTopology(Graphics::PrimitiveTopology topology)
 {
-	mpCommandList->IASetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY(topology));
+	_Current()->IASetPrimitiveTopology(D3D12_PRIMITIVE_TOPOLOGY(topology));
 }
 
 void CommandBuffer::SetVertexBuffers(int32_t startSlot, int32_t viewCount, Graphics::iVertexBuffer** inViews)
@@ -162,23 +182,23 @@ void CommandBuffer::SetVertexBuffers(int32_t startSlot, int32_t viewCount, Graph
 	D3D12_VERTEX_BUFFER_VIEW views[16];
 	for (int i = 0; i < viewCount; ++i)
 		views[i] = *static_cast<VertexBuffer*>(inViews[i])->GetView();
-	mpCommandList->IASetVertexBuffers(UINT(startSlot), UINT(viewCount), views);
+	_Current()->IASetVertexBuffers(UINT(startSlot), UINT(viewCount), views);
 }
 
 void CommandBuffer::SetIndexBuffer(Graphics::iIndexBuffer* ib)
 {
-	mpCommandList->IASetIndexBuffer(static_cast<IndexBuffer*>(ib)->GetView());
+	_Current()->IASetIndexBuffer(static_cast<IndexBuffer*>(ib)->GetView());
 }
 
 void CommandBuffer::SetConstantBuffer(int32_t index, Graphics::iConstantBuffer* cb)
 {
 	ConstantBuffer* cbuffer = static_cast<ConstantBuffer*>(cb);
-	mpCommandList->SetGraphicsRootConstantBufferView(UINT(index), cbuffer->GetGPUAddress());
+	_Current()->SetGraphicsRootConstantBufferView(UINT(index), cbuffer->GetGPUAddress());
 }
 
 void CommandBuffer::SetConstants(int32_t index, int32_t count, const void* data, int32_t offset)
 {
-	mpCommandList->SetGraphicsRoot32BitConstants(UINT(index), UINT(count), data, UINT(offset));
+	_Current()->SetGraphicsRoot32BitConstants(UINT(index), UINT(count), data, UINT(offset));
 }
 
 void CommandBuffer::SetSampler(int32_t index, Graphics::iSampler* sampler)
@@ -190,8 +210,8 @@ void CommandBuffer::SetSampler(int32_t index, Graphics::iSampler* sampler)
 	int i = 0;
 	for (auto heap : mHeaps)
 		heaps[i++] = heap;
-	mpCommandList->SetDescriptorHeaps(i, heaps);
-	mpCommandList->SetGraphicsRootDescriptorTable(index, d3d12Sampler->GetDescriptor());
+	_Current()->SetDescriptorHeaps(i, heaps);
+	_Current()->SetGraphicsRootDescriptorTable(index, d3d12Sampler->GetDescriptor());
 }
 
 void CommandBuffer::SetImage(int32_t index, Graphics::iImage* image)
@@ -203,18 +223,18 @@ void CommandBuffer::SetImage(int32_t index, Graphics::iImage* image)
 	int i = 0;
 	for (auto heap : mHeaps)
 		heaps[i++] = heap;
-	mpCommandList->SetDescriptorHeaps(i, heaps);
-	mpCommandList->SetGraphicsRootDescriptorTable(index, d3d12Image->GetDescriptor());
+	_Current()->SetDescriptorHeaps(i, heaps);
+	_Current()->SetGraphicsRootDescriptorTable(index, d3d12Image->GetDescriptor());
 }
 
 void CommandBuffer::DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance)
 {
-	mpCommandList->DrawInstanced(UINT(vertsPerInstance), UINT(instances), UINT(startVert), UINT(startInstance));
+	_Current()->DrawInstanced(UINT(vertsPerInstance), UINT(instances), UINT(startVert), UINT(startInstance));
 }
 
 void CommandBuffer::DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance)
 {
-	mpCommandList->DrawIndexedInstanced(UINT(vertsPerInstance), UINT(instances), UINT(startVert), UINT(offset), UINT(startInstance));
+	_Current()->DrawIndexedInstanced(UINT(vertsPerInstance), UINT(instances), UINT(startVert), UINT(offset), UINT(startInstance));
 }
 
 void CommandBuffer::SetRenderTargets(int32_t imageCount, Graphics::iImageView** images, Graphics::iImageView* depthView)
@@ -228,16 +248,16 @@ void CommandBuffer::SetRenderTargets(int32_t imageCount, Graphics::iImageView** 
 	{
 		// TODO: Have the descriptor return a pointer to avoid this copy.
 		D3D12_CPU_DESCRIPTOR_HANDLE depthViewHandle = static_cast<ImageView*>(depthView)->GetDescriptor();
-		mpCommandList->OMSetRenderTargets(imageCount, imageDescs, FALSE, &depthViewHandle);
+		_Current()->OMSetRenderTargets(imageCount, imageDescs, FALSE, &depthViewHandle);
 	}
 	else
-		mpCommandList->OMSetRenderTargets(imageCount, imageDescs, FALSE, nullptr);
+		_Current()->OMSetRenderTargets(imageCount, imageDescs, FALSE, nullptr);
 }
 
 void CommandBuffer::ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects)
 {
 	// TODO: Clean up the casts and validate that the rects are the same style.
-	mpCommandList->ClearRenderTargetView(
+	_Current()->ClearRenderTargetView(
 		static_cast<ImageView*>(view)->GetDescriptor(),
 		reinterpret_cast<float*>(&color),
 		count,
@@ -249,7 +269,7 @@ void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, Graphics::
 	D3D12_CLEAR_FLAGS d3dFlags = D3D12_CLEAR_FLAGS(0);
 	d3dFlags |= ((flags & Graphics::DepthStencilClearFlag::eDepth) == Graphics::DepthStencilClearFlag(0) ? D3D12_CLEAR_FLAGS(0) : D3D12_CLEAR_FLAG_DEPTH);
 	d3dFlags |= ((flags & Graphics::DepthStencilClearFlag::eStencil) == Graphics::DepthStencilClearFlag(0) ? D3D12_CLEAR_FLAGS(0) : D3D12_CLEAR_FLAG_STENCIL);
-	mpCommandList->ClearDepthStencilView(
+	_Current()->ClearDepthStencilView(
 		static_cast<ImageView*>(view)->GetDescriptor(),
 		d3dFlags,
 		depth,
@@ -282,13 +302,43 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 			return Graphics::kAlreadyInRenderPass;
 		}
 
-		Graphics::iRenderPass* renderPass = desc->mpRenderPass;
-		Graphics::iFrameBuffer* frameBuffer = desc->mpFrameBuffer;
-		if (renderPass && frameBuffer)
+		Graphics::iRenderPass* rPass = desc->mpRenderPass;
+		Graphics::iFrameBuffer* fBuffer = desc->mpFrameBuffer;
+		if (rPass && fBuffer)
 		{
 			mRenderPass = *desc;
-			mRenderPass.mpRenderPass->AddRef();
-			mRenderPass.mpFrameBuffer->AddRef();
+			// TODO: Enable when everything is in the same command buffer.
+//			mRenderPass.mpRenderPass->AddRef();
+//			mRenderPass.mpFrameBuffer->AddRef();
+
+			// TODO: Starting the render pass setup.  First step, just activate the first subpass.
+			const RenderPass* renderPass = static_cast<RenderPass*>(rPass);
+			const FrameBuffer* frameBuffer = static_cast<FrameBuffer*>(fBuffer);
+			if (renderPass->GetSubPassCount() > 0)
+			{
+				const auto& subPass = renderPass->GetSubPasses()[0];
+				for (int32_t i = 0; i < subPass.mColorCount; ++i)
+				{
+					const auto& color = subPass.mpColorAttachments;
+					ImageTransition(
+						frameBuffer->GetImages()[color->mIndex],
+						Graphics::ResourceState::ePresent,
+						color->mState,
+						Graphics::SubResource::eAll
+					);
+				}
+
+				for (int32_t i = 0; i < subPass.mDepthStencilCount; ++i)
+				{
+					const auto& depth = subPass.mpDepthStencilAttachments;
+					ImageTransition(
+						frameBuffer->GetImages()[depth->mIndex],
+						Graphics::ResourceState::ePresent,
+						depth->mState,
+						Graphics::SubResource::eAll
+					);
+				}
+			}
 		}
 	}
 	return COM::kInvalidParameter;
@@ -307,8 +357,9 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 {
 	if (mRenderPass.mpRenderPass)
 	{
-		mRenderPass.mpFrameBuffer->Release();
-		mRenderPass.mpRenderPass->Release();
+		// TODO: Re-enable when everything is in a single command buffer.
+//		mRenderPass.mpFrameBuffer->Release();
+//		mRenderPass.mpRenderPass->Release();
 		mRenderPass = { 0 };
 		return COM::kOK;
 	}
@@ -319,6 +370,51 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 //////////////////////////////////////////////////////////////////////////
 void CommandBuffer::Submit(ID3D12CommandQueue* queue)
 {
-	ID3D12CommandList* list[] = {mpCommandList};
-	queue->ExecuteCommandLists(1, list);
+	for (const CommandListVector& clv : mCommandLists)
+	{
+		queue->ExecuteCommandLists(UINT(clv.size()), reinterpret_cast<ID3D12CommandList* const*>(clv.data()));
+	}
+}
+
+COM::Result CommandBuffer::_AddCommandList()
+{
+	// Increase the current index.
+	++mCurrent;
+
+	// Make space if needed.
+	if (mCurrent >= mCommandLists.size())
+	{
+		mCommandLists.push_back(CommandListVector());
+		mCommandLists[mCurrent].push_back(CommandListPtr());
+	}
+
+	// Is a command list already allocated?
+	if (mCommandLists[mCurrent][0])
+	{
+		// This is already allocated.
+		return COM::kOK;
+	}
+
+	// This has not been allocated as of yet.
+	ID3D12GraphicsCommandList* commandList = nullptr;
+	if (SUCCEEDED(mpDevice->GetD3DDevice()->CreateCommandList(
+		0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		mpAllocator,
+		nullptr,
+		IID_PPV_ARGS(&commandList))))
+	{
+		mCommandLists[mCurrent][0] = commandList;
+		mCommandLists.back()[0]->Close();
+		return COM::kOK;
+	}
+	return COM::kError;
+}
+
+COM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const*)
+{
+	// Insert the given command lists into the vector at the top of the stack.
+
+	(void)count;
+	return COM::kError;
 }

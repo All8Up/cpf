@@ -150,9 +150,9 @@ void CPF_STDCALL Device::BeginFrame(Graphics::iCommandBuffer* cmds)
 		case WorkType::eUploadVertexBuffer:
 			{
 				const auto& work = item.UploadVertexBuffer;
-				commands->mpCommandList->CopyResource(work.mpDestination, work.mpSource);
+				commands->_Current()->CopyResource(work.mpDestination, work.mpSource);
 				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
-				commands->mpCommandList->ResourceBarrier(1, &barrier);
+				commands->_Current()->ResourceBarrier(1, &barrier);
 				work.mpDestination->Release();
 				mReleaseQueue.push_back(work.mpSource);
 			}
@@ -163,10 +163,10 @@ void CPF_STDCALL Device::BeginFrame(Graphics::iCommandBuffer* cmds)
 				auto& work = item.UpdateSubResource;
 
 				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
-				UpdateSubresources(commands->mpCommandList,
+				UpdateSubresources(commands->_Current(),
 					work.mpDestination, work.mpSource,
 					0, 0, 1, &work.mData);
-				commands->mpCommandList->ResourceBarrier(1, &barrier);
+				commands->_Current()->ResourceBarrier(1, &barrier);
 				// TODO: Have to clean up the buffer and blob.
 			}
 			break;
@@ -222,7 +222,7 @@ COM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool
 	CommandBuffer* result = new CommandBuffer(nullptr);
 	if (result)
 	{
-		if (Succeeded(result->Initialize(this, pool)))
+		if (Succeeded(result->Initialize(this, type, pool)))
 		{
 			*buffer = result;
 			return COM::kOK;

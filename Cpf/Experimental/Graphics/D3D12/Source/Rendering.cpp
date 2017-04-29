@@ -38,7 +38,7 @@ void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
 
 	beginDesc.mClearValueCount = 1;
 	beginDesc.mpClearValues = &clearValue;
-	mpPreCommandBuffer[mCurrentBackbuffer]->BeginRenderPass(&beginDesc);
+//	mpPreCommandBuffer[mCurrentBackbuffer]->BeginRenderPass(&beginDesc);
 }
 
 void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
