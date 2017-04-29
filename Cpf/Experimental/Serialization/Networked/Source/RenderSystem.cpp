@@ -317,7 +317,11 @@ bool RenderSystem::_CreateFrameBuffers(int32_t w, int32_t h)
 		FrameBufferDesc frameBufferDesc;
 		frameBufferDesc.mpRenderPass = mpRenderPass;
 		frameBufferDesc.mAttachmentCount = 2;
-		iImage* images[2] = { mpSwapChain->GetImage(i), mpDepthBuffer };
+		ImageAndView images[2] =
+		{
+			{mpSwapChain->GetImage(i), mpSwapChain->GetImageView(i)},
+			{mpDepthBuffer, mpDepthBufferView}
+		};
 		frameBufferDesc.mpAttachments = images;
 		frameBufferDesc.mWidth = w;
 		frameBufferDesc.mHeight = h;
@@ -390,11 +394,17 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 
 	self.mpPreCommandBuffer[self.mBufferIndex]->BeginRenderPass(&passBegin);
 
+	/*
 	// Cycle the colors to make sure things are working.
 	Math::Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Clear the color and depth buffers.
-	self.mpPreCommandBuffer[self.mBufferIndex]->ClearRenderTargetView(self.mpSwapChain->GetImageView(self.mSwapIndex), color, 0, nullptr);
+	self.mpPreCommandBuffer[self.mBufferIndex]->ClearRenderTargetView(
+		self.mpSwapChain->GetImageView(self.mSwapIndex),
+		color,
+		0,
+		nullptr);
+		*/
 
 	// End the command buffer prior to submission.
 	self.mpPreCommandBuffer[self.mBufferIndex]->End();
