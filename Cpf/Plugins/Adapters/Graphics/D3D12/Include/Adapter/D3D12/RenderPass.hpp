@@ -25,19 +25,30 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL Initialize(const Graphics::RenderPassDesc* desc);
 
-				using SubPassVector = Vector<Graphics::SubPassDesc>;
-				using AttachmentVector = Vector<Graphics::AttachmentDesc>;
 				using AttachmentRefVector = Vector<Graphics::AttachmentRef>;
+				struct SubPassStorage
+				{
+					Graphics::PipelineBindPoint mBindPoint;
+					AttachmentRefVector mInputAttachments;
+					AttachmentRefVector mColorAttachments;
+					AttachmentRefVector mResolveAttachments;
+					AttachmentRefVector mDepthStencilAttachments;
+					AttachmentRefVector mPreserveAttachments;
+				};
+				using SubPassVector = Vector<SubPassStorage>;
+				using AttachmentDescVector = Vector<Graphics::AttachmentDesc>;
+				using DependencyDescVector = Vector<Graphics::DependencyDesc>;
+				struct RenderPassStorage
+				{
+					AttachmentDescVector mAttachments;
+					SubPassVector mSubPasses;
+					DependencyDescVector mDependencies;
+				};
 
-				int32_t GetSubPassCount() const { return int32_t(mSubPasses.size()); }
-				const SubPassVector& GetSubPasses() const { return mSubPasses; }
-				const AttachmentVector& GetAttachments() const { return mAttachments; }
-				const AttachmentRefVector& GetAttachments(int32_t index) const { return mAttachmentRefs[index]; }
+				const RenderPassStorage& GetRenderPassDesc() const { return mRenderPass; }
 
 			private:
-				SubPassVector mSubPasses;
-				AttachmentVector mAttachments;
-				Vector<AttachmentRefVector> mAttachmentRefs;
+				RenderPassStorage mRenderPass;
 			};
 		}
 	}

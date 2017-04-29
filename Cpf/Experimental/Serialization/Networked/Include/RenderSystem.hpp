@@ -74,7 +74,7 @@ namespace Cpf
 		static void _DebugUI(Concurrency::ThreadContext&, void* context);
 		static void _EndFrame(Concurrency::ThreadContext&, void* context);
 
-		static constexpr int kBufferCount = 3;
+		static constexpr int kBufferCount = 2;
 
 		Desc mDesc;
 		MultiCore::iTimer* mpTimer;
@@ -94,19 +94,14 @@ namespace Cpf
 		int mBufferIndex = 0;
 		int mSwapIndex = 0;
 		uint64_t mFenceTarget = 4;
-		IntrusivePtr<Graphics::iCommandPool> mpPreCommandPool[kBufferCount];
-		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[kBufferCount];
-		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[kBufferCount];
-		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[kBufferCount];
+		IntrusivePtr<Graphics::iCommandPool> mpPrimaryPool[kBufferCount];
+		IntrusivePtr<Graphics::iCommandBuffer> mpPrimaryBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[kBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpDebugUIBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iFence> mpFence;
 
 		IntrusivePtr<Graphics::iRenderPass> mpRenderPass;
 		Vector<IntrusivePtr<Graphics::iFrameBuffer>> mpFrameBuffers;
-
-		int mScheduleIndex = 0;
-		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];
 
 		MultiCore::SystemID mID;
 		IntrusivePtr<MultiCore::iStageList> mpStages;

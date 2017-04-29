@@ -21,6 +21,7 @@
 #include "Graphics/iFrameBuffer.hpp"
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/SubResource.hpp"
+#include "Graphics/FrameBufferDesc.hpp"
 #include "Logging/Logging.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
 
@@ -57,6 +58,7 @@ COM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Gra
 		COM::Result result = _AddCommandList();
 		if (Succeeded(result))
 		{
+			End();
 			CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this);
 			return COM::kOK;
 		}
@@ -98,13 +100,16 @@ void CommandBuffer::Reset(Graphics::iCommandPool* pool)
 {
 	// TODO: Consider if the pipeline can/should be passed in.  Probably would not work in Vulkan and/or Metal though.
 	CommandPool* d3dPool = static_cast<CommandPool*>(pool);
-	_Current()->Reset(d3dPool->GetCommandAllocator(), nullptr);
 	mHeaps.clear();
 
 	// Remove inserted references to other command lists but do not free the owned items.
+	mCurrent = 0;
+	int index = 0;
+	mCommandLists[0][0]->Reset(d3dPool->GetCommandAllocator(), nullptr);
 	for (CommandListVector& clv : mCommandLists)
 	{
 		clv.resize(1);
+		++index;
 	}
 }
 
@@ -308,44 +313,47 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 		if (rPass && fBuffer)
 		{
 			mRenderPass = *desc;
-			// TODO: Enable when everything is in the same command buffer.
-//			mRenderPass.mpRenderPass->AddRef();
-//			mRenderPass.mpFrameBuffer->AddRef();
+			mRenderPass.mpRenderPass->AddRef();
+			mRenderPass.mpFrameBuffer->AddRef();
 
 			// TODO: Starting the render pass setup.  First step, just activate the first subpass.
+			// TODO: Handle multiple subpasses.
 			const RenderPass* renderPass = static_cast<RenderPass*>(rPass);
 			const FrameBuffer* frameBuffer = static_cast<FrameBuffer*>(fBuffer);
-			if (renderPass->GetSubPassCount() > 0)
+			if (renderPass->GetRenderPassDesc().mSubPasses.size() > 0)
 			{
-				CPF_ASSERT(frameBuffer->GetFrameBufferDesc().mAttachmentCount == renderPass->GetAttachments().size());
-				// TODO: This will be cached in the command buffer object.
-				Vector<Graphics::ResourceState> states(frameBuffer->GetImages().size());
-				for (int32_t i=0; i<renderPass->GetAttachments().size(); ++i)
+				CPF_ASSERT(frameBuffer->GetFrameBufferDesc().mAttachmentCount == renderPass->GetRenderPassDesc().mAttachments.size());
+				const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
+				const auto& subPasses = renderPass->GetRenderPassDesc().mSubPasses;
+
+				mAttachmentStates.resize(frameBuffer->GetImages().size());
+				for (int32_t i=0; i<attachments.size(); ++i)
 				{
-					states[i] = renderPass->GetAttachments()[i].mStartState;
+					mAttachmentStates[i] = attachments[i].mStartState;
 				}
 
-				const auto& subPass = renderPass->GetSubPasses()[0];
-				for (int32_t i = 0; i < subPass.mColorCount; ++i)
+				// TODO: Batch the transitions.
+				CPF_ASSERT(!subPasses.empty());
+				const auto& subPass = subPasses[0];
+				for (const auto& color : subPass.mColorAttachments)
 				{
-					const auto& color = subPass.mpColorAttachments;
-					const Graphics::ImageAndView& target = frameBuffer->GetImages()[color->mIndex];
+					const Graphics::ImageAndView& target = frameBuffer->GetImages()[color.mIndex];
 					ImageTransition(
 						target.mpImage,
-						states[color->mIndex],
-						color->mState,
+						mAttachmentStates[color.mIndex],
+						color.mState,
 						Graphics::SubResource::eAll
 					);
-					states[color->mIndex] = color->mState;
+					mAttachmentStates[color.mIndex] = color.mState;
 
 					// D3D12 only cares about LoadOp::eClear.
-					if (renderPass->GetAttachments()[color->mIndex].mLoadOp == Graphics::LoadOp::eClear)
+					if (attachments[color.mIndex].mLoadOp == Graphics::LoadOp::eClear)
 					{
 						Math::Vector4fv c(
-							desc->mpClearValues[color->mIndex].mColor[0],
-							desc->mpClearValues[color->mIndex].mColor[1],
-							desc->mpClearValues[color->mIndex].mColor[2],
-							desc->mpClearValues[color->mIndex].mColor[3]);
+							desc->mpClearValues[color.mIndex].mColor[0],
+							desc->mpClearValues[color.mIndex].mColor[1],
+							desc->mpClearValues[color.mIndex].mColor[2],
+							desc->mpClearValues[color.mIndex].mColor[3]);
 
 						Graphics::iImageView* imageViews[1] = { target.mpImageView };
 						SetRenderTargets(1, imageViews, nullptr);
@@ -353,29 +361,30 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 					}
 				}
 
-				for (int32_t i = 0; i < subPass.mDepthStencilCount; ++i)
+				for (const auto& depth : subPass.mDepthStencilAttachments)
 				{
-					const auto& depth = subPass.mpDepthStencilAttachments;
-					const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth->mIndex];
+					const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth.mIndex];
 					ImageTransition(
 						target.mpImage,
 						Graphics::ResourceState::ePresent,
-						depth->mState,
+						depth.mState,
 						Graphics::SubResource::eAll
 					);
-					states[depth->mIndex] = depth->mState;
+					mAttachmentStates[depth.mIndex] = depth.mState;
 
-					if (renderPass->GetAttachments()[depth->mIndex].mLoadOp == Graphics::LoadOp::eClear)
+					// D3D12 only cares about LoadOp::eClear.
+					if (attachments[depth.mIndex].mLoadOp == Graphics::LoadOp::eClear)
 					{
 						ClearDepthStencilView(
 							target.mpImageView,
 							Graphics::DepthStencilClearFlag::eDepth,
-							desc->mpClearValues[depth->mIndex].mDepthStencil.mDepth,
-							desc->mpClearValues[depth->mIndex].mDepthStencil.mStencil,
+							desc->mpClearValues[depth.mIndex].mDepthStencil.mDepth,
+							desc->mpClearValues[depth.mIndex].mDepthStencil.mStencil,
 							0,
 							nullptr);
 					}
 				}
+				return COM::kOK;
 			}
 		}
 	}
@@ -386,7 +395,9 @@ COM::Result CPF_STDCALL CommandBuffer::NextSubPass()
 {
 	if (mRenderPass.mpRenderPass)
 	{
-		
+		// TODO: Transition the attachments..
+
+		_AddCommandList();
 	}
 	return Graphics::kNotInRenderPass;
 }
@@ -395,9 +406,33 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 {
 	if (mRenderPass.mpRenderPass)
 	{
-		// TODO: Re-enable when everything is in a single command buffer.
-//		mRenderPass.mpFrameBuffer->Release();
-//		mRenderPass.mpRenderPass->Release();
+		// Perform final transitions.
+		const RenderPass* renderPass = static_cast<RenderPass*>(mRenderPass.mpRenderPass);
+		const FrameBuffer* frameBuffer = static_cast<FrameBuffer*>(mRenderPass.mpFrameBuffer);
+		const Graphics::FrameBufferDesc& desc = frameBuffer->GetFrameBufferDesc();
+		NextSubPass();
+
+		const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
+
+		for (int i = 0; i < desc.mAttachmentCount; ++i)
+		{
+			const auto currentState = mAttachmentStates[i];
+			const auto targetState = attachments[i].mFinalState;
+			if (currentState != targetState)
+			{
+				// TODO: This can pack all of these into a single resource barrier.
+				ImageTransition(
+					frameBuffer->GetImages()[i].mpImage,
+					currentState,
+					targetState,
+					Graphics::SubResource::eAll
+				);
+			}
+		}
+
+		// Clear the references to the render pass.
+		mRenderPass.mpFrameBuffer->Release();
+		mRenderPass.mpRenderPass->Release();
 		mRenderPass = { 0 };
 		return COM::kOK;
 	}
@@ -408,14 +443,19 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 //////////////////////////////////////////////////////////////////////////
 void CommandBuffer::Submit(ID3D12CommandQueue* queue)
 {
-	for (const CommandListVector& clv : mCommandLists)
+	for (int32_t i = 0; i <= mCurrent; ++i)
 	{
+		const CommandListVector& clv = mCommandLists[i];
 		queue->ExecuteCommandLists(UINT(clv.size()), reinterpret_cast<ID3D12CommandList* const*>(clv.data()));
 	}
 }
 
 COM::Result CommandBuffer::_AddCommandList()
 {
+	// Close the command list in current use.
+	if (mCurrent>=0)
+		End();
+
 	// Increase the current index.
 	++mCurrent;
 
@@ -429,7 +469,8 @@ COM::Result CommandBuffer::_AddCommandList()
 	// Is a command list already allocated?
 	if (mCommandLists[mCurrent][0])
 	{
-		// This is already allocated.
+		// This is already allocated, reset it.
+		mCommandLists[mCurrent][0]->Reset(mpAllocator, nullptr);
 		return COM::kOK;
 	}
 
@@ -443,16 +484,23 @@ COM::Result CommandBuffer::_AddCommandList()
 		IID_PPV_ARGS(&commandList))))
 	{
 		mCommandLists[mCurrent][0] = commandList;
-		mCommandLists.back()[0]->Close();
 		return COM::kOK;
 	}
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const*)
+COM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const* buffers)
 {
-	// Insert the given command lists into the vector at the top of the stack.
-
-	(void)count;
-	return COM::kError;
+	if (buffers)
+	{
+		// Insert the given command lists into the vector at the top of the stack.
+		for (int i = 0; i < count; ++i)
+		{
+			CommandListVector& current = mCommandLists[mCurrent];
+			auto buffer = static_cast<CommandBuffer*>(buffers[i])->mCommandLists[0][0];
+			current.push_back(buffer);
+		}
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }

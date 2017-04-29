@@ -105,6 +105,7 @@ namespace Cpf
 
 				UnorderedSet<ID3D12DescriptorHeap*> mHeaps;
 				Graphics::RenderPassBeginDesc mRenderPass;
+				Vector<Graphics::ResourceState> mAttachmentStates;
 			};
 		}
 	}

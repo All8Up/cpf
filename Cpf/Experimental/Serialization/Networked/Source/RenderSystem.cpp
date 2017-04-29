@@ -68,10 +68,8 @@ bool RenderSystem::Shutdown()
 {
 	for (int i = 0; i < kBufferCount; ++i)
 	{
-		mpPreCommandPool[i].Adopt(nullptr);
-		mpPreCommandBuffer[i].Adopt(nullptr);
-		mpPostCommandPool[i].Adopt(nullptr);
-		mpPostCommandBuffer[i].Adopt(nullptr);
+		mpPrimaryPool[i].Adopt(nullptr);
+		mpPrimaryBuffer[i].Adopt(nullptr);
 		mpDebugUIPool[i].Adopt(nullptr);
 		mpDebugUIBuffer[i].Adopt(nullptr);
 	}
@@ -184,6 +182,10 @@ bool RenderSystem::_CreateRenderPass()
 {
 	// Attachments in use.
 	AttachmentDesc attachments[2];
+	RenderPassDesc renderPassDesc;
+	AttachmentRef colorAttachment;
+	AttachmentRef depthAttachment;
+	SubPassDesc subPass;
 	{
 		// Color buffer.
 		attachments[0].mFlags = 0;
@@ -209,22 +211,18 @@ bool RenderSystem::_CreateRenderPass()
 		attachments[1].mStartState = ResourceState::eCommon;
 		attachments[1].mFinalState = ResourceState::eCommon;
 	}
-	RenderPassDesc renderPassDesc;
 	{
 		// Create attachment references for the subpass.
-		AttachmentRef colorAttachment;
 		{
 			colorAttachment.mIndex = 0;
 			colorAttachment.mState = ResourceState::eRenderTarget;
 		}
-		AttachmentRef depthAttachment;
 		{
 			depthAttachment.mIndex = 1;
 			depthAttachment.mState = ResourceState::eDepthWrite;
 		}
 
 		// Standard render to swap chain.
-		SubPassDesc subPass;
 		{
 			subPass.mBindPoint = PipelineBindPoint::eGraphic;
 			// No inputs.
@@ -338,12 +336,10 @@ bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resourc
 	mpDevice->CreateFence(3, mpFence.AsTypePP());
 	for (int i = 0; i < kBufferCount; ++i)
 	{
-		mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPreCommandPool[i], CommandBufferType::kPrimary, mpPreCommandBuffer[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPostCommandPool[i], CommandBufferType::kPrimary, mpPostCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandPool(mpPrimaryPool[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPrimaryPool[i], CommandBufferType::kPrimary, mpPrimaryBuffer[i].AsTypePP());
 		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], CommandBufferType::kPrimary, mpDebugUIBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], CommandBufferType::kSecondary, mpDebugUIBuffer[i].AsTypePP());
 	}
 	mpRegistry->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
 	mpDebugUI->Initialize(mpDevice, im, window, locator);
@@ -356,22 +352,16 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
 
 	// Manage indexing.
-	self.mScheduleIndex = 1;	// Skips 0, we'll be filling that in ourselves.
 	self.mBufferIndex = (self.mBufferIndex + 1) % kBufferCount;
 	self.mSwapIndex = self.mpSwapChain->GetCurrentIndex();
 
-	// Can only have kBufferCount frames outstanding at a time so hang out here if we get too far ahead.
-	auto lastFence = self.mFenceTarget;
-	if (lastFence - self.mpFence->GetValue() >= kBufferCount)
-		self.mpFence->WaitFor(lastFence - (kBufferCount - 1));
-
 	// Issue on the shared command buffers.
-	self.mpPreCommandPool[self.mBufferIndex]->Reset();
-	self.mpPreCommandBuffer[self.mBufferIndex]->Reset(self.mpPreCommandPool[self.mBufferIndex]);
-	self.mpPreCommandBuffer[self.mBufferIndex]->Begin();
+	self.mpPrimaryPool[self.mBufferIndex]->Reset();
+	self.mpPrimaryBuffer[self.mBufferIndex]->Reset(self.mpPrimaryPool[self.mBufferIndex]);
+	self.mpPrimaryBuffer[self.mBufferIndex]->Begin();
 
 	// TODO: This will move into the render pass abstraction when it is ready.
-	self.mpDevice->BeginFrame(self.mpPreCommandBuffer[self.mBufferIndex]);
+	self.mpDevice->BeginFrame(self.mpPrimaryBuffer[self.mBufferIndex]);
 
 	// Begin the render pass.
 	RenderPassBeginDesc passBegin;
@@ -392,22 +382,7 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	clearValues[1].mDepthStencil.mStencil = 0;
 	passBegin.mpClearValues = clearValues;
 
-	self.mpPreCommandBuffer[self.mBufferIndex]->BeginRenderPass(&passBegin);
-
-	/*
-	// Cycle the colors to make sure things are working.
-	Math::Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Clear the color and depth buffers.
-	self.mpPreCommandBuffer[self.mBufferIndex]->ClearRenderTargetView(
-		self.mpSwapChain->GetImageView(self.mSwapIndex),
-		color,
-		0,
-		nullptr);
-		*/
-
-	// Always the first to issue.
-	self.mpScheduledBuffers[0] = self.mpPreCommandBuffer[self.mBufferIndex];
+	self.mpPrimaryBuffer[self.mBufferIndex]->BeginRenderPass(&passBegin);
 }
 
 void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
@@ -427,61 +402,44 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 	self.mpDebugUI->EndFrame(self.mpDebugUIBuffer[self.mBufferIndex]);
 
 	self.mpDebugUIBuffer[self.mBufferIndex]->End();
-	self.mpScheduledBuffers[Atomic::Inc(self.mScheduleIndex) - 1] = self.mpDebugUIBuffer[self.mBufferIndex];
 }
 
 void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)
 {
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
 
-	// End the command buffer prior to submission.
-	self.mpScheduledBuffers[0]->End();
-
-	// 
-	self.mpPostCommandPool[self.mBufferIndex]->Reset();
-	self.mpPostCommandBuffer[self.mBufferIndex]->Reset(self.mpPostCommandPool[self.mBufferIndex]);
-	self.mpPostCommandBuffer[self.mBufferIndex]->Begin();
-
-	// Transition the back buffer to present.
-	self.mpPostCommandBuffer[self.mBufferIndex]->ImageTransition(
-		self.mpSwapChain->GetImage(self.mSwapIndex),
-		ResourceState::eRenderTarget,
-		ResourceState::ePresent,
-		SubResource::eAll
-	);
-	self.mpPostCommandBuffer[self.mBufferIndex]->ImageTransition(
-		self.mpDepthBuffer,
-		ResourceState::eDepthWrite,
-		ResourceState::ePresent,
-		SubResource::eAll
-	);
-
-	// Insert the debug drawing buffers.
-	iCommandBuffer* debugBuffer[2] = { self.mpScheduledBuffers[1], self.mpPostCommandBuffer[self.mBufferIndex] };
-	self.mpPreCommandBuffer[self.mBufferIndex]->Insert(2, debugBuffer);
+	// Insert the draw buffers.
+	{
+		iCommandBuffer* buffers[1] = { self.mpDebugUIBuffer[self.mBufferIndex] };
+		self.mpPrimaryBuffer[self.mBufferIndex]->Insert(1, buffers);
+	}
 
 	// End the render pass.
-	self.mpPreCommandBuffer[self.mBufferIndex]->EndRenderPass();
+	self.mpPrimaryBuffer[self.mBufferIndex]->EndRenderPass();
 
 	// Let the device take care of any final needed work, read backs for instance.
-	self.mpDevice->EndFrame(self.mpPostCommandBuffer[self.mBufferIndex]);
+	self.mpDevice->EndFrame(self.mpPrimaryBuffer[self.mBufferIndex]);
 
 	// End the command buffer prior to submission.
-	self.mpPostCommandBuffer[self.mBufferIndex]->End();
-
-	// Pick up and add the transition for present.
-	int32_t commandBufferCount = Atomic::Inc(self.mScheduleIndex);
-	self.mpScheduledBuffers[commandBufferCount - 1] = self.mpPostCommandBuffer[self.mBufferIndex];
+	self.mpPrimaryBuffer[self.mBufferIndex]->End();
 
 	// Submit the command buffers.
-	self.mpDevice->Submit(commandBufferCount, self.mpScheduledBuffers);
-
-	// Present the back buffer.
-	self.mpSwapChain->Present();
+	{
+		iCommandBuffer* buffers[1] = { self.mpPrimaryBuffer[self.mBufferIndex] };
+		self.mpDevice->Submit(1, buffers);
+	}
 
 	// Wait for completion.
 	auto fenceToWaitFor = Atomic::Inc(self.mFenceTarget);
 	self.mpDevice->Signal(self.mpFence, fenceToWaitFor);
+
+	// Need to wait for the above to complete before we attempt to present the swap chain.
+	auto lastFence = self.mFenceTarget;
+	if (lastFence - self.mpFence->GetValue() >= kBufferCount)
+		self.mpFence->WaitFor(lastFence - (kBufferCount - 1));
+
+	// Present the back buffer.
+	self.mpSwapChain->Present();
 
 	// TODO: Move into the render passes.
 	self.mpDevice->Finalize();

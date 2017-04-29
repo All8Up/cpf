@@ -37,57 +37,23 @@ COM::Result CPF_STDCALL RenderPass::Initialize(const Graphics::RenderPassDesc* d
 		CPF_ASSERT(desc->mDependencyCount == 0);
 		CPF_ASSERT(desc->mpDependencies == nullptr);
 
-		// Copy subpasses.
-		mSubPasses.resize(desc->mSubPassCount);
-		MemCpy(mSubPasses.data(), desc->mpSubPasses, sizeof(Graphics::SubPassDesc)*desc->mSubPassCount);
+		// Copy the attachments.
+		mRenderPass.mAttachments.resize(desc->mAttachmentCount);
+		mRenderPass.mAttachments.assign(desc->mpAttachments, desc->mpAttachments + desc->mAttachmentCount);
 
-		// Copy the attachment refs and perform fixup.
-		mAttachmentRefs.resize(desc->mSubPassCount);
-		for (int i=0; i<desc->mSubPassCount; ++i)
+		// Copy sub passes.
+		mRenderPass.mSubPasses.resize(desc->mSubPassCount);
+		for (int i = 0; i < desc->mSubPassCount; ++i)
 		{
-			Graphics::SubPassDesc& subPass = mSubPasses[i];
-			mAttachmentRefs[i].resize(
-				subPass.mInputCount +
-				subPass.mColorCount +
-				subPass.mResolveCount +
-				subPass.mDepthStencilCount +
-				subPass.mPreserveCount
-			);
-			Vector<Graphics::AttachmentRef>& refs = mAttachmentRefs[i];
+			auto& source = desc->mpSubPasses[i];
+			auto& target = mRenderPass.mSubPasses[i];
 
-			// Copy input refs and point to the new data.
-			for (int j = 0; j < subPass.mInputCount; ++j)
-				refs[j] = subPass.mpInputAttachments[j];
-			subPass.mpInputAttachments = refs.data();
-			int32_t offset = subPass.mInputCount;
-
-			// Copy color refs and point to the new data.
-			for (int j = 0; j < subPass.mColorCount; ++j)
-				refs[j+offset] = subPass.mpColorAttachments[j];
-			subPass.mpColorAttachments = refs.data() + offset;
-			offset += subPass.mColorCount;
-
-			// Copy resolve refs and point to the new data.
-			for (int j = 0; j < subPass.mResolveCount; ++j)
-				refs[j + offset] = subPass.mpResolveAttachments[j];
-			subPass.mpResolveAttachments = refs.data() + offset;
-			offset += subPass.mResolveCount;
-
-			// Copy depth refs and point to the new data.
-			for (int j = 0; j < subPass.mDepthStencilCount; ++j)
-				refs[j + offset] = subPass.mpDepthStencilAttachments[j];
-			subPass.mpDepthStencilAttachments = refs.data() + offset;
-			offset += subPass.mDepthStencilCount;
-
-			// Copy preserve refs and point to the new data.
-			for (int j = 0; j < subPass.mPreserveCount; ++j)
-				refs[j + offset] = subPass.mpPreserveAttachments[j];
-			subPass.mpPreserveAttachments = refs.data() + offset;
+			target.mBindPoint = desc->mpSubPasses[i].mBindPoint;
+			target.mInputAttachments.assign(source.mpInputAttachments, source.mpInputAttachments + source.mInputCount);
+			target.mColorAttachments.assign(source.mpColorAttachments, source.mpColorAttachments + source.mColorCount);
+			target.mResolveAttachments.assign(source.mpResolveAttachments, source.mpResolveAttachments + source.mResolveCount);
+			target.mDepthStencilAttachments.assign(source.mpDepthStencilAttachments, source.mpDepthStencilAttachments + source.mDepthStencilCount);
 		}
-
-		// Copy attachments.
-		mAttachments.resize(desc->mAttachmentCount);
-		MemCpy(mAttachments.data(), desc->mpAttachments, sizeof(Graphics::AttachmentDesc)*desc->mAttachmentCount);
 
 		return COM::kOK;
 	}
