@@ -383,9 +383,9 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	ClearValue clearValues[2];
 	clearValues[0].mFormat = Format::eRGBA8un;
 	clearValues[0].mColor[0] = 0.0f;
-	clearValues[0].mColor[0] = 0.0f;
-	clearValues[0].mColor[0] = 0.0f;
-	clearValues[0].mColor[0] = 1.0f;
+	clearValues[0].mColor[1] = 0.0f;
+	clearValues[0].mColor[2] = 0.0f;
+	clearValues[0].mColor[3] = 1.0f;
 
 	clearValues[1].mFormat = Format::eD32f;
 	clearValues[1].mDepthStencil.mDepth = 1.0f;
@@ -405,9 +405,6 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 		0,
 		nullptr);
 		*/
-
-	// End the command buffer prior to submission.
-	self.mpPreCommandBuffer[self.mBufferIndex]->End();
 
 	// Always the first to issue.
 	self.mpScheduledBuffers[0] = self.mpPreCommandBuffer[self.mBufferIndex];
@@ -436,6 +433,9 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)
 {
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
+
+	// End the command buffer prior to submission.
+	self.mpScheduledBuffers[0]->End();
 
 	// 
 	self.mpPostCommandPool[self.mBufferIndex]->Reset();

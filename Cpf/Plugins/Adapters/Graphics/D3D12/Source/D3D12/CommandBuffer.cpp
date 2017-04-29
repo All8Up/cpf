@@ -341,13 +341,11 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 					// D3D12 only cares about LoadOp::eClear.
 					if (renderPass->GetAttachments()[color->mIndex].mLoadOp == Graphics::LoadOp::eClear)
 					{
-						// TODO: Check this for consistency.  I.e. why are the values in reverse order?
-						// TODO: Likely it is due to how the simd vectors are stored.
 						Math::Vector4fv c(
-							desc->mpClearValues[color->mIndex].mColor[3],
-							desc->mpClearValues[color->mIndex].mColor[2],
+							desc->mpClearValues[color->mIndex].mColor[0],
 							desc->mpClearValues[color->mIndex].mColor[1],
-							desc->mpClearValues[color->mIndex].mColor[0]);
+							desc->mpClearValues[color->mIndex].mColor[2],
+							desc->mpClearValues[color->mIndex].mColor[3]);
 
 						Graphics::iImageView* imageViews[1] = { target.mpImageView };
 						SetRenderTargets(1, imageViews, nullptr);
