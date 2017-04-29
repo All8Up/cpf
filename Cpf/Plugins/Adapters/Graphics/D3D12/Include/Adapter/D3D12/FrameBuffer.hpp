@@ -22,12 +22,12 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL Initialize(const Graphics::FrameBufferDesc* desc);
 
-				using ImageViewVector = Vector<IntrusivePtr<Graphics::iImage>>;
-				const ImageViewVector& GetImages() const { return mAttachments; }
+				using ImageVector = Vector<Graphics::ImageAndView>;
+				const ImageVector& GetImages() const { return mAttachments; }
 				const Graphics::FrameBufferDesc& GetFrameBufferDesc() const { return mFrameBuffer; }
 
 			private:
-				ImageViewVector mAttachments;
+				ImageVector mAttachments;
 				Graphics::FrameBufferDesc mFrameBuffer;
 			};
 		}

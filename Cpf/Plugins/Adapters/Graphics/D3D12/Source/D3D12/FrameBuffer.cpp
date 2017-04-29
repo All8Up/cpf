@@ -49,7 +49,7 @@ COM::Result CPF_STDCALL FrameBuffer::Initialize(const Graphics::FrameBufferDesc*
 			// Copy the attachments.  NOTE: Takes a ref count.
 			mAttachments.resize(desc->mAttachmentCount);
 			for (int i = 0; i < desc->mAttachmentCount; ++i)
-				mAttachments[i].Assign(desc->mpAttachments[i]);
+				mAttachments[i] = desc->mpAttachments[i];
 
 			// Make sure we don't reference the old pointer.
 			mFrameBuffer.mpAttachments = nullptr;

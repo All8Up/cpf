@@ -4,6 +4,7 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Image.hpp"
+#include "Adapter/D3D12/ImageView.hpp"
 #include "Graphics/WindowData.hpp"
 #include "Logging/Logging.hpp"
 #include "Move.hpp"
@@ -70,7 +71,9 @@ SwapChain::SwapChain(
 			ID3D12Resource* rt;
 			mpSwapChain->GetBuffer(i, IID_PPV_ARGS(&rt));
 			mRenderTargets[i].Adopt(new Image(rt));
-			d3d12Device->CreateRenderTargetView(mRenderTargets[i].Cast<Image>()->GetResource(), nullptr, 
+			d3d12Device->CreateRenderTargetView(
+				mRenderTargets[i].Cast<Image>()->GetResource(),
+				nullptr, 
 				mRenderTargetViews[i].Cast<ImageView>()->GetDescriptor()
 				);
 		}

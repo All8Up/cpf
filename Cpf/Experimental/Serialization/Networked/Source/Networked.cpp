@@ -3,7 +3,6 @@
 #include "MultiCore.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iPipeline.hpp"
-#include "MultiCore/iStage.hpp"
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
 #include "Resources/ResourceConfig.hpp"

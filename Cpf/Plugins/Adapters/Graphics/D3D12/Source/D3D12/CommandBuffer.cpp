@@ -4,6 +4,7 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/SwapChain.hpp"
 #include "Adapter/D3D12/Image.hpp"
+#include "Adapter/D3D12/ImageView.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Resource.hpp"
 #include "Adapter/D3D12/ResourceBinding.hpp"
@@ -316,27 +317,66 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 			const FrameBuffer* frameBuffer = static_cast<FrameBuffer*>(fBuffer);
 			if (renderPass->GetSubPassCount() > 0)
 			{
+				CPF_ASSERT(frameBuffer->GetFrameBufferDesc().mAttachmentCount == renderPass->GetAttachments().size());
+				// TODO: This will be cached in the command buffer object.
+				Vector<Graphics::ResourceState> states(frameBuffer->GetImages().size());
+				for (int32_t i=0; i<renderPass->GetAttachments().size(); ++i)
+				{
+					states[i] = renderPass->GetAttachments()[i].mStartState;
+				}
+
 				const auto& subPass = renderPass->GetSubPasses()[0];
 				for (int32_t i = 0; i < subPass.mColorCount; ++i)
 				{
 					const auto& color = subPass.mpColorAttachments;
+					const Graphics::ImageAndView& target = frameBuffer->GetImages()[color->mIndex];
 					ImageTransition(
-						frameBuffer->GetImages()[color->mIndex],
-						Graphics::ResourceState::ePresent,
+						target.mpImage,
+						states[color->mIndex],
 						color->mState,
 						Graphics::SubResource::eAll
 					);
+					states[color->mIndex] = color->mState;
+
+					// D3D12 only cares about LoadOp::eClear.
+					if (renderPass->GetAttachments()[color->mIndex].mLoadOp == Graphics::LoadOp::eClear)
+					{
+						// TODO: Check this for consistency.  I.e. why are the values in reverse order?
+						// TODO: Likely it is due to how the simd vectors are stored.
+						Math::Vector4fv c(
+							desc->mpClearValues[color->mIndex].mColor[3],
+							desc->mpClearValues[color->mIndex].mColor[2],
+							desc->mpClearValues[color->mIndex].mColor[1],
+							desc->mpClearValues[color->mIndex].mColor[0]);
+
+						Graphics::iImageView* imageViews[1] = { target.mpImageView };
+						SetRenderTargets(1, imageViews, nullptr);
+						ClearRenderTargetView(target.mpImageView, c, 0, nullptr);
+					}
 				}
 
 				for (int32_t i = 0; i < subPass.mDepthStencilCount; ++i)
 				{
 					const auto& depth = subPass.mpDepthStencilAttachments;
+					const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth->mIndex];
 					ImageTransition(
-						frameBuffer->GetImages()[depth->mIndex],
+						target.mpImage,
 						Graphics::ResourceState::ePresent,
 						depth->mState,
 						Graphics::SubResource::eAll
 					);
+					states[depth->mIndex] = depth->mState;
+
+					if (renderPass->GetAttachments()[depth->mIndex].mLoadOp == Graphics::LoadOp::eClear)
+					{
+						ClearDepthStencilView(
+							target.mpImageView,
+							Graphics::DepthStencilClearFlag::eDepth,
+							desc->mpClearValues[depth->mIndex].mDepthStencil.mDepth,
+							desc->mpClearValues[depth->mIndex].mDepthStencil.mStencil,
+							0,
+							nullptr);
+					}
 				}
 			}
 		}

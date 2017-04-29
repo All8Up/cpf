@@ -18,6 +18,7 @@ set (INCLUDE_ADAPTER_D3D12_FILES
 	Include/Adapter/D3D12/D3D12Utils.hpp
 	Include/Adapter/D3D12/DescriptorManager.hpp
 	Include/Adapter/D3D12/Image.hpp
+	Include/Adapter/D3D12/ImageView.hpp
 	Include/Adapter/D3D12/Fence.hpp
 	Include/Adapter/D3D12/Shader.hpp
 	Include/Adapter/D3D12/Pipeline.hpp
@@ -43,6 +44,7 @@ set (SOURCE_ADAPTER_D3D12_FILES
 	Source/D3D12/D3D12Utils.cpp
 	Source/D3D12/DescriptorManager.cpp
 	Source/D3D12/Image.cpp
+	Source/D3D12/ImageView.cpp
 	Source/D3D12/Fence.cpp
 	Source/D3D12/Shader.cpp
 	Source/D3D12/Pipeline.cpp

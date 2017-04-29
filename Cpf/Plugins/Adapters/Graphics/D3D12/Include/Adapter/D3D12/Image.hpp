@@ -3,10 +3,7 @@
 #include "Graphics/Driver.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/ImageDesc.hpp"
-#include "Graphics/iImageView.hpp"
-#include "D3D12Utils.hpp"
 #include "DescriptorManager.hpp"
-#include "Move.hpp"
 
 namespace Cpf
 {
@@ -34,20 +31,6 @@ namespace Cpf
 				Graphics::ImageDesc mDesc;
 				Descriptor mDescriptor;
 				D3D12_SHADER_RESOURCE_VIEW_DESC mResourceView;
-			};
-
-			class ImageView : public tRefCounted<Graphics::iImageView>
-			{
-			public:
-				ImageView(Descriptor&& desc) : mDescriptor(Move(desc)) {}
-				ImageView(Device*, Image*, const Graphics::DepthStencilViewDesc*);
-
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
-
-				Descriptor& GetDescriptor() { return mDescriptor; }
-
-			private:
-				Descriptor mDescriptor;
 			};
 		}
 	}

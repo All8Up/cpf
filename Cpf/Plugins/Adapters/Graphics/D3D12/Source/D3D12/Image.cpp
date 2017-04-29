@@ -28,7 +28,9 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 			Convert(mDesc.mFormat),
 			{UINT(mDesc.mSamples.mCount), UINT(mDesc.mSamples.mQuality)},
 			D3D12_TEXTURE_LAYOUT_UNKNOWN,
-			(mDesc.mFlags == Graphics::ImageFlags::eNone ? D3D12_RESOURCE_FLAG_NONE : D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
+			(mDesc.mFlags == Graphics::ImageFlags::eNone
+				? D3D12_RESOURCE_FLAG_NONE
+				: D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 		};
 		D3D12_HEAP_PROPERTIES heapProps =
 		{
@@ -62,6 +64,7 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 
 	CPF_LOG(D3D12, Info) << "Created image: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 
+	// TODO: Remove the initialization data and use externally managed transfer buffers.
 	if (initData)
 	{
 		ID3D12Resource* upload = nullptr;
@@ -136,40 +139,4 @@ const Graphics::ImageDesc& Image::GetDesc() const
 ID3D12Resource* Image::GetResource()
 {
 	return mpResource;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-ImageView::ImageView(Device* device, Image* image, const Graphics::DepthStencilViewDesc* desc)
-	: mDescriptor(device->GetDepthStencilViewDescriptors().Alloc())
-{
-	D3D12_DEPTH_STENCIL_VIEW_DESC d3dDesc;
-	D3D12_DEPTH_STENCIL_VIEW_DESC* pd3dDesc = nullptr;
-	if (desc)
-	{
-		CPF_ASSERT_ALWAYS; // Not implemented yet.
-		pd3dDesc = &d3dDesc;
-	}
-	device->GetD3DDevice()->CreateDepthStencilView(image->GetResource(), pd3dDesc, mDescriptor);
-}
-
-COM::Result CPF_STDCALL ImageView::QueryInterface(COM::InterfaceID id, void** outIface)
-{
-	if (outIface)
-	{
-		switch (id.GetID())
-		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
-			break;
-		case iImageView::kIID.GetID():
-			*outIface = static_cast<iImageView*>(this);
-			break;
-		default:
-			return COM::kUnknownInterface;
-		}
-		AddRef();
-		return COM::kOK;
-	}
-	return COM::kInvalidParameter;
 }

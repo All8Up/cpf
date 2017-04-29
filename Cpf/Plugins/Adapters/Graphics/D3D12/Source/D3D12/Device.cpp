@@ -7,6 +7,7 @@
 #include "Adapter/D3D12/Fence.hpp"
 #include "Adapter/D3D12/SwapChain.hpp"
 #include "Adapter/D3D12/Image.hpp"
+#include "Adapter/D3D12/ImageView.hpp"
 #include "Adapter/D3D12/Shader.hpp"
 #include "Adapter/D3D12/Pipeline.hpp"
 #include "Adapter/D3D12/ResourceBinding.hpp"

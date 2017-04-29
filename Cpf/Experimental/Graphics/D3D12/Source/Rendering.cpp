@@ -60,7 +60,7 @@ void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
 		SubResource::eAll
 	);
 
-	// Cycle the colors to make sure things are working.
+	// Black background.
 	Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Clear the color and depth buffers.
