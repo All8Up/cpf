@@ -91,6 +91,7 @@ namespace Cpf
 			private:
 				COM::Result _AddCommandList();
 				ID3D12GraphicsCommandList* _Current() { CPF_ASSERT(mCurrent >= 0); return mCommandLists[mCurrent][0]; }
+				COM::Result _ApplySubPass();
 
 				friend class Device;
 				using CommandListPtr = ID3D12GraphicsCommandList*;
@@ -101,6 +102,7 @@ namespace Cpf
 				ID3D12CommandAllocator* mpAllocator;
 				CommandListStack mCommandLists;
 				int32_t mCurrent;
+				int32_t mSubPass;
 				Graphics::CommandBufferType mType;
 
 				UnorderedSet<ID3D12DescriptorHeap*> mHeaps;

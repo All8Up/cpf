@@ -35,6 +35,7 @@ CommandBuffer::CommandBuffer(COM::iUnknown*)
 	: mpDevice(nullptr)
 	, mpAllocator(nullptr)
 	, mCurrent(-1)
+	, mSubPass(0)
 	, mType(Graphics::CommandBufferType::kPrimary)
 	, mRenderPass{0}
 {
@@ -312,92 +313,105 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 		Graphics::iFrameBuffer* fBuffer = desc->mpFrameBuffer;
 		if (rPass && fBuffer)
 		{
+			// Store the render pass information.
 			mRenderPass = *desc;
 			mRenderPass.mpRenderPass->AddRef();
 			mRenderPass.mpFrameBuffer->AddRef();
+			mSubPass = 0;
 
-			// TODO: Starting the render pass setup.  First step, just activate the first subpass.
-			// TODO: Handle multiple subpasses.
+			// Initialize the attachment state array.
 			const RenderPass* renderPass = static_cast<RenderPass*>(rPass);
-			const FrameBuffer* frameBuffer = static_cast<FrameBuffer*>(fBuffer);
-			if (renderPass->GetRenderPassDesc().mSubPasses.size() > 0)
-			{
-				CPF_ASSERT(frameBuffer->GetFrameBufferDesc().mAttachmentCount == renderPass->GetRenderPassDesc().mAttachments.size());
-				const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
-				const auto& subPasses = renderPass->GetRenderPassDesc().mSubPasses;
+			const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
+			mAttachmentStates.resize(attachments.size());
+			for (int32_t i = 0; i < attachments.size(); ++i)
+				mAttachmentStates[i] = attachments[i].mStartState;
 
-				mAttachmentStates.resize(frameBuffer->GetImages().size());
-				for (int32_t i=0; i<attachments.size(); ++i)
-				{
-					mAttachmentStates[i] = attachments[i].mStartState;
-				}
-
-				// TODO: Batch the transitions.
-				CPF_ASSERT(!subPasses.empty());
-				const auto& subPass = subPasses[0];
-				for (const auto& color : subPass.mColorAttachments)
-				{
-					const Graphics::ImageAndView& target = frameBuffer->GetImages()[color.mIndex];
-					ImageTransition(
-						target.mpImage,
-						mAttachmentStates[color.mIndex],
-						color.mState,
-						Graphics::SubResource::eAll
-					);
-					mAttachmentStates[color.mIndex] = color.mState;
-
-					// D3D12 only cares about LoadOp::eClear.
-					if (attachments[color.mIndex].mLoadOp == Graphics::LoadOp::eClear)
-					{
-						Math::Vector4fv c(
-							desc->mpClearValues[color.mIndex].mColor[0],
-							desc->mpClearValues[color.mIndex].mColor[1],
-							desc->mpClearValues[color.mIndex].mColor[2],
-							desc->mpClearValues[color.mIndex].mColor[3]);
-
-						Graphics::iImageView* imageViews[1] = { target.mpImageView };
-						SetRenderTargets(1, imageViews, nullptr);
-						ClearRenderTargetView(target.mpImageView, c, 0, nullptr);
-					}
-				}
-
-				for (const auto& depth : subPass.mDepthStencilAttachments)
-				{
-					const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth.mIndex];
-					ImageTransition(
-						target.mpImage,
-						Graphics::ResourceState::ePresent,
-						depth.mState,
-						Graphics::SubResource::eAll
-					);
-					mAttachmentStates[depth.mIndex] = depth.mState;
-
-					// D3D12 only cares about LoadOp::eClear.
-					if (attachments[depth.mIndex].mLoadOp == Graphics::LoadOp::eClear)
-					{
-						ClearDepthStencilView(
-							target.mpImageView,
-							Graphics::DepthStencilClearFlag::eDepth,
-							desc->mpClearValues[depth.mIndex].mDepthStencil.mDepth,
-							desc->mpClearValues[depth.mIndex].mDepthStencil.mStencil,
-							0,
-							nullptr);
-					}
-				}
-				return COM::kOK;
-			}
+			return _ApplySubPass();
 		}
 	}
 	return COM::kInvalidParameter;
+}
+
+COM::Result CommandBuffer::_ApplySubPass()
+{
+	Graphics::iRenderPass* rPass = mRenderPass.mpRenderPass;
+	Graphics::iFrameBuffer* fBuffer = mRenderPass.mpFrameBuffer;
+	if (rPass && fBuffer)
+	{
+		const RenderPass* renderPass = static_cast<RenderPass*>(rPass);
+		const FrameBuffer* frameBuffer = static_cast<FrameBuffer*>(fBuffer);
+		const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
+
+		if (renderPass->GetRenderPassDesc().mSubPasses.size() > mSubPass)
+		{
+			CPF_ASSERT(frameBuffer->GetFrameBufferDesc().mAttachmentCount == renderPass->GetRenderPassDesc().mAttachments.size());
+			const auto& subPasses = renderPass->GetRenderPassDesc().mSubPasses;
+
+			// TODO: Batch the transitions.
+			CPF_ASSERT(!subPasses.empty());
+			const auto& subPass = subPasses[mSubPass];
+			for (const auto& color : subPass.mColorAttachments)
+			{
+				const Graphics::ImageAndView& target = frameBuffer->GetImages()[color.mIndex];
+				ImageTransition(
+					target.mpImage,
+					mAttachmentStates[color.mIndex],
+					color.mState,
+					Graphics::SubResource::eAll
+				);
+				mAttachmentStates[color.mIndex] = color.mState;
+
+				// D3D12 only cares about LoadOp::eClear.
+				if (attachments[color.mIndex].mLoadOp == Graphics::LoadOp::eClear)
+				{
+					Math::Vector4fv c(
+						mRenderPass.mpClearValues[color.mIndex].mColor[0],
+						mRenderPass.mpClearValues[color.mIndex].mColor[1],
+						mRenderPass.mpClearValues[color.mIndex].mColor[2],
+						mRenderPass.mpClearValues[color.mIndex].mColor[3]);
+
+					Graphics::iImageView* imageViews[1] = { target.mpImageView };
+					SetRenderTargets(1, imageViews, nullptr);
+					ClearRenderTargetView(target.mpImageView, c, 0, nullptr);
+				}
+			}
+
+			for (const auto& depth : subPass.mDepthStencilAttachments)
+			{
+				const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth.mIndex];
+				ImageTransition(
+					target.mpImage,
+					Graphics::ResourceState::ePresent,
+					depth.mState,
+					Graphics::SubResource::eAll
+				);
+				mAttachmentStates[depth.mIndex] = depth.mState;
+
+				// D3D12 only cares about LoadOp::eClear.
+				if (attachments[depth.mIndex].mLoadOp == Graphics::LoadOp::eClear)
+				{
+					ClearDepthStencilView(
+						target.mpImageView,
+						Graphics::DepthStencilClearFlag::eDepth,
+						mRenderPass.mpClearValues[depth.mIndex].mDepthStencil.mDepth,
+						mRenderPass.mpClearValues[depth.mIndex].mDepthStencil.mStencil,
+						0,
+						nullptr);
+				}
+			}
+			return COM::kOK;
+		}
+	}
+	return COM::kError;
 }
 
 COM::Result CPF_STDCALL CommandBuffer::NextSubPass()
 {
 	if (mRenderPass.mpRenderPass)
 	{
-		// TODO: Transition the attachments..
-
 		_AddCommandList();
+		++mSubPass;
+		return _ApplySubPass();
 	}
 	return Graphics::kNotInRenderPass;
 }
@@ -413,7 +427,6 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 		NextSubPass();
 
 		const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
-
 		for (int i = 0; i < desc.mAttachmentCount; ++i)
 		{
 			const auto currentState = mAttachmentStates[i];
