@@ -288,19 +288,6 @@ void CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view, Graphics::
 
 COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBeginDesc* desc)
 {
-	// This abstraction over render passes is preferred to the set render target approach of D3D12
-	// since Vulkan is better designed for the needs of the hand held devices the system should
-	// eventually run on.  Additionally, with enough work, this solution let's some automated optimization
-	// of resource barriers take place.  Finally, the same basic solution is used in Metal for iOS.
-
-	// TODO: The primary difficulty for this in D3D12 is that under Vulkan the render pass and all
-	// TODO: rendering commands are expected in a single primary command buffer.  So the method it
-	// TODO: would work in Vulkan is "begin -> embed secondary lists -> next subpass -> more secondary
-	// TODO: -> end passes" submit single primary list.  D3D12 does not have a separation between
-	// TODO: primary and secondary, the closest thing is direct and bundle but that would be misusing
-	// TODO: the API in a bad manner, not to mention not all needed commands are available to bundles.
-	// TODO: So, the trick seems to be that a command buffer abstraction for D3D12 will likely need
-	// TODO: to be multiple direct command buffers gathered up and then issued as a single submission.
 	if (desc)
 	{
 		if (mRenderPass.mpRenderPass)
