@@ -48,34 +48,34 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				void Begin() override;
-				void End() override;
-				void Reset(Graphics::iCommandPool*) override;
+				void CPF_STDCALL Begin() override;
+				void CPF_STDCALL End() override;
+				void CPF_STDCALL Reset(Graphics::iCommandPool*) override;
 
-				void UpdateSubResource(Graphics::iResource* src, Graphics::iResource* dst, const Graphics::ResourceData* data) override;
+				void CPF_STDCALL UpdateSubResource(Graphics::iResource* src, Graphics::iResource* dst, const Graphics::ResourceData* data) override;
 
-				void ResourceBarrier(Graphics::iResource* resource, Graphics::ResourceState startStart, Graphics::ResourceState endState) override;
-				void ImageTransition(Graphics::iImage* image, Graphics::ResourceState startState, Graphics::ResourceState endState, Graphics::SubResource subResources) override;
+				void CPF_STDCALL ResourceBarrier(Graphics::iResource* resource, Graphics::ResourceState startStart, Graphics::ResourceState endState) override;
+				void CPF_STDCALL ImageTransition(Graphics::iImage* image, Graphics::ResourceState startState, Graphics::ResourceState endState, Graphics::SubResource subResources) override;
 
-				void SetResourceBinding(Graphics::iResourceBinding* binding) override;
-				void SetPipeline(Graphics::iPipeline* pipeline) override;
-				void SetViewports(int32_t count, const Graphics::Viewport* rects) override;
-				void SetScissorRects(int32_t count, const Math::Rectanglei* rects) override;
-				void SetTopology(Graphics::PrimitiveTopology topology) override;
-				void SetVertexBuffers(int32_t startSlot, int32_t viewCount, Graphics::iVertexBuffer**) override;
-				void SetIndexBuffer(Graphics::iIndexBuffer*) override;
-				void SetConstantBuffer(int32_t index, Graphics::iConstantBuffer*) override;
-				void SetConstants(int32_t index, int32_t count, const void*, int32_t offset = 0) override;
-				void SetSampler(int32_t index, Graphics::iSampler*) override;
-				void SetImage(int32_t index, Graphics::iImage*) override;
+				void CPF_STDCALL SetResourceBinding(Graphics::iResourceBinding* binding) override;
+				void CPF_STDCALL SetPipeline(Graphics::iPipeline* pipeline) override;
+				void CPF_STDCALL SetViewports(int32_t count, const Graphics::Viewport* rects) override;
+				void CPF_STDCALL SetScissorRects(int32_t count, const Math::Rectanglei* rects) override;
+				void CPF_STDCALL SetTopology(Graphics::PrimitiveTopology topology) override;
+				void CPF_STDCALL SetVertexBuffers(int32_t startSlot, int32_t viewCount, Graphics::iVertexBuffer**) override;
+				void CPF_STDCALL SetIndexBuffer(Graphics::iIndexBuffer*) override;
+				void CPF_STDCALL SetConstantBuffer(int32_t index, Graphics::iConstantBuffer*) override;
+				void CPF_STDCALL SetConstants(int32_t index, int32_t count, const void*, int32_t offset = 0) override;
+				void CPF_STDCALL SetSampler(int32_t index, Graphics::iSampler*) override;
+				void CPF_STDCALL SetImage(int32_t index, Graphics::iImage*) override;
 
-				void DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) override;
-				void DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) override;
+				void CPF_STDCALL DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) override;
+				void CPF_STDCALL DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) override;
 
-				void SetRenderTargets(int32_t imageCount, Graphics::iImageView** images, Graphics::iImageView* depthView) override;
+				void CPF_STDCALL SetRenderTargets(int32_t imageCount, Graphics::iImageView** images, Graphics::iImageView* depthView) override;
 
-				void ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) override;
-				void ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
+				void CPF_STDCALL ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) override;
+				void CPF_STDCALL ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
 
 				COM::Result CPF_STDCALL BeginRenderPass(Graphics::RenderPassBeginDesc*) override;
 				COM::Result CPF_STDCALL NextSubPass() override;
@@ -91,7 +91,8 @@ namespace Cpf
 			private:
 				COM::Result _AddCommandList();
 				ID3D12GraphicsCommandList* _Current() { CPF_ASSERT(mCurrent >= 0); return mCommandLists[mCurrent][0]; }
-				COM::Result _ApplySubPass();
+				COM::Result _StartSubPass();
+				COM::Result _EndSubPass();
 
 				friend class Device;
 				using CommandListPtr = ID3D12GraphicsCommandList*;
