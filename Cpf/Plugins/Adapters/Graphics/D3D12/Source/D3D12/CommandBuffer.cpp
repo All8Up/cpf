@@ -341,22 +341,26 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 		const Graphics::FrameBufferDesc& desc = frameBuffer->GetFrameBufferDesc();
 		NextSubPass();
 
+		// Batch setup.
+		constexpr int kMaxBatch = 16;
+		D3D12_RESOURCE_BARRIER barrier[kMaxBatch];
+
+		//////////////////////////////////////////////////////////////////////////
 		const auto& attachments = renderPass->GetRenderPassDesc().mAttachments;
+		int currentIndex = 0;
 		for (int i = 0; i < desc.mAttachmentCount; ++i)
 		{
 			const auto currentState = mAttachmentStates[i];
 			const auto targetState = attachments[i].mFinalState;
 			if (currentState != targetState)
 			{
-				// TODO: This can pack all of these into a single resource barrier.
-				ImageTransition(
-					frameBuffer->GetImages()[i].mpImage,
-					currentState,
-					targetState,
-					Graphics::SubResource::eAll
-				);
+				_MakeBarrier(barrier + currentIndex, static_cast<Image*>(frameBuffer->GetImages()[i].mpImage), currentState, targetState);
+				++currentIndex;
 			}
 		}
+
+		// Issue the barriers.
+		_Current()->ResourceBarrier(currentIndex, barrier);
 
 		// Clear the references to the render pass.
 		mRenderPass.mpFrameBuffer->Release();
@@ -431,6 +435,16 @@ COM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* con
 	return COM::kInvalidParameter;
 }
 
+void CommandBuffer::_MakeBarrier(D3D12_RESOURCE_BARRIER* barrier, Image* image, Graphics::ResourceState begin, Graphics::ResourceState end)
+{
+	barrier->Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier->Transition.pResource = image->GetResource();
+	barrier->Transition.StateBefore = Convert(begin);
+	barrier->Transition.StateAfter = Convert(end);
+	barrier->Transition.Subresource = Convert(Graphics::SubResource::eAll);
+	barrier->Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+}
+
 COM::Result CommandBuffer::_StartSubPass()
 {
 	Graphics::iRenderPass* rPass = mRenderPass.mpRenderPass;
@@ -457,12 +471,7 @@ COM::Result CommandBuffer::_StartSubPass()
 			for (const auto& color : subPass.mColorAttachments)
 			{
 				const Graphics::ImageAndView& target = frameBuffer->GetImages()[color.mIndex];
-				barrier[currentIndex].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-				barrier[currentIndex].Transition.pResource = static_cast<Image*>(target.mpImage)->GetResource();
-				barrier[currentIndex].Transition.StateBefore = Convert(mAttachmentStates[color.mIndex]);
-				barrier[currentIndex].Transition.StateAfter = Convert(color.mState);
-				barrier[currentIndex].Transition.Subresource = Convert(Graphics::SubResource::eAll);
-				barrier[currentIndex].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				_MakeBarrier(barrier + currentIndex, static_cast<Image*>(target.mpImage), mAttachmentStates[color.mIndex], color.mState);
 				++currentIndex;
 				mAttachmentStates[color.mIndex] = color.mState;
 			}
@@ -470,12 +479,7 @@ COM::Result CommandBuffer::_StartSubPass()
 			for (const auto& depth : subPass.mDepthStencilAttachments)
 			{
 				const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth.mIndex];
-				barrier[currentIndex].Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-				barrier[currentIndex].Transition.pResource = static_cast<Image*>(target.mpImage)->GetResource();
-				barrier[currentIndex].Transition.StateBefore = Convert(mAttachmentStates[depth.mIndex]);
-				barrier[currentIndex].Transition.StateAfter = Convert(depth.mState);
-				barrier[currentIndex].Transition.Subresource = Convert(Graphics::SubResource::eAll);
-				barrier[currentIndex].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+				_MakeBarrier(barrier + currentIndex, static_cast<Image*>(target.mpImage), mAttachmentStates[depth.mIndex], depth.mState);
 				++currentIndex;
 				mAttachmentStates[depth.mIndex] = depth.mState;
 			}

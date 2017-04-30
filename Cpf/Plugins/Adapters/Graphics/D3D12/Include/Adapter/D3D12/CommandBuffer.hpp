@@ -35,6 +35,8 @@ namespace Cpf
 	{
 		namespace D3D12
 		{
+			class Image;
+
 			static constexpr COM::ClassID kCommandBufferCID = COM::ClassID("Adapter::D3D12::CommandBuffer"_crc64);
 
 			class CommandBuffer : public tRefCounted<Graphics::iCommandBuffer>
@@ -91,6 +93,7 @@ namespace Cpf
 			private:
 				COM::Result _AddCommandList();
 				ID3D12GraphicsCommandList* _Current() { CPF_ASSERT(mCurrent >= 0); return mCommandLists[mCurrent][0]; }
+				static void _MakeBarrier(D3D12_RESOURCE_BARRIER* barrier, Image* image, Graphics::ResourceState begin, Graphics::ResourceState end);
 				COM::Result _StartSubPass();
 				COM::Result _EndSubPass();
 
