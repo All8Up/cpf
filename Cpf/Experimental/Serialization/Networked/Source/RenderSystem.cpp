@@ -284,6 +284,11 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 	return mpSwapChain;
 }
 
+bool RenderSystem::_CreateRenderTargets(int32_t w, int32_t h)
+{
+	return false;
+}
+
 bool RenderSystem::_CreateDepthBuffer(int32_t w, int32_t h)
 {
 	mpDepthBuffer.Adopt(nullptr);

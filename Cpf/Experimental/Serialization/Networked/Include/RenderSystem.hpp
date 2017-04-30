@@ -66,6 +66,7 @@ namespace Cpf
 		bool _SelectAdapter();
 		bool _CreateRenderPass();
 		bool _CreateSwapChain(iWindow* window);
+		bool _CreateRenderTargets(int32_t w, int32_t h);
 		bool _CreateDepthBuffer(int32_t w, int32_t h);
 		bool _CreateFrameBuffers(int32_t w, int32_t h);
 		bool _CreateRenderData(iInputManager*, iWindow*, Resources::Locator*);

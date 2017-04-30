@@ -29,9 +29,5 @@ option (EXTERN_INLINE_ASIO "Include the source project for asio." ON)
 set (AURORA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Aurora")
 option (EXTERN_INLINE_AURORA "Include the source project for Aurora" ON)
 
-# BGFX
-set (BGFX_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/bgfx")
-option (EXTERN_INLINE_BGFX "Include the source project for Bgfx" ON)
-
 # ################################
 include ("Source/CMakeLists.txt")

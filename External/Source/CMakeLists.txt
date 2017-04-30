@@ -88,31 +88,6 @@ else ()
 	endif ()
 endif ()
 
-# Bgfx
-if (NOT EXTERN_INLINE_BGFX)
-else ()
-	if (IS_DIRECTORY "${BGFX_SRC_DIR}")
-		set (BGFX_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-		add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/bgfx)
-
-		set_property (TARGET tools PROPERTY FOLDER External)
-
-		set_property (TARGET bx PROPERTY FOLDER External)
-		set_property (TARGET bgfx PROPERTY FOLDER External)
-		set_property (TARGET geometryc PROPERTY FOLDER External)
-		set_property (TARGET shaderc PROPERTY FOLDER External)
-
-		set_property (TARGET fcpp PROPERTY FOLDER External)
-		set_property (TARGET mesa PROPERTY FOLDER External)
-		set_property (TARGET glcpp PROPERTY FOLDER External)
-		set_property (TARGET forsyth-too PROPERTY FOLDER External)
-		set_property (TARGET glcpp PROPERTY FOLDER External)
-		set_property (TARGET glslang PROPERTY FOLDER External)
-		set_property (TARGET glsl-optimizer PROPERTY FOLDER External)
-		set_property (TARGET ib-compress PROPERTY FOLDER External)
-	endif ()
-endif ()
-
 # Vulkan
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK")
 	add_library (vulkan INTERFACE)
