@@ -399,8 +399,8 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 	self.mpDebugUIBuffer[self.mBufferIndex]->Reset(self.mpDebugUIPool[self.mBufferIndex]);
 	self.mpDebugUIBuffer[self.mBufferIndex]->Begin();
 
-	iImageView* imageViews[] = { self.mpSwapChain->GetImageView(self.mSwapIndex) };
-	self.mpDebugUIBuffer[self.mBufferIndex]->SetRenderTargets(1, imageViews, nullptr);
+//	iImageView* imageViews[] = { self.mpSwapChain->GetImageView(self.mSwapIndex) };
+//	self.mpDebugUIBuffer[self.mBufferIndex]->SetRenderTargets(1, imageViews, nullptr);
 
 	self.mpDebugUI->BeginFrame(self.mpDebugUIBuffer[self.mBufferIndex], deltaTime);
 	self.mpDebugUI->Execute();
