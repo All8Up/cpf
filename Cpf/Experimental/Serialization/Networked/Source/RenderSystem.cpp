@@ -228,15 +228,13 @@ bool RenderSystem::_CreateRenderPass()
 			// No inputs.
 			subPass.mInputCount = 0;
 			subPass.mpInputAttachments = nullptr;
-			// 1 color output.
-			subPass.mColorCount = 1;
+			// 1 output.
+			subPass.mAttachmentCount = 1;
 			subPass.mpColorAttachments = &colorAttachment;
 			// No resolves.
-			subPass.mResolveCount = 0;
 			subPass.mpResolveAttachments = nullptr;
 			// 1 depth buffer.
-			subPass.mDepthStencilCount = 1;
-			subPass.mpDepthStencilAttachments = &depthAttachment;
+			subPass.mpDepthStencilAttachment = &depthAttachment;
 			// No preservation.
 			subPass.mPreserveCount = 0;
 			subPass.mpPreserveAttachments = nullptr;
