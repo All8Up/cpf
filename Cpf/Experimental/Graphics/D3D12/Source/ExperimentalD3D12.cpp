@@ -323,8 +323,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 					int32_t w, h;
 					mpWindow->GetClientAreaSize(&w, &h);
 					mpDebugUI->SetWindowSize(w, h);
-#pragma message("TODO: Input handling.")
-//					AddRawInputHook(&iDebugUI::HandleRawInput, mpDebugUI);
 
 					//
 					_UpdatePipelineDisplay();
