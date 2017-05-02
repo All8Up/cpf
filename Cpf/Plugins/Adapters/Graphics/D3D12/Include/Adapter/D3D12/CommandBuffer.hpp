@@ -3,7 +3,6 @@
 #include "Graphics/Driver.hpp"
 #include "Graphics/iCommandBuffer.hpp"
 #include "Graphics/RenderPassBeginDesc.hpp"
-#include "IntrusivePtr.hpp"
 #include <d3d12.h>
 #include "Math/Rectangle.hpp"
 #include "UnorderedSet.hpp"
@@ -50,7 +49,7 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				void CPF_STDCALL Begin() override;
+				void CPF_STDCALL Begin(iCommandBuffer* primary) override;
 				void CPF_STDCALL End() override;
 				void CPF_STDCALL Reset(Graphics::iCommandPool*) override;
 
@@ -112,6 +111,10 @@ namespace Cpf
 				UnorderedSet<ID3D12DescriptorHeap*> mHeaps;
 				Graphics::RenderPassBeginDesc mRenderPass;
 				Vector<Graphics::ResourceState> mAttachmentStates;
+
+				int32_t mColorViewCount;
+				Graphics::iImageView* mpColorViews[32];
+				Graphics::iImageView* mpDepthBufferView;
 			};
 		}
 	}

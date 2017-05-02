@@ -361,7 +361,7 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	// Issue on the shared command buffers.
 	self.mpPrimaryPool[self.mBufferIndex]->Reset();
 	self.mpPrimaryBuffer[self.mBufferIndex]->Reset(self.mpPrimaryPool[self.mBufferIndex]);
-	self.mpPrimaryBuffer[self.mBufferIndex]->Begin();
+	self.mpPrimaryBuffer[self.mBufferIndex]->Begin(nullptr);
 
 	// TODO: This will move into the render pass abstraction when it is ready.
 	self.mpDevice->BeginFrame(self.mpPrimaryBuffer[self.mBufferIndex]);
@@ -395,7 +395,7 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 
 	self.mpDebugUIPool[self.mBufferIndex]->Reset();
 	self.mpDebugUIBuffer[self.mBufferIndex]->Reset(self.mpDebugUIPool[self.mBufferIndex]);
-	self.mpDebugUIBuffer[self.mBufferIndex]->Begin();
+	self.mpDebugUIBuffer[self.mBufferIndex]->Begin(self.mpPrimaryBuffer[self.mBufferIndex]);
 
 //	iImageView* imageViews[] = { self.mpSwapChain->GetImageView(self.mSwapIndex) };
 //	self.mpDebugUIBuffer[self.mBufferIndex]->SetRenderTargets(1, imageViews, nullptr);

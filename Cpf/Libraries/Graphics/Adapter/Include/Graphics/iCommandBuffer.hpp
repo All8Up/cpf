@@ -44,7 +44,7 @@ namespace Cpf
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iCommandBuffer"_crc64);
 
-			virtual void CPF_STDCALL Begin() = 0;
+			virtual void CPF_STDCALL Begin(iCommandBuffer* primary) = 0;
 			virtual void CPF_STDCALL End() = 0;
 
 			virtual void CPF_STDCALL Reset(iCommandPool*) = 0;

@@ -38,6 +38,8 @@ CommandBuffer::CommandBuffer(COM::iUnknown*)
 	, mSubPass(0)
 	, mType(Graphics::CommandBufferType::kPrimary)
 	, mRenderPass{0}
+	, mColorViewCount(0)
+	, mpDepthBufferView(nullptr)
 {
 }
 
@@ -89,8 +91,14 @@ COM::Result CPF_STDCALL CommandBuffer::QueryInterface(COM::InterfaceID id, void*
 	return COM::kInvalidParameter;
 }
 
-void CPF_STDCALL CommandBuffer::Begin()
-{}
+void CPF_STDCALL CommandBuffer::Begin(iCommandBuffer* primary)
+{
+	if (primary)
+	{
+		CommandBuffer* p = static_cast<CommandBuffer*>(primary);
+		SetRenderTargets(p->mColorViewCount, p->mpColorViews, p->mpDepthBufferView);
+	}
+}
 
 void CPF_STDCALL CommandBuffer::End()
 {
@@ -104,6 +112,7 @@ void CPF_STDCALL CommandBuffer::Reset(Graphics::iCommandPool* pool)
 	mHeaps.clear();
 
 	// Remove inserted references to other command lists but do not free the owned items.
+	mColorViewCount = 0;
 	mCurrent = 0;
 	int index = 0;
 	mCommandLists[0][0]->Reset(d3dPool->GetCommandAllocator(), nullptr);
@@ -493,8 +502,6 @@ COM::Result CommandBuffer::_StartSubPass()
 
 			//////////////////////////////////////////////////////////////////////////
 			// Issue clears.
-			Graphics::iImageView* colorTargets[32];
-			int32_t targetIndex = 0;
 			for (const auto& color : subPass.mColorAttachments)
 			{
 				const Graphics::ImageAndView& target = frameBuffer->GetImages()[color.mIndex];
@@ -508,11 +515,11 @@ COM::Result CommandBuffer::_StartSubPass()
 
 					ClearRenderTargetView(target.mpImageView, c, 0, nullptr);
 				}
-				colorTargets[targetIndex++] = target.mpImageView;
+				mpColorViews[mColorViewCount++] = target.mpImageView;
 			}
 			SetRenderTargets(
-				targetIndex,
-				colorTargets,
+				mColorViewCount,
+				mpColorViews,
 				subPass.mDepthStencilAttachment.mIndex != Graphics::kInvalidAttachment ?
 					frameBuffer->GetImages()[subPass.mDepthStencilAttachment.mIndex].mpImageView :
 					nullptr

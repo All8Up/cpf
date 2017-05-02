@@ -21,7 +21,7 @@ void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
 	// Issue on the shared command buffers.
 	mpPreCommandPool[mCurrentBackbuffer]->Reset();
 	mpPreCommandBuffer[mCurrentBackbuffer]->Reset(mpPreCommandPool[mCurrentBackbuffer]);
-	mpPreCommandBuffer[mCurrentBackbuffer]->Begin();
+	mpPreCommandBuffer[mCurrentBackbuffer]->Begin(nullptr);
 
 	// TODO: This will move into the render pass abstraction when it is ready.
 	mpDevice->BeginFrame(mpPreCommandBuffer[mCurrentBackbuffer]);
@@ -83,7 +83,7 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	// Start issuing commands.
 	threadData.mpCommandPool[mCurrentBackbuffer]->Reset();
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->Reset(threadData.mpCommandPool[mCurrentBackbuffer]);
-	threadData.mpCommandBuffer[mCurrentBackbuffer]->Begin();
+	threadData.mpCommandBuffer[mCurrentBackbuffer]->Begin(nullptr);
 
 	//////////////////////////////////////////////////////////////////////////
 	/* Do some drawing...
@@ -125,7 +125,7 @@ void ExperimentalD3D12::_PreparePresent(Concurrency::ThreadContext&)
 	// Issue on the shared command buffers.
 	mpPostCommandPool[mCurrentBackbuffer]->Reset();
 	mpPostCommandBuffer[mCurrentBackbuffer]->Reset(mpPostCommandPool[mCurrentBackbuffer]);
-	mpPostCommandBuffer[mCurrentBackbuffer]->Begin();
+	mpPostCommandBuffer[mCurrentBackbuffer]->Begin(nullptr);
 
 	// Transition the back buffer and depth buffer to present.
 	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);

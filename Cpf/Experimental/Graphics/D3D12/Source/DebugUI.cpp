@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
-#include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 #include "Std/Std.hpp"
 
@@ -40,7 +39,7 @@ void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
 
 	threadData.mpDebugUIPool[mCurrentBackbuffer]->Reset();
 	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->Reset(threadData.mpDebugUIPool[mCurrentBackbuffer]);
-	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->Begin();
+	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->Begin(threadData.mpCommandBuffer[mCurrentBackbuffer]);
 
 	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
 	Graphics::iImageView* imageViews[] = { mpSwapChain->GetImageView(backBuffer) };
