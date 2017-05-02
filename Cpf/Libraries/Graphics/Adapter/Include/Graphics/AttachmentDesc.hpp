@@ -24,6 +24,7 @@ namespace Cpf
 			ResourceState mFinalState;
 		};
 
+		static constexpr int32_t kInvalidAttachment = -1;
 		struct AttachmentRef
 		{
 			int32_t mIndex;

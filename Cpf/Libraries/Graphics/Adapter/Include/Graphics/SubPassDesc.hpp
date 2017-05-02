@@ -12,12 +12,10 @@ namespace Cpf
 			PipelineBindPoint mBindPoint;
 			int32_t mInputCount;
 			AttachmentRef* mpInputAttachments;
-			int32_t mColorCount;
+			int32_t mAttachmentCount;
 			AttachmentRef* mpColorAttachments;
-			int32_t mResolveCount;
 			AttachmentRef* mpResolveAttachments;
-			int32_t mDepthStencilCount;
-			AttachmentRef* mpDepthStencilAttachments;
+			AttachmentRef* mpDepthStencilAttachment;
 			int32_t mPreserveCount;
 			AttachmentRef* mpPreserveAttachments;
 		};

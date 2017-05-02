@@ -32,7 +32,7 @@ namespace Cpf
 					AttachmentRefVector mInputAttachments;
 					AttachmentRefVector mColorAttachments;
 					AttachmentRefVector mResolveAttachments;
-					AttachmentRefVector mDepthStencilAttachments;
+					Graphics::AttachmentRef mDepthStencilAttachment;
 					AttachmentRefVector mPreserveAttachments;
 				};
 				using SubPassVector = Vector<SubPassStorage>;

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/RenderPass.hpp"
 #include "Graphics/RenderPassDesc.hpp"
+#include "Graphics/ResourceState.hpp"
 #include "Std/Memory.hpp"
 
 using namespace Cpf;
@@ -50,9 +51,13 @@ COM::Result CPF_STDCALL RenderPass::Initialize(const Graphics::RenderPassDesc* d
 
 			target.mBindPoint = desc->mpSubPasses[i].mBindPoint;
 			target.mInputAttachments.assign(source.mpInputAttachments, source.mpInputAttachments + source.mInputCount);
-			target.mColorAttachments.assign(source.mpColorAttachments, source.mpColorAttachments + source.mColorCount);
-			target.mResolveAttachments.assign(source.mpResolveAttachments, source.mpResolveAttachments + source.mResolveCount);
-			target.mDepthStencilAttachments.assign(source.mpDepthStencilAttachments, source.mpDepthStencilAttachments + source.mDepthStencilCount);
+			target.mColorAttachments.assign(source.mpColorAttachments, source.mpColorAttachments + source.mAttachmentCount);
+			if (source.mpResolveAttachments)
+				target.mResolveAttachments.assign(source.mpResolveAttachments, source.mpResolveAttachments + source.mAttachmentCount);
+			if (source.mpDepthStencilAttachment)
+				target.mDepthStencilAttachment = *source.mpDepthStencilAttachment;
+			else
+				target.mDepthStencilAttachment = { Graphics::kInvalidAttachment, Graphics::ResourceState::eCommon };
 		}
 
 		return COM::kOK;

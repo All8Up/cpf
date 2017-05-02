@@ -475,13 +475,17 @@ COM::Result CommandBuffer::_StartSubPass()
 				++currentIndex;
 				mAttachmentStates[color.mIndex] = color.mState;
 			}
-
-			for (const auto& depth : subPass.mDepthStencilAttachments)
+			
+			if (subPass.mDepthStencilAttachment.mIndex != Graphics::kInvalidAttachment)
 			{
-				const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth.mIndex];
-				_MakeBarrier(barrier + currentIndex, static_cast<Image*>(target.mpImage), mAttachmentStates[depth.mIndex], depth.mState);
+				const Graphics::ImageAndView& target = frameBuffer->GetImages()[subPass.mDepthStencilAttachment.mIndex];
+				_MakeBarrier(
+					barrier + currentIndex,
+					static_cast<Image*>(target.mpImage),
+					mAttachmentStates[subPass.mDepthStencilAttachment.mIndex],
+					subPass.mDepthStencilAttachment.mState);
 				++currentIndex;
-				mAttachmentStates[depth.mIndex] = depth.mState;
+				mAttachmentStates[subPass.mDepthStencilAttachment.mIndex] = subPass.mDepthStencilAttachment.mState;
 			}
 
 			// Issue the barriers.
@@ -489,6 +493,8 @@ COM::Result CommandBuffer::_StartSubPass()
 
 			//////////////////////////////////////////////////////////////////////////
 			// Issue clears.
+			Graphics::iImageView* colorTargets[32];
+			int32_t targetIndex = 0;
 			for (const auto& color : subPass.mColorAttachments)
 			{
 				const Graphics::ImageAndView& target = frameBuffer->GetImages()[color.mIndex];
@@ -500,21 +506,27 @@ COM::Result CommandBuffer::_StartSubPass()
 						mRenderPass.mpClearValues[color.mIndex].mColor[2],
 						mRenderPass.mpClearValues[color.mIndex].mColor[3]);
 
-					Graphics::iImageView* imageViews[1] = { target.mpImageView };
-					SetRenderTargets(1, imageViews, nullptr);
 					ClearRenderTargetView(target.mpImageView, c, 0, nullptr);
 				}
+				colorTargets[targetIndex++] = target.mpImageView;
 			}
-			for (const auto& depth : subPass.mDepthStencilAttachments)
+			SetRenderTargets(
+				targetIndex,
+				colorTargets,
+				subPass.mDepthStencilAttachment.mIndex != Graphics::kInvalidAttachment ?
+					frameBuffer->GetImages()[subPass.mDepthStencilAttachment.mIndex].mpImageView :
+					nullptr
+			);
+			if (subPass.mDepthStencilAttachment.mIndex != Graphics::kInvalidAttachment)
 			{
-				const Graphics::ImageAndView& target = frameBuffer->GetImages()[depth.mIndex];
-				if (attachments[depth.mIndex].mLoadOp == Graphics::LoadOp::eClear)
+				const Graphics::ImageAndView& target = frameBuffer->GetImages()[subPass.mDepthStencilAttachment.mIndex];
+				if (attachments[subPass.mDepthStencilAttachment.mIndex].mLoadOp == Graphics::LoadOp::eClear)
 				{
 					ClearDepthStencilView(
 						target.mpImageView,
 						Graphics::DepthStencilClearFlag::eDepth,
-						mRenderPass.mpClearValues[depth.mIndex].mDepthStencil.mDepth,
-						mRenderPass.mpClearValues[depth.mIndex].mDepthStencil.mStencil,
+						mRenderPass.mpClearValues[subPass.mDepthStencilAttachment.mIndex].mDepthStencil.mDepth,
+						mRenderPass.mpClearValues[subPass.mDepthStencilAttachment.mIndex].mDepthStencil.mStencil,
 						0,
 						nullptr);
 				}
