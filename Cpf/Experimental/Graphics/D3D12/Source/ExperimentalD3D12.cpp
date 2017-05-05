@@ -256,9 +256,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				for (int i = 0; i < mBackBufferCount; ++i)
 				{
 					mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
-					mpDevice->CreateCommandPool(mpPostCommandPool[i].AsTypePP());
 					mpDevice->CreateCommandBuffer(mpPreCommandPool[i], CommandBufferType::kPrimary, mpPreCommandBuffer[i].AsTypePP());
-					mpDevice->CreateCommandBuffer(mpPostCommandPool[i], CommandBufferType::kPrimary, mpPostCommandBuffer[i].AsTypePP());
 				}
 
 				if (!_CreateResources())
@@ -268,31 +266,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 
 				//
 				GetRegistry()->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
-
-				/*
-				RenderPassBeginDesc beginDesc;
-				beginDesc.mpRenderPass = renderPass;
-				beginDesc.mpFrameBuffer = frameBuffer;
-				beginDesc.mClipRect = {0, 0, 0, 0};
-
-				ClearValue clearValue;
-				clearValue.mFormat = Format::eD32f;
-				clearValue.mDepthStencil.mDepth = 1.0f;
-				clearValue.mDepthStencil.mStencil = 0;
-
-				beginDesc.mClearValueCount = 1;
-				beginDesc.mpClearValues = &clearValue;
-
-				mpDevice->BeginRenderPass(mpPreCommandBuffer[0], &beginDesc);
-				//mpDevice->NextSubPass(mpPreCommandBuffer[0]);
-				mpDevice->EndRenderPass(mpPreCommandBuffer[0]);
-				*/
-				//////////////////////////////////////////////////////////////////////////
-
-
-				//////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////////////////////////////////////////
-				//////////////////////////////////////////////////////////////////////////
 
 				//////////////////////////////////////////////////////////////////////////
 				// Start up the threading system.

@@ -52,7 +52,6 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 		mpSwapChain->Resize(x, y);
 
 		// Recreate the depth buffers.
-		// TODO: There should only be a single depth buffer.
 		mpDepthBuffer.Assign(nullptr);
 		mpDepthBufferView.Assign(nullptr);
 		Graphics::ImageDesc depthBufferDesc

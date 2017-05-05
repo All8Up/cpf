@@ -69,10 +69,6 @@ namespace Cpf
 			virtual void CPF_STDCALL DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) = 0;
 			virtual void CPF_STDCALL DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) = 0;
 
-			virtual void CPF_STDCALL SetRenderTargets(int32_t imageCount, iImageView** images, iImageView* depthView) = 0;
-			virtual void CPF_STDCALL ClearRenderTargetView(iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) = 0;
-			virtual void CPF_STDCALL ClearDepthStencilView(iImageView* view, DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) = 0;
-
 			// TODO: Starting render pass api.
 			virtual COM::Result CPF_STDCALL BeginRenderPass(RenderPassBeginDesc*) = 0;
 			virtual COM::Result CPF_STDCALL NextSubPass() = 0;

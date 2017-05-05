@@ -201,8 +201,6 @@ void ExperimentalD3D12::_DestroyResources()
 		mpInstanceBuffer[i].Assign(nullptr);
 		mpPreCommandBuffer[i].Assign(nullptr);
 		mpPreCommandPool[i].Assign(nullptr);
-		mpPostCommandBuffer[i].Assign(nullptr);
-		mpPostCommandPool[i].Assign(nullptr);
 	}
 	mpIndexBuffer.Assign(nullptr);
 	mpViewProj.Assign(nullptr);

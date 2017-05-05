@@ -526,6 +526,7 @@ COM::Result CommandBuffer::_StartSubPass()
 			);
 			if (subPass.mDepthStencilAttachment.mIndex != Graphics::kInvalidAttachment)
 			{
+				mpDepthBufferView = frameBuffer->GetImages()[subPass.mDepthStencilAttachment.mIndex].mpImageView;
 				const Graphics::ImageAndView& target = frameBuffer->GetImages()[subPass.mDepthStencilAttachment.mIndex];
 				if (attachments[subPass.mDepthStencilAttachment.mIndex].mLoadOp == Graphics::LoadOp::eClear)
 				{

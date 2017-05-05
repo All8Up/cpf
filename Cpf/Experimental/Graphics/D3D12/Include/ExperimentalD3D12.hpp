@@ -50,10 +50,8 @@ namespace Cpf
 
 		// Moving to a render system.
 		void _BeginFrame(Concurrency::ThreadContext&);
-		void _ClearBuffers(Concurrency::ThreadContext&);
 		void _Draw(Concurrency::ThreadContext& tc);
 		void _DebugUI(Concurrency::ThreadContext& tc);
-		void _PreparePresent(Concurrency::ThreadContext&);
 		void _EndFrame(Concurrency::ThreadContext&);
 
 	private:
@@ -94,8 +92,6 @@ namespace Cpf
 
 		IntrusivePtr<Graphics::iCommandPool> mpPreCommandPool[mBackBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[mBackBufferCount];
-		IntrusivePtr<Graphics::iCommandPool> mpPostCommandPool[mBackBufferCount];
-		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[mBackBufferCount];
 		IntrusivePtr<Graphics::iPipeline> mpPipeline;
 		IntrusivePtr<Graphics::iFence> mpFence;
 		Concurrency::Scheduler mScheduler;

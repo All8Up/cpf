@@ -73,8 +73,6 @@ namespace Cpf
 				void CPF_STDCALL DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) override;
 				void CPF_STDCALL DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) override;
 
-				void CPF_STDCALL ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects) override;
-				void CPF_STDCALL ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects) override;
 
 				COM::Result CPF_STDCALL BeginRenderPass(Graphics::RenderPassBeginDesc*) override;
 				COM::Result CPF_STDCALL NextSubPass() override;
@@ -87,7 +85,9 @@ namespace Cpf
 				void Submit(ID3D12CommandQueue* queue);
 				ID3D12GraphicsCommandList* GetCommandList() { return _Current(); }
 
-				void CPF_STDCALL SetRenderTargets(int32_t imageCount, Graphics::iImageView** images, Graphics::iImageView* depthView) override;
+				void CPF_STDCALL SetRenderTargets(int32_t imageCount, Graphics::iImageView** images, Graphics::iImageView* depthView);
+				void CPF_STDCALL ClearRenderTargetView(Graphics::iImageView* view, Math::Vector4fv& color, int32_t count, const Math::Rectanglei* rects);
+				void CPF_STDCALL ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects);
 
 			private:
 				COM::Result _AddCommandList();

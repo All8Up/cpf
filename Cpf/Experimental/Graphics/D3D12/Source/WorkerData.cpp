@@ -13,9 +13,9 @@ void ExperimentalD3D12::_CreateWorkerData(Concurrency::ThreadContext& tc)
 	for (int i = 0; i < mBackBufferCount; ++i)
 	{
 		mpDevice->CreateCommandPool(td.mpCommandPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(td.mpCommandPool[i], Graphics::CommandBufferType::kPrimary, td.mpCommandBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(td.mpCommandPool[i], Graphics::CommandBufferType::kSecondary, td.mpCommandBuffer[i].AsTypePP());
 		mpDevice->CreateCommandPool(td.mpDebugUIPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(td.mpDebugUIPool[i], Graphics::CommandBufferType::kPrimary, td.mpDebugUIBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(td.mpDebugUIPool[i], Graphics::CommandBufferType::kSecondary, td.mpDebugUIBuffer[i].AsTypePP());
 	}
 }
 

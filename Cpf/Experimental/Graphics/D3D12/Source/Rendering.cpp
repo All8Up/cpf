@@ -26,51 +26,27 @@ void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
 	// TODO: This will move into the render pass abstraction when it is ready.
 	mpDevice->BeginFrame(mpPreCommandBuffer[mCurrentBackbuffer]);
 
+	int32_t width, height;
+	mpWindow->GetClientAreaSize(&width, &height);
+
 	RenderPassBeginDesc beginDesc;
 	beginDesc.mpRenderPass = mpRenderPass;
 	beginDesc.mpFrameBuffer = mpFrameBuffers[mCurrentBackbuffer];
-	beginDesc.mClipRect = { 0, 0, 0, 0 };
+	beginDesc.mClipRect = { 0, width, 0, height };
 
-	ClearValue clearValue;
-	clearValue.mFormat = Format::eD32f;
-	clearValue.mDepthStencil.mDepth = 1.0f;
-	clearValue.mDepthStencil.mStencil = 0;
+	ClearValue clearValue[2];
+	clearValue[0].mFormat = Format::eRGBA8un;
+	clearValue[0].mColor[0] = 0.0f;
+	clearValue[0].mColor[1] = 0.0f;
+	clearValue[0].mColor[2] = 0.0f;
+	clearValue[0].mColor[3] = 1.0f;
+	clearValue[1].mFormat = Format::eD32f;
+	clearValue[1].mDepthStencil.mDepth = 1.0f;
+	clearValue[1].mDepthStencil.mStencil = 0;
 
-	beginDesc.mClearValueCount = 1;
-	beginDesc.mpClearValues = &clearValue;
-//	mpPreCommandBuffer[mCurrentBackbuffer]->BeginRenderPass(&beginDesc);
-}
-
-void ExperimentalD3D12::_ClearBuffers(Concurrency::ThreadContext&)
-{
-	// Setup the frame.
-	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
-
-	// Transition the current back buffer and depth buffers to render targets.
-	// TODO: This will go away with the render pass abstraction.
-	mpPreCommandBuffer[mCurrentBackbuffer]->ImageTransition(
-		mpSwapChain->GetImage(backBuffer),
-		ResourceState::ePresent,
-		ResourceState::eRenderTarget,
-		SubResource::eAll);
-	mpPreCommandBuffer[mCurrentBackbuffer]->ImageTransition(
-		mpDepthBuffer,
-		ResourceState::ePresent,
-		ResourceState::eDepthWrite,
-		SubResource::eAll
-	);
-
-	// Black background.
-	Vector4fv color(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Clear the color and depth buffers.
-	iImageView* imageViews[] = { mpSwapChain->GetImageView(mCurrentBackbuffer) };
-	mpPreCommandBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferView);
-	mpPreCommandBuffer[mCurrentBackbuffer]->ClearRenderTargetView(mpSwapChain->GetImageView(backBuffer), color, 0, nullptr);
-	mpPreCommandBuffer[mCurrentBackbuffer]->ClearDepthStencilView(mpDepthBufferView, DepthStencilClearFlag::eDepth, 1.0f, 0, 0, nullptr);
-
-	// End the command buffer prior to submission.
-	mpPreCommandBuffer[mCurrentBackbuffer]->End();
+	beginDesc.mClearValueCount = 2;
+	beginDesc.mpClearValues = clearValue;
+	mpPreCommandBuffer[mCurrentBackbuffer]->BeginRenderPass(&beginDesc);
 
 	// Always the first to issue.
 	mpScheduledBuffers[0] = mpPreCommandBuffer[mCurrentBackbuffer];
@@ -83,15 +59,11 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	// Start issuing commands.
 	threadData.mpCommandPool[mCurrentBackbuffer]->Reset();
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->Reset(threadData.mpCommandPool[mCurrentBackbuffer]);
-	threadData.mpCommandBuffer[mCurrentBackbuffer]->Begin(nullptr);
+	threadData.mpCommandBuffer[mCurrentBackbuffer]->Begin(mpPreCommandBuffer[mCurrentBackbuffer]);
 
 	//////////////////////////////////////////////////////////////////////////
 	/* Do some drawing...
 	*/
-	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
-	iImageView* imageViews[] = { mpSwapChain->GetImageView(backBuffer) };
-	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetRenderTargets(1, imageViews, mpDepthBufferView);
-
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetResourceBinding(mpResourceBinding);
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->SetPipeline(mpPipeline);
 
@@ -119,37 +91,21 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpCommandBuffer[mCurrentBackbuffer];
 }
 
-void ExperimentalD3D12::_PreparePresent(Concurrency::ThreadContext&)
-{
-	// This is not split out to be parallel with the above as it must always be the last submitted buffer.
-	// Issue on the shared command buffers.
-	mpPostCommandPool[mCurrentBackbuffer]->Reset();
-	mpPostCommandBuffer[mCurrentBackbuffer]->Reset(mpPostCommandPool[mCurrentBackbuffer]);
-	mpPostCommandBuffer[mCurrentBackbuffer]->Begin(nullptr);
-
-	// Transition the back buffer and depth buffer to present.
-	int32_t backBuffer = Atomic::Load(mCurrentBackbuffer);
-	mpPostCommandBuffer[mCurrentBackbuffer]->ImageTransition(mpSwapChain->GetImage(backBuffer), ResourceState::eRenderTarget, ResourceState::ePresent, SubResource::eAll);
-	mpPostCommandBuffer[mCurrentBackbuffer]->ImageTransition(mpDepthBuffer, ResourceState::eDepthWrite, ResourceState::ePresent, SubResource::eAll);
-
-	// Let the device take care of any final needed work, read backs for instance.
-	mpDevice->EndFrame(mpPostCommandBuffer[mCurrentBackbuffer]);
-}
-
 void ExperimentalD3D12::_EndFrame(Concurrency::ThreadContext&)
 {
+	// Insert the drawing buffers.
+	mpPreCommandBuffer[mCurrentBackbuffer]->Insert(mCurrentScheduledBuffer - 1, &mpScheduledBuffers[1]);
+
 	// End the render pass.
-	mpPostCommandBuffer[mCurrentBackbuffer]->EndRenderPass();
+	mpDevice->EndFrame(mpPreCommandBuffer[mCurrentBackbuffer]);
+	mpPreCommandBuffer[mCurrentBackbuffer]->EndRenderPass();
 
 	// End the command buffer prior to submission.
-	mpPostCommandBuffer[mCurrentBackbuffer]->End();
-
-	// Pick up and add the transition for present.
-	int32_t commandBufferCount = Atomic::Inc(mCurrentScheduledBuffer);
-	mpScheduledBuffers[commandBufferCount - 1] = mpPostCommandBuffer[mCurrentBackbuffer];
+	mpPreCommandBuffer[mCurrentBackbuffer]->End();
 
 	// Submit the command buffers.
-	mpDevice->Submit(commandBufferCount, mpScheduledBuffers);
+	iCommandBuffer* buffers[1] = {mpPreCommandBuffer[mCurrentBackbuffer]};
+	mpDevice->Submit(1, buffers);
 
 	// Present the back buffer.
 	mpSwapChain->Present();

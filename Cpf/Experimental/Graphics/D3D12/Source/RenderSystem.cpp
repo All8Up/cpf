@@ -31,11 +31,6 @@ void RenderSystem::_BeginFrame(ThreadContext& tc, void* context)
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_BeginFrame(tc);
 }
-void RenderSystem::_Clear(ThreadContext& tc, void* context)
-{
-	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
-	self->mpApp->_ClearBuffers(tc);
-}
 void RenderSystem::_Draw(ThreadContext& tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
@@ -45,11 +40,6 @@ void RenderSystem::_DebugUI(ThreadContext& tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_DebugUI(tc);
-}
-void RenderSystem::_PreparePresent(ThreadContext& tc, void* context)
-{
-	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
-	self->mpApp->_PreparePresent(tc);
 }
 void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
 {
@@ -107,11 +97,6 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 			beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, MultiCore::BlockOpcode::eFirst);
 
 			// Paired in a group ^
-			IntrusivePtr<MultiCore::iSingleUpdateStage> clearBuffers;
-			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, clearBuffers.AsVoidPP());
-			clearBuffers->Initialize(this, kClearBuffers.GetString());
-			clearBuffers->SetUpdate(&RenderSystem::_Clear, this, MultiCore::BlockOpcode::eLast);
-
 			IntrusivePtr<MultiCore::iSingleUpdateStage> drawInstances;
 			rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, drawInstances.AsVoidPP());
 			drawInstances->Initialize(this, kDrawInstances.GetString());
@@ -122,11 +107,6 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 			debugUI->Initialize(this, kDebugUI.GetString());
 			debugUI->SetUpdate(&RenderSystem::_DebugUI, this, MultiCore::BlockOpcode::eLast);
 
-			IntrusivePtr<MultiCore::iSingleUpdateStage> preparePresent;
-			rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, preparePresent.AsVoidPP());
-			preparePresent->Initialize(this, kPreparePresent.GetString());
-			preparePresent->SetUpdate(&RenderSystem::_PreparePresent, this, MultiCore::BlockOpcode::eLast);
-
 			IntrusivePtr<MultiCore::iSingleUpdateStage> endFrame;
 			rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, endFrame.AsVoidPP());
 			endFrame->Initialize(this, kEndFrame.GetString());
@@ -134,36 +114,24 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 
 			// Add the stages.
 			AddStage(beginFrame);
-			AddStage(clearBuffers);
 			AddStage(drawInstances);
 			AddStage(debugUI);
-			AddStage(preparePresent);
 			AddStage(endFrame);
 
 			// Add the default set of dependencies.
 			AddDependency({
-				{ GetID(), clearBuffers->GetID(), MultiCore::iStage::kExecute },
+				{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
 				{ GetID(), beginFrame->GetID(), MultiCore::iStage::kExecute },
 				MultiCore::DependencyPolicy::eAfter
 			});
 			AddDependency({
-				{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
-				{ GetID(), clearBuffers->GetID(), MultiCore::iStage::kExecute },
-				MultiCore::DependencyPolicy::eAfter
-			});
-			AddDependency({
 				{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
 				{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
-				MultiCore::DependencyPolicy::eAfter
-			});
-			AddDependency({
-				{ GetID(), preparePresent->GetID(), MultiCore::iStage::kExecute },
-				{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
 				MultiCore::DependencyPolicy::eAfter
 			});
 			AddDependency({
 				{ GetID(), endFrame->GetID(), MultiCore::iStage::kExecute },
-				{ GetID(), preparePresent->GetID(), MultiCore::iStage::kExecute },
+				{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
 				MultiCore::DependencyPolicy::eAfter
 			});
 

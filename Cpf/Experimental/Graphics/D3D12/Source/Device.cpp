@@ -201,6 +201,21 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 	mpWindow->GetClientAreaSize(&w, &h);
 	mpDevice->CreateSwapChain(instance, &winData, w, h, &desc, mpSwapChain.AsTypePP());
 
+	// Create a depth buffer for rendering.
+	mpDepthBuffer.Assign(nullptr);
+	mpDepthBufferView.Assign(nullptr);
+	ImageDesc depthBufferDesc
+	{
+		w, h,
+		1,
+		1,
+		Format::eD32f,
+		{ 1, 0 },
+		ImageFlags::eAllowDepthStencil
+	};
+	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
+
 	// Make a frame buffer for each target in the swap chain.
 	mpFrameBuffers.clear();
 	mpFrameBuffers.resize(mBackBufferCount);
@@ -221,21 +236,6 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 
 		mpDevice->CreateFrameBuffer(&frameBufferDesc, mpFrameBuffers[i].AsTypePP());
 	}
-
-	// Create a depth buffer for rendering.
-	mpDepthBuffer.Assign(nullptr);
-	mpDepthBufferView.Assign(nullptr);
-	ImageDesc depthBufferDesc
-	{
-		w, h,
-		1,
-		1,
-		Format::eD32f,
-		{ 1, 0 },
-		ImageFlags::eAllowDepthStencil
-	};
-	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
-	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
 	return mpSwapChain;
 }
