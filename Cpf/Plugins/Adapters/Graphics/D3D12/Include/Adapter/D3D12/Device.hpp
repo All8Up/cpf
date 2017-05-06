@@ -50,9 +50,6 @@ namespace Cpf
 				COM::Result CPF_STDCALL Initialize() override;
 				COM::Result CPF_STDCALL Shutdown() override;
 
-				void CPF_STDCALL BeginFrame(Graphics::iCommandBuffer*) override;
-				void CPF_STDCALL Finalize() override;
-
 				COM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
 				COM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
 				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::CommandBufferType type, Graphics::iCommandBuffer**) override;
@@ -66,9 +63,9 @@ namespace Cpf
 				COM::Result CPF_STDCALL CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass) override;
 				COM::Result CPF_STDCALL CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
 
-				COM::Result CPF_STDCALL CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer) override;
-				COM::Result CPF_STDCALL CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer) override;
-				COM::Result CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer**) override;
+				COM::Result CPF_STDCALL CreateIndexBuffer(const Graphics::ResourceDesc* desc, Graphics::Format format, Graphics::iIndexBuffer** indexBuffer) override;
+				COM::Result CPF_STDCALL CreateVertexBuffer(const Graphics::ResourceDesc* desc, int32_t stride, Graphics::iVertexBuffer** vertexBuffer) override;
+				COM::Result CPF_STDCALL CreateConstantBuffer(const Graphics::ResourceDesc*, const void* initData, Graphics::iConstantBuffer**) override;
 
 				COM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, Graphics::iBlob**) override;
 
@@ -81,9 +78,6 @@ namespace Cpf
 
 				//////////////////////////////////////////////////////////////////////////
 				// Internal
-				void CPF_STDCALL QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
-				void CPF_STDCALL QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::iBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState);
-
 				ID3D12Device* CPF_STDCALL GetD3DDevice() const { return mpDevice; }
 				ID3D12CommandQueue* CPF_STDCALL GetD3DQueue() const { return mpQueue; }
 
@@ -111,38 +105,6 @@ namespace Cpf
 				DescriptorManager mSamplerDescriptors;
 				DescriptorManager mRenderTargetDescriptors;
 				DescriptorManager mDepthStencilDescriptors;
-
-				enum class WorkType : int32_t
-				{
-					eUploadVertexBuffer,
-					eUpdateSubResource
-				};
-				struct WorkEntry
-				{
-					WorkType mType;
-					union
-					{
-						struct _UploadVertexBuffer
-						{
-							ID3D12Resource* mpSource;
-							ID3D12Resource* mpDestination;
-							D3D12_RESOURCE_STATES mDstStartState;
-							D3D12_RESOURCE_STATES mDstEndState;
-						} UploadVertexBuffer;
-						struct _UpdateSubResource
-						{
-							ID3D12Resource* mpSource;
-							ID3D12Resource* mpDestination;
-							Graphics::iBlob* mpBlob;
-							D3D12_SUBRESOURCE_DATA mData;
-							D3D12_RESOURCE_STATES mDstStartState;
-							D3D12_RESOURCE_STATES mDstEndState;
-						} UpdateSubResource;
-					};
-				};
-
-				Vector<WorkEntry> mUploadQueue;
-				Vector<ID3D12Resource*> mReleaseQueue;
 			};
 		}
 	}

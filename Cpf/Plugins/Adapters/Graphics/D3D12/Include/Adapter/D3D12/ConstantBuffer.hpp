@@ -15,11 +15,10 @@ namespace Cpf
 		{
 			class Device;
 
-
 			class ConstantBuffer : public tRefCounted<Graphics::iConstantBuffer>
 			{
 			public:
-				ConstantBuffer(Device* device, size_t size, const void* initData);
+				ConstantBuffer(Device* device, const Graphics::ResourceDesc* desc, const void* initData);
 				virtual ~ConstantBuffer();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;

@@ -14,31 +14,31 @@ namespace Cpf
 		enum class ResourceUsage : int32_t;
 		struct ResourceData;
 
-		class ResourceDesc
+		struct ResourceDesc
 		{
 		public:
-			ResourceDesc(ResourceType type, HeapType heapType, ResourceState state, int32_t usage, int32_t w);
+			ResourceDesc(ResourceType type, HeapType heapType, ResourceState state, int32_t w, int32_t h = 0);
 
 			ResourceType GetType() const { return mType; }
 			HeapType GetHeapType() const { return mHeapType; }
 			ResourceState GetResourceState() const { return mState; }
-			int32_t GetUsage() const { return mUsage; }
 			int32_t GetWidth() const { return mWidth; }
+			int32_t GetHeight() const { return mHeight; }
 
 		private:
 			ResourceType mType;
 			HeapType mHeapType;
 			ResourceState mState;
-			int32_t mUsage;
 			int32_t mWidth;
+			int32_t mHeight;
 		};
 
-		inline ResourceDesc::ResourceDesc(ResourceType type, HeapType heapType, ResourceState state, int32_t usage, int32_t w)
+		inline ResourceDesc::ResourceDesc(ResourceType type, HeapType heapType, ResourceState state, int32_t w, int32_t h)
 			: mType(type)
 			, mHeapType(heapType)
 			, mState(state)
-			, mUsage(usage)
 			, mWidth(w)
+			, mHeight(h)
 		{
 		}
 	}

@@ -71,7 +71,6 @@ set (INCLUDE_GRAPHICS_FILES_FLAGS
 	Include/Graphics/TopologyType.hpp
 	Include/Graphics/StencilOp.hpp
 	Include/Graphics/WindingOrder.hpp
-	Include/Graphics/BufferUsage.hpp
 	Include/Graphics/LoadOp.hpp
 	Include/Graphics/StoreOp.hpp
 	Include/Graphics/PipelineBindPoint.hpp

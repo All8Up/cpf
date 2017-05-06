@@ -54,6 +54,7 @@ namespace Cpf
 				void CPF_STDCALL Reset(Graphics::iCommandPool*) override;
 
 				void CPF_STDCALL UpdateSubResource(Graphics::iResource* src, Graphics::iResource* dst, const Graphics::ResourceData* data) override;
+				void CPF_STDCALL CopyResource(Graphics::iResource* src, Graphics::iResource* dst) override;
 
 				void CPF_STDCALL ResourceBarrier(Graphics::iResource* resource, Graphics::ResourceState startStart, Graphics::ResourceState endState) override;
 				void CPF_STDCALL ImageTransition(Graphics::iImage* image, Graphics::ResourceState startState, Graphics::ResourceState endState, Graphics::SubResource subResources) override;

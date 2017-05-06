@@ -122,7 +122,8 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		return false;
 
 	// Create the projection matrix constant buffer.
-	mpDevice->CreateConstantBuffer(sizeof(Math::Matrix44fv), nullptr, mpProjectionMatrix.AsTypePP());
+	Graphics::ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv));
+	mpDevice->CreateConstantBuffer(&cbDesc, nullptr, mpProjectionMatrix.AsTypePP());
 
 	// Create the atlas sampler.
 	SamplerDesc samplerDesc
@@ -248,7 +249,6 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 			ResourceType::eBuffer,
 			HeapType::eUpload,
 			ResourceState::eGenericRead,
-			0,
 			int32_t(dataSize)
 		);
 		IntrusivePtr<iResource> staging;
@@ -293,8 +293,11 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	window->GetEmitter()->On<iWindow::OnKeyUp>(Bind(&DebugUI::_OnKeyUp, this, Placeholders::_1));
 
 	// Create large buffers.
-	mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, kVertexBufferSize, sizeof(ImDrawVert), nullptr, mpVertexBuffer.AsTypePP());
-	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDynamic, kIndexBufferSize, nullptr, mpIndexBuffer.AsTypePP());
+	ResourceDesc vbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kVertexBufferSize, 1);
+	mpDevice->CreateVertexBuffer(&vbDesc, sizeof(ImDrawVert), mpVertexBuffer.AsTypePP());
+
+	ResourceDesc ibDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kIndexBufferSize);
+	mpDevice->CreateIndexBuffer(&ibDesc, Format::eR32u, mpIndexBuffer.AsTypePP());
 
 	return true;
 }

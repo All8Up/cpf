@@ -370,9 +370,6 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	self.mpPrimaryBuffer[self.mBufferIndex]->Reset(self.mpPrimaryPool[self.mBufferIndex]);
 	self.mpPrimaryBuffer[self.mBufferIndex]->Begin(nullptr);
 
-	// TODO: This will move into the render pass abstraction when it is ready.
-	self.mpDevice->BeginFrame(self.mpPrimaryBuffer[self.mBufferIndex]);
-
 	// Begin the render pass.
 	RenderPassBeginDesc passBegin;
 	passBegin.mpRenderPass = self.mpRenderPass;
@@ -447,9 +444,6 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)
 
 	// Present the back buffer.
 	self.mpSwapChain->Present();
-
-	// TODO: Move into the render passes.
-	self.mpDevice->Finalize();
 }
 
 //////////////////////////////////////////////////////////////////////////

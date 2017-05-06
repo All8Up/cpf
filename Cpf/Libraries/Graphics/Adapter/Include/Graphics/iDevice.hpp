@@ -30,7 +30,7 @@ namespace Cpf
 
 		struct SamplerDesc;
 		struct ClearValue;
-		class ResourceDesc;
+		struct ResourceDesc;
 		struct ImageDesc;
 		struct DepthStencilViewDesc;
 		struct SwapChainDesc;
@@ -41,7 +41,6 @@ namespace Cpf
 
 		enum class Format : int32_t;
 		enum class HeapType : int32_t;
-		enum class BufferUsage : int32_t;
 		enum class ShaderType : int32_t;
 		enum class CommandBufferType : int32_t;
 
@@ -51,9 +50,6 @@ namespace Cpf
 
 			virtual COM::Result CPF_STDCALL Initialize() = 0;
 			virtual COM::Result CPF_STDCALL Shutdown() = 0;
-
-			virtual void CPF_STDCALL BeginFrame(iCommandBuffer*) = 0;
-			virtual void CPF_STDCALL Finalize() = 0;
 
 			virtual COM::Result CPF_STDCALL CreateSwapChain(iInstance*, const WindowData*, int32_t w, int32_t h, const SwapChainDesc*, iSwapChain**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandPool(iCommandPool**) = 0;
@@ -68,9 +64,9 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL CreateRenderPass(const RenderPassDesc* desc, iRenderPass**) = 0;
 			virtual COM::Result CPF_STDCALL CreateFrameBuffer(const FrameBufferDesc* desc, iFrameBuffer** frameBuffer) = 0;
 
-			virtual COM::Result CPF_STDCALL CreateIndexBuffer(Format format, BufferUsage usage, size_t byteSize, const void* initData, iIndexBuffer** indexBuffer) = 0;
-			virtual COM::Result CPF_STDCALL CreateVertexBuffer(BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, iVertexBuffer** indexBuffer) = 0;
-			virtual COM::Result CPF_STDCALL CreateConstantBuffer(size_t bufferSize, const void* initData, iConstantBuffer** CPF_GFX_DEBUG_PARAM_DECL) = 0;
+			virtual COM::Result CPF_STDCALL CreateIndexBuffer(const ResourceDesc* desc, Format format, iIndexBuffer** indexBuffer) = 0;
+			virtual COM::Result CPF_STDCALL CreateVertexBuffer(const ResourceDesc* desc, int32_t stride, iVertexBuffer** indexBuffer) = 0;
+			virtual COM::Result CPF_STDCALL CreateConstantBuffer(const ResourceDesc*, const void* initData, iConstantBuffer**) = 0;
 
 			virtual COM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, iBlob**) = 0;
 

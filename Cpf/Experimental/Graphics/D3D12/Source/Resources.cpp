@@ -12,8 +12,13 @@
 #include "Graphics/ParamVisibility.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Graphics/ResourceType.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/ResourceData.hpp"
+#include "Graphics/HeapType.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Matrix44v.hpp"
+#include "Std/Memory.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -157,13 +162,80 @@ bool ExperimentalD3D12::_CreateResources()
 		20, 21, 22, 20, 22, 23
 	};
 
+	// Create a fence to synchronize uploads.
+	IntrusivePtr<iFence> fence;
+	mpDevice->CreateFence(0, fence.AsTypePP());
+
+	// Create a temporary command buffer for the upload.
+	IntrusivePtr<iCommandPool> tempPool;
+	mpDevice->CreateCommandPool(tempPool.AsTypePP());
+	IntrusivePtr<iCommandBuffer> tempCommands;
+	mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::kPrimary, tempCommands.AsTypePP());
+
 	// Create a vertex buffer.
-	mpDevice->CreateVertexBuffer(BufferUsage::eImmutable, sizeof(vbData), sizeof(PosColor), vbData, mpVertexBuffer.AsTypePP());
+	ResourceDesc vbDescPrimary(ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(vbData), 1);
+	mpDevice->CreateVertexBuffer(&vbDescPrimary, sizeof(PosColor), mpVertexBuffer.AsTypePP());
+	// Upload the vertex data.
+	{
+		ResourceDesc vbInit(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(vbData), 1);
+		IntrusivePtr<iVertexBuffer> uploadVb;
+		mpDevice->CreateVertexBuffer(&vbInit, sizeof(PosColor), uploadVb.AsTypePP());
+		void* buffer;
+		uploadVb->Map(&buffer, nullptr);
+		Std::MemCpy(buffer, vbData, sizeof(vbData));
+		uploadVb->Unmap();
+
+		tempCommands->Reset(tempPool);
+		tempCommands->Begin(nullptr);
+
+		Graphics::ResourceData data;
+		data.mpData = vbData;
+		data.mPitch = sizeof(vbData);
+		data.mSlicePitch = data.mPitch * 1;
+		IntrusivePtr<iResource> targetResource;
+		mpVertexBuffer->QueryInterface(iResource::kIID, targetResource.AsVoidPP());
+		tempCommands->UpdateSubResource(uploadVb, targetResource, &data);
+		tempCommands->End();
+		iCommandBuffer* commandBuffers[] = { tempCommands };
+		mpDevice->Submit(1, commandBuffers);
+
+		mpDevice->Signal(fence, 1);
+		fence->WaitFor(1);
+	}
+
+	ResourceDesc vbDescInstance(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Instance) * kInstanceCount, 1);
 	for (int i = 0; i < mBackBufferCount; ++i)
-		mpDevice->CreateVertexBuffer(BufferUsage::eDynamic, sizeof(Instance) * kInstanceCount, sizeof(Instance), nullptr, mpInstanceBuffer[i].AsTypePP());
+		mpDevice->CreateVertexBuffer(&vbDescInstance, sizeof(Instance), mpInstanceBuffer[i].AsTypePP());
 
 	// Create an index buffer.
-	mpDevice->CreateIndexBuffer(Format::eR32u, BufferUsage::eDefault, sizeof(ibData), ibData, mpIndexBuffer.AsTypePP());
+	ResourceDesc ibDesc(ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(ibData));
+	mpDevice->CreateIndexBuffer(&ibDesc, Format::eR32u, mpIndexBuffer.AsTypePP());
+
+	// Upload the index data.
+	{
+		ResourceDesc ibInit(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(ibData));
+		IntrusivePtr<iIndexBuffer> uploadIb;
+		mpDevice->CreateIndexBuffer(&ibInit, Format::eR32u, uploadIb.AsTypePP());
+		void* buffer;
+		uploadIb->Map(&buffer, nullptr);
+		Std::MemCpy(buffer, ibData, sizeof(ibData));
+		uploadIb->Unmap(nullptr);
+
+		tempPool->Reset();
+		tempCommands->Reset(tempPool);
+		tempCommands->Begin(nullptr);
+
+		IntrusivePtr<iResource> targetResource;
+		mpIndexBuffer->QueryInterface(iResource::kIID, targetResource.AsVoidPP());
+		tempCommands->CopyResource(uploadIb, targetResource);
+		tempCommands->ResourceBarrier(targetResource, ResourceState::eCopyDest, ResourceState::eGenericRead);
+		tempCommands->End();
+		iCommandBuffer* commandBuffers[] = { tempCommands };
+		mpDevice->Submit(1, commandBuffers);
+
+		mpDevice->Signal(fence, 2);
+		fence->WaitFor(2);
+	}
 
 	// Create a the view projection constant buffer.
 	struct CameraProj
@@ -185,7 +257,8 @@ bool ExperimentalD3D12::_CreateResources()
 		)),
 		1.0f, 1000.0f
 	};
-	mpDevice->CreateConstantBuffer(sizeof(CameraProj), &initCameraData, mpViewProj.AsTypePP());
+	ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(CameraProj));
+	mpDevice->CreateConstantBuffer(&cbDesc, &initCameraData, mpViewProj.AsTypePP());
 
 	return false;
 }

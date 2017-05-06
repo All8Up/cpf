@@ -140,52 +140,6 @@ COM::Result CPF_STDCALL Device::Shutdown()
 	return COM::kError;
 }
 
-void CPF_STDCALL Device::BeginFrame(Graphics::iCommandBuffer* cmds)
-{
-	CommandBuffer* commands = static_cast<CommandBuffer*>(cmds);
-
-	for (auto& item : mUploadQueue)
-	{
-		switch (item.mType)
-		{
-		case WorkType::eUploadVertexBuffer:
-			{
-				const auto& work = item.UploadVertexBuffer;
-				commands->_Current()->CopyResource(work.mpDestination, work.mpSource);
-				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
-				commands->_Current()->ResourceBarrier(1, &barrier);
-				work.mpDestination->Release();
-				mReleaseQueue.push_back(work.mpSource);
-			}
-			break;
-
-		case WorkType::eUpdateSubResource:
-			{
-				auto& work = item.UpdateSubResource;
-
-				UpdateSubresources(commands->_Current(),
-					work.mpDestination, work.mpSource,
-					0, 0, 1, &work.mData);
-
-				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
-				commands->_Current()->ResourceBarrier(1, &barrier);
-				// TODO: Have to clean up the buffer and blob.
-			}
-			break;
-		}
-	}
-	mUploadQueue.clear();
-}
-
-void CPF_STDCALL Device::Finalize()
-{
-	for (auto item : mReleaseQueue)
-	{
-		item->Release();
-	}
-	mReleaseQueue.clear();
-}
-
 COM::Result CPF_STDCALL Device::CreateSwapChain(Graphics::iInstance* instance, const Graphics::WindowData* winData, int32_t w, int32_t h, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain)
 {
 	Graphics::iSwapChain* result = new SwapChain(static_cast<Instance*>(instance), this, winData, w, h, desc);
@@ -355,9 +309,9 @@ COM::Result CPF_STDCALL Device::CreateFrameBuffer(const Graphics::FrameBufferDes
 	return COM::kUnknownClass;
 }
 
-COM::Result CPF_STDCALL Device::CreateIndexBuffer(Graphics::Format format, Graphics::BufferUsage usage, size_t byteSize, const void* initData, Graphics::iIndexBuffer** indexBuffer)
+COM::Result CPF_STDCALL Device::CreateIndexBuffer(const Graphics::ResourceDesc* desc, Graphics::Format format, Graphics::iIndexBuffer** indexBuffer)
 {
-	IntrusivePtr<IndexBuffer> result(new IndexBuffer(this, format, usage, byteSize, initData));
+	IntrusivePtr<IndexBuffer> result(new IndexBuffer(this, desc, format));
 	if (result)
 	{
 		*indexBuffer = result;
@@ -367,9 +321,9 @@ COM::Result CPF_STDCALL Device::CreateIndexBuffer(Graphics::Format format, Graph
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateVertexBuffer(Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData, Graphics::iVertexBuffer** vertexBuffer)
+COM::Result CPF_STDCALL Device::CreateVertexBuffer(const Graphics::ResourceDesc* desc, int32_t stride, Graphics::iVertexBuffer** vertexBuffer)
 {
-	IntrusivePtr<VertexBuffer> result(new VertexBuffer(this, usage, byteSize, byteStride, initData));
+	IntrusivePtr<VertexBuffer> result(new VertexBuffer(this, desc, stride));
 	if (result)
 	{
 		*vertexBuffer = result;
@@ -379,9 +333,9 @@ COM::Result CPF_STDCALL Device::CreateVertexBuffer(Graphics::BufferUsage usage, 
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateConstantBuffer(size_t bufferSize, const void* initData, Graphics::iConstantBuffer** cbuf)
+COM::Result CPF_STDCALL Device::CreateConstantBuffer(const Graphics::ResourceDesc* desc, const void* initData, Graphics::iConstantBuffer** cbuf)
 {
-	IntrusivePtr<ConstantBuffer> result(new ConstantBuffer(this, bufferSize, initData));
+	IntrusivePtr<ConstantBuffer> result(new ConstantBuffer(this, desc, initData));
 	if (result)
 	{
 		*cbuf = result;
@@ -495,29 +449,4 @@ DescriptorManager& CPF_STDCALL Device::GetRenderTargetViewDescriptors()
 DescriptorManager& CPF_STDCALL Device::GetDepthStencilViewDescriptors()
 {
 	return mDepthStencilDescriptors;
-}
-
-void CPF_STDCALL Device::QueueUpload(ID3D12Resource* src, ID3D12Resource* dst, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState)
-{
-	WorkEntry entry;
-	entry.mType = WorkType::eUploadVertexBuffer;
-	entry.UploadVertexBuffer.mpSource = src;
-	entry.UploadVertexBuffer.mpDestination = dst;
-	entry.UploadVertexBuffer.mDstStartState = dstStartState;
-	entry.UploadVertexBuffer.mDstEndState = dstEndState;
-	mUploadQueue.push_back(entry);
-}
-
-void CPF_STDCALL Device::QueueUpdateSubResource(ID3D12Resource* src, ID3D12Resource* dst, D3D12_SUBRESOURCE_DATA& data, Graphics::iBlob* blob, D3D12_RESOURCE_STATES dstStartState, D3D12_RESOURCE_STATES dstEndState)
-{
-	WorkEntry entry;
-	entry.mType = WorkType::eUpdateSubResource;
-	entry.UpdateSubResource.mpSource = src;
-	entry.UpdateSubResource.mpDestination = dst;
-	entry.UpdateSubResource.mpBlob = blob;
-	entry.UpdateSubResource.mData = data;
-	entry.UpdateSubResource.mDstStartState = dstStartState;
-	entry.UpdateSubResource.mDstEndState = dstEndState;
-	blob->AddRef();
-	mUploadQueue.push_back(entry);
 }

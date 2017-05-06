@@ -23,9 +23,6 @@ void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
 	mpPreCommandBuffer[mCurrentBackbuffer]->Reset(mpPreCommandPool[mCurrentBackbuffer]);
 	mpPreCommandBuffer[mCurrentBackbuffer]->Begin(nullptr);
 
-	// TODO: This will move into the render pass abstraction when it is ready.
-	mpDevice->BeginFrame(mpPreCommandBuffer[mCurrentBackbuffer]);
-
 	int32_t width, height;
 	mpWindow->GetClientAreaSize(&width, &height);
 
@@ -116,7 +113,4 @@ void ExperimentalD3D12::_EndFrame(Concurrency::ThreadContext&)
 	// TODO: This sure seems like a race condition but it is how all the examples seem to work.
 	if (mpFence->GetValue() < fenceToWaitFor)
 		mpFence->WaitFor(fenceToWaitFor);
-
-	// TODO: Move into the render passes.
-	mpDevice->Finalize();
 }

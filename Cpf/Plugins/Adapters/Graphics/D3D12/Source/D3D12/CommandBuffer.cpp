@@ -133,10 +133,18 @@ void CPF_STDCALL CommandBuffer::UpdateSubResource(Graphics::iResource* src, Grap
 		0, 0, 1, &resData);
 }
 
+void CPF_STDCALL CommandBuffer::CopyResource(Graphics::iResource* src, Graphics::iResource* dst)
+{
+	_Current()->CopyResource(
+		static_cast<Resource*>(dst)->GetResource(),
+		static_cast<Resource*>(src)->GetResource()
+		);
+}
+
 void CPF_STDCALL CommandBuffer::ResourceBarrier(Graphics::iResource* resource, Graphics::ResourceState startState, Graphics::ResourceState endState)
 {
 	Resource* res = static_cast<Resource*>(resource);
-	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(res->GetResource(), D3D12_RESOURCE_STATES(startState), D3D12_RESOURCE_STATES(endState));
+	CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(res->GetResource(), D3D12_RESOURCE_STATES(Convert(startState)), D3D12_RESOURCE_STATES(Convert(endState)));
 	_Current()->ResourceBarrier(1, &barrier);
 }
 

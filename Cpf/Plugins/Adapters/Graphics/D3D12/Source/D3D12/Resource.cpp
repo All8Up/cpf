@@ -38,7 +38,7 @@ Resource::Resource(Device* device, const Graphics::ResourceDesc* desc)
 		DXGI_FORMAT_UNKNOWN, // Format
 		{1, 0}, // SampleDesc
 		D3D12_TEXTURE_LAYOUT_ROW_MAJOR, // Layout
-		D3D12_RESOURCE_FLAGS(desc->GetUsage()) // Flags
+		D3D12_RESOURCE_FLAGS(0) // Flags
 	};
 	device->GetD3DDevice()->CreateCommittedResource(
 		&heapProps,

@@ -1,13 +1,18 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/iVertexBuffer.hpp"
-#include "Graphics/BufferUsage.hpp"
+#include "Graphics/ResourceDesc.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 
 
 namespace Cpf
 {
+	namespace Graphics
+	{
+		enum class HeapType : int32_t;
+	}
+
 	namespace Adapter
 	{
 		namespace D3D12
@@ -18,7 +23,7 @@ namespace Cpf
 			class VertexBuffer : public tRefCounted<Graphics::iVertexBuffer>
 			{
 			public:
-				VertexBuffer(Device* device, Graphics::BufferUsage usage, size_t byteSize, size_t byteStride, const void* initData);
+				VertexBuffer(Device* device, const Graphics::ResourceDesc* desc, int32_t stride);
 				virtual ~VertexBuffer();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
@@ -32,8 +37,7 @@ namespace Cpf
 			private:
 				IntrusivePtr<ID3D12Resource> mpResource;
 				D3D12_VERTEX_BUFFER_VIEW mView;
-				size_t mSize;
-				size_t mStride;
+				Graphics::ResourceDesc mDesc;
 			};
 		}
 	}

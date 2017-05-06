@@ -51,6 +51,8 @@ namespace Cpf
 
 			virtual void CPF_STDCALL UpdateSubResource(iResource* src, iResource* dst, const ResourceData* data) = 0;
 
+			virtual void CPF_STDCALL CopyResource(iResource* src, iResource* dst) = 0;
+
 			virtual void CPF_STDCALL ResourceBarrier(iResource* resource, ResourceState startStart, ResourceState endState) = 0;
 			virtual void CPF_STDCALL ImageTransition(iImage* image, ResourceState startState, ResourceState endState, SubResource subResources) = 0;
 

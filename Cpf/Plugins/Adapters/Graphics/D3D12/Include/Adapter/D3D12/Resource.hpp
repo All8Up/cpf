@@ -9,7 +9,7 @@ namespace Cpf
 	namespace Graphics
 	{
 		struct Range;
-		class ResourceDesc;
+		struct ResourceDesc;
 	}
 
 	namespace Adapter
