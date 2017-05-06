@@ -57,7 +57,7 @@ namespace Cpf
 				COM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
 				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::CommandBufferType type, Graphics::iCommandBuffer**) override;
 				COM::Result CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
-				COM::Result CPF_STDCALL CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
+				COM::Result CPF_STDCALL CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const Graphics::ClearValue* clearValue, Graphics::iImage**) override;
 				COM::Result CPF_STDCALL CreateShader(Graphics::iBlob* blob, Graphics::iShader**) override;
 				COM::Result CPF_STDCALL CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
 				COM::Result CPF_STDCALL CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;

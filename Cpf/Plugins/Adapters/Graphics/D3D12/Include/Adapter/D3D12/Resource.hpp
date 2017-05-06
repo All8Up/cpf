@@ -8,6 +8,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
+		struct Range;
 		class ResourceDesc;
 	}
 
@@ -26,6 +27,9 @@ namespace Cpf
 				virtual ~Resource();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+				bool Map(void**, const Graphics::Range* = nullptr) override;
+				void Unmap(const Graphics::Range* range) override;
 
 				ID3D12Resource* GetResource() const { return mpResource; }
 				D3D12_GPU_VIRTUAL_ADDRESS GetGPUAddress() const;

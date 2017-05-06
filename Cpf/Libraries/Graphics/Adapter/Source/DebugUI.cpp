@@ -19,6 +19,8 @@
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/HeapType.hpp"
+#include "Graphics/ResourceType.hpp"
+#include "Graphics/ResourceData.hpp"
 #include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
@@ -38,6 +40,8 @@
 #include "Application/iKeyboardDevice.hpp"
 #include "Application/iInputManager.hpp"
 #include "Application/iClipboard.hpp"
+
+#include "Std/Memory.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
@@ -224,6 +228,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
 		if (pixels == nullptr)
 			return false;
+		const size_t dataSize = sizeof(uint32_t) * width * height;
 
 		ImageDesc atlasDesc;
 		atlasDesc.mFormat = Format::eRGBA8un;
@@ -236,14 +241,47 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		atlasDesc.mFlags = ImageFlags::eNone;
 
 		// Create the target texture.
-		mpDevice->CreateImage2D(HeapType::eDefault, &atlasDesc, pixels, mpUIAtlas.AsTypePP());
+		mpDevice->CreateImage2D(HeapType::eDefault, &atlasDesc, nullptr, mpUIAtlas.AsTypePP());
 
-		// Create the staging texture.
-		atlasDesc.mState = ResourceState::eGenericRead;
-		IntrusivePtr<iImage> upload;
-		mpDevice->CreateImage2D(HeapType::eUpload, &atlasDesc, nullptr, upload.AsTypePP());
+		// Create the staging buffer.
+		ResourceDesc stagingDesc(
+			ResourceType::eBuffer,
+			HeapType::eUpload,
+			ResourceState::eGenericRead,
+			0,
+			int32_t(dataSize)
+		);
+		IntrusivePtr<iResource> staging;
+		mpDevice->CreateResource(&stagingDesc, staging.AsTypePP());
 
+		// Copy the image to the staging buffer.
+		void* buffer;
+		staging->Map(&buffer);
+		Std::MemCpy(buffer, pixels, sizeof(uint32_t) * width * height);
+		staging->Unmap(nullptr);
 
+		// Create a temporary command buffer and a fence to issue the copy from staging buffer to the image.
+		IntrusivePtr<iCommandPool> tempPool;
+		mpDevice->CreateCommandPool(tempPool.AsTypePP());
+		IntrusivePtr<iCommandBuffer> tempCommands;
+		mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::kPrimary, tempCommands.AsTypePP());
+		IntrusivePtr<iFence> tempFence;
+		mpDevice->CreateFence(0, tempFence.AsTypePP());
+
+		tempCommands->Reset(tempPool);
+		tempCommands->Begin(nullptr);
+		Graphics::ResourceData data;
+		data.mpData = pixels;
+		data.mPitch = width * sizeof(int32_t);
+		data.mSlicePitch = data.mPitch * height;
+		IntrusivePtr<iResource> targetResource;
+		mpUIAtlas->QueryInterface(iResource::kIID, targetResource.AsVoidPP());
+		tempCommands->UpdateSubResource(staging, targetResource, &data);
+		tempCommands->End();
+		iCommandBuffer* commandBuffers[] = { tempCommands };
+		mpDevice->Submit(1, commandBuffers);
+		mpDevice->Signal(tempFence, 1);
+		tempFence->WaitFor(1);
 	}
 	if (!mpUIAtlas)
 		return false;

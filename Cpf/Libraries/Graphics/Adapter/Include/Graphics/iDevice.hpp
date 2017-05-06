@@ -29,6 +29,7 @@ namespace Cpf
 		struct WindowData;
 
 		struct SamplerDesc;
+		struct ClearValue;
 		class ResourceDesc;
 		struct ImageDesc;
 		struct DepthStencilViewDesc;
@@ -58,7 +59,7 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL CreateCommandPool(iCommandPool**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandBuffer(iCommandPool*, CommandBufferType type, iCommandBuffer**) = 0;
 			virtual COM::Result CPF_STDCALL CreateFence(int64_t initValue, iFence**) = 0;
-			virtual COM::Result CPF_STDCALL CreateImage2D(HeapType heap, const ImageDesc* desc, const void* initData, iImage**) = 0;
+			virtual COM::Result CPF_STDCALL CreateImage2D(HeapType heap, const ImageDesc* desc, const Graphics::ClearValue* clearValue, iImage**) = 0;
 			virtual COM::Result CPF_STDCALL CreateShader(iBlob* blob, iShader**) = 0;
 			virtual COM::Result CPF_STDCALL CreateResourceBinding(const ResourceBindingDesc*, iResourceBinding**) = 0;
 			virtual COM::Result CPF_STDCALL CreatePipeline(const PipelineStateDesc* desc, iResourceBinding*, iPipeline**) = 0;

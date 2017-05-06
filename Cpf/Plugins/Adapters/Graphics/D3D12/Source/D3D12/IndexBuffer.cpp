@@ -130,7 +130,7 @@ COM::Result CPF_STDCALL IndexBuffer::QueryInterface(COM::InterfaceID id, void** 
 	return COM::kInvalidParameter;
 }
 
-bool IndexBuffer::Map(void** mapping, Graphics::Range* range)
+bool IndexBuffer::Map(void** mapping, const Graphics::Range* range)
 {
 	D3D12_RANGE* prange = nullptr;
 	D3D12_RANGE r;
@@ -145,7 +145,7 @@ bool IndexBuffer::Map(void** mapping, Graphics::Range* range)
 	return false;
 }
 
-void IndexBuffer::Unmap(Graphics::Range* range)
+void IndexBuffer::Unmap(const Graphics::Range* range)
 {
 	D3D12_RANGE* prange = nullptr;
 	D3D12_RANGE r;

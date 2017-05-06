@@ -77,6 +77,34 @@ COM::Result CPF_STDCALL Resource::QueryInterface(COM::InterfaceID id, void** out
 	return COM::kInvalidParameter;
 }
 
+bool Resource::Map(void** mapping, const Graphics::Range* range)
+{
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	if (SUCCEEDED(mpResource->Map(0, prange, mapping)))
+		return true;
+	return false;
+}
+
+void Resource::Unmap(const Graphics::Range* range)
+{
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	mpResource->Unmap(0, prange);
+}
+
 D3D12_GPU_VIRTUAL_ADDRESS Resource::GetGPUAddress() const
 {
 	return mpResource->GetGPUVirtualAddress();

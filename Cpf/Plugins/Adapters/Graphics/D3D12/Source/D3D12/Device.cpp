@@ -163,10 +163,11 @@ void CPF_STDCALL Device::BeginFrame(Graphics::iCommandBuffer* cmds)
 			{
 				auto& work = item.UpdateSubResource;
 
-				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
 				UpdateSubresources(commands->_Current(),
 					work.mpDestination, work.mpSource,
 					0, 0, 1, &work.mData);
+
+				CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(work.mpDestination, work.mDstStartState, work.mDstEndState);
 				commands->_Current()->ResourceBarrier(1, &barrier);
 				// TODO: Have to clean up the buffer and blob.
 			}
@@ -239,9 +240,9 @@ COM::Result CPF_STDCALL Device::CreateFence(int64_t initValue, Graphics::iFence*
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** image)
+COM::Result CPF_STDCALL Device::CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const Graphics::ClearValue* clearValue, Graphics::iImage** image)
 {
-	Image* result = new Image(this, heap, initData, desc);
+	Image* result = new Image(this, heap, clearValue, desc);
 	if (result)
 	{
 		*image = result;

@@ -7,6 +7,11 @@
 
 namespace Cpf
 {
+	namespace Graphics
+	{
+		struct ClearValue;
+	}
+
 	namespace Adapter
 	{
 		namespace D3D12
@@ -15,10 +20,13 @@ namespace Cpf
 			{
 			public:
 				Image(ID3D12Resource* resource);
-				Image(Device*, Graphics::HeapType heap, const void* initData, const Graphics::ImageDesc* desc);
+				Image(Device*, Graphics::HeapType heap, const Graphics::ClearValue* clearValue, const Graphics::ImageDesc* desc);
 				virtual ~Image();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+				bool Map(void**, const Graphics::Range* = nullptr) override;
+				void Unmap(const Graphics::Range* range) override;
 
 				const Graphics::ImageDesc& GetDesc() const override;
 

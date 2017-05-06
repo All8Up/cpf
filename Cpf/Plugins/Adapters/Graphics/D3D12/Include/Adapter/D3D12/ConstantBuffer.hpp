@@ -26,6 +26,9 @@ namespace Cpf
 
 				void Update(size_t offset, size_t size, const void* data) override;
 
+				bool Map(void**, const Graphics::Range* = nullptr) override;
+				void Unmap(const Graphics::Range* range) override;
+
 				const Descriptor& GetDescriptor() const { return mDescriptor; }
 				D3D12_GPU_VIRTUAL_ADDRESS GetGPUAddress() const { return mpResource->GetGPUVirtualAddress(); }
 

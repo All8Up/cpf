@@ -10,6 +10,7 @@
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/Format.hpp"
 #include "Graphics/HeapType.hpp"
+#include "Graphics/ClearValue.hpp"
 
 using namespace Cpf;
 
@@ -66,7 +67,11 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 			Graphics::ResourceState::eCommon,
 			Graphics::ImageFlags::eAllowDepthStencil
 		};
-		mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+		Graphics::ClearValue clearValue;
+		clearValue.mFormat = Graphics::Format::eD32f;
+		clearValue.mDepthStencil.mDepth = 1.0f;
+		clearValue.mDepthStencil.mStencil = 0;
+		mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, &clearValue, mpDepthBuffer.AsTypePP());
 		mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 	}
 }

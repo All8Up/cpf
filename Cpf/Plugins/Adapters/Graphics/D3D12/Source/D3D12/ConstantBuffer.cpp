@@ -80,6 +80,15 @@ COM::Result CPF_STDCALL ConstantBuffer::QueryInterface(COM::InterfaceID id, void
 	return COM::kInvalidParameter;
 }
 
+bool ConstantBuffer::Map(void**, const Graphics::Range*)
+{
+	return false;
+}
+
+void ConstantBuffer::Unmap(const Graphics::Range*)
+{
+}
+
 void ConstantBuffer::Update(size_t offset, size_t size, const void* data)
 {
 	CPF_ASSERT(mpBuffer);

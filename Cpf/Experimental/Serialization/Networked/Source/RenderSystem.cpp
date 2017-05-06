@@ -305,7 +305,11 @@ bool RenderSystem::_CreateDepthBuffer(int32_t w, int32_t h)
 		ResourceState::eCommon,
 		ImageFlags::eAllowDepthStencil
 	};
-	mpDevice->CreateImage2D(HeapType::eDefault, &depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+	ClearValue clearValue;
+	clearValue.mFormat = Format::eD32f;
+	clearValue.mDepthStencil.mDepth = 1.0f;
+	clearValue.mDepthStencil.mStencil = 0;
+	mpDevice->CreateImage2D(HeapType::eDefault, &depthBufferDesc, &clearValue, mpDepthBuffer.AsTypePP());
 	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
 	return true;

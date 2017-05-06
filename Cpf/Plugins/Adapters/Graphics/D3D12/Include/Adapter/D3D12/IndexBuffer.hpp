@@ -22,8 +22,8 @@ namespace Cpf
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				bool Map(void**, Graphics::Range*) override;
-				void Unmap(Graphics::Range*) override;
+				bool Map(void**, const Graphics::Range* = nullptr) override;
+				void Unmap(const Graphics::Range* range) override;
 
 				ID3D12Resource* GetResource() const;
 				const D3D12_INDEX_BUFFER_VIEW* GetView() const;

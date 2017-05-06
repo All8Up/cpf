@@ -3,6 +3,7 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/HeapType.hpp"
+#include "Graphics/ClearValue.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -15,7 +16,7 @@ Image::Image(ID3D12Resource* resource)
 {
 }
 
-Image::Image(Device* device, Graphics::HeapType heap, const void* initData, const Graphics::ImageDesc* desc)
+Image::Image(Device* device, Graphics::HeapType heap, const Graphics::ClearValue* cv, const Graphics::ImageDesc* desc)
 	: mDesc(*desc)
 {
 	{
@@ -39,62 +40,38 @@ Image::Image(Device* device, Graphics::HeapType heap, const void* initData, cons
 			Convert(mDesc.mFormat),
 			{UINT(mDesc.mSamples.mCount), UINT(mDesc.mSamples.mQuality)},
 			D3D12_TEXTURE_LAYOUT_UNKNOWN,
-			(mDesc.mFlags == Graphics::ImageFlags::eNone
+			(mDesc.mFlags != Graphics::ImageFlags::eAllowDepthStencil
 				? D3D12_RESOURCE_FLAG_NONE
 				: D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
 		};
+
 		D3D12_CLEAR_VALUE clearValue;
-		clearValue.Format = Convert(mDesc.mFormat);
-		if (mDesc.mFlags == Graphics::ImageFlags::eNone)
+		if (cv)
 		{
-			clearValue.Color[0] = 0.0f;
-			clearValue.Color[1] = 0.0f;
-			clearValue.Color[2] = 0.0f;
-			clearValue.Color[3] = 1.0f;
-		}
-		else
-		{
-			clearValue.DepthStencil.Depth = 1.0f;
-			clearValue.DepthStencil.Stencil = 0;
+			clearValue.Format = Convert(cv->mFormat);
+			if ((mDesc.mFlags & Graphics::ImageFlags::eAllowDepthStencil) == Graphics::ImageFlags::eNone)
+			{
+				clearValue.Color[0] = cv->mColor[0];
+				clearValue.Color[1] = cv->mColor[1];
+				clearValue.Color[2] = cv->mColor[2];
+				clearValue.Color[3] = cv->mColor[3];
+			}
+			else
+			{
+				clearValue.DepthStencil.Depth = cv->mDepthStencil.mDepth;
+				clearValue.DepthStencil.Stencil = cv->mDepthStencil.mStencil;
+			}
 		}
 		device->GetD3DDevice()->CreateCommittedResource(
 			&heapProps,
 			D3D12_HEAP_FLAG_NONE,
 			&d3dDesc,
 			Convert(desc->mState),
-			initData==nullptr ? &clearValue : nullptr,
+			cv ? &clearValue : nullptr,
 			IID_PPV_ARGS(mpResource.AsTypePP()));
 	}
 
 	CPF_LOG(D3D12, Info) << "Created image: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
-
-	// TODO: Remove the initialization data and use externally managed transfer buffers.
-	if (initData)
-	{
-		ID3D12Resource* upload = nullptr;
-		CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_UPLOAD);
-		CD3DX12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(mDesc.mWidth * mDesc.mHeight * 4);
-		device->GetD3DDevice()->CreateCommittedResource(
-			&heapProperties,
-			D3D12_HEAP_FLAG_NONE,
-			&resourceDesc,
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&upload));
-
-		IntrusivePtr<Graphics::iBlob> blob;
-		device->CreateBlob(mDesc.mWidth * mDesc.mHeight * 4, initData, blob.AsTypePP());
-
-		D3D12_SUBRESOURCE_DATA textureData = {};
-		textureData.pData = blob->GetData();
-		textureData.RowPitch = desc->mWidth * 4;
-		textureData.SlicePitch = textureData.RowPitch * desc->mHeight;
-
-		mpResource->AddRef();
-		device->QueueUpdateSubResource(
-			upload, mpResource, textureData, blob,
-			D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_COMMON);
-	}
 
 	if (mDesc.mFlags == Graphics::ImageFlags::eNone)
 	{
@@ -123,6 +100,9 @@ COM::Result CPF_STDCALL Image::QueryInterface(COM::InterfaceID id, void** outIfa
 		case COM::iUnknown::kIID.GetID():
 			*outIface = static_cast<COM::iUnknown*>(this);
 			break;
+		case iResource::kIID.GetID():
+			*outIface = static_cast<iResource*>(this);
+			break;
 		case iImage::kIID.GetID():
 			*outIface = static_cast<iImage*>(this);
 			break;
@@ -133,6 +113,34 @@ COM::Result CPF_STDCALL Image::QueryInterface(COM::InterfaceID id, void** outIfa
 		return COM::kOK;
 	}
 	return COM::kInvalidParameter;
+}
+
+bool Image::Map(void** mapping, const Graphics::Range* range)
+{
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	if (SUCCEEDED(mpResource->Map(0, prange, mapping)))
+		return true;
+	return false;
+}
+
+void Image::Unmap(const Graphics::Range* range)
+{
+	D3D12_RANGE* prange = nullptr;
+	D3D12_RANGE r;
+	if (range)
+	{
+		r.Begin = range->mStart;
+		r.End = range->mEnd;
+		prange = &r;
+	}
+	mpResource->Unmap(0, prange);
 }
 
 const Graphics::ImageDesc& Image::GetDesc() const

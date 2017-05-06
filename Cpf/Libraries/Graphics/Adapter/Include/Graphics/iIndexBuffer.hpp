@@ -11,9 +11,6 @@ namespace Cpf
 		struct iIndexBuffer : iResource
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iIndexBuffer"_crc64);
-
-			virtual bool Map(void**, Range* = nullptr) = 0;
-			virtual void Unmap(Range* = nullptr) = 0;
 		};
 	}
 }
