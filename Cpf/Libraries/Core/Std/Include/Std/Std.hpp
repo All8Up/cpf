@@ -26,16 +26,6 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	struct StdInitializer
-	{
-		CPF_EXPORT_STD static int Install();
-		CPF_EXPORT_STD static int Remove();
-
-	private:
-		StdInitializer() = delete;
-		~StdInitializer() = delete;
-	};
-
 	//////////////////////////////////////////////////////////////////////////
 	template <typename LHS, typename RHS>
 	LHS Min(LHS a, RHS b)

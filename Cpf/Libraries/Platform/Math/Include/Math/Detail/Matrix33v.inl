@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Math/Quaternion.hpp"
+#include "Std/Trigonometric.hpp"
 
 namespace Cpf
 {
@@ -95,8 +96,8 @@ namespace Cpf
 		{
 			CPF_ASSERT(MagnitudeSq(axis) > Element(0.0001));
 			Row a = Normalize(axis);
-			Element ca = std::cos(radians);
-			Element sa = std::sin(radians);
+			Element ca = Std::Cos(radians);
+			Element sa = Std::Sin(radians);
 
 			Element omc = 1 - ca;
 			Element xx = a.x*a.x;
@@ -116,8 +117,8 @@ namespace Cpf
 		template <typename TYPE> CPF_FORCE_INLINE
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::RotationX(Element radians)
 		{
-			Element sa = std::sin(radians);
-			Element ca = std::cos(radians);
+			Element sa = Std::Sin(radians);
+			Element ca = Std::Cos(radians);
 
 			return Matrix33<TYPE>(
 				1, 0, 0,
@@ -129,8 +130,8 @@ namespace Cpf
 		template <typename TYPE> CPF_FORCE_INLINE
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::RotationY(Element radians)
 		{
-			Element sa = std::sin(radians);
-			Element ca = std::cos(radians);
+			Element sa = Std::Sin(radians);
+			Element ca = Std::Cos(radians);
 
 			return Matrix33<TYPE>(
 				ca, 0, -sa,
@@ -142,8 +143,8 @@ namespace Cpf
 		template <typename TYPE> CPF_FORCE_INLINE
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::RotationZ(Element radians)
 		{
-			Element sa = std::sin(radians);
-			Element ca = std::cos(radians);
+			Element sa = Std::Sin(radians);
+			Element ca = Std::Cos(radians);
 
 			return Matrix33v<TYPE>(
 				ca, sa, 0,

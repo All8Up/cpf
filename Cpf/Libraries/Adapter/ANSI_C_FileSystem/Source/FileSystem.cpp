@@ -129,7 +129,7 @@ void ANSI_C_FileSystem::Seek(FileHandle handle, int64_t offset, StreamOrigin ori
 
 int64_t ANSI_C_FileSystem::Read(FileHandle handle, void* buffer, int64_t length, Error* error)
 {
-	int64_t len = Std::FRead(buffer, 1, length, (FILE*)handle);
+	int64_t len = Std::FRead((FILE*)handle, buffer, 1, length);
 	if (error)
 		*error = len < 0 ? Error::eNone : Std::FError((FILE*)handle) == 0 ? Error::eNone : Error::eUnknownError;
 	return len;
@@ -137,7 +137,7 @@ int64_t ANSI_C_FileSystem::Read(FileHandle handle, void* buffer, int64_t length,
 
 int64_t ANSI_C_FileSystem::Write(FileHandle handle, const void* buffer, int64_t length, Error* error)
 {
-	int64_t len = Std::FWrite(buffer, 1, length, (FILE*)handle);
+	int64_t len = Std::FWrite((FILE*)handle, buffer, 1, length);
 	if (error)
 		*error = len < length ? Error::eNone : Std::FError((FILE*)handle) == 0 ? Error::eNone : Error::eUnknownError;
 	return len;

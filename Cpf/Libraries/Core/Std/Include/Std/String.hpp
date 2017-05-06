@@ -6,28 +6,110 @@ namespace Cpf
 {
 	namespace Std
 	{
-		CPF_EXPORT_STD char* StrCat(char* dst, const char* src);
-		CPF_EXPORT_STD const char* StrChr(const char* str, int ch);
-		CPF_EXPORT_STD char* StrChr(char* str, int ch);
-		CPF_EXPORT_STD int StrCmp(const char* lhs, const char* rhs);
-		CPF_EXPORT_STD int StrColl(const char* lhs, const char* rhs);
-		CPF_EXPORT_STD char* StrCpy(char* dst, const char* src);
-		CPF_EXPORT_STD size_t StrCspn(const char* lhs, const char* rhs);
-		CPF_EXPORT_STD char* StrError(int errnum);
-		CPF_EXPORT_STD size_t StrLen(const char* str);
 
-		CPF_EXPORT_STD char* StrNCat(char* dst, const char* src, size_t num);
-		CPF_EXPORT_STD int StrNCmp(const char* lhs, const char* rhs, size_t num);
-		CPF_EXPORT_STD char* StrNCpy(char* dst, const char* src, size_t num);
+		inline char* StrCat(char* dst, const char* src)
+		{
+			return strcat(dst, src);
+		}
 
-		CPF_EXPORT_STD const char* StrPBrk(const char* lhs, const char* rhs);
-		CPF_EXPORT_STD char* StrPBrk(char* lhs, const char* rhs);
-		CPF_EXPORT_STD const char* StrRChr(const char* str, int ch);
-		CPF_EXPORT_STD char* StrRChr(char* str, int ch);
-		CPF_EXPORT_STD size_t StrSpn(const char* lhs, const char* rhs);
-		CPF_EXPORT_STD const char* StrStr(const char* lhs, const char* rhs);
-		CPF_EXPORT_STD char* StrStr(char* lhs, const char* rhs);
-		CPF_EXPORT_STD char* StrTok(char* lhs, const char* dels);
-		CPF_EXPORT_STD size_t StrXfrm(char* dst, const char* src, size_t num);
+		inline const char* StrChr(const char* str, int ch)
+		{
+			return strchr(str, ch);
+		}
+
+		inline char* StrChr(char* str, int ch)
+		{
+			return strchr(str, ch);
+		}
+
+		inline int StrCmp(const char* lhs, const char* rhs)
+		{
+			return strcmp(lhs, rhs);
+		}
+
+		inline int StrColl(const char* lhs, const char* rhs)
+		{
+			return strcoll(lhs, rhs);
+		}
+
+		inline char* StrCpy(char* dst, const char* src)
+		{
+			return strcpy(dst, src);
+		}
+
+		inline size_t StrCspn(const char* lhs, const char* rhs)
+		{
+			return strcspn(lhs, rhs);
+		}
+
+		inline char* StrError(int errnum)
+		{
+			return strerror(errnum);
+		}
+
+		inline size_t StrLen(const char* str)
+		{
+			return strlen(str);
+		}
+
+		inline char* StrNCat(char* dst, const char* src, size_t num)
+		{
+			return strncat(dst, src, num);
+		}
+
+		inline int StrNCmp(const char* lhs, const char* rhs, size_t num)
+		{
+			return strncmp(lhs, rhs, num);
+		}
+
+		inline char* StrNCpy(char* dst, const char* src, size_t num)
+		{
+			return strncpy(dst, src, num);
+		}
+
+		inline const char* StrPBrk(const char* lhs, const char* rhs)
+		{
+			return strpbrk(lhs, rhs);
+		}
+
+		inline char* StrPBrk(char* lhs, const char* rhs)
+		{
+			return strpbrk(lhs, rhs);
+		}
+
+		inline const char* StrRChr(const char* str, int ch)
+		{
+			return strrchr(str, ch);
+		}
+
+		inline char* StrRChr(char* str, int ch)
+		{
+			return strrchr(str, ch);
+		}
+
+		inline size_t StrSpn(const char* lhs, const char* rhs)
+		{
+			return strspn(lhs, rhs);
+		}
+
+		inline const char* StrStr(const char* lhs, const char* rhs)
+		{
+			return strstr(lhs, rhs);
+		}
+
+		inline char* StrStr(char* lhs, const char* rhs)
+		{
+			return strstr(lhs, rhs);
+		}
+
+		inline char* StrTok(char* lhs, const char* dels)
+		{
+			return strtok(lhs, dels);
+		}
+
+		inline size_t StrXfrm(char* dst, const char* src, size_t num)
+		{
+			return strxfrm(dst, src, num);
+		}
 	}
 }

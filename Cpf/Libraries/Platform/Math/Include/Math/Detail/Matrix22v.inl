@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Std/Trigonometric.hpp"
 
 namespace Cpf
 {
@@ -66,8 +67,8 @@ namespace Cpf
 			Matrix22<TYPE> CPF_VECTORCALL Matrix22<TYPE>::Rotation(Element radians)
 		{
 			return Matrix22<TYPE>(
-				Element(std::cos(radians)), Element(-std::sin(radians)),
-				Element(std::sin(radians)), Element(std::cos(radians))
+				Element(Std::Cos(radians)), Element(-Std::Sin(radians)),
+				Element(Std::Sin(radians)), Element(Std::Cos(radians))
 				);
 		}
 

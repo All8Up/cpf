@@ -7,42 +7,19 @@ set (INCLUDE_FILES
 	Include/Std/Memory.hpp
 	Include/Std/String.hpp
 	Include/Std/Time.hpp
+	Include/Std/Trigonometric.hpp
 )
 
-set (SOURCE_FILES
-	Source/Std.cpp
-	Source/CCType.cpp
-	Source/CwCType.cpp
-	Source/IO.cpp
-	Source/Memory.cpp
-	Source/String.cpp
-	Source/Time.cpp
-)
-
-
-add_library (s_Std STATIC ${INCLUDE_FILES} ${SOURCE_FILES})
-
-
-target_compile_definitions (s_Std
-	PUBLIC
-		CPF_STATIC_STD
-	PRIVATE
-		CPF_BUILD_STD
-)
-
-source_group (Headers FILES ${INCLUDE_FILES})
-source_group (Sources FILES ${SOURCE_FILES})
-
-
-target_link_libraries (s_Std Configuration)
-
-
-target_include_directories (s_Std PUBLIC
+add_library (Std INTERFACE)
+target_link_libraries (Std INTERFACE Configuration)
+target_include_directories (Std INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
 )
 
-set_property (TARGET s_Std PROPERTY FOLDER Libraries/Static/Core )
+add_custom_target (Std_IDE SOURCES ${INCLUDE_FILES} ${PLATFORM_INCLUDE_FILES})
+set_property (TARGET Std_IDE PROPERTY FOLDER Libraries/Interface/Core)
+source_group (Interface FILES ${INCLUDE_FILES})
 
 
 install (DIRECTORY Include/Std
@@ -50,8 +27,7 @@ install (DIRECTORY Include/Std
 	PATTERN *
 )
 
-
-install (TARGETS s_Std
+install (TARGETS Std
 	EXPORT StdConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
