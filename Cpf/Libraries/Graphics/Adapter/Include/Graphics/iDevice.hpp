@@ -39,6 +39,7 @@ namespace Cpf
 		struct FrameBufferDesc;
 
 		enum class Format : int32_t;
+		enum class HeapType : int32_t;
 		enum class BufferUsage : int32_t;
 		enum class ShaderType : int32_t;
 		enum class CommandBufferType : int32_t;
@@ -51,14 +52,13 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL Shutdown() = 0;
 
 			virtual void CPF_STDCALL BeginFrame(iCommandBuffer*) = 0;
-			virtual void CPF_STDCALL EndFrame(iCommandBuffer*) = 0;
 			virtual void CPF_STDCALL Finalize() = 0;
 
 			virtual COM::Result CPF_STDCALL CreateSwapChain(iInstance*, const WindowData*, int32_t w, int32_t h, const SwapChainDesc*, iSwapChain**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandPool(iCommandPool**) = 0;
 			virtual COM::Result CPF_STDCALL CreateCommandBuffer(iCommandPool*, CommandBufferType type, iCommandBuffer**) = 0;
 			virtual COM::Result CPF_STDCALL CreateFence(int64_t initValue, iFence**) = 0;
-			virtual COM::Result CPF_STDCALL CreateImage2D(const ImageDesc* desc, const void* initData, iImage**) = 0;
+			virtual COM::Result CPF_STDCALL CreateImage2D(HeapType heap, const ImageDesc* desc, const void* initData, iImage**) = 0;
 			virtual COM::Result CPF_STDCALL CreateShader(iBlob* blob, iShader**) = 0;
 			virtual COM::Result CPF_STDCALL CreateResourceBinding(const ResourceBindingDesc*, iResourceBinding**) = 0;
 			virtual COM::Result CPF_STDCALL CreatePipeline(const PipelineStateDesc* desc, iResourceBinding*, iPipeline**) = 0;

@@ -15,7 +15,7 @@ namespace Cpf
 			{
 			public:
 				Image(ID3D12Resource* resource);
-				Image(Device*, const void* initData, const Graphics::ImageDesc* desc);
+				Image(Device*, Graphics::HeapType heap, const void* initData, const Graphics::ImageDesc* desc);
 				virtual ~Image();
 
 				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;

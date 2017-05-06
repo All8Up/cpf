@@ -13,6 +13,7 @@
 #include "Graphics/WindowData.hpp"
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/RenderPassDesc.hpp"
+#include "Graphics/HeapType.hpp"
 #include "Application/OSWindowData.hpp"
 #include "Logging/Logging.hpp"
 
@@ -211,9 +212,10 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		1,
 		Format::eD32f,
 		{ 1, 0 },
+		ResourceState::eCommon,
 		ImageFlags::eAllowDepthStencil
 	};
-	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+	mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
 	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
 	// Make a frame buffer for each target in the swap chain.

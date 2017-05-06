@@ -7,7 +7,9 @@
 #include "Logging/Logging.hpp"
 #include "Math/Constants.hpp"
 #include "Graphics/ImageDesc.hpp"
+#include "Graphics/ResourceState.hpp"
 #include "Graphics/Format.hpp"
+#include "Graphics/HeapType.hpp"
 
 using namespace Cpf;
 
@@ -61,9 +63,10 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 			1,
 			Graphics::Format::eD32f,
 			{ 1, 0 },
+			Graphics::ResourceState::eCommon,
 			Graphics::ImageFlags::eAllowDepthStencil
 		};
-		mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+		mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
 		mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 	}
 }

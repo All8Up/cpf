@@ -176,12 +176,6 @@ void CPF_STDCALL Device::BeginFrame(Graphics::iCommandBuffer* cmds)
 	mUploadQueue.clear();
 }
 
-void CPF_STDCALL Device::EndFrame(Graphics::iCommandBuffer* cmds)
-{
-	(void)cmds;
-//	CommandBuffer* commands = static_cast<CommandBuffer*>(cmds);
-}
-
 void CPF_STDCALL Device::Finalize()
 {
 	for (auto item : mReleaseQueue)
@@ -245,9 +239,9 @@ COM::Result CPF_STDCALL Device::CreateFence(int64_t initValue, Graphics::iFence*
 	return COM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** image)
+COM::Result CPF_STDCALL Device::CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage** image)
 {
-	Image* result = new Image(this, initData, desc);
+	Image* result = new Image(this, heap, initData, desc);
 	if (result)
 	{
 		*image = result;

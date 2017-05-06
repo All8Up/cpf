@@ -69,11 +69,12 @@ namespace Cpf
 			virtual void CPF_STDCALL DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance) = 0;
 			virtual void CPF_STDCALL DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) = 0;
 
-			// TODO: Starting render pass api.
+			// Render passes.
 			virtual COM::Result CPF_STDCALL BeginRenderPass(RenderPassBeginDesc*) = 0;
 			virtual COM::Result CPF_STDCALL NextSubPass() = 0;
 			virtual COM::Result CPF_STDCALL EndRenderPass() = 0;
 
+			// Secondary command buffer insertion.
 			virtual COM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) = 0;
 		};
 	}

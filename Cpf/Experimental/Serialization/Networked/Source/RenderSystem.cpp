@@ -8,6 +8,7 @@
 #include "Graphics/Format.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Graphics/HeapType.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "Application/iApplication.hpp"
@@ -284,6 +285,7 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 
 bool RenderSystem::_CreateRenderTargets(int32_t w, int32_t h)
 {
+	(void)w; (void)h;
 	return false;
 }
 
@@ -300,9 +302,10 @@ bool RenderSystem::_CreateDepthBuffer(int32_t w, int32_t h)
 		1,
 		Format::eD32f,
 		{ 1, 0 },
+		ResourceState::eCommon,
 		ImageFlags::eAllowDepthStencil
 	};
-	mpDevice->CreateImage2D(&depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
+	mpDevice->CreateImage2D(HeapType::eDefault, &depthBufferDesc, nullptr, mpDepthBuffer.AsTypePP());
 	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
 	return true;
@@ -419,9 +422,6 @@ void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)
 
 	// End the render pass.
 	self.mpPrimaryBuffer[self.mBufferIndex]->EndRenderPass();
-
-	// Let the device take care of any final needed work, read backs for instance.
-	self.mpDevice->EndFrame(self.mpPrimaryBuffer[self.mBufferIndex]);
 
 	// End the command buffer prior to submission.
 	self.mpPrimaryBuffer[self.mBufferIndex]->End();

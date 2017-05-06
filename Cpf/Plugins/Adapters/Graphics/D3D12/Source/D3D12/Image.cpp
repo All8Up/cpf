@@ -2,6 +2,7 @@
 #include "Adapter/D3D12/Image.hpp"
 #include "Adapter/D3D12/Device.hpp"
 #include "Graphics/ImageFlags.hpp"
+#include "Graphics/HeapType.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -14,10 +15,20 @@ Image::Image(ID3D12Resource* resource)
 {
 }
 
-Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* desc)
+Image::Image(Device* device, Graphics::HeapType heap, const void* initData, const Graphics::ImageDesc* desc)
 	: mDesc(*desc)
 {
 	{
+		D3D12_HEAP_TYPE heapType = D3D12_HEAP_TYPE_CUSTOM;
+		switch (heap)
+		{
+		case Graphics::HeapType::eCustom:	heapType = D3D12_HEAP_TYPE_CUSTOM; break;
+		case Graphics::HeapType::eDefault:	heapType = D3D12_HEAP_TYPE_DEFAULT; break;
+		case Graphics::HeapType::eReadback:	heapType = D3D12_HEAP_TYPE_READBACK; break;
+		case Graphics::HeapType::eUpload:	heapType = D3D12_HEAP_TYPE_UPLOAD; break;
+		}
+		CD3DX12_HEAP_PROPERTIES heapProps(heapType);
+
 		D3D12_RESOURCE_DESC d3dDesc
 		{
 			D3D12_RESOURCE_DIMENSION_TEXTURE2D,
@@ -31,13 +42,6 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 			(mDesc.mFlags == Graphics::ImageFlags::eNone
 				? D3D12_RESOURCE_FLAG_NONE
 				: D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL)
-		};
-		D3D12_HEAP_PROPERTIES heapProps =
-		{
-			D3D12_HEAP_TYPE_DEFAULT,
-			D3D12_CPU_PAGE_PROPERTY_UNKNOWN,
-			D3D12_MEMORY_POOL_UNKNOWN,
-			1, 1
 		};
 		D3D12_CLEAR_VALUE clearValue;
 		clearValue.Format = Convert(mDesc.mFormat);
@@ -57,7 +61,7 @@ Image::Image(Device* device, const void* initData, const Graphics::ImageDesc* de
 			&heapProps,
 			D3D12_HEAP_FLAG_NONE,
 			&d3dDesc,
-			initData==nullptr ? D3D12_RESOURCE_STATE_COMMON : D3D12_RESOURCE_STATE_COPY_DEST,
+			Convert(desc->mState),
 			initData==nullptr ? &clearValue : nullptr,
 			IID_PPV_ARGS(mpResource.AsTypePP()));
 	}

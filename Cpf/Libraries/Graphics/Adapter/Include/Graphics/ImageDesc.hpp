@@ -17,6 +17,7 @@ namespace Cpf
 			int32_t mMipLevels;
 			Format mFormat;
 			SampleDesc mSamples;
+			ResourceState mState;
 			ImageFlags mFlags;
 		};
 	}

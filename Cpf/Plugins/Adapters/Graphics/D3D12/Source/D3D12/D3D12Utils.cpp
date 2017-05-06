@@ -45,6 +45,7 @@ D3D12_RESOURCE_STATES D3D12::Convert(ResourceState resourceState)
 	case ResourceState::eCopySource:				return D3D12_RESOURCE_STATE_COPY_SOURCE;
 	case ResourceState::eResolveDest:				return D3D12_RESOURCE_STATE_RESOLVE_DEST;
 	case ResourceState::eResolveSource:				return D3D12_RESOURCE_STATE_RESOLVE_SOURCE;
+	case ResourceState::eGenericRead:				return D3D12_RESOURCE_STATE_GENERIC_READ;
 	}
 	CPF_ASSERT_ALWAYS;
 	return D3D12_RESOURCE_STATES(-1);

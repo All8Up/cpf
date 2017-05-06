@@ -51,14 +51,13 @@ namespace Cpf
 				COM::Result CPF_STDCALL Shutdown() override;
 
 				void CPF_STDCALL BeginFrame(Graphics::iCommandBuffer*) override;
-				void CPF_STDCALL EndFrame(Graphics::iCommandBuffer*) override;
 				void CPF_STDCALL Finalize() override;
 
 				COM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
 				COM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
 				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::CommandBufferType type, Graphics::iCommandBuffer**) override;
 				COM::Result CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
-				COM::Result CPF_STDCALL CreateImage2D(const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
+				COM::Result CPF_STDCALL CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const void* initData, Graphics::iImage**) override;
 				COM::Result CPF_STDCALL CreateShader(Graphics::iBlob* blob, Graphics::iShader**) override;
 				COM::Result CPF_STDCALL CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
 				COM::Result CPF_STDCALL CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;

@@ -97,7 +97,6 @@ void ExperimentalD3D12::_EndFrame(Concurrency::ThreadContext&)
 	mpPreCommandBuffer[mCurrentBackbuffer]->Insert(mCurrentScheduledBuffer - 1, &mpScheduledBuffers[1]);
 
 	// End the render pass.
-	mpDevice->EndFrame(mpPreCommandBuffer[mCurrentBackbuffer]);
 	mpPreCommandBuffer[mCurrentBackbuffer]->EndRenderPass();
 
 	// End the command buffer prior to submission.

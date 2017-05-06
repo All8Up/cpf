@@ -17,6 +17,8 @@
 #include "Graphics/ParamVisibility.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/HeapType.hpp"
 #include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
@@ -230,8 +232,18 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		atlasDesc.mDepth = 1;
 		atlasDesc.mMipLevels = 1;
 		atlasDesc.mSamples = SampleDesc(1, 0);
+		atlasDesc.mState = ResourceState::eCopyDest;
 		atlasDesc.mFlags = ImageFlags::eNone;
-		mpDevice->CreateImage2D(&atlasDesc, pixels, mpUIAtlas.AsTypePP());
+
+		// Create the target texture.
+		mpDevice->CreateImage2D(HeapType::eDefault, &atlasDesc, pixels, mpUIAtlas.AsTypePP());
+
+		// Create the staging texture.
+		atlasDesc.mState = ResourceState::eGenericRead;
+		IntrusivePtr<iImage> upload;
+		mpDevice->CreateImage2D(HeapType::eUpload, &atlasDesc, nullptr, upload.AsTypePP());
+
+
 	}
 	if (!mpUIAtlas)
 		return false;
