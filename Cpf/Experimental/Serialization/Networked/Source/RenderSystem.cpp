@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "RenderSystem.hpp"
-#include "Graphics.hpp"
+#include "Graphics/Driver.hpp"
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/SwapChainDesc.hpp"
 #include "Graphics/SwapEffect.hpp"

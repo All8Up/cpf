@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12.hpp"
-#include "Graphics.hpp"
+#include "Graphics/Driver.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "Adapter/D3D12/Plugin.hpp"
 #include "Adapter/D3D12/Instance.hpp"

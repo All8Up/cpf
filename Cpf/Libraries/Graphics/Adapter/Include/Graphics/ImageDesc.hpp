@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/SampleDesc.hpp"
+#include "Graphics/ResourceState.hpp"
 
 namespace Cpf
 {

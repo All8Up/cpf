@@ -1,7 +1,4 @@
 # ###############################################
-set (INCLUDE_GRAPHICS_FILES
-	Include/Graphics/Plugin.hpp
-)
 set (INCLUDE_GRAPHICS_FILES_INTERFACES
 	Include/Graphics/iDevice.hpp
 	Include/Graphics/iAdapter.hpp
@@ -109,8 +106,6 @@ target_link_libraries (GraphicsDriver INTERFACE Plugin Math)
 # ###############################################
 add_custom_target (GraphicsDriver_IDE
 	SOURCES
-		Include/Graphics.hpp
-		${INCLUDE_GRAPHICS_FILES}
 		${INCLUDE_GRAPHICS_FILES_INTERFACES}
 		${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
 		${INCLUDE_GRAPHICS_FILES_STRUCTURES}

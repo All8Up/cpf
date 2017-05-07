@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics.hpp"
 #include "Graphics/ParamFlags.hpp"
 #include "Graphics/BindingType.hpp"
 #include <initializer_list>
