@@ -3,7 +3,6 @@
 #include "Export.hpp"
 #include "Platform/Threading/Types.hpp"
 
-
 namespace Cpf
 {
 	namespace Threading

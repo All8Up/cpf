@@ -2,7 +2,7 @@
 option( CPF_THREADING_DISABLE_PROFILING "" OFF )
 
 # ###############################################
-set( THREADING_INCLUDE_FILES
+set (THREADING_INCLUDE_FILES
 	Include/Threading.hpp
 	Include/Threading/Export.hpp
 	Include/Threading/CPU.hpp
@@ -13,13 +13,15 @@ set( THREADING_INCLUDE_FILES
 	Include/Threading/ConditionVariable.hpp
 	Include/Threading/ScopedLock.hpp
 	Include/Threading/Reactor.hpp
+	Include/Threading/ThreadGroup.hpp
 )
-set( THREADING_PLATFORM_INCLUDE_FILES
+set (THREADING_PLATFORM_INCLUDE_FILES
 	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Types.hpp
+	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/CPU.hpp
+	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Thread.hpp
 )
-set( THREADING_SOURCE_FILES
+set (THREADING_SOURCE_FILES
 	Source/Threading.cpp
-	Source/${CMAKE_SYSTEM_NAME}/CPU.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Thread.cpp
 	Source/${CMAKE_SYSTEM_NAME}/ThreadLocal.cpp
 	Source/${CMAKE_SYSTEM_NAME}/Mutex.cpp
@@ -46,13 +48,14 @@ target_include_directories (i_Threading INTERFACE
 	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
 )
 
-source_group( Headers FILES ${THREADING_INCLUDE_FILES} ${THREADING_PLATFORM_INCLUDE_FILES} )
-source_group( Source FILES ${THREADING_SOURCE_FILES} )
+source_group (Headers FILES ${THREADING_INCLUDE_FILES})
+source_group (Headers\\Platform FILES ${THREADING_PLATFORM_INCLUDE_FILES})
+source_group (Source FILES ${THREADING_SOURCE_FILES})
 
 if (WIN32)
 	set (ADDITIONAL_LIBS "Pdh.lib")
 endif ()
-target_link_libraries( Threading Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
+target_link_libraries (Threading Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
 
 target_include_directories( Threading PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

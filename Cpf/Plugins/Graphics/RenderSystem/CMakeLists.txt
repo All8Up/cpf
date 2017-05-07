@@ -29,7 +29,7 @@ target_include_directories (RenderSystem
 )
 target_link_libraries (RenderSystem
 	PUBLIC
-		Configuration Plugin i_MultiCore i_Concurrency i_EntityService
+		Configuration Plugin Threading i_MultiCore i_Concurrency i_EntityService
 )
 set_property (TARGET RenderSystem PROPERTY FOLDER Plugins/Graphics)
 

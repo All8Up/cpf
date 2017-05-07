@@ -2,6 +2,7 @@
 #pragma once
 #include "Configuration.hpp"
 #include "Threading/Export.hpp"
+#include <thread>
 
 namespace Cpf
 {
@@ -28,6 +29,6 @@ namespace Cpf
 		class CPF_EXPORT_THREADING Thread;
 
 		//////////////////////////////////////////////////////////////////////////
-		CPF_EXPORT_THREADING int GetHardwareConcurrency();
+		inline int GetHardwareConcurrency() { return std::thread::hardware_concurrency(); }
 	}
 }
