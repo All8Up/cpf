@@ -23,10 +23,10 @@ namespace Cpf
 	namespace Threading
 	{
 		//////////////////////////////////////////////////////////////////////////
-		class CPF_EXPORT_THREADING ConditionVariable;
-		class CPF_EXPORT_THREADING Mutex;
-		class CPF_EXPORT_THREADING Semaphore;
-		class CPF_EXPORT_THREADING Thread;
+		class ConditionVariable;
+		class Mutex;
+		class Semaphore;
+		class Thread;
 
 		//////////////////////////////////////////////////////////////////////////
 		inline int GetHardwareConcurrency() { return std::thread::hardware_concurrency(); }

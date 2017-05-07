@@ -10,7 +10,7 @@ namespace Cpf
 		/**
 		* @brief A container for a group of threads.
 		*/
-		class CPF_EXPORT_THREADING Thread::Group
+		class Thread::Group
 		{
 		public:
 			Group();

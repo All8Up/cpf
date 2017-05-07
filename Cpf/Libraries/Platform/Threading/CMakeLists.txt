@@ -19,15 +19,13 @@ set (THREADING_PLATFORM_INCLUDE_FILES
 	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Types.hpp
 	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/CPU.hpp
 	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Thread.hpp
+	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/ThreadLocal.hpp
+	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Semaphore.hpp
+	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/ConditionVariable.hpp
+	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Mutex.hpp
 )
 set (THREADING_SOURCE_FILES
 	Source/Threading.cpp
-	Source/${CMAKE_SYSTEM_NAME}/Thread.cpp
-	Source/${CMAKE_SYSTEM_NAME}/ThreadLocal.cpp
-	Source/${CMAKE_SYSTEM_NAME}/Mutex.cpp
-	Source/${CMAKE_SYSTEM_NAME}/Semaphore.cpp
-	Source/${CMAKE_SYSTEM_NAME}/ConditionVariable.cpp
-	Source/Reactor.cpp
 )
 
 add_library( Threading SHARED

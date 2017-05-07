@@ -2,36 +2,40 @@
 #pragma once
 #include "Platform/Threading/Types.hpp"
 
-
 namespace Cpf
 {
 	namespace Threading
 	{
 		//////////////////////////////////////////////////////////////////////////
-		/// Threading synchronization semaphore.
+		/// Create a thread local item.
 		//////////////////////////////////////////////////////////////////////////
-		class Semaphore
+		class ThreadLocal
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			Semaphore(int initCount = 0);
-			~Semaphore();
+			ThreadLocal() : m_ThreadLocal(InvalidThreadLocal)
+			{
+				m_ThreadLocal = ::TlsAlloc();
+			}
+
+			~ThreadLocal()
+			{
+				::TlsFree(m_ThreadLocal);
+			}
 
 			//////////////////////////////////////////////////////////////////////////
-			void Acquire();
-			void Release(int count = 1);
+			void* Get()
+			{
+				return ::TlsGetValue(m_ThreadLocal);
+			}
+			void Set(void* value)
+			{
+				::TlsSetValue(m_ThreadLocal, value);
+			}
 
 		private:
 			//////////////////////////////////////////////////////////////////////////
-			Semaphore(const Semaphore&) = delete;
-			Semaphore& operator =(const Semaphore&) = delete;
-			Semaphore(Semaphore&&) = delete;
-			Semaphore& operator =(Semaphore&&) = delete;
-
-			//////////////////////////////////////////////////////////////////////////
-			Semaphore_t m_Handle;
+			ThreadLocal_t m_ThreadLocal;
 		};
 	}
 }
-
-#include "Platform/Threading/Semaphore.hpp"
