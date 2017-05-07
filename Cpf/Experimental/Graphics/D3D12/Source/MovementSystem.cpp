@@ -6,7 +6,7 @@
 #include "Math/Vector3v.hpp"
 #include "Math/Matrix33v.hpp"
 #include "Graphics/iImageView.hpp"
-#include "Std/Trigonometric.hpp"
+#include "Math/Trigonometric.hpp"
 
 #include "EntityService/Interfaces/iEntity.hpp"
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
@@ -119,10 +119,10 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	float magnitude = Magnitude(pos + Vector3fv(0.0f, 50.0f, 0.0f)) * 0.03f;
 	magnitude *= magnitude;
 	float time = float(Time::Seconds(timer->GetTime()));
-	float angle = Std::Sin(0.25f * time);
-	pos.x = Std::Sin(angle * magnitude) * pos.x - Std::Cos(angle * magnitude) * pos.z;
-	pos.y = (Std::Sin(angle) + 0.5f) * pos.y * magnitude;
-	pos.z = Std::Cos(angle * magnitude) * pos.x + Std::Sin(angle * magnitude) * pos.z;
+	float angle = Sin(0.25f * time);
+	pos.x = Sin(angle * magnitude) * pos.x - Cos(angle * magnitude) * pos.z;
+	pos.y = (Sin(angle) + 0.5f) * pos.y * magnitude;
+	pos.z = Cos(angle * magnitude) * pos.x + Sin(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 	transform->GetTransform().SetTranslation(pos);

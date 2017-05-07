@@ -7,7 +7,7 @@ set (INCLUDE_FILES
 	Include/Std/Memory.hpp
 	Include/Std/String.hpp
 	Include/Std/Time.hpp
-	Include/Std/Trigonometric.hpp
+	Include/Std/Common.hpp
 )
 
 add_library (Std INTERFACE)

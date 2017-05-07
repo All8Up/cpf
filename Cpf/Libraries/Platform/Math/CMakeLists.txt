@@ -15,6 +15,12 @@ set (MATH_INCLUDE_FILES
 	Include/Math/Vector2v.hpp
 	Include/Math/Vector3v.hpp
 	Include/Math/Vector4v.hpp
+	Include/Math/Basic.hpp
+	Include/Math/Exponential.hpp
+	Include/Math/Power.hpp
+	Include/Math/Trigonometric.hpp
+	Include/Math/Hyperbolic.hpp
+	Include/Math/Rounding.hpp
 )
 set (MATH_DETAIL_INCLUDE_FILES
 	Include/Math/Detail/AABB.inl

@@ -4,7 +4,7 @@
 
 namespace Cpf
 {
-	namespace Std
+	namespace Math
 	{
 		inline float Sin(float r) { return std::sin(r); }
 		inline float Cos(float r) { return std::cos(r); }
