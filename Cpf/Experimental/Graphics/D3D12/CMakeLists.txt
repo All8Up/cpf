@@ -33,9 +33,9 @@ if (WIN32)
 	target_link_libraries (ExperimentalD3D12
 		s_ANSI_C_FileSystem
 		s_Resources
-		i_Application
+		s_Application
 		i_Adapter_SDL2
-		s_GraphicsDriver
+		GraphicsDriver
 		i_EntityService
 		i_DebugUI
 		Concurrency

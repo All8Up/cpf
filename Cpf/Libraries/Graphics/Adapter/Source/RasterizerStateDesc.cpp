@@ -1,6 +1,0 @@
-//////////////////////////////////////////////////////////////////////////
-#include "Graphics/RasterizerStateDesc.hpp"
-
-using namespace Cpf;
-using namespace Graphics;
-

@@ -76,7 +76,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
-	ScopedInitializer<GraphicsInitializer, int, Plugin::iRegistry*> graphicsInit(GetRegistry());
 
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");

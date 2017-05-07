@@ -41,7 +41,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	IOInitializer::Install();
 	ConcurrencyInitializer::Install();
 	Resources::ResourcesInitializer::Install();
-	GraphicsInitializer::Install(registry);
 
 	// Setup initial working directory.
 	auto exePath = IO::File::GetExecutableFilePath();
@@ -58,7 +57,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 
 void CPF_STDCALL Networked::Shutdown()
 {
-	GraphicsInitializer::Remove();
 	Resources::ResourcesInitializer::Remove();
 	ConcurrencyInitializer::Remove();
 	IOInitializer::Remove();

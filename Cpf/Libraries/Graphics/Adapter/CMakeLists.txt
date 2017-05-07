@@ -96,43 +96,29 @@ set (INCLUDE_GRAPHICS_FILES_FLAGS
 	Include/Graphics/PrimitiveTopology.hpp
 )
 
-set (SOURCE_GRAPHICS_FILES
-	Source/Graphics.cpp
-	Source/PipelineStateDesc.cpp
-	Source/Plugin.cpp
-	Source/RasterizerStateDesc.cpp
-)
-
 # ###############################################
-add_library (s_GraphicsDriver STATIC
-	Include/Graphics.hpp
-	${INCLUDE_GRAPHICS_FILES}
-	${INCLUDE_GRAPHICS_FILES_INTERFACES}
-	${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
-	${INCLUDE_GRAPHICS_FILES_STRUCTURES}
-	${INCLUDE_GRAPHICS_FILES_FLAGS}
-	${SOURCE_GRAPHICS_FILES}
-)
-
-# ###############################################
-target_compile_definitions (s_GraphicsDriver
-	PUBLIC CPF_STATIC_GRAPHICS_DRIVER
-	PRIVATE CPF_BUILD_GRAPHICS_DRIVER
-)
-target_include_directories (s_GraphicsDriver
-	PUBLIC
+add_library (GraphicsDriver INTERFACE)
+target_include_directories (GraphicsDriver
+	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
 )
-target_link_libraries (s_GraphicsDriver
-	LINK_PUBLIC
-		Configuration RefCount Math s_Application s_IO s_Resources Logging
-)
+target_link_libraries (GraphicsDriver INTERFACE Plugin Math)
+
 
 # ###############################################
-set_property (TARGET s_GraphicsDriver
-	PROPERTY FOLDER Libraries/Static/Graphics
+add_custom_target (GraphicsDriver_IDE
+	SOURCES
+		Include/Graphics.hpp
+		${INCLUDE_GRAPHICS_FILES}
+		${INCLUDE_GRAPHICS_FILES_INTERFACES}
+		${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
+		${INCLUDE_GRAPHICS_FILES_STRUCTURES}
+		${INCLUDE_GRAPHICS_FILES_FLAGS}
 )
+set_property (TARGET GraphicsDriver_IDE PROPERTY FOLDER Libraries/Interface/Graphics)
+source_group (Interface FILES ${INCLUDE_FILES})
+source_group (Interface\\Platform FILES ${PLATFORM_INCLUDE_FILES})
 
 # ###############################################
 source_group (Headers FILES Include/Graphics.hpp)
@@ -141,16 +127,6 @@ source_group (Headers\\Graphics\\Interfaces FILES ${INCLUDE_GRAPHICS_FILES_INTER
 source_group (Headers\\Graphics\\Descriptors FILES ${INCLUDE_GRAPHICS_FILES_DESCRIPTORS})
 source_group (Headers\\Graphics\\Structures FILES ${INCLUDE_GRAPHICS_FILES_STRUCTURES})
 source_group (Headers\\Graphics\\Flags FILES ${INCLUDE_GRAPHICS_FILES_FLAGS})
-source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
-
-# ###############################################
-add_library (GraphicsDriver_Interface INTERFACE)
-target_include_directories (GraphicsDriver_Interface
-	INTERFACE
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<INSTALL_INTERFACE:Include>
-)
-target_link_libraries (GraphicsDriver_Interface INTERFACE Plugin)
 
 # ###############################################
 #[[

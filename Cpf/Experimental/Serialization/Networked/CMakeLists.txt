@@ -25,8 +25,8 @@ target_link_libraries (Networked
 	s_ANSI_C_FileSystem
 	MultiCore
 	s_Resources
-	s_GraphicsDriver
-	i_Application
+	GraphicsDriver
+	s_Application
 	i_DebugUI
 	i_Adapter_SDL2
 	cereal

@@ -77,7 +77,7 @@ target_include_directories (AdapterD3D12
 )
 target_link_libraries (AdapterD3D12
 	PUBLIC
-		Configuration RefCount Math s_IO Logging GraphicsDriver_Interface DXGI.lib d3d12.lib D3DCompiler.lib
+		Configuration RefCount Math s_IO Logging GraphicsDriver DXGI.lib d3d12.lib D3DCompiler.lib
 )
 
 # ###############################################
