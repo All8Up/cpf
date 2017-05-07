@@ -8,6 +8,7 @@ set (INCLUDE_FILES
 	Include/Std/String.hpp
 	Include/Std/Time.hpp
 	Include/Std/Common.hpp
+	Include/Std/Hash.hpp
 )
 
 add_library (Std INTERFACE)

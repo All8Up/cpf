@@ -119,7 +119,7 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 	stateDesc.pRootSignature = resourceBinding->GetSignature();
 
 	//////////////////////////////////////////////////////////////////////////
-	if (SUCCEEDED(device->GetD3DDevice()->CreateGraphicsPipelineState(&stateDesc, IID_PPV_ARGS(mpPipelineState.AsTypePP()))))
+	if (FAILED(device->GetD3DDevice()->CreateGraphicsPipelineState(&stateDesc, IID_PPV_ARGS(mpPipelineState.AsTypePP()))))
 	{
 	}
 
