@@ -11,6 +11,7 @@
 #include "Graphics/Format.hpp"
 #include "Graphics/HeapType.hpp"
 #include "Graphics/ClearValue.hpp"
+#include "Graphics/FrameBufferDesc.hpp"
 
 using namespace Cpf;
 
@@ -73,5 +74,25 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 		clearValue.mDepthStencil.mStencil = 0;
 		mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, &clearValue, mpDepthBuffer.AsTypePP());
 		mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
+
+		mpFrameBuffers.clear();
+		mpFrameBuffers.resize(mBackBufferCount);
+		for (int i = 0; i < mBackBufferCount; ++i)
+		{
+			Graphics::FrameBufferDesc frameBufferDesc;
+			frameBufferDesc.mpRenderPass = mpRenderPass;
+			frameBufferDesc.mAttachmentCount = 2;
+			Graphics::ImageAndView images[2] =
+			{
+				{ mpSwapChain->GetImage(i), mpSwapChain->GetImageView(i) },
+				{ mpDepthBuffer, mpDepthBufferView }
+			};
+			frameBufferDesc.mpAttachments = images;
+			frameBufferDesc.mWidth = x;
+			frameBufferDesc.mHeight = y;
+			frameBufferDesc.mLayers = 1;
+
+			mpDevice->CreateFrameBuffer(&frameBufferDesc, mpFrameBuffers[i].AsTypePP());
+		}
 	}
 }
