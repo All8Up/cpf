@@ -37,6 +37,7 @@ if (WIN32)
 		i_Adapter_SDL2
 		s_GraphicsDriver
 		i_EntityService
+		i_DebugUI
 		Concurrency
 	)
 

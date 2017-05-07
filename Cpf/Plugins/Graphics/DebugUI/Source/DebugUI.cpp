@@ -2,9 +2,7 @@
 #include "DebugUI.hpp"
 #include "Graphics/iBlob.hpp"
 #include "Graphics/iDevice.hpp"
-#include "Graphics/iShader.hpp"
 #include "Graphics/iSampler.hpp"
-#include "Graphics/iPipeline.hpp"
 #include "Graphics/ImageDesc.hpp"
 #include "Graphics/PipelineStateDesc.hpp"
 #include "Graphics/ResourceBindingDesc.hpp"
@@ -21,7 +19,6 @@
 #include "Graphics/HeapType.hpp"
 #include "Graphics/ResourceType.hpp"
 #include "Graphics/ResourceData.hpp"
-#include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
 #include "imgui/imgui.h"
@@ -32,7 +29,6 @@
 #include "Math/Constants.hpp"
 #include "Logging/Logging.hpp"
 
-#include "Application/KeyCode.hpp"
 #include "Application/ScanCode.hpp"
 #include "Application/KeyModifier.hpp"
 #include "Application/MouseButton.hpp"
@@ -42,9 +38,58 @@
 #include "Application/iClipboard.hpp"
 
 #include "Std/Memory.hpp"
+#include "Plugin/Context.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 using namespace Cpf;
 using namespace Graphics;
+
+//////////////////////////////////////////////////////////////////////////
+namespace
+{
+	Plugin::Context g_Context;
+}
+
+
+extern "C"
+COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		if (g_Context.AddRef() == 1)
+		{
+			CPF_ASSERT(g_Context.GetRegistry() == nullptr);
+			g_Context.SetRegistry(registry);
+			registry->Install(kDebugUICID, new Plugin::tClassInstance<DebugUI>());
+		}
+		CPF_ASSERT(g_Context.GetRegistry() == registry);
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+extern "C"
+bool CPF_EXPORT CanUnload()
+{
+	return g_Context.GetRefCount() == 0;
+}
+
+extern "C"
+COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		if (g_Context.Release() == 0)
+		{
+			registry->Remove(kDebugUICID);
+			g_Context.SetRegistry(nullptr);
+		}
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
+//////////////////////////////////////////////////////////////////////////
 
 IntrusivePtr<iClipboard> sClipboard;
 char sClipboardText[1024];
@@ -52,6 +97,8 @@ char sClipboardText[1024];
 DebugUI::DebugUI(iUnknown*)
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
+	, mWidth(0)
+	, mHeight(0)
 	, mMouseWheel(0.0f)
 {
 	CPF_INIT_LOG(DebugUI);
@@ -69,10 +116,10 @@ COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
-		case iDebugUI::kIID.GetID():
+		case kIID.GetID():
 			*outIface = static_cast<iDebugUI*>(this);
 			break;
 		default:
@@ -122,7 +169,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		return false;
 
 	// Create the projection matrix constant buffer.
-	Graphics::ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv));
+	ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv));
 	mpDevice->CreateConstantBuffer(&cbDesc, nullptr, mpProjectionMatrix.AsTypePP());
 
 	// Create the atlas sampler.
@@ -157,11 +204,11 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 				.DepthWriteMask(DepthWriteMask::eZero)
 			)
 			.InputLayout(
-			{
-				cElementDesc("POSITION", Format::eRG32f),
-				cElementDesc("TEXCOORD", Format::eRG32f),
-				cElementDesc("COLOR", Format::eRGBA8un)
-			})
+		{
+			cElementDesc("POSITION", Format::eRG32f),
+			cElementDesc("TEXCOORD", Format::eRG32f),
+			cElementDesc("COLOR", Format::eRGBA8un)
+		})
 			.TargetBlend(0, RenderTargetBlendStateDesc::Build()
 				.Blending(true)
 				.Op(BlendOp::eAdd)
@@ -326,10 +373,10 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	io.DeltaTime = deltaTime;
 
 	Math::Matrix44fv projection = Math::Matrix44fv(
-		{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
-		{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
-		{ 0.0f,						0.0f,						 0.5f,	0.0f },
-		{-1.0f,						1.0f,						 0.5f,	1.0f }
+	{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
+	{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
+	{ 0.0f,						0.0f,						 0.5f,	0.0f },
+	{ -1.0f,						1.0f,						 0.5f,	1.0f }
 	);
 	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
 
@@ -339,7 +386,7 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	if (mx<0 || mx>mWidth || my<0 || my>mHeight)
 		io.MousePos = ImVec2(-1.0f, -1.0f);
 	else
-		io.MousePos = ImVec2((float)mx, (float)my);
+		io.MousePos = ImVec2(static_cast<float>(mx), static_cast<float>(my));
 
 	MouseButton button;
 	mpMouse->GetButtonState(&button);
@@ -354,7 +401,7 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	// Start the frame
 	ImGui::NewFrame();
 
-//	ImGui::ShowTestWindow();
+	//	ImGui::ShowTestWindow();
 
 	//////////////////////////////////////////////////////////////////////////
 	/* Input testing
@@ -432,10 +479,10 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 			{
 				Math::Rectanglei scissor
 				{
-					(int)pcmd->ClipRect.x,
-					(int)pcmd->ClipRect.z,
-					(int)pcmd->ClipRect.y,
-					(int)pcmd->ClipRect.w
+					static_cast<int>(pcmd->ClipRect.x),
+					static_cast<int>(pcmd->ClipRect.z),
+					static_cast<int>(pcmd->ClipRect.y),
+					static_cast<int>(pcmd->ClipRect.w)
 				};
 				commands->SetScissorRects(1, &scissor);
 				commands->DrawIndexedInstanced(pcmd->ElemCount, 1, int32_t(indexOffset), int32_t(vertexOffset), 0);
@@ -541,8 +588,8 @@ void DebugUI::Add(DebugUICall call, void* context)
 
 void DebugUI::Remove(DebugUICall call, void* context)
 {
-	DebugCallPair testPair{call, context};
-	for (size_t i=0; i<mDebugCalls.size(); ++i)
+	DebugCallPair testPair{ call, context };
+	for (size_t i = 0; i<mDebugCalls.size(); ++i)
 	{
 		if (testPair == mDebugCalls[i])
 		{

@@ -3,7 +3,6 @@ set (INCLUDE_GRAPHICS_FILES
 	Include/Graphics/Plugin.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_INTERFACES
-	Include/Graphics/iDebugUI.hpp
 	Include/Graphics/iDevice.hpp
 	Include/Graphics/iAdapter.hpp
 	Include/Graphics/iInstance.hpp
@@ -98,25 +97,10 @@ set (INCLUDE_GRAPHICS_FILES_FLAGS
 )
 
 set (SOURCE_GRAPHICS_FILES
-	Source/DebugUI.hpp
-	Source/DebugUI.cpp
 	Source/Graphics.cpp
 	Source/PipelineStateDesc.cpp
 	Source/Plugin.cpp
 	Source/RasterizerStateDesc.cpp
-)
-set (SOURCE_IMGUI_FILES
-	Source/imgui/imconfig.h
-	Source/imgui/imgui.cpp
-	Source/imgui/imgui.h
-	Source/imgui/imgui_demo.cpp
-	Source/imgui/imgui_draw.cpp
-	Source/imgui/imgui_internal.h
-	Source/imgui/stb_image.h
-	Source/imgui/stb_image.cpp
-	Source/imgui/stb_textedit.h
-	Source/imgui/stb_truetype.h
-	Source/imgui/stb_rect_pack.h
 )
 
 # ###############################################
@@ -128,7 +112,6 @@ add_library (s_GraphicsDriver STATIC
 	${INCLUDE_GRAPHICS_FILES_STRUCTURES}
 	${INCLUDE_GRAPHICS_FILES_FLAGS}
 	${SOURCE_GRAPHICS_FILES}
-	${SOURCE_IMGUI_FILES}
 )
 
 # ###############################################
@@ -159,7 +142,6 @@ source_group (Headers\\Graphics\\Descriptors FILES ${INCLUDE_GRAPHICS_FILES_DESC
 source_group (Headers\\Graphics\\Structures FILES ${INCLUDE_GRAPHICS_FILES_STRUCTURES})
 source_group (Headers\\Graphics\\Flags FILES ${INCLUDE_GRAPHICS_FILES_FLAGS})
 source_group (Sources\\Graphics FILES ${SOURCE_GRAPHICS_FILES})
-source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})
 
 # ###############################################
 add_library (GraphicsDriver_Interface INTERFACE)

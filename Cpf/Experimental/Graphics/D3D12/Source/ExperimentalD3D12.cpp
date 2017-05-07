@@ -7,12 +7,9 @@
 #include "IntrusivePtr.hpp"
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
-#include "Time.hpp"
 
 #include "Graphics/Driver.hpp"
-#include "Graphics/iDebugUI.hpp"
-
-#include "Math/Vector4v.hpp"
+#include "iDebugUI.hpp"
 
 #include "Concurrency/Scheduler.hpp"
 #include "Math/Constants.hpp"
@@ -29,16 +26,7 @@
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 #include "MultiCore.hpp"
 
-#include "Graphics/RenderPassDesc.hpp"
-#include "Graphics/ResourceState.hpp"
-#include "Graphics/iRenderPass.hpp"
-#include "Graphics/FrameBufferDesc.hpp"
-#include "Graphics/iFrameBuffer.hpp"
-#include "Graphics/iImage.hpp"
-#include "Graphics/iImageView.hpp"
-
 #include "SDL2/CIDs.hpp"
-#include "Graphics/RenderPassBeginDesc.hpp"
 
 using namespace Cpf;
 using namespace Math;
@@ -92,6 +80,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
+	GetRegistry()->Load("plugins/DebugUI.cfp");
 
 	// Hack: Setup the view all cheezy like.
 	mViewportSize = 1.0f;

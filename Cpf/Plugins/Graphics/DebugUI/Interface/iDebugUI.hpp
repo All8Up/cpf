@@ -4,8 +4,6 @@
 #include "Math/Vector2v.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Constants.hpp"
-#include "Pair.hpp"
-#include "Vector.hpp"
 
 namespace Cpf
 {

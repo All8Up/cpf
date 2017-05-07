@@ -27,6 +27,7 @@ target_link_libraries (Networked
 	s_Resources
 	s_GraphicsDriver
 	i_Application
+	i_DebugUI
 	i_Adapter_SDL2
 	cereal
 	asio

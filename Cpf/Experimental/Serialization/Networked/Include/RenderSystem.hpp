@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/iSystem.hpp"
-#include "Graphics/iDebugUI.hpp"
+#include "iDebugUI.hpp"
 #include "Graphics/iInstance.hpp"
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iSwapChain.hpp"

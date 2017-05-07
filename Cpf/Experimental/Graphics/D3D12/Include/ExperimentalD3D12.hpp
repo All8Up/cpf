@@ -8,7 +8,7 @@
 #include "Resources/Locator.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 #include "Threading/Reactor.hpp"
-#include "Graphics/iDebugUI.hpp"
+#include "iDebugUI.hpp"
 #include "MultiCore/iPipeline.hpp"
 #include "MovementSystem.hpp"
 #include "Graphics/iImage.hpp"

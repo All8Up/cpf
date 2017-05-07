@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iDebugUI.hpp"
+#include "iDebugUI.hpp"
+#include "Pair.hpp"
+#include "Vector.hpp"
 
 namespace Cpf
 {
@@ -76,9 +78,6 @@ namespace Cpf
 			static const char* _GetClipboardText();
 			static void _SetClipboardText(const char* text);
 
-			bool mMousePressed[3];
-			float mMouseWheel;
-
 			static const size_t kVertexBufferSize = 1024 * 512;
 			static const size_t kIndexBufferSize = 1024 * 64;
 
@@ -98,6 +97,9 @@ namespace Cpf
 			// Rendering information.
 			int32_t mWidth;
 			int32_t mHeight;
+
+			bool mMousePressed[3];
+			float mMouseWheel;
 
 			//
 			IntrusivePtr<iMouseDevice> mpMouse;
