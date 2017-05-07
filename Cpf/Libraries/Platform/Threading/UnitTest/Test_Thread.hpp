@@ -7,8 +7,6 @@
 
 TEST(Threading, Thread_Run)
 {
-	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
-
 	volatile bool testRan = false;
 	Cpf::Threading::Thread testThread([&]() {
 		testRan = true;
@@ -27,8 +25,6 @@ TEST(Threading, Thread_Sleep)
 	const int64_t aproxDurationMs = 2000;
 	const int64_t tollerance = 200;
 
-	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
-
 	Cpf::Time::Value startTime = Cpf::Time::Value::Now();
 	Cpf::Threading::Thread::Sleep(Cpf::Time::Ms(aproxDurationMs));
 	Cpf::Time::Value endTime = Cpf::Time::Value::Now();
@@ -41,7 +37,6 @@ TEST(Threading, Thread_Sleep)
 TEST(Threading, Thread_Group)
 {
 	using namespace Cpf::Threading;
-	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
 
 	Thread::Group testGroup(10);
 	int testValue = 0;

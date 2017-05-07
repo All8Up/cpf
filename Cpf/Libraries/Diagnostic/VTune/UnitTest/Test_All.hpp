@@ -8,8 +8,6 @@
 
 TEST(VTune, AllTests)
 {
-	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> threadingInit;
-
 	// Setup test domains.
 	VTune::Domain* frameDomain = VTune::DomainCreate("test name");
 	VTune::Domain* innerDomain = VTune::DomainCreate("inner");

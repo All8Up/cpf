@@ -85,7 +85,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	CPF_LOG_LEVEL(Experimental, Trace);
 
 	// Initialize the gfx library.
-	ScopedInitializer<ThreadingInitializer> threadingInit;
 	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;

@@ -24,45 +24,26 @@ set (THREADING_PLATFORM_INCLUDE_FILES
 	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/ConditionVariable.hpp
 	Include/${CMAKE_SYSTEM_NAME}/Platform/Threading/Mutex.hpp
 )
-set (THREADING_SOURCE_FILES
-	Source/Threading.cpp
-)
 
-add_library( Threading SHARED
-	${THREADING_INCLUDE_FILES}
-	${THREADING_PLATFORM_INCLUDE_FILES}
-	${THREADING_SOURCE_FILES}
-)
-target_compile_definitions( Threading
-	PRIVATE CPF_BUILD_THREADING
-)
-
-add_library (i_Threading INTERFACE)
-target_link_libraries (i_Threading INTERFACE Configuration Atomic Time)
-target_include_directories (i_Threading INTERFACE
+add_library (Threading INTERFACE)
+target_include_directories (Threading INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
 	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
 )
 
-source_group (Headers FILES ${THREADING_INCLUDE_FILES})
-source_group (Headers\\Platform FILES ${THREADING_PLATFORM_INCLUDE_FILES})
-source_group (Source FILES ${THREADING_SOURCE_FILES})
 
 if (WIN32)
 	set (ADDITIONAL_LIBS "Pdh.lib")
 endif ()
-target_link_libraries (Threading Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
+target_link_libraries (Threading INTERFACE Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
 
-target_include_directories( Threading PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-	$<INSTALL_INTERFACE:Include>
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
-	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
-)
+add_custom_target (Threading_IDE SOURCES ${THREADING_INCLUDE_FILES} ${THREADING_PLATFORM_INCLUDE_FILES})
+set_property (TARGET Threading_IDE PROPERTY FOLDER Libraries/Interface/Platform)
+source_group (Interface FILES ${THREADING_INCLUDE_FILES})
+source_group (Interface\\Platform FILES ${THREADING_PLATFORM_INCLUDE_FILES})
 
-set_property( TARGET Threading PROPERTY FOLDER Libraries/Shared/Platform )
 
 #[[
 install( DIRECTORY Include/Threading
@@ -85,7 +66,7 @@ install( EXPORT ThreadingConfig DESTINATION CMake )
 ]]#
 
 # ###############################################
-MakeUnitTest( LIBRARY Threading GROUP Platform
+MakeUnitTest (LIBRARY Threading GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		UnitTest/Test_ConditionVariable.hpp

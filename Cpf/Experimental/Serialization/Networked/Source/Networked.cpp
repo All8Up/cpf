@@ -39,7 +39,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	*appCid = SDL2::kWindowedApplicationCID;
 
 	IOInitializer::Install();
-	ThreadingInitializer::Install();
 	ConcurrencyInitializer::Install();
 	Resources::ResourcesInitializer::Install();
 	GraphicsInitializer::Install(registry);
@@ -61,7 +60,6 @@ void CPF_STDCALL Networked::Shutdown()
 	GraphicsInitializer::Remove();
 	Resources::ResourcesInitializer::Remove();
 	ConcurrencyInitializer::Remove();
-	ThreadingInitializer::Remove();
 	IOInitializer::Remove();
 }
 

@@ -52,7 +52,7 @@ target_include_directories (Concurrency PUBLIC
 set_property (TARGET Concurrency PROPERTY FOLDER Libraries/Shared/Platform)
 
 add_library (i_Concurrency INTERFACE)
-target_link_libraries (i_Concurrency INTERFACE Configuration Atomic i_Threading)
+target_link_libraries (i_Concurrency INTERFACE Configuration Atomic Threading)
 target_include_directories (i_Concurrency INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
