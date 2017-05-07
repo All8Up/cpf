@@ -169,7 +169,9 @@ namespace Cpf
 			void Release();
 
 		private:
+			CPF_DLL_SAFE_BEGIN;
 			Threading::Semaphore mSemaphore;
+			CPF_DLL_SAFE_END;
 		};
 
 		class Scheduler::ThreadTimes : private Semaphore

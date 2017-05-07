@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Time.hpp"
-
+#include "Configuration.hpp"
 
 namespace Cpf
 {
@@ -14,7 +13,7 @@ namespace Cpf
 		A value represents the os specific high(est) resolution time possible as represented in 64 bits.
 		The static ratio represents the os timer granularity, used in converting to human usable values.
 		*/
-		class CPF_EXPORT_TIME Value
+		class Value
 		{
 		public:
 			// Internal representation.
