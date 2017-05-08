@@ -47,6 +47,9 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	exePath += "../resources/";
 	IO::Directory::SetWorkingDirectory(exePath);
 
+	GetRegistry()->Load("plugins/Concurrency.cfp");
+	// TODO: Temporary work around for concurrency *not* being a plugin yet.
+	Concurrency::Scheduler::Install(GetRegistry());
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/MultiCore.cfp");
@@ -66,32 +69,35 @@ COM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
 	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
 
-	if (_CreateWindow() && _Install() && _InitializeMultiCore())
+	if (Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID, Concurrency::iScheduler::kIID, mpScheduler.AsVoidPP())))
 	{
-		if (_InitializeResources() && _InitializePipeline())
+		if (_CreateWindow() && _Install() && _InitializeMultiCore())
 		{
-			if (COM::Succeeded(_ConfigurePipeline()))
+			if (_InitializeResources() && _InitializePipeline())
 			{
-				_ConfigureDebugUI();
-
-				// Semaphore to track when the last submitted queue of work has completed.
-				Concurrency::Scheduler::Semaphore complete;
-
-				// Run the event loop for the window.
-				while (mpWindowedApplication->IsRunning())
+				if (COM::Succeeded(_ConfigurePipeline()))
 				{
-					mpWindowedApplication->Poll();
-					mpPipeline->Submit(&mLoopScheduler);
-					mLoopScheduler.Submit(complete);
-					complete.Acquire();
+					_ConfigureDebugUI();
 
-					// Keep balancing the threads.
-					mLoadBalancer.Balance();
+					// Semaphore to track when the last submitted queue of work has completed.
+					Concurrency::Semaphore complete;
+
+					// Run the event loop for the window.
+					while (mpWindowedApplication->IsRunning())
+					{
+						mpWindowedApplication->Poll();
+						mpPipeline->Submit(mpScheduler);
+						mpScheduler->Submit(&complete);
+						complete.Acquire();
+
+						// Keep balancing the threads.
+						mLoadBalancer.Balance();
+					}
 				}
 			}
+			_ShutdownPipeline();
+			_ShutdownResources();
 		}
-		_ShutdownPipeline();
-		_ShutdownResources();
 	}
 
 	_ShutdownMultiCore();
@@ -115,7 +121,7 @@ void Networked::_PerformanceUI(Graphics::iDebugUI* ui, void* context)
 
 	//////////////////////////////////////////////////////////////////////////
 	ui->Begin("Performance");
-	auto activeLoopThreads = self.mLoopScheduler.GetActiveThreads();
+	auto activeLoopThreads = self.mpScheduler->GetActiveThreads();
 	auto activePoolThreads = self.mThreadPool.GetActiveThreads();
 
 	auto now = Time::Now();
@@ -187,10 +193,13 @@ bool Networked::_ShutdownResources()
 
 bool Networked::_InitializeMultiCore()
 {
-	if (mLoopScheduler.Initialize(Move(Thread::Group(Thread::GetHardwareThreadCount()))) &&
-		mThreadPool.Initialize(Move(Thread::Group(Thread::GetHardwareThreadCount()))))
+	if (COM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
+		mThreadPool.Initialize(Thread::GetHardwareThreadCount()))
 	{
-		Concurrency::LoadBalancer::Schedulers schedulers{ &mLoopScheduler, &mThreadPool.GetScheduler() };
+		Concurrency::LoadBalancer::Schedulers schedulers(2);
+		schedulers[0] = static_cast<Concurrency::Scheduler*>(mpScheduler.Ptr());
+		schedulers[1] = &mThreadPool.GetScheduler();
+
 		mLoadBalancer.SetSchedulers(&schedulers);
 		return true;
 	}
@@ -200,7 +209,7 @@ bool Networked::_InitializeMultiCore()
 bool Networked::_ShutdownMultiCore()
 {
 	mThreadPool.Shutdown();
-	mLoopScheduler.Shutdown();
+	mpScheduler->Shutdown();
 	return true;
 }
 

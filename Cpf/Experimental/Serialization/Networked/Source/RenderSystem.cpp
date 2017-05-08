@@ -357,7 +357,7 @@ bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resourc
 	return true;
 }
 
-void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
+void RenderSystem::_BeginFrame(const Concurrency::WorkContext*, void* context)
 {
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
 
@@ -392,7 +392,7 @@ void RenderSystem::_BeginFrame(Concurrency::ThreadContext&, void* context)
 	self.mpPrimaryBuffer[self.mBufferIndex]->BeginRenderPass(&passBegin);
 }
 
-void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
+void RenderSystem::_DebugUI(const Concurrency::WorkContext*, void* context)
 {
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
 	float deltaTime = self.mpTimer->GetDeltaTime();
@@ -411,7 +411,7 @@ void RenderSystem::_DebugUI(Concurrency::ThreadContext&, void* context)
 	self.mpDebugUIBuffer[self.mBufferIndex]->End();
 }
 
-void RenderSystem::_EndFrame(Concurrency::ThreadContext&, void* context)
+void RenderSystem::_EndFrame(const Concurrency::WorkContext*, void* context)
 {
 	RenderSystem& self = *reinterpret_cast<RenderSystem*>(context);
 

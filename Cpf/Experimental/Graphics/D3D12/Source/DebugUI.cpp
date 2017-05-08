@@ -32,10 +32,10 @@ void ExperimentalD3D12::_UpdatePipelineDisplay()
 	}
 }
 
-void ExperimentalD3D12::_DebugUI(Concurrency::ThreadContext& tc)
+void ExperimentalD3D12::_DebugUI(const Concurrency::WorkContext* tc)
 {
 	// Open the command buffer.
-	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc.GetUserData());
+	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc->mpUserData);
 
 	threadData.mpDebugUIPool[mCurrentBackbuffer]->Reset();
 	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->Reset(threadData.mpDebugUIPool[mCurrentBackbuffer]);

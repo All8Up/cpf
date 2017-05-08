@@ -63,8 +63,8 @@ namespace Cpf
 		}
 
 	private:
-		static void _Begin(Concurrency::ThreadContext&, void* context);
-		static void _End(Concurrency::ThreadContext&, void* context);
+		static void _Begin(const Concurrency::WorkContext*, void* context);
+		static void _End(const Concurrency::WorkContext*, void* context);
 
 		MultiCore::SystemID mID;
 		IntrusivePtr<MultiCore::iStageList> mpStages;

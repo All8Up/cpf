@@ -14,26 +14,26 @@ namespace Cpf
 			{
 			private:
 				friend class Scheduler;
-				using ThreadContext = Scheduler::ThreadContext;
+				friend class Queue;
 
 				static void Wait(Scheduler &vm, int64_t index);
 
-				static void FirstOne(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void FirstOneBarrier(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void LastOne(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void LastOneBarrier(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void All(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void AllBarrier(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void Barrier(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void FirstOne(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void FirstOneBarrier(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void LastOne(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void LastOneBarrier(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void All(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void AllBarrier(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void Barrier(Scheduler &vm, const WorkContext* context, int64_t index);
 
-				static void TLD(Scheduler&, ThreadContext&, int64_t);
-				static void TLA(Scheduler&, ThreadContext&, int64_t);
-				static void SD(Scheduler&, ThreadContext&, int64_t);
-				static void SA(Scheduler&, ThreadContext&, int64_t);
+				static void TLD(Scheduler&, const WorkContext*, int64_t);
+				static void TLA(Scheduler&, const WorkContext*, int64_t);
+				static void SD(Scheduler&, const WorkContext*, int64_t);
+				static void SA(Scheduler&, const WorkContext*, int64_t);
 
 
-				static void ActiveThreads(Scheduler &vm, ThreadContext& context, int64_t index);
-				static void HeadMinimize(Scheduler &vm, ThreadContext& context, int64_t index);
+				static void ActiveThreads(Scheduler &vm, const WorkContext* context, int64_t index);
+				static void HeadMinimize(Scheduler &vm, const WorkContext* context, int64_t index);
 			};
 		}
 	}

@@ -172,13 +172,13 @@ COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, i
 	return COM::kInvalidParameter;
 }
 
-void CPF_STDCALL Pipeline::Submit(Concurrency::Scheduler* scheduler)
+void CPF_STDCALL Pipeline::Submit(Concurrency::iScheduler* scheduler)
 {
 #ifdef CPF_DEBUG
 	// Asserts can be enabled in release mode.
 	CPF_ASSERT(mChanged == false);
 #endif
-	scheduler->Execute(mQueue, false);
+	scheduler->Execute(&mQueue, false);
 }
 
 COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outString)

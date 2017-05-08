@@ -8,7 +8,7 @@ using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-void SingleUpdateStage::SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode)
+void SingleUpdateStage::SetUpdate(Function<void(const Concurrency::WorkContext*, void*)> func, void* context, BlockOpcode opcode)
 {
 	mOpcode = opcode;
 	mpUpdate = func;
@@ -105,7 +105,7 @@ SingleUpdateStage::SingleUpdateStage(iUnknown*)
 {
 }
 
-void SingleUpdateStage::_Update(Concurrency::ThreadContext& tc, void* context)
+void SingleUpdateStage::_Update(const Concurrency::WorkContext* tc, void* context)
 {
 	SingleUpdateStage* self = reinterpret_cast<SingleUpdateStage*>(context);
 	if (self->mpUpdate)

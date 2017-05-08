@@ -44,7 +44,7 @@ namespace Cpf
 		private:
 
 			// Internal update function.
-			static void _Update(Concurrency::ThreadContext&, void*);
+			static void _Update(const Concurrency::WorkContext*, void*);
 
 			// Implementation data.
 			Time::Value mTime;

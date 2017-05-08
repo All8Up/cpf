@@ -17,14 +17,14 @@ namespace Cpf
 			ThreadPool();
 			~ThreadPool();
 
-			bool Initialize(Threading::Thread::Group&&);
+			bool Initialize(int threadCount);
 			void Shutdown();
 
 			// TODO: Make this promise/future based, but it will need to be a
 			// custom promise to make it actually useful, C++11 promises are
 			// way too primitive.
 
-			using Task = Scheduler::PayloadFunc_t;
+			using Task = PayloadFunc_t;
 			void Enqueue(Task, void* context);
 
 			int GetAvailableThreads() const;
@@ -35,7 +35,7 @@ namespace Cpf
 
 		private:
 			Scheduler mScheduler;
-			Scheduler::Queue mQueue;
+			Queue mQueue;
 		};
 	}
 }

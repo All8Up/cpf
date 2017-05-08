@@ -29,10 +29,10 @@ TEST(Concurrency, ActiveChange)
 
 	{
 		TestData* testData = new TestData;
-		Scheduler* scheduler = new Scheduler;
+		Scheduler* scheduler = new Scheduler(nullptr);
 
-		scheduler->Initialize(Move(Threading::Thread::Group(Threading::Thread::GetHardwareThreadCount())));
-		Scheduler::Queue queue;
+		scheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr);
+		Queue queue;
 
 		for (auto threads = 1; threads < scheduler->GetAvailableThreads(); ++threads)
 		{
@@ -42,7 +42,7 @@ TEST(Concurrency, ActiveChange)
 			for (auto i = 0; i < loopCount*threads; ++i)
 			{
 				queue.FirstOne(
-					[](Scheduler::ThreadContext&, void* context)
+					[](const WorkContext*, void* context)
 				{
 					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x7000);
 					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
@@ -54,7 +54,7 @@ TEST(Concurrency, ActiveChange)
 			}
 			// Creates a fence.
 			queue.LastOneBarrier(
-				[](Scheduler::ThreadContext&, void* context)
+				[](const WorkContext*, void* context)
 			{
 				auto& sem = reinterpret_cast<TestData*>(context)->Complete;
 				sem.Release();
@@ -73,7 +73,7 @@ TEST(Concurrency, ActiveChange)
 			for (auto i = 0; i < loopCount*threads; ++i)
 			{
 				queue.FirstOne(
-					[](Scheduler::ThreadContext&, void* context)
+					[](const WorkContext*, void* context)
 				{
 					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x7000);
 					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
@@ -85,7 +85,7 @@ TEST(Concurrency, ActiveChange)
 			}
 			// Creates a fence.
 			queue.LastOneBarrier(
-				[](Scheduler::ThreadContext&, void* context)
+				[](const WorkContext*, void* context)
 			{
 				auto& sem = reinterpret_cast<TestData*>(context)->Complete;
 				sem.Release();
@@ -108,7 +108,7 @@ TEST(Concurrency, ActiveChange)
 			for (auto i = 0; i < loopCount*threadCount; ++i)
 			{
 				queue.FirstOne(
-					[](Scheduler::ThreadContext&, void* context)
+					[](const WorkContext*, void* context)
 				{
 					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x7000);
 					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
@@ -120,7 +120,7 @@ TEST(Concurrency, ActiveChange)
 			}
 			// Creates a fence.
 			queue.LastOneBarrier(
-				[](Scheduler::ThreadContext&, void* context)
+				[](const WorkContext*, void* context)
 			{
 				auto& sem = reinterpret_cast<TestData*>(context)->Complete;
 				sem.Release();

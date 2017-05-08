@@ -13,16 +13,15 @@ TEST(Concurrency, Last_Opcode)
 
 	for (auto i = 0; i < 100; ++i)
 	{
-		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
-		Scheduler* scheduler = new Scheduler;
-		scheduler->Initialize(std::move(threads));
-		Scheduler::Semaphore sync;
+		Scheduler* scheduler = new Scheduler(nullptr);
+		scheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr);
+		Semaphore sync;
 		{
-			Scheduler::Queue queue;
+			Queue queue;
 
 			auto firstThreadArrived = 0;
 			queue.LastOne(
-				[](Scheduler::ThreadContext&, void* context)
+				[](const WorkContext*, void* context)
 			{
 				// The next instruction should execute and the flag should be set.
 				for (; Atomic::Load(*reinterpret_cast<int*>(context)) != 1;)
@@ -31,7 +30,7 @@ TEST(Concurrency, Last_Opcode)
 				&firstThreadArrived);
 
 			queue.FirstOne(
-				[](Scheduler::ThreadContext&, void* context)
+				[](const WorkContext*, void* context)
 			{
 				// Signal that we have arrived.
 				Atomic::Store(*reinterpret_cast<int*>(context), 1);
@@ -40,7 +39,7 @@ TEST(Concurrency, Last_Opcode)
 
 			// Wait for completion.
 			scheduler->Execute(queue);
-			scheduler->Submit(sync);
+			scheduler->Submit(&sync);
 			sync.Acquire();
 			EXPECT_EQ(1, firstThreadArrived);
 		}

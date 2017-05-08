@@ -5,10 +5,10 @@
 
 using namespace Cpf;
 
-void ExperimentalD3D12::_CreateWorkerData(Concurrency::ThreadContext& tc)
+void ExperimentalD3D12::_CreateWorkerData(const Concurrency::WorkContext* tc)
 {
-	ThreadData& td = mWorkerData[tc.GetThreadIndex()];
-	tc.SetUserData(&td);
+	ThreadData& td = mWorkerData[tc->mThreadId];
+	tc->mpUserData = &td;
 
 	for (int i = 0; i < mBackBufferCount; ++i)
 	{
@@ -19,9 +19,9 @@ void ExperimentalD3D12::_CreateWorkerData(Concurrency::ThreadContext& tc)
 	}
 }
 
-void ExperimentalD3D12::_DestroyWorkerData(Concurrency::ThreadContext& tc)
+void ExperimentalD3D12::_DestroyWorkerData(const Concurrency::WorkContext* tc)
 {
-	ThreadData& td = mWorkerData[tc.GetThreadIndex()];
+	ThreadData& td = mWorkerData[tc->mThreadId];
 
 	for (int i = 0; i < mBackBufferCount; ++i)
 	{

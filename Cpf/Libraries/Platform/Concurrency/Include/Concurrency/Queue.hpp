@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Vector.hpp"
+#include "Concurrency/iQueue.hpp"
 #include "Concurrency/Scheduler.hpp"
 
 #define CPF_SCHEDULER_DISASSEMBLER 1
@@ -10,25 +11,20 @@ namespace Cpf
 	namespace Concurrency
 	{
 		/** @brief Execution queue for the scheduler. */
-		class CPF_EXPORT_CONCURRENCY Scheduler::Queue
+		class CPF_EXPORT_CONCURRENCY Queue : public tRefCounted<iQueue>
 		{
 		public:
 			// Declaration types.
 			using Opcode = Scheduler::OpcodeFunc_t;
-			using Payload = Scheduler::PayloadFunc_t;
+			using Payload = PayloadFunc_t;
 			using OpcodeEntry = Scheduler::Instruction;
 			using QueueType = Vector<OpcodeEntry>;
-			enum class SubmissionType : int
-			{
-				eNormal,
-				eNoClear
-			};
 
 			// Construction/Destruction.
 			Queue();
-			Queue(size_t size);
-			Queue(Queue&& rhs) noexcept;
 			~Queue();
+
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			// 
 			Queue& operator = (Queue&& rhs);
@@ -46,6 +42,9 @@ namespace Cpf
 
 			// Control.
 			// TODO: Decide if these will actually remain.
+			// TODO: What would be better is something similar to thread local storage
+			// so that different systems can register them individually instead of using
+			// these common shared items.
 #if 0
 			void TLD(int index, int32_t value);
 			void TLA(int index, void* value);

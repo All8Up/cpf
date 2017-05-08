@@ -23,7 +23,7 @@ namespace Cpf
 	{
 	public:
 		ExperimentalD3D12()
-			: mScheduler(this)
+			: mScheduler(nullptr)
 			, mFenceTarget(1)
 			, mSelectedInstruction(0)
 			, mpInstructionList(nullptr)
@@ -49,15 +49,15 @@ namespace Cpf
 		void ReconfigurePipeline();
 
 		// Moving to a render system.
-		void _BeginFrame(Concurrency::ThreadContext&);
-		void _Draw(Concurrency::ThreadContext& tc);
-		void _DebugUI(Concurrency::ThreadContext& tc);
-		void _EndFrame(Concurrency::ThreadContext&);
+		void _BeginFrame(const Concurrency::WorkContext*);
+		void _Draw(const Concurrency::WorkContext*);
+		void _DebugUI(const Concurrency::WorkContext*);
+		void _EndFrame(const Concurrency::WorkContext*);
 
 	private:
 		bool _CreateWindow();
-		void _CreateWorkerData(Concurrency::ThreadContext& tc);
-		void _DestroyWorkerData(Concurrency::ThreadContext& tc);
+		void _CreateWorkerData(const Concurrency::WorkContext* tc);
+		void _DestroyWorkerData(const Concurrency::WorkContext* tc);
 
 		bool _SelectAdapter(Graphics::iInstance* instance, Graphics::iAdapter**);
 		bool _EnumerateOutputs(Graphics::iAdapter*);
@@ -97,7 +97,7 @@ namespace Cpf
 		Concurrency::Scheduler mScheduler;
 
 		int32_t mCurrentScheduledBuffer = 0;
-		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::Scheduler::kMaxThreads * 4];
+		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::kMaxThreads * 4];
 
 		int32_t mCurrentBackbuffer = 0;
 		uint64_t mFenceTarget = 1;
@@ -123,7 +123,7 @@ namespace Cpf
 			IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[mBackBufferCount];
 			IntrusivePtr<Graphics::iCommandBuffer> mpDebugUIBuffer[mBackBufferCount];
 		};
-		ThreadData mWorkerData[Concurrency::Scheduler::kMaxThreads];
+		ThreadData mWorkerData[Concurrency::kMaxThreads];
 
 		/* Not used right now.
 		struct ModelTransform

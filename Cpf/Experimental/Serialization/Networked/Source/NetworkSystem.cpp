@@ -22,7 +22,7 @@ NetworkSystem::NetworkSystem(COM::iUnknown*)
 {
 }
 
-void NetworkSystem::_Update(Concurrency::ThreadContext&, void* context)
+void NetworkSystem::_Update(const Concurrency::WorkContext*, void* context)
 {
 	NetworkSystem* self = reinterpret_cast<NetworkSystem*>(context);
 	self->mASIO.poll();

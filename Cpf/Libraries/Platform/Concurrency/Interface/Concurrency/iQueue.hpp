@@ -14,6 +14,7 @@ namespace Cpf
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Concurrency::iQueue"_crc64);
 
+			/*
 			using Payload = void(*)(ThreadContext&, void*);
 
 			virtual COM::Result CPF_STDCALL Reserve(int32_t size) = 0;
@@ -27,6 +28,7 @@ namespace Cpf
 
 			virtual void CPF_STDCALL Barrier() = 0;
 			virtual void CPF_STDCALL Fence(Payload func, void* context) = 0;
+			*/
 		};
 	}
 }

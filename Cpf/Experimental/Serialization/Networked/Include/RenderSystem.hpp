@@ -71,9 +71,9 @@ namespace Cpf
 		bool _CreateFrameBuffers(int32_t w, int32_t h);
 		bool _CreateRenderData(iInputManager*, iWindow*, Resources::Locator*);
 
-		static void _BeginFrame(Concurrency::ThreadContext&, void* context);
-		static void _DebugUI(Concurrency::ThreadContext&, void* context);
-		static void _EndFrame(Concurrency::ThreadContext&, void* context);
+		static void _BeginFrame(const Concurrency::WorkContext*, void* context);
+		static void _DebugUI(const Concurrency::WorkContext*, void* context);
+		static void _EndFrame(const Concurrency::WorkContext*, void* context);
 
 		static constexpr int kBufferCount = 2;
 

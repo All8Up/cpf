@@ -117,8 +117,8 @@ namespace Cpf
 			WorkVector mWork;
 
 			// Per thread add/remove.
-			WorkVector mAdditions[Concurrency::Scheduler::kMaxThreads];
-			WorkVector mDeletions[Concurrency::Scheduler::kMaxThreads];
+			WorkVector mAdditions[Concurrency::kMaxThreads];
+			WorkVector mDeletions[Concurrency::kMaxThreads];
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ namespace Cpf
 		void SortedVectorContainer<WORKTYPE, LESSTHAN>::Begin()
 		{
 			WorkVector accumulate;
-			for (int i = 0; i < Concurrency::Scheduler::kMaxThreads; ++i)
+			for (int i = 0; i < Concurrency::kMaxThreads; ++i)
 			{
 				accumulate.insert(accumulate.end(), mAdditions[i].begin(), mAdditions[i].end());
 				mAdditions[i].clear();
@@ -196,7 +196,7 @@ namespace Cpf
 		void SortedVectorContainer<WORKTYPE, LESSTHAN>::End()
 		{
 			WorkVector accumulate;
-			for (int i = 0; i < Concurrency::Scheduler::kMaxThreads; ++i)
+			for (int i = 0; i < Concurrency::kMaxThreads; ++i)
 			{
 				accumulate.insert(accumulate.end(), mDeletions[i].begin(), mDeletions[i].end());
 				mDeletions[i].clear();

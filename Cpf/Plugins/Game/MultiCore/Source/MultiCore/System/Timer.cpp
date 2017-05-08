@@ -231,7 +231,7 @@ void CPF_STDCALL Timer::Resume()
 	SetPause(false);
 }
 
-void Timer::_Update(Concurrency::ThreadContext&, void* context)
+void Timer::_Update(const Concurrency::WorkContext*, void* context)
 {
 	Timer* self = reinterpret_cast<Timer*>(context);
 	if (!self->mPaused)

@@ -5,6 +5,7 @@ using namespace Cpf;
 using namespace Concurrency;
 
 ThreadPool::ThreadPool()
+	: mScheduler(nullptr)
 {
 }
 
@@ -13,9 +14,9 @@ ThreadPool::~ThreadPool()
 	mScheduler.Shutdown();
 }
 
-bool ThreadPool::Initialize(Threading::Thread::Group&& group)
+bool ThreadPool::Initialize(int threadCount)
 {
-	return mScheduler.Initialize(Move(group));
+	return COM::Succeeded(mScheduler.Initialize(threadCount, nullptr, nullptr, nullptr));
 }
 
 void ThreadPool::Shutdown()
@@ -41,5 +42,5 @@ void ThreadPool::SetActiveThreads(int count)
 
 int ThreadPool::GetActiveThreads() const
 {
-	return mScheduler.GetActiveThreads();
+	return mScheduler.GetCurrentThreads();
 }

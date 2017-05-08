@@ -38,7 +38,7 @@ namespace Cpf
 		private:
 			CPF_DLL_SAFE_BEGIN;
 			Schedulers mSchedulers;
-			Scheduler::ThreadTimes mDistTimeQuery;
+			ThreadTimes mDistTimeQuery;
 			bool mQueryOutstanding = false;
 			Time::Value mLastUpdate;
 			Threading::CPUUsage mCPUUsage;

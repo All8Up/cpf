@@ -45,7 +45,7 @@ namespace Cpf
 
 		IntrusivePtr<iWindow> mpWindow;
 
-		Concurrency::Scheduler mLoopScheduler;
+		IntrusivePtr<Concurrency::iScheduler> mpScheduler;
 		Concurrency::ThreadPool mThreadPool;
 		Concurrency::LoadBalancer mLoadBalancer;
 		IntrusivePtr<Resources::Locator> mpLocator;

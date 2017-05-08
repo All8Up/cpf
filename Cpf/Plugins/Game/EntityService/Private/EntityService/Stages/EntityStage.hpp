@@ -44,12 +44,12 @@ namespace Cpf
 			MultiCore::SortedVectorContainer<UpdateTuple_t, Compare> mWork;
 			struct Caller
 			{
-				void Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work);
+				void Execute(const Concurrency::WorkContext*, const UpdateTuple_t& work);
 			};
 
-			static void _Begin(Concurrency::ThreadContext& tc, void* context);
-			static void _Update(Concurrency::ThreadContext& tc, void* context);
-			static void _End(Concurrency::ThreadContext& tc, void* context);
+			static void _Begin(const Concurrency::WorkContext* tc, void* context);
+			static void _Update(const Concurrency::WorkContext* tc, void* context);
+			static void _End(const Concurrency::WorkContext* tc, void* context);
 
 			MultiCore::iSystem* mpSystem;
 			Caller mCaller;

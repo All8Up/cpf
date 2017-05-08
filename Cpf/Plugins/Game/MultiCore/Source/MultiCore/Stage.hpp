@@ -37,12 +37,12 @@ namespace Cpf
 			BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
 
 			// iSingleUpdateStage overrides.
-			void SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
+			void SetUpdate(Function<void(const Concurrency::WorkContext*, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
 
 		private:
-			static void _Update(Concurrency::ThreadContext& tc, void* context);
+			static void _Update(const Concurrency::WorkContext* tc, void* context);
 
-			Function<void(Concurrency::ThreadContext&, void*)> mpUpdate;
+			Function<void(const Concurrency::WorkContext*, void*)> mpUpdate;
 			void* mpContext;
 			BlockOpcode mOpcode;
 

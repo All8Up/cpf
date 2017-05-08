@@ -13,21 +13,20 @@ TEST(Concurrency, Basics)
 
 	for (auto iterations = 0; iterations < 20; ++iterations)
 	{
-		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
-		Scheduler* scheduler = new Scheduler;
+		Scheduler* scheduler = new Scheduler(nullptr);
 
-		scheduler->Initialize(Move(threads));
-		Scheduler::Semaphore sync;
+		scheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr);
+		Semaphore sync;
 		{
 			static const auto loopCount = 25000;
 			int valid[loopCount] = { 0 };
 
-			Scheduler::Queue queue;
+			Queue queue;
 
 			for (auto i = 0; i < loopCount; ++i)
 			{
 				queue.FirstOne(
-					[](Scheduler::ThreadContext&, void* context)
+					[](const WorkContext*, void* context)
 				{
 					auto *target = reinterpret_cast<int*>(context);
 					*target += 1;
@@ -37,7 +36,7 @@ TEST(Concurrency, Basics)
 
 			// Wait for completion.
 			scheduler->Execute(queue);
-			scheduler->Submit(sync);
+			scheduler->Submit(&sync);
 			sync.Acquire();
 			for (auto i = 0; i < loopCount; ++i)
 				EXPECT_EQ(1, valid[i]);

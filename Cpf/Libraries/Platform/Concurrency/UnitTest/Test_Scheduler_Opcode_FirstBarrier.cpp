@@ -13,20 +13,19 @@ TEST(Concurrency, FirstFenced_Opcode)
 
 	for (auto i = 0; i < 10; ++i)
 	{
-		Scheduler* scheduler = new Scheduler;
-		Scheduler::Semaphore sync;
-		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
-		scheduler->Initialize(std::move(threads));
+		Scheduler* scheduler = new Scheduler(nullptr);
+		Semaphore sync;
+		scheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr);
 		{
 			auto firstThreadArrived = 0;
-			Scheduler::Queue queue;
-			queue.FirstOneBarrier([](Scheduler::ThreadContext&, void* context)
+			Queue queue;
+			queue.FirstOneBarrier([](const WorkContext*, void* context)
 			{
 				Atomic::Store(*reinterpret_cast<int*>(context), 1);
 			},
 				&firstThreadArrived);
 
-			queue.AllBarrier([](Scheduler::ThreadContext&, void* context)
+			queue.AllBarrier([](const WorkContext*, void* context)
 			{
 				EXPECT_EQ(1, Atomic::Load(*reinterpret_cast<int*>(context)));
 			},
@@ -35,7 +34,7 @@ TEST(Concurrency, FirstFenced_Opcode)
 			scheduler->Execute(queue);
 
 			// Wait for completion.
-			scheduler->Submit(sync);
+			scheduler->Submit(&sync);
 			sync.Acquire();
 
 			EXPECT_EQ(1, firstThreadArrived);

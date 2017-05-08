@@ -122,20 +122,20 @@ COM::Result EntityStage::GetInstructions(int32_t* count, MultiCore::Instruction*
 	return COM::kInvalidParameter;
 }
 
-void EntityStage::_Begin(Concurrency::ThreadContext& tc, void* context)
+void EntityStage::_Begin(const Concurrency::WorkContext* tc, void* context)
 {
 	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	self.mWork.Begin();
 }
 
-void EntityStage::_Update(Concurrency::ThreadContext& tc, void* context)
+void EntityStage::_Update(const Concurrency::WorkContext* tc, void* context)
 {
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	MultiCore::EqualPartitions<MultiCore::SortedVectorContainer<UpdateTuple_t, Compare>, Caller>::Execute(self.mWork, tc, &self.mCaller);
 }
 
-void EntityStage::_End(Concurrency::ThreadContext& tc, void* context)
+void EntityStage::_End(const Concurrency::WorkContext* tc, void* context)
 {
 	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
@@ -147,7 +147,7 @@ bool EntityStage::Compare::operator ()(const UpdateTuple_t& lhs, const UpdateTup
 	return CPF_STL_NAMESPACE::get<1>(lhs) < CPF_STL_NAMESPACE::get<1>(rhs);
 }
 
-void EntityStage::Caller::Execute(Concurrency::ThreadContext&, const UpdateTuple_t& work)
+void EntityStage::Caller::Execute(const Concurrency::WorkContext*, const UpdateTuple_t& work)
 {
 	(*std::get<2>(work))(std::get<0>(work), std::get<1>(work));
 }

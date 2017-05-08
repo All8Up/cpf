@@ -26,22 +26,22 @@ RenderSystem::RenderSystem(COM::iUnknown*)
 RenderSystem::~RenderSystem()
 {}
 
-void RenderSystem::_BeginFrame(ThreadContext& tc, void* context)
+void RenderSystem::_BeginFrame(const Concurrency::WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_BeginFrame(tc);
 }
-void RenderSystem::_Draw(ThreadContext& tc, void* context)
+void RenderSystem::_Draw(const Concurrency::WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_Draw(tc);
 }
-void RenderSystem::_DebugUI(ThreadContext& tc, void* context)
+void RenderSystem::_DebugUI(const Concurrency::WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_DebugUI(tc);
 }
-void RenderSystem::_EndFrame(Concurrency::ThreadContext& tc, void* context)
+void RenderSystem::_EndFrame(const Concurrency::WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_EndFrame(tc);

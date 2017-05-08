@@ -21,7 +21,7 @@ namespace Cpf
 
 			bool Solve();
 
-			Concurrency::Scheduler::Queue& GetQueue() { return mResultQueue; }
+			Concurrency::Queue& GetQueue() { return mResultQueue; }
 
 			Vector<String> GetQueueInfo() const;
 
@@ -50,7 +50,7 @@ namespace Cpf
 			void _GatherStageDependencies();
 
 			//
-			Concurrency::Scheduler::Queue mResultQueue;
+			Concurrency::Queue mResultQueue;
 
 			iPipeline* mpPipeline;
 

@@ -25,7 +25,7 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL GetSystem(SystemID, iSystem**) const = 0;
 			virtual COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const = 0;
 			virtual COM::Result CPF_STDCALL GetStage(SystemID, StageID, iStage**) = 0;
-			virtual void CPF_STDCALL Submit(Concurrency::Scheduler*) = 0;
+			virtual void CPF_STDCALL Submit(Concurrency::iScheduler*) = 0;
 			virtual COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) = 0;
 			virtual COM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) = 0;
 		};

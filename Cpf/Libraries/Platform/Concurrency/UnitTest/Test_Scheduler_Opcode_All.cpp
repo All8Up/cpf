@@ -13,31 +13,30 @@ TEST(Concurrency, All_Opcode)
 	using namespace Concurrency;
 
 	//////////////////////////////////////////////////////////////////////////
-	auto scheduler = new Scheduler;
+	auto scheduler = new Scheduler(nullptr);
 	EXPECT_TRUE(scheduler != nullptr);
 	if (scheduler)
 	{
 		//////////////////////////////////////////////////////////////////////////
-		Threading::Thread::Group threads(Threading::Thread::GetHardwareThreadCount());
-		EXPECT_TRUE(scheduler->Initialize(std::move(threads)));
+		EXPECT_TRUE(COM::Succeeded(scheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)));
 		EXPECT_TRUE(scheduler->GetAvailableThreads() >= 4);
 
-		Scheduler::Queue queue;
-		Scheduler::Semaphore sync;
+		Queue queue;
+		Semaphore sync;
 		scheduler->SetActiveThreads(4);
 		{
 			//////////////////////////////////////////////////////////////////////////
 			int hitCount = 0;
 			for (int i=0; i<25; ++i)
 			{
-				queue.All( [](Scheduler::ThreadContext&, void* context)
+				queue.All( [](const WorkContext*, void* context)
 				{
 					Atomic::Inc(*reinterpret_cast<int*>(context));
 				},
 					&hitCount);
 			}
 			scheduler->Execute(queue);
-			scheduler->Submit(sync);
+			scheduler->Submit(&sync);
 			sync.Acquire();
 			EXPECT_EQ(4 * 25, hitCount);
 		}

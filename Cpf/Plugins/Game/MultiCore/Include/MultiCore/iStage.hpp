@@ -45,7 +45,7 @@ namespace Cpf
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iSingleUpdateStage"_crc64);
 
-			virtual void CPF_STDCALL SetUpdate(Function<void(Concurrency::ThreadContext&, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst) = 0;
+			virtual void CPF_STDCALL SetUpdate(Function<void(const Concurrency::WorkContext*, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst) = 0;
 		};
 	}
 }

@@ -8,41 +8,26 @@ using namespace Concurrency;
 /**
  * @brief Constructor.
  */
-Scheduler::Queue::Queue()
-{}
-
-Scheduler::Queue::Queue(size_t size)
-	: mQueue(size)
+Queue::Queue()
 {}
 
 /**
  * @brief Move assignment.
  */
-Scheduler::Queue& Scheduler::Queue::operator = (Queue&& rhs)
+Queue& Queue::operator = (Queue&& rhs)
 {
 	mQueue = Move(rhs.mQueue);
 	return *this;
 }
 
-/**
- * @brief Move constructor.
- * @param rhs The queue to move from.
- */
-Scheduler::Queue::Queue(Queue&& rhs) noexcept
-	: mQueue(Move(rhs.mQueue))
-{
-}
-
-
 /** @brief Destructor. */
-Scheduler::Queue::~Queue()
+Queue::~Queue()
 {}
 
 /**
  * @brief Query for an interface.
  */
-#if 0
-COM::Result CPF_STDCALL Scheduler::Queue::QueryInterface(COM::InterfaceID id, void** outIface)
+COM::Result CPF_STDCALL Queue::QueryInterface(COM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -60,7 +45,6 @@ COM::Result CPF_STDCALL Scheduler::Queue::QueryInterface(COM::InterfaceID id, vo
 	}
 	return COM::kInvalidParameter;
 }
-#endif
 
 /**
  * @brief Function call operator.
@@ -68,7 +52,7 @@ COM::Result CPF_STDCALL Scheduler::Queue::QueryInterface(COM::InterfaceID id, vo
  * @param p The Payload to insert.
  * @param c The opaque data for the payload.
  */
-void Scheduler::Queue::operator ()(Opcode o, Payload p, void* c)
+void Queue::operator ()(Opcode o, Payload p, void* c)
 {
 	mQueue.push_back({ o, p, c });
 }
@@ -86,7 +70,7 @@ COM::Result CPF_STDCALL Scheduler::Queue::Reserve(int32_t size)
  * @param func The payload to execute.
  * @param context The opaque data associated with the payload.
  */
-void CPF_STDCALL Scheduler::Queue::FirstOne(Payload func, void* context)
+void CPF_STDCALL Queue::FirstOne(Payload func, void* context)
 {
 	CPF_ASSERT(func != nullptr);
 	(*this)(Detail::Opcodes::FirstOne, func, context);
@@ -98,7 +82,7 @@ void CPF_STDCALL Scheduler::Queue::FirstOne(Payload func, void* context)
 * @param func The payload to execute.
 * @param context The opaque data associated with the payload.
 */
-void CPF_STDCALL Scheduler::Queue::FirstOneBarrier(Payload func, void* context)
+void CPF_STDCALL Queue::FirstOneBarrier(Payload func, void* context)
 {
 	(*this)(Detail::Opcodes::FirstOneBarrier, func, context);
 }
@@ -108,7 +92,7 @@ void CPF_STDCALL Scheduler::Queue::FirstOneBarrier(Payload func, void* context)
 * @param func The payload to execute.
 * @param context The opaque data associated with the payload.
 */
-void CPF_STDCALL Scheduler::Queue::LastOne(Payload func, void* context)
+void CPF_STDCALL Queue::LastOne(Payload func, void* context)
 {
 	(*this)(Detail::Opcodes::LastOne, func, context);
 }
@@ -119,7 +103,7 @@ void CPF_STDCALL Scheduler::Queue::LastOne(Payload func, void* context)
 * @param func The payload to execute.
 * @param context The opaque data associated with the payload.
 */
-void CPF_STDCALL Scheduler::Queue::LastOneBarrier(Payload func, void* context)
+void CPF_STDCALL Queue::LastOneBarrier(Payload func, void* context)
 {
 	(*this)(Detail::Opcodes::LastOneBarrier, func, context);
 }
@@ -129,7 +113,7 @@ void CPF_STDCALL Scheduler::Queue::LastOneBarrier(Payload func, void* context)
 * @param func The payload to execute.
 * @param context The opaque data associated with the payload.
 */
-void CPF_STDCALL Scheduler::Queue::All(Payload func, void* context)
+void CPF_STDCALL Queue::All(Payload func, void* context)
 {
 	(*this)(Detail::Opcodes::All, func, context);
 }
@@ -140,14 +124,14 @@ void CPF_STDCALL Scheduler::Queue::All(Payload func, void* context)
 * @param func The payload to execute.
 * @param context The opaque data associated with the payload.
 */
-void CPF_STDCALL Scheduler::Queue::AllBarrier(Payload func, void* context)
+void CPF_STDCALL Queue::AllBarrier(Payload func, void* context)
 {
 	(*this)(Detail::Opcodes::AllBarrier, func, context);
 }
 
 
 /** @brief Implements a barrier, no thread will pass until all have arrived. */
-void CPF_STDCALL Scheduler::Queue::Barrier()
+void CPF_STDCALL Queue::Barrier()
 {
 	(*this)(Detail::Opcodes::Barrier, nullptr, nullptr);
 }
@@ -157,7 +141,7 @@ void CPF_STDCALL Scheduler::Queue::Barrier()
  * @param func The payload to execute.
  * @param context The opaque data associated with the payload.
  */
-void CPF_STDCALL Scheduler::Queue::Fence(Payload func, void* context)
+void CPF_STDCALL Queue::Fence(Payload func, void* context)
 {
 	(*this)(Detail::Opcodes::LastOne, func, context);
 }
@@ -202,7 +186,7 @@ void Scheduler::Queue::SA(int index, void* value)
 }
 #endif
 
-void Scheduler::Queue::Discard()
+void Queue::Discard()
 {
 	mQueue.clear();
 }
@@ -210,9 +194,9 @@ void Scheduler::Queue::Discard()
 #if CPF_SCHEDULER_DISASSEMBLER
 #include <UnorderedMap.hpp>
 #include <String.hpp>
-Scheduler::Queue::DisVector Scheduler::Queue::Dissassemble() const
+Queue::DisVector Queue::Dissassemble() const
 {
-	using OpMap = UnorderedMap<OpcodeFunc_t, Op>;
+	using OpMap = UnorderedMap<Scheduler::OpcodeFunc_t, Op>;
 	static OpMap sOpMap{
 		{&Detail::Opcodes::FirstOne, Op::eFirstOne},
 		{&Detail::Opcodes::FirstOneBarrier, Op::eFirstOneBarrier},
@@ -234,7 +218,7 @@ Scheduler::Queue::DisVector Scheduler::Queue::Dissassemble() const
 	return result;
 }
 
-const char* Scheduler::Queue::GetOpName(Op op)
+const char* Queue::GetOpName(Op op)
 {
 	static Vector<String> sNames{
 		"FirstOne",
@@ -254,7 +238,7 @@ const char* Scheduler::Queue::GetOpName(Op op)
  * @brief Returns an iterator to the beginning of the queue.
  * @return The iterator.
  */
-Scheduler::Queue::QueueType::const_iterator Scheduler::Queue::begin() const
+Queue::QueueType::const_iterator Queue::begin() const
 {
 	return mQueue.cbegin();
 }
@@ -263,7 +247,7 @@ Scheduler::Queue::QueueType::const_iterator Scheduler::Queue::begin() const
 * @brief Returns an iterator to the end of the queue.
 * @return The iterator.
 */
-Scheduler::Queue::QueueType::const_iterator Scheduler::Queue::end() const
+Queue::QueueType::const_iterator Queue::end() const
 {
 	return mQueue.cend();
 }

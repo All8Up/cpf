@@ -41,7 +41,7 @@ namespace Cpf
 		NetworkSystem(COM::iUnknown*);
 
 	private:
-		static void _Update(Concurrency::ThreadContext&, void*);
+		static void _Update(const Concurrency::WorkContext*, void*);
 
 		asio::io_service mASIO;
 

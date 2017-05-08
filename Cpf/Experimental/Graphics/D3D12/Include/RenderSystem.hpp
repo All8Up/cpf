@@ -63,12 +63,12 @@ namespace Cpf
 
 	private:
 		//
-		static void _BeginFrame(Concurrency::ThreadContext& tc, void* context);
-		static void _Clear(Concurrency::ThreadContext& tc, void* context);
-		static void _Draw(Concurrency::ThreadContext& tc, void* context);
-		static void _DebugUI(Concurrency::ThreadContext& tc, void* context);
-		static void _PreparePresent(Concurrency::ThreadContext& tc, void* context);
-		static void _EndFrame(Concurrency::ThreadContext& tc, void* context);
+		static void _BeginFrame(const Concurrency::WorkContext* tc, void* context);
+		static void _Clear(const Concurrency::WorkContext* tc, void* context);
+		static void _Draw(const Concurrency::WorkContext* tc, void* context);
+		static void _DebugUI(const Concurrency::WorkContext* tc, void* context);
+		static void _PreparePresent(const Concurrency::WorkContext* tc, void* context);
+		static void _EndFrame(const Concurrency::WorkContext* tc, void* context);
 
 		ExperimentalD3D12* mpApp;
 

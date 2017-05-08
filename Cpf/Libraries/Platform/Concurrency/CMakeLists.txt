@@ -5,11 +5,11 @@ set (INCLUDE_FILES
 	Include/Concurrency/Scheduler.hpp
 	Include/Concurrency/Opcodes.hpp
 	Include/Concurrency/Queue.hpp
-	Include/Concurrency/ThreadContext.hpp
 	Include/Concurrency/ThreadPool.hpp
 	Include/Concurrency/LoadBalancer.hpp
 )
 set (INTERFACE_FILES
+	Interface/Concurrency/WorkContext.hpp
 	Interface/Concurrency/iQueue.hpp
 	Interface/Concurrency/iScheduler.hpp
 	Interface/Concurrency/iThreadPool.hpp
@@ -21,7 +21,6 @@ set (SOURCE_FILES
 	Source/Scheduler.cpp
 	Source/Opcodes.cpp
 	Source/Queue.cpp
-	Source/ThreadContext.cpp
 	Source/ThreadPool.cpp
 	Source/LoadBalancer.cpp
 )

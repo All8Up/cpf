@@ -74,7 +74,7 @@ namespace Cpf
 		{
 			SSBID mID;
 			BlockOpcode mOpcode;
-			Concurrency::Scheduler::PayloadFunc_t mpFunction;
+			Concurrency::PayloadFunc_t mpFunction;
 			void* mpContext;
 		};
 		using Instructions = Vector<Instruction>;

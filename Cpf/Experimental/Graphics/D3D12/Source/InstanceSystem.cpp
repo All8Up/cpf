@@ -9,13 +9,13 @@ using namespace Cpf;
 InstanceSystem::InstanceSystem(COM::iUnknown*)
 {}
 
-void InstanceSystem::_Begin(Concurrency::ThreadContext&, void* context)
+void InstanceSystem::_Begin(const Concurrency::WorkContext*, void* context)
 {
 	InstanceSystem* system = static_cast<InstanceSystem*>(context);
 	system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances));
 }
 
-void InstanceSystem::_End(Concurrency::ThreadContext&, void* context)
+void InstanceSystem::_End(const Concurrency::WorkContext*, void* context)
 {
 	InstanceSystem* system = static_cast<InstanceSystem*>(context);
 	system->mpApp->GetCurrentInstanceBuffer()->Unmap();

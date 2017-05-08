@@ -22,7 +22,7 @@ namespace Cpf
 			COM::Result CPF_STDCALL GetSystem(SystemID id, iSystem**) const override;
 			COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const override;
 			COM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, iStage**) override;
-			void CPF_STDCALL Submit(Concurrency::Scheduler*) override;
+			void CPF_STDCALL Submit(Concurrency::iScheduler*) override;
 			COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) override;
 			COM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) override;
 
@@ -32,7 +32,7 @@ namespace Cpf
 			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<iSystem>>;
 			SystemMap mSystemMap;
 
-			Concurrency::Scheduler::Queue mQueue;
+			Concurrency::Queue mQueue;
 #ifdef CPF_DEBUG
 			bool mChanged;
 #endif

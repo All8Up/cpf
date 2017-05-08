@@ -16,7 +16,7 @@ using namespace Math;
 using namespace Graphics;
 
 
-void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
+void ExperimentalD3D12::_BeginFrame(const Concurrency::WorkContext*)
 {
 	// Issue on the shared command buffers.
 	mpPreCommandPool[mCurrentBackbuffer]->Reset();
@@ -49,9 +49,9 @@ void ExperimentalD3D12::_BeginFrame(Concurrency::ThreadContext&)
 	mpScheduledBuffers[0] = mpPreCommandBuffer[mCurrentBackbuffer];
 }
 
-void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
+void ExperimentalD3D12::_Draw(const Concurrency::WorkContext* tc)
 {
-	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc.GetUserData());
+	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc->mpUserData);
 
 	// Start issuing commands.
 	threadData.mpCommandPool[mCurrentBackbuffer]->Reset();
@@ -88,7 +88,7 @@ void ExperimentalD3D12::_Draw(Concurrency::ThreadContext& tc)
 	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpCommandBuffer[mCurrentBackbuffer];
 }
 
-void ExperimentalD3D12::_EndFrame(Concurrency::ThreadContext&)
+void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 {
 	// Insert the drawing buffers.
 	mpPreCommandBuffer[mCurrentBackbuffer]->Insert(mCurrentScheduledBuffer - 1, &mpScheduledBuffers[1]);

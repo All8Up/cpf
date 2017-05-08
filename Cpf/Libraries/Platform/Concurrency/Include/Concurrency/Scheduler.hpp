@@ -6,71 +6,88 @@
 #include "Threading/Mutex.hpp"
 #include "Threading/Semaphore.hpp"
 #include "Threading/ConditionVariable.hpp"
+#include "Concurrency/iScheduler.hpp"
+#include "Plugin/iRegistry.hpp"
 
+
+extern "C" Cpf::COM::Result CPF_EXPORT Install(Cpf::Plugin::iRegistry* registry);
 
 namespace Cpf
 {
 	namespace Concurrency
 	{
-		class ThreadContext;
+		static constexpr int kMaxThreads = 64;
+
 		namespace Detail
 		{
 			struct Opcodes;
 		}
 
+		class Semaphore;
+		class ThreadTimes;
+		class Queue;
+
+		using PayloadFunc_t = void(*)(const WorkContext*, void*);
+
+		struct ThreadTimeInfo
+		{
+			int mThreadCount;
+			Time::Value mDuration;
+			Time::Value mUserTime[kMaxThreads];
+			Time::Value mKernelTime[kMaxThreads];
+		};
 
 		/** @brief Scheduler for multi-core distribution. */
-		class CPF_EXPORT_CONCURRENCY Scheduler
+		class CPF_EXPORT_CONCURRENCY Scheduler : public tRefCounted<iScheduler>
 		{
 		public:
+			// TODO: Temporary hack to setup for moving over to plugin.
+			static void Install(Plugin::iRegistry* regy) { ::Install(regy); }
+
 			//
-			static const int kMaxThreads = 64;
-			static const int kRegisterCount = 16;
-			using ThreadContext = ThreadContext;
-			using PayloadFunc_t = void(*)(ThreadContext&, void*);
+			static constexpr int kRegisterCount = 16;
+			static constexpr int kQueueSize = 4096;
 			using InitOrShutdownFunc_t = PayloadFunc_t;
-			using OpcodeFunc_t = void(*)(Scheduler &vm, ThreadContext& context, int64_t index);
+			using OpcodeFunc_t = void(*)(Scheduler &vm, const WorkContext* context, int64_t index);
 			struct Instruction
 			{
 				OpcodeFunc_t mpHandler;
 				PayloadFunc_t mpFunction;
 				void* mpContext;
 			};
-			struct ThreadTimeInfo
-			{
-				int mThreadCount;
-				Time::Value mDuration;
-				Time::Value mUserTime[kMaxThreads];
-				Time::Value mKernelTime[kMaxThreads];
-			};
 
-
-			class Queue;
-			class Semaphore;
-			class ThreadTimes;
 
 			// Construction/Destruction.
-			explicit Scheduler(void* outerContext = nullptr, size_t queueSize=4096);
+			explicit Scheduler(iUnknown*);
 			~Scheduler();
 
-			//
-			bool Initialize(Threading::Thread::Group&&, InitOrShutdownFunc_t init = nullptr, InitOrShutdownFunc_t shutdown = nullptr, void* context = nullptr);
-			void Shutdown();
+			// iUnkown overrides.
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+			// iScheduler overrides.
+			COM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) override;
+			void CPF_STDCALL Shutdown() override;
+
+			int CPF_STDCALL GetMaxThreads() override { return GetAvailableThreads(); }
+			int CPF_STDCALL GetActiveThreads() override { return GetCurrentThreads(); }
+
+			void CPF_STDCALL Execute(iQueue*, bool clear = true) override;
+			void Submit(Semaphore*) override;
+
+			//////////////////////////////////////////////////////////////////////////
 
 			// Data access.
 			int GetAvailableThreads() const;
 			void SetActiveThreads(int count);
-			int GetActiveThreads() const;
+			int GetCurrentThreads() const;
 			void* GetContext() const;
 
 			//
-			void Submit(Semaphore&);
 			void Submit(ThreadTimes&);
 			void Execute(Queue&, bool clear=true);
 
 		private:
 			//////////////////////////////////////////////////////////////////////////
-			friend class Concurrency::ThreadContext;
 			friend struct Detail::Opcodes;
 			CPF_DLL_SAFE_BEGIN;
 
@@ -144,13 +161,13 @@ namespace Cpf
 		// identifier via the macro counter.  In most cases, the benefits out weight the
 		// evil inherent.
 		template<typename TYPE, int UNIQUE>
-		Scheduler::PayloadFunc_t ThreadedCall(void(TYPE::*function)(ThreadContext&))
+		PayloadFunc_t ThreadedCall(void(TYPE::*function)(const WorkContext*))
 		{
-			using FunctionType = void(TYPE::*)(ThreadContext&);
+			using FunctionType = void(TYPE::*)(const WorkContext*);
 			static FunctionType func = function;
 			struct Caller
 			{
-				static void Call(ThreadContext& tc, void* context)
+				static void Call(const WorkContext* tc, void* context)
 				{
 					TYPE* type = reinterpret_cast<TYPE*>(context);
 					(type->*func)(tc);
@@ -158,10 +175,10 @@ namespace Cpf
 			};
 			return &Caller::Call;
 		}
-#define SCHEDULED_CALL(t, f) ThreadedCall<t, __COUNTER__>(f)
+#define SCHEDULED_CALL(t, f) Cpf::Concurrency::ThreadedCall<t, __COUNTER__>(f)
 
 
-		class CPF_EXPORT_CONCURRENCY Scheduler::Semaphore
+		class CPF_EXPORT_CONCURRENCY Semaphore
 		{
 		public:
 			Semaphore(int32_t value=0);
@@ -174,7 +191,7 @@ namespace Cpf
 			CPF_DLL_SAFE_END;
 		};
 
-		class Scheduler::ThreadTimes : private Semaphore
+		class ThreadTimes : Semaphore
 		{
 		public:
 			ThreadTimes() {}
@@ -192,4 +209,3 @@ namespace Cpf
 
 //
 #include <Concurrency/Queue.hpp>
-#include <Concurrency/ThreadContext.hpp>

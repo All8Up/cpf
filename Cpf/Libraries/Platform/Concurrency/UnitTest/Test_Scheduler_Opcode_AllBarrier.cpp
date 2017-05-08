@@ -15,18 +15,17 @@ TEST(Concurrency, AllFenced_Opcode)
 	using namespace Concurrency;
 
 	//////////////////////////////////////////////////////////////////////////
-	auto scheduler = new Scheduler;
+	auto scheduler = new Scheduler(nullptr);
 	EXPECT_TRUE(scheduler != nullptr);
 	if (scheduler)
 	{
 		//////////////////////////////////////////////////////////////////////////
 		const int hardwareThreads = Threading::Thread::GetHardwareThreadCount();
-		Threading::Thread::Group threads(hardwareThreads);
-		EXPECT_TRUE(scheduler->Initialize(std::move(threads)));
+		EXPECT_TRUE(COM::Succeeded(scheduler->Initialize(hardwareThreads, nullptr, nullptr, nullptr)));
 		EXPECT_TRUE(scheduler->GetAvailableThreads() >= 4);
 
 		const int threadCount = 8 > hardwareThreads ? hardwareThreads : 8;
-		Scheduler::Semaphore sync;
+		Semaphore sync;
 		scheduler->SetActiveThreads(threadCount);
 		{
 			static const int testCount = 100;
@@ -45,18 +44,18 @@ TEST(Concurrency, AllFenced_Opcode)
 				testData.clear();
 				testData.reserve(loopCount);
 
-				Scheduler::Queue queue;
+				Queue queue;
 				for (int j = 0; j < loopCount; ++j)
 				{
 					testData.push_back({&hitCount, (j + 1) * threadCount });
 
-					queue.AllBarrier( [](Scheduler::ThreadContext&, void* context)
+					queue.AllBarrier( [](const WorkContext*, void* context)
 					{
 						Atomic::Inc(*reinterpret_cast<int*>(context));
 					},
 						&hitCount);
 
-					queue.FirstOneBarrier( [](Scheduler::ThreadContext&, void* context)
+					queue.FirstOneBarrier( [](const WorkContext*, void* context)
 					{
 						auto testData = reinterpret_cast<TestData*>(context);
 						EXPECT_EQ(Atomic::Load(*testData->mpCounter), testData->mExpected);
@@ -64,7 +63,7 @@ TEST(Concurrency, AllFenced_Opcode)
 						&testData[j]);
 				}
 				scheduler->Execute(queue);
-				scheduler->Submit(sync);
+				scheduler->Submit(&sync);
 				sync.Acquire();
 				EXPECT_EQ(threadCount * loopCount, hitCount);
 			}

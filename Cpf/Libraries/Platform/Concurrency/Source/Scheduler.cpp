@@ -21,17 +21,17 @@ VTune::Domain* gSchedulerDomain = VTune::DomainCreate("Scheduler");
 
 
 //////////////////////////////////////////////////////////////////////////
-Scheduler::Semaphore::Semaphore(int32_t value)
+Semaphore::Semaphore(int32_t value)
 	: mSemaphore(value)
 {
 }
 
-void Scheduler::Semaphore::Acquire()
+void Semaphore::Acquire()
 {
 	mSemaphore.Acquire();
 }
 
-void Scheduler::Semaphore::Release()
+void Semaphore::Release()
 {
 	mSemaphore.Release();
 }
@@ -42,18 +42,15 @@ const int Scheduler::kMaxBackoff = 4096;
 
 
 /** @brief Default constructor. */
-Scheduler::Scheduler(void* outerContext, size_t queueSize)
+Scheduler::Scheduler(iUnknown*)
 	: mControlLock(0)
 	, mTargetCount(0)
 	, mActiveCount(0)
 	, mThreadCount(0)
-	, mInstructionRing(queueSize)
-	, mPredicateRing(queueSize)
-	, mpOuterContext(outerContext)
-	, mQueueSize(queueSize)
+	, mInstructionRing(kQueueSize)
+	, mPredicateRing(kQueueSize)
+	, mQueueSize(kQueueSize)
 {
-	// Queue must be power of 2.
-	CPF_ASSERT((queueSize&(queueSize - 1)) == 0);
 	_ClearRegisters();
 }
 
@@ -63,6 +60,28 @@ Scheduler::~Scheduler()
 {
 	// Check that we were shut down.
 	CPF_ASSERT(Atomic::Load(mThreadCount) == 0);
+}
+
+
+COM::Result CPF_STDCALL Scheduler::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case kIID.GetID():
+			*outIface = static_cast<iScheduler*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 
@@ -80,27 +99,18 @@ void Scheduler::_ClearRegisters()
 	}
 }
 
-
-
-/**
- * @brief Initializes the thread team by creating the given number of threads.
- * @param count Number of threads to allocate.
- * @param init A function for each thread to call to setup any custom data required.
- * @param shutdown A function for each thread to call on shutdown to free up any custom data..
- * @param context If non-null, context for the shutdown.
- * @return true if it succeeds, false if it fails.
- */
-bool Scheduler::Initialize(Threading::Thread::Group&& threads, InitOrShutdownFunc_t init, InitOrShutdownFunc_t shutdown, void* context)
+COM::Result CPF_STDCALL Scheduler::Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context)
 {
-	if (threads)
+	(void)init; (void)shutdown; (void)context;
+	if (threadCount > 0)
 	{
-		mThreads = std::move(threads);
+		mThreads = Move(Threading::Thread::Group(threadCount));
 		if (mInstructionRing.Initialize(mThreads.Size()))
 		{
 			// Setup to start with all threads active.
 			mThreadCount = mTargetCount = mActiveCount = int(mThreads.Size());
 
-			for(int i=0; i<mThreadCount; ++i)
+			for (int i = 0; i < mThreadCount; ++i)
 				mThreads(i, std::bind(&Scheduler::_Worker, this, i, init, shutdown, context));
 
 			mTimeInfo.mThreadCount = mThreadCount;
@@ -110,13 +120,14 @@ bool Scheduler::Initialize(Threading::Thread::Group&& threads, InitOrShutdownFun
 				mTimeInfo.mUserTime[i] = Time::Value::Zero();
 				mTimeInfo.mKernelTime[i] = Time::Value::Zero();
 			}
-			return true;
+
+			return COM::kOK;
 		}
 		mThreadCount = mTargetCount = mActiveCount = 0;
 	}
-	return false;
-}
 
+	return COM::kInvalidParameter;
+}
 
 /** @brief Shuts down this object and frees any resources it is using. */
 void Scheduler::Shutdown()
@@ -139,7 +150,7 @@ int Scheduler::GetAvailableThreads() const
 	return mThreadCount;
 }
 
-int Scheduler::GetActiveThreads() const
+int Scheduler::GetCurrentThreads() const
 {
 	return mActiveCount;
 }
@@ -149,7 +160,7 @@ void Scheduler::SetActiveThreads(int count)
 	CPF_ASSERT(count > 0);
 	CPF_ASSERT(count <= mThreadCount);
 
-	_Emit(Detail::Opcodes::AllBarrier, [](ThreadContext&, void* context) {
+	_Emit(Detail::Opcodes::AllBarrier, [](const WorkContext*, void* context) {
 		reinterpret_cast<Threading::Semaphore*>(context)->Release();
 	}, &mWait);
 	mWait.Acquire();
@@ -187,42 +198,54 @@ void Scheduler::_Emit(OpcodeFunc_t opcode, PayloadFunc_t func, void* context)
 	}
 }
 
-void Scheduler::Submit(Scheduler::Semaphore& semaphore)
+void Scheduler::Submit(Semaphore* semaphore)
 {
-	_Emit(Detail::Opcodes::LastOne, [](ThreadContext&, void* context)
+	_Emit(Detail::Opcodes::LastOne, [](const WorkContext*, void* context)
 	{
-		reinterpret_cast<Scheduler::Semaphore*>(context)->Release();
-	}, &semaphore);
+		reinterpret_cast<Semaphore*>(context)->Release();
+	}, semaphore);
 }
 
 void Scheduler::Submit(ThreadTimes& times)
 {
-	_Emit(Detail::Opcodes::All, [](ThreadContext& tc, void* context)
+	_Emit(Detail::Opcodes::All, [](const WorkContext* tc, void* context)
 	{
 		ThreadTimes* times = reinterpret_cast<ThreadTimes*>(context);
 		Threading::Thread::GetThreadTimes(
-			times->mTimeResult.mUserTime[tc.GetThreadIndex()],
-			times->mTimeResult.mKernelTime[tc.GetThreadIndex()]
+			times->mTimeResult.mUserTime[tc->mThreadId],
+			times->mTimeResult.mKernelTime[tc->mThreadId]
 		);
 	}, &times);
-	_Emit(Detail::Opcodes::LastOne, [](ThreadContext& tc, void* context)
+	_Emit(Detail::Opcodes::LastOne, [](const WorkContext* tc, void* context)
 	{
 		auto now = Time::Now();
 		ThreadTimes* times = reinterpret_cast<ThreadTimes*>(context);
-		times->mTimeResult.mThreadCount = tc.GetThreadCount();
+		times->mTimeResult.mThreadCount = tc->mpScheduler->GetActiveThreads();
 		times->mTimeResult.mDuration = now;
 		auto temp = times->mTimeResult;
 
+		// TODO: Re-enable after transition.
+		/*
 		// Make the times relative.
-		times->mTimeResult.mDuration -= tc.GetScheduler().mTimeInfo.mDuration;
+		times->mTimeResult.mDuration -= tc->mpScheduler->mTimeInfo.mDuration;
 		for (int i=0; i<tc.GetThreadCount(); ++i)
 		{
 			times->mTimeResult.mUserTime[i] -= tc.GetScheduler().mTimeInfo.mUserTime[i];
 			times->mTimeResult.mKernelTime[i] -= tc.GetScheduler().mTimeInfo.mKernelTime[i];
 		}
 		tc.GetScheduler().mTimeInfo = temp;
+		*/
 	}, &times);
-	Submit(*static_cast<Semaphore*>(&times));
+	Submit(static_cast<Semaphore*>(&times));
+}
+
+void CPF_STDCALL Scheduler::Execute(iQueue* queue, bool clear)
+{
+	Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
+	Queue* q = static_cast<Queue*>(queue);
+	mExternalQueue.insert(mExternalQueue.end(), q->begin(), q->end());
+	if (clear)
+		q->Discard();
 }
 
 void Scheduler::Execute(Queue& q, bool clear)
@@ -246,11 +269,11 @@ void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdown
 	Threading::Thread::SetName((std::string("Scheduler thread: ") + std::to_string(index)).c_str());
 
 	// Setup the thread context for calling opcodes.
-	ThreadContext context{*this, index, nullptr};
+	WorkContext context{this, index, nullptr};
 
 	// Run the optional initialization function.
 	if (initFunc)
-		initFunc(context, ctx);
+		initFunc(&context, ctx);
 
 	// Setup performance profiling.
 	String threadNumber("Thread(");
@@ -277,7 +300,7 @@ void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdown
 			{
 				if (work.mpHandler)
 				{
-					work.mpHandler(*this, context, workIndex);
+					work.mpHandler(*this, &context, workIndex);
 
 					// Mark the instruction consumed.
 					mInstructionRing.Consume(index, mInstructionRing.ThreadHead(index));
@@ -318,7 +341,7 @@ void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdown
 
 	// Call the optional shutdown function.
 	if (shutdownFunc)
-		shutdownFunc(context, ctx);
+		shutdownFunc(&context, ctx);
 }
 
 /**

@@ -257,8 +257,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				//////////////////////////////////////////////////////////////////////////
 				// Start up the threading system.
 				// Allocates a command pool and buffer per thread.
-				Thread::Group workerThreads(Thread::GetHardwareThreadCount());
-				mScheduler.Initialize(Move(workerThreads),
+				mScheduler.Initialize(Thread::GetHardwareThreadCount(),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_CreateWorkerData),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
 					this
@@ -271,7 +270,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				mCurrentTime = Time::Now() - mStartTime;
 
 				// Currently only a single frame.  Will Eventually match the number of back buffers and other resources.
-				Scheduler::Semaphore frameSemaphore(1);
+				Concurrency::Semaphore frameSemaphore(1);
 				// Create a graphics fence to track back buffers.
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
@@ -323,7 +322,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.
-						mScheduler.Submit(frameSemaphore);
+						mScheduler.Submit(&frameSemaphore);
 					}
 
 					// Guarantee last frame is complete before we tear everything down.
