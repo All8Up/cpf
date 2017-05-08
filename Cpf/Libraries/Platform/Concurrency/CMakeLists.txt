@@ -9,7 +9,14 @@ set (INCLUDE_FILES
 	Include/Concurrency/ThreadPool.hpp
 	Include/Concurrency/LoadBalancer.hpp
 )
+set (INTERFACE_FILES
+	Interface/Concurrency/iQueue.hpp
+	Interface/Concurrency/iScheduler.hpp
+	Interface/Concurrency/iThreadPool.hpp
+	Interface/Concurrency/iLoadBalancer.hpp
+)
 set (SOURCE_FILES
+	Source/Plugin.cpp
 	Source/Concurrency.cpp
 	Source/Scheduler.cpp
 	Source/Opcodes.cpp
@@ -22,44 +29,44 @@ set (SOURCE_FILES
 set (COLLECTIONS_INCLUDE
 	Include/Concurrency/Collections/RingBuffer.hpp
 )
-set (COLLECTIONS_SOURCE
-)
 
 
 set (DISPATCH_INCLUDE
 	Include/Concurrency/Dispatch/Vector.hpp
 )
-set (DISPATCH_SOURCE
-)
 
 add_library (Concurrency SHARED
 	${INCLUDE_FILES}
+	${INTERFACE_FILES}
 	${DISPATCH_INCLUDE}
 	${COLLECTIONS_INCLUDE}
 	${SOURCE_FILES}
-	${DISPATCH_SOURCE}
-	${COLLECTIONS_SOURCE}
 )
 target_compile_definitions (Concurrency
 	PRIVATE
 		CPF_BUILD_CONCURRENCY
 )
-target_link_libraries (Concurrency Configuration Atomic Threading Logging VTune)
+target_link_libraries (Concurrency Configuration Atomic Plugin Threading Logging VTune)
 target_include_directories (Concurrency PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+	$<INSTALL_INTERFACE:Interface>
 )
 set_property (TARGET Concurrency PROPERTY FOLDER Libraries/Shared/Platform)
 
 add_library (i_Concurrency INTERFACE)
-target_link_libraries (i_Concurrency INTERFACE Configuration Atomic Threading)
+target_link_libraries (i_Concurrency INTERFACE Configuration Atomic Plugin Threading)
 target_include_directories (i_Concurrency INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
+	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+	$<INSTALL_INTERFACE:Interface>
 )
 
 
 source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Interfaces FILES ${INTERFACE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
 source_group (Headers\\Dispatch FILES ${DISPATCH_INCLUDE})
 source_group (Sources\\Dispatch FILES ${DISPATCH_SOURCE})

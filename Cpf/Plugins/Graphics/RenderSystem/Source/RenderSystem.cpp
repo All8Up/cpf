@@ -75,8 +75,9 @@ COM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owne
 
 COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc)
 {
+	(void)desc;
 	mID = MultiCore::SystemID(name, strlen(name));
-	auto result = rgy->Create(this, MultiCore::kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+	rgy->Create(this, MultiCore::kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
 
 	return COM::kOK;
 }
