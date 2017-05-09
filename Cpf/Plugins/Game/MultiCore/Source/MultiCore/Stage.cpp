@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/iStage.hpp"
 #include "Stage.hpp"
-#include "QueueBuilder.hpp"
+#include "PipelineBuilder.hpp"
 #include "UnorderedMap.hpp"
 
 using namespace Cpf;

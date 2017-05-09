@@ -26,8 +26,8 @@ set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Pipeline.cpp
 	Source/MultiCore/System.hpp
 	Source/MultiCore/System.cpp
-	Source/MultiCore/QueueBuilder.hpp
-	Source/MultiCore/QueueBuilder.cpp
+	Source/MultiCore/PipelineBuilder.hpp
+	Source/MultiCore/PipelineBuilder.cpp
 )
 set (MULTICORE_SYSTEM_SOURCE_FILES
 	Source/MultiCore/System/Timer.hpp

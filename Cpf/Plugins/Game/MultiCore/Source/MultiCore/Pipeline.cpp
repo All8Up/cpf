@@ -4,7 +4,7 @@
 #include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
-#include "QueueBuilder.hpp"
+#include "PipelineBuilder.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -70,7 +70,7 @@ COM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
 COM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 {
 	// Iterate the systems and setup the queue builder.
-	QueueBuilder builder(regy, this);
+	PipelineBuilder builder(regy, this);
 	mpQueue.Adopt(nullptr);
 	regy->Create(nullptr, Concurrency::kWorkBufferCID, Concurrency::iWorkBuffer::kIID, mpQueue.AsVoidPP());
 	for (auto& system : mSystemMap)

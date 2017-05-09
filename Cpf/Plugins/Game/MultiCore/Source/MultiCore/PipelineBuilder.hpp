@@ -10,11 +10,11 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class QueueBuilder
+		class PipelineBuilder
 		{
 		public:
-			QueueBuilder(Plugin::iRegistry*, iPipeline* pipeline);
-			~QueueBuilder();
+			PipelineBuilder(Plugin::iRegistry*, iPipeline* pipeline);
+			~PipelineBuilder();
 
 			void Add(const Instruction& instructions);
 			void Add(const BlockDependencies& dependencies);

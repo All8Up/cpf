@@ -12,7 +12,7 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class QueueBuilder;
+		class PipelineBuilder;
 
 		static constexpr COM::ClassID kStageClass = COM::ClassID("StageClass"_crc64);
 		struct iStage : COM::iUnknown

@@ -14,7 +14,7 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class QueueBuilder;
+		class PipelineBuilder;
 
 		class SingleUpdateStage : public tRefCounted<iSingleUpdateStage>
 		{

@@ -190,7 +190,7 @@ void Scheduler::Queue::SA(int index, void* value)
 #if CPF_SCHEDULER_DISASSEMBLER
 #include <UnorderedMap.hpp>
 #include <String.hpp>
-Queue::DisVector Queue::Dissassemble() const
+WorkBuffer::DisVector WorkBuffer::Dissassemble() const
 {
 	using OpMap = UnorderedMap<Scheduler::OpcodeFunc_t, Op>;
 	static OpMap sOpMap{
@@ -214,7 +214,7 @@ Queue::DisVector Queue::Dissassemble() const
 	return result;
 }
 
-const char* Queue::GetOpName(Op op)
+const char* WorkBuffer::GetOpName(Op op)
 {
 	static Vector<String> sNames{
 		"FirstOne",

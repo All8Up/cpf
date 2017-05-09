@@ -4,7 +4,7 @@
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Concurrency/Scheduler.hpp"
 
-#define CPF_SCHEDULER_DISASSEMBLER 0
+#define CPF_SCHEDULER_DISASSEMBLER 1
 
 namespace Cpf
 {
@@ -70,7 +70,7 @@ namespace Cpf
 			struct Dissassem
 			{
 				Op mOp;
-				PayloadFunc_t mpPayload;
+				WorkFunction mpPayload;
 				void* mpContext;
 			};
 			using DisVector = Vector<Dissassem>;
