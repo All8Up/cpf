@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Concurrency/Scheduler.hpp"
+#include "IntrusivePtr.hpp"
 
 namespace Cpf
 {
@@ -17,7 +18,7 @@ namespace Cpf
 			ThreadPool();
 			~ThreadPool();
 
-			bool Initialize(int threadCount);
+			bool Initialize(Plugin::iRegistry* regy, int threadCount);
 			void Shutdown();
 
 			// TODO: Make this promise/future based, but it will need to be a
@@ -31,10 +32,10 @@ namespace Cpf
 			void SetActiveThreads(int count);
 			int GetActiveThreads() const;
 
-			Scheduler& GetScheduler() { return mScheduler; }
+			iScheduler* GetScheduler() { return mpScheduler; }
 
 		private:
-			Scheduler mScheduler;
+			IntrusivePtr<iScheduler> mpScheduler;
 			Queue mQueue;
 		};
 	}

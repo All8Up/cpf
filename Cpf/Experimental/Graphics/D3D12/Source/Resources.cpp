@@ -284,7 +284,7 @@ void ExperimentalD3D12::_DestroyResources()
 	mpFence.Assign(nullptr);
 	mpResourceBinding.Assign(nullptr);
 
-	mScheduler.Shutdown();
+	mpScheduler->Shutdown();
 	for (auto& data : mWorkerData)
 	{
 		for (int i = 0; i < mBackBufferCount; ++i)

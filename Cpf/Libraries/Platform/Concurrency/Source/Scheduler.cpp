@@ -144,6 +144,19 @@ void Scheduler::Shutdown()
 	}
 }
 
+COM::Result CPF_STDCALL Scheduler::CreateWorkBuffer(iQueue** workBuffer)
+{
+	if (workBuffer)
+	{
+		Queue* q = new Queue;
+		COM::Result result = q->QueryInterface(iQueue::kIID, reinterpret_cast<void**>(workBuffer));
+		if (COM::Succeeded(result))
+			return COM::kOK;
+		delete q;
+		return result;
+	}
+	return COM::kInvalidParameter;
+}
 
 int Scheduler::GetAvailableThreads() const
 {

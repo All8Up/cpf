@@ -8,9 +8,11 @@
 #include "Threading/ConditionVariable.hpp"
 #include "Concurrency/iScheduler.hpp"
 #include "Plugin/iRegistry.hpp"
+#include "Plugin/iClassInstance.hpp"
 
 
 extern "C" Cpf::COM::Result CPF_EXPORT Install(Cpf::Plugin::iRegistry* registry);
+extern "C" Cpf::COM::Result CPF_EXPORT Remove(Cpf::Plugin::iRegistry* registry);
 
 namespace Cpf
 {
@@ -43,6 +45,7 @@ namespace Cpf
 		public:
 			// TODO: Temporary hack to setup for moving over to plugin.
 			static void Install(Plugin::iRegistry* regy) { ::Install(regy); }
+			static void Remove(Plugin::iRegistry* regy) { ::Remove(regy); }
 
 			//
 			static constexpr int kRegisterCount = 16;
@@ -57,10 +60,6 @@ namespace Cpf
 			};
 
 
-			// Construction/Destruction.
-			explicit Scheduler(iUnknown*);
-			~Scheduler();
-
 			// iUnkown overrides.
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
@@ -68,8 +67,11 @@ namespace Cpf
 			COM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) override;
 			void CPF_STDCALL Shutdown() override;
 
+			COM::Result CPF_STDCALL CreateWorkBuffer(iQueue**) override;
+
 			int CPF_STDCALL GetMaxThreads() override { return GetAvailableThreads(); }
 			int CPF_STDCALL GetActiveThreads() override { return GetCurrentThreads(); }
+			void CPF_STDCALL SetActiveThreads(int count) override;
 
 			void CPF_STDCALL Execute(iQueue*, bool clear = true) override;
 			void Submit(Semaphore*) override;
@@ -78,7 +80,6 @@ namespace Cpf
 
 			// Data access.
 			int GetAvailableThreads() const;
-			void SetActiveThreads(int count);
 			int GetCurrentThreads() const;
 			void* GetContext() const;
 
@@ -87,6 +88,13 @@ namespace Cpf
 			void Execute(Queue&, bool clear=true);
 
 		private:
+			// Construction/Destruction.
+			explicit Scheduler(iUnknown*);
+			~Scheduler();
+
+			template <typename TYPE>
+			friend struct Plugin::tClassInstance;
+
 			//////////////////////////////////////////////////////////////////////////
 			friend struct Detail::Opcodes;
 			CPF_DLL_SAFE_BEGIN;

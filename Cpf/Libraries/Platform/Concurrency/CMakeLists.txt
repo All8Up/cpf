@@ -89,6 +89,7 @@ install (TARGETS s_Concurrency
 install (EXPORT ConcurrencyConfig DESTINATION CMake)
 ]]#
 
+#[[
 # ###############################################
 MakeUnitTest (LIBRARY Concurrency GROUP Platform
 	TEST_FILES
@@ -111,7 +112,7 @@ MakeUnitTest (LIBRARY Concurrency GROUP Platform
 	LINK_LIBRARIES
 		Configuration Atomic Threading VTune
 )
-
+]]#
 
 # ###############################################
 # Performance testing application.

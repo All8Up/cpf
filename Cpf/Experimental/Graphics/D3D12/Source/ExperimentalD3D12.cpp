@@ -56,6 +56,9 @@ COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registr
 
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
+	GetRegistry()->Load("plugins/Concurrency.cfp");
+	// TODO: Temporary workaround.
+	Scheduler::Install(GetRegistry());
 	return COM::kOK;
 }
 
@@ -257,13 +260,14 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				//////////////////////////////////////////////////////////////////////////
 				// Start up the threading system.
 				// Allocates a command pool and buffer per thread.
-				mScheduler.Initialize(Thread::GetHardwareThreadCount(),
+				GetRegistry()->Create(nullptr, kSchedulerCID, iScheduler::kIID, mpScheduler.AsVoidPP());
+				mpScheduler->Initialize(Thread::GetHardwareThreadCount(),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_CreateWorkerData),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
 					this
 				);
 				mThreadCountChanged = false;
-				mThreadCount = mScheduler.GetAvailableThreads();
+				mThreadCount = mpScheduler->GetMaxThreads();
 				
 				//////////////////////////////////////////////////////////////////////////
 				mStartTime = Time::Now();
@@ -295,7 +299,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 						if (mThreadCountChanged)
 						{
 							mThreadCountChanged = false;
-							mScheduler.SetActiveThreads(mThreadCount);
+							mpScheduler->SetActiveThreads(mThreadCount);
 						}
 
 						// Poll the application OS events.
@@ -318,11 +322,11 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 
 						//////////////////////////////////////////////////////////////////////////
 						// Issue all the stages.
-						mpMultiCore->Submit(&mScheduler);
+						mpMultiCore->Submit(mpScheduler);
 
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.
-						mScheduler.Submit(&frameSemaphore);
+						mpScheduler->Submit(&frameSemaphore);
 					}
 
 					// Guarantee last frame is complete before we tear everything down.

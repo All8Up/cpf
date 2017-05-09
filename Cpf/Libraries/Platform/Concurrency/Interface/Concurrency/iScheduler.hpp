@@ -21,8 +21,11 @@ namespace Cpf
 			virtual COM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) = 0;
 			virtual void CPF_STDCALL Shutdown() = 0;
 
+			virtual COM::Result CPF_STDCALL CreateWorkBuffer(iQueue**) = 0;
+
 			virtual int CPF_STDCALL GetMaxThreads() = 0;
 			virtual int CPF_STDCALL GetActiveThreads() = 0;
+			virtual void CPF_STDCALL SetActiveThreads(int count) = 0;
 
 			virtual void CPF_STDCALL Execute(iQueue*, bool clear = true) = 0;
 			virtual void Submit(Semaphore*) = 0;

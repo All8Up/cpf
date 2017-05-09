@@ -194,11 +194,11 @@ bool Networked::_ShutdownResources()
 bool Networked::_InitializeMultiCore()
 {
 	if (COM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
-		mThreadPool.Initialize(Thread::GetHardwareThreadCount()))
+		mThreadPool.Initialize(GetRegistry(), Thread::GetHardwareThreadCount()))
 	{
 		Concurrency::LoadBalancer::Schedulers schedulers(2);
 		schedulers[0] = static_cast<Concurrency::Scheduler*>(mpScheduler.Ptr());
-		schedulers[1] = &mThreadPool.GetScheduler();
+		schedulers[1] = static_cast<Concurrency::Scheduler*>(mThreadPool.GetScheduler());
 
 		mLoadBalancer.SetSchedulers(&schedulers);
 		return true;

@@ -23,8 +23,7 @@ namespace Cpf
 	{
 	public:
 		ExperimentalD3D12()
-			: mScheduler(nullptr)
-			, mFenceTarget(1)
+			: mFenceTarget(1)
 			, mSelectedInstruction(0)
 			, mpInstructionList(nullptr)
 			, mInstructionCount(0)
@@ -94,7 +93,7 @@ namespace Cpf
 		IntrusivePtr<Graphics::iCommandBuffer> mpPreCommandBuffer[mBackBufferCount];
 		IntrusivePtr<Graphics::iPipeline> mpPipeline;
 		IntrusivePtr<Graphics::iFence> mpFence;
-		Concurrency::Scheduler mScheduler;
+		IntrusivePtr<Concurrency::iScheduler> mpScheduler;
 
 		int32_t mCurrentScheduledBuffer = 0;
 		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::kMaxThreads * 4];

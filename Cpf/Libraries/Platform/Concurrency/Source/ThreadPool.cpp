@@ -5,42 +5,43 @@ using namespace Cpf;
 using namespace Concurrency;
 
 ThreadPool::ThreadPool()
-	: mScheduler(nullptr)
 {
 }
 
 ThreadPool::~ThreadPool()
 {
-	mScheduler.Shutdown();
+	mpScheduler->Shutdown();
 }
 
-bool ThreadPool::Initialize(int threadCount)
+bool ThreadPool::Initialize(Plugin::iRegistry* regy, int threadCount)
 {
-	return COM::Succeeded(mScheduler.Initialize(threadCount, nullptr, nullptr, nullptr));
+	if (Succeeded(regy->Create(nullptr, kSchedulerCID, iScheduler::kIID, mpScheduler.AsVoidPP())))
+		return Succeeded(mpScheduler->Initialize(threadCount, nullptr, nullptr, nullptr));
+	return false;
 }
 
 void ThreadPool::Shutdown()
 {
-	mScheduler.Shutdown();
+	mpScheduler->Shutdown();
 }
 
 void ThreadPool::Enqueue(Task task, void* context)
 {
 	mQueue.FirstOne(task, context);
-	mScheduler.Execute(mQueue, false);
+	mpScheduler->Execute(static_cast<iQueue*>(&mQueue), false);
 }
 
 int ThreadPool::GetAvailableThreads() const
 {
-	return mScheduler.GetAvailableThreads();
+	return mpScheduler->GetMaxThreads();
 }
 
 void ThreadPool::SetActiveThreads(int count)
 {
-	mScheduler.SetActiveThreads(count);
+	mpScheduler->SetActiveThreads(count);
 }
 
 int ThreadPool::GetActiveThreads() const
 {
-	return mScheduler.GetCurrentThreads();
+	return mpScheduler->GetActiveThreads();
 }
