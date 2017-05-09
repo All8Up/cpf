@@ -6,7 +6,7 @@
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
 #include "Resources/ResourceConfig.hpp"
-#include "Threading.hpp"
+#include "Concurrency/iFence.hpp"
 #include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
@@ -14,6 +14,7 @@
 #include "IO/Directory.hpp"
 #include "SDL2/CIDs.hpp"
 #include "Graphics/Driver.hpp"
+#include "Threading/Thread.hpp"
 
 using namespace Cpf;
 using namespace Platform;
@@ -39,7 +40,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	*appCid = SDL2::kWindowedApplicationCID;
 
 	IOInitializer::Install();
-	ConcurrencyInitializer::Install();
 	Resources::ResourcesInitializer::Install();
 
 	// Setup initial working directory.
@@ -48,8 +48,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	IO::Directory::SetWorkingDirectory(exePath);
 
 	GetRegistry()->Load("plugins/Concurrency.cfp");
-	// TODO: Temporary work around for concurrency *not* being a plugin yet.
-	Concurrency::Scheduler::Install(GetRegistry());
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/MultiCore.cfp");
@@ -61,7 +59,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 void CPF_STDCALL Networked::Shutdown()
 {
 	Resources::ResourcesInitializer::Remove();
-	ConcurrencyInitializer::Remove();
 	IOInitializer::Remove();
 }
 
@@ -80,18 +77,19 @@ COM::Result CPF_STDCALL Networked::Main(iApplication* application)
 					_ConfigureDebugUI();
 
 					// Semaphore to track when the last submitted queue of work has completed.
-					Concurrency::Semaphore complete;
+					IntrusivePtr<Concurrency::iFence> complete;
+					GetRegistry()->Create(nullptr, Concurrency::kFenceCID, Concurrency::iFence::kIID, complete.AsVoidPP());
 
 					// Run the event loop for the window.
 					while (mpWindowedApplication->IsRunning())
 					{
 						mpWindowedApplication->Poll();
 						mpPipeline->Submit(mpScheduler);
-						mpScheduler->Submit(&complete);
-						complete.Acquire();
+						mpScheduler->Submit(complete);
+						complete->Wait();
 
 						// Keep balancing the threads.
-						mLoadBalancer.Balance();
+						mpLoadBalancer->Balance();
 					}
 				}
 			}
@@ -122,7 +120,7 @@ void Networked::_PerformanceUI(Graphics::iDebugUI* ui, void* context)
 	//////////////////////////////////////////////////////////////////////////
 	ui->Begin("Performance");
 	auto activeLoopThreads = self.mpScheduler->GetActiveThreads();
-	auto activePoolThreads = self.mThreadPool.GetActiveThreads();
+	auto activePoolThreads = self.mpThreadPool->GetActiveThreads();
 
 	auto now = Time::Now();
 	auto delta = now - self.mLastTime;
@@ -193,14 +191,13 @@ bool Networked::_ShutdownResources()
 
 bool Networked::_InitializeMultiCore()
 {
+	GetRegistry()->Create(nullptr, kThreadPoolCID, iThreadPool::kIID, mpThreadPool.AsVoidPP());
 	if (COM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
-		mThreadPool.Initialize(GetRegistry(), Thread::GetHardwareThreadCount()))
+		mpThreadPool->Initialize(GetRegistry(), Thread::GetHardwareThreadCount()))
 	{
-		Concurrency::LoadBalancer::Schedulers schedulers(2);
-		schedulers[0] = static_cast<Concurrency::Scheduler*>(mpScheduler.Ptr());
-		schedulers[1] = static_cast<Concurrency::Scheduler*>(mThreadPool.GetScheduler());
-
-		mLoadBalancer.SetSchedulers(&schedulers);
+		GetRegistry()->Create(nullptr, Concurrency::kLoadBalancerCID, Concurrency::iLoadBalancer::kIID, mpLoadBalancer.AsVoidPP());
+		Concurrency::iScheduler* schedulers[] = {mpScheduler, mpThreadPool->GetScheduler()};
+		mpLoadBalancer->Initialize(GetRegistry(), 2, schedulers);
 		return true;
 	}
 	return false;
@@ -208,7 +205,7 @@ bool Networked::_InitializeMultiCore()
 
 bool Networked::_ShutdownMultiCore()
 {
-	mThreadPool.Shutdown();
+	mpThreadPool->Shutdown();
 	mpScheduler->Shutdown();
 	return true;
 }
@@ -259,7 +256,7 @@ bool Networked::_InitializePipeline()
 COM::Result Networked::_ConfigurePipeline()
 {
 	if (mpPipeline)
-		return mpPipeline->Configure();
+		return mpPipeline->Configure(GetRegistry());
 	return COM::kInvalid;
 }
 

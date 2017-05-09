@@ -4,7 +4,8 @@
 #include "Threading/Mutex.hpp"
 #include "Functional.hpp"
 #include "Vector.hpp"
-#include "Concurrency/Scheduler.hpp"
+#include "Concurrency/Concurrency.hpp"
+#include "Move.hpp"
 
 namespace Cpf
 {

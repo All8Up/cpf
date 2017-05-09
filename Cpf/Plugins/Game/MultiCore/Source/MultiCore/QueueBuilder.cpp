@@ -4,6 +4,7 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
+#include "Concurrency/iWorkBuffer.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
@@ -17,9 +18,11 @@ bool QueueBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) cons
 
 //////////////////////////////////////////////////////////////////////////
 
-QueueBuilder::QueueBuilder(iPipeline* pipeline)
+QueueBuilder::QueueBuilder(Plugin::iRegistry* regy, iPipeline* pipeline)
 	: mpPipeline(pipeline)
-{}
+{
+	regy->Create(nullptr, Concurrency::kWorkBufferCID, Concurrency::iWorkBuffer::kIID, mpQueue.AsVoidPP());
+}
 
 QueueBuilder::~QueueBuilder()
 {}
@@ -120,7 +123,7 @@ bool QueueBuilder::Solve()
 
 void QueueBuilder::_BuildQueue()
 {
-	mResultQueue.Discard();
+	mpQueue->Reset();
 	for (const auto& bucket : mBuckets)
 	{
 		for (const auto& instruction : bucket)
@@ -128,15 +131,15 @@ void QueueBuilder::_BuildQueue()
 			switch (instruction.mOpcode)
 			{
 			case BlockOpcode::eFirst:
-				mResultQueue.FirstOne(instruction.mpFunction, instruction.mpContext);
+				mpQueue->FirstOne(instruction.mpFunction, instruction.mpContext);
 				break;
 
 			case BlockOpcode::eAll:
-				mResultQueue.All(instruction.mpFunction, instruction.mpContext);
+				mpQueue->All(instruction.mpFunction, instruction.mpContext);
 				break;
 
 			case BlockOpcode::eLast:
-				mResultQueue.LastOne(instruction.mpFunction, instruction.mpContext);
+				mpQueue->LastOne(instruction.mpFunction, instruction.mpContext);
 				break;
 
 			default:
@@ -144,7 +147,7 @@ void QueueBuilder::_BuildQueue()
 				break;
 			}
 		}
-		mResultQueue.Barrier();
+		mpQueue->Barrier();
 	}
 
 	_MakeQueueInfo();

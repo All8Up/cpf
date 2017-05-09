@@ -1,5 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Platform/Threading/Types.hpp"
+#include "Move.hpp"
+#include "Functional.hpp"
+#include <thread>
 
 namespace Cpf
 {

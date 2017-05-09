@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
-#include "Threading/Export.hpp"
 #include <thread>
 
 namespace Cpf

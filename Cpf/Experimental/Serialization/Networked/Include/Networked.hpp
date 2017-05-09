@@ -5,8 +5,8 @@
 #include "MultiCore/iPipeline.hpp"
 #include "RenderSystem.hpp"
 #include "NetworkSystem.hpp"
-#include "Concurrency/ThreadPool.hpp"
-#include "Concurrency/LoadBalancer.hpp"
+#include "Concurrency/iThreadPool.hpp"
+#include "Concurrency/iLoadBalancer.hpp"
 #include "MultiCore/System/iTimer.hpp"
 
 namespace Cpf
@@ -46,8 +46,8 @@ namespace Cpf
 		IntrusivePtr<iWindow> mpWindow;
 
 		IntrusivePtr<Concurrency::iScheduler> mpScheduler;
-		Concurrency::ThreadPool mThreadPool;
-		Concurrency::LoadBalancer mLoadBalancer;
+		IntrusivePtr<iThreadPool> mpThreadPool;
+		IntrusivePtr<Concurrency::iLoadBalancer> mpLoadBalancer;
 		IntrusivePtr<Resources::Locator> mpLocator;
 
 		IntrusivePtr<MultiCore::iPipeline> mpPipeline;

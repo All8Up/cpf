@@ -18,7 +18,7 @@ namespace Cpf
 			COM::Result QueryInterface(COM::InterfaceID id, void** iface) override;
 			iSystem* CPF_STDCALL Install(iSystem*) override;
 			COM::Result CPF_STDCALL Remove(iSystem*) override;
-			COM::Result CPF_STDCALL Configure() override;
+			COM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) override;
 			COM::Result CPF_STDCALL GetSystem(SystemID id, iSystem**) const override;
 			COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const override;
 			COM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, iStage**) override;
@@ -32,7 +32,7 @@ namespace Cpf
 			using SystemMap = UnorderedMap<SystemID, IntrusivePtr<iSystem>>;
 			SystemMap mSystemMap;
 
-			Concurrency::Queue mQueue;
+			IntrusivePtr<Concurrency::iWorkBuffer> mpQueue;
 #ifdef CPF_DEBUG
 			bool mChanged;
 #endif

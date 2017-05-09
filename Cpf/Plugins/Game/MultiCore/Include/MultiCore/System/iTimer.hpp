@@ -3,6 +3,7 @@
 #include "MultiCore/Export.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
+#include "Time/Value.hpp"
 
 
 namespace Cpf

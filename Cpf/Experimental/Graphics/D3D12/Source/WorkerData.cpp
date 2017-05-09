@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Concurrency/WorkContext.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 

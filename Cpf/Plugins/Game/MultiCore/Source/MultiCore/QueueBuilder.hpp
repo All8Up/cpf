@@ -13,7 +13,7 @@ namespace Cpf
 		class QueueBuilder
 		{
 		public:
-			QueueBuilder(iPipeline* pipeline);
+			QueueBuilder(Plugin::iRegistry*, iPipeline* pipeline);
 			~QueueBuilder();
 
 			void Add(const Instruction& instructions);
@@ -21,7 +21,7 @@ namespace Cpf
 
 			bool Solve();
 
-			Concurrency::Queue& GetQueue() { return mResultQueue; }
+			Concurrency::iWorkBuffer* GetQueue() { return mpQueue; }
 
 			Vector<String> GetQueueInfo() const;
 
@@ -50,10 +50,8 @@ namespace Cpf
 			void _GatherStageDependencies();
 
 			//
-			Concurrency::Queue mResultQueue;
-
+			IntrusivePtr<Concurrency::iWorkBuffer> mpQueue;
 			iPipeline* mpPipeline;
-
 			Vector<String> mQueueInfo;
 		};
 	}

@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Atomic/Atomic.hpp"
 #include "Graphics/TopologyType.hpp"
 #include "Graphics/Viewport.hpp"
 #include "Graphics/ResourceState.hpp"
@@ -9,6 +10,7 @@
 #include "Graphics/iImageView.hpp"
 #include "Graphics/RenderPassBeginDesc.hpp"
 #include "Application/iWindow.hpp"
+#include "Concurrency/WorkContext.hpp"
 #include "Math/Vector4v.hpp"
 
 using namespace Cpf;

@@ -2,6 +2,7 @@
 #pragma once
 #include "MultiCore/Types.hpp"
 #include "COM/iUnknown.hpp"
+#include "Plugin/iRegistry.hpp"
 
 namespace Cpf
 {
@@ -21,7 +22,7 @@ namespace Cpf
 
 			virtual iSystem* CPF_STDCALL Install(iSystem*) = 0;
 			virtual COM::Result CPF_STDCALL Remove(iSystem*) = 0;
-			virtual COM::Result CPF_STDCALL Configure() = 0;
+			virtual COM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) = 0;
 			virtual COM::Result CPF_STDCALL GetSystem(SystemID, iSystem**) const = 0;
 			virtual COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const = 0;
 			virtual COM::Result CPF_STDCALL GetStage(SystemID, StageID, iStage**) = 0;

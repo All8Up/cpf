@@ -4,7 +4,7 @@
 #include "Application/iWindowedApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Graphics/Driver.hpp"
-#include "Concurrency/Scheduler.hpp"
+#include "Concurrency/iScheduler.hpp"
 #include "Resources/Locator.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 #include "Threading/Reactor.hpp"

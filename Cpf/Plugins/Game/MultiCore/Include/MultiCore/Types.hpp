@@ -6,7 +6,7 @@
 #include "IntrusivePtr.hpp"
 #include "Hash/HashID.hpp"
 #include "Hash/HashString.hpp"
-#include "Concurrency/Scheduler.hpp"
+#include "Concurrency/iScheduler.hpp"
 
 namespace Cpf
 {
@@ -74,7 +74,7 @@ namespace Cpf
 		{
 			SSBID mID;
 			BlockOpcode mOpcode;
-			Concurrency::PayloadFunc_t mpFunction;
+			Concurrency::WorkFunction mpFunction;
 			void* mpContext;
 		};
 		using Instructions = Vector<Instruction>;

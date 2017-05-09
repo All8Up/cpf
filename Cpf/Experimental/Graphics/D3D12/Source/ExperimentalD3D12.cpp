@@ -4,14 +4,18 @@
 #include "Application/iWindowedApplication.hpp"
 #include "Logging/Logging.hpp"
 
+#include "Atomic/Atomic.hpp"
 #include "IntrusivePtr.hpp"
 #include "Resources/ResourceConfig.hpp"
 #include "Threading.hpp"
+#include "Threading/Thread.hpp"
 
 #include "Graphics/Driver.hpp"
 #include "iDebugUI.hpp"
 
-#include "Concurrency/Scheduler.hpp"
+#include "Concurrency/iScheduler.hpp"
+#include "Concurrency/iFence.hpp"
+
 #include "Math/Constants.hpp"
 #include "Math/Matrix33v.hpp"
 #include "IO/IO.hpp"
@@ -41,7 +45,7 @@ using namespace Concurrency;
 
 void ExperimentalD3D12::ReconfigurePipeline()
 {
-	mpMultiCore->Configure();
+	mpMultiCore->Configure(GetRegistry());
 }
 
 COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registry, COM::ClassID* appCid)
@@ -57,8 +61,6 @@ COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registr
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/Concurrency.cfp");
-	// TODO: Temporary workaround.
-	Scheduler::Install(GetRegistry());
 	return COM::kOK;
 }
 
@@ -76,7 +78,6 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	CPF_LOG_LEVEL(Experimental, Trace);
 
 	// Initialize the gfx library.
-	ScopedInitializer<ConcurrencyInitializer> concurrencyInit;
 	ScopedInitializer<IOInitializer> ioInit;
 	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
@@ -274,7 +275,10 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 				mCurrentTime = Time::Now() - mStartTime;
 
 				// Currently only a single frame.  Will Eventually match the number of back buffers and other resources.
-				Concurrency::Semaphore frameSemaphore(1);
+				IntrusivePtr<Concurrency::iFence> concurrencyFence;
+				GetRegistry()->Create(nullptr, Concurrency::kFenceCID, Concurrency::iFence::kIID, concurrencyFence.AsVoidPP());
+				concurrencyFence->Signal();
+
 				// Create a graphics fence to track back buffers.
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
@@ -294,7 +298,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 					{
 						//////////////////////////////////////////////////////////////////////////
 						// Wait for the last frame of processing.
-						frameSemaphore.Acquire();
+						concurrencyFence->Wait();
 
 						if (mThreadCountChanged)
 						{
@@ -326,11 +330,11 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.
-						mpScheduler->Submit(&frameSemaphore);
+						mpScheduler->Submit(concurrencyFence);
 					}
 
 					// Guarantee last frame is complete before we tear everything down.
-					frameSemaphore.Acquire();
+					concurrencyFence->Wait();
 					mpDebugUI->Shutdown();
 				}
 

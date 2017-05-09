@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Concurrency/WorkContext.hpp"
+#include "Atomic/Atomic.hpp"
 #include "Std/Std.hpp"
 
 using namespace Cpf;

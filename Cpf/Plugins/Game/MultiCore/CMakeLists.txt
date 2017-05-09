@@ -53,7 +53,7 @@ target_include_directories (MultiCore
 )
 target_link_libraries (MultiCore
 	PUBLIC
-		Configuration s_Collections Plugin COM Logging Hash Concurrency
+		Configuration s_Collections Plugin COM Logging Hash i_Concurrency
 )
 set_property (TARGET MultiCore PROPERTY FOLDER Plugins/Game)
 

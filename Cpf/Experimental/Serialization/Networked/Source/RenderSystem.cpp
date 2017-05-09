@@ -6,6 +6,7 @@
 #include "Graphics/SwapEffect.hpp"
 #include "Graphics/ImageDesc.hpp"
 #include "Graphics/Format.hpp"
+#include "Atomic/Atomic.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 #include "Graphics/HeapType.hpp"

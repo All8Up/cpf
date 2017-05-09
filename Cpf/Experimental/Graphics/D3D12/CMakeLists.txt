@@ -38,7 +38,7 @@ if (WIN32)
 		GraphicsDriver
 		i_EntityService
 		i_DebugUI
-		Concurrency
+		i_Concurrency
 	)
 
 	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)

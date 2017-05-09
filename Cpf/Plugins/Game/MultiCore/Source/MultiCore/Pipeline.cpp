@@ -3,7 +3,7 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
-#include "Hash/Crc.hpp"
+#include "Concurrency/iWorkBuffer.hpp"
 #include "QueueBuilder.hpp"
 
 using namespace Cpf;
@@ -67,10 +67,12 @@ COM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
 	return COM::kOK;
 }
 
-COM::Result CPF_STDCALL Pipeline::Configure()
+COM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 {
 	// Iterate the systems and setup the queue builder.
-	QueueBuilder builder(this);
+	QueueBuilder builder(regy, this);
+	mpQueue.Adopt(nullptr);
+	regy->Create(nullptr, Concurrency::kWorkBufferCID, Concurrency::iWorkBuffer::kIID, mpQueue.AsVoidPP());
 	for (auto& system : mSystemMap)
 	{
 		// Iterate and add all blocks.
@@ -100,7 +102,7 @@ COM::Result CPF_STDCALL Pipeline::Configure()
 		CPF_LOG(MultiCore, Error) << "Error resolving block dependencies.";
 	}
 	else
-		mQueue = Move(builder.GetQueue());
+		mpQueue->Copy(builder.GetQueue());
 
 	// Let the systems configure to the new pipeline.
 	// This allows systems to get pointers to other configured systems.
@@ -178,7 +180,7 @@ void CPF_STDCALL Pipeline::Submit(Concurrency::iScheduler* scheduler)
 	// Asserts can be enabled in release mode.
 	CPF_ASSERT(mChanged == false);
 #endif
-	scheduler->Execute(&mQueue, false);
+	scheduler->Execute(mpQueue, false);
 }
 
 COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outString)
