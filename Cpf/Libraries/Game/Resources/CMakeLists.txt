@@ -20,6 +20,9 @@ set (MONITOR_INCLUDE_FILES
 	Include/Resources/Monitors/FileSystem.hpp
 	Include/Resources/Monitors/Manual.hpp
 )
+set (INTERFACE_FILES
+	Interface/Resources/iConfiguration.hpp
+)
 
 set (SOURCE_FILES
 	Source/Cache.cpp
@@ -30,6 +33,7 @@ set (SOURCE_FILES
 	Source/Resources.cpp
 	Source/Volume.cpp
 	Source/ResourceConfig.cpp
+	Source/Plugin.cpp
 )
 set (CACHE_SOURCE_FILES
 	Source/Caches/Default.cpp
@@ -47,6 +51,7 @@ add_library (s_Resources STATIC
 	${CACHE_INCLUDE_FILES}
 	${VOLUME_INCLUDE_FILES}
 	${MONITOR_INCLUDE_FILES}
+	${INTERFACE_FILES}
 	${SOURCE_FILES}
 	${CACHE_SOURCE_FILES}
 	${VOLUME_SOURCE_FILES}
@@ -60,10 +65,12 @@ target_include_directories (s_Resources
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
 )
 target_link_libraries (s_Resources
 	LINK_PUBLIC
-		Configuration s_Collections RefCount s_IO Logging Events Hash rapidjson
+		Configuration s_Collections RefCount s_IO Logging COM Plugin Events Hash rapidjson
 )
 set_property (TARGET s_Resources PROPERTY FOLDER Libraries/Static/Game)
 
@@ -73,6 +80,7 @@ source_group (Headers\\Caches FILES ${CACHE_INCLUDE_FILES})
 source_group (Headers\\Volumes FILES ${VOLUME_INCLUDE_FILES})
 source_group (Headers\\Loaders FILES ${LOADER_INCLUDE_FILES})
 source_group (Headers\\Monitors FILES ${MONITOR_INCLUDE_FILES})
+source_group (Interfaces FILES ${INTERFACE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
 source_group (Sources\\Caches FILES ${CACHE_SOURCE_FILES})
 source_group (Sources\\Volumes FILES ${VOLUME_SOURCE_FILES})

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Resources.hpp"
+#include "Resources/iConfiguration.hpp"
 #include "Locator.hpp"
 #include "String.hpp"
 #include "Volume.hpp"
@@ -11,11 +12,13 @@ namespace Cpf
 {
 	namespace Resources
 	{
-		class CPF_EXPORT_RESOURCES Configuration
+		class CPF_EXPORT_RESOURCES Configuration : public tRefCounted<iConfiguration>
 		{
 		public:
 			Configuration(const String& filename);
 			~Configuration();
+
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			Locator* GetLocator() const;
 

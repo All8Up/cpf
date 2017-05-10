@@ -13,8 +13,8 @@ namespace Cpf
 		{
 			static constexpr auto kIID = COM::InterfaceID("EntityService::iComponent"_crc64);
 
-			virtual void SetOwner(MultiCore::iSystem*) = 0;
-			virtual MultiCore::iSystem* GetOwner() = 0;
+			virtual void SetSystem(MultiCore::iSystem*) = 0;
+			virtual MultiCore::iSystem* GetSystem() = 0;
 
 			virtual iEntity* GetEntity() const = 0;
 			virtual void SetEntity(iEntity* entity) = 0;

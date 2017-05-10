@@ -63,7 +63,7 @@ namespace Cpf
 			regy->Create(nullptr, id, TYPE::kIID, created.AsVoidPP());
 			if (created)
 			{
-				created->SetOwner(system);
+				created->SetSystem(system);
 				AddComponent<TYPE>(created);
 			}
 			return created;

@@ -30,10 +30,10 @@ COM::Result CPF_STDCALL Renderable::QueryInterface(COM::InterfaceID id, void** o
 }
 
 
-void CPF_STDCALL Renderable::SetOwner(MultiCore::iSystem*)
+void CPF_STDCALL Renderable::SetSystem(MultiCore::iSystem*)
 {}
 
-MultiCore::iSystem* CPF_STDCALL Renderable::GetOwner()
+MultiCore::iSystem* CPF_STDCALL Renderable::GetSystem()
 {
 	return nullptr;
 }

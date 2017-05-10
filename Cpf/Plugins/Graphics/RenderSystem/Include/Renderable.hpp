@@ -12,8 +12,8 @@ namespace Cpf
 		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
 
 		// iComponent
-		void CPF_STDCALL SetOwner(MultiCore::iSystem*) override;
-		MultiCore::iSystem* CPF_STDCALL GetOwner() override;
+		void CPF_STDCALL SetSystem(MultiCore::iSystem*) override;
+		MultiCore::iSystem* CPF_STDCALL GetSystem() override;
 
 		EntityService::iEntity* CPF_STDCALL GetEntity() const override;
 		void CPF_STDCALL SetEntity(EntityService::iEntity* entity) override;

@@ -206,6 +206,27 @@ Configuration::~Configuration()
 		mpLocator->Release();
 }
 
+COM::Result CPF_STDCALL Configuration::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case iConfiguration::kIID.GetID():
+			*outIface = static_cast<iConfiguration*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 Locator* Configuration::GetLocator() const
 {
 	return mpLocator;

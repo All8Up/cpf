@@ -28,8 +28,8 @@ namespace Cpf
 
 			void Shutdown() override;
 
-			void SetOwner(MultiCore::iSystem*) override {}
-			MultiCore::iSystem* GetOwner() override { return nullptr; }
+			void SetSystem(MultiCore::iSystem*) override {}
+			MultiCore::iSystem* GetSystem() override { return nullptr; }
 
 			// Local transform interface.
 			iTransformComponent* GetParent() const;

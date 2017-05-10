@@ -96,8 +96,8 @@ namespace Cpf
 		static iComponent* Create(iSystem*);
 
 		//
-		void SetOwner(MultiCore::iSystem* system) override { mpMover = static_cast<MoverSystem*>(system); }
-		MultiCore::iSystem* GetOwner() override { return mpMover; }
+		void SetSystem(MultiCore::iSystem* system) override { mpMover = static_cast<MoverSystem*>(system); }
+		MultiCore::iSystem* GetSystem() override { return mpMover; }
 
 		//////////////////////////////////////////////////////////////////////////
 		MoverComponent(COM::iUnknown*);
