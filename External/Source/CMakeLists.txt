@@ -93,3 +93,9 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK")
 	add_library (vulkan INTERFACE)
 	target_include_directories (vulkan INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK/1.0.46.0/Include")
 endif ()
+
+# Rttr
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/Rttr-master")
+	set (BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/Rttr-master)
+endif ()
