@@ -5,7 +5,7 @@
 #include "MultiCore/iPipeline.hpp"
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
-#include "Resources/ResourceConfig.hpp"
+#include "Resources/iConfiguration.hpp"
 #include "Concurrency/iFence.hpp"
 #include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
@@ -43,13 +43,13 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	*appCid = SDL2::kWindowedApplicationCID;
 
 	IOInitializer::Install();
-	Resources::ResourcesInitializer::Install();
 
 	// Setup initial working directory.
 	auto exePath = IO::File::GetExecutableFilePath();
 	exePath += "../resources/";
 	IO::Directory::SetWorkingDirectory(exePath);
 
+	GetRegistry()->Load("plugins/Resources.cfp");
 	GetRegistry()->Load("plugins/Concurrency.cfp");
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
@@ -61,7 +61,6 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 
 void CPF_STDCALL Networked::Shutdown()
 {
-	Resources::ResourcesInitializer::Remove();
 	IOInitializer::Remove();
 }
 
@@ -180,7 +179,11 @@ bool Networked::_InitializeResources()
 {
 //	Resources::Configuration config;
 //	config.Parse("./networked/resource_config.json");
-	mpLocator.Adopt(Resources::Configuration("./networked/resource_config.json").GetLocator());
+	Resources::iConfiguration* pConfig = nullptr;
+	GetRegistry()->Create(nullptr, Resources::kConfigurationCID, Resources::iConfiguration::kIID, reinterpret_cast<void**>(&pConfig));
+	pConfig->Initialize(GetRegistry(), "./Experimental/resource_config.json");
+	mpLocator.Adopt(pConfig->GetLocator());
+//	mpLocator.Adopt(Resources::Configuration(GetRegistry(), "./networked/resource_config.json").GetLocator());
 	return bool(mpLocator);
 }
 

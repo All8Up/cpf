@@ -5,6 +5,8 @@
 #include "Logging/Logging.hpp"
 #include "IO/Directory.hpp"
 #include "jsoncons/json.hpp"
+#include "Resources/Locator.hpp"
+#include "Plugin/iRegistry.hpp"
 
 using namespace Cpf;
 using namespace Resources;
@@ -31,7 +33,7 @@ UnorderedMap<String, Configuration::CacheDescriptor> Configuration::mCacheTypes;
 
 struct Configuration::MountReader
 {
-	static bool Parse(const rapidjson::Value& value, Locator* loc)
+	static bool Parse(const rapidjson::Value& value, iLocator* loc)
 	{
 		if (value.IsArray())
 		{
@@ -48,11 +50,11 @@ struct Configuration::MountReader
 						if (volumeInfo == nullptr)
 							return false;
 
-						Volume::Descriptor* desc = nullptr;
+						VolumeDesc* desc = nullptr;
 						if (it.HasMember(kDescriptor) && volumeInfo->CreateDescriptor)
 							desc = volumeInfo->CreateDescriptor(it[kDescriptor]);
 
-						Volume* volume = volumeInfo->CreateVolume(desc);
+						iVolume* volume = volumeInfo->CreateVolume(desc);
 						if (volume)
 						{
 							if (!loc->Mount(it[kMountPoint].GetString(), volume))
@@ -75,7 +77,7 @@ struct Configuration::MountReader
 
 struct Configuration::CacheReader
 {
-	static bool Parse(const rapidjson::Value& value, Locator* loc)
+	static bool Parse(const rapidjson::Value& value, iLocator* loc)
 	{
 		if (value.IsArray())
 		{
@@ -91,11 +93,11 @@ struct Configuration::CacheReader
 						if (cacheDesc == nullptr)
 							return false;
 
-						Cache::Descriptor* desc = nullptr;
+						CacheDesc* desc = nullptr;
 						if (it.HasMember(kDescriptor) && cacheDesc->CreateDescriptor)
 							desc = cacheDesc->CreateDescriptor(it[kDescriptor]);
 
-						Cache* cache = cacheDesc->CreateCache(desc);
+						iCache* cache = cacheDesc->CreateCache(desc);
 						if (cache)
 						{
 							if (!loc->Attach(it[kName].GetString(), cache))
@@ -117,7 +119,7 @@ struct Configuration::CacheReader
 
 struct Configuration::LoaderReader
 {
-	static bool Parse(const rapidjson::Value& value, Locator* loc)
+	static bool Parse(const rapidjson::Value& value, iLocator* loc)
 	{
 		(void)loc;
 		if (value.IsArray())
@@ -131,7 +133,7 @@ struct Configuration::LoaderReader
 
 struct Configuration::Reader
 {
-	static bool Parse(const rapidjson::Document& doc, Locator* loc)
+	static bool Parse(const rapidjson::Document& doc, iLocator* loc)
 	{
 		if (doc.IsObject())
 		{
@@ -163,13 +165,14 @@ struct Configuration::Reader
 };
 
 
-Configuration::Configuration(const String& filename)
+Configuration::Configuration(Plugin::iRegistry* regy, const String& filename)
 	: mpLocator(nullptr)
 {
 	CPF_INIT_LOG(ResourceConfig);
 	CPF_LOG_LEVEL(ResourceConfig, Info);
 
-	mpLocator = Locator::Create();
+	if (COM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+		return;
 
 	if (mpLocator && File::Exists(filename))
 	{
@@ -205,18 +208,58 @@ Configuration::Configuration(const String& filename)
 	}
 }
 
-Configuration::Configuration()
+Configuration::Configuration(iUnknown*)
 	: mpLocator(nullptr)
 {
 	CPF_INIT_LOG(ResourceConfig);
 	CPF_LOG_LEVEL(ResourceConfig, Info);
 }
 
-COM::Result CPF_STDCALL Configuration::Parse(const char* filename)
+COM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const char* filename)
 {
+	if (COM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+		return COM::kError;
+
+	if (mpLocator && File::Exists(filename))
+	{
+		mpLocator->AddRef();
+
+		Error fileError;
+		Stream* file = File::Create(filename, Stream::Access::eRead, &fileError);
+		if (fileError == Error::eNone)
+		{
+			int64_t jsonLength = file->GetLength(&fileError);
+			if (fileError == Error::eNone)
+			{
+				char* jsonData = new char[jsonLength + 1];
+				if (jsonData && file->Read(jsonData, jsonLength, &fileError) == jsonLength)
+				{
+					jsonData[jsonLength] = 0;
+					rapidjson::Document configDocument;
+					configDocument.Parse(jsonData);
+					if (!configDocument.HasParseError() && Reader::Parse(configDocument, mpLocator))
+					{
+					}
+
+					delete[] jsonData;
+				}
+			}
+			file->Release();
+			return COM::kOK;
+		}
+	}
+	else
+	{
+		CPF_LOG(ResourceConfig, Error) << "Failed to find resource configuration file.";
+		CPF_LOG(ResourceConfig, Info) << "- Current working directory: " << Directory::GetWorkingDirectory();
+	}
+
+	/* New stuff to test out jsoncons.
 	if (filename)
 	{
-		mpLocator = Locator::Create();
+		COM::Result result;
+		if (Failed(result = regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+			return result;
 
 		if (File::Exists(filename))
 		{
@@ -256,7 +299,7 @@ COM::Result CPF_STDCALL Configuration::Parse(const char* filename)
 												const auto vd = GetVolumeDescriptor(volumeType.as_string().c_str());
 												if (vd)
 												{
-													/*
+#if 0
 													auto desc = vd->CreateDescriptor(descriptor.as_string().c_str());
 
 													Volume* volume = volumeInfo->CreateVolume(desc);
@@ -268,7 +311,7 @@ COM::Result CPF_STDCALL Configuration::Parse(const char* filename)
 													}
 													if (desc)
 														delete desc;
-													*/
+#endif
 												}
 											}
 										}
@@ -293,6 +336,7 @@ COM::Result CPF_STDCALL Configuration::Parse(const char* filename)
 			}
 		}
 	}
+	*/
 	return COM::kInvalidParameter;
 }
 
@@ -324,7 +368,7 @@ COM::Result CPF_STDCALL Configuration::QueryInterface(COM::InterfaceID id, void*
 	return COM::kInvalidParameter;
 }
 
-Locator* Configuration::GetLocator() const
+iLocator* Configuration::GetLocator()
 {
 	return mpLocator;
 }

@@ -21,7 +21,7 @@ namespace
 	const char* const kDirectory = "Directory";
 }
 
-const char* const FileSystem::kVolumeName = "FileSystem";
+const char* const FileSystem::kVolumeType = "FileSystem";
 
 RTTR_REGISTRATION
 {
@@ -29,15 +29,37 @@ RTTR_REGISTRATION
 		.constructor<const char* const>();
 }
 
+
+COM::Result CPF_STDCALL FileSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case iVolume::kIID.GetID():
+			*outIface = static_cast<iVolume*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
+}
+
 //////////////////////////////////////////////////////////////////////////
 
-CPF_EXPORT_RESOURCES Volume* FileSystem::Create(const Volume::Descriptor* const desc)
+iVolume* FileSystem::Create(const VolumeDesc* const desc)
 {
 	const Descriptor* const fsDesc = static_cast<const Descriptor* const>(desc);
 	return new FileSystem(fsDesc->mpRoot);
 }
 
-CPF_EXPORT_RESOURCES Volume::Descriptor* FileSystem::CreateDescriptor(const rapidjson::Value& value)
+VolumeDesc* FileSystem::CreateDescriptor(const rapidjson::Value& value)
 {
 	if (value.IsObject())
 	{
@@ -131,7 +153,7 @@ Stream* FileSystem::Open(ID id)
 }
 
 FileSystem::FileSystem(const String& relRoot)
-	: tRefCounted<Volume>()
+	: tRefCounted<iVolume>()
 	, mRoot(relRoot)
 {
 }

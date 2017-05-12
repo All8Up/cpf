@@ -24,7 +24,7 @@ namespace Cpf
 			COM::Result QueryInterface(COM::InterfaceID id, void** outIface) override;
 
 			//
-			bool Initialize(iDevice*, iInputManager* im, iWindow* window, Resources::Locator*);
+			bool Initialize(iDevice*, iInputManager* im, iWindow* window, Resources::iLocator*);
 			void Shutdown();
 			void BeginFrame(iCommandBuffer* commands, float deltaTime);
 			void EndFrame(iCommandBuffer* commands);
@@ -83,7 +83,7 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			iDevice* mpDevice;
-			Resources::Locator* mpLocator;
+			Resources::iLocator* mpLocator;
 			IntrusivePtr<iShader> mpVertexShader;
 			IntrusivePtr<iShader> mpPixelShader;
 			IntrusivePtr<iResourceBinding> mpResourceBinding;

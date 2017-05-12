@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Resources/Monitor.hpp"
+#include "Resources/iMonitor.hpp"
 
 namespace Cpf
 {
@@ -8,17 +8,22 @@ namespace Cpf
 	{
 		namespace Monitors
 		{
-			class FileSystem : public tRefCounted<Monitor>
+			class FileSystem : public tRefCounted<iMonitor>
 			{
 			public:
-				CPF_EXPORT_RESOURCES static Monitor* Create();
+				FileSystem(iUnknown*);
+				~FileSystem() override;
 
-				bool Touch(ID) override;
-				void TouchAll() override;
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+				bool CPF_STDCALL Touch(ID) override;
+				void CPF_STDCALL TouchAll() override;
+
+				void CPF_STDCALL SetLocator(iLocator* locator) override { mpLocator.Adopt(locator); }
+				iLocator* CPF_STDCALL GetLocator() const override { return mpLocator; }
 
 			private:
-				FileSystem();
-				~FileSystem() override;
+				IntrusivePtr<iLocator> mpLocator;
 			};
 		}
 	}

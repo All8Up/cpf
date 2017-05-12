@@ -45,7 +45,7 @@ COM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
 	return mpTimer != nullptr ? COM::kOK : COM::kInvalid;
 }
 
-bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager* im, iWindow* window, Resources::Locator* locator)
+bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
 	if (Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
 	{
@@ -342,7 +342,7 @@ bool RenderSystem::_CreateFrameBuffers(int32_t w, int32_t h)
 	return true;
 }
 
-bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resources::Locator* locator)
+bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
 	mpDevice->CreateFence(3, mpFence.AsTypePP());
 	for (int i = 0; i < kBufferCount; ++i)

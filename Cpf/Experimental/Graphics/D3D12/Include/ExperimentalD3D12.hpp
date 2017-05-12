@@ -5,7 +5,7 @@
 #include "Application/iWindow.hpp"
 #include "Graphics/Driver.hpp"
 #include "Concurrency/iScheduler.hpp"
-#include "Resources/Locator.hpp"
+#include "Resources/iLocator.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 #include "Threading/Reactor.hpp"
 #include "iDebugUI.hpp"
@@ -69,7 +69,7 @@ namespace Cpf
 
 		void _UpdatePipelineDisplay();
 
-		IntrusivePtr<Resources::Locator> mpLocator;
+		IntrusivePtr<Resources::iLocator> mpLocator;
 
 		static const int32_t mBackBufferCount = 3;
 

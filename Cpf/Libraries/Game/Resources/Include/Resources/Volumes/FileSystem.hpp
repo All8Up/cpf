@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Resources/Volume.hpp"
+#include "Resources/Resources.hpp"
+#include "Resources/iVolume.hpp"
 #include "String.hpp"
 #include "UnorderedMap.hpp"
 #include "Vector.hpp"
@@ -12,23 +13,26 @@ namespace Cpf
 	{
 		namespace Volumes
 		{
-			class FileSystem : public tRefCounted<Volume>
+			class FileSystem : public tRefCounted<iVolume>
 			{
 			public:
-				static const char* const kVolumeName;
+				static const char* const kVolumeType;
 
-				struct Descriptor : public Volume::Descriptor
+				struct Descriptor : VolumeDesc
 				{
 					Descriptor(const char* const root) : mpRoot(root) {}
 
 					const char* const mpRoot;
 				};
 
-				CPF_EXPORT_RESOURCES static Volume* Create(const Volume::Descriptor* const desc);
-				CPF_EXPORT_RESOURCES static Volume::Descriptor* CreateDescriptor(const rapidjson::Value&);
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
 
-				bool Mount(const char* const mountPoint) override;
-				void Unmount() override;
+				// TODO: Remove.
+				static iVolume* Create(const VolumeDesc* const desc);
+				static VolumeDesc* CreateDescriptor(const rapidjson::Value&);
+
+				bool CPF_STDCALL Mount(const char* const mountPoint) override;
+				void CPF_STDCALL Unmount() override;
 
 				Platform::IO::Stream* Open(ID) override;
 

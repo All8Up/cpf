@@ -8,6 +8,7 @@
 #include "Concurrency/iThreadPool.hpp"
 #include "Concurrency/iLoadBalancer.hpp"
 #include "MultiCore/System/iTimer.hpp"
+#include "Resources/iLocator.hpp"
 
 namespace Cpf
 {
@@ -48,7 +49,7 @@ namespace Cpf
 		IntrusivePtr<Concurrency::iScheduler> mpScheduler;
 		IntrusivePtr<iThreadPool> mpThreadPool;
 		IntrusivePtr<Concurrency::iLoadBalancer> mpLoadBalancer;
-		IntrusivePtr<Resources::Locator> mpLocator;
+		IntrusivePtr<Resources::iLocator> mpLocator;
 
 		IntrusivePtr<MultiCore::iPipeline> mpPipeline;
 		IntrusivePtr<MultiCore::iTimer> mpTimer;

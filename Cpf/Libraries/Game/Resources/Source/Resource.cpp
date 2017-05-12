@@ -1,6 +1,6 @@
 ///
 #include "Resources/Resource.hpp"
-#include "Resources/Cache.hpp"
+#include "Resources/iCache.hpp"
 
 using namespace Cpf;
 using namespace Resources;
@@ -36,15 +36,20 @@ int32_t ResourceBase::Release()
 	return mRefCount;
 }
 
+void CPF_STDCALL ResourceBase::Initialize(ID id, iCache* cache)
+{
+	mID.mID = id.mID;
+	mpCache = cache;
+}
+
 /**
  * @brief Constructor.
  * @param id The identifier.
  * @param [in,out] cache If non-null, the cache.
  */
-ResourceBase::ResourceBase(ID id, Cache* cache)
+ResourceBase::ResourceBase(iUnknown*)
 	: mRefCount(1)
-	, mID(id)
-	, mpCache(cache)
+	, mID(kInvalidID)
 {}
 
 /** @brief Destructor. */

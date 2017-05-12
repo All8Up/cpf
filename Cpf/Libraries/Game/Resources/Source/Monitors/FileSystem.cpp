@@ -1,14 +1,31 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Monitors/FileSystem.hpp"
 #include "Resources/ID.hpp"
+#include "Resources/iLocator.hpp"
 
 using namespace Cpf;
 using namespace Resources;
 using namespace Monitors;
 
-CPF_EXPORT_RESOURCES Monitor* FileSystem::Create()
+COM::Result CPF_STDCALL FileSystem::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return new FileSystem();
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case kIID.GetID():
+			*outIface = static_cast<iMonitor*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
 bool FileSystem::Touch(ID id)
@@ -20,7 +37,7 @@ bool FileSystem::Touch(ID id)
 void FileSystem::TouchAll()
 {}
 
-FileSystem::FileSystem()
+FileSystem::FileSystem(iUnknown*)
 {}
 
 FileSystem::~FileSystem()

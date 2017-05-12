@@ -1,32 +1,48 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Locator.hpp"
-#include "Resources/Monitor.hpp"
-#include "Resources/Loader.hpp"
-#include "Resources/Volume.hpp"
-#include "Resources/Cache.hpp"
+#include "Resources/iLoader.hpp"
+#include "Resources/iVolume.hpp"
+#include "Resources/iCache.hpp"
+#include "Resources/iMonitor.hpp"
 #include "Resources/ID.hpp"
 
 using namespace Cpf;
 using namespace Resources;
 
-CPF_EXPORT_RESOURCES Locator* Locator::Create()
+COM::Result CPF_STDCALL Locator::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return new Locator();
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case kIID.GetID():
+			*outIface = static_cast<iLocator*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
-bool Locator::Mount(const char* const mp, Volume* volume)
+bool CPF_STDCALL Locator::Mount(const char* const mp, iVolume* volume)
 {
 	if (volume->Mount(mp))
 	{
 		volume->AddRef();
 		mVolumes.insert(mVolumes.begin(), { String(mp), volume });
-		Emit<Mounted>(mp, volume);
+		mEmitter.Emit<Mounted>(mp, volume);
 		return true;
 	}
 	return false;
 }
 
-bool Locator::Unmount(Volume* volume)
+bool CPF_STDCALL Locator::Unmount(iVolume* volume)
 {
 	for (auto it = mVolumes.begin(), iend=mVolumes.end(); it!=iend; ++it)
 	{
@@ -36,14 +52,14 @@ bool Locator::Unmount(Volume* volume)
 			it->mpVolume->Release();
 			String mp = it->mMountPoint;
 			mVolumes.erase(it);
-			Emit<Unmounted>(mp.c_str(), volume);
+			mEmitter.Emit<Unmounted>(mp.c_str(), volume);
 			return true;
 		}
 	}
 	return false;
 }
 
-bool Locator::Attach(const char* const name, Cache* cache)
+bool CPF_STDCALL Locator::Attach(const char* const name, iCache* cache)
 {
 	if (cache != nullptr)
 	{
@@ -54,7 +70,7 @@ bool Locator::Attach(const char* const name, Cache* cache)
 	return false;
 }
 
-bool Locator::Detach(const char* const name)
+bool CPF_STDCALL Locator::Detach(const char* const name)
 {
 	if (name != nullptr)
 	{
@@ -69,7 +85,7 @@ bool Locator::Detach(const char* const name)
 	return false;
 }
 
-Cache* Locator::GetCache(const char* const name) const
+iCache* CPF_STDCALL Locator::GetCache(const char* const name) const
 {
 	auto it = mCaches.find(name);
 	if (it != mCaches.end())
@@ -77,7 +93,7 @@ Cache* Locator::GetCache(const char* const name) const
 	return nullptr;
 }
 
-bool Locator::Attach(Monitor* monitor)
+bool CPF_STDCALL Locator::Attach(iMonitor* monitor)
 {
 	if (mMonitors.find(monitor) == mMonitors.end())
 	{
@@ -89,7 +105,7 @@ bool Locator::Attach(Monitor* monitor)
 	return false;
 }
 
-bool Locator::Detach(Monitor* monitor)
+bool CPF_STDCALL Locator::Detach(iMonitor* monitor)
 {
 	if (mMonitors.find(monitor) != mMonitors.end())
 	{
@@ -100,7 +116,7 @@ bool Locator::Detach(Monitor* monitor)
 	return false;
 }
 
-bool Locator::Install(Loader* loader, Cache* cache)
+bool CPF_STDCALL Locator::Install(iLoader* loader, iCache* cache)
 {
 	auto it = mLoaders.find(loader->GetID());
 	if (it == mLoaders.end())
@@ -114,7 +130,7 @@ bool Locator::Install(Loader* loader, Cache* cache)
 	return false;
 }
 
-bool Locator::Remove(Loader* loader)
+bool CPF_STDCALL Locator::Remove(iLoader* loader)
 {
 	auto it = mLoaders.find(loader->GetID());
 	if (it != mLoaders.end())
@@ -127,7 +143,7 @@ bool Locator::Remove(Loader* loader)
 	return false;
 }
 
-const Locator::LoaderInfo* Locator::GetLoader(uint32_t id) const
+const LoaderInfo* CPF_STDCALL Locator::GetLoader(uint32_t id) const
 {
 	auto it = mLoaders.find(id);
 	if (it != mLoaders.end())
@@ -135,7 +151,7 @@ const Locator::LoaderInfo* Locator::GetLoader(uint32_t id) const
 	return nullptr;
 }
 
-Platform::IO::Stream* Locator::Open(ID id) const
+Platform::IO::Stream* CPF_STDCALL Locator::Open(ID id) const
 {
 	Platform::IO::Stream* result = nullptr;
 	for (const auto& volume : mVolumes)
@@ -147,7 +163,7 @@ Platform::IO::Stream* Locator::Open(ID id) const
 	return result;
 }
 
-ResourceBase* Locator::GetResource(ID id) const
+ResourceBase* CPF_STDCALL Locator::GetResource(ID id) const
 {
 	ResourceBase* result = nullptr;
 	for (auto ibegin = mCaches.begin(), iend = mCaches.end(); ibegin != iend; ++ibegin)
@@ -159,7 +175,7 @@ ResourceBase* Locator::GetResource(ID id) const
 	return result;
 }
 
-bool Locator::Touch(ID id)
+bool CPF_STDCALL Locator::Touch(ID id)
 {
 	for (auto it : mCaches)
 	{
@@ -173,7 +189,7 @@ bool Locator::Touch(ID id)
 	return false;
 }
 
-void Locator::TouchAll()
+void CPF_STDCALL Locator::TouchAll()
 {
 	for (auto it : mCaches)
 	{
@@ -183,9 +199,7 @@ void Locator::TouchAll()
 	}
 }
 
-Locator::Locator()
-	: tRefCounted<iRefCounted>()
-	, Emitter()
+Locator::Locator(iUnknown*)
 {}
 
 Locator::~Locator()

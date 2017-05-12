@@ -1,13 +1,8 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/Resources/Cache.hpp
-	Include/Resources/ID.hpp
-	Include/Resources/Loader.hpp
 	Include/Resources/Locator.hpp
-	Include/Resources/Monitor.hpp
 	Include/Resources/Resource.hpp
 	Include/Resources/Resources.hpp
-	Include/Resources/Volume.hpp
 	Include/Resources/ResourceConfig.hpp
 )
 set (CACHE_INCLUDE_FILES
@@ -21,17 +16,20 @@ set (MONITOR_INCLUDE_FILES
 	Include/Resources/Monitors/Manual.hpp
 )
 set (INTERFACE_FILES
+	Interface/Resources/ID.hpp
+	Interface/Resources/iCache.hpp
 	Interface/Resources/iConfiguration.hpp
+	Interface/Resources/iLoader.hpp
+	Interface/Resources/iLocator.hpp
+	Interface/Resources/iMonitor.hpp
+	Interface/Resources/iResource.hpp
+	Interface/Resources/iVolume.hpp
 )
 
 set (SOURCE_FILES
-	Source/Cache.cpp
-	Source/Loader.cpp
 	Source/Locator.cpp
-	Source/Monitor.cpp
 	Source/Resource.cpp
 	Source/Resources.cpp
-	Source/Volume.cpp
 	Source/ResourceConfig.cpp
 	Source/Plugin.cpp
 )
@@ -46,7 +44,7 @@ set (MONITOR_SOURCE_FILES
 	Source/Monitors/Manual.cpp
 )
 
-add_library (s_Resources STATIC
+add_library (Resources SHARED
 	${INCLUDE_FILES}
 	${CACHE_INCLUDE_FILES}
 	${VOLUME_INCLUDE_FILES}
@@ -57,22 +55,19 @@ add_library (s_Resources STATIC
 	${VOLUME_SOURCE_FILES}
 	${MONITOR_SOURCE_FILES}
 )
-target_compile_definitions (s_Resources
-	PUBLIC CPF_STATIC_RESOURCES
-	PRIVATE CPF_BUILD_RESOURCES
-)
-target_include_directories (s_Resources
+target_include_directories (Resources
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
 		$<INSTALL_INTERFACE:Interface>
 )
-target_link_libraries (s_Resources
+target_compile_definitions (Resources PUBLIC CPF_STATIC_IO)
+target_link_libraries (Resources
 	LINK_PUBLIC
-		Configuration s_Collections RefCount s_IO Logging COM Plugin Events Hash jsoncons rapidjson rttr_core
+		Configuration s_Collections RefCount s_IO s_ANSI_C_FileSystem Logging COM Plugin Events Hash jsoncons rapidjson rttr_core
 )
-set_property (TARGET s_Resources PROPERTY FOLDER Libraries/Static/Game)
+set_property (TARGET Resources PROPERTY FOLDER Plugins/Game)
 
 # ###############################################
 source_group (Headers FILES ${INCLUDE_FILES})
@@ -87,13 +82,15 @@ source_group (Sources\\Volumes FILES ${VOLUME_SOURCE_FILES})
 source_group (Sources\\Loaders FILES ${LOADER_SOURCE_FILES})
 source_group (Sources\\Monitors FILES ${MONITOR_SOURCE_FILES})
 
-# ###############################################
-#[[
-install (TARGETS s_Resources
-	EXPORT ResourcesSystemConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
+
+add_library (i_Resources INTERFACE)
+target_include_directories (i_Resources
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
 )
-install (EXPORT ResourcesSystemConfig DESTINATION CMake)
-]]#
+
+add_custom_command (
+	TARGET Resources POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Resources> ${CPF_COMMON_PLUGINS}/Resources.cfp
+)

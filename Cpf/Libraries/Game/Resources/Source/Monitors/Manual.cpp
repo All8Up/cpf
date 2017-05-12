@@ -7,10 +7,27 @@ using namespace Cpf;
 using namespace Resources;
 using namespace Monitors;
 
-CPF_EXPORT_RESOURCES Monitor* Manual::Create()
+COM::Result CPF_STDCALL Manual::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return new Manual();
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case iMonitor::kIID.GetID():
+			*outIface = static_cast<iMonitor*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
+
 
 bool Manual::Touch(ID id)
 {
@@ -25,7 +42,7 @@ void Manual::TouchAll()
 		GetLocator()->TouchAll();
 }
 
-Manual::Manual()
+Manual::Manual(iUnknown*)
 {}
 
 Manual::~Manual()

@@ -2,31 +2,31 @@
 #pragma once
 #include "Resources/Resources.hpp"
 #include "Resources/ID.hpp"
-#include "RefCounted.hpp"
+#include "Resources/iResource.hpp"
 
 namespace Cpf
 {
 	namespace Resources
 	{
-		class Cache;
+		struct iCache;
 
 		/** @brief The base resource class. */
-		class ResourceBase : public iRefCounted
+		class ResourceBase : public iResource
 		{
 		public:
-			int32_t AddRef() override;
-			int32_t Release() override;
+			int32_t CPF_STDCALL AddRef() override;
+			int32_t CPF_STDCALL Release() override;
 
-			virtual void Update() = 0;
+			void CPF_STDCALL Initialize(ID, iCache*) override;
 
 		protected:
-			ResourceBase(ID, Cache*);
+			ResourceBase(iUnknown*);
 			virtual ~ResourceBase();
 
 		private:
 			int32_t mRefCount;
 			ID mID;
-			Cache* mpCache;
+			iCache* mpCache;
 		};
 	}
 }

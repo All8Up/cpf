@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Caches/Default.hpp"
+#include "Resources/Resource.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -9,19 +10,40 @@ using namespace Caches;
 const char* const Default::kCacheName = "Default";
 
 
-CPF_EXPORT_RESOURCES Cache* Default::Create(const Cache::Descriptor* const)
+COM::Result CPF_STDCALL Default::QueryInterface(COM::InterfaceID id, void** outIface)
 {
-	return new Default();
+	if (outIface)
+	{
+		switch (id.GetID())
+		{
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
+			break;
+		case kIID.GetID():
+			*outIface = static_cast<iCache*>(this);
+			break;
+		default:
+			return COM::kUnknownInterface;
+		}
+		AddRef();
+		return COM::kOK;
+	}
+	return COM::kInvalidParameter;
 }
 
-CPF_EXPORT_RESOURCES Cache::Descriptor* Default::CreateDescriptor(const rapidjson::Value&)
+iCache* Default::Create(const CacheDesc* const)
+{
+	return new Default(nullptr);
+}
+
+CacheDesc* Default::CreateDescriptor(const rapidjson::Value&)
 {
 	return nullptr;
 }
 
 ///
-Default::Default()
-	: tRefCounted<Cache>()
+Default::Default(iUnknown*)
+	: tRefCounted<iCache>()
 	, mShuttingDown(false)
 {
 	CPF_INIT_LOG(Default_Cache);

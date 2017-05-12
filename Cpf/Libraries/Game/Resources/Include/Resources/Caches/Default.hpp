@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Resources/Cache.hpp"
+#include "Resources/Resources.hpp"
+#include "Resources/iCache.hpp"
 #include "UnorderedMap.hpp"
 
 namespace Cpf
@@ -9,29 +10,34 @@ namespace Cpf
 	{
 		namespace Caches
 		{
+			static constexpr COM::ClassID kCacheDefaultCID = COM::ClassID("Cpf::Resources::Caches::Default"_crc64);
+
 			/** @brief A default cache implementation. */
-			class Default : public tRefCounted<Cache>
+			class Default : public tRefCounted<iCache>
 			{
 			public:
-				static const char* const kCacheName;
-
-				struct Descriptor : public Cache::Descriptor
-				{};
-
-				CPF_EXPORT_RESOURCES static Cache* Create(const Cache::Descriptor* const desc);
-				CPF_EXPORT_RESOURCES static Cache::Descriptor* CreateDescriptor(const rapidjson::Value&);
-
-				// Overrides of Cache.
-				ResourceBase* Get(ID) const override;
-				void Store(ID, ResourceBase*) override;
-				void LastReference(ID) override;
-				void Enumerate(Function<void(ResourceBase*)>) override;
-
-			private:
 				// Construction/Destruction.
-				Default();
+				Default(iUnknown*);
 				virtual ~Default();
 
+				static const char* const kCacheName;
+
+				struct Descriptor : CacheDesc
+				{};
+
+				// iUnknown overrides.
+				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+				static iCache* Create(const CacheDesc* const desc);
+				static CacheDesc* CreateDescriptor(const rapidjson::Value&);
+
+				// Overrides of Cache.
+				ResourceBase* CPF_STDCALL Get(ID) const override;
+				void CPF_STDCALL Store(ID, ResourceBase*) override;
+				void CPF_STDCALL LastReference(ID) override;
+				void CPF_STDCALL Enumerate(Function<void(ResourceBase*)>) override;
+
+			private:
 				// Implementation types.
 				using ResourceMap = UnorderedMap<uint64_t, ResourceBase*>;
 

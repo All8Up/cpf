@@ -1,13 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "String.hpp"
-#include "Resources/Resources.hpp"
 #include "Hash/Crc.hpp"
 
 namespace Cpf
 {
 	namespace Resources
 	{
+		static constexpr uint64_t kInvalidID = uint64_t(-1);
+
 		struct ID
 		{
 			ID(uint32_t d, uint32_t f

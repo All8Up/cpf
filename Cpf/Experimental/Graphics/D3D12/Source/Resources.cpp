@@ -19,6 +19,7 @@
 #include "Math/Vector4v.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Std/Memory.hpp"
+#include "Resources/ID.hpp"
 
 using namespace Cpf;
 using namespace Math;

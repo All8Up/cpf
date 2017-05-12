@@ -24,7 +24,7 @@ target_link_libraries (Networked
 	Logging
 	s_ANSI_C_FileSystem
 	MultiCore
-	s_Resources
+	i_Resources
 	GraphicsDriver
 	s_Application
 	i_DebugUI

@@ -39,7 +39,7 @@ target_include_directories (DebugUI
 )
 target_link_libraries (DebugUI
 	PUBLIC
-		Configuration Std Plugin Math GraphicsDriver i_Application s_IO s_Resources
+		Configuration Std Plugin Math GraphicsDriver Logging i_Application s_IO i_Resources
 )
 set_property (TARGET DebugUI PROPERTY FOLDER Plugins/Graphics)
 source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})

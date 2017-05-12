@@ -13,19 +13,22 @@ namespace
 	uint32_t s_RefCount = 0;
 }
 
-CPF_EXPORT_RESOURCES int ResourcesInitializer::Install()
+extern "C" void CPF_EXPORT InstallResources(Plugin::iRegistry* registry);
+extern "C" void CPF_EXPORT RemoveResources(Plugin::iRegistry* registry);
+
+
+int ResourcesInitializer::Install(Plugin::iRegistry* registry)
 {
 	if (s_RefCount++ == 0)
 	{
-		CPF_INIT_LOG(Resources);
-		CPF_LOG_LEVEL(Resources, Trace);
+		InstallResources(registry);
 
 		Configuration::VolumeDescriptor fileSystemDesc
 		{
 			&Volumes::FileSystem::CreateDescriptor,
 			&Volumes::FileSystem::Create
 		};
-		Configuration::InstallVolumeType(Volumes::FileSystem::kVolumeName, fileSystemDesc);
+		Configuration::InstallVolumeType(Volumes::FileSystem::kVolumeType, fileSystemDesc);
 
 		Configuration::CacheDescriptor defaultCacheDesc
 		{
@@ -37,11 +40,11 @@ CPF_EXPORT_RESOURCES int ResourcesInitializer::Install()
 	return s_RefCount;
 }
 
-CPF_EXPORT_RESOURCES int ResourcesInitializer::Remove()
+int ResourcesInitializer::Remove(Plugin::iRegistry* registry)
 {
 	if (--s_RefCount == 0)
 	{
-		CPF_DROP_LOG(Resources);
+		RemoveResources(registry);
 	}
 	return 0;
 }

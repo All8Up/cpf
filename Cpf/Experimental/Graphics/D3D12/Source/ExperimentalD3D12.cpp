@@ -6,7 +6,7 @@
 
 #include "Atomic/Atomic.hpp"
 #include "IntrusivePtr.hpp"
-#include "Resources/ResourceConfig.hpp"
+#include "Resources/iConfiguration.hpp"
 #include "Threading.hpp"
 #include "Threading/Thread.hpp"
 
@@ -58,6 +58,7 @@ COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registr
 	exePath += "../resources/";
 	IO::Directory::SetWorkingDirectory(exePath);
 
+	GetRegistry()->Load("plugins/Resources.cfp");
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/Concurrency.cfp");
@@ -77,9 +78,8 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 	CPF_INIT_LOG(Experimental);
 	CPF_LOG_LEVEL(Experimental, Trace);
 
-	// Initialize the gfx library.
+	// Initialize the io library.
 	ScopedInitializer<IOInitializer> ioInit;
-	ScopedInitializer<Resources::ResourcesInitializer> resourceInit;
 
 	CPF_INIT_MULTICORE(GetRegistry(), "plugins");
 	CPF_INIT_ENTITYSERVICE(GetRegistry(), "plugins");
@@ -191,7 +191,12 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create the virtual file system locator.
-	mpLocator.Adopt(Resources::Configuration("./Experimental/resource_config.json").GetLocator());
+	Resources::iConfiguration* pConfig = nullptr;
+	GetRegistry()->Create(nullptr, Resources::kConfigurationCID, Resources::iConfiguration::kIID, reinterpret_cast<void**>(&pConfig));
+	pConfig->Initialize(GetRegistry(), "./Experimental/resource_config.json");
+	mpLocator.Adopt(pConfig->GetLocator());
+
+//	mpLocator.Adopt(Resources::Configuration(GetRegistry(), "./Experimental/resource_config.json").GetLocator());
 	if (!mpLocator)
 	{
 		// Do something with configuration error.

@@ -2,6 +2,7 @@
 #pragma once
 #include "Resources/Resources.hpp"
 #include "Resources/Resource.hpp"
+#include "Resources/iLocator.hpp"
 #include "Events/Emitter.hpp"
 #include "IO/Stream.hpp"
 #include "RefCounted.hpp"
@@ -14,77 +15,56 @@ namespace Cpf
 	namespace Resources
 	{
 		struct ID;
-		class Cache;
-		class Loader;
-		class Volume;
-		class Monitor;
+		struct iCache;
+		struct iMonitor;
+		struct iLoader;
 
-		class Locator : public tRefCounted<>, public Events::Emitter
+		class Locator : public tRefCounted<iLocator>
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			using Mounted = Events::Event<0, Function<void(const char* const, Volume*)>>;
-			using Unmounted = Events::Event<1, Function<void(const char* const, Volume*)>>;
+			Locator(iUnknown*);
+			virtual ~Locator();
+			
+			// iUnknown overrides.
+			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void**) override;
+
+			//
+			Events::Emitter& CPF_STDCALL GetEmitter() override { return mEmitter; }
 
 			//////////////////////////////////////////////////////////////////////////
-			struct LoaderInfo
-			{
-				Loader* mpLoader;
-				Cache* mpCache;
-			};
+			bool CPF_STDCALL Mount(const char* const, iVolume*) override;
+			bool CPF_STDCALL Unmount(iVolume*) override;
 
-			//////////////////////////////////////////////////////////////////////////
-			CPF_EXPORT_RESOURCES static Locator* Create();
+			bool CPF_STDCALL Attach(const char* const, iCache*) override;
+			bool CPF_STDCALL Detach(const char* const) override;
+			iCache* CPF_STDCALL GetCache(const char* const) const override;
 
-			//////////////////////////////////////////////////////////////////////////
-			bool Mount(const char* const, Volume*);
-			bool Unmount(Volume*);
+			bool CPF_STDCALL Attach(iMonitor*) override;
+			bool CPF_STDCALL Detach(iMonitor*) override;
 
-			bool Attach(const char* const, Cache*);
-			bool Detach(const char* const);
-			Cache* GetCache(const char* const) const;
+			bool CPF_STDCALL Install(iLoader*, iCache*) override;
+			bool CPF_STDCALL Remove(iLoader*) override;
+			const LoaderInfo* CPF_STDCALL GetLoader(uint32_t id) const override;
 
-			bool Attach(Monitor*);
-			bool Detach(Monitor*);
+			Platform::IO::Stream* CPF_STDCALL Open(ID) const override;
+			ResourceBase* CPF_STDCALL GetResource(ID) const override;
 
-			bool Install(Loader*, Cache*);
-			bool Remove(Loader*);
-			const LoaderInfo* GetLoader(uint32_t id) const;
-
-			Platform::IO::Stream* Open(ID) const;
-			template<typename TYPE>
-			typename TYPE::Resource* Load(ID);
-			ResourceBase* GetResource(ID) const;
-
-			bool Touch(ID);
-			void TouchAll();
+			bool CPF_STDCALL Touch(ID) override;
+			void CPF_STDCALL TouchAll() override;
 
 		private:
-			//////////////////////////////////////////////////////////////////////////
-			Locator();
-			virtual ~Locator();
-
 			//////////////////////////////////////////////////////////////////////////
 			struct VolumeEntry
 			{
 				String mMountPoint;
-				Volume* mpVolume;
+				iVolume* mpVolume;
 			};
 			Vector<VolumeEntry> mVolumes;
-			UnorderedMap<String, Cache*> mCaches;
-			UnorderedSet<Monitor*> mMonitors;
+			UnorderedMap<String, iCache*> mCaches;
+			UnorderedSet<iMonitor*> mMonitors;
 			UnorderedMap<uint32_t, LoaderInfo> mLoaders;
+			Events::Emitter mEmitter;
 		};
-
-		template<typename TYPE>
-		typename TYPE::Resource* Locator::Load(ID id)
-		{
-			auto info = GetLoader(TYPE::kID);
-			if (info != nullptr)
-			{
-				return static_cast<typename TYPE::Resource*>((*static_cast<TYPE*>(info->mpLoader))(id));
-			}
-			return nullptr;
-		}
 	}
 }

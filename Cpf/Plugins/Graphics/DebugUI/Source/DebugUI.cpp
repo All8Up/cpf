@@ -34,7 +34,7 @@
 #include "imgui/imgui.h"
 #include "IO/Stream.hpp"
 #include "Resources/ID.hpp"
-#include "Resources/Locator.hpp"
+#include "Resources/iLocator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
 #include "Logging/Logging.hpp"
@@ -141,7 +141,7 @@ COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
 	return COM::kInvalidParameter;
 }
 
-bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Resources::Locator* locator)
+bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
 	CPF_ASSERT(device != nullptr);
 	CPF_ASSERT(locator != nullptr);

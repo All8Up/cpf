@@ -12,6 +12,10 @@
 
 namespace Cpf
 {
+	namespace Resources {
+		struct iLocator;
+	}
+
 	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("Render System Class"_crc64);
 
 	class RenderSystem : public tRefCounted<MultiCore::iSystem>
@@ -31,7 +35,7 @@ namespace Cpf
 
 		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
-		bool Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager*, iWindow*, Resources::Locator*);
+		bool Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager*, iWindow*, Resources::iLocator*);
 		bool Shutdown();
 
 		void Resize(int32_t, int32_t);
@@ -69,7 +73,7 @@ namespace Cpf
 		bool _CreateRenderTargets(int32_t w, int32_t h);
 		bool _CreateDepthBuffer(int32_t w, int32_t h);
 		bool _CreateFrameBuffers(int32_t w, int32_t h);
-		bool _CreateRenderData(iInputManager*, iWindow*, Resources::Locator*);
+		bool _CreateRenderData(iInputManager*, iWindow*, Resources::iLocator*);
 
 		static void _BeginFrame(const Concurrency::WorkContext*, void* context);
 		static void _DebugUI(const Concurrency::WorkContext*, void* context);
@@ -105,6 +109,6 @@ namespace Cpf
 		Vector<IntrusivePtr<Graphics::iFrameBuffer>> mpFrameBuffers;
 
 		MultiCore::SystemID mID;
-		IntrusivePtr<MultiCore::iStageList> mpStages;
+		IntrusivePtr<iStageList> mpStages;
 	};
 }
