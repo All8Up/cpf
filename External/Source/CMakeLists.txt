@@ -113,3 +113,5 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2")
 	add_library (jsoncons INTERFACE)
 	target_include_directories (jsoncons INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2/src)
 endif ()
+
+#find_package (PythonLibs 3)

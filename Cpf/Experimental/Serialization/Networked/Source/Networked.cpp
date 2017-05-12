@@ -15,6 +15,7 @@
 #include "SDL2/CIDs.hpp"
 #include "Graphics/Driver.hpp"
 #include "Threading/Thread.hpp"
+//#include <Python.h>
 
 using namespace Cpf;
 using namespace Platform;
@@ -27,10 +28,12 @@ Networked::Networked()
 	, mpWindowedApplication(nullptr)
 {
 	CPF_INIT_LOG(Networked);
+//	Py_Initialize();
 }
 
 Networked::~Networked()
 {
+//	Py_FinalizeEx();
 	CPF_DROP_LOG(Networked);
 }
 
@@ -175,8 +178,8 @@ bool Networked::_Remove()
 
 bool Networked::_InitializeResources()
 {
-	Resources::Configuration config;
-	config.Parse("./networked/resource_config.json");
+//	Resources::Configuration config;
+//	config.Parse("./networked/resource_config.json");
 	mpLocator.Adopt(Resources::Configuration("./networked/resource_config.json").GetLocator());
 	return bool(mpLocator);
 }
