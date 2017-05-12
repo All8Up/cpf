@@ -175,6 +175,8 @@ bool Networked::_Remove()
 
 bool Networked::_InitializeResources()
 {
+	Resources::Configuration config;
+	config.Parse("./networked/resource_config.json");
 	mpLocator.Adopt(Resources::Configuration("./networked/resource_config.json").GetLocator());
 	return bool(mpLocator);
 }

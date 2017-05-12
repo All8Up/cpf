@@ -6,6 +6,7 @@
 #include "IO/Path.hpp"
 #include "IO/File.hpp"
 #include "Hash/Crc.hpp"
+#include "rttr/registration.h"
 
 using namespace Cpf;
 
@@ -22,6 +23,11 @@ namespace
 
 const char* const FileSystem::kVolumeName = "FileSystem";
 
+RTTR_REGISTRATION
+{
+	rttr::registration::class_<FileSystem::Descriptor>("FileSystem::Descriptor")
+		.constructor<const char* const>();
+}
 
 //////////////////////////////////////////////////////////////////////////
 

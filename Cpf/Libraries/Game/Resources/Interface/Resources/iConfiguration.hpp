@@ -11,6 +11,7 @@ namespace Cpf
 		{
 			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Resources::iConfiguration"_crc64);
 
+			virtual COM::Result CPF_STDCALL Parse(const char* filename) = 0;
 		};
 	}
 }

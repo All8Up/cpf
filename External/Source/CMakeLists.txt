@@ -97,5 +97,13 @@ endif ()
 # Rttr
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/Rttr-master")
 	set (BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+	set (USE_PCH OFF CACHE BOOL "" FORCE)
 	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/Rttr-master)
+	set_property (TARGET rttr_core PROPERTY FOLDER External)
+endif ()
+
+# jsoncons
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2")
+	add_library (jsoncons INTERFACE)
+	target_include_directories (jsoncons INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2/src)
 endif ()

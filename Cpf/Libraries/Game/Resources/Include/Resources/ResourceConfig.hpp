@@ -15,10 +15,14 @@ namespace Cpf
 		class CPF_EXPORT_RESOURCES Configuration : public tRefCounted<iConfiguration>
 		{
 		public:
+			Configuration();
 			Configuration(const String& filename);
 			~Configuration();
 
 			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+
+			COM::Result CPF_STDCALL Parse(const char* filename) override;
+
 
 			Locator* GetLocator() const;
 

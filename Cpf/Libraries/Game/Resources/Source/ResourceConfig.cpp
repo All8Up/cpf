@@ -4,6 +4,7 @@
 #include "rapidjson/document.h"
 #include "Logging/Logging.hpp"
 #include "IO/Directory.hpp"
+#include "jsoncons/json.hpp"
 
 using namespace Cpf;
 using namespace Resources;
@@ -12,6 +13,10 @@ using namespace IO;
 
 namespace
 {
+	const char* const kMountArray = "Mounts";
+	const char* const kCacheArray = "Caches";
+	const char* const kLoaderArray = "Loaders";
+
 	const char* const kVolumeType = "VolumeType";
 	const char* const kMountPoint = "MountPoint";
 	const char* const kDescriptor = "Descriptor";
@@ -199,6 +204,98 @@ Configuration::Configuration(const String& filename)
 		CPF_LOG(ResourceConfig, Info) << "- Current working directory: " << Directory::GetWorkingDirectory();
 	}
 }
+
+Configuration::Configuration()
+	: mpLocator(nullptr)
+{
+	CPF_INIT_LOG(ResourceConfig);
+	CPF_LOG_LEVEL(ResourceConfig, Info);
+}
+
+COM::Result CPF_STDCALL Configuration::Parse(const char* filename)
+{
+	if (filename)
+	{
+		mpLocator = Locator::Create();
+
+		if (File::Exists(filename))
+		{
+			mpLocator->AddRef();
+
+			Error fileError;
+			Stream* file = File::Create(filename, Stream::Access::eRead, &fileError);
+			if (fileError == Error::eNone)
+			{
+				int64_t jsonLength = file->GetLength(&fileError);
+				if (fileError == Error::eNone)
+				{
+					std::string jsonData;
+					jsonData.resize(jsonLength);
+					if (file->Read(&jsonData[0], jsonLength, &fileError) == jsonLength)
+					{
+						auto inputJson = jsoncons::json::parse(jsonData);
+
+						//
+						if (inputJson.has_key(kMountArray))
+						{
+							auto mounts = inputJson[kMountArray];
+							if (mounts.is_array())
+							{
+								for (auto mount : mounts.array_range())
+								{
+									auto volumeType = mount.get(kVolumeType);
+									if (!volumeType.is_null())
+									{
+										auto mountPoint = mount.get(kMountPoint);
+										if (!mountPoint.is_null())
+										{
+											auto descriptor = mount.get(kDescriptor);
+											if (descriptor.is_object())
+											{
+												CPF_LOG(ResourceConfig, Info) << "Type: " << volumeType << " Mount: " << mountPoint << " Desc: " << descriptor;
+												const auto vd = GetVolumeDescriptor(volumeType.as_string().c_str());
+												if (vd)
+												{
+													/*
+													auto desc = vd->CreateDescriptor(descriptor.as_string().c_str());
+
+													Volume* volume = volumeInfo->CreateVolume(desc);
+													if (volume)
+													{
+														if (!loc->Mount(it[kMountPoint].GetString(), volume))
+															return false;
+														volume->Release();
+													}
+													if (desc)
+														delete desc;
+													*/
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+						auto caches = inputJson.find(kCacheArray);
+						if (caches != inputJson.object_range().end())
+						{
+							
+						}
+						auto loaders = inputJson.find(kLoaderArray);
+						if (loaders != inputJson.object_range().end())
+						{
+							
+						}
+						file->Release();
+						return COM::kOK;
+					}
+				}
+			}
+		}
+	}
+	return COM::kInvalidParameter;
+}
+
 
 Configuration::~Configuration()
 {
