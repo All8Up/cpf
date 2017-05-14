@@ -12,6 +12,7 @@ namespace Cpf
 		struct ThreadTimeInfo;
 		struct iWorkBuffer;
 		struct iFence;
+		struct iThreadTimes;
 
 		using WorkFunction = void(*)(const WorkContext*, void*);
 
@@ -28,6 +29,7 @@ namespace Cpf
 
 			virtual void CPF_STDCALL Execute(iWorkBuffer*, bool clear = true) = 0;
 			virtual void CPF_STDCALL Submit(iFence*) = 0;
+			virtual void CPF_STDCALL Submit(iThreadTimes*) = 0;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
