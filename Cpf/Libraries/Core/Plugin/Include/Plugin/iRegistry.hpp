@@ -9,6 +9,9 @@ namespace Cpf
 		struct IID_CID;
 		struct iClassInstance;
 
+		static constexpr COM::Result kInstanceExists = COM::CreateResult(1, "Plugin"_crc16, "Instance already exists"_crc16);
+		static constexpr COM::Result kNotInstalled = COM::CreateResult(1, "Plugin"_crc16, "Instance not installed"_crc16);
+
 		/**
 		 Class instance registry.
 		 */
@@ -50,7 +53,7 @@ namespace Cpf
 			 * @param [in,out] outer Aggregation outer object or null.
 			 * @param cid The class instance id to create.
 			 * @param iid The interface id to store in the result.
-			 * @param [out] result A pointer to the interface pointer which the interface is stored in.
+			 * @param [out] result Various error codes or COM::kOK.
 			 * @return A result code.
 			 */
 			virtual COM::Result CPF_STDCALL Create(COM::iUnknown* outer, COM::ClassID cid, COM::InterfaceID iid, void** result) = 0;
@@ -79,6 +82,29 @@ namespace Cpf
 			 * @return A result code.
 			 */
 			virtual COM::Result CPF_STDCALL GetClasses(COM::InterfaceID id, int32_t* count, COM::ClassID* cid) = 0;
+
+			/**
+			 * @brief Install an instance for the given interface id.
+			 * @param id The interface id for the singleton.
+			 * @param [in,out] instance If non-null, the instance pointer to install.
+			 * @return A COM::Result, kOK if all is ok.
+			 */
+			virtual COM::Result CPF_STDCALL InstanceInstall(COM::InterfaceID id, void* instance) = 0;
+
+			/**
+			 * @brief Remove an instance from the instances.
+			 * @param id The interface id for the singleton.
+			 * @return A COM::Result, kOK if the instance was removed.
+			 */
+			virtual COM::Result CPF_STDCALL InstanceRemove(COM::InterfaceID id) = 0;
+
+			/**
+			 * @brief Get the instance for the given interface.
+			 * @param id The interface id for the singleton.
+			 * @param [in,out] outIface If non-null, the output.
+			 * @return The COM::Result, kOK if the instance was found and put in the output.
+			 */
+			virtual COM::Result CPF_STDCALL GetInstance(COM::InterfaceID id, void** outIface) = 0;
 		};
 	}
 }

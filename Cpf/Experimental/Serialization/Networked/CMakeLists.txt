@@ -29,7 +29,6 @@ target_link_libraries (Networked
 	s_Application
 	i_DebugUI
 	i_Adapter_SDL2
-	cereal
 	asio
 )
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)

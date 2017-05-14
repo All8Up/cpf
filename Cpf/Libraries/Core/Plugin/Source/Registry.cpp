@@ -23,15 +23,20 @@ public:
 
 	// iRegistry overrides.
 	COM::Result CPF_STDCALL Load(const char* const) override;
+
+	COM::Result CPF_STDCALL Create(COM::iUnknown*, COM::ClassID, COM::InterfaceID, void**) override;
+
 	COM::Result CPF_STDCALL Install(COM::ClassID, Plugin::iClassInstance*) override;
 	COM::Result CPF_STDCALL Remove(COM::ClassID) override;
 	COM::Result CPF_STDCALL Exists(COM::ClassID id) override;
-	COM::Result CPF_STDCALL Create(COM::iUnknown*, COM::ClassID, COM::InterfaceID, void**) override;
 
 	COM::Result CPF_STDCALL ClassInstall(int32_t count, const Plugin::IID_CID* pairs) override;
 	COM::Result CPF_STDCALL ClassRemove(int32_t count, const Plugin::IID_CID* pairs) override;
-
 	COM::Result CPF_STDCALL GetClasses(COM::InterfaceID id, int32_t* count, COM::ClassID*) override;
+
+	COM::Result CPF_STDCALL InstanceInstall(COM::InterfaceID id, void*) override;
+	COM::Result CPF_STDCALL InstanceRemove(COM::InterfaceID id) override;
+	COM::Result CPF_STDCALL GetInstance(COM::InterfaceID id, void**) override;
 
 private:
 	int32_t mRefCount;
@@ -45,6 +50,9 @@ private:
 	using ClassList = Cpf::Vector<COM::ClassID>;
 	using ClassMap = Cpf::UnorderedMap<COM::InterfaceID, ClassList>;
 	ClassMap mClasses;
+
+	using InstanceMap = Cpf::UnorderedMap<COM::InterfaceID, void*>;
+	InstanceMap mInstances;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -260,4 +268,40 @@ COM::Result CPF_STDCALL Registry::ClassRemove(int32_t count, const Plugin::IID_C
 		}
 	}
 	return COM::kOK;
+}
+
+COM::Result CPF_STDCALL Registry::InstanceInstall(COM::InterfaceID id, void* instance)
+{
+	auto it = mInstances.find(id);
+	if (it != mInstances.end())
+		return Plugin::kInstanceExists;
+	mInstances[id] = instance;
+	return COM::kOK;
+}
+
+COM::Result CPF_STDCALL Registry::InstanceRemove(COM::InterfaceID id)
+{
+	auto it = mInstances.find(id);
+	if (it != mInstances.end())
+	{
+		mInstances.erase(it);
+		return COM::kOK;
+	}
+	return Plugin::kNotInstalled;
+}
+
+COM::Result CPF_STDCALL Registry::GetInstance(COM::InterfaceID id, void** outIface)
+{
+	if (outIface)
+	{
+		auto it = mInstances.find(id);
+		if (it != mInstances.end())
+		{
+			*outIface = it->second;
+			return COM::kOK;
+		}
+
+		return Plugin::kNotInstalled;
+	}
+	return COM::kInvalidParameter;
 }
