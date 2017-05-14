@@ -33,9 +33,13 @@ COM::Result CPF_STDCALL Python3::QueryInterface(COM::InterfaceID id, void** outI
 	return COM::kInvalidParameter;
 }
 
-static int numargs = 0;
+//////////////////////////////////////////////////////////////////////////
+
+
 
 /* Return the number of arguments of the application command line */
+static int numargs = 0;
+
 static PyObject*
 emb_numargs(PyObject*, PyObject* args)
 {
@@ -51,12 +55,12 @@ static PyMethodDef EmbMethods[] = {
 };
 
 static PyModuleDef EmbModule = {
-	PyModuleDef_HEAD_INIT, "emb", NULL, -1, EmbMethods,
+	PyModuleDef_HEAD_INIT, "cpf", NULL, -1, EmbMethods,
 	NULL, NULL, NULL, NULL
 };
 
 static PyObject*
-PyInit_emb(void)
+PyInit_emb()
 {
 	return PyModule_Create(&EmbModule);
 }
@@ -64,14 +68,13 @@ PyInit_emb(void)
 COM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 {
 	numargs = 5;
-	PyImport_AppendInittab("emb", &PyInit_emb);
-
+	PyImport_AppendInittab("cpf", &PyInit_emb);
 	Py_Initialize();
+
 	WString wpath;
 	for (int i = 0; basePath[i] != 0; ++i)
 		wpath.push_back(wchar_t(basePath[i]));
 	PySys_SetPath(wpath.c_str());
-
 
 	PyObject *pName, *pModule, *pFunc;
 	PyObject *pArgs, *pValue;
