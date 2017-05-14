@@ -114,5 +114,11 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2")
 	target_include_directories (jsoncons INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2/src)
 endif ()
 
+# pybind11
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/pybind11-2.1.1")
+	set (PYBIND11_PYTHON_VERSION 3.6 CACHE STRING "" FORCE)
+	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/pybind11-2.1.1)
+endif ()
+
 # Find installed Python 3.6.1 (or higher) for tools.
 find_package (PythonLibs 3)

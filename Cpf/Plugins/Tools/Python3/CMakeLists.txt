@@ -1,5 +1,7 @@
 # ###############################################
 if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
+	message ("Found Python3.")
+
 	set (INCLUDE_FILES
 		Include/Python3.hpp
 	)
@@ -30,6 +32,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	target_link_libraries (Python3
 		PUBLIC
 			Configuration Plugin Logging
+		PRIVATE
 			debug ${PYTHON_DEBUG_LIBRARY}
 			optimized ${PYTHON_LIBRARY}
 	)
@@ -47,6 +50,8 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	source_group (Headers FILES ${INCLUDE_FILES})
 	source_group (Interfaces FILES ${INTERFACE_FILES})
 	source_group (Sources FILES ${SOURCE_FILES})
+else ()
+	message ("Python not found.")
 endif ()
 
 # ###############################################

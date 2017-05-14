@@ -1,5 +1,5 @@
-import emb
-print ("Number of arguments: ", emb.numargs())
+import cpf
+print ("Number of arguments: ", cpf.numargs())
 
 def multiply(a,b):
     print("Will compute", a, "times", b)
