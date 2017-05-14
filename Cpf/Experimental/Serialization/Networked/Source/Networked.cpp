@@ -15,7 +15,6 @@
 #include "SDL2/CIDs.hpp"
 #include "Graphics/Driver.hpp"
 #include "Threading/Thread.hpp"
-//#include <Python.h>
 
 using namespace Cpf;
 using namespace Platform;
@@ -28,12 +27,12 @@ Networked::Networked()
 	, mpWindowedApplication(nullptr)
 {
 	CPF_INIT_LOG(Networked);
-//	Py_Initialize();
 }
 
 Networked::~Networked()
 {
-//	Py_FinalizeEx();
+	if (mpPython3)
+		mpPython3->Shutdown();
 	CPF_DROP_LOG(Networked);
 }
 
@@ -55,6 +54,14 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/MultiCore.cfp");
 	GetRegistry()->Load("plugins/DebugUI.cfp");
+	if (Succeeded(GetRegistry()->Load("plugins/Python3.cfp")))
+	{
+		if (Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID, Tools::iPython3::kIID, mpPython3.AsVoidPP())))
+		{
+			String assetPath = exePath + "networked/";
+			mpPython3->Initialize(assetPath.c_str());
+		}
+	}
 
 	return COM::kOK;
 }

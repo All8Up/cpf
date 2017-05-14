@@ -9,6 +9,7 @@
 #include "Concurrency/iLoadBalancer.hpp"
 #include "MultiCore/System/iTimer.hpp"
 #include "Resources/iLocator.hpp"
+#include "iPython.hpp"
 
 namespace Cpf
 {
@@ -55,6 +56,8 @@ namespace Cpf
 		IntrusivePtr<MultiCore::iTimer> mpTimer;
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
+
+		IntrusivePtr<Tools::iPython3> mpPython3;
 
 		Time::Value mLastTime;
 

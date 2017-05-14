@@ -114,4 +114,5 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2")
 	target_include_directories (jsoncons INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2/src)
 endif ()
 
-#find_package (PythonLibs 3)
+# Find installed Python 3.6.1 (or higher) for tools.
+find_package (PythonLibs 3)

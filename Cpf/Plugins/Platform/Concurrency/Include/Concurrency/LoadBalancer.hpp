@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Scheduler.hpp"
-#include "Threading/CPU.hpp"
 #include "Concurrency/iLoadBalancer.hpp"
+#include "Platform/Threading/CPU.hpp"
 
 namespace Cpf
 {

@@ -29,6 +29,7 @@ target_link_libraries (Networked
 	s_Application
 	i_DebugUI
 	i_Adapter_SDL2
+	i_Python3
 	asio
 )
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
