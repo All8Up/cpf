@@ -52,6 +52,17 @@ foreach (file ${DataFiles})
 	)
 endforeach ()
 ]]#
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/Debug/resources/networked/TestPython.py
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/networked/TestPython.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/TestPython.py
+	MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/networked/TestPython.py
+)
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/Release/resources/networked/TestPython.py
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/networked/TestPython.py ${CMAKE_BINARY_DIR}/Release/resources/networked/TestPython.py
+	MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/networked/TestPython.py
+)
+
 add_custom_command (TARGET Networked POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	${CMAKE_CURRENT_SOURCE_DIR}/networked
