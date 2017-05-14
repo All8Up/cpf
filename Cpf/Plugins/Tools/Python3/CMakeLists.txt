@@ -1,5 +1,5 @@
 # ###############################################
-if (PYTHON_INCLUDE_DIR)
+if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	set (INCLUDE_FILES
 		Include/Python3.hpp
 	)
