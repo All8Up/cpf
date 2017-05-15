@@ -2,6 +2,7 @@
 #include "Python3.hpp"
 #include "Logging/Logging.hpp"
 #include <Python.h>
+#include "pybind11/pybind11.h"
 
 using namespace Cpf;
 using namespace Tools;
@@ -34,76 +35,43 @@ COM::Result CPF_STDCALL Python3::QueryInterface(COM::InterfaceID id, void** outI
 }
 
 //////////////////////////////////////////////////////////////////////////
+struct Pet {
+	Pet(const std::string &name) : name(name) { }
+	void setName(const std::string &name_) { name = name_; }
+	const std::string &getName() const { return name; }
 
-
-
-/* Return the number of arguments of the application command line */
-static int numargs = 0;
-
-static PyObject*
-emb_numargs(PyObject*, PyObject* args)
-{
-	if (!PyArg_ParseTuple(args, ":numargs"))
-		return NULL;
-	return PyLong_FromLong(numargs);
-}
-
-static PyMethodDef EmbMethods[] = {
-	{ "numargs", emb_numargs, METH_VARARGS,
-	"Return the number of arguments received by the process." },
-	{ NULL, NULL, 0, NULL }
+	std::string name;
 };
 
-static PyModuleDef EmbModule = {
-	PyModuleDef_HEAD_INIT, "cpf", NULL, -1, EmbMethods,
-	NULL, NULL, NULL, NULL
-};
+namespace py = pybind11;
 
-static PyObject*
-PyInit_emb()
-{
-	return PyModule_Create(&EmbModule);
+PYBIND11_PLUGIN(example) {
+	py::module m("example", "pybind11 example plugin");
+
+	py::class_<Pet>(m, "Pet")
+		.def(py::init<const std::string &>())
+		.def("setName", &Pet::setName)
+		.def("getName", &Pet::getName);
+
+	return m.ptr();
 }
 
 COM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 {
-	numargs = 5;
-	PyImport_AppendInittab("cpf", &PyInit_emb);
 	Py_Initialize();
+	auto example = pybind11_init();
 
 	WString wpath;
 	for (int i = 0; basePath[i] != 0; ++i)
 		wpath.push_back(wchar_t(basePath[i]));
 	PySys_SetPath(wpath.c_str());
 
-	PyObject *pName, *pModule, *pFunc;
-	PyObject *pArgs, *pValue;
+	auto module = pybind11::module::import("TestPython");
+	auto func = module.attr("multiply");
+	auto result = func(2, 5);
+	auto rval = result.cast<long>();
 
-	pName = PyUnicode_DecodeFSDefault("TestPython");
-	pModule = PyImport_Import(pName);
-	Py_DECREF(pName);
-	if (pModule!=nullptr)
-	{
-		pFunc = PyObject_GetAttrString(pModule, "multiply");
-		if (pFunc && PyCallable_Check(pFunc))
-		{
-			pArgs = PyTuple_New(2);
-			pValue = PyLong_FromLong(5);
-			PyTuple_SetItem(pArgs, 0, pValue);
-			pValue = PyLong_FromLong(7);
-			PyTuple_SetItem(pArgs, 1, pValue);
-
-			pValue = PyObject_CallObject(pFunc, pArgs);
-			Py_DECREF(pArgs);
-			if (pValue != NULL)
-			{
-				CPF_LOG(Python3, Info) << "Python test result is 5*7 = " << PyLong_AsLong(pValue);
-				Py_DECREF(pValue);
-			}
-		}
-		Py_XDECREF(pFunc);
-		Py_DECREF(pModule);
-	}
+	Py_DECREF(example);
 	return COM::kOK;
 }
 

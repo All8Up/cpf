@@ -33,8 +33,9 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		PUBLIC
 			Configuration Plugin Logging
 		PRIVATE
-			debug ${PYTHON_DEBUG_LIBRARY}
-			optimized ${PYTHON_LIBRARY}
+            debug ${PYTHON_DEBUG_LIBRARY}
+            optimized ${PYTHON_LIBRARY}
+			pybind11::module
 	)
 	set_property (TARGET Python3 PROPERTY FOLDER Plugins/Tools)
 
