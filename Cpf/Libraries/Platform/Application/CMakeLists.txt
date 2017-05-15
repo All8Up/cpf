@@ -58,6 +58,7 @@ target_include_directories( s_Application PUBLIC
 
 set_property( TARGET s_Application PROPERTY FOLDER Libraries/Static/Platform )
 
+#[[
 install( DIRECTORY Include/Application
 	DESTINATION Include/Application
 	PATTERN *
@@ -66,7 +67,6 @@ install( DIRECTORY Include/${CMAKE_SYSTEM_NAME}/Platform/Application
 	DESTINATION ${CPF_PLATFORM_INCLUDE_DIR}/Platform
 	PATTERN *
 )
-
 
 install( TARGETS s_Application
 	EXPORT ApplicationConfig
@@ -81,6 +81,7 @@ install( TARGETS i_Application
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install( EXPORT ApplicationConfig DESTINATION CMake )
+]]#
 
 
 # ###############################################

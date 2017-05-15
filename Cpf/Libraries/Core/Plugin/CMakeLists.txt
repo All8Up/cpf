@@ -13,7 +13,7 @@ set (INCLUDE_PLATFORM_FILES
 )
 
 add_library (Plugin INTERFACE)
-target_link_libraries (Plugin INTERFACE Configuration COM)
+target_link_libraries (Plugin INTERFACE Configuration COM rttr_core)
 
 target_include_directories (Plugin INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -29,12 +29,11 @@ source_group (Interface FILES ${INCLUDE_FILES})
 source_group (Interface\\Plugin FILES ${INCLUDE_PLUGIN_FILES})
 source_group (Interface\\Platform FILES ${INCLUDE_PLATFORM_FILES})
 
+#[[
 install( DIRECTORY Include/Core
 	DESTINATION Include/Core
 	PATTERN *
 )
-
-
 install (TARGETS Plugin
 	EXPORT PluginConfig
 	CONFIGURATIONS Debug Release
@@ -42,6 +41,7 @@ install (TARGETS Plugin
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT PluginConfig DESTINATION CMake)
+]]#
 
 # ###############################################
 add_library (TestPlugin SHARED
@@ -76,6 +76,7 @@ set_property (TARGET s_PluginHost PROPERTY FOLDER Libraries/Static/Core)
 source_group ("Header Files" FILES ${PLUGINHOST_INCLUDE_FILES})
 source_group ("Source Files" FILES ${PLUGINHOST_SOURCE_FILES})
 
+#[[
 install (TARGETS s_PluginHost
 	EXPORT PluginHostConfig
 	CONFIGURATIONS Debug Release
@@ -83,6 +84,7 @@ install (TARGETS s_PluginHost
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install (EXPORT PluginHostConfig DESTINATION CMake)
+]]#
 
 # ###############################################
 if(MSVC)

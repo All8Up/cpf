@@ -65,7 +65,18 @@ target_include_directories (Resources
 target_compile_definitions (Resources PUBLIC CPF_STATIC_IO)
 target_link_libraries (Resources
 	LINK_PUBLIC
-		Configuration s_Collections RefCount s_IO s_ANSI_C_FileSystem Logging COM Plugin Events Hash jsoncons rapidjson rttr_core
+		Configuration
+		s_Collections
+		RefCount
+		s_IO
+		s_ANSI_C_FileSystem
+		Logging
+		COM
+		Plugin
+		Events
+		Hash
+		jsoncons
+		rapidjson
 )
 set_property (TARGET Resources PROPERTY FOLDER Plugins/Game)
 

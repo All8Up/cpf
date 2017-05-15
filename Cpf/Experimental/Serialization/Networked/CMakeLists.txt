@@ -31,6 +31,7 @@ target_link_libraries (Networked
 	i_Adapter_SDL2
 	i_Python3
 	asio
+	rttr_core
 )
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
 

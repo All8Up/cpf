@@ -35,7 +35,6 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		PRIVATE
             debug ${PYTHON_DEBUG_LIBRARY}
             optimized ${PYTHON_LIBRARY}
-			pybind11::module
 	)
 	set_property (TARGET Python3 PROPERTY FOLDER Plugins/Tools)
 

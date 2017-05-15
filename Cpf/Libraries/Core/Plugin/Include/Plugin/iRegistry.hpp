@@ -56,7 +56,7 @@ namespace Cpf
 			 * @param [out] result Various error codes or COM::kOK.
 			 * @return A result code.
 			 */
-			virtual COM::Result CPF_STDCALL Create(COM::iUnknown* outer, COM::ClassID cid, COM::InterfaceID iid, void** result) = 0;
+			virtual COM::Result CPF_STDCALL Create(iUnknown* outer, COM::ClassID cid, COM::InterfaceID iid, void** result) = 0;
 
 			/**
 			 * @brief Install a set of class id's and instance id's.

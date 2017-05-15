@@ -81,7 +81,7 @@ COM::Result CPF_STDCALL Networked::Main(iApplication* application)
 		{
 			if (_InitializeResources() && _InitializePipeline())
 			{
-				if (COM::Succeeded(_ConfigurePipeline()))
+				if (Succeeded(_ConfigurePipeline()))
 				{
 					_ConfigureDebugUI();
 
