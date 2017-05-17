@@ -6,7 +6,7 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(COM::iUnknown*)
+InstanceSystem::InstanceSystem(GOM::iUnknown*)
 {}
 
 void InstanceSystem::_Begin(const Concurrency::WorkContext*, void* context)
@@ -23,29 +23,29 @@ void InstanceSystem::_End(const Concurrency::WorkContext*, void* context)
 
 
 // iUnknown
-COM::Result CPF_STDCALL InstanceSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL InstanceSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
+		case GOM::iUnknown::kIID.GetID():
 			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case InstanceSystem::kIID.GetID():
 			*outIface = static_cast<InstanceSystem*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 // iSystem
-COM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const MultiCore::iSystem::Desc* desc)
+GOM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const MultiCore::iSystem::Desc* desc)
 {
 	if (rgy && name)
 	{
@@ -80,7 +80,7 @@ COM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const
 
 		return result;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 MultiCore::SystemID CPF_STDCALL InstanceSystem::GetID() const
@@ -89,17 +89,17 @@ MultiCore::SystemID CPF_STDCALL InstanceSystem::GetID() const
 }
 
 // iStageList
-COM::Result CPF_STDCALL InstanceSystem::FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const
+GOM::Result CPF_STDCALL InstanceSystem::FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const
 {
 	return mpStages->FindStage(id, outStage);
 }
 
-COM::Result CPF_STDCALL InstanceSystem::GetStages(int32_t* count, MultiCore::iStage** outStages) const
+GOM::Result CPF_STDCALL InstanceSystem::GetStages(int32_t* count, MultiCore::iStage** outStages) const
 {
 	return mpStages->GetStages(count, outStages);
 }
 
-COM::Result CPF_STDCALL InstanceSystem::GetInstructions(int32_t* count, MultiCore::Instruction* instrs)
+GOM::Result CPF_STDCALL InstanceSystem::GetInstructions(int32_t* count, MultiCore::Instruction* instrs)
 {
 	return mpStages->GetInstructions(count, instrs);
 }
@@ -109,17 +109,17 @@ void CPF_STDCALL InstanceSystem::AddDependency(MultiCore::BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-COM::Result CPF_STDCALL InstanceSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, MultiCore::BlockDependency* deps)
+GOM::Result CPF_STDCALL InstanceSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, MultiCore::BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }
 
-COM::Result CPF_STDCALL InstanceSystem::AddStage(MultiCore::iStage* stage)
+GOM::Result CPF_STDCALL InstanceSystem::AddStage(MultiCore::iStage* stage)
 {
 	return mpStages->AddStage(stage);
 }
 
-COM::Result CPF_STDCALL InstanceSystem::RemoveStage(MultiCore::StageID id)
+GOM::Result CPF_STDCALL InstanceSystem::RemoveStage(MultiCore::StageID id)
 {
 	return mpStages->RemoveStage(id);
 }

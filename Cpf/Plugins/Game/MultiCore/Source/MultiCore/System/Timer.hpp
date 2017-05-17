@@ -18,17 +18,17 @@ namespace Cpf
 			virtual ~Timer();
 
 			// iUnknown overrides.
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			// System overrides.
-			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) override;
-			COM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
+			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) override;
+			GOM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			SystemID CPF_STDCALL GetID() const override;
-			COM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
-			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
+			GOM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
+			GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			void CPF_STDCALL AddDependency(BlockDependency dep) override;
-			COM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
-			COM::Result CPF_STDCALL Configure(iPipeline*) override;
+			GOM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
+			GOM::Result CPF_STDCALL Configure(iPipeline*) override;
 
 			// Timer interface.
 			Time::Value CPF_STDCALL GetTime() override;
@@ -38,8 +38,8 @@ namespace Cpf
 			void CPF_STDCALL Pause() override;
 			void CPF_STDCALL Resume() override;
 
-			COM::Result CPF_STDCALL AddStage(iStage*);
-			COM::Result CPF_STDCALL RemoveStage(StageID);
+			GOM::Result CPF_STDCALL AddStage(iStage*);
+			GOM::Result CPF_STDCALL RemoveStage(StageID);
 
 		private:
 

@@ -10,7 +10,7 @@ using namespace Caches;
 const char* const Default::kCacheName = "Default";
 
 
-COM::Result CPF_STDCALL Default::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Default::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -23,12 +23,12 @@ COM::Result CPF_STDCALL Default::QueryInterface(COM::InterfaceID id, void** outI
 			*outIface = static_cast<iCache*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 iCache* Default::Create(const CacheDesc* const)

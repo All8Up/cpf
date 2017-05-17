@@ -10,14 +10,14 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		static constexpr COM::ClassID kTimerCID = COM::ClassID("TimerClass"_crc64);
+		static constexpr GOM::ClassID kTimerCID = GOM::ClassID("TimerClass"_crc64);
 
 		/**
 		 @brief A game timer system.
 		 */
 		struct iTimer : iSystem
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iTimer"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iTimer"_crc64);
 
 			/**
 			 @brief Gets the time.

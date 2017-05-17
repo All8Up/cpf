@@ -10,17 +10,17 @@ namespace Cpf
 	{
 		namespace D3D12
 		{
-			static constexpr COM::ClassID kFrameBufferCID = COM::ClassID("Adapter::D3D12::FrameBuffer"_crc64);
+			static constexpr GOM::ClassID kFrameBufferCID = GOM::ClassID("Adapter::D3D12::FrameBuffer"_crc64);
 
 			class FrameBuffer : public tRefCounted<Graphics::iFrameBuffer>
 			{
 			public:
-				FrameBuffer(COM::iUnknown*);
+				FrameBuffer(GOM::iUnknown*);
 				virtual ~FrameBuffer();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
-				COM::Result CPF_STDCALL Initialize(const Graphics::FrameBufferDesc* desc);
+				GOM::Result CPF_STDCALL Initialize(const Graphics::FrameBufferDesc* desc);
 
 				using ImageVector = Vector<Graphics::ImageAndView>;
 				const ImageVector& GetImages() const { return mAttachments; }

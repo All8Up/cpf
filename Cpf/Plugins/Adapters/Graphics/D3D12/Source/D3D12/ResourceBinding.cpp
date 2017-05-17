@@ -39,25 +39,25 @@ ResourceBinding::~ResourceBinding()
 	CPF_LOG(D3D12, Info) << "Destroyed resource binding: " << intptr_t(this) << " - " << intptr_t(mpSignature.Ptr());
 }
 
-COM::Result CPF_STDCALL ResourceBinding::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL ResourceBinding::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iResourceBinding::kIID.GetID():
 			*outIface = static_cast<iResourceBinding*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool ResourceBinding::_BuildSignature(const Graphics::ResourceBindingDesc* desc, ID3DBlob** result) const

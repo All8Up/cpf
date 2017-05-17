@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
 
@@ -29,8 +29,8 @@ namespace Cpf
 		enum class ResourceState : int32_t;
 		enum class DepthStencilClearFlag : int32_t;
 
-		static constexpr COM::Result kAlreadyInRenderPass = COM::CreateResult(1, "Graphics"_crc16, "Already in render pass"_crc16);
-		static constexpr COM::Result kNotInRenderPass = COM::CreateResult(1, "Graphics"_crc16, "Not in a render pass"_crc16);
+		static constexpr GOM::Result kAlreadyInRenderPass = GOM::CreateResult(1, "Graphics"_crc16, "Already in render pass"_crc16);
+		static constexpr GOM::Result kNotInRenderPass = GOM::CreateResult(1, "Graphics"_crc16, "Not in a render pass"_crc16);
 
 		enum class CommandBufferType : int32_t
 		{
@@ -40,9 +40,9 @@ namespace Cpf
 			kCopy = 3
 		};
 
-		struct iCommandBuffer : COM::iUnknown
+		struct iCommandBuffer : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iCommandBuffer"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iCommandBuffer"_crc64);
 
 			virtual void CPF_STDCALL Begin(iCommandBuffer* primary) = 0;
 			virtual void CPF_STDCALL End() = 0;
@@ -72,12 +72,12 @@ namespace Cpf
 			virtual void CPF_STDCALL DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) = 0;
 
 			// Render passes.
-			virtual COM::Result CPF_STDCALL BeginRenderPass(RenderPassBeginDesc*) = 0;
-			virtual COM::Result CPF_STDCALL NextSubPass() = 0;
-			virtual COM::Result CPF_STDCALL EndRenderPass() = 0;
+			virtual GOM::Result CPF_STDCALL BeginRenderPass(RenderPassBeginDesc*) = 0;
+			virtual GOM::Result CPF_STDCALL NextSubPass() = 0;
+			virtual GOM::Result CPF_STDCALL EndRenderPass() = 0;
 
 			// Secondary command buffer insertion.
-			virtual COM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) = 0;
+			virtual GOM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) = 0;
 		};
 	}
 }

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 
 namespace Cpf
@@ -10,9 +10,9 @@ namespace Cpf
 		struct iDevice;
 		struct iBlob;
 
-		struct iShader : COM::iUnknown
+		struct iShader : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iShader"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iShader"_crc64);
 
 			virtual bool LoadFrom(iDevice* device, iBlob*) = 0;
 		};

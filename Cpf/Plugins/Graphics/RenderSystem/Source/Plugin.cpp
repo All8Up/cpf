@@ -13,7 +13,7 @@ namespace
 
 
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -25,9 +25,9 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 			registry->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
 		}
 		CPF_ASSERT(g_Context.GetRegistry() == registry);
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
@@ -37,7 +37,7 @@ bool CPF_EXPORT CanUnload()
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -47,7 +47,7 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 			registry->Remove(kRenderableCID);
 			g_Context.SetRegistry(nullptr);
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

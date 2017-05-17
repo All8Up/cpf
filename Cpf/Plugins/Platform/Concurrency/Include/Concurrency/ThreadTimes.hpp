@@ -14,7 +14,7 @@ namespace Cpf
 		public:
 			ThreadTimes(iUnknown*) {}
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			void CPF_STDCALL Wait() override;
 			void CPF_STDCALL Signal() override;

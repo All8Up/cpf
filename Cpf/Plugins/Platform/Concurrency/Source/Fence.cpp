@@ -9,7 +9,7 @@ Fence::Fence(iUnknown*)
 {
 }
 
-COM::Result CPF_STDCALL Fence::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Fence::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -24,12 +24,12 @@ COM::Result CPF_STDCALL Fence::QueryInterface(COM::InterfaceID id, void** outIfa
 			break;
 
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void Fence::Wait()

@@ -7,20 +7,20 @@ using namespace Cpf;
 using namespace SDL2;
 
 
-MouseDevice::MouseDevice(COM::iUnknown*)
+MouseDevice::MouseDevice(GOM::iUnknown*)
 {}
 
 MouseDevice::~MouseDevice()
 {}
 
-COM::Result CPF_STDCALL MouseDevice::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL MouseDevice::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iInputDevice::kIID.GetID():
 			*outIface = static_cast<iInputDevice*>(this);
@@ -29,15 +29,15 @@ COM::Result CPF_STDCALL MouseDevice::QueryInterface(COM::InterfaceID id, void** 
 			*outIface = static_cast<iMouseDevice*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL MouseDevice::GetButtonState(MouseButton* state)
+GOM::Result CPF_STDCALL MouseDevice::GetButtonState(MouseButton* state)
 {
 	if (state)
 	{
@@ -48,20 +48,20 @@ COM::Result CPF_STDCALL MouseDevice::GetButtonState(MouseButton* state)
 		if (button & SDL_BUTTON(SDL_BUTTON_MIDDLE)) *state |= MouseButton::eMiddle;
 		if (button & SDL_BUTTON(SDL_BUTTON_X1)) *state |= MouseButton::eX1;
 		if (button & SDL_BUTTON(SDL_BUTTON_X2)) *state |= MouseButton::eX2;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL MouseDevice::GetPosition(int32_t* x, int32_t* y)
+GOM::Result CPF_STDCALL MouseDevice::GetPosition(int32_t* x, int32_t* y)
 {
 	if (x == nullptr && y == nullptr)
-		return COM::kInvalidParameter;
+		return GOM::kInvalidParameter;
 
 	int xx, yy;
 	SDL_GetMouseState(&xx, &yy);
 	if (x) *x = int32_t(xx);
 	if (y) *y = int32_t(yy);
 
-	return COM::kOK;
+	return GOM::kOK;
 }

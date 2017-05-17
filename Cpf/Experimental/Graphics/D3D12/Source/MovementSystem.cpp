@@ -18,33 +18,33 @@ using namespace Platform;
 using namespace EntityService;
 using namespace MultiCore;
 
-COM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
+GOM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
 {
 	return regy->Install(kMoverComponentCID, new Plugin::tClassInstance<MoverSystem::MoverComponent>());
 }
 
-COM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
+GOM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
 {
 	return regy->Remove(kMoverComponentCID);
 }
 
-COM::Result MoverSystem::MoverComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
+GOM::Result MoverSystem::MoverComponent::QueryInterface(GOM::InterfaceID id, void** outPtr)
 {
 	if (id.GetID() == iMoverComponent::kIID.GetID())
 	{
 		iMoverComponent* mover = static_cast<iMoverComponent*>(this);
 		mover->AddRef();
 		*outPtr = mover;
-		return COM::kOK;
+		return GOM::kOK;
 	}
 
 	*outPtr = nullptr;
-	return COM::kUnknownInterface;
+	return GOM::kUnknownInterface;
 }
 
 
 
-MoverSystem::MoverSystem(COM::iUnknown*)
+MoverSystem::MoverSystem(GOM::iUnknown*)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -57,19 +57,19 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 	return mpInstances;
 }
 
-COM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
+GOM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
 {
-	if (COM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
-		COM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
-		return COM::kOK;
-	return COM::kInvalid;
+	if (GOM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
+		GOM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
+		return GOM::kOK;
+	return GOM::kInvalid;
 }
 
-COM::Result MoverSystem::Install(Plugin::iRegistry* regy)
+GOM::Result MoverSystem::Install(Plugin::iRegistry* regy)
 {
 	return regy->Install(kMoverSystemCID, new Plugin::tClassInstance<MoverSystem>());
 }
-COM::Result MoverSystem::Remove(Plugin::iRegistry* regy)
+GOM::Result MoverSystem::Remove(Plugin::iRegistry* regy)
 {
 	return regy->Remove(kMoverSystemCID);
 }
@@ -84,7 +84,7 @@ void MoverSystem::EnableMovement(bool flag)
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(COM::iUnknown*)
+MoverSystem::MoverComponent::MoverComponent(GOM::iUnknown*)
 	: mpMover(nullptr)
 {}
 
@@ -143,14 +143,14 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 
 
 //////////////////////////////////////////////////////////////////////////
-COM::Result CPF_STDCALL MoverSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL MoverSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);
@@ -159,16 +159,16 @@ COM::Result CPF_STDCALL MoverSystem::QueryInterface(COM::InterfaceID id, void** 
 			*outIface = static_cast<MoverSystem*>(this);
 			break;
 		default:
-			return COM::kNotImplemented;
+			return GOM::kNotImplemented;
 		}
 
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* gdesc)
+GOM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* gdesc)
 {
 	(void)rgy;
 	if (name)
@@ -183,7 +183,7 @@ COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const ch
 
 		mID = SystemID(name, strlen(name));
 		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
-		if (COM::Succeeded(result))
+		if (GOM::Succeeded(result))
 		{
 			mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
@@ -193,11 +193,11 @@ COM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const ch
 
 			// Add the stages to this system.
 			AddStage(mpThreadStage);
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		return result;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 SystemID CPF_STDCALL MoverSystem::GetID() const
@@ -205,27 +205,27 @@ SystemID CPF_STDCALL MoverSystem::GetID() const
 	return mID;
 }
 
-COM::Result CPF_STDCALL MoverSystem::FindStage(StageID id, iStage** outStage) const
+GOM::Result CPF_STDCALL MoverSystem::FindStage(StageID id, iStage** outStage) const
 {
 	return mpStages->FindStage(id, outStage);
 }
 
-COM::Result CPF_STDCALL MoverSystem::GetInstructions(int32_t* count, Instruction* instructions)
+GOM::Result CPF_STDCALL MoverSystem::GetInstructions(int32_t* count, Instruction* instructions)
 {
 	return mpStages->GetInstructions(count, instructions);
 }
 
-COM::Result CPF_STDCALL MoverSystem::GetStages(int32_t* count, iStage** outStages) const
+GOM::Result CPF_STDCALL MoverSystem::GetStages(int32_t* count, iStage** outStages) const
 {
 	return mpStages->GetStages(count, outStages);
 }
 
-COM::Result CPF_STDCALL MoverSystem::AddStage(iStage* stage)
+GOM::Result CPF_STDCALL MoverSystem::AddStage(iStage* stage)
 {
 	return mpStages->AddStage(stage);
 }
 
-COM::Result CPF_STDCALL MoverSystem::RemoveStage(StageID id)
+GOM::Result CPF_STDCALL MoverSystem::RemoveStage(StageID id)
 {
 	return mpStages->RemoveStage(id);
 }
@@ -235,7 +235,7 @@ void CPF_STDCALL MoverSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-COM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

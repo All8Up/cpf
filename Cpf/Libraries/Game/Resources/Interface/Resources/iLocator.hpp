@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Events/Event.hpp"
 #include "IO/Stream.hpp"
 
@@ -8,7 +8,7 @@ namespace Cpf
 {
 	namespace Resources
 	{
-		static constexpr COM::ClassID kLocatorCID = COM::ClassID("Cpf::Resources::iLocator"_crc64);
+		static constexpr GOM::ClassID kLocatorCID = GOM::ClassID("Cpf::Resources::iLocator"_crc64);
 
 		//////////////////////////////////////////////////////////////////////////
 		struct ID;
@@ -26,9 +26,9 @@ namespace Cpf
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		struct iLocator : COM::iUnknown
+		struct iLocator : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Resources::iLocator"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iLocator"_crc64);
 
 			//////////////////////////////////////////////////////////////////////////
 			using Mounted = Events::Event<0, Function<void(const char* const, iVolume*)>>;

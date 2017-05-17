@@ -34,7 +34,7 @@ namespace
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -49,19 +49,19 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 			registry->Install(SDL2::kClipboardCID, new Plugin::tClassInstance<SDL2::Clipboard>());
 			registry->ClassInstall(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
-COM::Result CPF_EXPORT CanUnload()
+GOM::Result CPF_EXPORT CanUnload()
 {
-	return SDL2::g_Context.GetRefCount() == 0 ? COM::kOK : COM::kInUse;
+	return SDL2::g_Context.GetRefCount() == 0 ? GOM::kOK : GOM::kInUse;
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -76,7 +76,7 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 			registry->Remove(SDL2::kWindowCID);
 			SDL2::g_Context.SetRegistry(nullptr);
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

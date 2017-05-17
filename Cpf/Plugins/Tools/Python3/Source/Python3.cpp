@@ -15,7 +15,7 @@ Python3::Python3(iUnknown*)
 Python3::~Python3()
 {}
 
-COM::Result CPF_STDCALL Python3::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Python3::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -28,12 +28,12 @@ COM::Result CPF_STDCALL Python3::QueryInterface(COM::InterfaceID id, void** outI
 			*outIface = static_cast<iPython3*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ static PyModuleDef cpfModuleDef =
 struct PythonRegistry
 {
 	PyObject_HEAD
-		int64_t mTest;
+	int64_t mTest;
 };
 
 static PyTypeObject cpfRegistryType =
@@ -120,158 +120,167 @@ PyMODINIT_FUNC PyInit_cpf()
 
 
 //////////////////////////////////////////////////////////////////////////
-
-/* Use this file as a template to start implementing a module that
-also declares object types. All occurrences of 'Xxo' should be changed
-to something reasonable for your objects. After that, all other
-occurrences of 'xx' should be changed to something reasonable for your
-module. If your module is named foo your sourcefile should be named
-foomodule.c.
-
-You will probably want to delete all references to 'x_attr' and add
-your own types of attributes instead.  Maybe you want to name your
-local variables other than 'self'.  If your object type is needed in
-other files, you'll have to create a file "foobarobject.h"; see
-floatobject.h for an example. */
-
 /* Xxo objects */
-static PyObject *ErrorObject;
-
-typedef struct {
+struct PyObject_GOMResult
+{
 	PyObject_HEAD
-		PyObject            *x_attr;        /* Attributes dictionary */
-} XxoObject;
-
-void Xxo_dealloc(XxoObject *self);
-int Xxo_setattr(XxoObject *self, const char *name, PyObject *v);
-PyObject* Xxo_getattro(XxoObject *self, PyObject *name);
-extern PyMethodDef Xxo_methods[2];
-
-static PyTypeObject Xxo_Type = {
-	/* The ob_type field must be initialized in the module init function
-	* to be portable to Windows without using C++. */
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"xxmodule.Xxo",             /*tp_name*/
-	sizeof(XxoObject),          /*tp_basicsize*/
-	0,                          /*tp_itemsize*/
-								/* methods */
-	(destructor)Xxo_dealloc,    /*tp_dealloc*/
-	0,                          /*tp_print*/
-	(getattrfunc)0,             /*tp_getattr*/
-	(setattrfunc)Xxo_setattr,   /*tp_setattr*/
-	0,                          /*tp_reserved*/
-	0,                          /*tp_repr*/
-	0,                          /*tp_as_number*/
-	0,                          /*tp_as_sequence*/
-	0,                          /*tp_as_mapping*/
-	0,                          /*tp_hash*/
-	0,                          /*tp_call*/
-	0,                          /*tp_str*/
-	(getattrofunc)Xxo_getattro, /*tp_getattro*/
-	0,                          /*tp_setattro*/
-	0,                          /*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT,         /*tp_flags*/
-	0,                          /*tp_doc*/
-	0,                          /*tp_traverse*/
-	0,                          /*tp_clear*/
-	0,                          /*tp_richcompare*/
-	0,                          /*tp_weaklistoffset*/
-	0,                          /*tp_iter*/
-	0,                          /*tp_iternext*/
-	Xxo_methods,                /*tp_methods*/
-	0,                          /*tp_members*/
-	0,                          /*tp_getset*/
-	0,                          /*tp_base*/
-	0,                          /*tp_dict*/
-	0,                          /*tp_descr_get*/
-	0,                          /*tp_descr_set*/
-	0,                          /*tp_dictoffset*/
-	0,                          /*tp_init*/
-	0,                          /*tp_alloc*/
-	0,                          /*tp_new*/
-	0,                          /*tp_free*/
-	0,                          /*tp_is_gc*/
+	GOM::Result mResult;
 };
 
-#define XxoObject_Check(v)      (Py_TYPE(v) == &Xxo_Type)
-
-static XxoObject *
-newXxoObject(PyObject *arg)
+extern "C" void Dealloc_GOMResult(PyObject_GOMResult *self)
 {
-	XxoObject *self;
-	self = PyObject_New(XxoObject, &Xxo_Type);
-	if (self == NULL)
-		return NULL;
-	self->x_attr = NULL;
-	return self;
-}
-
-/* Xxo methods */
-
-static void
-Xxo_dealloc(XxoObject *self)
-{
-	Py_XDECREF(self->x_attr);
 	PyObject_Del(self);
 }
 
-static PyObject *
-Xxo_demo(XxoObject *self, PyObject *args)
+extern "C" PyObject* GOMResult_GetAttr(PyObject_GOMResult* self, char* name)
 {
-	if (!PyArg_ParseTuple(args, ":demo"))
-		return NULL;
-	Py_INCREF(Py_None);
-	return Py_None;
+	if (strcmp(name, "error") == 0)
+	{
+		int value = self->mResult.Error;
+		return PyLong_FromLong(value);
+	}
+	if (strcmp(name, "subsystem") == 0)
+	{
+		int value = self->mResult.SubSystem;
+		return PyLong_FromLong(value);
+	}
+	if (strcmp(name, "value") == 0)
+	{
+		int value = self->mResult.Value;
+		return PyLong_FromLong(value);
+	}
+	return nullptr;
 }
 
-static PyMethodDef Xxo_methods[] = {
-	{ "demo",            (PyCFunction)Xxo_demo,  METH_VARARGS,
-	PyDoc_STR("demo() -> None") },
-	{ NULL,              NULL }           /* sentinel */
+extern "C" void GOMResult_SetAttr(PyObject_GOMResult* self, char *name, PyObject *v){	int value = PyLong_AsLong(v);	if (strcmp(name, "error") == 0)	{
+		self->mResult.Error = value == 0 ? 0 : 1;
+	}
+	else if (strcmp(name, "subsystem") == 0)
+	{
+		self->mResult.SubSystem = value;
+	}
+	else if (strcmp(name, "value") == 0)
+	{
+		self->mResult.Value = value;
+	}}
+
+extern PyMethodDef GOMResult_methods[];
+
+static PyTypeObject GOMResult_Type =
+{
+	PyVarObject_HEAD_INIT(NULL, 0)
+	"xx.Result",					/*tp_name*/
+	sizeof(PyObject_GOMResult),		/*tp_basicsize*/
+	0,								/*tp_itemsize*/
+									/* methods */
+	(destructor)Dealloc_GOMResult,	/*tp_dealloc*/
+	0,								/*tp_print*/
+	(getattrfunc)GOMResult_GetAttr,	/*tp_getattr*/
+	(setattrfunc)GOMResult_SetAttr,	/*tp_setattr*/
+	0,								/*tp_reserved*/
+	0,								/*tp_repr*/
+	0,								/*tp_as_number*/
+	0,								/*tp_as_sequence*/
+	0,								/*tp_as_mapping*/
+	0,								/*tp_hash*/
+	0,								/*tp_call*/
+	0,								/*tp_str*/
+	nullptr,						/*tp_getattro*/
+	0,								/*tp_setattro*/
+	0,								/*tp_as_buffer*/
+	Py_TPFLAGS_DEFAULT,				/*tp_flags*/
+	0,								/*tp_doc*/
+	0,								/*tp_traverse*/
+	0,								/*tp_clear*/
+	0,								/*tp_richcompare*/
+	0,								/*tp_weaklistoffset*/
+	0,								/*tp_iter*/
+	0,								/*tp_iternext*/
+	GOMResult_methods,				/*tp_methods*/
+	0,								/*tp_members*/
+	0,								/*tp_getset*/
+	0,								/*tp_base*/
+	0,								/*tp_dict*/
+	0,								/*tp_descr_get*/
+	0,								/*tp_descr_set*/
+	0,								/*tp_dictoffset*/
+	0,								/*tp_init*/
+	0,								/*tp_alloc*/
+	0,								/*tp_new*/
+	0,								/*tp_free*/
+	0,								/*tp_is_gc*/
 };
 
-static PyObject *
-Xxo_getattro(XxoObject *self, PyObject *name)
+#define GOMResult_Check(v)      (Py_TYPE(v) == &GOMResult_Type)
+
+extern "C" PyObject_GOMResult* newGOMResult(PyObject *arg)
 {
-	if (self->x_attr != NULL) {
-		PyObject *v = PyDict_GetItem(self->x_attr, name);
-		if (v != NULL) {
-			Py_INCREF(v);
-			return v;
-		}
-	}
-	return PyObject_GenericGetAttr((PyObject *)self, name);
+	PyObject_GOMResult *self;
+	self = PyObject_New(PyObject_GOMResult, &GOMResult_Type);
+	if (self == nullptr)
+		return nullptr;
+	self->mResult = GOM::kOK;
+	return self;
 }
 
-static int
-Xxo_setattr(XxoObject *self, const char *name, PyObject *v)
+/* PyObject_GOMResult methods */
+extern "C" PyObject* GOMResult_Succeeded(PyObject_GOMResult* self, PyObject *args)
 {
-	if (self->x_attr == NULL) {
-		self->x_attr = PyDict_New();
-		if (self->x_attr == NULL)
-			return -1;
-	}
-	if (v == NULL) {
-		int rv = PyDict_DelItemString(self->x_attr, name);
-		if (rv < 0)
-			PyErr_SetString(PyExc_AttributeError,
-				"delete non-existing Xxo attribute");
-		return rv;
-	}
-		
-	return PyDict_SetItemString(self->x_attr, name, v);
+	if (!PyArg_ParseTuple(args, ":succeeded"))
+		return nullptr;
+	return PyBool_FromLong(self->mResult.Error == 0);
 }
+
+extern "C" PyObject* GOMResult_Failed(PyObject_GOMResult* self, PyObject* args)
+{
+	if (!PyArg_ParseTuple(args, ":failed"))
+		return nullptr;
+	return PyBool_FromLong(self->mResult.Error != 0);
+}
+
+extern "C" PyObject* GOMResult_IsError(PyObject_GOMResult* self, PyObject* args)
+{
+	if (!PyArg_ParseTuple(args, ":is_error"))
+		return nullptr;
+	return PyBool_FromLong(self->mResult.Error == 0);
+}
+
+extern "C" PyObject* GOMResult_IsSuccess(PyObject_GOMResult* self, PyObject* args)
+{
+	if (!PyArg_ParseTuple(args, ":is_success"))
+		return nullptr;
+	return PyBool_FromLong(self->mResult.Error != 1);
+}
+
+extern "C" PyObject* GOMResult_Subsystem(PyObject_GOMResult* self, PyObject* args)
+{
+	if (!PyArg_ParseTuple(args, ":subsystem"))
+		return nullptr;
+	return PyLong_FromLong(self->mResult.SubSystem);
+}
+
+extern "C" PyObject* GOMResult_Value(PyObject_GOMResult* self, PyObject* args)
+{
+	if (!PyArg_ParseTuple(args, ":value"))
+		return nullptr;
+	return PyLong_FromLong(self->mResult.Value);
+}
+
+PyMethodDef GOMResult_methods[] =
+{
+	{"succeeded", (PyCFunction)GOMResult_Succeeded,  METH_VARARGS, PyDoc_STR("Check that a result is a success code.")},
+	{"failed", (PyCFunction)GOMResult_Failed,  METH_VARARGS, PyDoc_STR("Check that a result is a failure code.")},
+	{"is_error", (PyCFunction)GOMResult_IsError, METH_VARARGS, PyDoc_STR("")},
+	{"is_success", (PyCFunction)GOMResult_IsSuccess, METH_VARARGS, PyDoc_STR("")},
+	{nullptr, nullptr}
+};
 /* --------------------------------------------------------------------- */
 
 /* Function of two integers returning integer */
 
-PyDoc_STRVAR(xx_foo_doc,
-	"foo(i,j)\n\
-\n\
-Return the sum of i and j.");
+PyDoc_STRVAR(xx_foo_doc, "foo(i,j) Return the sum of i and j.");
 
-static PyObject *
-xx_foo(PyObject *self, PyObject *args)
+extern "C" PyObject* xx_foo(PyObject *self, PyObject *args)
 {
 	long i, j;
 	long res;
@@ -284,44 +293,20 @@ xx_foo(PyObject *self, PyObject *args)
 
 /* Function of no arguments returning new Xxo object */
 
-static PyObject *
-xx_new(PyObject *self, PyObject *args)
+extern "C" PyObject* xx_new(PyObject *self, PyObject *args)
 {
-	XxoObject *rv;
+	PyObject_GOMResult *rv;
 
 	if (!PyArg_ParseTuple(args, ":new"))
 		return NULL;
-	rv = newXxoObject(args);
+	rv = newGOMResult(args);
 	if (rv == NULL)
 		return NULL;
 	return (PyObject *)rv;
 }
 
-/* Example with subtle bug from extensions manual ("Thin Ice"). */
-
-static PyObject *
-xx_bug(PyObject *self, PyObject *args)
-{
-	PyObject *list, *item;
-
-	if (!PyArg_ParseTuple(args, "O:bug", &list))
-		return NULL;
-
-	item = PyList_GetItem(list, 0);
-	/* Py_INCREF(item); */
-	PyList_SetItem(list, 1, PyLong_FromLong(0L));
-	PyObject_Print(item, stdout, 0);
-	printf("\n");
-	/* Py_DECREF(item); */
-
-	Py_INCREF(Py_None);
-	return Py_None;
-}
-
 /* Test bad format character */
-
-static PyObject *
-xx_roj(PyObject *self, PyObject *args)
+extern "C" PyObject* xx_roj(PyObject *self, PyObject *args)
 {
 	PyObject *a;
 	long b;
@@ -334,146 +319,91 @@ xx_roj(PyObject *self, PyObject *args)
 
 /* ---------- */
 
-static PyTypeObject Str_Type = {
-	/* The ob_type field must be initialized in the module init function
-	* to be portable to Windows without using C++. */
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"xxmodule.Str",             /*tp_name*/
-	0,                          /*tp_basicsize*/
-	0,                          /*tp_itemsize*/
-								/* methods */
-	0,                          /*tp_dealloc*/
-	0,                          /*tp_print*/
-	0,                          /*tp_getattr*/
-	0,                          /*tp_setattr*/
-	0,                          /*tp_reserved*/
-	0,                          /*tp_repr*/
-	0,                          /*tp_as_number*/
-	0,                          /*tp_as_sequence*/
-	0,                          /*tp_as_mapping*/
-	0,                          /*tp_hash*/
-	0,                          /*tp_call*/
-	0,                          /*tp_str*/
-	0,                          /*tp_getattro*/
-	0,                          /*tp_setattro*/
-	0,                          /*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-	0,                          /*tp_doc*/
-	0,                          /*tp_traverse*/
-	0,                          /*tp_clear*/
-	0,                          /*tp_richcompare*/
-	0,                          /*tp_weaklistoffset*/
-	0,                          /*tp_iter*/
-	0,                          /*tp_iternext*/
-	0,                          /*tp_methods*/
-	0,                          /*tp_members*/
-	0,                          /*tp_getset*/
-	0, /* see PyInit_xx */      /*tp_base*/
-	0,                          /*tp_dict*/
-	0,                          /*tp_descr_get*/
-	0,                          /*tp_descr_set*/
-	0,                          /*tp_dictoffset*/
-	0,                          /*tp_init*/
-	0,                          /*tp_alloc*/
-	0,                          /*tp_new*/
-	0,                          /*tp_free*/
-	0,                          /*tp_is_gc*/
-};
-
-/* ---------- */
-
-static PyObject *
-null_richcompare(PyObject *self, PyObject *other, int op)
+static PyTypeObject Str_Type =
 {
-	Py_INCREF(Py_NotImplemented);
-	return Py_NotImplemented;
-}
-
-static PyTypeObject Null_Type = {
-	/* The ob_type field must be initialized in the module init function
-	* to be portable to Windows without using C++. */
 	PyVarObject_HEAD_INIT(NULL, 0)
-	"xxmodule.Null",            /*tp_name*/
-	0,                          /*tp_basicsize*/
-	0,                          /*tp_itemsize*/
-								/* methods */
-	0,                          /*tp_dealloc*/
-	0,                          /*tp_print*/
-	0,                          /*tp_getattr*/
-	0,                          /*tp_setattr*/
-	0,                          /*tp_reserved*/
-	0,                          /*tp_repr*/
-	0,                          /*tp_as_number*/
-	0,                          /*tp_as_sequence*/
-	0,                          /*tp_as_mapping*/
-	0,                          /*tp_hash*/
-	0,                          /*tp_call*/
-	0,                          /*tp_str*/
-	0,                          /*tp_getattro*/
-	0,                          /*tp_setattro*/
-	0,                          /*tp_as_buffer*/
+	"xxmodule.Str",						/*tp_name*/
+	0,									/*tp_basicsize*/
+	0,									/*tp_itemsize*/
+	/* methods */
+	0,									/*tp_dealloc*/
+	0,									/*tp_print*/
+	0,									/*tp_getattr*/
+	0,									/*tp_setattr*/
+	0,									/*tp_reserved*/
+	0,									/*tp_repr*/
+	0,									/*tp_as_number*/
+	0,									/*tp_as_sequence*/
+	0,									/*tp_as_mapping*/
+	0,									/*tp_hash*/
+	0,									/*tp_call*/
+	0,									/*tp_str*/
+	0,									/*tp_getattro*/
+	0,									/*tp_setattro*/
+	0,									/*tp_as_buffer*/
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-	0,                          /*tp_doc*/
-	0,                          /*tp_traverse*/
-	0,                          /*tp_clear*/
-	null_richcompare,           /*tp_richcompare*/
-	0,                          /*tp_weaklistoffset*/
-	0,                          /*tp_iter*/
-	0,                          /*tp_iternext*/
-	0,                          /*tp_methods*/
-	0,                          /*tp_members*/
-	0,                          /*tp_getset*/
-	0, /* see PyInit_xx */      /*tp_base*/
-	0,                          /*tp_dict*/
-	0,                          /*tp_descr_get*/
-	0,                          /*tp_descr_set*/
-	0,                          /*tp_dictoffset*/
-	0,                          /*tp_init*/
-	0,                          /*tp_alloc*/
-	0, /* see PyInit_xx */      /*tp_new*/
-	0,                          /*tp_free*/
-	0,                          /*tp_is_gc*/
+	0,									/*tp_doc*/
+	0,									/*tp_traverse*/
+	0,									/*tp_clear*/
+	0,									/*tp_richcompare*/
+	0,									/*tp_weaklistoffset*/
+	0,									/*tp_iter*/
+	0,									/*tp_iternext*/
+	0,									/*tp_methods*/
+	0,									/*tp_members*/
+	0,									/*tp_getset*/
+	0, /* see PyInit_xx */				/*tp_base*/
+	0,									/*tp_dict*/
+	0,									/*tp_descr_get*/
+	0,									/*tp_descr_set*/
+	0,									/*tp_dictoffset*/
+	0,									/*tp_init*/
+	0,									/*tp_alloc*/
+	0,									/*tp_new*/
+	0,									/*tp_free*/
+	0,									/*tp_is_gc*/
 };
 
 
-/* ---------- */
-
+// Functions to be exposed in the cpf.gom module.
+/* create_result(error, subsystem, desc)
+ * success(cpf.gom.result)
+ * failed(cpf.gom.result)
+ * -- Failure codes from GOM/Result.hpp
+ */
 
 /* List of functions defined in the module */
 
-static PyMethodDef xx_methods[] = {
-	{ "roj",             xx_roj,         METH_VARARGS,
-	PyDoc_STR("roj(a,b) -> None") },
-	{ "foo",             xx_foo,         METH_VARARGS,
-	xx_foo_doc },
-	{ "new",             xx_new,         METH_VARARGS,
-	PyDoc_STR("new() -> new Xx object") },
-	{ "bug",             xx_bug,         METH_VARARGS,
-	PyDoc_STR("bug(o) -> None") },
-	{ NULL,              NULL }           /* sentinel */
+PyMethodDef xx_methods[] =
+{
+	{ "roj", xx_roj, METH_VARARGS, PyDoc_STR("roj(a,b) -> None") },
+	{ "foo", xx_foo, METH_VARARGS, xx_foo_doc },
+	{ "new", xx_new, METH_VARARGS, PyDoc_STR("new() -> new Xx object") },
+	{ NULL, NULL }
 };
 
-PyDoc_STRVAR(module_doc,
-	"This is a template module just for instruction.");
+PyDoc_STRVAR(module_doc, "This is a template module just for instruction.");
+
+// TODO: Keeping as an example for the moment.
+static PyObject *ErrorObject;
 
 
-static int
-xx_exec(PyObject *m)
+extern "C" int xx_exec(PyObject *m)
 {
 	/* Due to cross platform compiler issues the slots must be filled
 	* here. It's required for portability to Windows without requiring
 	* C++. */
-	Null_Type.tp_base = &PyBaseObject_Type;
-	Null_Type.tp_new = PyType_GenericNew;
 	Str_Type.tp_base = &PyUnicode_Type;
 
 	/* Finalize the type object including setting type of the new type
 	* object; doing it here is required for portability, too. */
-	if (PyType_Ready(&Xxo_Type) < 0)
+	if (PyType_Ready(&GOMResult_Type) < 0)
 		goto fail;
+	PyModule_AddObject(m, "Result", (PyObject*)&GOMResult_Type);
 
 	/* Add some symbolic constants to the module */
-	if (ErrorObject == NULL) {
+	if (ErrorObject == NULL)
+	{
 		ErrorObject = PyErr_NewException("xx.error", NULL, NULL);
 		if (ErrorObject == NULL)
 			goto fail;
@@ -486,22 +416,20 @@ xx_exec(PyObject *m)
 		goto fail;
 	PyModule_AddObject(m, "Str", (PyObject *)&Str_Type);
 
-	/* Add Null */
-	if (PyType_Ready(&Null_Type) < 0)
-		goto fail;
-	PyModule_AddObject(m, "Null", (PyObject *)&Null_Type);
 	return 0;
 fail:
 	Py_XDECREF(m);
 	return -1;
 }
 
-static struct PyModuleDef_Slot xx_slots[] = {
+struct PyModuleDef_Slot xx_slots[] =
+{
 	{ Py_mod_exec, xx_exec },
 	{ 0, NULL },
 };
 
-static struct PyModuleDef xxmodule = {
+struct PyModuleDef xxmodule =
+{
 	PyModuleDef_HEAD_INIT,
 	"xx",
 	module_doc,
@@ -515,8 +443,7 @@ static struct PyModuleDef xxmodule = {
 
 /* Export function for the module (*must* be called PyInit_xx) */
 
-PyMODINIT_FUNC
-PyInit_xx(void)
+PyMODINIT_FUNC PyInit_xx()
 {
 	return PyModuleDef_Init(&xxmodule);
 }
@@ -531,7 +458,7 @@ PyInit_xx(void)
  * it doesn't matter much.
  */
 
-COM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
+GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 {
 	// TODO: Redirect this properly to an asynchronous data sink
 	// so the streams can be parsed, placed in different windows,
@@ -549,7 +476,7 @@ COM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 	//////////////////////////////////////////////////////////////////////////
 	// Create a Cpf module.
 	PyImport_AppendInittab("cpf", &PyInit_cpf);
-	PyImport_AppendInittab("xo", &PyInit_xx);
+	PyImport_AppendInittab("xx", &PyInit_xx);
 	Py_Initialize();
 
 
@@ -603,11 +530,11 @@ COM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 		Py_XDECREF(pFunc);
 		Py_DECREF(pModule);
 	}
-	return COM::kOK;
+	return GOM::kOK;
 }
 
-COM::Result CPF_STDCALL Python3::Shutdown()
+GOM::Result CPF_STDCALL Python3::Shutdown()
 {
 	Py_FinalizeEx();
-	return COM::kOK;
+	return GOM::kOK;
 }

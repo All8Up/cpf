@@ -18,7 +18,7 @@ namespace Cpf
 			ThreadPool(iUnknown*);
 			~ThreadPool();
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			bool CPF_STDCALL Initialize(Plugin::iRegistry* regy, int threadCount) override;
 			void CPF_STDCALL Shutdown() override;

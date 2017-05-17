@@ -62,7 +62,7 @@ namespace
 
 
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -73,9 +73,9 @@ COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 			registry->Install(kDebugUICID, new Plugin::tClassInstance<DebugUI>());
 		}
 		CPF_ASSERT(g_Context.GetRegistry() == registry);
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
@@ -85,7 +85,7 @@ bool CPF_EXPORT CanUnload()
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -94,9 +94,9 @@ COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 			registry->Remove(kDebugUICID);
 			g_Context.SetRegistry(nullptr);
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ DebugUI::~DebugUI()
 	CPF_DROP_LOG(DebugUI);
 }
 
-COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result DebugUI::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -133,12 +133,12 @@ COM::Result DebugUI::QueryInterface(COM::InterfaceID id, void** outIface)
 			*outIface = static_cast<iDebugUI*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Resources::iLocator* locator)

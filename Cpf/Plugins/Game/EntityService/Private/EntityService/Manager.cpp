@@ -17,14 +17,14 @@ Manager::Manager(iUnknown*)
 Manager::~Manager()
 {}
 
-COM::Result Manager::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result Manager::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 
 		case iManager::kIID.GetID():
@@ -32,12 +32,12 @@ COM::Result Manager::QueryInterface(COM::InterfaceID id, void** outIface)
 			break;
 
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 iEntity* Manager::CreateEntity(EntityID id)

@@ -4,7 +4,7 @@
 using namespace Cpf;
 using namespace Concurrency;
 
-COM::Result CPF_STDCALL ThreadTimes::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL ThreadTimes::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -19,12 +19,12 @@ COM::Result CPF_STDCALL ThreadTimes::QueryInterface(COM::InterfaceID id, void** 
 			break;
 
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL ThreadTimes::Wait()

@@ -9,12 +9,12 @@ namespace Cpf
 		class KeyboardDevice : public tRefCounted<iKeyboardDevice>
 		{
 		public:
-			KeyboardDevice(COM::iUnknown*);
+			KeyboardDevice(GOM::iUnknown*);
 			virtual ~KeyboardDevice();
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
-			COM::Result CPF_STDCALL GetModifiers(KeyModifier*) override;
+			GOM::Result CPF_STDCALL GetModifiers(KeyModifier*) override;
 		};
 	}
 }

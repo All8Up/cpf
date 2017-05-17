@@ -36,7 +36,7 @@ Networked::~Networked()
 	CPF_DROP_LOG(Networked);
 }
 
-COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::ClassID* appCid)
+GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
 {
 	mpRegistry = registry;
 	*appCid = SDL2::kWindowedApplicationCID;
@@ -63,7 +63,7 @@ COM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, COM::
 		}
 	}
 
-	return COM::kOK;
+	return GOM::kOK;
 }
 
 void CPF_STDCALL Networked::Shutdown()
@@ -71,7 +71,7 @@ void CPF_STDCALL Networked::Shutdown()
 	IOInitializer::Remove();
 }
 
-COM::Result CPF_STDCALL Networked::Main(iApplication* application)
+GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
 	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
 
@@ -112,7 +112,7 @@ COM::Result CPF_STDCALL Networked::Main(iApplication* application)
 
 	// Destroy the window and exit.
 	mpWindow.Assign(nullptr);
-	return COM::kOK;
+	return GOM::kOK;
 }
 
 void Networked::_ConfigureDebugUI()
@@ -169,16 +169,16 @@ bool Networked::_CreateWindow()
 bool Networked::_Install()
 {
 	return (
-		COM::Succeeded(NetworkSystem::Install(GetRegistry())) &&
-		COM::Succeeded(RenderSystem::Install(GetRegistry()))
+		GOM::Succeeded(NetworkSystem::Install(GetRegistry())) &&
+		GOM::Succeeded(RenderSystem::Install(GetRegistry()))
 		);
 }
 
 bool Networked::_Remove()
 {
 	return (
-		COM::Succeeded(RenderSystem::Remove(GetRegistry())) &&
-		COM::Succeeded(NetworkSystem::Remove(GetRegistry()))
+		GOM::Succeeded(RenderSystem::Remove(GetRegistry())) &&
+		GOM::Succeeded(NetworkSystem::Remove(GetRegistry()))
 		);
 }
 
@@ -207,7 +207,7 @@ bool Networked::_ShutdownResources()
 bool Networked::_InitializeMultiCore()
 {
 	GetRegistry()->Create(nullptr, kThreadPoolCID, iThreadPool::kIID, mpThreadPool.AsVoidPP());
-	if (COM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
+	if (GOM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
 		mpThreadPool->Initialize(GetRegistry(), Thread::GetHardwareThreadCount()))
 	{
 		GetRegistry()->Create(nullptr, Concurrency::kLoadBalancerCID, Concurrency::iLoadBalancer::kIID, mpLoadBalancer.AsVoidPP());
@@ -227,7 +227,7 @@ bool Networked::_ShutdownMultiCore()
 
 bool Networked::_InitializePipeline()
 {
-	if (COM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
+	if (GOM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
 	{
 		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
 		mpTimer->Initialize(GetRegistry(), "Game Time", nullptr);
@@ -240,11 +240,11 @@ bool Networked::_InitializePipeline()
 		//////////////////////////////////////////////////////////////////////////
 		// Find graphics driver implementations.
 		int32_t typeCount = 0;
-		COM::ClassID selectedAPI;
-		if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
+		GOM::ClassID selectedAPI;
+		if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
 		{
-			Vector<COM::ClassID> classes(typeCount);
-			if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
+			Vector<GOM::ClassID> classes(typeCount);
+			if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
 			{
 				if (typeCount > 0)
 					selectedAPI = classes[0];
@@ -268,11 +268,11 @@ bool Networked::_InitializePipeline()
 	return false;
 }
 
-COM::Result Networked::_ConfigurePipeline()
+GOM::Result Networked::_ConfigurePipeline()
 {
 	if (mpPipeline)
 		return mpPipeline->Configure(GetRegistry());
-	return COM::kInvalid;
+	return GOM::kInvalid;
 }
 
 bool Networked::_ShutdownPipeline()

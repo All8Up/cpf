@@ -171,7 +171,7 @@ Configuration::Configuration(Plugin::iRegistry* regy, const String& filename)
 	CPF_INIT_LOG(ResourceConfig);
 	CPF_LOG_LEVEL(ResourceConfig, Info);
 
-	if (COM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+	if (GOM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
 		return;
 
 	if (mpLocator && File::Exists(filename))
@@ -215,10 +215,10 @@ Configuration::Configuration(iUnknown*)
 	CPF_LOG_LEVEL(ResourceConfig, Info);
 }
 
-COM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const char* filename)
+GOM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const char* filename)
 {
-	if (COM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
-		return COM::kError;
+	if (GOM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+		return GOM::kError;
 
 	if (mpLocator && File::Exists(filename))
 	{
@@ -245,7 +245,7 @@ COM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const
 				}
 			}
 			file->Release();
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
 	else
@@ -257,7 +257,7 @@ COM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const
 	/* New stuff to test out jsoncons.
 	if (filename)
 	{
-		COM::Result result;
+		GOM::Result result;
 		if (Failed(result = regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
 			return result;
 
@@ -330,14 +330,14 @@ COM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const
 							
 						}
 						file->Release();
-						return COM::kOK;
+						return GOM::kOK;
 					}
 				}
 			}
 		}
 	}
 	*/
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 
@@ -347,7 +347,7 @@ Configuration::~Configuration()
 		mpLocator->Release();
 }
 
-COM::Result CPF_STDCALL Configuration::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Configuration::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -360,12 +360,12 @@ COM::Result CPF_STDCALL Configuration::QueryInterface(COM::InterfaceID id, void*
 			*outIface = static_cast<iConfiguration*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 iLocator* Configuration::GetLocator()

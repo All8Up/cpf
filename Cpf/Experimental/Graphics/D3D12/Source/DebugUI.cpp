@@ -21,7 +21,7 @@ void ExperimentalD3D12::_UpdatePipelineDisplay()
 
 	const char* tempString = nullptr;
 	Vector<String> queueInfo;
-	for (int index = 0; mpMultiCore->GetQueueInfo(index, &tempString) == COM::kOK; ++index)
+	for (int index = 0; mpMultiCore->GetQueueInfo(index, &tempString) == GOM::kOK; ++index)
 		queueInfo.push_back(tempString);
 	mInstructionCount = int(queueInfo.size());
 

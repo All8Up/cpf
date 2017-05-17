@@ -23,7 +23,7 @@ namespace
 const char* const FileSystem::kVolumeType = "FileSystem";
 
 
-COM::Result CPF_STDCALL FileSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL FileSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -36,12 +36,12 @@ COM::Result CPF_STDCALL FileSystem::QueryInterface(COM::InterfaceID id, void** o
 			*outIface = static_cast<iVolume*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 //////////////////////////////////////////////////////////////////////////

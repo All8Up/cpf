@@ -10,7 +10,7 @@ namespace Cpf
 	{
 		namespace Caches
 		{
-			static constexpr COM::ClassID kCacheDefaultCID = COM::ClassID("Cpf::Resources::Caches::Default"_crc64);
+			static constexpr GOM::ClassID kCacheDefaultCID = GOM::ClassID("Cpf::Resources::Caches::Default"_crc64);
 
 			/** @brief A default cache implementation. */
 			class Default : public tRefCounted<iCache>
@@ -26,7 +26,7 @@ namespace Cpf
 				{};
 
 				// iUnknown overrides.
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				static iCache* Create(const CacheDesc* const desc);
 				static CacheDesc* CreateDescriptor(const rapidjson::Value&);

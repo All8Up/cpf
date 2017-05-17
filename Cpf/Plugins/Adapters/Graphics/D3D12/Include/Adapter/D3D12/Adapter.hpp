@@ -11,16 +11,16 @@ namespace Cpf
 	{
 		namespace D3D12
 		{
-			static constexpr COM::ClassID kAdapterCID = COM::ClassID("Adapter::D3D12::Adapter"_crc64);
+			static constexpr GOM::ClassID kAdapterCID = GOM::ClassID("Adapter::D3D12::Adapter"_crc64);
 
 			class Adapter : public tRefCounted<Graphics::iAdapter>
 			{
 			public:
 				// Internal
-				COM::Result Initialize(IDXGIAdapter2* adapter);
+				GOM::Result Initialize(IDXGIAdapter2* adapter);
 
 				// Overrides from iUnknown.
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				const char* CPF_STDCALL GetDescription() const override;
 				size_t CPF_STDCALL GetVideoMemory() const override;
@@ -30,13 +30,13 @@ namespace Cpf
 				bool CPF_STDCALL IsSoftware() const override;
 				bool CPF_STDCALL IsRemote() const override;
 
-				COM::Result CPF_STDCALL EnumerateOutputs(int32_t& count, Graphics::iOutput**) const override;
+				GOM::Result CPF_STDCALL EnumerateOutputs(int32_t& count, Graphics::iOutput**) const override;
 
 				IDXGIAdapter2* GetD3DAdapter() const { return mpAdapter; }
 
 			private:
 				CPF_CLASSINSTANCE_ACCESS(Adapter);
-				Adapter(COM::iUnknown*);
+				Adapter(GOM::iUnknown*);
 				virtual ~Adapter();
 
 				IntrusivePtr<IDXGIAdapter2> mpAdapter;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -13,9 +13,9 @@ namespace Cpf
 		struct OutputDesc;
 		struct ModeDesc;
 
-		struct iOutput : COM::iUnknown
+		struct iOutput : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iOutput"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iOutput"_crc64);
 
 			virtual bool GetDesc(OutputDesc*) const = 0;
 			virtual bool EnumerateModes(Format format, EnumMode enumMode, int32_t& count, ModeDesc*) = 0;

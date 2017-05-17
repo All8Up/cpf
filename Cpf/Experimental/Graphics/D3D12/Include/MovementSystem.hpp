@@ -18,13 +18,13 @@ namespace Cpf
 	public:
 	};
 
-	static constexpr COM::ClassID kMoverSystemCID = COM::ClassID("MoverSystemClass"_crc64);
-	static constexpr COM::ClassID kMoverComponentCID = COM::ClassID("MoverSystem::MoverComponent"_crc64);
+	static constexpr GOM::ClassID kMoverSystemCID = GOM::ClassID("MoverSystemClass"_crc64);
+	static constexpr GOM::ClassID kMoverComponentCID = GOM::ClassID("MoverSystem::MoverComponent"_crc64);
 
 	class MoverSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("iMoverSystem"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iMoverSystem"_crc64);
 
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Mover System"_hashString);
 		static constexpr MultiCore::StageID kUpdate = Hash::Create<MultiCore::StageID_tag>("Update"_hashString);
@@ -36,34 +36,34 @@ namespace Cpf
 			MultiCore::SystemID mInstanceID;
 		};
 
-		static COM::Result Install(Plugin::iRegistry*);
-		static COM::Result Remove(Plugin::iRegistry*);
+		static GOM::Result Install(Plugin::iRegistry*);
+		static GOM::Result Remove(Plugin::iRegistry*);
 
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(COM::iUnknown*);
+		MoverSystem(GOM::iUnknown*);
 		InstanceSystem* GetInstanceSystem() const;
-		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
+		GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 		void EnableMovement(bool flag);
 
 		// iUnknown
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
+		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
-		// COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
+		// GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return GOM::kOK; }
 
 		// iStageList
-		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
-		COM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
-		COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+		GOM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
+		GOM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
+		GOM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
 		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
-		COM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
 
-		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
-		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
+		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
+		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 	private:
 		ExperimentalD3D12* mpApp;
@@ -91,8 +91,8 @@ namespace Cpf
 		static constexpr EntityService::ComponentID kID = EntityService::ComponentID("Mover Component"_crc64);
 
 		//
-		static COM::Result Install(Plugin::iRegistry*);
-		static COM::Result Remove(Plugin::iRegistry*);
+		static GOM::Result Install(Plugin::iRegistry*);
+		static GOM::Result Remove(Plugin::iRegistry*);
 		static iComponent* Create(iSystem*);
 
 		//
@@ -100,9 +100,9 @@ namespace Cpf
 		MultiCore::iSystem* GetSystem() override { return mpMover; }
 
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent(COM::iUnknown*);
+		MoverComponent(GOM::iUnknown*);
 
-		COM::Result QueryInterface(COM::InterfaceID id, void**) override;
+		GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
 
 		//////////////////////////////////////////////////////////////////////////
 		EntityService::ComponentID GetID() const;

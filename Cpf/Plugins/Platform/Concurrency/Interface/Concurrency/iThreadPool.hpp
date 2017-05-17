@@ -5,11 +5,11 @@
 
 namespace Cpf
 {
-	static constexpr COM::ClassID kThreadPoolCID = COM::ClassID("Cpf::iThreadPool"_crc64);
+	static constexpr GOM::ClassID kThreadPoolCID = GOM::ClassID("Cpf::iThreadPool"_crc64);
 
-	struct iThreadPool : COM::iUnknown
+	struct iThreadPool : GOM::iUnknown
 	{
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iThreadPool"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iThreadPool"_crc64);
 
 		virtual bool CPF_STDCALL Initialize(Plugin::iRegistry* regy, int threadCount) = 0;
 		virtual void CPF_STDCALL Shutdown() = 0;

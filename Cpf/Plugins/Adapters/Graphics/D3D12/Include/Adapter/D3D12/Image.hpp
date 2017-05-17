@@ -23,7 +23,7 @@ namespace Cpf
 				Image(Device*, Graphics::HeapType heap, const Graphics::ClearValue* clearValue, const Graphics::ImageDesc* desc);
 				virtual ~Image();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				bool Map(void**, const Graphics::Range* = nullptr) override;
 				void Unmap(const Graphics::Range* range) override;

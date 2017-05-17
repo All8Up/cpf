@@ -9,7 +9,7 @@
 using namespace Cpf;
 using namespace Resources;
 
-COM::Result CPF_STDCALL Locator::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Locator::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -22,12 +22,12 @@ COM::Result CPF_STDCALL Locator::QueryInterface(COM::InterfaceID id, void** outI
 			*outIface = static_cast<iLocator*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool CPF_STDCALL Locator::Mount(const char* const mp, iVolume* volume)

@@ -11,7 +11,7 @@ namespace Cpf
 
 		struct iImage : Graphics::iResource
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iImage"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iImage"_crc64);
 
 			virtual const ImageDesc& GetDesc() const = 0;
 		};

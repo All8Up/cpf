@@ -14,7 +14,7 @@ ThreadPool::~ThreadPool()
 	mpScheduler->Shutdown();
 }
 
-COM::Result CPF_STDCALL ThreadPool::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL ThreadPool::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -28,12 +28,12 @@ COM::Result CPF_STDCALL ThreadPool::QueryInterface(COM::InterfaceID id, void** o
 			break;
 
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool ThreadPool::Initialize(Plugin::iRegistry* regy, int threadCount)

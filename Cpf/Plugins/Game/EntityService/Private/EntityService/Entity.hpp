@@ -17,10 +17,10 @@ namespace Cpf
 		{
 		public:
 			static constexpr int kMaxComponents = 32;
-			using ComponentPair = Pair<COM::InterfaceID, IntrusivePtr<iComponent>>;
+			using ComponentPair = Pair<GOM::InterfaceID, IntrusivePtr<iComponent>>;
 
 			// iUnknown interface.
-			COM::Result QueryInterface(COM::InterfaceID id, void**) override;
+			GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
 
 			// Object interface.
 			static bool Create(EntityID id, iEntity**);
@@ -35,9 +35,9 @@ namespace Cpf
 
 			const EntityID& GetID() const override;
 
-			void AddComponent(COM::InterfaceID id, iComponent* component) override;
-			iComponent* GetComponent(COM::InterfaceID id) override;
-			const iComponent* GetComponent(COM::InterfaceID id) const override;
+			void AddComponent(GOM::InterfaceID id, iComponent* component) override;
+			iComponent* GetComponent(GOM::InterfaceID id) override;
+			const iComponent* GetComponent(GOM::InterfaceID id) const override;
 		
 		private:
 			// Not intended for direct creation.
@@ -45,7 +45,7 @@ namespace Cpf
 			~Entity();
 
 			//
-			int _GetComponentIndex(COM::InterfaceID id) const;
+			int _GetComponentIndex(GOM::InterfaceID id) const;
 
 			// Implementation data.
 			iManager* mpManager;

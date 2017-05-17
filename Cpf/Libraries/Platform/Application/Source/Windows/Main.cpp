@@ -11,21 +11,21 @@ extern Cpf::iApplicationMain::AppMainCreate gs_AppMainCreate;
 
 namespace
 {
-	Cpf::COM::Result RunApplication(Cpf::iApplicationMain* appMain)
+	Cpf::GOM::Result RunApplication(Cpf::iApplicationMain* appMain)
 	{
 		if (appMain)
 		{
 			Cpf::Plugin::iRegistry* registry = nullptr;
-			Cpf::COM::Result result;
-			if (Cpf::COM::Succeeded(result = Cpf::PluginHost::CreateRegistry(&registry)))
+			Cpf::GOM::Result result;
+			if (Cpf::GOM::Succeeded(result = Cpf::PluginHost::CreateRegistry(&registry)))
 			{
-				Cpf::COM::ClassID appId;
-				if (Cpf::COM::Succeeded(appMain->Initialize(registry, &appId)))
+				Cpf::GOM::ClassID appId;
+				if (Cpf::GOM::Succeeded(appMain->Initialize(registry, &appId)))
 				{
 					Cpf::IntrusivePtr<Cpf::iApplication> app;
-					if (Cpf::COM::Succeeded(result = registry->Create(nullptr, appId, Cpf::iApplication::kIID, app.AsVoidPP())))
+					if (Cpf::GOM::Succeeded(result = registry->Create(nullptr, appId, Cpf::iApplication::kIID, app.AsVoidPP())))
 					{
-						if (Cpf::COM::Succeeded(app->Initialize(registry, appMain)))
+						if (Cpf::GOM::Succeeded(app->Initialize(registry, appMain)))
 							result = app->Run();
 					}
 				}
@@ -34,7 +34,7 @@ namespace
 			appMain->Release();
 			return result;
 		}
-		return Cpf::COM::kOutOfMemory;
+		return Cpf::GOM::kOutOfMemory;
 	}
 }
 
@@ -46,9 +46,9 @@ int main(int argc, char** argv)
 	if (app)
 	{
 		auto result = RunApplication(app);
-		return Cpf::COM::Succeeded(result) ? 0 : -int(result.Value);
+		return Cpf::GOM::Succeeded(result) ? 0 : -int(result.Value);
 	}
-	return -int(Cpf::COM::kOutOfMemory.Value);
+	return -int(Cpf::GOM::kOutOfMemory.Value);
 }
 
 
@@ -60,8 +60,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 	if (app)
 	{
 		auto result = RunApplication(app);
-		return Cpf::COM::Succeeded(result) ? 0 : -int(result.Value);
+		return Cpf::GOM::Succeeded(result) ? 0 : -int(result.Value);
 	}
-	return -int(Cpf::COM::kOutOfMemory.Value);
+	return -int(Cpf::GOM::kOutOfMemory.Value);
 }
 #endif

@@ -27,8 +27,8 @@ namespace Cpf
 			Configuration(Plugin::iRegistry* regy, const String& filename);
 			~Configuration();
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
-			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, const char* filename) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, const char* filename) override;
 			iLocator* CPF_STDCALL GetLocator() override;
 
 			struct VolumeDescriptor

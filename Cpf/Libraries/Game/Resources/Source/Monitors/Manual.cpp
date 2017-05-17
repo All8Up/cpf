@@ -7,7 +7,7 @@ using namespace Cpf;
 using namespace Resources;
 using namespace Monitors;
 
-COM::Result CPF_STDCALL Manual::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Manual::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -20,12 +20,12 @@ COM::Result CPF_STDCALL Manual::QueryInterface(COM::InterfaceID id, void** outIf
 			*outIface = static_cast<iMonitor*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 

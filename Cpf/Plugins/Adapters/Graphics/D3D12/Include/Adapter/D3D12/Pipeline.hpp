@@ -28,7 +28,7 @@ namespace Cpf
 				Pipeline(Device*, const Graphics::PipelineStateDesc*, const ResourceBinding* CPF_GFX_DEBUG_PARAM_DECL);
 				virtual ~Pipeline();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				ID3D12PipelineState* GetPipelineState() const { return mpPipelineState; }
 

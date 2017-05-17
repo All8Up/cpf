@@ -16,7 +16,7 @@ LoadBalancer::LoadBalancer(iUnknown*)
 LoadBalancer::~LoadBalancer()
 {}
 
-COM::Result CPF_STDCALL LoadBalancer::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL LoadBalancer::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -29,15 +29,15 @@ COM::Result CPF_STDCALL LoadBalancer::QueryInterface(COM::InterfaceID id, void**
 			*outIface = static_cast<iLoadBalancer*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL LoadBalancer::Initialize(Plugin::iRegistry* regy, int count, iScheduler** schedulers)
+GOM::Result CPF_STDCALL LoadBalancer::Initialize(Plugin::iRegistry* regy, int count, iScheduler** schedulers)
 {
 	if(regy)
 	{
@@ -46,7 +46,7 @@ COM::Result CPF_STDCALL LoadBalancer::Initialize(Plugin::iRegistry* regy, int co
 			mSchedulers.push_back(schedulers[i]);
 		return regy->Create(nullptr, kThreadTimeCID, iThreadTimes::kIID, mpDistTimeQuery.AsVoidPP());
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL LoadBalancer::Balance()

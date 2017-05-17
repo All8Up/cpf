@@ -14,16 +14,16 @@ namespace Cpf
 	{
 		namespace D3D12
 		{
-			static constexpr COM::ClassID kRenderPassCID = COM::ClassID("Adapter::D3D12::RenderPass"_crc64);
+			static constexpr GOM::ClassID kRenderPassCID = GOM::ClassID("Adapter::D3D12::RenderPass"_crc64);
 
 			class RenderPass : public tRefCounted<Graphics::iRenderPass>
 			{
 			public:
-				RenderPass(COM::iUnknown*) {}
+				RenderPass(GOM::iUnknown*) {}
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
-				COM::Result CPF_STDCALL Initialize(const Graphics::RenderPassDesc* desc);
+				GOM::Result CPF_STDCALL Initialize(const Graphics::RenderPassDesc* desc);
 
 				using AttachmentRefVector = Vector<Graphics::AttachmentRef>;
 				struct SubPassStorage

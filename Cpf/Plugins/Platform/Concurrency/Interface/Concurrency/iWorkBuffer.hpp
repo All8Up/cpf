@@ -8,13 +8,13 @@ namespace Cpf
 	{
 		class ThreadContext;
 
-		static constexpr COM::ClassID kWorkBufferCID = COM::ClassID("Cpf::Concurrency::iWorkBuffer"_crc64);
+		static constexpr GOM::ClassID kWorkBufferCID = GOM::ClassID("Cpf::Concurrency::iWorkBuffer"_crc64);
 
-		struct iWorkBuffer : COM::iUnknown
+		struct iWorkBuffer : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Concurrency::iWorkBuffer"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Concurrency::iWorkBuffer"_crc64);
 
-			virtual COM::Result CPF_STDCALL Reserve(int32_t size) = 0;
+			virtual GOM::Result CPF_STDCALL Reserve(int32_t size) = 0;
 			virtual void CPF_STDCALL Copy(iWorkBuffer*) = 0;
 
 			virtual void CPF_STDCALL Reset() = 0;

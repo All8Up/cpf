@@ -16,14 +16,14 @@ TEST_F(ConcurrencyTest, Basics)
 	for (auto iterations = 0; iterations < 20; ++iterations)
 	{
 		IntrusivePtr<iScheduler> pScheduler;
-		EXPECT_TRUE(COM::Succeeded(GetRegistry()->Create(nullptr, kSchedulerCID, iScheduler::kIID, pScheduler.AsVoidPP())));
-		EXPECT_TRUE(COM::Succeeded(pScheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)));
+		EXPECT_TRUE(GOM::Succeeded(GetRegistry()->Create(nullptr, kSchedulerCID, iScheduler::kIID, pScheduler.AsVoidPP())));
+		EXPECT_TRUE(GOM::Succeeded(pScheduler->Initialize(Threading::Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)));
 
 		IntrusivePtr<iFence> pFence;
-		EXPECT_TRUE(COM::Succeeded(GetRegistry()->Create(nullptr, kFenceCID, iFence::kIID, pFence.AsVoidPP())));
+		EXPECT_TRUE(GOM::Succeeded(GetRegistry()->Create(nullptr, kFenceCID, iFence::kIID, pFence.AsVoidPP())));
 
 		IntrusivePtr<iWorkBuffer> pWorkBuffer;
-		EXPECT_TRUE(COM::Succeeded(GetRegistry()->Create(nullptr, kWorkBufferCID, iWorkBuffer::kIID, pWorkBuffer.AsVoidPP())));
+		EXPECT_TRUE(GOM::Succeeded(GetRegistry()->Create(nullptr, kWorkBufferCID, iWorkBuffer::kIID, pWorkBuffer.AsVoidPP())));
 
 		{
 			static const auto loopCount = 25000;

@@ -31,7 +31,7 @@ namespace Cpf
 				SwapChain(Instance*, Graphics::iDevice*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc* desc);
 				virtual ~SwapChain();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				void Present() override;
 				void Resize(int32_t x, int32_t y) override;

@@ -3,13 +3,13 @@
 using namespace Cpf;
 
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
@@ -19,13 +19,13 @@ bool CPF_EXPORT CanUnload()
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 #include "spine/extension.h"

@@ -15,14 +15,14 @@ void SingleUpdateStage::SetUpdate(Function<void(const Concurrency::WorkContext*,
 	mpContext = context;
 }
 
-COM::Result CPF_STDCALL SingleUpdateStage::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL SingleUpdateStage::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iStage::kIID.GetID():
 			*outIface = static_cast<iStage*>(this);
@@ -31,23 +31,23 @@ COM::Result CPF_STDCALL SingleUpdateStage::QueryInterface(COM::InterfaceID id, v
 			*outIface = static_cast<iSingleUpdateStage*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL SingleUpdateStage::Initialize(iSystem* system, const char* const name)
+GOM::Result CPF_STDCALL SingleUpdateStage::Initialize(iSystem* system, const char* const name)
 {
 	if (system && name)
 	{
 		mpSystem = system;
 		mID = StageID(name, strlen(name));
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 iSystem* SingleUpdateStage::GetSystem() const
@@ -70,7 +70,7 @@ void SingleUpdateStage::SetEnabled(bool flag)
 {
 	mEnabled = flag;
 }
-COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(int32_t* c, Instruction* i)
+GOM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(int32_t* c, Instruction* i)
 {
 	if (c)
 	{
@@ -78,23 +78,23 @@ COM::Result CPF_STDCALL SingleUpdateStage::GetInstructions(int32_t* c, Instructi
 		{
 			*c = 1;
 			i[0] = { { mpSystem->GetID(), GetID(), kExecute }, mOpcode, &SingleUpdateStage::_Update, this };
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		*c = 1;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, BlockDependency* dependencies)
+GOM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, BlockDependency* dependencies)
 {
 	(void)dependencies;
 	if (count)
 	{
 		*count = 0;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 SingleUpdateStage::SingleUpdateStage(iUnknown*)

@@ -21,7 +21,7 @@ namespace Cpf
 			DebugUI(iUnknown* outer);
 			virtual ~DebugUI();
 
-			COM::Result QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			//
 			bool Initialize(iDevice*, iInputManager* im, iWindow* window, Resources::iLocator*);

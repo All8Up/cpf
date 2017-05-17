@@ -7,20 +7,20 @@ using namespace Cpf;
 using namespace SDL2;
 
 
-KeyboardDevice::KeyboardDevice(COM::iUnknown*)
+KeyboardDevice::KeyboardDevice(GOM::iUnknown*)
 {}
 
 KeyboardDevice::~KeyboardDevice()
 {}
 
-COM::Result CPF_STDCALL KeyboardDevice::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL KeyboardDevice::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iInputDevice::kIID.GetID():
 			*outIface = static_cast<iInputDevice*>(this);
@@ -29,15 +29,15 @@ COM::Result CPF_STDCALL KeyboardDevice::QueryInterface(COM::InterfaceID id, void
 			*outIface = static_cast<iKeyboardDevice*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL KeyboardDevice::GetModifiers(KeyModifier* modifiers)
+GOM::Result CPF_STDCALL KeyboardDevice::GetModifiers(KeyModifier* modifiers)
 {
 	if (modifiers)
 	{
@@ -54,7 +54,7 @@ COM::Result CPF_STDCALL KeyboardDevice::GetModifiers(KeyModifier* modifiers)
 		if (mods & KMOD_NUM) *modifiers |= KeyModifier::eNumLock;
 		if (mods & KMOD_CAPS) *modifiers |= KeyModifier::eCaps;
 		if (mods & KMOD_MODE) *modifiers |= KeyModifier::eMode;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

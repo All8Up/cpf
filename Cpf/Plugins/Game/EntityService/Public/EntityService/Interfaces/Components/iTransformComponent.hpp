@@ -8,10 +8,10 @@ namespace Cpf
 {
 	namespace EntityService
 	{
-		static constexpr COM::ClassID kTransformComponentCID = COM::ClassID("EntityService::iTransformComponentCID"_crc64);
+		static constexpr GOM::ClassID kTransformComponentCID = GOM::ClassID("EntityService::iTransformComponentCID"_crc64);
 		struct iTransformComponent : iComponent
 		{
-			static constexpr auto kIID = COM::InterfaceID("EntityService::iTransformComponent"_crc64);
+			static constexpr auto kIID = GOM::InterfaceID("EntityService::iTransformComponent"_crc64);
 
 			// Local transform interface.
 			virtual iTransformComponent* GetParent() const = 0;

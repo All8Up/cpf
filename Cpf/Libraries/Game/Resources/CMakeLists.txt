@@ -71,7 +71,7 @@ target_link_libraries (Resources
 		s_IO
 		s_ANSI_C_FileSystem
 		Logging
-		COM
+		GOM
 		Plugin
 		Events
 		Hash

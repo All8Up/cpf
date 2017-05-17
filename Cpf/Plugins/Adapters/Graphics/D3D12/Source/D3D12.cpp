@@ -47,28 +47,28 @@ int D3D12Initializer::Remove()
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return D3D12Initializer::Install(registry) > 0 ? COM::kOK : COM::kInitializationFailure;
+		return D3D12Initializer::Install(registry) > 0 ? GOM::kOK : GOM::kInitializationFailure;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
-COM::Result CPF_EXPORT CanUnload()
+GOM::Result CPF_EXPORT CanUnload()
 {
-	return (D3D12::gContext.GetRefCount() == 0) ? COM::kOK : COM::kInUse;
+	return (D3D12::gContext.GetRefCount() == 0) ? GOM::kOK : GOM::kInUse;
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
 		D3D12Initializer::Remove();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

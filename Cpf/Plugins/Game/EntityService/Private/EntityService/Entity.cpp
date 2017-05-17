@@ -24,7 +24,7 @@ bool Entity::Create(EntityID id, iEntity** outEntity)
 
 
 //////////////////////////////////////////////////////////////////////////
-COM::Result Entity::QueryInterface(COM::InterfaceID id, void** outPtr)
+GOM::Result Entity::QueryInterface(GOM::InterfaceID id, void** outPtr)
 {
 	switch (id.GetID())
 	{
@@ -33,7 +33,7 @@ COM::Result Entity::QueryInterface(COM::InterfaceID id, void** outPtr)
 			iUnknown* result = static_cast<iUnknown*>(this);
 			result->AddRef();
 			*outPtr = result;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 
 	default:
@@ -43,13 +43,13 @@ COM::Result Entity::QueryInterface(COM::InterfaceID id, void** outPtr)
 			{
 				*outPtr = component;
 				component->AddRef();
-				return COM::kOK;
+				return GOM::kOK;
 			}
 		}
 	}
 
 	*outPtr = nullptr;
-	return COM::kUnknownInterface;
+	return GOM::kUnknownInterface;
 }
 
 Entity::Entity()
@@ -96,7 +96,7 @@ const EntityID& Entity::GetID() const
 	return mID;
 }
 
-void Entity::AddComponent(COM::InterfaceID id, iComponent* component)
+void Entity::AddComponent(GOM::InterfaceID id, iComponent* component)
 {
 	component->SetEntity(this);
 	CPF_ASSERT(mComponentCount < kMaxComponents);
@@ -120,7 +120,7 @@ void Entity::AddComponent(COM::InterfaceID id, iComponent* component)
 		component->Activate();
 }
 
-int Entity::_GetComponentIndex(COM::InterfaceID id) const
+int Entity::_GetComponentIndex(GOM::InterfaceID id) const
 {
 	int low = 0;
 	int high = mComponentCount;
@@ -145,13 +145,13 @@ int Entity::_GetComponentIndex(COM::InterfaceID id) const
 	return -1;
 }
 
-iComponent* Entity::GetComponent(COM::InterfaceID id)
+iComponent* Entity::GetComponent(GOM::InterfaceID id)
 {
 	int index = _GetComponentIndex(id);
 	return index==-1 ? nullptr : static_cast<iComponent*>(mComponents[index].second);
 }
 
-const iComponent* Entity::GetComponent(COM::InterfaceID id) const
+const iComponent* Entity::GetComponent(GOM::InterfaceID id) const
 {
 	int index = _GetComponentIndex(id);
 	return index == -1 ? nullptr : static_cast<const iComponent*>(mComponents[index].second);

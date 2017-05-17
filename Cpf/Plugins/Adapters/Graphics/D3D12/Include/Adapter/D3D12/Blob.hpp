@@ -13,9 +13,9 @@ namespace Cpf
 			public:
 				Blob(size_t size, const void* data);
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
-				COM::Result Initialize(const void* data, int64_t size) override;
+				GOM::Result Initialize(const void* data, int64_t size) override;
 				void* CPF_STDCALL GetData() override;
 				int64_t CPF_STDCALL GetSize() override;
 

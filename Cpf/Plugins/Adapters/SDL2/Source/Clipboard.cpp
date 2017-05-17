@@ -5,34 +5,34 @@
 using namespace Cpf;
 using namespace SDL2;
 
-Clipboard::Clipboard(COM::iUnknown*)
+Clipboard::Clipboard(GOM::iUnknown*)
 {}
 
 Clipboard::~Clipboard()
 {}
 
-COM::Result CPF_STDCALL Clipboard::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Clipboard::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iClipboard::kIID.GetID():
 			*outIface = static_cast<iClipboard*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Clipboard::GetClipboardText(int32_t* count, char* chars)
+GOM::Result CPF_STDCALL Clipboard::GetClipboardText(int32_t* count, char* chars)
 {
 	if (count)
 	{
@@ -41,22 +41,22 @@ COM::Result CPF_STDCALL Clipboard::GetClipboardText(int32_t* count, char* chars)
 		if (chars)
 		{
 			if (*count < len)
-				return COM::kNotEnoughSpace;
+				return GOM::kNotEnoughSpace;
 			strcpy(chars, clipText);
 		}
 		else
 			*count = len;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Clipboard::SetClipboardText(const char* chars)
+GOM::Result CPF_STDCALL Clipboard::SetClipboardText(const char* chars)
 {
 	if (chars)
 	{
 		SDL_SetClipboardText(chars);
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

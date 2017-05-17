@@ -35,45 +35,45 @@ namespace Cpf
 			class IndexBuffer;
 			class VertexBuffer;
 
-			static constexpr COM::ClassID kDeviceCID = COM::ClassID("Adapter::D3D12::Device"_crc64);
+			static constexpr GOM::ClassID kDeviceCID = GOM::ClassID("Adapter::D3D12::Device"_crc64);
 
 			class Device : public tRefCounted<Graphics::iDevice>
 			{
 			public:
 				// Internal.
-				COM::Result Initialize(Graphics::iAdapter* adapter);
+				GOM::Result Initialize(Graphics::iAdapter* adapter);
 
 				// Overrides from iUnknown.
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				// Overrides from iDevice.
-				COM::Result CPF_STDCALL Initialize() override;
-				COM::Result CPF_STDCALL Shutdown() override;
+				GOM::Result CPF_STDCALL Initialize() override;
+				GOM::Result CPF_STDCALL Shutdown() override;
 
-				COM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
-				COM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
-				COM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::CommandBufferType type, Graphics::iCommandBuffer**) override;
-				COM::Result CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
-				COM::Result CPF_STDCALL CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const Graphics::ClearValue* clearValue, Graphics::iImage**) override;
-				COM::Result CPF_STDCALL CreateShader(Graphics::iBlob* blob, Graphics::iShader**) override;
-				COM::Result CPF_STDCALL CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
-				COM::Result CPF_STDCALL CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;
-				COM::Result CPF_STDCALL CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource) override;
-				COM::Result CPF_STDCALL CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler) override;
-				COM::Result CPF_STDCALL CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass) override;
-				COM::Result CPF_STDCALL CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
+				GOM::Result CPF_STDCALL CreateSwapChain(Graphics::iInstance*, const Graphics::WindowData*, int32_t w, int32_t h, const Graphics::SwapChainDesc*, Graphics::iSwapChain**) override;
+				GOM::Result CPF_STDCALL CreateCommandPool(Graphics::iCommandPool**) override;
+				GOM::Result CPF_STDCALL CreateCommandBuffer(Graphics::iCommandPool*, Graphics::CommandBufferType type, Graphics::iCommandBuffer**) override;
+				GOM::Result CPF_STDCALL CreateFence(int64_t initValue, Graphics::iFence**) override;
+				GOM::Result CPF_STDCALL CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const Graphics::ClearValue* clearValue, Graphics::iImage**) override;
+				GOM::Result CPF_STDCALL CreateShader(Graphics::iBlob* blob, Graphics::iShader**) override;
+				GOM::Result CPF_STDCALL CreateResourceBinding(const Graphics::ResourceBindingDesc*, Graphics::iResourceBinding**) override;
+				GOM::Result CPF_STDCALL CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding*, Graphics::iPipeline**) override;
+				GOM::Result CPF_STDCALL CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource) override;
+				GOM::Result CPF_STDCALL CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler) override;
+				GOM::Result CPF_STDCALL CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass) override;
+				GOM::Result CPF_STDCALL CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer) override;
 
-				COM::Result CPF_STDCALL CreateIndexBuffer(const Graphics::ResourceDesc* desc, Graphics::Format format, Graphics::iIndexBuffer** indexBuffer) override;
-				COM::Result CPF_STDCALL CreateVertexBuffer(const Graphics::ResourceDesc* desc, int32_t stride, Graphics::iVertexBuffer** vertexBuffer) override;
-				COM::Result CPF_STDCALL CreateConstantBuffer(const Graphics::ResourceDesc*, const void* initData, Graphics::iConstantBuffer**) override;
+				GOM::Result CPF_STDCALL CreateIndexBuffer(const Graphics::ResourceDesc* desc, Graphics::Format format, Graphics::iIndexBuffer** indexBuffer) override;
+				GOM::Result CPF_STDCALL CreateVertexBuffer(const Graphics::ResourceDesc* desc, int32_t stride, Graphics::iVertexBuffer** vertexBuffer) override;
+				GOM::Result CPF_STDCALL CreateConstantBuffer(const Graphics::ResourceDesc*, const void* initData, Graphics::iConstantBuffer**) override;
 
-				COM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, Graphics::iBlob**) override;
+				GOM::Result CPF_STDCALL CreateBlob(int64_t size, const void* data, Graphics::iBlob**) override;
 
-				COM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::iBlob**) override;
+				GOM::Result CPF_STDCALL CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::iBlob**) override;
 
-				COM::Result CPF_STDCALL CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView**) override;
+				GOM::Result CPF_STDCALL CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView**) override;
 
-				COM::Result CPF_STDCALL Signal(Graphics::iFence*, int64_t value) override;
+				GOM::Result CPF_STDCALL Signal(Graphics::iFence*, int64_t value) override;
 				void CPF_STDCALL Submit(int32_t count, Graphics::iCommandBuffer**) override;
 
 				//////////////////////////////////////////////////////////////////////////
@@ -92,7 +92,7 @@ namespace Cpf
 
 			private:
 				//////////////////////////////////////////////////////////////////////////
-				Device(COM::iUnknown*);
+				Device(GOM::iUnknown*);
 				virtual ~Device();
 				CPF_CLASSINSTANCE_ACCESS(Device);
 

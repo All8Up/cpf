@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-COM::Result CPF_STDCALL StageList::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL StageList::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -25,9 +25,9 @@ COM::Result CPF_STDCALL StageList::QueryInterface(COM::InterfaceID id, void** ou
 			return mpOuter->QueryInterface(id, outIface);
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kUnknownInterface;
+	return GOM::kUnknownInterface;
 }
 
 int32_t CPF_STDCALL StageList::AddRef()
@@ -54,7 +54,7 @@ int32_t CPF_STDCALL StageList::Release()
 	return mRefCount;
 }
 
-COM::Result CPF_STDCALL StageList::FindStage(StageID id, iStage** outStage) const
+GOM::Result CPF_STDCALL StageList::FindStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
@@ -62,59 +62,59 @@ COM::Result CPF_STDCALL StageList::FindStage(StageID id, iStage** outStage) cons
 		{
 			stage->AddRef();
 			*outStage = stage;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalid;
+	return GOM::kInvalid;
 }
 
-COM::Result CPF_STDCALL StageList::GetStages(int32_t* count, iStage** outStages) const
+GOM::Result CPF_STDCALL StageList::GetStages(int32_t* count, iStage** outStages) const
 {
 	if (count)
 	{
 		if (outStages)
 		{
 			if (int32_t(mStages.size()) > *count)
-				return COM::kNotEnoughSpace;
+				return GOM::kNotEnoughSpace;
 			int32_t index = 0;
 			for (auto stage : mStages)
 				outStages[index++] = stage;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		else
 		{
 			*count = int32_t(mStages.size());
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL StageList::AddStage(iStage* stage)
+GOM::Result CPF_STDCALL StageList::AddStage(iStage* stage)
 {
 	if (stage)
 	{
 		stage->AddRef();
 		mStages.emplace_back(stage);
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL StageList::RemoveStage(StageID id)
+GOM::Result CPF_STDCALL StageList::RemoveStage(StageID id)
 {
 	for (int i = 0; i < mStages.size(); ++i)
 	{
 		if (mStages[i]->GetID() == id)
 		{
 			mStages.erase(mStages.begin() + i);
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL StageList::GetInstructions(int32_t* count, Instruction* instructions)
+GOM::Result CPF_STDCALL StageList::GetInstructions(int32_t* count, Instruction* instructions)
 {
 	if (count)
 	{
@@ -137,14 +137,14 @@ COM::Result CPF_STDCALL StageList::GetInstructions(int32_t* count, Instruction* 
 				int32_t index = 0;
 				for (auto& inst : result)
 					instructions[index++] = inst;
-				return COM::kOK;
+				return GOM::kOK;
 			}
-			return COM::kNotEnoughSpace;
+			return GOM::kNotEnoughSpace;
 		}
 		*count = int32_t(result.size());
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL StageList::AddDependency(BlockDependency dep)
@@ -152,7 +152,7 @@ void CPF_STDCALL StageList::AddDependency(BlockDependency dep)
 	mDependencies.push_back(dep);
 }
 
-COM::Result CPF_STDCALL StageList::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL StageList::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	if (count)
 	{
@@ -179,13 +179,13 @@ COM::Result CPF_STDCALL StageList::GetDependencies(iPipeline* owner, int32_t* co
 			int32_t index = 0;
 			for (const auto& dep : result)
 				deps[index++] = dep;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		else
 		{
 			*count = int32_t(result.size());
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

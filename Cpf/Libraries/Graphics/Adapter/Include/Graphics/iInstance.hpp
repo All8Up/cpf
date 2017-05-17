@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -9,13 +9,13 @@ namespace Cpf
 		struct iDevice;
 		struct iAdapter;
 
-		struct iInstance : COM::iUnknown
+		struct iInstance : GOM::iUnknown
 		{
 		public:
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iInstance"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iInstance"_crc64);
 
-			virtual COM::Result CPF_STDCALL EnumerateAdapters(int& count, iAdapter** adapters) = 0;
-			virtual COM::Result CPF_STDCALL CreateDevice(iAdapter*, iDevice**) = 0;
+			virtual GOM::Result CPF_STDCALL EnumerateAdapters(int& count, iAdapter** adapters) = 0;
+			virtual GOM::Result CPF_STDCALL CreateDevice(iAdapter*, iDevice**) = 0;
 		};
 	}
 }

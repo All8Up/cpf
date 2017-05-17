@@ -14,28 +14,28 @@ Blob::Blob(size_t size, const void* data)
 Blob::~Blob()
 {}
 
-COM::Result CPF_STDCALL Blob::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Blob::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iBlob::kIID.GetID():
 			*outIface = static_cast<iBlob*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result Blob::Initialize(const void* data, int64_t size)
+GOM::Result Blob::Initialize(const void* data, int64_t size)
 {
 	if (data)
 	{
@@ -44,9 +44,9 @@ COM::Result Blob::Initialize(const void* data, int64_t size)
 		mData.resize(size);
 		for (int i = 0; i < size; ++i)
 			mData[i] = reinterpret_cast<const uint8_t*>(data)[i];
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void* Blob::GetData()

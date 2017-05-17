@@ -20,9 +20,9 @@ namespace Cpf
 				CommandPool();
 				virtual ~CommandPool();
 
-				COM::Result CPF_STDCALL Initialize(Device* device);
+				GOM::Result CPF_STDCALL Initialize(Device* device);
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface);
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface);
 
 				void Reset() override;
 

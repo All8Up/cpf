@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace SDL2;
 
 //////////////////////////////////////////////////////////////////////////
-Window::Window(COM::iUnknown*)
+Window::Window(GOM::iUnknown*)
 	: mpWindow(nullptr)
 {
 }
@@ -20,25 +20,25 @@ Window::~Window()
 	SDL_DestroyWindow(mpWindow);
 }
 
-COM::Result CPF_STDCALL Window::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Window::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iWindow::kIID.GetID():
 			*outIface = static_cast<iWindow*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool Window::Initialize(const WindowDesc* desc)
@@ -106,7 +106,7 @@ void CPF_STDCALL Window::Restore()
 	SDL_RestoreWindow(mpWindow);
 }
 
-COM::Result CPF_STDCALL Window::GetClientAreaSize(int32_t* w, int32_t* h)
+GOM::Result CPF_STDCALL Window::GetClientAreaSize(int32_t* w, int32_t* h)
 {
 	if (w && h)
 	{
@@ -114,12 +114,12 @@ COM::Result CPF_STDCALL Window::GetClientAreaSize(int32_t* w, int32_t* h)
 		SDL_GL_GetDrawableSize(mpWindow, &hw, &hh);
 		*w = hw;
 		*h = hh;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Window::GetOSData(OSWindowData* outData)
+GOM::Result CPF_STDCALL Window::GetOSData(OSWindowData* outData)
 {
 	if (outData)
 	{
@@ -136,9 +136,9 @@ COM::Result CPF_STDCALL Window::GetOSData(OSWindowData* outData)
 		SDL_GetWindowWMInfo(mpWindow, &windowInfo);
 		result.mpView = windowInfo.info.cocoa.window;
 #endif
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 SDL_Window* Window::GetSDLWindow() const

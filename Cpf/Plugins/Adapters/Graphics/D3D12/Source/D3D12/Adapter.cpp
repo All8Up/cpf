@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-D3D12::Adapter::Adapter(COM::iUnknown*)
+D3D12::Adapter::Adapter(GOM::iUnknown*)
 	: mpAdapter(nullptr)
 {
 }
@@ -20,7 +20,7 @@ D3D12::Adapter::~Adapter()
 	CPF_LOG(D3D12, Info) << "Destroyed adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
 }
 
-COM::Result D3D12::Adapter::Initialize(IDXGIAdapter2* adapter)
+GOM::Result D3D12::Adapter::Initialize(IDXGIAdapter2* adapter)
 {
 	mpAdapter.Adopt(adapter);
 	mpAdapter->AddRef();
@@ -31,28 +31,28 @@ COM::Result D3D12::Adapter::Initialize(IDXGIAdapter2* adapter)
 		mDescription[i] = char(mDesc.Description[i]);
 
 	CPF_LOG(D3D12, Info) << "Created adapter: " << intptr_t(this) << " - " << intptr_t(mpAdapter.Ptr());
-	return COM::kOK;
+	return GOM::kOK;
 }
 
-COM::Result CPF_STDCALL D3D12::Adapter::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL D3D12::Adapter::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case Graphics::iAdapter::kIID.GetID():
 			*outIface = static_cast<Graphics::iAdapter*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 
@@ -86,7 +86,7 @@ bool CPF_STDCALL D3D12::Adapter::IsRemote() const
 	return (mDesc.Flags & DXGI_ADAPTER_FLAG_REMOTE) != 0;
 }
 
-COM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
+GOM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
 {
 	if (outputs && count != 0)
 	{
@@ -102,7 +102,7 @@ COM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphic
 			else
 				output->Release();
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
 	else
 	{
@@ -111,6 +111,6 @@ COM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphic
 		for (IDXGIOutput* output = nullptr; SUCCEEDED(mpAdapter->EnumOutputs(index, &output)); ++index)
 			output->Release();
 		count = int32_t(index);
-		return COM::kOK;
+		return GOM::kOK;
 	}
 }

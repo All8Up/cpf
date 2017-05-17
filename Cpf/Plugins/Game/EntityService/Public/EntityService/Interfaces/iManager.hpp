@@ -13,11 +13,11 @@ namespace Cpf
 	{
 		struct iEntity;
 
-		static constexpr COM::ClassID kManagerCID = COM::ClassID("EntityService::iManager"_crc64);
+		static constexpr GOM::ClassID kManagerCID = GOM::ClassID("EntityService::iManager"_crc64);
 
-		struct iManager : COM::iUnknown
+		struct iManager : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("EntityService::iManager"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("EntityService::iManager"_crc64);
 
 			virtual MultiCore::iPipeline* GetPipeline() const = 0;
 

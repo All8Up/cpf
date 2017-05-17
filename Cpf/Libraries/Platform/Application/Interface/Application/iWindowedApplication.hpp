@@ -10,7 +10,7 @@ namespace Cpf
 
 	struct iWindowedApplication : iApplication
 	{
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iWindowedApplication"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iWindowedApplication"_crc64);
 
 		/**
 		 * @brief Determine if the application is supposed to still be running.
@@ -27,13 +27,13 @@ namespace Cpf
 		 * @brief Polls the application for events.
 		 * @return A result code.
 		 */
-		virtual COM::Result CPF_STDCALL Poll() = 0;
+		virtual GOM::Result CPF_STDCALL Poll() = 0;
 
 		/**
 		 * @brief Waits for an application event.
 		 * @return A result code.
 		 */
-		virtual COM::Result CPF_STDCALL Wait() = 0;
+		virtual GOM::Result CPF_STDCALL Wait() = 0;
 
 		/**
 		 * @brief Creates a new CPF_STDCALL.
@@ -41,7 +41,7 @@ namespace Cpf
 		 * @param [in,out] outWindow The window output variable.
 		 * @return A result code.
 		 */
-		virtual COM::Result CPF_STDCALL Create(const WindowDesc* desc, iWindow** outWindow) = 0;
+		virtual GOM::Result CPF_STDCALL Create(const WindowDesc* desc, iWindow** outWindow) = 0;
 
 		/**
 		 * @brief Gets input manager.

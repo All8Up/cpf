@@ -25,7 +25,7 @@ namespace Cpf
 					const char* const mpRoot;
 				};
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				// TODO: Remove.
 				static iVolume* Create(const VolumeDesc* const desc);

@@ -5,17 +5,17 @@
 using namespace Cpf;
 using namespace EntityService;
 
-COM::Result TransformComponent::Install(Plugin::iRegistry* regy)
+GOM::Result TransformComponent::Install(Plugin::iRegistry* regy)
 {
 	return regy->Install(kTransformComponentCID, new Plugin::tClassInstance<TransformComponent>());
 }
 
-COM::Result TransformComponent::Remove(Plugin::iRegistry* regy)
+GOM::Result TransformComponent::Remove(Plugin::iRegistry* regy)
 {
 	return regy->Remove(kTransformComponentCID);
 }
 
-COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPtr)
+GOM::Result TransformComponent::QueryInterface(GOM::InterfaceID id, void** outPtr)
 {
 	switch(id.GetID())
 	{
@@ -24,7 +24,7 @@ COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPt
 			iUnknown* result = static_cast<iUnknown*>(this);
 			result->AddRef();
 			*outPtr = result;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 
 	case iTransformComponent::kIID.GetID():
@@ -32,15 +32,15 @@ COM::Result TransformComponent::QueryInterface(COM::InterfaceID id, void** outPt
 			iTransformComponent* result = static_cast<iTransformComponent*>(this);
 			result->AddRef();
 			*outPtr = result;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
 	*outPtr = nullptr;
-	return COM::kUnknownInterface;
+	return GOM::kUnknownInterface;
 }
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent(COM::iUnknown*)
+TransformComponent::TransformComponent(GOM::iUnknown*)
 	: mpParent(nullptr)
 {}
 

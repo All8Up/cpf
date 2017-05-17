@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -9,12 +9,12 @@ namespace Cpf
 		struct ID;
 		struct iLocator;
 
-		static constexpr COM::ClassID kMonitorManualCID = COM::ClassID("Cpf::Resources::Monitors::iManual"_crc64);
-		static constexpr COM::ClassID kMonitorFileSystemCID = COM::ClassID("Cpf::Resources::Monitors::iFileSystem"_crc64);
+		static constexpr GOM::ClassID kMonitorManualCID = GOM::ClassID("Cpf::Resources::Monitors::iManual"_crc64);
+		static constexpr GOM::ClassID kMonitorFileSystemCID = GOM::ClassID("Cpf::Resources::Monitors::iFileSystem"_crc64);
 
-		struct iMonitor : COM::iUnknown
+		struct iMonitor : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Resources::iMonitor"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iMonitor"_crc64);
 
 			virtual bool CPF_STDCALL Touch(ID) = 0;
 			virtual void CPF_STDCALL TouchAll() = 0;

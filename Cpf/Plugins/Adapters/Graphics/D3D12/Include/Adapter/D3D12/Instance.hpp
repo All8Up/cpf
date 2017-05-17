@@ -27,18 +27,18 @@ namespace Cpf
 		namespace D3D12
 		{
 			//////////////////////////////////////////////////////////////////////////
-			static constexpr Cpf::COM::ClassID kD3D12InstanceCID = Cpf::COM::ClassID("Adapter::D3D12::iInstance"_crc64);
+			static constexpr Cpf::GOM::ClassID kD3D12InstanceCID = Cpf::GOM::ClassID("Adapter::D3D12::iInstance"_crc64);
 
 			//////////////////////////////////////////////////////////////////////////
 			struct Instance : tRefCounted<Graphics::iInstance>
 			{
-				Instance(COM::iUnknown*);
+				Instance(GOM::iUnknown*);
 				virtual ~Instance();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
-				COM::Result CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
-				COM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;
+				GOM::Result CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
+				GOM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;
 
 				//
 				IDXGIFactory2* GetFactory() const { return mpDXGIFactory2; }

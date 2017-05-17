@@ -23,7 +23,7 @@ namespace Cpf
 				ResourceBinding(Device* device, const Graphics::ResourceBindingDesc* desc);
 				virtual ~ResourceBinding();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				ID3D12RootSignature* GetSignature() const { return mpSignature; }
 

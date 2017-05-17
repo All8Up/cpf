@@ -1,14 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iCommandPool : COM::iUnknown
+		struct iCommandPool : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iCommandPool"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iCommandPool"_crc64);
 
 			virtual void Reset() = 0;
 		};

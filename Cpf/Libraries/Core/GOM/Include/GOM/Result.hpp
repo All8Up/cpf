@@ -4,7 +4,7 @@
 
 namespace Cpf
 {
-	namespace COM
+	namespace GOM
 	{
 		/** @brief A result code. */
 		struct Result
@@ -33,21 +33,21 @@ namespace Cpf
 		 * @param v  The error code identifier.
 		 * @return The result code.
 		 */
-		inline constexpr Result CreateResult(uint8_t e, uint16_t ss, uint16_t v) { return Result{ e, ss, uint16_t(v & 0x7FFF) }; }
+		constexpr Result CreateResult(uint8_t e, uint16_t ss, uint16_t v) { return Result{ e, ss, uint16_t(v & 0x7FFF) }; }
 
 		/**
 		 * @brief Test a result code for sucess.
 		 * @param result The result code to test.
 		 * @return True if the result code is a non-error code.
 		 */
-		inline constexpr bool Succeeded(Result result) { return result.Error == 0; }
+		constexpr bool Succeeded(Result result) { return result.Error == 0; }
 
 		/**
 		 * @brief Test if a result code indicates an error.
 		 * @param result The result code to test.
 		 * @return True if the result code is a failure code.
 		 */
-		inline constexpr bool Failed(Result result) { return result.Error != 0; }
+		constexpr bool Failed(Result result) { return result.Error != 0; }
 
 		static constexpr Result kOK = CreateResult(0, "Core"_crc16, "OK"_crc16);
 		static constexpr Result kError = CreateResult(1, "Core"_crc16, "Error"_crc16);

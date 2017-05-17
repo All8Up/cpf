@@ -14,7 +14,7 @@ namespace Cpf
 				FileSystem(iUnknown*);
 				~FileSystem() override;
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				bool CPF_STDCALL Touch(ID) override;
 				void CPF_STDCALL TouchAll() override;

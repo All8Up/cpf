@@ -29,7 +29,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 
-Device::Device(COM::iUnknown*)
+Device::Device(GOM::iUnknown*)
 {
 }
 
@@ -39,13 +39,13 @@ Device::~Device()
 	CPF_LOG(D3D12, Info) << "Destroyed device: " << intptr_t(this) << " - " << intptr_t(mpDevice.Ptr()) << " - " << intptr_t(mpQueue.Ptr());
 }
 
-COM::Result Device::Initialize(Graphics::iAdapter* adapter)
+GOM::Result Device::Initialize(Graphics::iAdapter* adapter)
 {
 #ifdef CPF_DEBUG
 	ID3D12Debug* debugController = nullptr;
 	if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 	{
-		return COM::kError;
+		return GOM::kError;
 	}
 	debugController->EnableDebugLayer();
 	debugController->Release();
@@ -92,31 +92,31 @@ COM::Result Device::Initialize(Graphics::iAdapter* adapter)
 	mpDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(mpQueue.AsTypePP()));
 
 	CPF_LOG(D3D12, Info) << "Created device: " << intptr_t(this) << " - " << intptr_t(mpDevice.Ptr()) << " - " << intptr_t(mpQueue.Ptr());
-	return COM::kOK;
+	return GOM::kOK;
 }
 
-COM::Result CPF_STDCALL Device::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Device::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iDevice::kIID.GetID():
 			*outIface = static_cast<iDevice*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Device::Initialize()
+GOM::Result CPF_STDCALL Device::Initialize()
 {
 	if (
 		mShaderResourceDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE, kShaderResourceDescriptors) &&
@@ -124,11 +124,11 @@ COM::Result CPF_STDCALL Device::Initialize()
 		mRenderTargetDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, kRenderTargetDescriptors) &&
 		mDepthStencilDescriptors.Initialize(this, D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE, kDepthStencilDescriptors)
 		)
-		return COM::kOK;
-	return COM::kError;
+		return GOM::kOK;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::Shutdown()
+GOM::Result CPF_STDCALL Device::Shutdown()
 {
 	if (
 		mShaderResourceDescriptors.Shutdown() &&
@@ -136,38 +136,38 @@ COM::Result CPF_STDCALL Device::Shutdown()
 		mRenderTargetDescriptors.Shutdown() &&
 		mDepthStencilDescriptors.Shutdown()
 		)
-		return COM::kOK;
-	return COM::kError;
+		return GOM::kOK;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateSwapChain(Graphics::iInstance* instance, const Graphics::WindowData* winData, int32_t w, int32_t h, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain)
+GOM::Result CPF_STDCALL Device::CreateSwapChain(Graphics::iInstance* instance, const Graphics::WindowData* winData, int32_t w, int32_t h, const Graphics::SwapChainDesc* desc, Graphics::iSwapChain** swapChain)
 {
 	Graphics::iSwapChain* result = new SwapChain(static_cast<Instance*>(instance), this, winData, w, h, desc);
 	if (result)
 	{
 		*swapChain = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateCommandPool(Graphics::iCommandPool** pool)
+GOM::Result CPF_STDCALL Device::CreateCommandPool(Graphics::iCommandPool** pool)
 {
 	CommandPool* result = new CommandPool();
 	if (pool)
 	{
-		if (COM::Succeeded(result->Initialize(this)))
+		if (GOM::Succeeded(result->Initialize(this)))
 		{
 			*pool = result;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		*pool = nullptr;
-		return COM::kInitializationFailure;
+		return GOM::kInitializationFailure;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::CommandBufferType type, Graphics::iCommandBuffer** buffer)
+GOM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::CommandBufferType type, Graphics::iCommandBuffer** buffer)
 {
 	CommandBuffer* result = new CommandBuffer(nullptr);
 	if (result)
@@ -175,37 +175,37 @@ COM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool
 		if (Succeeded(result->Initialize(this, type, pool)))
 		{
 			*buffer = result;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		*buffer = nullptr;
-		return COM::kInitializationFailure;
+		return GOM::kInitializationFailure;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateFence(int64_t initValue, Graphics::iFence** fence)
+GOM::Result CPF_STDCALL Device::CreateFence(int64_t initValue, Graphics::iFence** fence)
 {
 	Fence* result = new Fence(this, initValue);
 	if (result)
 	{
 		*fence = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const Graphics::ClearValue* clearValue, Graphics::iImage** image)
+GOM::Result CPF_STDCALL Device::CreateImage2D(Graphics::HeapType heap, const Graphics::ImageDesc* desc, const Graphics::ClearValue* clearValue, Graphics::iImage** image)
 {
 	Image* result = new Image(this, heap, clearValue, desc);
 	if (result)
 	{
 		*image = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateShader(Graphics::iBlob* blob, Graphics::iShader** shader)
+GOM::Result CPF_STDCALL Device::CreateShader(Graphics::iBlob* blob, Graphics::iShader** shader)
 {
 	IntrusivePtr<Shader> result(new Shader());
 	if (result)
@@ -214,150 +214,150 @@ COM::Result CPF_STDCALL Device::CreateShader(Graphics::iBlob* blob, Graphics::iS
 		{
 			*shader = result;
 			result->AddRef();
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateResourceBinding(const Graphics::ResourceBindingDesc* resourceState, Graphics::iResourceBinding** binding)
+GOM::Result CPF_STDCALL Device::CreateResourceBinding(const Graphics::ResourceBindingDesc* resourceState, Graphics::iResourceBinding** binding)
 {
 	IntrusivePtr<ResourceBinding> resourceBinding(new ResourceBinding(this, resourceState));
 	if (resourceBinding)
 	{
 		resourceBinding->AddRef();
 		*binding = resourceBinding;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding* rb, Graphics::iPipeline** pipeline)
+GOM::Result CPF_STDCALL Device::CreatePipeline(const Graphics::PipelineStateDesc* desc, Graphics::iResourceBinding* rb, Graphics::iPipeline** pipeline)
 {
 	IntrusivePtr<Pipeline> result(new Pipeline(this, desc, static_cast<const ResourceBinding*>(rb)));
 	if (result)
 	{
 		result->AddRef();
 		*pipeline = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource)
+GOM::Result CPF_STDCALL Device::CreateResource(const Graphics::ResourceDesc* desc, Graphics::iResource** resource)
 {
 	IntrusivePtr<Resource> result(new Resource(this, desc));
 	if (result)
 	{
 		result->AddRef();
 		*resource = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler)
+GOM::Result CPF_STDCALL Device::CreateSampler(const Graphics::SamplerDesc* desc, Graphics::iSampler** sampler)
 {
 	IntrusivePtr<Sampler> result(new Sampler(this, desc));
 	if (result)
 	{
 		result->AddRef();
 		*sampler = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass)
+GOM::Result CPF_STDCALL Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass)
 {
 	if (gContext.GetRegistry() == nullptr)
-		return COM::kNotInitialized;
+		return GOM::kNotInitialized;
 	if (desc == nullptr)
-		return COM::kInvalidParameter;
+		return GOM::kInvalidParameter;
 	if (renderPass == nullptr)
-		return COM::kInvalidParameter;
+		return GOM::kInvalidParameter;
 
-	if (COM::Succeeded(gContext.GetRegistry()->Create(nullptr, kRenderPassCID, Graphics::iRenderPass::kIID, reinterpret_cast<void**>(renderPass))))
+	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kRenderPassCID, Graphics::iRenderPass::kIID, reinterpret_cast<void**>(renderPass))))
 	{
-		if (COM::Succeeded(static_cast<RenderPass*>(*renderPass)->Initialize(desc)))
-			return COM::kOK;
+		if (GOM::Succeeded(static_cast<RenderPass*>(*renderPass)->Initialize(desc)))
+			return GOM::kOK;
 		(*renderPass)->Release();
 		*renderPass = nullptr;
-		return COM::kInitializationFailure;
+		return GOM::kInitializationFailure;
 	}
 
-	return COM::kUnknownClass;
+	return GOM::kUnknownClass;
 }
 
-COM::Result CPF_STDCALL Device::CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer)
+GOM::Result CPF_STDCALL Device::CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer)
 {
 	if (gContext.GetRegistry() == nullptr)
-		return COM::kNotInitialized;
+		return GOM::kNotInitialized;
 	if (desc == nullptr)
-		return COM::kInvalidParameter;
+		return GOM::kInvalidParameter;
 	if (frameBuffer == nullptr)
-		return COM::kInvalidParameter;
+		return GOM::kInvalidParameter;
 
-	if (COM::Succeeded(gContext.GetRegistry()->Create(nullptr, kFrameBufferCID, Graphics::iFrameBuffer::kIID, reinterpret_cast<void**>(frameBuffer))))
+	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kFrameBufferCID, Graphics::iFrameBuffer::kIID, reinterpret_cast<void**>(frameBuffer))))
 	{
-		if (COM::Succeeded(static_cast<FrameBuffer*>(*frameBuffer)->Initialize(desc)))
-			return COM::kOK;
+		if (GOM::Succeeded(static_cast<FrameBuffer*>(*frameBuffer)->Initialize(desc)))
+			return GOM::kOK;
 		(*frameBuffer)->Release();
 		*frameBuffer = nullptr;
-		return COM::kInitializationFailure;
+		return GOM::kInitializationFailure;
 	}
-	return COM::kUnknownClass;
+	return GOM::kUnknownClass;
 }
 
-COM::Result CPF_STDCALL Device::CreateIndexBuffer(const Graphics::ResourceDesc* desc, Graphics::Format format, Graphics::iIndexBuffer** indexBuffer)
+GOM::Result CPF_STDCALL Device::CreateIndexBuffer(const Graphics::ResourceDesc* desc, Graphics::Format format, Graphics::iIndexBuffer** indexBuffer)
 {
 	IntrusivePtr<IndexBuffer> result(new IndexBuffer(this, desc, format));
 	if (result)
 	{
 		*indexBuffer = result;
 		result.Abandon();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateVertexBuffer(const Graphics::ResourceDesc* desc, int32_t stride, Graphics::iVertexBuffer** vertexBuffer)
+GOM::Result CPF_STDCALL Device::CreateVertexBuffer(const Graphics::ResourceDesc* desc, int32_t stride, Graphics::iVertexBuffer** vertexBuffer)
 {
 	IntrusivePtr<VertexBuffer> result(new VertexBuffer(this, desc, stride));
 	if (result)
 	{
 		*vertexBuffer = result;
 		result.Abandon();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateConstantBuffer(const Graphics::ResourceDesc* desc, const void* initData, Graphics::iConstantBuffer** cbuf)
+GOM::Result CPF_STDCALL Device::CreateConstantBuffer(const Graphics::ResourceDesc* desc, const void* initData, Graphics::iConstantBuffer** cbuf)
 {
 	IntrusivePtr<ConstantBuffer> result(new ConstantBuffer(this, desc, initData));
 	if (result)
 	{
 		*cbuf = result;
 		result.Abandon();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateBlob(int64_t size, const void* data, Graphics::iBlob** blob)
+GOM::Result CPF_STDCALL Device::CreateBlob(int64_t size, const void* data, Graphics::iBlob** blob)
 {
 	IntrusivePtr<Graphics::iBlob> result(new Blob(size, data));
 	if (result)
 	{
 		*blob = result;
 		result->AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::iBlob** outBlob)
+GOM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphics::ShaderType type, size_t size, const char* source, Graphics::iBlob** outBlob)
 {
 	if (size > 0 && source)
 	{
@@ -393,7 +393,7 @@ COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphi
 		)))
 		{
 			CreateBlob(blob->GetBufferSize(), blob->GetBufferPointer(), outBlob);
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		if (errorBlob)
 		{
@@ -403,26 +403,26 @@ COM::Result CPF_STDCALL Device::CompileToByteCode(const char* entryPoint, Graphi
 			CPF_LOG(D3D12, Error) << "Shader compile errors: " << errors;
 		}
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::CreateDepthStencilView(Graphics::iImage* image, const Graphics::DepthStencilViewDesc* dsDesc, Graphics::iImageView** imageView)
+GOM::Result CPF_STDCALL Device::CreateDepthStencilView(Graphics::iImage* image, const Graphics::DepthStencilViewDesc* dsDesc, Graphics::iImageView** imageView)
 {
 	ImageView* result = new ImageView(this, static_cast<Image*>(image), dsDesc);
 	if (result)
 	{
 		*imageView = result;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL Device::Signal(Graphics::iFence* fence, int64_t value)
+GOM::Result CPF_STDCALL Device::Signal(Graphics::iFence* fence, int64_t value)
 {
 	auto d3dFence = static_cast<Fence*>(fence);
 	if (SUCCEEDED(mpQueue->Signal(d3dFence->GetD3DFence(), UINT64(value))))
-		return COM::kOK;
-	return COM::kError;
+		return GOM::kOK;
+	return GOM::kError;
 }
 
 void CPF_STDCALL Device::Submit(int32_t count, Graphics::iCommandBuffer** buffers)

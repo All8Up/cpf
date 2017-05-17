@@ -13,11 +13,11 @@ namespace Cpf
 			virtual ~Python3();
 
 			// iUnknown overrides.
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			// iPython3 overrides.
-			COM::Result CPF_STDCALL Initialize(const char* basePath) override;
-			COM::Result CPF_STDCALL Shutdown() override;
+			GOM::Result CPF_STDCALL Initialize(const char* basePath) override;
+			GOM::Result CPF_STDCALL Shutdown() override;
 		};
 	}
 }

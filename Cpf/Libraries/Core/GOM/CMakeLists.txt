@@ -1,21 +1,21 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/COM.hpp
-	Include/COM/iUnknown.hpp
-	Include/COM/Result.hpp
+	Include/GOM.hpp
+	Include/GOM/iUnknown.hpp
+	Include/GOM/Result.hpp
 )
 
-add_library (COM INTERFACE)
-target_link_libraries (COM INTERFACE Configuration RefCount)
+add_library (GOM INTERFACE)
+target_link_libraries (GOM INTERFACE Configuration RefCount)
 
-target_include_directories (COM INTERFACE
+target_include_directories (GOM INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
 )
 source_group (Interface FILES ${INCLUDE_FILES})
 
-add_custom_target (COM_IDE SOURCES ${INCLUDE_FILES})
-set_property (TARGET COM_IDE PROPERTY FOLDER Libraries/Interface/Core)
+add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES})
+set_property (TARGET GOM_IDE PROPERTY FOLDER Libraries/Interface/Core)
 source_group (Interface FILES ${INCLUDE_FILES})
 
 install( DIRECTORY Include/Core
@@ -24,17 +24,17 @@ install( DIRECTORY Include/Core
 )
 
 
-install (TARGETS COM
-	EXPORT COMConfig
+install (TARGETS GOM
+	EXPORT GOMConfig
 	CONFIGURATIONS Debug Release
 	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
-install( EXPORT COMConfig DESTINATION CMake )
+install( EXPORT GOMConfig DESTINATION CMake )
 
 
 # ###############################################
-MakeUnitTest (LIBRARY COM GROUP Core
+MakeUnitTest (LIBRARY GOM GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		../Test/UnitTestMain.cpp

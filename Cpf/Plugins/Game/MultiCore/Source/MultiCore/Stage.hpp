@@ -3,7 +3,7 @@
 #include "Pair.hpp"
 #include "Vector.hpp"
 #include "String.hpp"
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "MultiCore/Types.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "Plugin/iRegistry.hpp"
@@ -24,14 +24,14 @@ namespace Cpf
 			SingleUpdateStage(iUnknown*);
 
 			// iStage overrides.
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
-			COM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) override;
 			iSystem* CPF_STDCALL GetSystem() const override;
 			StageID CPF_STDCALL GetID() const override;
 			bool CPF_STDCALL IsEnabled() const override;
 			void CPF_STDCALL SetEnabled(bool flag) override;
-			COM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
-			COM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
+			GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
+			GOM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
 			BlockID CPF_STDCALL GetDefaultBlock() const { return kExecute; };
 			BlockID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
 			BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }

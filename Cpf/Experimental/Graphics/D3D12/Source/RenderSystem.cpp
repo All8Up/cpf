@@ -7,17 +7,17 @@ using namespace Cpf;
 using namespace Concurrency;
 using namespace MultiCore;
 
-COM::Result RenderSystem::Install(Plugin::iRegistry* regy)
+GOM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
 	return regy->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
 }
 
-COM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
+GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 {
 	return regy->Remove(kRenderSystemCID);
 }
 
-RenderSystem::RenderSystem(COM::iUnknown*)
+RenderSystem::RenderSystem(GOM::iUnknown*)
 	: mpApp(nullptr)
 	, mCurrentBackBuffer(0)
 {
@@ -49,14 +49,14 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext* tc, void* context)
 
 
 //////////////////////////////////////////////////////////////////////////
-COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);
@@ -66,16 +66,16 @@ COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void**
 			break;
 
 		default:
-			return COM::kNotImplemented;
+			return GOM::kNotImplemented;
 		}
 
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
+GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
 {
 	(void)rgy;
 	if (name)
@@ -85,7 +85,7 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 		mCurrentBackBuffer = 0;
 		mID = SystemID(name, strlen(name));
 		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
-		if (COM::Succeeded(result))
+		if (GOM::Succeeded(result))
 		{
 			// Build the stages and set the update function for each.
 			// NOTE: While there are 6 stages which must operate in order, there will only
@@ -135,11 +135,11 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 				MultiCore::DependencyPolicy::eAfter
 			});
 
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		return result;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 SystemID CPF_STDCALL RenderSystem::GetID() const
@@ -147,27 +147,27 @@ SystemID CPF_STDCALL RenderSystem::GetID() const
 	return mID;
 }
 
-COM::Result CPF_STDCALL RenderSystem::FindStage(StageID id, iStage** outStage) const
+GOM::Result CPF_STDCALL RenderSystem::FindStage(StageID id, iStage** outStage) const
 {
 	return mpStages->FindStage(id, outStage);
 }
 
-COM::Result CPF_STDCALL RenderSystem::GetInstructions(int32_t* count, Instruction* instructions)
+GOM::Result CPF_STDCALL RenderSystem::GetInstructions(int32_t* count, Instruction* instructions)
 {
 	return mpStages->GetInstructions(count, instructions);
 }
 
-COM::Result CPF_STDCALL RenderSystem::GetStages(int32_t* count, iStage** outStages) const
+GOM::Result CPF_STDCALL RenderSystem::GetStages(int32_t* count, iStage** outStages) const
 {
 	return mpStages->GetStages(count, outStages);
 }
 
-COM::Result CPF_STDCALL RenderSystem::AddStage(iStage* stage)
+GOM::Result CPF_STDCALL RenderSystem::AddStage(iStage* stage)
 {
 	return mpStages->AddStage(stage);
 }
 
-COM::Result CPF_STDCALL RenderSystem::RemoveStage(StageID id)
+GOM::Result CPF_STDCALL RenderSystem::RemoveStage(StageID id)
 {
 	return mpStages->RemoveStage(id);
 }
@@ -177,7 +177,7 @@ void CPF_STDCALL RenderSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-COM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

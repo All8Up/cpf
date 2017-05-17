@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -10,14 +10,14 @@ namespace Cpf
 
 		struct IID_CID
 		{
-			COM::InterfaceID mIID;
-			COM::ClassID mCID;
+			GOM::InterfaceID mIID;
+			GOM::ClassID mCID;
 		};
 
 		/** @brief The class instance interface.  Added to iRegistry to create component instances. */
-		struct iClassInstance : COM::iUnknown
+		struct iClassInstance : GOM::iUnknown
 		{
-			virtual COM::Result CPF_STDCALL CreateInstance(iRegistry*, COM::iUnknown*, COM::iUnknown**) = 0;
+			virtual GOM::Result CPF_STDCALL CreateInstance(iRegistry*, GOM::iUnknown*, GOM::iUnknown**) = 0;
 		};
 
 		/**
@@ -30,7 +30,7 @@ namespace Cpf
 			tClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
 			virtual ~tClassInstance() {}
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID, void**) override { return GOM::kNotImplemented; }
 			int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
 			int32_t CPF_STDCALL Release() override
 			{
@@ -42,7 +42,7 @@ namespace Cpf
 				return mRefCount;
 			}
 
-			COM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, COM::iUnknown* outer, COM::iUnknown** outIface) override
+			GOM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, GOM::iUnknown* outer, GOM::iUnknown** outIface) override
 			{
 				if (outIface)
 				{
@@ -51,11 +51,11 @@ namespace Cpf
 					{
 						if (mExternalRef)
 							++*mExternalRef;
-						return COM::kOK;
+						return GOM::kOK;
 					}
-					return COM::kOutOfMemory;
+					return GOM::kOutOfMemory;
 				}
-				return COM::kInvalidParameter;
+				return GOM::kInvalidParameter;
 			}
 
 		private:

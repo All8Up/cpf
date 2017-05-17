@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Graphics/SubPassDesc.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iRenderPass : COM::iUnknown
+		struct iRenderPass : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iRenderPass"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iRenderPass"_crc64);
 		};
 	}
 }

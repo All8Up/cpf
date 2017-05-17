@@ -13,12 +13,12 @@ namespace Cpf
 
 	class ExperimentalD3D12;
 
-	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("RenderSystemCID"_crc64);
+	static constexpr GOM::ClassID kRenderSystemCID = GOM::ClassID("RenderSystemCID"_crc64);
 
 	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("RenderSystem"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("RenderSystem"_crc64);
 		//
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
@@ -30,12 +30,12 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Construction/Destruction.
-		RenderSystem(COM::iUnknown*);
+		RenderSystem(GOM::iUnknown*);
 		virtual ~RenderSystem();
 
 		// Registration.
-		static COM::Result Install(Plugin::iRegistry*);
-		static COM::Result Remove(Plugin::iRegistry*);
+		static GOM::Result Install(Plugin::iRegistry*);
+		static GOM::Result Remove(Plugin::iRegistry*);
 
 		struct Desc : iSystem::Desc
 		{
@@ -44,22 +44,22 @@ namespace Cpf
 		};
 
 		// iUnknown
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
+		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
-		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return COM::kOK; }
+		GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return GOM::kOK; }
 
 		// iStageList
-		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
-		COM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
-		COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+		GOM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
+		GOM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
+		GOM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
 		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
-		COM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
 
-		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
-		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
+		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
+		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 	private:
 		//

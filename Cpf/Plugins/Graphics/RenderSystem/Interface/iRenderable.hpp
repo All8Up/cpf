@@ -4,11 +4,11 @@
 
 namespace Cpf
 {
-	static constexpr COM::ClassID kRenderableCID = COM::ClassID("Cpf::iRenderable"_crc64);
+	static constexpr GOM::ClassID kRenderableCID = GOM::ClassID("Cpf::iRenderable"_crc64);
 
 	struct iRenderable : EntityService::iComponent
 	{
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iRenderable"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iRenderable"_crc64);
 
 
 	};

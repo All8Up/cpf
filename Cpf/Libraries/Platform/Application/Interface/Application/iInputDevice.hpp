@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
-	struct iInputDevice : COM::iUnknown
+	struct iInputDevice : GOM::iUnknown
 	{
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iInputDevice"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iInputDevice"_crc64);
 	};
 }

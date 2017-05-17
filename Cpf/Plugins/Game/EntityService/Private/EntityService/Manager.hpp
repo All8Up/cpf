@@ -26,7 +26,7 @@ namespace Cpf
 			virtual ~Manager();
 
 			//
-			COM::Result QueryInterface(COM::InterfaceID id, void**) override;
+			GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
 
 			// 
 			MultiCore::iPipeline* GetPipeline() const { return mpPipeline; }

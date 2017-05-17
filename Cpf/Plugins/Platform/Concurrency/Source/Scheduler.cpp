@@ -49,7 +49,7 @@ Scheduler::~Scheduler()
 }
 
 
-COM::Result CPF_STDCALL Scheduler::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Scheduler::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -62,12 +62,12 @@ COM::Result CPF_STDCALL Scheduler::QueryInterface(COM::InterfaceID id, void** ou
 			*outIface = static_cast<iScheduler*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 
@@ -85,7 +85,7 @@ void Scheduler::_ClearRegisters()
 	}
 }
 
-COM::Result CPF_STDCALL Scheduler::Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context)
+GOM::Result CPF_STDCALL Scheduler::Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context)
 {
 	(void)init; (void)shutdown; (void)context;
 	if (threadCount > 0)
@@ -107,12 +107,12 @@ COM::Result CPF_STDCALL Scheduler::Initialize(int threadCount, WorkFunction init
 				mTimeInfo.mKernelTime[i] = Time::Value::Zero();
 			}
 
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		mThreadCount = mTargetCount = mActiveCount = 0;
 	}
 
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 /** @brief Shuts down this object and frees any resources it is using. */

@@ -36,18 +36,18 @@ namespace Cpf
 		{
 			class Image;
 
-			static constexpr COM::ClassID kCommandBufferCID = COM::ClassID("Adapter::D3D12::CommandBuffer"_crc64);
+			static constexpr GOM::ClassID kCommandBufferCID = GOM::ClassID("Adapter::D3D12::CommandBuffer"_crc64);
 
 			class CommandBuffer : public tRefCounted<Graphics::iCommandBuffer>
 			{
 			public:
-				CommandBuffer(COM::iUnknown*);
+				CommandBuffer(GOM::iUnknown*);
 				virtual ~CommandBuffer();
 
 				//
-				COM::Result CPF_STDCALL Initialize(Graphics::iDevice*, Graphics::CommandBufferType type, Graphics::iCommandPool*);
+				GOM::Result CPF_STDCALL Initialize(Graphics::iDevice*, Graphics::CommandBufferType type, Graphics::iCommandPool*);
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				void CPF_STDCALL Begin(iCommandBuffer* primary) override;
 				void CPF_STDCALL End() override;
@@ -75,11 +75,11 @@ namespace Cpf
 				void CPF_STDCALL DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance) override;
 
 
-				COM::Result CPF_STDCALL BeginRenderPass(Graphics::RenderPassBeginDesc*) override;
-				COM::Result CPF_STDCALL NextSubPass() override;
-				COM::Result CPF_STDCALL EndRenderPass() override;
+				GOM::Result CPF_STDCALL BeginRenderPass(Graphics::RenderPassBeginDesc*) override;
+				GOM::Result CPF_STDCALL NextSubPass() override;
+				GOM::Result CPF_STDCALL EndRenderPass() override;
 
-				COM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) override;
+				GOM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) override;
 
 				//////////////////////////////////////////////////////////////////////////
 				// D3D12 specific implementation details.
@@ -91,11 +91,11 @@ namespace Cpf
 				void CPF_STDCALL ClearDepthStencilView(Graphics::iImageView* view, Graphics::DepthStencilClearFlag flags, float depth, uint8_t stencil, int32_t count, const Math::Rectanglei* rects);
 
 			private:
-				COM::Result _AddCommandList();
+				GOM::Result _AddCommandList();
 				ID3D12GraphicsCommandList* _Current() { CPF_ASSERT(mCurrent >= 0); return mCommandLists[mCurrent][0]; }
 				static void _MakeBarrier(D3D12_RESOURCE_BARRIER* barrier, Image* image, Graphics::ResourceState begin, Graphics::ResourceState end);
-				COM::Result _StartSubPass();
-				COM::Result _EndSubPass();
+				GOM::Result _StartSubPass();
+				GOM::Result _EndSubPass();
 
 				friend class Device;
 				using CommandListPtr = ID3D12GraphicsCommandList*;

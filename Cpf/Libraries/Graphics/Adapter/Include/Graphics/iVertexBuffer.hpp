@@ -10,7 +10,7 @@ namespace Cpf
 
 		struct iVertexBuffer : iResource
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iVertexBuffer"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iVertexBuffer"_crc64);
 
 			virtual bool Map(void**, const Range* = nullptr) = 0;
 			virtual void Unmap(const Range* = nullptr) = 0;

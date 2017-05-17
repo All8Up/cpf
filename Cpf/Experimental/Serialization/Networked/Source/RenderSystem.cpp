@@ -29,28 +29,28 @@ using namespace Cpf;
 using namespace MultiCore;
 using namespace Graphics;
 
-COM::Result RenderSystem::Install(Plugin::iRegistry* regy)
+GOM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
 	return regy->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
 }
 
-COM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
+GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 {
 	return regy->Remove(kRenderSystemCID);
 }
 
-COM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
+GOM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
 {
 	mpTimer = GetSystem<iTimer>(pipeline, mDesc.mTimer.GetString());
-	return mpTimer != nullptr ? COM::kOK : COM::kInvalid;
+	return mpTimer != nullptr ? GOM::kOK : GOM::kInvalid;
 }
 
-bool RenderSystem::Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager* im, iWindow* window, Resources::iLocator* locator)
+bool RenderSystem::Initialize(Plugin::iRegistry* registry, GOM::ClassID rid, iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
 	if (Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
 	{
 		if (_SelectAdapter() &&
-			COM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
+			GOM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
 			_CreateRenderPass() &&
 			_CreateSwapChain(window) &&
 			_CreateRenderData(im, window, locator)
@@ -107,7 +107,7 @@ iDebugUI* RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem(COM::iUnknown*)
+RenderSystem::RenderSystem(GOM::iUnknown*)
 	: mpTimer(nullptr)
 	, mpRegistry(nullptr)
 	, mWidth(0)
@@ -448,14 +448,14 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext*, void* context)
 }
 
 //////////////////////////////////////////////////////////////////////////
-COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);
@@ -464,16 +464,16 @@ COM::Result CPF_STDCALL RenderSystem::QueryInterface(COM::InterfaceID id, void**
 			*outIface = static_cast<RenderSystem*>(this);
 			break;
 		default:
-			return COM::kNotImplemented;
+			return GOM::kNotImplemented;
 		}
 
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
+GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc)
 {
 	mpRegistry = rgy; (void)desc;
 	if (name)
@@ -481,11 +481,11 @@ COM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 		mDesc = *static_cast<const Desc*>(desc);
 		mID = SystemID(name, strlen(name));
 		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
-		if (COM::Succeeded(result))
-			return COM::kOK;
+		if (GOM::Succeeded(result))
+			return GOM::kOK;
 		return result;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 SystemID CPF_STDCALL RenderSystem::GetID() const
@@ -493,27 +493,27 @@ SystemID CPF_STDCALL RenderSystem::GetID() const
 	return mID;
 }
 
-COM::Result CPF_STDCALL RenderSystem::FindStage(StageID id, iStage** outStage) const
+GOM::Result CPF_STDCALL RenderSystem::FindStage(StageID id, iStage** outStage) const
 {
 	return mpStages->FindStage(id, outStage);
 }
 
-COM::Result CPF_STDCALL RenderSystem::GetInstructions(int32_t* count, Instruction* instructions)
+GOM::Result CPF_STDCALL RenderSystem::GetInstructions(int32_t* count, Instruction* instructions)
 {
 	return mpStages->GetInstructions(count, instructions);
 }
 
-COM::Result CPF_STDCALL RenderSystem::GetStages(int32_t* count, iStage** outStages) const
+GOM::Result CPF_STDCALL RenderSystem::GetStages(int32_t* count, iStage** outStages) const
 {
 	return mpStages->GetStages(count, outStages);
 }
 
-COM::Result CPF_STDCALL RenderSystem::AddStage(iStage* stage)
+GOM::Result CPF_STDCALL RenderSystem::AddStage(iStage* stage)
 {
 	return mpStages->AddStage(stage);
 }
 
-COM::Result CPF_STDCALL RenderSystem::RemoveStage(StageID id)
+GOM::Result CPF_STDCALL RenderSystem::RemoveStage(StageID id)
 {
 	return mpStages->RemoveStage(id);
 }
@@ -523,7 +523,7 @@ void CPF_STDCALL RenderSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-COM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

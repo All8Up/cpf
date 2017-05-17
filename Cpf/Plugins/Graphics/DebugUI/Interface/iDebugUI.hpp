@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Math/Vector2v.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Constants.hpp"
@@ -31,11 +31,11 @@ namespace Cpf
 		struct iResourceBinding;
 
 		//////////////////////////////////////////////////////////////////////////
-		static constexpr COM::ClassID kDebugUICID = COM::ClassID("Graphics::iDebugUI"_crc64);
+		static constexpr GOM::ClassID kDebugUICID = GOM::ClassID("Graphics::iDebugUI"_crc64);
 
-		struct iDebugUI : COM::iUnknown
+		struct iDebugUI : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iDebugUI"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iDebugUI"_crc64);
 
 			// Interfacing functionality.
 			virtual bool CPF_STDCALL Initialize(iDevice*, iInputManager*, iWindow* window, Resources::iLocator*) = 0;

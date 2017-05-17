@@ -15,16 +15,16 @@ namespace Cpf
 			Pipeline(iUnknown*);
 			~Pipeline();
 
-			COM::Result QueryInterface(COM::InterfaceID id, void** iface) override;
+			GOM::Result QueryInterface(GOM::InterfaceID id, void** iface) override;
 			iSystem* CPF_STDCALL Install(iSystem*) override;
-			COM::Result CPF_STDCALL Remove(iSystem*) override;
-			COM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) override;
-			COM::Result CPF_STDCALL GetSystem(SystemID id, iSystem**) const override;
-			COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const override;
-			COM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, iStage**) override;
+			GOM::Result CPF_STDCALL Remove(iSystem*) override;
+			GOM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) override;
+			GOM::Result CPF_STDCALL GetSystem(SystemID id, iSystem**) const override;
+			GOM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const override;
+			GOM::Result CPF_STDCALL GetStage(SystemID systemID, StageID stageID, iStage**) override;
 			void CPF_STDCALL Submit(Concurrency::iScheduler*) override;
-			COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) override;
-			COM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) override;
+			GOM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) override;
+			GOM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) override;
 
 		private:
 			bool _ConfigureSystems();

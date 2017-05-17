@@ -9,13 +9,13 @@ namespace Cpf
 		class Clipboard : public tRefCounted<iClipboard>
 		{
 		public:
-			Clipboard(COM::iUnknown*);
+			Clipboard(GOM::iUnknown*);
 			virtual ~Clipboard();
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
-			COM::Result CPF_STDCALL GetClipboardText(int32_t*, char*) override;
-			COM::Result CPF_STDCALL SetClipboardText(const char*) override;
+			GOM::Result CPF_STDCALL GetClipboardText(int32_t*, char*) override;
+			GOM::Result CPF_STDCALL SetClipboardText(const char*) override;
 		};
 	}
 }

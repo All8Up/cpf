@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 
 namespace Cpf
@@ -11,9 +11,9 @@ namespace Cpf
 		struct iLocator;
 		struct iResource;
 
-		struct iLoader : COM::iUnknown
+		struct iLoader : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Resources::iLoader"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iLoader"_crc64);
 
 			virtual uint32_t CPF_STDCALL GetID() = 0;
 			virtual iResource* CPF_STDCALL GetResource(ID id) = 0;

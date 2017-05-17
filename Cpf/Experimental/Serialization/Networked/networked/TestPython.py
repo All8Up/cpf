@@ -1,8 +1,14 @@
 import cpf
+import xx
 
-x = cpf.Registry
-print ("X: ", x)
+print ("-------------------------------")
+print (dir(xx))
+print ("-------------------------------")
+y = xx.Result
+print (dir(y))
+print ("-------------------------------")
 print(dir(cpf))
+print ("-------------------------------")
 
 def multiply(a,b):
     print("Will compute", a, "times", b)

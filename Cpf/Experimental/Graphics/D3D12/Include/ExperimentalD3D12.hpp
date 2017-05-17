@@ -32,10 +32,10 @@ namespace Cpf
 			, mpApplication(nullptr)
 		{}
 
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID, void**) override { return COM::kNotImplemented; }
+		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID, void**) override { return GOM::kNotImplemented; }
 
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, COM::ClassID* appCid) override;
-		COM::Result CPF_STDCALL Main(iApplication* application) override;
+		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, GOM::ClassID* appCid) override;
+		GOM::Result CPF_STDCALL Main(iApplication* application) override;
 		void CPF_STDCALL Shutdown() override;
 
 		Plugin::iRegistry* GetRegistry() { return mpRegistry; }

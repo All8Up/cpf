@@ -22,25 +22,25 @@ Shader::~Shader()
 	CPF_LOG(D3D12, Info) << "Destroyed shader: " << intptr_t(this);
 }
 
-COM::Result CPF_STDCALL Shader::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Shader::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iShader::kIID.GetID():
 			*outIface = static_cast<iShader*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool Shader::LoadFrom(Graphics::iDevice*, Graphics::iBlob* blob)

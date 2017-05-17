@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Events/Event.hpp"
 
 namespace Cpf
@@ -12,9 +12,9 @@ namespace Cpf
 	struct OSWindowData;
 	struct WindowDesc;
 
-	struct iWindow : COM::iUnknown
+	struct iWindow : GOM::iUnknown
 	{
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::iWindow"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iWindow"_crc64);
 
 		using OnMouseMove = Events::Event<"OnMouseMove"_crc64, Function<void(int32_t x, int32_t y)>>;
 		using OnButtonDown = Events::Event<"OnButtonDown"_crc64, Function<void(MouseButton, int32_t, int32_t)>>;
@@ -52,8 +52,8 @@ namespace Cpf
 		virtual void CPF_STDCALL Minimize() = 0;
 		virtual void CPF_STDCALL Maximize() = 0;
 		virtual void CPF_STDCALL Restore() = 0;
-		virtual COM::Result CPF_STDCALL GetClientAreaSize(int32_t*, int32_t*) = 0;
+		virtual GOM::Result CPF_STDCALL GetClientAreaSize(int32_t*, int32_t*) = 0;
 		virtual Events::Emitter* CPF_STDCALL GetEmitter() = 0;
-		virtual COM::Result CPF_STDCALL GetOSData(OSWindowData*) = 0;
+		virtual GOM::Result CPF_STDCALL GetOSData(OSWindowData*) = 0;
 	};
 }

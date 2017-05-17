@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iSampler : COM::iUnknown
+		struct iSampler : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iSampler"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iSampler"_crc64);
 		};
 	}
 }

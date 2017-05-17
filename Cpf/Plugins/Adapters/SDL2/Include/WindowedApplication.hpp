@@ -13,16 +13,16 @@ namespace Cpf
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			WindowedApp(COM::iUnknown*);
+			WindowedApp(GOM::iUnknown*);
 			~WindowedApp();
 
 			//
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			// Overrides for iApplication.
-			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, iApplicationMain*) override;
-			COM::Result CPF_STDCALL Run() override;
-			COM::Result CPF_STDCALL Shutdown() override;
+			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, iApplicationMain*) override;
+			GOM::Result CPF_STDCALL Run() override;
+			GOM::Result CPF_STDCALL Shutdown() override;
 
 			Plugin::iRegistry* CPF_STDCALL GetRegistry() override;
 			Events::Emitter* CPF_STDCALL GetEmitter() override;
@@ -30,9 +30,9 @@ namespace Cpf
 			// Overrides for iWindowedApplication.
 			bool CPF_STDCALL IsRunning() override;
 			void CPF_STDCALL Quit() override;
-			COM::Result CPF_STDCALL Poll() override;
-			COM::Result CPF_STDCALL Wait() override;
-			COM::Result CPF_STDCALL Create(const WindowDesc*, iWindow**) override;
+			GOM::Result CPF_STDCALL Poll() override;
+			GOM::Result CPF_STDCALL Wait() override;
+			GOM::Result CPF_STDCALL Create(const WindowDesc*, iWindow**) override;
 			iInputManager* CPF_STDCALL GetInputManager() override;
 
 		private:

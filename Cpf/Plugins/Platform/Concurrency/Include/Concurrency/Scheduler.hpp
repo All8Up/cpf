@@ -42,10 +42,10 @@ namespace Cpf
 
 
 			// iUnkown overrides.
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			// iScheduler overrides.
-			COM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) override;
+			GOM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) override;
 			void CPF_STDCALL Shutdown() override;
 
 			int CPF_STDCALL GetMaxThreads() override { return GetAvailableThreads(); }

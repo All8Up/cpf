@@ -17,8 +17,8 @@ namespace Cpf
 			LoadBalancer(iUnknown*);
 			~LoadBalancer();
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
-			COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, int count, iScheduler**) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, int count, iScheduler**) override;
 
 			// TODO: Add policy information to each scheduler.
 			// Policies should describe how the scheduler is being used.

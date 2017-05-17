@@ -8,7 +8,7 @@
 using namespace Cpf;
 using namespace SDL2;
 
-InputManager::InputManager(COM::iUnknown*)
+InputManager::InputManager(GOM::iUnknown*)
 {
 	g_Context.GetRegistry()->Create(nullptr, kMouseDeviceCID, iMouseDevice::kIID, mpMouse.AsVoidPP());
 	g_Context.GetRegistry()->Create(nullptr, kKeyboardDeviceCID, iKeyboardDevice::kIID, mpKeyboard.AsVoidPP());
@@ -17,25 +17,25 @@ InputManager::InputManager(COM::iUnknown*)
 InputManager::~InputManager()
 {}
 
-COM::Result CPF_STDCALL InputManager::QueryInterface(COM::InterfaceID iid, void** outIface)
+GOM::Result CPF_STDCALL InputManager::QueryInterface(GOM::InterfaceID iid, void** outIface)
 {
 	if (outIface)
 	{
 		switch (iid.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iInputManager::kIID.GetID():
 			*outIface = static_cast<iInputManager*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 Events::Emitter* CPF_STDCALL InputManager::GetEmiter()
@@ -43,12 +43,12 @@ Events::Emitter* CPF_STDCALL InputManager::GetEmiter()
 	return &mEmitter;
 }
 
-COM::Result CPF_STDCALL InputManager::EnumerateDevices(EnumCallback, void*)
+GOM::Result CPF_STDCALL InputManager::EnumerateDevices(EnumCallback, void*)
 {
-	return COM::kNotImplemented;
+	return GOM::kNotImplemented;
 }
 
-COM::Result CPF_STDCALL InputManager::GetDevice(COM::InstanceID id, COM::InterfaceID iid, void** outIface)
+GOM::Result CPF_STDCALL InputManager::GetDevice(GOM::InstanceID id, GOM::InterfaceID iid, void** outIface)
 {
 	switch (id.GetID())
 	{
@@ -60,5 +60,5 @@ COM::Result CPF_STDCALL InputManager::GetDevice(COM::InstanceID id, COM::Interfa
 		// TODO: Should this have a custom kUnknownInstance result?  Probably
 		break;
 	}
-	return COM::kError;
+	return GOM::kError;
 }

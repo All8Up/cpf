@@ -1,14 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iFrameBuffer : COM::iUnknown
+		struct iFrameBuffer : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iFrameBuffer"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iFrameBuffer"_crc64);
 		};
 	}
 }

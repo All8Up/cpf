@@ -20,7 +20,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
-Instance::Instance(COM::iUnknown*)
+Instance::Instance(GOM::iUnknown*)
 {
 	UINT flags = 0;
 #ifdef CPF_USE_D3D12_DEBUG_LAYER
@@ -50,28 +50,28 @@ Instance::~Instance()
 	CPF_LOG(D3D12, Info) << "Destroyed instance: " << intptr_t(this) << " - " << intptr_t(mpDXGIFactory2.Ptr());
 }
 
-COM::Result CPF_STDCALL Instance::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Instance::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iInstance::kIID.GetID():
 			*outIface = static_cast<iInstance*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
+GOM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
 {
 	if (mpDXGIFactory2)
 	{
@@ -97,13 +97,13 @@ COM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapter
 							}
 						}
 						else
-							return COM::kUnknownInterface;
+							return GOM::kUnknownInterface;
 					}
 				}
 				else
-					return COM::kUnknownInterface;
+					return GOM::kUnknownInterface;
 			}
-			return COM::kOK;
+			return GOM::kOK;
 		}
 
 		for (int i = 0;; ++i)
@@ -115,14 +115,14 @@ COM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapter
 				break;
 			}
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
 
-	return COM::kNotInitialized;
+	return GOM::kNotInitialized;
 }
 
 
-COM::Result Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
+GOM::Result Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::iDevice** device)
 {
 	if (adapter && device)
 	{
@@ -130,12 +130,12 @@ COM::Result Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::
 		{
 			Device* dev = static_cast<Device*>(*device);
 			if (Succeeded(dev->Initialize(adapter)) && Succeeded(dev->Initialize()))
-				return COM::kOK;
+				return GOM::kOK;
 			(*device)->Release();
 			*device = nullptr;
-			return COM::kInitializationFailure;
+			return GOM::kInitializationFailure;
 		}
-		return COM::kOutOfMemory;
+		return GOM::kOutOfMemory;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

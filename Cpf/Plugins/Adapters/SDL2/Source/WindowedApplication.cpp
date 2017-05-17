@@ -10,7 +10,7 @@
 using namespace Cpf;
 using namespace SDL2;
 
-WindowedApp::WindowedApp(COM::iUnknown*)
+WindowedApp::WindowedApp(GOM::iUnknown*)
 	: mRunning(false)
 	, mpApplicationMain(nullptr)
 	, mpRegistry(nullptr)
@@ -32,14 +32,14 @@ WindowedApp::~WindowedApp()
 	CPF_DROP_LOG(Application);
 }
 
-COM::Result CPF_STDCALL WindowedApp::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL WindowedApp::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iApplication::kIID.GetID():
 			*outIface = static_cast<iApplication*>(this);
@@ -48,15 +48,15 @@ COM::Result CPF_STDCALL WindowedApp::QueryInterface(COM::InterfaceID id, void** 
 			*outIface = static_cast<iWindowedApplication*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Initialize(Plugin::iRegistry* regy, iApplicationMain* appMain)
+GOM::Result CPF_STDCALL WindowedApp::Initialize(Plugin::iRegistry* regy, iApplicationMain* appMain)
 {
 	if (regy && appMain)
 	{
@@ -65,12 +65,12 @@ COM::Result CPF_STDCALL WindowedApp::Initialize(Plugin::iRegistry* regy, iApplic
 
 		regy->Create(nullptr, kInputManagerCID, iInputManager::kIID, mpInputManager.AsVoidPP());
 
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Run()
+GOM::Result CPF_STDCALL WindowedApp::Run()
 {
 	if (mpApplicationMain)
 	{
@@ -79,17 +79,17 @@ COM::Result CPF_STDCALL WindowedApp::Run()
 		mRunning = false;
 		return result;
 	}
-	return COM::kNotInitialized;
+	return GOM::kNotInitialized;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Shutdown()
+GOM::Result CPF_STDCALL WindowedApp::Shutdown()
 {
 	if (mpApplicationMain)
 	{
 		mpApplicationMain->Shutdown();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kNotInitialized;
+	return GOM::kNotInitialized;
 }
 
 Plugin::iRegistry* CPF_STDCALL WindowedApp::GetRegistry()
@@ -112,7 +112,7 @@ void CPF_STDCALL WindowedApp::Quit()
 	mRunning = false;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Poll()
+GOM::Result CPF_STDCALL WindowedApp::Poll()
 {
 	if (IsRunning())
 	{
@@ -121,12 +121,12 @@ COM::Result CPF_STDCALL WindowedApp::Poll()
 		{
 			_HandleEvent(event);
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kNotRunning;
+	return GOM::kNotRunning;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Wait()
+GOM::Result CPF_STDCALL WindowedApp::Wait()
 {
 	if (IsRunning())
 	{
@@ -134,27 +134,27 @@ COM::Result CPF_STDCALL WindowedApp::Wait()
 		if (SDL_WaitEvent(&event))
 		{
 			_HandleEvent(event);
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kNotRunning;
+	return GOM::kNotRunning;
 }
 
-COM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc* desc, iWindow** outWindow)
+GOM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc* desc, iWindow** outWindow)
 {
 	iWindow* win = nullptr;
 	int32_t classCount = 0;
 	GetRegistry()->GetClasses(iWindow::kIID, &classCount, nullptr);
-	Vector<COM::ClassID> classes(classCount);
+	Vector<GOM::ClassID> classes(classCount);
 	GetRegistry()->GetClasses(iWindow::kIID, &classCount, classes.data());
-	if (COM::Succeeded(GetRegistry()->Create(nullptr, classes[0], iWindow::kIID, reinterpret_cast<void**>(&win))))
+	if (GOM::Succeeded(GetRegistry()->Create(nullptr, classes[0], iWindow::kIID, reinterpret_cast<void**>(&win))))
 	{
 		if (win && win->Initialize(desc))
 			*outWindow = win;
 		else
 			*outWindow = nullptr;
 	}
-	return (win != nullptr) ? COM::kOK : COM::kOutOfMemory;
+	return (win != nullptr) ? GOM::kOK : GOM::kOutOfMemory;
 }
 
 iInputManager* CPF_STDCALL WindowedApp::GetInputManager()

@@ -16,12 +16,12 @@ namespace Cpf
 		struct iLocator;
 	}
 
-	static constexpr COM::ClassID kRenderSystemCID = COM::ClassID("Render System Class"_crc64);
+	static constexpr GOM::ClassID kRenderSystemCID = GOM::ClassID("Render System Class"_crc64);
 
 	class RenderSystem : public tRefCounted<MultiCore::iSystem>
 	{
 	public:
-		static constexpr COM::InterfaceID kIID = COM::InterfaceID("RenderSystem"_crc64);
+		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("RenderSystem"_crc64);
 
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
@@ -30,12 +30,12 @@ namespace Cpf
 			MultiCore::SystemID mTimer;
 		};
 
-		static COM::Result Install(Plugin::iRegistry*);
-		static COM::Result Remove(Plugin::iRegistry*);
+		static GOM::Result Install(Plugin::iRegistry*);
+		static GOM::Result Remove(Plugin::iRegistry*);
 
-		COM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
+		GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 
-		bool Initialize(Plugin::iRegistry* registry, COM::ClassID rid, iInputManager*, iWindow*, Resources::iLocator*);
+		bool Initialize(Plugin::iRegistry* registry, GOM::ClassID rid, iInputManager*, iWindow*, Resources::iLocator*);
 		bool Shutdown();
 
 		void Resize(int32_t, int32_t);
@@ -43,24 +43,24 @@ namespace Cpf
 		Graphics::iDebugUI* GetDebugUI();
 
 		// iUnknown
-		COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 		// iSystem
-		COM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
+		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
 
 		// iStageList
-		COM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
-		COM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
-		COM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
+		GOM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
+		GOM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
+		GOM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
 		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
-		COM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
 
-		COM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
-		COM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
+		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
+		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 
-		RenderSystem(COM::iUnknown*);
+		RenderSystem(GOM::iUnknown*);
 
 	private:
 		virtual ~RenderSystem();

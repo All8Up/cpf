@@ -6,15 +6,15 @@
 using namespace Cpf;
 
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
 		CPF_INIT_LOG(Python3);
 		registry->Install(Tools::kPython3CID, new Plugin::tClassInstance<Tools::Python3>());
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
@@ -24,13 +24,13 @@ bool CPF_EXPORT CanUnload()
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
 		registry->Remove(Tools::kPython3CID);
 		CPF_DROP_LOG(Python3);
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

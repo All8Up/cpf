@@ -31,7 +31,7 @@ using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
 
-CommandBuffer::CommandBuffer(COM::iUnknown*)
+CommandBuffer::CommandBuffer(GOM::iUnknown*)
 	: mpDevice(nullptr)
 	, mpAllocator(nullptr)
 	, mCurrent(-1)
@@ -50,7 +50,7 @@ CommandBuffer::~CommandBuffer()
 	CPF_LOG(D3D12, Info) << "Destroyed command buffer: " << intptr_t(this);
 }
 
-COM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Graphics::CommandBufferType type, Graphics::iCommandPool* pool)
+GOM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Graphics::CommandBufferType type, Graphics::iCommandPool* pool)
 {
 	if (device && pool)
 	{
@@ -58,37 +58,37 @@ COM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Gra
 		mpAllocator = static_cast<CommandPool*>(pool)->GetCommandAllocator();
 		mType = type;
 
-		COM::Result result = _AddCommandList();
+		GOM::Result result = _AddCommandList();
 		if (Succeeded(result))
 		{
 			End();
 			CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this);
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		return result;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL CommandBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL CommandBuffer::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iCommandBuffer::kIID.GetID():
 			*outIface = static_cast<iCommandBuffer*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL CommandBuffer::Begin(iCommandBuffer* primary)
@@ -303,7 +303,7 @@ void CPF_STDCALL CommandBuffer::ClearDepthStencilView(Graphics::iImageView* view
 	);
 }
 
-COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBeginDesc* desc)
+GOM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBeginDesc* desc)
 {
 	if (desc)
 	{
@@ -333,10 +333,10 @@ COM::Result CPF_STDCALL CommandBuffer::BeginRenderPass(Graphics::RenderPassBegin
 			return _StartSubPass();
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL CommandBuffer::NextSubPass()
+GOM::Result CPF_STDCALL CommandBuffer::NextSubPass()
 {
 	if (mRenderPass.mpRenderPass)
 	{
@@ -348,7 +348,7 @@ COM::Result CPF_STDCALL CommandBuffer::NextSubPass()
 	return Graphics::kNotInRenderPass;
 }
 
-COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
+GOM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 {
 	if (mRenderPass.mpRenderPass)
 	{
@@ -383,7 +383,7 @@ COM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 		mRenderPass.mpFrameBuffer->Release();
 		mRenderPass.mpRenderPass->Release();
 		mRenderPass = { 0 };
-		return COM::kOK;
+		return GOM::kOK;
 	}
 	return Graphics::kNotInRenderPass;
 }
@@ -397,7 +397,7 @@ void CommandBuffer::Submit(ID3D12CommandQueue* queue)
 	}
 }
 
-COM::Result CommandBuffer::_AddCommandList()
+GOM::Result CommandBuffer::_AddCommandList()
 {
 	// Close the command list in current use.
 	if (mCurrent>=0)
@@ -418,7 +418,7 @@ COM::Result CommandBuffer::_AddCommandList()
 	{
 		// This is already allocated, reset it.
 		mCommandLists[mCurrent][0]->Reset(mpAllocator, nullptr);
-		return COM::kOK;
+		return GOM::kOK;
 	}
 
 	// This has not been allocated as of yet.
@@ -431,12 +431,12 @@ COM::Result CommandBuffer::_AddCommandList()
 		IID_PPV_ARGS(&commandList))))
 	{
 		mCommandLists[mCurrent][0] = commandList;
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const* buffers)
+GOM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const* buffers)
 {
 	if (buffers)
 	{
@@ -447,9 +447,9 @@ COM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* con
 			auto buffer = static_cast<CommandBuffer*>(buffers[i])->mCommandLists[0][0];
 			current.push_back(buffer);
 		}
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CommandBuffer::_MakeBarrier(D3D12_RESOURCE_BARRIER* barrier, Image* image, Graphics::ResourceState begin, Graphics::ResourceState end)
@@ -462,7 +462,7 @@ void CommandBuffer::_MakeBarrier(D3D12_RESOURCE_BARRIER* barrier, Image* image, 
 	barrier->Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
 }
 
-COM::Result CommandBuffer::_StartSubPass()
+GOM::Result CommandBuffer::_StartSubPass()
 {
 	Graphics::iRenderPass* rPass = mRenderPass.mpRenderPass;
 	Graphics::iFrameBuffer* fBuffer = mRenderPass.mpFrameBuffer;
@@ -548,15 +548,15 @@ COM::Result CommandBuffer::_StartSubPass()
 				}
 			}
 
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kError;
+	return GOM::kError;
 }
 
-COM::Result CommandBuffer::_EndSubPass()
+GOM::Result CommandBuffer::_EndSubPass()
 {
 	// Primarily this will run resolves.
 
-	return COM::kOK;
+	return GOM::kOK;
 }

@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RefCounted.hpp"
-#include "COM/Result.hpp"
+#include "GOM/Result.hpp"
 
 namespace Cpf
 {
-	namespace COM
+	namespace GOM
 	{
 		struct class_tag;
 		using ClassID = Hash::HashID<uint64_t, class_tag>;

@@ -27,7 +27,7 @@ namespace Cpf
 			virtual ~Locator();
 			
 			// iUnknown overrides.
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void**) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void**) override;
 
 			//
 			Events::Emitter& CPF_STDCALL GetEmitter() override { return mEmitter; }

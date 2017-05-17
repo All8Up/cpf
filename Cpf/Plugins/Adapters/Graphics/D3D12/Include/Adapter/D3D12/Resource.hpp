@@ -18,7 +18,7 @@ namespace Cpf
 		{
 			class Device;
 
-			static constexpr COM::ClassID kResourceCID = COM::ClassID("Adapter::D3D12::Resource"_crc64);
+			static constexpr GOM::ClassID kResourceCID = GOM::ClassID("Adapter::D3D12::Resource"_crc64);
 
 			class Resource : public tRefCounted<Graphics::iResource>
 			{
@@ -26,7 +26,7 @@ namespace Cpf
 				Resource(Device* device, const Graphics::ResourceDesc* desc);
 				virtual ~Resource();
 
-				COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 				bool Map(void**, const Graphics::Range* = nullptr) override;
 				void Unmap(const Graphics::Range* range) override;

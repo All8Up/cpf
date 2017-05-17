@@ -48,7 +48,7 @@ void ExperimentalD3D12::ReconfigurePipeline()
 	mpMultiCore->Configure(GetRegistry());
 }
 
-COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registry, COM::ClassID* appCid)
+GOM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
 {
 	mpRegistry = registry;
 	*appCid = SDL2::kWindowedApplicationCID;
@@ -62,7 +62,7 @@ COM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registr
 	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/Concurrency.cfp");
-	return COM::kOK;
+	return GOM::kOK;
 }
 
 void CPF_STDCALL ExperimentalD3D12::Shutdown()
@@ -70,7 +70,7 @@ void CPF_STDCALL ExperimentalD3D12::Shutdown()
 
 }
 
-COM::Result ExperimentalD3D12::Main(iApplication* application)
+GOM::Result ExperimentalD3D12::Main(iApplication* application)
 {
 	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpApplication));
 
@@ -211,11 +211,11 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 			//////////////////////////////////////////////////////////////////////////
 			// Find graphics driver implementations.
 			int32_t typeCount = 0;
-			COM::ClassID selectedAPI;
-			if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
+			GOM::ClassID selectedAPI;
+			if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
 			{
-				Vector<COM::ClassID> classes(typeCount);
-				if (COM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
+				Vector<GOM::ClassID> classes(typeCount);
+				if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
 				{
 					if (typeCount > 0)
 						selectedAPI = classes[0];
@@ -349,7 +349,7 @@ COM::Result ExperimentalD3D12::Main(iApplication* application)
 			gfxInstance.Assign(nullptr);
 		}
 	}
-	return COM::kOK;
+	return GOM::kOK;
 }
 
 CPF_CREATE_APPMAIN(Cpf::ExperimentalD3D12);

@@ -21,23 +21,23 @@ Pipeline::Pipeline(iUnknown*)
 Pipeline::~Pipeline()
 {}
 
-COM::Result CPF_STDCALL Pipeline::QueryInterface(COM::InterfaceID id, void** iface)
+GOM::Result CPF_STDCALL Pipeline::QueryInterface(GOM::InterfaceID id, void** iface)
 {
 	if (iface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*iface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*iface = static_cast<GOM::iUnknown*>(this);
 			AddRef();
-			return COM::kOK;
+			return GOM::kOK;
 		case iPipeline::kIID.GetID():
 			*iface = static_cast<iPipeline*>(this);
 			AddRef();
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 iSystem* CPF_STDCALL Pipeline::Install(iSystem* system)
@@ -55,19 +55,19 @@ iSystem* CPF_STDCALL Pipeline::Install(iSystem* system)
 	return nullptr;
 }
 
-COM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
+GOM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
-		return COM::kInvalidParameter;
+		return GOM::kInvalidParameter;
 #ifdef CPF_DEBUG
 	mChanged = true;
 #endif
 	mSystemMap.erase(id);
-	return COM::kOK;
+	return GOM::kOK;
 }
 
-COM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
+GOM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 {
 	// Iterate the systems and setup the queue builder.
 	PipelineBuilder builder(regy, this);
@@ -77,7 +77,7 @@ COM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 	{
 		// Iterate and add all blocks.
 		iSystem* systemPtr = nullptr;
-		if (COM::Succeeded(GetSystem(system.first, &systemPtr)))
+		if (GOM::Succeeded(GetSystem(system.first, &systemPtr)))
 		{
 			int32_t instructionCount = 0;
 			systemPtr->GetInstructions(&instructionCount, nullptr);
@@ -113,7 +113,7 @@ COM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 #endif
 
 	mQueueInfo = builder.GetQueueInfo();
-	return result ? COM::kOK : kConfigurationError;
+	return result ? GOM::kOK : kConfigurationError;
 }
 
 bool Pipeline::_ConfigureSystems()
@@ -123,14 +123,14 @@ bool Pipeline::_ConfigureSystems()
 	// Let the systems configure to the new pipeline.
 	for (const auto& system : mSystemMap)
 	{
-		if (COM::Failed(system.second->Configure(this)))
+		if (GOM::Failed(system.second->Configure(this)))
 			result = false;
 	}
 
 	return result;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
+GOM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
 {
 	if (system)
 	{
@@ -139,39 +139,39 @@ COM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
 		{
 			result->second->AddRef();
 			*system = result->second;
-			return COM::kOK;
+			return GOM::kOK;
 		}
-		return COM::kInvalid;
+		return GOM::kInvalid;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** outSystem) const
+GOM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** outSystem) const
 {
 	if (outSystem)
 	{
 		return GetSystem(SystemID(name, strlen(name)), outSystem);
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, iStage** outStage)
+GOM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, iStage** outStage)
 {
 	if (outStage)
 	{
 		iSystem* system = nullptr;
-		if (COM::Succeeded(GetSystem(systemID, &system)))
+		if (GOM::Succeeded(GetSystem(systemID, &system)))
 		{
 			if (system)
 			{
 				iStage* result = nullptr;
-				if (COM::Succeeded(system->FindStage(stageID, &result)))
-					return COM::kOK;
+				if (GOM::Succeeded(system->FindStage(stageID, &result)))
+					return GOM::kOK;
 			}
 		}
-		return COM::kInvalid;
+		return GOM::kInvalid;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL Pipeline::Submit(Concurrency::iScheduler* scheduler)
@@ -183,20 +183,20 @@ void CPF_STDCALL Pipeline::Submit(Concurrency::iScheduler* scheduler)
 	scheduler->Execute(mpQueue, false);
 }
 
-COM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outString)
+GOM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outString)
 {
 	if (outString)
 	{
 		if (idx < mQueueInfo.size())
 		{
 			*outString = mQueueInfo[idx].c_str();
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, iSystem** systems)
+GOM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, iSystem** systems)
 {
 	if (count)
 	{
@@ -210,10 +210,10 @@ COM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, iSystem** systems)
 					systems[index++] = pair.second;
 				}
 			}
-			return COM::kNotEnoughSpace;
+			return GOM::kNotEnoughSpace;
 		}
 		*count = int32_t(mSystemMap.size());
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }

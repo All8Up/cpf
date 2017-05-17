@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Types.hpp"
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Plugin/iRegistry.hpp"
 
 namespace Cpf
@@ -10,25 +10,25 @@ namespace Cpf
 	{
 		struct iSystem;
 
-		static constexpr COM::ClassID kPipelineCID = COM::ClassID("Pipeline"_crc64);
+		static constexpr GOM::ClassID kPipelineCID = GOM::ClassID("Pipeline"_crc64);
 
 		/**
 		 A multicore pipeline execution component.
 		 */
-		struct iPipeline : COM::iUnknown
+		struct iPipeline : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("iPipeline"_crc64);
-			static constexpr COM::Result kConfigurationError = COM::CreateResult(1, 50, 1);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iPipeline"_crc64);
+			static constexpr GOM::Result kConfigurationError = GOM::CreateResult(1, 50, 1);
 
 			virtual iSystem* CPF_STDCALL Install(iSystem*) = 0;
-			virtual COM::Result CPF_STDCALL Remove(iSystem*) = 0;
-			virtual COM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) = 0;
-			virtual COM::Result CPF_STDCALL GetSystem(SystemID, iSystem**) const = 0;
-			virtual COM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const = 0;
-			virtual COM::Result CPF_STDCALL GetStage(SystemID, StageID, iStage**) = 0;
+			virtual GOM::Result CPF_STDCALL Remove(iSystem*) = 0;
+			virtual GOM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) = 0;
+			virtual GOM::Result CPF_STDCALL GetSystem(SystemID, iSystem**) const = 0;
+			virtual GOM::Result CPF_STDCALL GetSystem(const char* const, iSystem**) const = 0;
+			virtual GOM::Result CPF_STDCALL GetStage(SystemID, StageID, iStage**) = 0;
 			virtual void CPF_STDCALL Submit(Concurrency::iScheduler*) = 0;
-			virtual COM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) = 0;
-			virtual COM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) = 0;
+			virtual GOM::Result CPF_STDCALL GetQueueInfo(int32_t idx, const char**) = 0;
+			virtual GOM::Result CPF_STDCALL GetSystems(int32_t* count, iSystem**) = 0;
 		};
 
 		/**
@@ -42,7 +42,7 @@ namespace Cpf
 		TYPE* GetSystem(iPipeline* pipeline, const String& name)
 		{
 			iSystem* result = nullptr;
-			if (COM::Succeeded(pipeline->GetSystem(name.c_str(), &result)))
+			if (GOM::Succeeded(pipeline->GetSystem(name.c_str(), &result)))
 				return static_cast<TYPE*>(result);
 			return nullptr;
 		}

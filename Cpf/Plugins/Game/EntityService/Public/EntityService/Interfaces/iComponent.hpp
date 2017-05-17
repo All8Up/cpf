@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 #include "EntityService/Types.hpp"
 
 namespace Cpf
@@ -9,9 +9,9 @@ namespace Cpf
 	{
 		struct iEntity;
 
-		struct iComponent : COM::iUnknown
+		struct iComponent : GOM::iUnknown
 		{
-			static constexpr auto kIID = COM::InterfaceID("EntityService::iComponent"_crc64);
+			static constexpr auto kIID = GOM::InterfaceID("EntityService::iComponent"_crc64);
 
 			virtual void SetSystem(MultiCore::iSystem*) = 0;
 			virtual MultiCore::iSystem* GetSystem() = 0;

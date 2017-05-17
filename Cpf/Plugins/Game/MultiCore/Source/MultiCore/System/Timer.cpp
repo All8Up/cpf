@@ -30,14 +30,14 @@ Timer::~Timer()
  @param [in,out] outIface The output interface pointer.
  @return Success/failure code.
  */
-COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Timer::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 
 		case iTimer::kIID.GetID():
@@ -45,12 +45,12 @@ COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIfa
 			break;
 
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 /**
@@ -59,7 +59,7 @@ COM::Result CPF_STDCALL Timer::QueryInterface(COM::InterfaceID id, void** outIfa
  @param name The name of the timer.
  @return Success/failure code.
  */
-COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* name, const Desc*)
+GOM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* name, const Desc*)
 {
 	mID = SystemID(name, strlen(name));
 
@@ -70,10 +70,10 @@ COM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* na
 	mpUpdate->Initialize(this, iStage::kExecute.GetString());
 	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);
-	return COM::kOK;
+	return GOM::kOK;
 }
 
-COM::Result CPF_STDCALL Timer::FindStage(StageID id, iStage** outStage) const
+GOM::Result CPF_STDCALL Timer::FindStage(StageID id, iStage** outStage) const
 {
 	for (const auto& stage : mStages)
 	{
@@ -81,10 +81,10 @@ COM::Result CPF_STDCALL Timer::FindStage(StageID id, iStage** outStage) const
 		{
 			stage->AddRef();
 			*outStage = stage;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalid;
+	return GOM::kInvalid;
 }
 
 SystemID CPF_STDCALL Timer::GetID() const
@@ -92,29 +92,29 @@ SystemID CPF_STDCALL Timer::GetID() const
 	return mID;
 }
 
-COM::Result CPF_STDCALL Timer::GetStages(int32_t* count, iStage** outStages) const
+GOM::Result CPF_STDCALL Timer::GetStages(int32_t* count, iStage** outStages) const
 {
 	if (count)
 	{
 		if (outStages)
 		{
 			if (int32_t(mStages.size()) > *count)
-				return COM::kNotEnoughSpace;
+				return GOM::kNotEnoughSpace;
 			int32_t index = 0;
 			for (auto stage : mStages)
 				outStages[index++] = stage;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		else
 		{
 			*count = int32_t(mStages.size());
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Timer::GetInstructions(int32_t* count, Instruction* instructions)
+GOM::Result CPF_STDCALL Timer::GetInstructions(int32_t* count, Instruction* instructions)
 {
 	if (count)
 	{
@@ -137,14 +137,14 @@ COM::Result CPF_STDCALL Timer::GetInstructions(int32_t* count, Instruction* inst
 				int32_t index = 0;
 				for (auto& inst : result)
 					instructions[index++] = inst;
-				return COM::kOK;
+				return GOM::kOK;
 			}
-			return COM::kNotEnoughSpace;
+			return GOM::kNotEnoughSpace;
 		}
 		*count = int32_t(result.size());
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL Timer::AddDependency(BlockDependency dep)
@@ -152,7 +152,7 @@ void CPF_STDCALL Timer::AddDependency(BlockDependency dep)
 	mDependencies.push_back(dep);
 }
 
-COM::Result CPF_STDCALL Timer::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL Timer::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
 {
 	if (count)
 	{
@@ -179,20 +179,20 @@ COM::Result CPF_STDCALL Timer::GetDependencies(iPipeline* owner, int32_t* count,
 			int32_t index = 0;
 			for (const auto& dep : result)
 				deps[index++] = dep;
-			return COM::kOK;
+			return GOM::kOK;
 		}
 		else
 		{
 			*count = int32_t(result.size());
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result CPF_STDCALL Timer::Configure(iPipeline*)
+GOM::Result CPF_STDCALL Timer::Configure(iPipeline*)
 {
-	return COM::kOK;
+	return GOM::kOK;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -244,27 +244,27 @@ void Timer::_Update(const Concurrency::WorkContext*, void* context)
 
 
 //////////////////////////////////////////////////////////////////////////
-COM::Result Timer::AddStage(iStage* stage)
+GOM::Result Timer::AddStage(iStage* stage)
 {
 	if (stage && stage->IsEnabled())
 	{
 		stage->AddRef();
 		mStages.emplace_back(stage);
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
-COM::Result Timer::RemoveStage(StageID id)
+GOM::Result Timer::RemoveStage(StageID id)
 {
 	for (int i = 0; i < mStages.size(); ++i)
 	{
 		if (mStages[i]->GetID() == id)
 		{
 			mStages.erase(mStages.begin() + i);
-			return COM::kOK;
+			return GOM::kOK;
 		}
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 

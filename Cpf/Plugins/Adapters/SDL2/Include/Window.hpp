@@ -11,10 +11,10 @@ namespace Cpf
 		class Window : public tRefCounted<iWindow>
 		{
 		public:
-			Window(COM::iUnknown*);
+			Window(GOM::iUnknown*);
 			virtual ~Window();
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			bool CPF_STDCALL Initialize(const WindowDesc* desc) override;
 			void CPF_STDCALL SetTitle(const char* title) override;
@@ -25,8 +25,8 @@ namespace Cpf
 			void CPF_STDCALL Minimize() override;
 			void CPF_STDCALL Maximize() override;
 			void CPF_STDCALL Restore() override;
-			COM::Result CPF_STDCALL GetClientAreaSize(int32_t* w, int32_t* h) override;
-			COM::Result CPF_STDCALL GetOSData(OSWindowData*) override;
+			GOM::Result CPF_STDCALL GetClientAreaSize(int32_t* w, int32_t* h) override;
+			GOM::Result CPF_STDCALL GetOSData(OSWindowData*) override;
 			Events::Emitter* CPF_STDCALL GetEmitter() override { return &mEmitter; }
 
 			SDL_Window* GetSDLWindow() const;

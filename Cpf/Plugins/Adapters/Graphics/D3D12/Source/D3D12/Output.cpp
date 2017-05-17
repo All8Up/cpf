@@ -23,25 +23,25 @@ Output::~Output()
 	CPF_LOG(D3D12, Info) << "Destroyed output: " << intptr_t(this) << " - " << intptr_t(mpOutput.Ptr());
 }
 
-COM::Result CPF_STDCALL Output::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Output::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case COM::iUnknown::kIID.GetID():
-			*outIface = static_cast<COM::iUnknown*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iOutput::kIID.GetID():
 			*outIface = static_cast<iOutput*>(this);
 			break;
 		default:
-			return COM::kUnknownInterface;
+			return GOM::kUnknownInterface;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 bool Output::GetDesc(OutputDesc* desc) const

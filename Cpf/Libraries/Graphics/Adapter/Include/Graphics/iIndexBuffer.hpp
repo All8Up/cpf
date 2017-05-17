@@ -10,7 +10,7 @@ namespace Cpf
 
 		struct iIndexBuffer : iResource
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iIndexBuffer"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iIndexBuffer"_crc64);
 		};
 	}
 }

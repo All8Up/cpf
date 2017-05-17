@@ -25,10 +25,10 @@ namespace Cpf
 			using OpcodeEntry = Scheduler::Instruction;
 			using QueueType = Vector<OpcodeEntry>;
 
-			COM::Result CPF_STDCALL QueryInterface(COM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
 
 			// 
-			COM::Result CPF_STDCALL Reserve(int32_t size) override;
+			GOM::Result CPF_STDCALL Reserve(int32_t size) override;
 			void CPF_STDCALL Copy(iWorkBuffer*) override;
 
 			void CPF_STDCALL Reset() override;

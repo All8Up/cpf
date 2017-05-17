@@ -50,15 +50,15 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
 
 #ifndef CPF_STATIC_MULTICORE
 extern "C"
-COM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
 		if (MultiCoreInitializer::Install(registry) > 0)
-			return COM::kOK;
-		return COM::kError;
+			return GOM::kOK;
+		return GOM::kError;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 extern "C"
@@ -68,14 +68,14 @@ bool CPF_EXPORT CanUnload()
 }
 
 extern "C"
-COM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
 		if (MultiCoreInitializer::Remove() == 0)
-			return COM::kOK;
-		return COM::kInUse;
+			return GOM::kOK;
+		return GOM::kInUse;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 #endif

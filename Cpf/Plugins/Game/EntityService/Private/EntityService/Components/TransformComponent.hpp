@@ -14,14 +14,14 @@ namespace Cpf
 		public:
 			static constexpr auto kID = ComponentID("iTransformComponent"_crc64);
 
-			static COM::Result Install(Plugin::iRegistry*);
-			static COM::Result Remove(Plugin::iRegistry*);
+			static GOM::Result Install(Plugin::iRegistry*);
+			static GOM::Result Remove(Plugin::iRegistry*);
 
-			TransformComponent(COM::iUnknown*);
+			TransformComponent(GOM::iUnknown*);
 			~TransformComponent() override;
 
 			//
-			COM::Result QueryInterface(COM::InterfaceID id, void**) override;
+			GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
 
 			// Component overrides.
 			ComponentID GetID() const override;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -12,9 +12,9 @@ namespace Cpf
 		enum class SwapEffect : int32_t;
 		struct SwapChainDesc;
 
-		struct iSwapChain : COM::iUnknown
+		struct iSwapChain : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Graphics::iSwapChain"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iSwapChain"_crc64);
 
 			virtual void Present() = 0;
 			virtual void Resize(int32_t x, int32_t y) = 0;

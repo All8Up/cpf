@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "COM/iUnknown.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -9,10 +9,10 @@ namespace Cpf
 		struct iCache;
 		struct ID;
 
-		static constexpr COM::ClassID kResourceCID = COM::ClassID("Cpf::Resources::iResource"_crc64);
-		struct iResource : COM::iUnknown
+		static constexpr GOM::ClassID kResourceCID = GOM::ClassID("Cpf::Resources::iResource"_crc64);
+		struct iResource : GOM::iUnknown
 		{
-			static constexpr COM::InterfaceID kIID = COM::InterfaceID("Cpf::Resources::iResource"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iResource"_crc64);
 
 			virtual void CPF_STDCALL Initialize(ID, iCache*) = 0;
 			virtual void CPF_STDCALL Update() = 0;

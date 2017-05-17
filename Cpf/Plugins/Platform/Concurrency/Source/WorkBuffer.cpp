@@ -19,7 +19,7 @@ WorkBuffer::~WorkBuffer()
 /**
  * @brief Query for an interface.
  */
-COM::Result CPF_STDCALL WorkBuffer::QueryInterface(COM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL WorkBuffer::QueryInterface(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -33,9 +33,9 @@ COM::Result CPF_STDCALL WorkBuffer::QueryInterface(COM::InterfaceID id, void** o
 			break;
 		}
 		AddRef();
-		return COM::kOK;
+		return GOM::kOK;
 	}
-	return COM::kInvalidParameter;
+	return GOM::kInvalidParameter;
 }
 
 void CPF_STDCALL WorkBuffer::Copy(iWorkBuffer* queue)
@@ -55,10 +55,10 @@ void WorkBuffer::operator ()(Opcode o, WorkFunction p, void* c)
 	mQueue.push_back({ o, p, c });
 }
 
-COM::Result CPF_STDCALL WorkBuffer::Reserve(int32_t size)
+GOM::Result CPF_STDCALL WorkBuffer::Reserve(int32_t size)
 {
 	mQueue.resize(size);
-	return COM::kOK;
+	return GOM::kOK;
 }
 
 void CPF_STDCALL WorkBuffer::Reset()
