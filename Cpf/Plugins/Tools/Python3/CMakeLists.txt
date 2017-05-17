@@ -33,6 +33,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		PUBLIC
 			Configuration Plugin Logging
 		PRIVATE
+			rttr_core
             debug ${PYTHON_DEBUG_LIBRARY}
             optimized ${PYTHON_LIBRARY}
 	)

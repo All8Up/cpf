@@ -1,10 +1,13 @@
 import cpf
-import xx
 
-print ("-------------------------------")
-print (dir(xx))
-print ("-------------------------------")
-y = xx.Result
+y = cpf.Result()
+z = y.is_error()
+print ("is_error: ", z)
+print ("error: ", y.error)
+print ("subsystem: ", y.subsystem)
+print ("value: ", y.value)
+print ("success: ", cpf.succeeded(y))
+print ("failed: ", cpf.failed(y))
 print (dir(y))
 print ("-------------------------------")
 print(dir(cpf))

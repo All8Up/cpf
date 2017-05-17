@@ -13,7 +13,7 @@ set (INCLUDE_PLATFORM_FILES
 )
 
 add_library (Plugin INTERFACE)
-target_link_libraries (Plugin INTERFACE Configuration GOM rttr_core)
+target_link_libraries (Plugin INTERFACE Configuration GOM) # rttr_core)
 
 target_include_directories (Plugin INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

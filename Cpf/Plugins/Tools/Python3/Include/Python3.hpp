@@ -18,6 +18,9 @@ namespace Cpf
 			// iPython3 overrides.
 			GOM::Result CPF_STDCALL Initialize(const char* basePath) override;
 			GOM::Result CPF_STDCALL Shutdown() override;
+
+		private:
+			bool _InitPython();
 		};
 	}
 }

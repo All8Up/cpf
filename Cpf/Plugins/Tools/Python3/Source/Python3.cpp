@@ -55,84 +55,127 @@ RTTR_REGISTRATION
 		.method("InstanceRemove", &Plugin::iRegistry::InstanceRemove)
 		.method("GetInstance", &Plugin::iRegistry::GetInstance)
 	;
+	rttr::registration::class_<GOM::Result>("Cpf::GOM::Result")
+		(
+			rttr::metadata("ScriptExport", true)
+		)
+		.property("Error", &GOM::Result::GetError, &GOM::Result::SetError)
+		.property("SubSystem", &GOM::Result::GetSubSystem, &GOM::Result::SetSubSystem)
+		.property("Value", &GOM::Result::GetValue, &GOM::Result::SetValue)
+	;
 }
 
 
+//////////////////////////////////////////////////////////////////////////
+extern PyMethodDef CpfGOM_methods[];
 static PyModuleDef cpfModuleDef =
 {
 	PyModuleDef_HEAD_INIT,
 	"cpf",
 	"Core module integration with the Cpf frameworks.",
 	-1,
-	nullptr,
+	CpfGOM_methods,
 	nullptr,
 	nullptr,
 	nullptr,
 	nullptr
 };
 
-struct PythonRegistry
-{
-	PyObject_HEAD
-	int64_t mTest;
-};
-
-static PyTypeObject cpfRegistryType =
-{
-	PyVarObject_HEAD_INIT(nullptr, 0)
-	"cpf.Registry",            /* tp_name */
-	sizeof(PythonRegistry),	   /* tp_basicsize */
-	0,                         /* tp_itemsize */
-	0,                         /* tp_dealloc */
-	0,                         /* tp_print */
-	0,                         /* tp_getattr */
-	0,                         /* tp_setattr */
-	0,                         /* tp_reserved */
-	0,                         /* tp_repr */
-	0,                         /* tp_as_number */
-	0,                         /* tp_as_sequence */
-	0,                         /* tp_as_mapping */
-	0,                         /* tp_hash  */
-	0,                         /* tp_call */
-	0,                         /* tp_str */
-	0,                         /* tp_getattro */
-	0,                         /* tp_setattro */
-	0,                         /* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT,        /* tp_flags */
-	"Cpf objects",				/* tp_doc */
-};
-
-PyMODINIT_FUNC PyInit_cpf()
-{
-	cpfRegistryType.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&cpfRegistryType) < 0)
-		return nullptr;
-
-	PyObject* m = PyModule_Create(&cpfModuleDef);
-	if (m == nullptr)
-		return m;
-
-	Py_INCREF(&cpfRegistryType);
-	PyModule_AddObject(m, "Registry", reinterpret_cast<PyObject*>(&cpfRegistryType));
-
-	return m;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
-/* Xxo objects */
 struct PyObject_GOMResult
 {
 	PyObject_HEAD
 	GOM::Result mResult;
 };
 
-extern "C" void Dealloc_GOMResult(PyObject_GOMResult *self)
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" PyObject* CPF_STDCALL CpfGOMSucceeded(PyObject_GOMResult*, PyObject* args)
+{
+	PyObject_GOMResult* result;
+	if (!PyArg_ParseTuple(args, "O:succeeded", &result))
+		return nullptr;
+	return PyBool_FromLong(result->mResult.Error == 0);
+}
+
+extern "C" PyObject* CPF_STDCALL CpfGOMFailed(PyObject_GOMResult*, PyObject* args)
+{
+	PyObject_GOMResult* result;
+	if (!PyArg_ParseTuple(args, "O:failed", &result))
+		return nullptr;
+	return PyBool_FromLong(result->mResult.Error != 0);
+}
+
+
+PyMethodDef CpfGOM_methods[] =
+{
+	{ "succeeded", (PyCFunction)CpfGOMSucceeded, METH_VARARGS, PyDoc_STR("Determine if a call succeeded.") },
+	{ "failed", (PyCFunction)CpfGOMFailed, METH_VARARGS, PyDoc_STR("Determine if a call failed.") },
+	{ nullptr, nullptr }
+};
+//////////////////////////////////////////////////////////////////////////
+
+extern PyMethodDef GOMResult_methods[];
+extern PyGetSetDef GOMResult_getseters[];
+
+static PyTypeObject GOMResult_type =
+{
+	PyVarObject_HEAD_INIT(nullptr, 0)
+	"cpf.Result",				/* tp_name */
+	sizeof(PyObject_GOMResult),	/* tp_basicsize */
+	0,							/* tp_itemsize */
+	0,							/* tp_dealloc */
+	0,							/* tp_print */
+	0,							/* tp_getattr */
+	0,							/* tp_setattr */
+	0,							/* tp_reserved */
+	0,							/* tp_repr */
+	0,							/* tp_as_number */
+	0,							/* tp_as_sequence */
+	0,							/* tp_as_mapping */
+	0,							/* tp_hash  */
+	0,							/* tp_call */
+	0,							/* tp_str */
+	0,							/* tp_getattro */
+	0,							/* tp_setattro */
+	0,							/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,			/* tp_flags */
+	"Cpf objects",				/* tp_doc */
+	nullptr,					/* tp_traverse */
+	nullptr,					/* tp_clear */
+	nullptr,					/* tp_richcompare */
+	0,							/* tp_weaklistoffset */
+	nullptr,					/* tp_iter */
+	nullptr,					/* tp_iternext */
+	GOMResult_methods,			/* tp_methods */
+	nullptr,					/* tp_members */
+	GOMResult_getseters,		/* tp_getset */
+	nullptr,					/* tp_base */
+};
+
+PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
+{
+	GOMResult_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&GOMResult_type) < 0)
+		return nullptr;
+
+	PyObject* m = PyModule_Create(&cpfModuleDef);
+	if (m == nullptr)
+		return m;
+
+	Py_INCREF(&GOMResult_type);
+	PyModule_AddObject(m, "Result", reinterpret_cast<PyObject*>(&GOMResult_type));
+
+	return m;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" void CPF_STDCALL Dealloc_GOMResult(PyObject_GOMResult *self)
 {
 	PyObject_Del(self);
 }
 
-extern "C" PyObject* GOMResult_GetAttr(PyObject_GOMResult* self, char* name)
+extern "C" PyObject* CPF_STDCALL GOMResult_GetAttr(PyObject_GOMResult* self, char* name)
 {
 	if (strcmp(name, "error") == 0)
 	{
@@ -152,7 +195,11 @@ extern "C" PyObject* GOMResult_GetAttr(PyObject_GOMResult* self, char* name)
 	return nullptr;
 }
 
-extern "C" void GOMResult_SetAttr(PyObject_GOMResult* self, char *name, PyObject *v){	int value = PyLong_AsLong(v);	if (strcmp(name, "error") == 0)	{
+extern "C" void CPF_STDCALL GOMResult_SetAttr(PyObject_GOMResult* self, char *name, PyObject *v)
+{
+	int value = PyLong_AsLong(v);
+	if (strcmp(name, "error") == 0)
+	{
 		self->mResult.Error = value == 0 ? 0 : 1;
 	}
 	else if (strcmp(name, "subsystem") == 0)
@@ -162,61 +209,16 @@ extern "C" void GOMResult_SetAttr(PyObject_GOMResult* self, char *name, PyObject
 	else if (strcmp(name, "value") == 0)
 	{
 		self->mResult.Value = value;
-	}}
+	}
+}
 
-extern PyMethodDef GOMResult_methods[];
+#define GOMResult_Check(v)      (Py_TYPE(v) == &GOMResult_type)
 
-static PyTypeObject GOMResult_Type =
+extern "C" PyObject_GOMResult* CPF_STDCALL newGOMResult(PyObject *arg)
 {
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"xx.Result",					/*tp_name*/
-	sizeof(PyObject_GOMResult),		/*tp_basicsize*/
-	0,								/*tp_itemsize*/
-									/* methods */
-	(destructor)Dealloc_GOMResult,	/*tp_dealloc*/
-	0,								/*tp_print*/
-	(getattrfunc)GOMResult_GetAttr,	/*tp_getattr*/
-	(setattrfunc)GOMResult_SetAttr,	/*tp_setattr*/
-	0,								/*tp_reserved*/
-	0,								/*tp_repr*/
-	0,								/*tp_as_number*/
-	0,								/*tp_as_sequence*/
-	0,								/*tp_as_mapping*/
-	0,								/*tp_hash*/
-	0,								/*tp_call*/
-	0,								/*tp_str*/
-	nullptr,						/*tp_getattro*/
-	0,								/*tp_setattro*/
-	0,								/*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT,				/*tp_flags*/
-	0,								/*tp_doc*/
-	0,								/*tp_traverse*/
-	0,								/*tp_clear*/
-	0,								/*tp_richcompare*/
-	0,								/*tp_weaklistoffset*/
-	0,								/*tp_iter*/
-	0,								/*tp_iternext*/
-	GOMResult_methods,				/*tp_methods*/
-	0,								/*tp_members*/
-	0,								/*tp_getset*/
-	0,								/*tp_base*/
-	0,								/*tp_dict*/
-	0,								/*tp_descr_get*/
-	0,								/*tp_descr_set*/
-	0,								/*tp_dictoffset*/
-	0,								/*tp_init*/
-	0,								/*tp_alloc*/
-	0,								/*tp_new*/
-	0,								/*tp_free*/
-	0,								/*tp_is_gc*/
-};
-
-#define GOMResult_Check(v)      (Py_TYPE(v) == &GOMResult_Type)
-
-extern "C" PyObject_GOMResult* newGOMResult(PyObject *arg)
-{
+	(void)arg;
 	PyObject_GOMResult *self;
-	self = PyObject_New(PyObject_GOMResult, &GOMResult_Type);
+	self = PyObject_New(PyObject_GOMResult, &GOMResult_type);
 	if (self == nullptr)
 		return nullptr;
 	self->mResult = GOM::kOK;
@@ -224,230 +226,54 @@ extern "C" PyObject_GOMResult* newGOMResult(PyObject *arg)
 }
 
 /* PyObject_GOMResult methods */
-extern "C" PyObject* GOMResult_Succeeded(PyObject_GOMResult* self, PyObject *args)
+extern "C" PyObject* CPF_STDCALL GOMResult_IsSuccess(PyObject_GOMResult* self, PyObject* args)
 {
-	if (!PyArg_ParseTuple(args, ":succeeded"))
+	if (!PyArg_ParseTuple(args, ":is_success"))
 		return nullptr;
 	return PyBool_FromLong(self->mResult.Error == 0);
 }
 
-extern "C" PyObject* GOMResult_Failed(PyObject_GOMResult* self, PyObject* args)
+extern "C" PyObject* CPF_STDCALL GOMResult_IsError(PyObject_GOMResult* self, PyObject* args)
 {
-	if (!PyArg_ParseTuple(args, ":failed"))
+	if (!PyArg_ParseTuple(args, ":is_error"))
 		return nullptr;
 	return PyBool_FromLong(self->mResult.Error != 0);
 }
 
-extern "C" PyObject* GOMResult_IsError(PyObject_GOMResult* self, PyObject* args)
+
+//////////////////////////////////////////////////////////////////////////
+PyMethodDef GOMResult_methods[] =
 {
-	if (!PyArg_ParseTuple(args, ":is_error"))
-		return nullptr;
-	return PyBool_FromLong(self->mResult.Error == 0);
+	{"is_error", (PyCFunction)GOMResult_IsError, METH_VARARGS, PyDoc_STR("Determine if the result indicates an error occurred.")},
+	{"is_success", (PyCFunction)GOMResult_IsSuccess, METH_VARARGS, PyDoc_STR("Determine if the result indicates success.")},
+	{nullptr, nullptr}
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" PyObject* CPF_STDCALL GOMResult_get_error(PyObject_GOMResult* self, void*)
+{
+	return PyLong_FromLong(self->mResult.Error);
 }
 
-extern "C" PyObject* GOMResult_IsSuccess(PyObject_GOMResult* self, PyObject* args)
+extern "C" PyObject* CPF_STDCALL GOMResult_get_subsystem(PyObject_GOMResult* self, void*)
 {
-	if (!PyArg_ParseTuple(args, ":is_success"))
-		return nullptr;
-	return PyBool_FromLong(self->mResult.Error != 1);
-}
-
-extern "C" PyObject* GOMResult_Subsystem(PyObject_GOMResult* self, PyObject* args)
-{
-	if (!PyArg_ParseTuple(args, ":subsystem"))
-		return nullptr;
 	return PyLong_FromLong(self->mResult.SubSystem);
 }
 
-extern "C" PyObject* GOMResult_Value(PyObject_GOMResult* self, PyObject* args)
+extern "C" PyObject* CPF_STDCALL GOMResult_get_value(PyObject_GOMResult* self, void*)
 {
-	if (!PyArg_ParseTuple(args, ":value"))
-		return nullptr;
 	return PyLong_FromLong(self->mResult.Value);
 }
 
-PyMethodDef GOMResult_methods[] =
+PyGetSetDef GOMResult_getseters[] =
 {
-	{"succeeded", (PyCFunction)GOMResult_Succeeded,  METH_VARARGS, PyDoc_STR("Check that a result is a success code.")},
-	{"failed", (PyCFunction)GOMResult_Failed,  METH_VARARGS, PyDoc_STR("Check that a result is a failure code.")},
-	{"is_error", (PyCFunction)GOMResult_IsError, METH_VARARGS, PyDoc_STR("")},
-	{"is_success", (PyCFunction)GOMResult_IsSuccess, METH_VARARGS, PyDoc_STR("")},
-	{nullptr, nullptr}
-};
-/* --------------------------------------------------------------------- */
-
-/* Function of two integers returning integer */
-
-PyDoc_STRVAR(xx_foo_doc, "foo(i,j) Return the sum of i and j.");
-
-extern "C" PyObject* xx_foo(PyObject *self, PyObject *args)
-{
-	long i, j;
-	long res;
-	if (!PyArg_ParseTuple(args, "ll:foo", &i, &j))
-		return NULL;
-	res = i + j; /* XXX Do something here */
-	return PyLong_FromLong(res);
-}
-
-
-/* Function of no arguments returning new Xxo object */
-
-extern "C" PyObject* xx_new(PyObject *self, PyObject *args)
-{
-	PyObject_GOMResult *rv;
-
-	if (!PyArg_ParseTuple(args, ":new"))
-		return NULL;
-	rv = newGOMResult(args);
-	if (rv == NULL)
-		return NULL;
-	return (PyObject *)rv;
-}
-
-/* Test bad format character */
-extern "C" PyObject* xx_roj(PyObject *self, PyObject *args)
-{
-	PyObject *a;
-	long b;
-	if (!PyArg_ParseTuple(args, "O#:roj", &a, &b))
-		return NULL;
-	Py_INCREF(Py_None);
-	return Py_None;
-}
-
-
-/* ---------- */
-
-static PyTypeObject Str_Type =
-{
-	PyVarObject_HEAD_INIT(NULL, 0)
-	"xxmodule.Str",						/*tp_name*/
-	0,									/*tp_basicsize*/
-	0,									/*tp_itemsize*/
-	/* methods */
-	0,									/*tp_dealloc*/
-	0,									/*tp_print*/
-	0,									/*tp_getattr*/
-	0,									/*tp_setattr*/
-	0,									/*tp_reserved*/
-	0,									/*tp_repr*/
-	0,									/*tp_as_number*/
-	0,									/*tp_as_sequence*/
-	0,									/*tp_as_mapping*/
-	0,									/*tp_hash*/
-	0,									/*tp_call*/
-	0,									/*tp_str*/
-	0,									/*tp_getattro*/
-	0,									/*tp_setattro*/
-	0,									/*tp_as_buffer*/
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, /*tp_flags*/
-	0,									/*tp_doc*/
-	0,									/*tp_traverse*/
-	0,									/*tp_clear*/
-	0,									/*tp_richcompare*/
-	0,									/*tp_weaklistoffset*/
-	0,									/*tp_iter*/
-	0,									/*tp_iternext*/
-	0,									/*tp_methods*/
-	0,									/*tp_members*/
-	0,									/*tp_getset*/
-	0, /* see PyInit_xx */				/*tp_base*/
-	0,									/*tp_dict*/
-	0,									/*tp_descr_get*/
-	0,									/*tp_descr_set*/
-	0,									/*tp_dictoffset*/
-	0,									/*tp_init*/
-	0,									/*tp_alloc*/
-	0,									/*tp_new*/
-	0,									/*tp_free*/
-	0,									/*tp_is_gc*/
+	{ "error", (getter)GOMResult_get_error, NULL, NULL, NULL },
+	{ "subsystem", (getter)GOMResult_get_subsystem, NULL, NULL, NULL },
+	{ "value", (getter)GOMResult_get_value, NULL, NULL, NULL },
+	{ NULL }
 };
 
-
-// Functions to be exposed in the cpf.gom module.
-/* create_result(error, subsystem, desc)
- * success(cpf.gom.result)
- * failed(cpf.gom.result)
- * -- Failure codes from GOM/Result.hpp
- */
-
-/* List of functions defined in the module */
-
-PyMethodDef xx_methods[] =
-{
-	{ "roj", xx_roj, METH_VARARGS, PyDoc_STR("roj(a,b) -> None") },
-	{ "foo", xx_foo, METH_VARARGS, xx_foo_doc },
-	{ "new", xx_new, METH_VARARGS, PyDoc_STR("new() -> new Xx object") },
-	{ NULL, NULL }
-};
-
-PyDoc_STRVAR(module_doc, "This is a template module just for instruction.");
-
-// TODO: Keeping as an example for the moment.
-static PyObject *ErrorObject;
-
-
-extern "C" int xx_exec(PyObject *m)
-{
-	/* Due to cross platform compiler issues the slots must be filled
-	* here. It's required for portability to Windows without requiring
-	* C++. */
-	Str_Type.tp_base = &PyUnicode_Type;
-
-	/* Finalize the type object including setting type of the new type
-	* object; doing it here is required for portability, too. */
-	if (PyType_Ready(&GOMResult_Type) < 0)
-		goto fail;
-	PyModule_AddObject(m, "Result", (PyObject*)&GOMResult_Type);
-
-	/* Add some symbolic constants to the module */
-	if (ErrorObject == NULL)
-	{
-		ErrorObject = PyErr_NewException("xx.error", NULL, NULL);
-		if (ErrorObject == NULL)
-			goto fail;
-	}
-	Py_INCREF(ErrorObject);
-	PyModule_AddObject(m, "error", ErrorObject);
-
-	/* Add Str */
-	if (PyType_Ready(&Str_Type) < 0)
-		goto fail;
-	PyModule_AddObject(m, "Str", (PyObject *)&Str_Type);
-
-	return 0;
-fail:
-	Py_XDECREF(m);
-	return -1;
-}
-
-struct PyModuleDef_Slot xx_slots[] =
-{
-	{ Py_mod_exec, xx_exec },
-	{ 0, NULL },
-};
-
-struct PyModuleDef xxmodule =
-{
-	PyModuleDef_HEAD_INIT,
-	"xx",
-	module_doc,
-	0,
-	xx_methods,
-	xx_slots,
-	NULL,
-	NULL,
-	NULL
-};
-
-/* Export function for the module (*must* be called PyInit_xx) */
-
-PyMODINIT_FUNC PyInit_xx()
-{
-	return PyModuleDef_Init(&xxmodule);
-}
-//////////////////////////////////////////////////////////////////////////
 
 /*
  * I think that the goal is going to be centralized around rttr.
@@ -456,9 +282,11 @@ PyMODINIT_FUNC PyInit_xx()
  * This will allow multiple script languages at the cost of speed,
  * but since this is intended as only being a tool only solution
  * it doesn't matter much.
+ * There will be a couple exceptions such as the GOM::Result, GOM::ClassID
+ * and core bits which will likely be manually wrapped for best results.
  */
 
-GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
+bool Python3::_InitPython()
 {
 	// TODO: Redirect this properly to an asynchronous data sink
 	// so the streams can be parsed, placed in different windows,
@@ -475,10 +303,18 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create a Cpf module.
-	PyImport_AppendInittab("cpf", &PyInit_cpf);
-	PyImport_AppendInittab("xx", &PyInit_xx);
-	Py_Initialize();
+	if (PyImport_AppendInittab("cpf", &PyInit_cpf)==0)
+	{
+		Py_Initialize();
+		return true;
+	}
+	return false;
+}
 
+GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
+{
+	bool pythonInit = _InitPython();
+	(void)pythonInit;
 
 	//////////////////////////////////////////////////////////////////////////
 	// List out the registered iRegistry.

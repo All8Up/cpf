@@ -12,6 +12,13 @@ namespace Cpf
 			uint32_t Error : 1;
 			uint32_t SubSystem : 16;
 			uint32_t Value : 15;
+
+			uint32_t GetError() const { return Error; }
+			void SetError(uint32_t value) { Error = value == 0 ? 0 : 1; }
+			uint32_t GetSubSystem() const { return SubSystem; }
+			void SetSubSystem(uint32_t value) { SubSystem = value; }
+			uint32_t GetValue() const { return Value; }
+			void SetValue(uint32_t value) { Value = value; }
 		};
 		static_assert(sizeof(Result) == 4, "Invalid result code size.");
 
