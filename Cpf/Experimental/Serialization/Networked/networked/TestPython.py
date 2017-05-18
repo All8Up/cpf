@@ -4,6 +4,8 @@ y = cpf.Result()
 z = y.is_error()
 print ("is_error: ", z)
 print ("error: ", y.error)
+y.error = 1
+print ("error: ", y.error)
 print ("subsystem: ", y.subsystem)
 print ("value: ", y.value)
 print ("success: ", cpf.succeeded(y))
@@ -12,6 +14,11 @@ print (dir(y))
 print ("-------------------------------")
 print(dir(cpf))
 print ("-------------------------------")
+
+classID = cpf.ClassID()
+print ("ClassID: ", classID.id)
+interfaceID = cpf.InterfaceID()
+print ("InterfaceID: ", interfaceID.id)
 
 def multiply(a,b):
     print("Will compute", a, "times", b)

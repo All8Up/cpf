@@ -112,8 +112,9 @@ PyMethodDef CpfGOM_methods[] =
 	{ "failed", (PyCFunction)CpfGOMFailed, METH_VARARGS, PyDoc_STR("Determine if a call failed.") },
 	{ nullptr, nullptr }
 };
-//////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////////////////////////////
+// GOMResult
 extern PyMethodDef GOMResult_methods[];
 extern PyGetSetDef GOMResult_getseters[];
 
@@ -152,64 +153,9 @@ static PyTypeObject GOMResult_type =
 	nullptr,					/* tp_base */
 };
 
-PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
-{
-	GOMResult_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&GOMResult_type) < 0)
-		return nullptr;
-
-	PyObject* m = PyModule_Create(&cpfModuleDef);
-	if (m == nullptr)
-		return m;
-
-	Py_INCREF(&GOMResult_type);
-	PyModule_AddObject(m, "Result", reinterpret_cast<PyObject*>(&GOMResult_type));
-
-	return m;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
 extern "C" void CPF_STDCALL Dealloc_GOMResult(PyObject_GOMResult *self)
 {
 	PyObject_Del(self);
-}
-
-extern "C" PyObject* CPF_STDCALL GOMResult_GetAttr(PyObject_GOMResult* self, char* name)
-{
-	if (strcmp(name, "error") == 0)
-	{
-		int value = self->mResult.Error;
-		return PyLong_FromLong(value);
-	}
-	if (strcmp(name, "subsystem") == 0)
-	{
-		int value = self->mResult.SubSystem;
-		return PyLong_FromLong(value);
-	}
-	if (strcmp(name, "value") == 0)
-	{
-		int value = self->mResult.Value;
-		return PyLong_FromLong(value);
-	}
-	return nullptr;
-}
-
-extern "C" void CPF_STDCALL GOMResult_SetAttr(PyObject_GOMResult* self, char *name, PyObject *v)
-{
-	int value = PyLong_AsLong(v);
-	if (strcmp(name, "error") == 0)
-	{
-		self->mResult.Error = value == 0 ? 0 : 1;
-	}
-	else if (strcmp(name, "subsystem") == 0)
-	{
-		self->mResult.SubSystem = value;
-	}
-	else if (strcmp(name, "value") == 0)
-	{
-		self->mResult.Value = value;
-	}
 }
 
 #define GOMResult_Check(v)      (Py_TYPE(v) == &GOMResult_type)
@@ -256,9 +202,23 @@ extern "C" PyObject* CPF_STDCALL GOMResult_get_error(PyObject_GOMResult* self, v
 	return PyLong_FromLong(self->mResult.Error);
 }
 
+extern "C" int CPF_STDCALL GOMResult_set_error(PyObject_GOMResult* self, PyObject* value, void*)
+{
+	auto v = PyLong_AsUnsignedLong(value);
+	self->mResult.Error = v;
+	return 0;
+}
+
 extern "C" PyObject* CPF_STDCALL GOMResult_get_subsystem(PyObject_GOMResult* self, void*)
 {
 	return PyLong_FromLong(self->mResult.SubSystem);
+}
+
+extern "C" int CPF_STDCALL GOMResult_set_subsystem(PyObject_GOMResult* self, PyObject* value, void*)
+{
+	auto v = PyLong_AsUnsignedLong(value);
+	self->mResult.SubSystem = v;
+	return 0;
 }
 
 extern "C" PyObject* CPF_STDCALL GOMResult_get_value(PyObject_GOMResult* self, void*)
@@ -266,14 +226,307 @@ extern "C" PyObject* CPF_STDCALL GOMResult_get_value(PyObject_GOMResult* self, v
 	return PyLong_FromLong(self->mResult.Value);
 }
 
+extern "C" int CPF_STDCALL GOMResult_set_value(PyObject_GOMResult* self, PyObject* value, void*)
+{
+	auto v = PyLong_AsUnsignedLong(value);
+	self->mResult.Value = v;
+	return 0;
+}
+
 PyGetSetDef GOMResult_getseters[] =
 {
-	{ "error", (getter)GOMResult_get_error, NULL, NULL, NULL },
-	{ "subsystem", (getter)GOMResult_get_subsystem, NULL, NULL, NULL },
-	{ "value", (getter)GOMResult_get_value, NULL, NULL, NULL },
+	{ "error", (getter)GOMResult_get_error, (setter)GOMResult_set_error, nullptr, nullptr },
+	{ "subsystem", (getter)GOMResult_get_subsystem, (setter)GOMResult_set_subsystem, NULL, NULL },
+	{ "value", (getter)GOMResult_get_value, (setter)GOMResult_set_value, NULL, NULL },
 	{ NULL }
 };
 
+
+//////////////////////////////////////////////////////////////////////////
+// GOMClassID
+struct PyObject_GOMClassID
+{
+	PyObject_HEAD
+	GOM::ClassID mID;
+};
+
+extern PyGetSetDef GOMClassID_getseters[];
+
+static PyTypeObject GOMClassID_type =
+{
+	PyVarObject_HEAD_INIT(nullptr, 0)
+	"cpf.ClassID",				/* tp_name */
+	sizeof(PyObject_GOMClassID),	/* tp_basicsize */
+	0,							/* tp_itemsize */
+	0,							/* tp_dealloc */
+	0,							/* tp_print */
+	0,							/* tp_getattr */
+	0,							/* tp_setattr */
+	0,							/* tp_reserved */
+	0,							/* tp_repr */
+	0,							/* tp_as_number */
+	0,							/* tp_as_sequence */
+	0,							/* tp_as_mapping */
+	0,							/* tp_hash  */
+	0,							/* tp_call */
+	0,							/* tp_str */
+	0,							/* tp_getattro */
+	0,							/* tp_setattro */
+	0,							/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,			/* tp_flags */
+	"Cpf objects",				/* tp_doc */
+	nullptr,					/* tp_traverse */
+	nullptr,					/* tp_clear */
+	nullptr,					/* tp_richcompare */
+	0,							/* tp_weaklistoffset */
+	nullptr,					/* tp_iter */
+	nullptr,					/* tp_iternext */
+	nullptr,					/* tp_methods */
+	nullptr,					/* tp_members */
+	GOMClassID_getseters,		/* tp_getset */
+	nullptr,					/* tp_base */
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" void CPF_STDCALL Dealloc_GOMClassID(PyObject_GOMResult *self)
+{
+	PyObject_Del(self);
+}
+
+#define GOMClassID_Check(v)      (Py_TYPE(v) == &GOMClassID_type)
+
+extern "C" PyObject_GOMClassID* CPF_STDCALL newGOMClassID(PyObject *arg)
+{
+	(void)arg;
+	PyObject_GOMClassID *self;
+	self = PyObject_New(PyObject_GOMClassID, &GOMClassID_type);
+	if (self == nullptr)
+		return nullptr;
+	self->mID = GOM::ClassID(0);
+	return self;
+}
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" PyObject* CPF_STDCALL GOMClassID_get_id(PyObject_GOMClassID* self, void*)
+{
+	return PyLong_FromUnsignedLongLong(self->mID.GetID());
+}
+
+extern "C" int CPF_STDCALL GOMClassID_set_id(PyObject_GOMClassID* self, PyObject* value, void*)
+{
+	auto v = PyLong_AsUnsignedLongLong(value);
+	self->mID = GOM::ClassID(v);
+	return 0;
+}
+
+PyGetSetDef GOMClassID_getseters[] =
+{
+	{ "id", (getter)GOMClassID_get_id, (setter)GOMClassID_set_id, nullptr, nullptr },
+	{ NULL }
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+// GOMInterfaceID
+struct PyObject_GOMInterfaceID
+{
+	PyObject_HEAD
+	GOM::InterfaceID mID;
+};
+
+extern PyGetSetDef GOMInterfaceID_getseters[];
+
+static PyTypeObject GOMInterfaceID_type =
+{
+	PyVarObject_HEAD_INIT(nullptr, 0)
+	"cpf.InterfaceID",				/* tp_name */
+	sizeof(PyObject_GOMInterfaceID),	/* tp_basicsize */
+	0,							/* tp_itemsize */
+	0,							/* tp_dealloc */
+	0,							/* tp_print */
+	0,							/* tp_getattr */
+	0,							/* tp_setattr */
+	0,							/* tp_reserved */
+	0,							/* tp_repr */
+	0,							/* tp_as_number */
+	0,							/* tp_as_sequence */
+	0,							/* tp_as_mapping */
+	0,							/* tp_hash  */
+	0,							/* tp_call */
+	0,							/* tp_str */
+	0,							/* tp_getattro */
+	0,							/* tp_setattro */
+	0,							/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,			/* tp_flags */
+	"Cpf objects",				/* tp_doc */
+	nullptr,					/* tp_traverse */
+	nullptr,					/* tp_clear */
+	nullptr,					/* tp_richcompare */
+	0,							/* tp_weaklistoffset */
+	nullptr,					/* tp_iter */
+	nullptr,					/* tp_iternext */
+	nullptr,					/* tp_methods */
+	nullptr,					/* tp_members */
+	GOMInterfaceID_getseters,	/* tp_getset */
+	nullptr,					/* tp_base */
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(PyObject_GOMResult *self)
+{
+	PyObject_Del(self);
+}
+
+#define GOMInterfaceID_Check(v)      (Py_TYPE(v) == &GOMInterfaceID_type)
+
+extern "C" PyObject_GOMInterfaceID* CPF_STDCALL newGOMInterfaceID(PyObject *arg)
+{
+	(void)arg;
+	PyObject_GOMInterfaceID *self;
+	self = PyObject_New(PyObject_GOMInterfaceID, &GOMInterfaceID_type);
+	if (self == nullptr)
+		return nullptr;
+	self->mID = GOM::InterfaceID(0);
+	return self;
+}
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" PyObject* CPF_STDCALL GOMInterfaceID_get_id(PyObject_GOMInterfaceID* self, void*)
+{
+	return PyLong_FromUnsignedLongLong(self->mID.GetID());
+}
+
+extern "C" int CPF_STDCALL GOMInterfaceID_set_id(PyObject_GOMInterfaceID* self, PyObject* value, void*)
+{
+	auto v = PyLong_AsUnsignedLongLong(value);
+	self->mID = GOM::InterfaceID(v);
+	return 0;
+}
+
+PyGetSetDef GOMInterfaceID_getseters[] =
+{
+	{ "id", (getter)GOMInterfaceID_get_id, (setter)GOMInterfaceID_set_id, nullptr, nullptr },
+	{ NULL }
+};
+
+//////////////////////////////////////////////////////////////////////////
+// PluginRegistry
+struct PyObject_PluginRegistry
+{
+	PyObject_HEAD
+	Plugin::iRegistry* mpRegistry;
+};
+
+static PyTypeObject PluginRegistry_type =
+{
+	PyVarObject_HEAD_INIT(nullptr, 0)
+	"cpf.Registry",				/* tp_name */
+	sizeof(PyObject_PluginRegistry),	/* tp_basicsize */
+	0,							/* tp_itemsize */
+	0,							/* tp_dealloc */
+	0,							/* tp_print */
+	0,							/* tp_getattr */
+	0,							/* tp_setattr */
+	0,							/* tp_reserved */
+	0,							/* tp_repr */
+	0,							/* tp_as_number */
+	0,							/* tp_as_sequence */
+	0,							/* tp_as_mapping */
+	0,							/* tp_hash  */
+	0,							/* tp_call */
+	0,							/* tp_str */
+	0,							/* tp_getattro */
+	0,							/* tp_setattro */
+	0,							/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,			/* tp_flags */
+	"Cpf objects",				/* tp_doc */
+	nullptr,					/* tp_traverse */
+	nullptr,					/* tp_clear */
+	nullptr,					/* tp_richcompare */
+	0,							/* tp_weaklistoffset */
+	nullptr,					/* tp_iter */
+	nullptr,					/* tp_iternext */
+	nullptr,					/* tp_methods */
+	nullptr,					/* tp_members */
+	nullptr,	/* tp_getset */
+	nullptr,					/* tp_base */
+};
+
+#if 0
+//////////////////////////////////////////////////////////////////////////
+extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(PyObject_GOMResult *self)
+{
+	PyObject_Del(self);
+}
+
+#define GOMInterfaceID_Check(v)      (Py_TYPE(v) == &GOMInterfaceID_type)
+
+extern "C" PyObject_GOMInterfaceID* CPF_STDCALL newGOMInterfaceID(PyObject *arg)
+{
+	(void)arg;
+	PyObject_GOMInterfaceID *self;
+	self = PyObject_New(PyObject_GOMInterfaceID, &GOMInterfaceID_type);
+	if (self == nullptr)
+		return nullptr;
+	self->mID = GOM::InterfaceID(0);
+	return self;
+}
+
+//////////////////////////////////////////////////////////////////////////
+extern "C" PyObject* CPF_STDCALL GOMInterfaceID_get_id(PyObject_GOMInterfaceID* self, void*)
+{
+	return PyLong_FromUnsignedLongLong(self->mID.GetID());
+}
+
+extern "C" int CPF_STDCALL GOMInterfaceID_set_id(PyObject_GOMInterfaceID* self, PyObject* value, void*)
+{
+	auto v = PyLong_AsUnsignedLongLong(value);
+	self->mID = GOM::InterfaceID(v);
+	return 0;
+}
+
+PyGetSetDef GOMInterfaceID_getseters[] =
+{
+	{ "id", (getter)GOMInterfaceID_get_id, (setter)GOMInterfaceID_set_id, nullptr, nullptr },
+	{ NULL }
+};
+#endif
+
+//////////////////////////////////////////////////////////////////////////
+PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
+{
+	PyObject* m = PyModule_Create(&cpfModuleDef);
+	if (m == nullptr)
+		return m;
+
+	GOMResult_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&GOMResult_type) < 0)
+		return nullptr;
+	Py_INCREF(&GOMResult_type);
+	PyModule_AddObject(m, "Result", reinterpret_cast<PyObject*>(&GOMResult_type));
+
+	GOMClassID_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&GOMClassID_type) < 0)
+		return nullptr;
+	Py_INCREF(&GOMClassID_type);
+	PyModule_AddObject(m, "ClassID", reinterpret_cast<PyObject*>(&GOMClassID_type));
+
+	GOMInterfaceID_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&GOMInterfaceID_type) < 0)
+		return nullptr;
+	Py_INCREF(&GOMInterfaceID_type);
+	PyModule_AddObject(m, "InterfaceID", reinterpret_cast<PyObject*>(&GOMInterfaceID_type));
+
+	PluginRegistry_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&PluginRegistry_type) < 0)
+		return nullptr;
+	Py_INCREF(&PluginRegistry_type);
+	PyModule_AddObject(m, "Registry", reinterpret_cast<PyObject*>(&PluginRegistry_type));
+
+	return m;
+}
 
 /*
  * I think that the goal is going to be centralized around rttr.
