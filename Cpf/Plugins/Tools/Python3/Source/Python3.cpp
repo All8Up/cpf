@@ -81,6 +81,19 @@ static PyModuleDef cpfModuleDef =
 	nullptr
 };
 
+static PyModuleDef CpfGomModuleDef =
+{
+	PyModuleDef_HEAD_INIT,
+	"cpf.gom",
+	"GOM module integration.",
+	-1,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr
+};
+
 struct PyObject_GOMResult
 {
 	PyObject_HEAD
@@ -118,10 +131,22 @@ PyMethodDef CpfGOM_methods[] =
 extern PyMethodDef GOMResult_methods[];
 extern PyGetSetDef GOMResult_getseters[];
 
+extern "C" int CPF_STDCALL Init_GOMResult(PyObject_GOMResult* self, PyObject* args, PyObject* kwds)
+{
+	char* name = nullptr;
+	self->mResult = GOM::Result{ 0, 0, 0 };
+	char* keys[] = {"error", "subsystem", "value"};
+	if (!PyArg_ParseTuple(args, "|s", &name))
+	{
+		return -1;
+	}
+	return 0;
+}
+
 static PyTypeObject GOMResult_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
-	"cpf.Result",				/* tp_name */
+	"gom.Result",				/* tp_name */
 	sizeof(PyObject_GOMResult),	/* tp_basicsize */
 	0,							/* tp_itemsize */
 	0,							/* tp_dealloc */
@@ -151,6 +176,23 @@ static PyTypeObject GOMResult_type =
 	nullptr,					/* tp_members */
 	GOMResult_getseters,		/* tp_getset */
 	nullptr,					/* tp_base */
+	nullptr,					/* tp_dict */
+	nullptr,					/* tp_descr_get */
+	nullptr,					/* tp_descr_set */
+	0,							/* tp_dictoffset */
+	(initproc)Init_GOMResult,	/* tp_init */
+	nullptr,					/* tp_alloc */
+	nullptr,					/* tp_new */
+	nullptr,					/* tp_free */
+	nullptr,					/* tp_is_gc */
+	nullptr,					/* tp_bases */
+	nullptr,					/* tp_mro */
+	nullptr,					/* tp_cache */
+	nullptr,					/* tp_subclasses */
+	nullptr,					/* tp_weaklist */
+	nullptr,					/* tp_del */
+	0,							/* tp_version_tag */
+	nullptr						/* tp_finalize */
 };
 
 extern "C" void CPF_STDCALL Dealloc_GOMResult(PyObject_GOMResult *self)
@@ -159,17 +201,6 @@ extern "C" void CPF_STDCALL Dealloc_GOMResult(PyObject_GOMResult *self)
 }
 
 #define GOMResult_Check(v)      (Py_TYPE(v) == &GOMResult_type)
-
-extern "C" PyObject_GOMResult* CPF_STDCALL newGOMResult(PyObject *arg)
-{
-	(void)arg;
-	PyObject_GOMResult *self;
-	self = PyObject_New(PyObject_GOMResult, &GOMResult_type);
-	if (self == nullptr)
-		return nullptr;
-	self->mResult = GOM::kOK;
-	return self;
-}
 
 /* PyObject_GOMResult methods */
 extern "C" PyObject* CPF_STDCALL GOMResult_IsSuccess(PyObject_GOMResult* self, PyObject* args)
@@ -250,6 +281,18 @@ struct PyObject_GOMClassID
 	GOM::ClassID mID;
 };
 
+extern "C" int CPF_STDCALL Init_GOMClassID(PyObject_GOMClassID* self, PyObject* args, PyObject* kwds)
+{
+	char* name = nullptr;
+	if (!PyArg_ParseTuple(args, "|s", &name))
+	{
+		self->mID = GOM::ClassID(0);
+		return -1;
+	}
+	self->mID = GOM::ClassID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
+	return 0;
+}
+
 extern PyGetSetDef GOMClassID_getseters[];
 
 static PyTypeObject GOMClassID_type =
@@ -258,21 +301,21 @@ static PyTypeObject GOMClassID_type =
 	"cpf.ClassID",				/* tp_name */
 	sizeof(PyObject_GOMClassID),	/* tp_basicsize */
 	0,							/* tp_itemsize */
-	0,							/* tp_dealloc */
-	0,							/* tp_print */
-	0,							/* tp_getattr */
-	0,							/* tp_setattr */
-	0,							/* tp_reserved */
-	0,							/* tp_repr */
-	0,							/* tp_as_number */
-	0,							/* tp_as_sequence */
-	0,							/* tp_as_mapping */
-	0,							/* tp_hash  */
-	0,							/* tp_call */
-	0,							/* tp_str */
-	0,							/* tp_getattro */
-	0,							/* tp_setattro */
-	0,							/* tp_as_buffer */
+	nullptr,					/* tp_dealloc */
+	nullptr,					/* tp_print */
+	nullptr,					/* tp_getattr */
+	nullptr,					/* tp_setattr */
+	nullptr,					/* tp_reserved */
+	nullptr,					/* tp_repr */
+	nullptr,					/* tp_as_number */
+	nullptr,					/* tp_as_sequence */
+	nullptr,					/* tp_as_mapping */
+	nullptr,					/* tp_hash  */
+	nullptr,					/* tp_call */
+	nullptr,					/* tp_str */
+	nullptr,					/* tp_getattro */
+	nullptr,					/* tp_setattro */
+	nullptr,					/* tp_as_buffer */
 	Py_TPFLAGS_DEFAULT,			/* tp_flags */
 	"Cpf objects",				/* tp_doc */
 	nullptr,					/* tp_traverse */
@@ -285,6 +328,23 @@ static PyTypeObject GOMClassID_type =
 	nullptr,					/* tp_members */
 	GOMClassID_getseters,		/* tp_getset */
 	nullptr,					/* tp_base */
+	nullptr,					/* tp_dict */
+	nullptr,					/* tp_descr_get */
+	nullptr,					/* tp_descr_set */
+	0,							/* tp_dictoffset */
+	(initproc)Init_GOMClassID,	/* tp_init */
+	nullptr,					/* tp_alloc */
+	nullptr,					/* tp_new */
+	nullptr,					/* tp_free */
+	nullptr,					/* tp_is_gc */
+	nullptr,					/* tp_bases */
+	nullptr,					/* tp_mro */
+	nullptr,					/* tp_cache */
+	nullptr,					/* tp_subclasses */
+	nullptr,					/* tp_weaklist */
+	nullptr,					/* tp_del */
+	0,							/* tp_version_tag */
+	nullptr						/* tp_finalize */
 };
 
 
@@ -296,16 +356,6 @@ extern "C" void CPF_STDCALL Dealloc_GOMClassID(PyObject_GOMResult *self)
 
 #define GOMClassID_Check(v)      (Py_TYPE(v) == &GOMClassID_type)
 
-extern "C" PyObject_GOMClassID* CPF_STDCALL newGOMClassID(PyObject *arg)
-{
-	(void)arg;
-	PyObject_GOMClassID *self;
-	self = PyObject_New(PyObject_GOMClassID, &GOMClassID_type);
-	if (self == nullptr)
-		return nullptr;
-	self->mID = GOM::ClassID(0);
-	return self;
-}
 
 //////////////////////////////////////////////////////////////////////////
 extern "C" PyObject* CPF_STDCALL GOMClassID_get_id(PyObject_GOMClassID* self, void*)
@@ -337,44 +387,76 @@ struct PyObject_GOMInterfaceID
 
 extern PyGetSetDef GOMInterfaceID_getseters[];
 
+extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(PyObject_GOMInterfaceID* self);
+
+extern "C" int CPF_STDCALL Init_GOMInterfaceID(PyObject_GOMInterfaceID* self, PyObject* args, PyObject* kwds)
+{
+	char* name = nullptr;
+	if (!PyArg_ParseTuple(args, "|s", &name))
+	{
+		self->mID = GOM::InterfaceID(0);
+		return -1;
+	}
+	self->mID = GOM::InterfaceID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
+	return 0;
+}
+
+
 static PyTypeObject GOMInterfaceID_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
-	"cpf.InterfaceID",				/* tp_name */
-	sizeof(PyObject_GOMInterfaceID),	/* tp_basicsize */
-	0,							/* tp_itemsize */
-	0,							/* tp_dealloc */
-	0,							/* tp_print */
-	0,							/* tp_getattr */
-	0,							/* tp_setattr */
-	0,							/* tp_reserved */
-	0,							/* tp_repr */
-	0,							/* tp_as_number */
-	0,							/* tp_as_sequence */
-	0,							/* tp_as_mapping */
-	0,							/* tp_hash  */
-	0,							/* tp_call */
-	0,							/* tp_str */
-	0,							/* tp_getattro */
-	0,							/* tp_setattro */
-	0,							/* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT,			/* tp_flags */
-	"Cpf objects",				/* tp_doc */
-	nullptr,					/* tp_traverse */
-	nullptr,					/* tp_clear */
-	nullptr,					/* tp_richcompare */
-	0,							/* tp_weaklistoffset */
-	nullptr,					/* tp_iter */
-	nullptr,					/* tp_iternext */
-	nullptr,					/* tp_methods */
-	nullptr,					/* tp_members */
-	GOMInterfaceID_getseters,	/* tp_getset */
-	nullptr,					/* tp_base */
+	"cpf.InterfaceID",						/* tp_name */
+	sizeof(PyObject_GOMInterfaceID),		/* tp_basicsize */
+	0,										/* tp_itemsize */
+	(destructor)Dealloc_GOMInterfaceID,		/* tp_dealloc */
+	0,										/* tp_print */
+	0,										/* tp_getattr */
+	0,										/* tp_setattr */
+	0,										/* tp_reserved */
+	0,										/* tp_repr */
+	0,										/* tp_as_number */
+	0,										/* tp_as_sequence */
+	0,										/* tp_as_mapping */
+	0,										/* tp_hash  */
+	0,										/* tp_call */
+	0,										/* tp_str */
+	0,										/* tp_getattro */
+	0,										/* tp_setattro */
+	0,										/* tp_as_buffer */
+	Py_TPFLAGS_DEFAULT,						/* tp_flags */
+	"Cpf objects",							/* tp_doc */
+	nullptr,								/* tp_traverse */
+	nullptr,								/* tp_clear */
+	nullptr,								/* tp_richcompare */
+	0,										/* tp_weaklistoffset */
+	nullptr,								/* tp_iter */
+	nullptr,								/* tp_iternext */
+	nullptr,								/* tp_methods */
+	nullptr,								/* tp_members */
+	GOMInterfaceID_getseters,				/* tp_getset */
+	nullptr,								/* tp_base */
+	nullptr,								/* tp_dict */
+	nullptr,								/* tp_descr_get */
+	nullptr,								/* tp_descr_set */
+	0,										/* tp_dictoffset */
+	(initproc)Init_GOMInterfaceID,			/* tp_init */
+	nullptr,								/* tp_alloc */
+	nullptr,								/* tp_new */
+	nullptr,								/* tp_free */
+	nullptr,								/* tp_is_gc */
+	nullptr,								/* tp_bases */
+	nullptr,								/* tp_mro */
+	nullptr,								/* tp_cache */
+	nullptr,								/* tp_subclasses */
+	nullptr,								/* tp_weaklist */
+	nullptr,								/* tp_del */
+	0,										/* tp_version_tag */
+	nullptr									/* tp_finalize */
 };
 
 
 //////////////////////////////////////////////////////////////////////////
-extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(PyObject_GOMResult *self)
+extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(PyObject_GOMInterfaceID *self)
 {
 	PyObject_Del(self);
 }
@@ -450,7 +532,7 @@ static PyTypeObject PluginRegistry_type =
 	nullptr,					/* tp_iternext */
 	nullptr,					/* tp_methods */
 	nullptr,					/* tp_members */
-	nullptr,	/* tp_getset */
+	nullptr,					/* tp_getset */
 	nullptr,					/* tp_base */
 };
 
@@ -501,11 +583,19 @@ PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
 	if (m == nullptr)
 		return m;
 
+	PyObject* mgom = PyModule_Create(&CpfGomModuleDef);
+	if (mgom == nullptr)
+	{
+		Py_DECREF(m);
+		return mgom;
+	}
+	PyModule_AddObject(m, "gom", mgom);
+
 	GOMResult_type.tp_new = PyType_GenericNew;
 	if (PyType_Ready(&GOMResult_type) < 0)
 		return nullptr;
 	Py_INCREF(&GOMResult_type);
-	PyModule_AddObject(m, "Result", reinterpret_cast<PyObject*>(&GOMResult_type));
+	PyModule_AddObject(mgom, "Result", reinterpret_cast<PyObject*>(&GOMResult_type));
 
 	GOMClassID_type.tp_new = PyType_GenericNew;
 	if (PyType_Ready(&GOMClassID_type) < 0)
@@ -627,3 +717,43 @@ GOM::Result CPF_STDCALL Python3::Shutdown()
 	Py_FinalizeEx();
 	return GOM::kOK;
 }
+
+
+/*
+y = gom.Result()
+z = y.is_error()
+print ("is_error: ", z)
+print ("error: ", y.error)
+y.error = 1
+print ("error: ", y.error)
+print ("subsystem: ", y.subsystem)
+print ("value: ", y.value)
+print ("success: ", cpf.succeeded(y))
+print ("failed: ", cpf.failed(y))
+print (dir(y))
+print ("-------------------------------")
+print(dir(cpf))
+print ("-------------------------------")
+
+classID = cpf.ClassID()
+print ("ClassID: ", classID.id)
+interfaceID = cpf.InterfaceID()
+print ("InterfaceID: ", interfaceID.id)
+interfaceID2 = cpf.InterfaceID('Hello')
+print ("InterfaceID2: ", interfaceID2.id)
+
+def multiply(a,b):
+    print("Will compute", a, "times", b)
+    c = 0
+    for i in range(0, a):
+        c = c + b
+
+    return c
+
+'''
+def test_registry():
+	registry = Registry()
+	result = registry.exists()
+	print ("Exists: ", result)
+'''
+ */

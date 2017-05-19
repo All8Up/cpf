@@ -1,36 +1,11 @@
 import cpf
+from cpf import gom
 
-y = cpf.Result()
-z = y.is_error()
-print ("is_error: ", z)
-print ("error: ", y.error)
-y.error = 1
-print ("error: ", y.error)
-print ("subsystem: ", y.subsystem)
-print ("value: ", y.value)
-print ("success: ", cpf.succeeded(y))
-print ("failed: ", cpf.failed(y))
-print (dir(y))
-print ("-------------------------------")
-print(dir(cpf))
-print ("-------------------------------")
-
-classID = cpf.ClassID()
-print ("ClassID: ", classID.id)
-interfaceID = cpf.InterfaceID()
-print ("InterfaceID: ", interfaceID.id)
-
-def multiply(a,b):
-    print("Will compute", a, "times", b)
-    c = 0
-    for i in range(0, a):
-        c = c + b
-
-    return c
-
-'''
-def test_registry():
-	registry = Registry()
-	result = registry.exists()
-	print ("Exists: ", result)
-'''
+print (dir(cpf))
+print ('-------------------------------')
+print (dir(gom))
+print ('-------------------------------')
+testResult = gom.Result(error=0, subsystem='Core', value='Not and error')
+print ("testResult.error: ", testResult.error)
+print ("testResult.subsystem: ", testResult.subsystem)
+print ("testResult.value: ", testResult.value)
