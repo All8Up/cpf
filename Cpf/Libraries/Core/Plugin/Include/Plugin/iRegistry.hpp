@@ -104,7 +104,7 @@ namespace Cpf
 			 * @param [in,out] outIface If non-null, the output.
 			 * @return The GOM::Result, kOK if the instance was found and put in the output.
 			 */
-			virtual GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, void** outIface) = 0;
+			virtual GOM::Result CPF_STDCALL GetInstances(GOM::InterfaceID id, void** outIface) = 0;
 		};
 	}
 }
