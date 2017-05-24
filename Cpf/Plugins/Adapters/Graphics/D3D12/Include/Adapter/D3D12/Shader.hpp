@@ -21,7 +21,7 @@ namespace Cpf
 				Shader();
 				virtual ~Shader();
 
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				bool LoadFrom(Graphics::iDevice* device, Graphics::iBlob*) override;
 

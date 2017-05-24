@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -8,7 +8,7 @@ namespace Cpf
 	{
 		// TODO: Insert a generic script component before this.
 		static constexpr GOM::ClassID kPython3CID = GOM::ClassID("Cpf::Tools::iPython3"_crc64);
-		struct iPython3 : GOM::iUnknown
+		struct iPython3 : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Tools::iPython3"_crc64);
 

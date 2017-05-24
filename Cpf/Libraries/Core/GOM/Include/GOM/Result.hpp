@@ -56,21 +56,26 @@ namespace Cpf
 		 */
 		constexpr bool Failed(Result result) { return result.Error != 0; }
 
-		static constexpr Result kOK = CreateResult(0, "Core"_crc16, "OK"_crc16);
-		static constexpr Result kError = CreateResult(1, "Core"_crc16, "Error"_crc16);
-		static constexpr Result kUnknownInterface = CreateResult(1, "Core"_crc16, "UnknownInterface"_crc16);
-		static constexpr Result kInvalidParameter = CreateResult(1, "Core"_crc16, "InvalidParameter"_crc16);
-		static constexpr Result kOutOfMemory = CreateResult(1, "Core"_crc16, "OutOfMemory"_crc16);
-		static constexpr Result kUnknownClass = CreateResult(1, "Core"_crc16, "UnknownClass"_crc16);
-		static constexpr Result kNotImplemented = CreateResult(1, "Core"_crc16, "NotImplemented"_crc16);
-		static constexpr Result kInvalid = CreateResult(1, "Core"_crc16, "Invalid"_crc16);
-		static constexpr Result kNotEnoughSpace = CreateResult(1, "Core"_crc16, "NotEnoughSpace"_crc16);
-		static constexpr Result kInUse = CreateResult(0, "Core"_crc16, "InUse"_crc16);
-		static constexpr Result kNotInitialized = CreateResult(1, "Core"_crc16, "NotInitialized"_crc16);
-		static constexpr Result kInitializationFailure = CreateResult(1, "Core"_crc16, "InitializationFailure"_crc16);
-		static constexpr Result kOutOfRange = CreateResult(1, "Core"_crc16, "OutOfRange"_crc16);
-		static constexpr Result kDuplicateCID = CreateResult(1, "Core"_crc16, "DuplicateCID"_crc16);
-		static constexpr Result kRegistryError = CreateResult(1, "Core"_crc16, "RegistryError"_crc16);
-		static constexpr Result kNotRunning = CreateResult(1, "Core"_crc16, "NotRunning"_crc16);
+		// Standard result codes.
+		static constexpr Result kOK = CreateResult(0, "Core"_crc16, "OK"_crc15);
+		static constexpr Result kError = CreateResult(1, "Core"_crc16, "Error"_crc15);
+		static constexpr Result kUnknownInterface = CreateResult(1, "Core"_crc16, "UnknownInterface"_crc15);
+		static constexpr Result kInvalidParameter = CreateResult(1, "Core"_crc16, "InvalidParameter"_crc15);
+		static constexpr Result kOutOfMemory = CreateResult(1, "Core"_crc16, "OutOfMemory"_crc15);
+		static constexpr Result kUnknownClass = CreateResult(1, "Core"_crc16, "UnknownClass"_crc15);
+		static constexpr Result kNotImplemented = CreateResult(1, "Core"_crc16, "NotImplemented"_crc15);
+		static constexpr Result kInvalid = CreateResult(1, "Core"_crc16, "Invalid"_crc15);
+		static constexpr Result kNotEnoughSpace = CreateResult(1, "Core"_crc16, "NotEnoughSpace"_crc15);
+		static constexpr Result kInUse = CreateResult(0, "Core"_crc16, "InUse"_crc15);
+		static constexpr Result kNotInitialized = CreateResult(1, "Core"_crc16, "NotInitialized"_crc15);
+		static constexpr Result kInitializationFailure = CreateResult(1, "Core"_crc16, "InitializationFailure"_crc15);
+		static constexpr Result kOutOfRange = CreateResult(1, "Core"_crc16, "OutOfRange"_crc15);
+		static constexpr Result kDuplicateCID = CreateResult(1, "Core"_crc16, "DuplicateCID"_crc15);
+		static constexpr Result kRegistryError = CreateResult(1, "Core"_crc16, "RegistryError"_crc15);
+		static constexpr Result kNotRunning = CreateResult(1, "Core"_crc16, "NotRunning"_crc15);
 	}
 }
+
+
+// Utility macro for creating result codes.
+#define GOM_RESULT(e, ss, v) Cpf::GOM::CreateResult(e, ss##_crc16, v##_crc15)

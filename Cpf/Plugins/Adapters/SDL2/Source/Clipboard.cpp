@@ -5,20 +5,20 @@
 using namespace Cpf;
 using namespace SDL2;
 
-Clipboard::Clipboard(GOM::iUnknown*)
+Clipboard::Clipboard(GOM::iBase*)
 {}
 
 Clipboard::~Clipboard()
 {}
 
-GOM::Result CPF_STDCALL Clipboard::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Clipboard::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iClipboard::kIID.GetID():
 			*outIface = static_cast<iClipboard*>(this);

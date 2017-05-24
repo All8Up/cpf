@@ -17,7 +17,7 @@ namespace Cpf
 			{
 			public:
 				// Construction/Destruction.
-				Default(iUnknown*);
+				Default(iBase*);
 				virtual ~Default();
 
 				static const char* const kCacheName;
@@ -25,8 +25,8 @@ namespace Cpf
 				struct Descriptor : CacheDesc
 				{};
 
-				// iUnknown overrides.
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				// iBase overrides.
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				static iCache* Create(const CacheDesc* const desc);
 				static CacheDesc* CreateDescriptor(const rapidjson::Value&);

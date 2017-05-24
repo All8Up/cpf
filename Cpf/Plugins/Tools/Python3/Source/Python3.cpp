@@ -11,20 +11,20 @@
 using namespace Cpf;
 using namespace Tools;
 
-Python3::Python3(iUnknown*)
+Python3::Python3(iBase*)
 {}
 
 Python3::~Python3()
 {}
 
-GOM::Result CPF_STDCALL Python3::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Python3::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iPython3*>(this);
@@ -82,18 +82,62 @@ RTTR_REGISTRATION
 
 
 //////////////////////////////////////////////////////////////////////////
+PyMethodDef Cpf_methods[];
 static PyModuleDef cpfModuleDef =
 {
 	PyModuleDef_HEAD_INIT,
 	"cpf",
 	"Core module integration with the Cpf frameworks.",
 	-1,
-	nullptr,
+	Cpf_methods,
 	nullptr,
 	nullptr,
 	nullptr,
 	nullptr
 };
+
+extern "C" PyObject* CPF_STDCALL CpfCrc15(GOM::py::Result*, PyObject* args)
+{
+	char* strValue = nullptr;
+	if (!PyArg_ParseTuple(args, "s:crc15", &strValue))
+		return nullptr;
+	return PyLong_FromLong(Hash::Crc15(strValue, ::strlen(strValue)));
+}
+
+extern "C" PyObject* CPF_STDCALL CpfCrc16(GOM::py::Result*, PyObject* args)
+{
+	char* strValue = nullptr;
+	if (!PyArg_ParseTuple(args, "s:crc16", &strValue))
+		return nullptr;
+	return PyLong_FromLong(Hash::Crc16(strValue, ::strlen(strValue)));
+}
+
+extern "C" PyObject* CPF_STDCALL CpfCrc32(GOM::py::Result*, PyObject* args)
+{
+	char* strValue = nullptr;
+	if (!PyArg_ParseTuple(args, "s:crc32", &strValue))
+		return nullptr;
+	return PyLong_FromLong(Hash::Crc32(strValue, ::strlen(strValue)));
+}
+
+extern "C" PyObject* CPF_STDCALL CpfCrc64(GOM::py::Result*, PyObject* args)
+{
+	char* strValue = nullptr;
+	if (!PyArg_ParseTuple(args, "s:crc64", &strValue))
+		return nullptr;
+	return PyLong_FromLongLong(Hash::Crc64(strValue, ::strlen(strValue)));
+}
+
+//////////////////////////////////////////////////////////////////////////
+PyMethodDef Cpf_methods[] =
+{
+	{ "crc15", (PyCFunction)CpfCrc15, METH_VARARGS, PyDoc_STR("Compute the crc15 of the given string.") },
+	{ "crc16", (PyCFunction)CpfCrc16, METH_VARARGS, PyDoc_STR("Compute the crc16 of the given string.") },
+	{ "crc32", (PyCFunction)CpfCrc32, METH_VARARGS, PyDoc_STR("Compute the crc32 of the given string.") },
+	{ "crc64", (PyCFunction)CpfCrc64, METH_VARARGS, PyDoc_STR("Compute the crc64 of the given string.") },
+	{ nullptr, nullptr }
+};
+
 
 PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
 {
@@ -165,31 +209,24 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 		wpath.push_back(wchar_t(basePath[i]));
 	PySys_SetPath(wpath.c_str());
 
-	PyObject* pName = PyUnicode_DecodeFSDefault("TestPython");
-	PyObject* pModule = PyImport_Import(pName);
-	Py_DECREF(pName);
-	if (pModule != nullptr)
+
+	PyObject* pName = PyUnicode_DecodeFSDefault("test_gom");
+	PyObject* testGom = PyImport_Import(pName);
+	if (testGom)
 	{
-		PyObject* pFunc = PyObject_GetAttrString(pModule, "multiply");
+		PyObject* pFunc = PyObject_GetAttrString(testGom, "run_tests");
 		if (pFunc && PyCallable_Check(pFunc))
 		{
-			PyObject* pArgs = PyTuple_New(2);
-			PyObject* pValue = PyLong_FromLong(5);
-			PyTuple_SetItem(pArgs, 0, pValue);
-			pValue = PyLong_FromLong(7);
-			PyTuple_SetItem(pArgs, 1, pValue);
-
-			pValue = PyObject_CallObject(pFunc, pArgs);
-			Py_DECREF(pArgs);
-			if (pValue != NULL)
-			{
-				CPF_LOG(Python3, Info) << "Python test result is 5*7 = " << PyLong_AsLong(pValue);
-				Py_DECREF(pValue);
-			}
+			PyObject_CallObject(pFunc, nullptr);
 		}
-		Py_XDECREF(pFunc);
-		Py_DECREF(pModule);
 	}
+	else
+	{
+		PyErr_Print();
+	}
+	Py_DECREF(pName);
+	Py_DECREF(testGom);
+
 	return GOM::kOK;
 }
 
@@ -198,43 +235,3 @@ GOM::Result CPF_STDCALL Python3::Shutdown()
 	Py_FinalizeEx();
 	return GOM::kOK;
 }
-
-
-/*
-y = gom.Result()
-z = y.is_error()
-print ("is_error: ", z)
-print ("error: ", y.error)
-y.error = 1
-print ("error: ", y.error)
-print ("subsystem: ", y.subsystem)
-print ("value: ", y.value)
-print ("success: ", cpf.succeeded(y))
-print ("failed: ", cpf.failed(y))
-print (dir(y))
-print ("-------------------------------")
-print(dir(cpf))
-print ("-------------------------------")
-
-classID = cpf.ClassID()
-print ("ClassID: ", classID.id)
-interfaceID = cpf.InterfaceID()
-print ("InterfaceID: ", interfaceID.id)
-interfaceID2 = cpf.InterfaceID('Hello')
-print ("InterfaceID2: ", interfaceID2.id)
-
-def multiply(a,b):
-    print("Will compute", a, "times", b)
-    c = 0
-    for i in range(0, a):
-        c = c + b
-
-    return c
-
-'''
-def test_registry():
-	registry = Registry()
-	result = registry.exists()
-	print ("Exists: ", result)
-'''
- */

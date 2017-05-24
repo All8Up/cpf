@@ -8,7 +8,7 @@
 using namespace Cpf;
 using namespace SDL2;
 
-InputManager::InputManager(GOM::iUnknown*)
+InputManager::InputManager(GOM::iBase*)
 {
 	g_Context.GetRegistry()->Create(nullptr, kMouseDeviceCID, iMouseDevice::kIID, mpMouse.AsVoidPP());
 	g_Context.GetRegistry()->Create(nullptr, kKeyboardDeviceCID, iKeyboardDevice::kIID, mpKeyboard.AsVoidPP());
@@ -17,14 +17,14 @@ InputManager::InputManager(GOM::iUnknown*)
 InputManager::~InputManager()
 {}
 
-GOM::Result CPF_STDCALL InputManager::QueryInterface(GOM::InterfaceID iid, void** outIface)
+GOM::Result CPF_STDCALL InputManager::Cast(GOM::InterfaceID iid, void** outIface)
 {
 	if (outIface)
 	{
 		switch (iid.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iInputManager::kIID.GetID():
 			*outIface = static_cast<iInputManager*>(this);
@@ -53,9 +53,9 @@ GOM::Result CPF_STDCALL InputManager::GetDevice(GOM::InstanceID id, GOM::Interfa
 	switch (id.GetID())
 	{
 	case iMouseDevice::kDefault.GetID():
-		return mpMouse->QueryInterface(iid, outIface);
+		return mpMouse->Cast(iid, outIface);
 	case iKeyboardDevice::kDefault.GetID():
-		return mpKeyboard->QueryInterface(iid, outIface);
+		return mpKeyboard->Cast(iid, outIface);
 	default:
 		// TODO: Should this have a custom kUnknownInstance result?  Probably
 		break;

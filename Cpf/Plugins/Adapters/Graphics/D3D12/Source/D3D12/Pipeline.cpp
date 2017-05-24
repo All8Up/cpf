@@ -134,14 +134,14 @@ Pipeline::~Pipeline()
 	CPF_LOG(D3D12, Info) << "Destroyed pipeline: " << intptr_t(this) << " - " << intptr_t(mpPipelineState.Ptr());
 }
 
-GOM::Result CPF_STDCALL Pipeline::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Pipeline::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iPipeline::kIID.GetID():
 			*outIface = static_cast<iPipeline*>(this);

@@ -22,11 +22,11 @@ namespace Cpf
 			using EntityIDValue = EntityIDMap::value_type;
 
 			//
-			Manager(iUnknown*);
+			Manager(iBase*);
 			virtual ~Manager();
 
 			//
-			GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
+			GOM::Result Cast(GOM::InterfaceID id, void**) override;
 
 			// 
 			MultiCore::iPipeline* GetPipeline() const { return mpPipeline; }

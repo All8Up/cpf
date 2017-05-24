@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Types.hpp"
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "Plugin/iRegistry.hpp"
 
 namespace Cpf
@@ -15,7 +15,7 @@ namespace Cpf
 		/**
 		 A multicore pipeline execution component.
 		 */
-		struct iPipeline : GOM::iUnknown
+		struct iPipeline : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iPipeline"_crc64);
 			static constexpr GOM::Result kConfigurationError = GOM::CreateResult(1, 50, 1);

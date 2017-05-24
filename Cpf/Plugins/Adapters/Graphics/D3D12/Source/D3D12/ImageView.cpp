@@ -21,14 +21,14 @@ ImageView::ImageView(Device* device, Image* image, const Graphics::DepthStencilV
 	device->GetD3DDevice()->CreateDepthStencilView(image->GetResource(), pd3dDesc, mDescriptor);
 }
 
-GOM::Result CPF_STDCALL ImageView::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL ImageView::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iImageView::kIID.GetID():
 			*outIface = static_cast<iImageView*>(this);

@@ -30,7 +30,7 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Construction/Destruction.
-		RenderSystem(GOM::iUnknown*);
+		RenderSystem(GOM::iBase*);
 		virtual ~RenderSystem();
 
 		// Registration.
@@ -43,8 +43,8 @@ namespace Cpf
 			ExperimentalD3D12* mpApplication;
 		};
 
-		// iUnknown
-		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+		// iBase
+		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;

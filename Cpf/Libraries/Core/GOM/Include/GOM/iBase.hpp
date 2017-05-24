@@ -15,11 +15,11 @@ namespace Cpf
 		using InstanceID = Hash::HashID<uint64_t, instance_tag>;
 
 		//////////////////////////////////////////////////////////////////////////
-		struct iUnknown : iRefCounted
+		struct iBase : iRefCounted
 		{
-			static constexpr InterfaceID kIID = InterfaceID("iUnknown Interface"_crc64);
+			static constexpr InterfaceID kIID = InterfaceID("iBase Interface"_crc64);
 
-			virtual Result CPF_STDCALL QueryInterface(InterfaceID id, void** outIface) = 0;
+			virtual Result CPF_STDCALL Cast(InterfaceID id, void** outIface) = 0;
 		};
 	}
 }

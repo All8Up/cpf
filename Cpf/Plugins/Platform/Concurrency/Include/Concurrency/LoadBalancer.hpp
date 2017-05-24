@@ -14,10 +14,10 @@ namespace Cpf
 		public:
 			static const int kUpdateRate = 1;
 
-			LoadBalancer(iUnknown*);
+			LoadBalancer(iBase*);
 			~LoadBalancer();
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, int count, iScheduler**) override;
 
 			// TODO: Add policy information to each scheduler.

@@ -11,6 +11,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		Include/GOM/pyResult.hpp
 		Include/GOM/pyClassID.hpp
 		Include/GOM/pyInterfaceID.hpp
+		Include/GOM/pyBase.hpp
 	)
 	set (INCLUDE_PLUGIN_FILES
 		Include/Plugin/pyModule.hpp
@@ -31,6 +32,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		Source/GOM/pyResult.cpp
 		Source/GOM/pyClassID.cpp
 		Source/GOM/pyInterfaceID.cpp
+		Source/GOM/pyBase.cpp
 	)
 	set (SOURCE_PLUGIN_FILES
 		Source/Plugin/pyModule.cpp

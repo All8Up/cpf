@@ -12,9 +12,9 @@ namespace Cpf
 		class ThreadTimes : public tRefCounted<iThreadTimes>
 		{
 		public:
-			ThreadTimes(iUnknown*) {}
+			ThreadTimes(iBase*) {}
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			void CPF_STDCALL Wait() override;
 			void CPF_STDCALL Signal() override;

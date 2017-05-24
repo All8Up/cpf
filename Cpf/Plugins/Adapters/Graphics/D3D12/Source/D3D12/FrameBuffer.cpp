@@ -5,7 +5,7 @@ using namespace Cpf;
 using namespace Adapter;
 using namespace D3D12;
 
-FrameBuffer::FrameBuffer(GOM::iUnknown*)
+FrameBuffer::FrameBuffer(GOM::iBase*)
 	: mFrameBuffer{ 0 }
 {}
 
@@ -15,14 +15,14 @@ FrameBuffer::~FrameBuffer()
 }
 
 
-GOM::Result CPF_STDCALL FrameBuffer::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL FrameBuffer::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case Graphics::iFrameBuffer::kIID.GetID():
 			*outIface = static_cast<iFrameBuffer*>(this);

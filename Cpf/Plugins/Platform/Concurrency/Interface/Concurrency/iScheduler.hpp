@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -16,7 +16,7 @@ namespace Cpf
 
 		using WorkFunction = void(*)(const WorkContext*, void*);
 
-		struct iScheduler : GOM::iUnknown
+		struct iScheduler : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iScheduler"_crc64);
 

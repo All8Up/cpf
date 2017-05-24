@@ -4,6 +4,7 @@ set (INCLUDE_FILES
 	Include/Hash/HashID.hpp
 	Include/Hash/HashString.hpp
 	Include/Hash/Crc.hpp
+	Include/Hash/Detail/Crc15Table.hpp
 	Include/Hash/Detail/Crc16Table.hpp
 	Include/Hash/Detail/Crc32Table.hpp
 	Include/Hash/Detail/Crc64Table.hpp

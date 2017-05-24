@@ -7,10 +7,10 @@ namespace Cpf
 	class RenderSystem : public tRefCounted<iRenderSystem>
 	{
 	public:
-		RenderSystem(GOM::iUnknown*);
+		RenderSystem(GOM::iBase*);
 
-		// iUnknown.
-		GOM::Result QueryInterface(GOM::InterfaceID id, void** outIface) override;
+		// iBase.
+		GOM::Result Cast(GOM::InterfaceID id, void** outIface) override;
 
 		// iStageList.
 		GOM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;

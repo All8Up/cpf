@@ -59,14 +59,14 @@ ConstantBuffer::~ConstantBuffer()
 	CPF_LOG(D3D12, Info) << "Destroyed constant buffer: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr()) << " - " << intptr_t(mpBuffer);
 }
 
-GOM::Result CPF_STDCALL ConstantBuffer::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL ConstantBuffer::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iConstantBuffer::kIID.GetID():
 			*outIface = static_cast<iConstantBuffer*>(this);

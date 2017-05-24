@@ -208,7 +208,7 @@ Configuration::Configuration(Plugin::iRegistry* regy, const String& filename)
 	}
 }
 
-Configuration::Configuration(iUnknown*)
+Configuration::Configuration(iBase*)
 	: mpLocator(nullptr)
 {
 	CPF_INIT_LOG(ResourceConfig);
@@ -347,14 +347,14 @@ Configuration::~Configuration()
 		mpLocator->Release();
 }
 
-GOM::Result CPF_STDCALL Configuration::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Configuration::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case iConfiguration::kIID.GetID():
 			*outIface = static_cast<iConfiguration*>(this);

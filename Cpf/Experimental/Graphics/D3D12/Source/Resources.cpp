@@ -194,7 +194,7 @@ bool ExperimentalD3D12::_CreateResources()
 		data.mPitch = sizeof(vbData);
 		data.mSlicePitch = data.mPitch * 1;
 		IntrusivePtr<iResource> targetResource;
-		mpVertexBuffer->QueryInterface(iResource::kIID, targetResource.AsVoidPP());
+		mpVertexBuffer->Cast(iResource::kIID, targetResource.AsVoidPP());
 		tempCommands->UpdateSubResource(uploadVb, targetResource, &data);
 		tempCommands->End();
 		iCommandBuffer* commandBuffers[] = { tempCommands };
@@ -227,7 +227,7 @@ bool ExperimentalD3D12::_CreateResources()
 		tempCommands->Begin(nullptr);
 
 		IntrusivePtr<iResource> targetResource;
-		mpIndexBuffer->QueryInterface(iResource::kIID, targetResource.AsVoidPP());
+		mpIndexBuffer->Cast(iResource::kIID, targetResource.AsVoidPP());
 		tempCommands->CopyResource(uploadIb, targetResource);
 		tempCommands->ResourceBarrier(targetResource, ResourceState::eCopyDest, ResourceState::eGenericRead);
 		tempCommands->End();

@@ -23,11 +23,11 @@ namespace Cpf
 		class Configuration : public tRefCounted<iConfiguration>
 		{
 		public:
-			Configuration(iUnknown*);
+			Configuration(iBase*);
 			Configuration(Plugin::iRegistry* regy, const String& filename);
 			~Configuration();
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, const char* filename) override;
 			iLocator* CPF_STDCALL GetLocator() override;
 

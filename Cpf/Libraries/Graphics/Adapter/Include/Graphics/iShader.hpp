@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 
 namespace Cpf
@@ -10,7 +10,7 @@ namespace Cpf
 		struct iDevice;
 		struct iBlob;
 
-		struct iShader : GOM::iUnknown
+		struct iShader : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iShader"_crc64);
 

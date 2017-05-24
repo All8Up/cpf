@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include <Python.h>
 
 namespace Cpf

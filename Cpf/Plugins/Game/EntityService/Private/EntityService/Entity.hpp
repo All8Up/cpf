@@ -19,8 +19,8 @@ namespace Cpf
 			static constexpr int kMaxComponents = 32;
 			using ComponentPair = Pair<GOM::InterfaceID, IntrusivePtr<iComponent>>;
 
-			// iUnknown interface.
-			GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
+			// iBase interface.
+			GOM::Result Cast(GOM::InterfaceID id, void**) override;
 
 			// Object interface.
 			static bool Create(EntityID id, iEntity**);

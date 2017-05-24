@@ -6,7 +6,7 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(iUnknown*)
+EntityStage::EntityStage(iBase*)
 	: mpSystem(nullptr)
 	, mEnabled(true)
 {
@@ -26,14 +26,14 @@ void EntityStage::RemoveUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f)
 	mWork.Release();
 }
 
-GOM::Result CPF_STDCALL EntityStage::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL EntityStage::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iStage::kIID.GetID():
 			*outIface = static_cast<iStage*>(this);

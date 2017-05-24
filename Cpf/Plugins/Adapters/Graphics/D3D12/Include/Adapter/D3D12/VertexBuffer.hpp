@@ -26,7 +26,7 @@ namespace Cpf
 				VertexBuffer(Device* device, const Graphics::ResourceDesc* desc, int32_t stride);
 				virtual ~VertexBuffer();
 
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				bool Map(void**, const Graphics::Range*) override;
 				void Unmap(const Graphics::Range*) override;

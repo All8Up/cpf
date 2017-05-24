@@ -72,7 +72,7 @@ void CPF_STDCALL ExperimentalD3D12::Shutdown()
 
 GOM::Result ExperimentalD3D12::Main(iApplication* application)
 {
-	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpApplication));
+	application->Cast(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpApplication));
 
 	// Initialize logging.
 	CPF_INIT_LOG(Experimental);

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
@@ -11,7 +11,7 @@ namespace Cpf
 	}
 	struct iApplication;
 
-	struct iApplicationMain : GOM::iUnknown
+	struct iApplicationMain : GOM::iBase
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iApplicationMain"_crc64);
 

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
 
@@ -29,8 +29,8 @@ namespace Cpf
 		enum class ResourceState : int32_t;
 		enum class DepthStencilClearFlag : int32_t;
 
-		static constexpr GOM::Result kAlreadyInRenderPass = GOM::CreateResult(1, "Graphics"_crc16, "Already in render pass"_crc16);
-		static constexpr GOM::Result kNotInRenderPass = GOM::CreateResult(1, "Graphics"_crc16, "Not in a render pass"_crc16);
+		static constexpr GOM::Result kAlreadyInRenderPass = GOM::CreateResult(1, "Graphics"_crc16, "Already in render pass"_crc15);
+		static constexpr GOM::Result kNotInRenderPass = GOM::CreateResult(1, "Graphics"_crc16, "Not in a render pass"_crc15);
 
 		enum class CommandBufferType : int32_t
 		{
@@ -40,7 +40,7 @@ namespace Cpf
 			kCopy = 3
 		};
 
-		struct iCommandBuffer : GOM::iUnknown
+		struct iCommandBuffer : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iCommandBuffer"_crc64);
 

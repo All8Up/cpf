@@ -9,14 +9,14 @@
 using namespace Cpf;
 using namespace Resources;
 
-GOM::Result CPF_STDCALL Locator::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Locator::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iLocator*>(this);
@@ -199,7 +199,7 @@ void CPF_STDCALL Locator::TouchAll()
 	}
 }
 
-Locator::Locator(iUnknown*)
+Locator::Locator(iBase*)
 {}
 
 Locator::~Locator()

@@ -23,11 +23,11 @@ namespace Cpf
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			Locator(iUnknown*);
+			Locator(iBase*);
 			virtual ~Locator();
 			
-			// iUnknown overrides.
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void**) override;
+			// iBase overrides.
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void**) override;
 
 			//
 			Events::Emitter& CPF_STDCALL GetEmitter() override { return mEmitter; }

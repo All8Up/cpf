@@ -20,7 +20,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
-Instance::Instance(GOM::iUnknown*)
+Instance::Instance(GOM::iBase*)
 {
 	UINT flags = 0;
 #ifdef CPF_USE_D3D12_DEBUG_LAYER
@@ -50,14 +50,14 @@ Instance::~Instance()
 	CPF_LOG(D3D12, Info) << "Destroyed instance: " << intptr_t(this) << " - " << intptr_t(mpDXGIFactory2.Ptr());
 }
 
-GOM::Result CPF_STDCALL Instance::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Instance::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iInstance::kIID.GetID():
 			*outIface = static_cast<iInstance*>(this);

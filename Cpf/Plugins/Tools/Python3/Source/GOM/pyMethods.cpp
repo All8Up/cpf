@@ -21,6 +21,7 @@ extern "C" PyObject* CPF_STDCALL CpfGOMFailed(GOM::py::Result*, PyObject* args)
 	return PyBool_FromLong(result->mResult.Error != 0);
 }
 
+//////////////////////////////////////////////////////////////////////////
 PyMethodDef GOM::py::CpfGOM_methods[] =
 {
 	{ "succeeded", (PyCFunction)CpfGOMSucceeded, METH_VARARGS, PyDoc_STR("Determine if a call succeeded.") },

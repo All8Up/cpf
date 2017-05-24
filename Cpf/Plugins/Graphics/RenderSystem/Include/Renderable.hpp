@@ -7,9 +7,9 @@ namespace Cpf
 	class Renderable : public tRefCounted<iRenderable>
 	{
 	public:
-		Renderable(GOM::iUnknown*);
+		Renderable(GOM::iBase*);
 
-		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface);
+		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 		// iComponent
 		void CPF_STDCALL SetSystem(MultiCore::iSystem*) override;

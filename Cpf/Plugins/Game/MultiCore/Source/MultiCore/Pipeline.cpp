@@ -11,7 +11,7 @@ using namespace MultiCore;
 
 
 //////////////////////////////////////////////////////////////////////////
-Pipeline::Pipeline(iUnknown*)
+Pipeline::Pipeline(iBase*)
 #ifdef CPF_DEBUG
 	: mChanged(false)
 #endif
@@ -21,14 +21,14 @@ Pipeline::Pipeline(iUnknown*)
 Pipeline::~Pipeline()
 {}
 
-GOM::Result CPF_STDCALL Pipeline::QueryInterface(GOM::InterfaceID id, void** iface)
+GOM::Result CPF_STDCALL Pipeline::Cast(GOM::InterfaceID id, void** iface)
 {
 	if (iface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*iface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*iface = static_cast<GOM::iBase*>(this);
 			AddRef();
 			return GOM::kOK;
 		case iPipeline::kIID.GetID():

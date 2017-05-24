@@ -15,13 +15,13 @@ GOM::Result TransformComponent::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kTransformComponentCID);
 }
 
-GOM::Result TransformComponent::QueryInterface(GOM::InterfaceID id, void** outPtr)
+GOM::Result TransformComponent::Cast(GOM::InterfaceID id, void** outPtr)
 {
 	switch(id.GetID())
 	{
-	case iUnknown::kIID.GetID():
+	case iBase::kIID.GetID():
 		{
-			iUnknown* result = static_cast<iUnknown*>(this);
+			iBase* result = static_cast<iBase*>(this);
 			result->AddRef();
 			*outPtr = result;
 			return GOM::kOK;
@@ -40,7 +40,7 @@ GOM::Result TransformComponent::QueryInterface(GOM::InterfaceID id, void** outPt
 }
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent(GOM::iUnknown*)
+TransformComponent::TransformComponent(GOM::iBase*)
 	: mpParent(nullptr)
 {}
 

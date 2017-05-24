@@ -68,14 +68,14 @@ VertexBuffer::~VertexBuffer()
 {
 }
 
-GOM::Result CPF_STDCALL VertexBuffer::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL VertexBuffer::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iResource::kIID.GetID():
 			*outIface = static_cast<iResource*>(this);

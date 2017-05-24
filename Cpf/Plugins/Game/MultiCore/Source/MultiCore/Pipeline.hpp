@@ -12,10 +12,10 @@ namespace Cpf
 		class Pipeline : public tRefCounted<iPipeline>
 		{
 		public:
-			Pipeline(iUnknown*);
+			Pipeline(iBase*);
 			~Pipeline();
 
-			GOM::Result QueryInterface(GOM::InterfaceID id, void** iface) override;
+			GOM::Result Cast(GOM::InterfaceID id, void** iface) override;
 			iSystem* CPF_STDCALL Install(iSystem*) override;
 			GOM::Result CPF_STDCALL Remove(iSystem*) override;
 			GOM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) override;

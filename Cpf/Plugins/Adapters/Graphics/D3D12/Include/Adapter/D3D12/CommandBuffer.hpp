@@ -41,13 +41,13 @@ namespace Cpf
 			class CommandBuffer : public tRefCounted<Graphics::iCommandBuffer>
 			{
 			public:
-				CommandBuffer(GOM::iUnknown*);
+				CommandBuffer(GOM::iBase*);
 				virtual ~CommandBuffer();
 
 				//
 				GOM::Result CPF_STDCALL Initialize(Graphics::iDevice*, Graphics::CommandBufferType type, Graphics::iCommandPool*);
 
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				void CPF_STDCALL Begin(iCommandBuffer* primary) override;
 				void CPF_STDCALL End() override;

@@ -19,7 +19,7 @@ extern "C" int CPF_STDCALL ResultInit(py::Result* self, PyObject* args, PyObject
 		return -1;
 	}
 	if (subSys && value)
-		self->mResult = Result{ uint32_t(error == 0 ? 0 : 1), Hash::Crc16(subSys, ::strlen(subSys)), Hash::Crc16(value, ::strlen(value)) };
+		self->mResult = Result{ uint32_t(error == 0 ? 0 : 1), Hash::Crc16(subSys, ::strlen(subSys)), Hash::Crc15(value, ::strlen(value)) };
 	return 0;
 }
 

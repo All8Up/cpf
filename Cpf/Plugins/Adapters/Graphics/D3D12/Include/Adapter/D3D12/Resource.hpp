@@ -26,7 +26,7 @@ namespace Cpf
 				Resource(Device* device, const Graphics::ResourceDesc* desc);
 				virtual ~Resource();
 
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				bool Map(void**, const Graphics::Range* = nullptr) override;
 				void Unmap(const Graphics::Range* range) override;

@@ -3,17 +3,17 @@
 
 using namespace Cpf;
 
-Renderable::Renderable(GOM::iUnknown*)
+Renderable::Renderable(GOM::iBase*)
 {}
 
-GOM::Result CPF_STDCALL Renderable::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Renderable::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 
 		case iRenderable::kIID.GetID():

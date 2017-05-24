@@ -28,7 +28,7 @@ GOM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kMoverComponentCID);
 }
 
-GOM::Result MoverSystem::MoverComponent::QueryInterface(GOM::InterfaceID id, void** outPtr)
+GOM::Result MoverSystem::MoverComponent::Cast(GOM::InterfaceID id, void** outPtr)
 {
 	if (id.GetID() == iMoverComponent::kIID.GetID())
 	{
@@ -44,7 +44,7 @@ GOM::Result MoverSystem::MoverComponent::QueryInterface(GOM::InterfaceID id, voi
 
 
 
-MoverSystem::MoverSystem(GOM::iUnknown*)
+MoverSystem::MoverSystem(GOM::iBase*)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -84,7 +84,7 @@ void MoverSystem::EnableMovement(bool flag)
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(GOM::iUnknown*)
+MoverSystem::MoverComponent::MoverComponent(GOM::iBase*)
 	: mpMover(nullptr)
 {}
 
@@ -143,14 +143,14 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL MoverSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL MoverSystem::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);

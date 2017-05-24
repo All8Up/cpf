@@ -15,10 +15,10 @@ namespace Cpf
 		class ThreadPool : public tRefCounted<iThreadPool>
 		{
 		public:
-			ThreadPool(iUnknown*);
+			ThreadPool(iBase*);
 			~ThreadPool();
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			bool CPF_STDCALL Initialize(Plugin::iRegistry* regy, int threadCount) override;
 			void CPF_STDCALL Shutdown() override;

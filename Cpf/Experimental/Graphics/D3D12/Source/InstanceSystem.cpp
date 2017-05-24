@@ -6,7 +6,7 @@
 
 using namespace Cpf;
 
-InstanceSystem::InstanceSystem(GOM::iUnknown*)
+InstanceSystem::InstanceSystem(GOM::iBase*)
 {}
 
 void InstanceSystem::_Begin(const Concurrency::WorkContext*, void* context)
@@ -22,15 +22,15 @@ void InstanceSystem::_End(const Concurrency::WorkContext*, void* context)
 }
 
 
-// iUnknown
-GOM::Result CPF_STDCALL InstanceSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
+// iBase
+GOM::Result CPF_STDCALL InstanceSystem::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case InstanceSystem::kIID.GetID():
 			*outIface = static_cast<InstanceSystem*>(this);

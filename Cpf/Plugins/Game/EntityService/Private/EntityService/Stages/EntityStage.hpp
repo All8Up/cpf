@@ -13,10 +13,10 @@ namespace Cpf
 		class EntityStage : public tRefCounted<iEntityStage>
 		{
 		public:
-			EntityStage(iUnknown*);
+			EntityStage(iBase*);
 
-			// iUnknown overrides.
-			GOM::Result QueryInterface(GOM::InterfaceID, void**) override;
+			// iBase overrides.
+			GOM::Result Cast(GOM::InterfaceID, void**) override;
 
 			// iStage overrides.
 			GOM::Result CPF_STDCALL Initialize(MultiCore::iSystem*, const char* const name) override;

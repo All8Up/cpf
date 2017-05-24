@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "Events/Event.hpp"
 #include "Events/Emitter.hpp"
 
@@ -15,7 +15,7 @@ namespace Cpf
 	struct iApplicationMain;
 	struct iInputManager;
 
-	struct iApplication : GOM::iUnknown
+	struct iApplication : GOM::iBase
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iApplication"_crc64);
 

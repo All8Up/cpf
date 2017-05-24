@@ -17,7 +17,7 @@ GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kRenderSystemCID);
 }
 
-RenderSystem::RenderSystem(GOM::iUnknown*)
+RenderSystem::RenderSystem(GOM::iBase*)
 	: mpApp(nullptr)
 	, mCurrentBackBuffer(0)
 {
@@ -49,14 +49,14 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext* tc, void* context)
 
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL RenderSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);

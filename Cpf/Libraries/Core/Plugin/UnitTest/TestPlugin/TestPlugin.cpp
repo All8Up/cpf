@@ -10,15 +10,15 @@ using namespace Cpf;
 class TestPlugin : public iTestPlugin
 {
 public:
-	TestPlugin(iUnknown* outer);
+	TestPlugin(iBase* outer);
 	virtual ~TestPlugin();
 
 	// iRefCounted overrides.
 	int32_t AddRef() override;
 	int32_t Release() override;
 
-	// iUnknown overrides.
-	GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
+	// iBase overrides.
+	GOM::Result Cast(GOM::InterfaceID id, void**) override;
 
 	// iTestPlugin overrides.
 	uint32_t Test() override;
@@ -61,7 +61,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 
 
 //////////////////////////////////////////////////////////////////////////
-TestPlugin::TestPlugin(iUnknown*)
+TestPlugin::TestPlugin(iBase*)
 	: mRefCount(1)
 {}
 
@@ -86,15 +86,15 @@ int32_t TestPlugin::Release()
 	return mRefCount;
 }
 
-GOM::Result TestPlugin::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result TestPlugin::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		*outIface = nullptr;
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 
 		case iTestPlugin::kIID.GetID():

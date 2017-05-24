@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-D3D12::Adapter::Adapter(GOM::iUnknown*)
+D3D12::Adapter::Adapter(GOM::iBase*)
 	: mpAdapter(nullptr)
 {
 }
@@ -34,14 +34,14 @@ GOM::Result D3D12::Adapter::Initialize(IDXGIAdapter2* adapter)
 	return GOM::kOK;
 }
 
-GOM::Result CPF_STDCALL D3D12::Adapter::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL D3D12::Adapter::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case Graphics::iAdapter::kIID.GetID():
 			*outIface = static_cast<Graphics::iAdapter*>(this);

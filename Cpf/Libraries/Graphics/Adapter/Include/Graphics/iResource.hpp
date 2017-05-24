@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -8,7 +8,7 @@ namespace Cpf
 	{
 		struct Range;
 
-		struct iResource : GOM::iUnknown
+		struct iResource : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iResource"_crc64);
 

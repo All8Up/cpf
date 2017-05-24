@@ -29,7 +29,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 
-Device::Device(GOM::iUnknown*)
+Device::Device(GOM::iBase*)
 {
 }
 
@@ -95,14 +95,14 @@ GOM::Result Device::Initialize(Graphics::iAdapter* adapter)
 	return GOM::kOK;
 }
 
-GOM::Result CPF_STDCALL Device::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Device::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iDevice::kIID.GetID():
 			*outIface = static_cast<iDevice*>(this);

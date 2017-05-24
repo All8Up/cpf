@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -12,7 +12,7 @@ namespace Cpf
 		static constexpr GOM::ClassID kMonitorManualCID = GOM::ClassID("Cpf::Resources::Monitors::iManual"_crc64);
 		static constexpr GOM::ClassID kMonitorFileSystemCID = GOM::ClassID("Cpf::Resources::Monitors::iFileSystem"_crc64);
 
-		struct iMonitor : GOM::iUnknown
+		struct iMonitor : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iMonitor"_crc64);
 

@@ -9,10 +9,10 @@ namespace Cpf
 		class MouseDevice : public tRefCounted<iMouseDevice>
 		{
 		public:
-			MouseDevice(GOM::iUnknown*);
+			MouseDevice(GOM::iBase*);
 			virtual ~MouseDevice();
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			GOM::Result CPF_STDCALL GetButtonState(MouseButton*) override;
 			GOM::Result CPF_STDCALL GetPosition(int32_t*, int32_t*) override;

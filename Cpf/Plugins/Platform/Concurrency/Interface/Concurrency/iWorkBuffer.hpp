@@ -10,7 +10,7 @@ namespace Cpf
 
 		static constexpr GOM::ClassID kWorkBufferCID = GOM::ClassID("Cpf::Concurrency::iWorkBuffer"_crc64);
 
-		struct iWorkBuffer : GOM::iUnknown
+		struct iWorkBuffer : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Concurrency::iWorkBuffer"_crc64);
 

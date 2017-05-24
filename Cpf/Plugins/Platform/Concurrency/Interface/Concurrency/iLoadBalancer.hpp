@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
 	namespace Concurrency
 	{
 		static constexpr GOM::ClassID kLoadBalancerCID = GOM::ClassID("Cpf::Concurrency::iLoadBalancer"_crc64);
-		struct iLoadBalancer : GOM::iUnknown
+		struct iLoadBalancer : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Concurrency::iLoadBalancer"_crc64);
 

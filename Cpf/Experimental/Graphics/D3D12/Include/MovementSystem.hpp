@@ -42,13 +42,13 @@ namespace Cpf
 		// Component(s) supplied.
 		class MoverComponent;
 
-		MoverSystem(GOM::iUnknown*);
+		MoverSystem(GOM::iBase*);
 		InstanceSystem* GetInstanceSystem() const;
 		GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
 		void EnableMovement(bool flag);
 
-		// iUnknown
-		GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+		// iBase
+		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
@@ -100,9 +100,9 @@ namespace Cpf
 		MultiCore::iSystem* GetSystem() override { return mpMover; }
 
 		//////////////////////////////////////////////////////////////////////////
-		MoverComponent(GOM::iUnknown*);
+		MoverComponent(GOM::iBase*);
 
-		GOM::Result QueryInterface(GOM::InterfaceID id, void**) override;
+		GOM::Result Cast(GOM::InterfaceID id, void**) override;
 
 		//////////////////////////////////////////////////////////////////////////
 		EntityService::ComponentID GetID() const;

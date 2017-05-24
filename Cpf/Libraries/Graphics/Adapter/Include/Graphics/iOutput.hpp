@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -13,7 +13,7 @@ namespace Cpf
 		struct OutputDesc;
 		struct ModeDesc;
 
-		struct iOutput : GOM::iUnknown
+		struct iOutput : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iOutput"_crc64);
 

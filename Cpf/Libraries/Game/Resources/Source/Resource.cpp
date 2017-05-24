@@ -47,7 +47,7 @@ void CPF_STDCALL ResourceBase::Initialize(ID id, iCache* cache)
  * @param id The identifier.
  * @param [in,out] cache If non-null, the cache.
  */
-ResourceBase::ResourceBase(iUnknown*)
+ResourceBase::ResourceBase(iBase*)
 	: mRefCount(1)
 	, mID(kInvalidID)
 {}

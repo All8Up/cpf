@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include "Hash/Detail/Crc15Table.hpp"
 #include "Hash/Detail/Crc16Table.hpp"
 #include "Hash/Detail/Crc32Table.hpp"
 #include "Hash/Detail/Crc64Table.hpp"
@@ -10,6 +11,15 @@ namespace Cpf
 {
 	namespace Hash
 	{
+		/**
+		 * @brief Compute a 15 bit crc recursively for compile time results.
+		 */
+		constexpr uint16_t ComputeCrc15(const char* data, size_t idx, uint16_t crc)
+		{
+			return idx == 0 ? (~crc & 0x7fff)
+				: ComputeCrc15(&data[1], idx - 1, Detail::Crc15Table[(crc ^ data[0]) & 0xFF] ^ (crc >> 7));
+		}
+
 		/**
 		 * @brief Compute a 16 bit crc recursively for compile time results.
 		 */
@@ -43,6 +53,16 @@ namespace Cpf
 		/**
 		 * @brief Updates the crc with more data.
 		 */
+		inline uint16_t UpdateCrc15(uint16_t crc, const uint8_t* data, size_t length)
+		{
+			while (length--)
+				crc = Detail::Crc15Table[(crc ^ *data++) & 0xFFL] ^ (crc >> 7);
+			return crc & 0x7fff;
+		}
+
+		/**
+		 * @brief Updates the crc with more data.
+		 */
 		inline uint16_t UpdateCrc16(uint16_t crc, const uint8_t* data, size_t length)
 		{
 			while (length--)
@@ -57,6 +77,15 @@ namespace Cpf
 		constexpr uint16_t FinalizeCrc16(uint16_t crc)
 		{
 			return crc ^ -1;
+		}
+
+
+		/**
+		 * @brief Compute a 15 bit crc from the given data.
+		 */
+		constexpr uint16_t Crc15(const char* const data, size_t length)
+		{
+			return ComputeCrc15(data, length, uint16_t(0));
 		}
 
 
@@ -127,6 +156,15 @@ namespace Cpf
 		}
 	}
 }
+
+/**
+ * @brief String literal crc15 computation.
+ */
+constexpr uint16_t operator "" _crc15(const char* val, size_t idx)
+{
+	return Cpf::Hash::ComputeCrc15(val, idx, uint16_t(0));
+}
+
 
 /**
  * @brief String literal crc16 computation.

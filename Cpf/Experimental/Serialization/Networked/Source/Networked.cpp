@@ -73,7 +73,7 @@ void CPF_STDCALL Networked::Shutdown()
 
 GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
-	application->QueryInterface(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
+	application->Cast(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
 
 	if (Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID, Concurrency::iScheduler::kIID, mpScheduler.AsVoidPP())))
 	{

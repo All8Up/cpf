@@ -14,11 +14,11 @@ namespace Cpf
 		{
 		public:
 			// Construction/Destruction.
-			Timer(iUnknown*);
+			Timer(iBase*);
 			virtual ~Timer();
 
-			// iUnknown overrides.
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			// iBase overrides.
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			// System overrides.
 			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) override;

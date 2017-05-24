@@ -16,15 +16,15 @@ public:
 	Registry();
 	virtual ~Registry();
 
-	// iUnknown overrides.
+	// iBase overrides.
 	int32_t CPF_STDCALL AddRef() override;
 	int32_t CPF_STDCALL Release() override;
-	GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void**) override;
+	GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void**) override;
 
 	// iRegistry overrides.
 	GOM::Result CPF_STDCALL Load(const char* const) override;
 
-	GOM::Result CPF_STDCALL Create(GOM::iUnknown*, GOM::ClassID, GOM::InterfaceID, void**) override;
+	GOM::Result CPF_STDCALL Create(GOM::iBase*, GOM::ClassID, GOM::InterfaceID, void**) override;
 
 	GOM::Result CPF_STDCALL Install(GOM::ClassID, Plugin::iClassInstance*) override;
 	GOM::Result CPF_STDCALL Remove(GOM::ClassID) override;
@@ -94,14 +94,14 @@ int32_t CPF_STDCALL Registry::Release()
 	return mRefCount;
 }
 
-GOM::Result CPF_STDCALL Registry::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Registry::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 
 		case iRegistry::kIID.GetID():
@@ -171,18 +171,18 @@ GOM::Result CPF_STDCALL Registry::Exists(GOM::ClassID id)
 	return exists != mCreationMap.end() ? GOM::kOK : GOM::kUnknownClass;
 }
 
-GOM::Result CPF_STDCALL Registry::Create(GOM::iUnknown* outer, GOM::ClassID cid, GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Registry::Create(GOM::iBase* outer, GOM::ClassID cid, GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		auto creator = mCreationMap.find(cid);
 		if (creator != mCreationMap.end())
 		{
-			GOM::iUnknown* instance;
+			GOM::iBase* instance;
 			creator->second->CreateInstance(static_cast<Plugin::iRegistry*>(this), outer, &instance);
 			if (instance)
 			{
-				GOM::Result result = instance->QueryInterface(id, outIface);
+				GOM::Result result = instance->Cast(id, outIface);
 				instance->Release();
 				return result;
 			}

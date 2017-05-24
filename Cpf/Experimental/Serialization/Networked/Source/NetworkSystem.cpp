@@ -18,7 +18,7 @@ GOM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem(GOM::iUnknown*)
+NetworkSystem::NetworkSystem(GOM::iBase*)
 {
 }
 
@@ -29,14 +29,14 @@ void NetworkSystem::_Update(const Concurrency::WorkContext*, void* context)
 }
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL NetworkSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL NetworkSystem::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);

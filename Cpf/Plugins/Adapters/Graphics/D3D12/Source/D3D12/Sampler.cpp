@@ -33,14 +33,14 @@ Sampler::Sampler(Device* device, const Graphics::SamplerDesc* desc)
 Sampler::~Sampler()
 {}
 
-GOM::Result CPF_STDCALL Sampler::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Sampler::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iSampler::kIID.GetID():
 			*outIface = static_cast<iSampler*>(this);

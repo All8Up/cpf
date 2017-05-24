@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "MultiCore/Export.hpp"
 #include "MultiCore/Types.hpp"
 #include "Plugin/iRegistry.hpp"
@@ -14,7 +14,7 @@ namespace Cpf
 	{
 		static constexpr GOM::ClassID kStageListCID = GOM::ClassID("StageListClass"_crc64);
 
-		struct iStageList : GOM::iUnknown
+		struct iStageList : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iStageList"_crc64);
 

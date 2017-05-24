@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -9,13 +9,13 @@ namespace Cpf
 		struct IID_CID;
 		struct iClassInstance;
 
-		static constexpr GOM::Result kInstanceExists = GOM::CreateResult(1, "Plugin"_crc16, "Instance already exists"_crc16);
-		static constexpr GOM::Result kNotInstalled = GOM::CreateResult(1, "Plugin"_crc16, "Instance not installed"_crc16);
+		static constexpr GOM::Result kInstanceExists = GOM::CreateResult(1, "Plugin"_crc16, "Instance already exists"_crc15);
+		static constexpr GOM::Result kNotInstalled = GOM::CreateResult(1, "Plugin"_crc16, "Instance not installed"_crc15);
 
 		/**
 		 Class instance registry.
 		 */
-		struct iRegistry : GOM::iUnknown
+		struct iRegistry : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iRegistry"_crc64);
 
@@ -56,7 +56,7 @@ namespace Cpf
 			 * @param [out] result Various error codes or GOM::kOK.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL Create(iUnknown* outer, GOM::ClassID cid, GOM::InterfaceID iid, void** result) = 0;
+			virtual GOM::Result CPF_STDCALL Create(iBase* outer, GOM::ClassID cid, GOM::InterfaceID iid, void** result) = 0;
 
 			/**
 			 * @brief Install a set of class id's and instance id's.

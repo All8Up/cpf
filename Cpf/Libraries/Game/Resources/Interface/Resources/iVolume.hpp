@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -18,7 +18,7 @@ namespace Cpf
 		struct VolumeDesc {};
 
 		//////////////////////////////////////////////////////////////////////////
-		struct iVolume : GOM::iUnknown
+		struct iVolume : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iVolume"_crc64);
 

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -12,7 +12,7 @@ namespace Cpf
 		enum class SwapEffect : int32_t;
 		struct SwapChainDesc;
 
-		struct iSwapChain : GOM::iUnknown
+		struct iSwapChain : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iSwapChain"_crc64);
 

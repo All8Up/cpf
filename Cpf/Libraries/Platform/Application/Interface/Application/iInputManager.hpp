@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "Events/Emitter.hpp"
 
 namespace Cpf
 {
 	struct iInputDevice;
 
-	struct iInputManager : GOM::iUnknown
+	struct iInputManager : GOM::iBase
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iInputManager"_crc64);
 

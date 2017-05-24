@@ -66,14 +66,14 @@ IndexBuffer::~IndexBuffer()
 {
 }
 
-GOM::Result CPF_STDCALL IndexBuffer::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL IndexBuffer::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iResource::kIID.GetID():
 			*outIface = static_cast<iResource*>(this);

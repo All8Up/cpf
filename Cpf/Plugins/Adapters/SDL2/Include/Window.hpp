@@ -11,10 +11,10 @@ namespace Cpf
 		class Window : public tRefCounted<iWindow>
 		{
 		public:
-			Window(GOM::iUnknown*);
+			Window(GOM::iBase*);
 			virtual ~Window();
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			bool CPF_STDCALL Initialize(const WindowDesc* desc) override;
 			void CPF_STDCALL SetTitle(const char* title) override;

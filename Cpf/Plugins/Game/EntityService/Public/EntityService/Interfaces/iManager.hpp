@@ -15,7 +15,7 @@ namespace Cpf
 
 		static constexpr GOM::ClassID kManagerCID = GOM::ClassID("EntityService::iManager"_crc64);
 
-		struct iManager : GOM::iUnknown
+		struct iManager : GOM::iBase
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("EntityService::iManager"_crc64);
 

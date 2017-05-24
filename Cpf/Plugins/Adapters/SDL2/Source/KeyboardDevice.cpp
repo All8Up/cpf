@@ -7,20 +7,20 @@ using namespace Cpf;
 using namespace SDL2;
 
 
-KeyboardDevice::KeyboardDevice(GOM::iUnknown*)
+KeyboardDevice::KeyboardDevice(GOM::iBase*)
 {}
 
 KeyboardDevice::~KeyboardDevice()
 {}
 
-GOM::Result CPF_STDCALL KeyboardDevice::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL KeyboardDevice::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iInputDevice::kIID.GetID():
 			*outIface = static_cast<iInputDevice*>(this);

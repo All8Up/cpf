@@ -13,7 +13,7 @@ namespace Cpf
 			public:
 				Blob(size_t size, const void* data);
 
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				GOM::Result Initialize(const void* data, int64_t size) override;
 				void* CPF_STDCALL GetData() override;

@@ -28,7 +28,7 @@ const int Scheduler::kMaxBackoff = 4096;
 
 
 /** @brief Default constructor. */
-Scheduler::Scheduler(iUnknown*)
+Scheduler::Scheduler(iBase*)
 	: mControlLock(0)
 	, mTargetCount(0)
 	, mActiveCount(0)
@@ -49,14 +49,14 @@ Scheduler::~Scheduler()
 }
 
 
-GOM::Result CPF_STDCALL Scheduler::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Scheduler::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iScheduler*>(this);

@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL StageList::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL StageList::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
@@ -22,7 +22,7 @@ GOM::Result CPF_STDCALL StageList::QueryInterface(GOM::InterfaceID id, void** ou
 
 		default:
 			CPF_ASSERT(mpOuter != nullptr);
-			return mpOuter->QueryInterface(id, outIface);
+			return mpOuter->Cast(id, outIface);
 		}
 		AddRef();
 		return GOM::kOK;

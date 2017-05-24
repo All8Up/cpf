@@ -22,7 +22,7 @@ namespace Cpf
 
 				GOM::Result CPF_STDCALL Initialize(Device* device);
 
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface);
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				void Reset() override;
 

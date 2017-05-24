@@ -12,10 +12,10 @@ namespace Cpf
 		class InputManager : public tRefCounted<iInputManager>
 		{
 		public:
-			InputManager(GOM::iUnknown*);
+			InputManager(GOM::iBase*);
 			virtual ~InputManager();
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID, void**) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID, void**) override;
 
 			Events::Emitter* CPF_STDCALL GetEmiter() override;
 			GOM::Result CPF_STDCALL EnumerateDevices(EnumCallback, void*) override;

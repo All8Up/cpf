@@ -14,7 +14,7 @@ namespace Cpf
 		class WorkBuffer : public tRefCounted<iWorkBuffer>
 		{
 			// Construction/Destruction.
-			WorkBuffer(iUnknown*);
+			WorkBuffer(iBase*);
 			~WorkBuffer();
 			template <typename TYPE>
 			friend struct Plugin::tClassInstance;
@@ -25,7 +25,7 @@ namespace Cpf
 			using OpcodeEntry = Scheduler::Instruction;
 			using QueueType = Vector<OpcodeEntry>;
 
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			// 
 			GOM::Result CPF_STDCALL Reserve(int32_t size) override;

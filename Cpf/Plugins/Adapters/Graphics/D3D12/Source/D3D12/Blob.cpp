@@ -14,14 +14,14 @@ Blob::Blob(size_t size, const void* data)
 Blob::~Blob()
 {}
 
-GOM::Result CPF_STDCALL Blob::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Blob::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iBlob::kIID.GetID():
 			*outIface = static_cast<iBlob*>(this);

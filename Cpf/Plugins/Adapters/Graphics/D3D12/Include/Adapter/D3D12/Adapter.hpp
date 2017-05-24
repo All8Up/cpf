@@ -19,8 +19,8 @@ namespace Cpf
 				// Internal
 				GOM::Result Initialize(IDXGIAdapter2* adapter);
 
-				// Overrides from iUnknown.
-				GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+				// Overrides from iBase.
+				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 				const char* CPF_STDCALL GetDescription() const override;
 				size_t CPF_STDCALL GetVideoMemory() const override;
@@ -36,7 +36,7 @@ namespace Cpf
 
 			private:
 				CPF_CLASSINSTANCE_ACCESS(Adapter);
-				Adapter(GOM::iUnknown*);
+				Adapter(GOM::iBase*);
 				virtual ~Adapter();
 
 				IntrusivePtr<IDXGIAdapter2> mpAdapter;

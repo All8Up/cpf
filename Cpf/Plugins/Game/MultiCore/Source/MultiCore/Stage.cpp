@@ -15,14 +15,14 @@ void SingleUpdateStage::SetUpdate(Function<void(const Concurrency::WorkContext*,
 	mpContext = context;
 }
 
-GOM::Result CPF_STDCALL SingleUpdateStage::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL SingleUpdateStage::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 		case iStage::kIID.GetID():
 			*outIface = static_cast<iStage*>(this);
@@ -97,7 +97,7 @@ GOM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, Block
 	return GOM::kInvalidParameter;
 }
 
-SingleUpdateStage::SingleUpdateStage(iUnknown*)
+SingleUpdateStage::SingleUpdateStage(iBase*)
 	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)

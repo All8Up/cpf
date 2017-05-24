@@ -104,7 +104,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 IntrusivePtr<iClipboard> sClipboard;
 char sClipboardText[1024];
 
-DebugUI::DebugUI(iUnknown*)
+DebugUI::DebugUI(iBase*)
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
 	, mWidth(0)
@@ -120,14 +120,14 @@ DebugUI::~DebugUI()
 	CPF_DROP_LOG(DebugUI);
 }
 
-GOM::Result DebugUI::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result DebugUI::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iDebugUI*>(this);
@@ -332,7 +332,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		data.mPitch = width * sizeof(int32_t);
 		data.mSlicePitch = data.mPitch * height;
 		IntrusivePtr<iResource> targetResource;
-		mpUIAtlas->QueryInterface(iResource::kIID, targetResource.AsVoidPP());
+		mpUIAtlas->Cast(iResource::kIID, targetResource.AsVoidPP());
 		tempCommands->UpdateSubResource(staging, targetResource, &data);
 		tempCommands->End();
 		iCommandBuffer* commandBuffers[] = { tempCommands };

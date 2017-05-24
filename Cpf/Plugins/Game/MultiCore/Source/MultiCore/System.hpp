@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "MultiCore/Export.hpp"
 #include "MultiCore/Types.hpp"
 #include "Plugin/iRegistry.hpp"
@@ -16,11 +16,11 @@ namespace Cpf
 		class StageList : public iStageList
 		{
 		public:
-			StageList(iUnknown* outer) : mpOuter(outer), mRefCount(0) {}
+			StageList(iBase* outer) : mpOuter(outer), mRefCount(0) {}
 
 			int32_t CPF_STDCALL AddRef() override;
 			int32_t CPF_STDCALL Release() override;
-			GOM::Result CPF_STDCALL QueryInterface(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
 
 			GOM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			GOM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
@@ -32,7 +32,7 @@ namespace Cpf
 			GOM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
 
 		private:
-			iUnknown* mpOuter;
+			iBase* mpOuter;
 			int32_t mRefCount;
 			StageVector mStages;
 			BlockDependencies mDependencies;

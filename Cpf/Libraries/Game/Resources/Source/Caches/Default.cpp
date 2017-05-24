@@ -10,14 +10,14 @@ using namespace Caches;
 const char* const Default::kCacheName = "Default";
 
 
-GOM::Result CPF_STDCALL Default::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Default::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id.GetID())
 		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
+		case iBase::kIID.GetID():
+			*outIface = static_cast<iBase*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iCache*>(this);
@@ -42,7 +42,7 @@ CacheDesc* Default::CreateDescriptor(const rapidjson::Value&)
 }
 
 ///
-Default::Default(iUnknown*)
+Default::Default(iBase*)
 	: tRefCounted<iCache>()
 	, mShuttingDown(false)
 {

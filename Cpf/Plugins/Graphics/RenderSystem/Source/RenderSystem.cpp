@@ -3,18 +3,18 @@
 
 using namespace Cpf;
 
-RenderSystem::RenderSystem(GOM::iUnknown*)
+RenderSystem::RenderSystem(GOM::iBase*)
 {
 }
 
-GOM::Result CPF_STDCALL RenderSystem::QueryInterface(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::Cast(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{
 		switch(id.GetID())
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case GOM::iBase::kIID.GetID():
+			*outIface = static_cast<GOM::iBase*>(this);
 			break;
 
 		case iStageList::kIID.GetID():

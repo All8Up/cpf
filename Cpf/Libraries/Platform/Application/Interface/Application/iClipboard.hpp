@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
-	struct iClipboard : GOM::iUnknown
+	struct iClipboard : GOM::iBase
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iClipboard"_crc64);
 		static constexpr GOM::InstanceID kDefault = GOM::InstanceID("Cpf::iClipboard::Default"_crc64);

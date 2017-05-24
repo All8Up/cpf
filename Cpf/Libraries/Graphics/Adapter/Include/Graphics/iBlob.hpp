@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iUnknown.hpp"
+#include "GOM/iBase.hpp"
 #include "Vector.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iBlob : GOM::iUnknown
+		struct iBlob : GOM::iBase
 		{
-			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iUnknown"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iBase"_crc64);
 
 			virtual GOM::Result Initialize(const void*, int64_t) = 0;
 			virtual void* CPF_STDCALL GetData() = 0;
