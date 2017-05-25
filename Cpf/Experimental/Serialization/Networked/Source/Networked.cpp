@@ -15,6 +15,7 @@
 #include "SDL2/CIDs.hpp"
 #include "Graphics/Driver.hpp"
 #include "Threading/Thread.hpp"
+#include "PluginHost/Registry.hpp"
 
 using namespace Cpf;
 using namespace Platform;
@@ -59,7 +60,7 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 		if (Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID, Tools::iPython3::kIID, mpPython3.AsVoidPP())))
 		{
 			String assetPath = exePath + "networked/";
-			mpPython3->Initialize(assetPath.c_str());
+			mpPython3->Initialize(assetPath.c_str(), &PluginHost::CreateRegistry);
 		}
 	}
 

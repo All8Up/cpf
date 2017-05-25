@@ -15,6 +15,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	)
 	set (INCLUDE_PLUGIN_FILES
 		Include/Plugin/pyModule.hpp
+		Include/Plugin/pyMethods.hpp
 		Include/Plugin/pyRegistry.hpp
 	)
 
@@ -36,6 +37,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	)
 	set (SOURCE_PLUGIN_FILES
 		Source/Plugin/pyModule.cpp
+		Source/Plugin/pyMethods.cpp
 		Source/Plugin/pyRegistry.cpp
 	)
 

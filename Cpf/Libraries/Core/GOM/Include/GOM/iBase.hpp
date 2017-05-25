@@ -17,7 +17,7 @@ namespace Cpf
 		//////////////////////////////////////////////////////////////////////////
 		struct iBase : iRefCounted
 		{
-			static constexpr InterfaceID kIID = InterfaceID("iBase Interface"_crc64);
+			static constexpr InterfaceID kIID = InterfaceID("Cpf::GOM::iBase"_crc64);
 
 			virtual Result CPF_STDCALL Cast(InterfaceID id, void** outIface) = 0;
 		};

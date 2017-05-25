@@ -11,6 +11,9 @@ namespace Cpf
 
 		static constexpr GOM::Result kInstanceExists = GOM::CreateResult(1, "Plugin"_crc16, "Instance already exists"_crc15);
 		static constexpr GOM::Result kNotInstalled = GOM::CreateResult(1, "Plugin"_crc16, "Instance not installed"_crc15);
+		static constexpr GOM::Result kNotLoaded = GOM::CreateResult(1, "Plugin"_crc16, "Plugin not loaded"_crc15);
+		static constexpr GOM::Result kCantUnload = GOM::CreateResult(1, "Plugin"_crc16, "Plugin can not be unloaded"_crc15);
+		static constexpr GOM::Result kExportMissing = GOM::CreateResult(1, "Plugin"_crc16, "Plugin does not expose correct function"_crc15);
 
 		/**
 		 Class instance registry.
@@ -25,6 +28,20 @@ namespace Cpf
 			 * @return A result code.
 			 */
 			virtual GOM::Result CPF_STDCALL Load(const char* const library) = 0;
+
+			/**
+			 * @brief Determine if the plugin can be unloaded.
+			 * @param library The library to check.
+			 * @return A result code.
+			 */
+			virtual GOM::Result CPF_STDCALL CanUnload(const char* const library) = 0;
+
+			/**
+			 * @brief Unloads the given library.
+			 * @param library The library to unload.
+			 * @return A result code.
+			 */
+			virtual GOM::Result CPF_STDCALL Unload(const char* const library) = 0;
 
 			/**
 			 * @brief Installs a class instance.

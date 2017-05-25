@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Plugin/pyModule.hpp"
 #include "Plugin/pyRegistry.hpp"
+#include "Plugin/pyMethods.hpp"
 
 using namespace Cpf;
 using namespace Plugin;
@@ -11,7 +12,7 @@ static PyModuleDef CpfPluginModuleDef =
 	"cpf.plugin",
 	"Plugin module integration.",
 	-1,
-	nullptr,
+	py::CpfPlugin_methods,
 	nullptr,
 	nullptr,
 	nullptr,

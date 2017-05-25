@@ -7,8 +7,10 @@ from test_gom import base
 
 # I would like to use unittest but it doesn't seem to want to import in my environment.
 def run_tests():
+	print('--------------------------------')
 	print ('cpf.gom contents:')
 	print (dir(gom))
+	print('--------------------------------')
 	methods.run_tests()
 	classid.run_tests()
 	interfaceid.run_tests()

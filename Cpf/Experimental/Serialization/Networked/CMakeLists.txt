@@ -65,6 +65,12 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/base.py ${CMAKE_B
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/base.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/base.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/__init__.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/__init__.py COPYONLY)
+
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_plugin/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_plugin/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_plugin/registry.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_plugin/registry.py COPYONLY)
+
 source_group (Data FILES ${DataFiles})
 
 foreach (file ${DataFiles})

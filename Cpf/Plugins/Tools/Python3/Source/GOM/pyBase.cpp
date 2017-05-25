@@ -31,6 +31,7 @@ extern "C" PyObject* CPF_STDCALL BaseCast(py::Base* self, PyObject* args)
 	{
 		
 	}
+	PyErr_SetString(PyExc_RuntimeError, "Not implemented.");
 	return nullptr;
 }
 
@@ -48,7 +49,7 @@ PyGetSetDef GOMBase_getseters[] =
 
 
 //////////////////////////////////////////////////////////////////////////
-static PyTypeObject GOMBase_type =
+PyTypeObject GOMBase_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
 	"gom.Base",						/* tp_name */
@@ -69,7 +70,9 @@ static PyTypeObject GOMBase_type =
 	nullptr,						/* tp_getattro */
 	nullptr,						/* tp_setattro */
 	nullptr,						/* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT,				/* tp_flags */
+	Py_TPFLAGS_DEFAULT |
+//	Py_TPFLAGS_IS_ABSTRACT |
+	Py_TPFLAGS_BASETYPE,			/* tp_flags */
 	"Cpf objects",					/* tp_doc */
 	nullptr,						/* tp_traverse */
 	nullptr,						/* tp_clear */
@@ -107,7 +110,7 @@ bool py::AddBaseType(PyObject* parent)
 	if (PyType_Ready(&GOMBase_type) < 0)
 		return false;
 	Py_INCREF(&GOMBase_type);
-	PyModule_AddObject(parent, "Unknown", reinterpret_cast<PyObject*>(&GOMBase_type));
+	PyModule_AddObject(parent, "Base", reinterpret_cast<PyObject*>(&GOMBase_type));
 
 	return true;
 }

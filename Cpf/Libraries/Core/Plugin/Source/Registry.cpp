@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "PluginHost/Registry.hpp"
+#include "Plugin/Library.hpp"
 #include "Plugin.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "Move.hpp"
@@ -23,6 +24,8 @@ public:
 
 	// iRegistry overrides.
 	GOM::Result CPF_STDCALL Load(const char* const) override;
+	GOM::Result CPF_STDCALL CanUnload(const char* const library) override;
+	GOM::Result CPF_STDCALL Unload(const char* const library) override;
 
 	GOM::Result CPF_STDCALL Create(GOM::iBase*, GOM::ClassID, GOM::InterfaceID, void**) override;
 
@@ -139,6 +142,53 @@ GOM::Result CPF_STDCALL Registry::Load(const char* const name)
 				}
 			}
 		}
+	}
+	return GOM::kInvalidParameter;
+}
+
+GOM::Result CPF_STDCALL Registry::CanUnload(const char* const name)
+{
+	if (name)
+	{
+		auto exists = mLibraryMap.find(name);
+		if (exists == mLibraryMap.end())
+			return Plugin::kNotLoaded;
+
+		auto canUnload = (exists->second).GetAddress<bool(*)()>(kPluginAPICanUnload);
+		if (canUnload)
+		{
+			if ((*canUnload)())
+				return GOM::kOK;
+			return Plugin::kCantUnload;
+		}
+		return Plugin::kExportMissing;
+	}
+	return GOM::kInvalidParameter;
+}
+
+GOM::Result CPF_STDCALL Registry::Unload(const char* const name)
+{
+	if (name)
+	{
+		auto exists = mLibraryMap.find(name);
+		if (exists == mLibraryMap.end())
+			return Plugin::kNotLoaded;
+		auto unload = (exists->second).GetAddress<GOM::Result(*)(iRegistry*)>(kPluginAPIRemove);
+		if (unload)
+		{
+			auto result = (*unload)(this);
+			if (Succeeded(result))
+			{
+				if ((exists->second).Unload())
+				{
+					mLibraryMap.erase(exists);
+					return GOM::kOK;
+				}
+				return Plugin::kCantUnload;
+			}
+			return result;
+		}
+		return Plugin::kExportMissing;
 	}
 	return GOM::kInvalidParameter;
 }

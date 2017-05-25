@@ -24,7 +24,7 @@ target_include_directories (Scene
 )
 target_link_libraries (Scene
 	PUBLIC
-		Configuration Plugin
+		Configuration Plugin Logging
 )
 set_property (TARGET Scene PROPERTY FOLDER Plugins/Graphics)
 

@@ -11,11 +11,18 @@
 using namespace Cpf;
 using namespace Tools;
 
+Python3* s_Python3 = nullptr;
+
 Python3::Python3(iBase*)
-{}
+	: mpCreateRegistry(nullptr)
+{
+	s_Python3 = this;
+}
 
 Python3::~Python3()
-{}
+{
+	s_Python3 = nullptr;
+}
 
 GOM::Result CPF_STDCALL Python3::Cast(GOM::InterfaceID id, void** outIface)
 {
@@ -36,35 +43,6 @@ GOM::Result CPF_STDCALL Python3::Cast(GOM::InterfaceID id, void** outIface)
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
-}
-
-//////////////////////////////////////////////////////////////////////////
-RTTR_REGISTRATION
-{
-	rttr::registration::class_<Plugin::iRegistry>("Cpf::Plugin::iRegistry")
-		(
-			rttr::metadata("ScriptExport", true)
-		)
-		.method("Load", &Plugin::iRegistry::Load)
-		.method("Install", &Plugin::iRegistry::Install)
-		.method("Remove", &Plugin::iRegistry::Remove)
-		.method("Exists", &Plugin::iRegistry::Exists)
-		.method("Create", &Plugin::iRegistry::Create)
-		.method("ClassInstall", &Plugin::iRegistry::ClassInstall)
-		.method("ClassRemove", &Plugin::iRegistry::ClassRemove)
-		.method("GetClasses", &Plugin::iRegistry::GetClasses)
-		.method("InstanceInstall", &Plugin::iRegistry::InstanceInstall)
-		.method("InstanceRemove", &Plugin::iRegistry::InstanceRemove)
-		.method("GetInstance", &Plugin::iRegistry::GetInstances)
-	;
-	rttr::registration::class_<GOM::Result>("Cpf::GOM::Result")
-		(
-			rttr::metadata("ScriptExport", true)
-		)
-		.property("Error", &GOM::Result::GetError, &GOM::Result::SetError)
-		.property("SubSystem", &GOM::Result::GetSubSystem, &GOM::Result::SetSubSystem)
-		.property("Value", &GOM::Result::GetValue, &GOM::Result::SetValue)
-	;
 }
 
 
@@ -96,7 +74,7 @@ static PyModuleDef cpfModuleDef =
 	nullptr
 };
 
-extern "C" PyObject* CPF_STDCALL CpfCrc15(GOM::py::Result*, PyObject* args)
+extern "C" PyObject* CPF_STDCALL CpfCrc15(PyObject*, PyObject* args)
 {
 	char* strValue = nullptr;
 	if (!PyArg_ParseTuple(args, "s:crc15", &strValue))
@@ -104,7 +82,7 @@ extern "C" PyObject* CPF_STDCALL CpfCrc15(GOM::py::Result*, PyObject* args)
 	return PyLong_FromLong(Hash::Crc15(strValue, ::strlen(strValue)));
 }
 
-extern "C" PyObject* CPF_STDCALL CpfCrc16(GOM::py::Result*, PyObject* args)
+extern "C" PyObject* CPF_STDCALL CpfCrc16(PyObject*, PyObject* args)
 {
 	char* strValue = nullptr;
 	if (!PyArg_ParseTuple(args, "s:crc16", &strValue))
@@ -112,7 +90,7 @@ extern "C" PyObject* CPF_STDCALL CpfCrc16(GOM::py::Result*, PyObject* args)
 	return PyLong_FromLong(Hash::Crc16(strValue, ::strlen(strValue)));
 }
 
-extern "C" PyObject* CPF_STDCALL CpfCrc32(GOM::py::Result*, PyObject* args)
+extern "C" PyObject* CPF_STDCALL CpfCrc32(PyObject*, PyObject* args)
 {
 	char* strValue = nullptr;
 	if (!PyArg_ParseTuple(args, "s:crc32", &strValue))
@@ -120,7 +98,7 @@ extern "C" PyObject* CPF_STDCALL CpfCrc32(GOM::py::Result*, PyObject* args)
 	return PyLong_FromLong(Hash::Crc32(strValue, ::strlen(strValue)));
 }
 
-extern "C" PyObject* CPF_STDCALL CpfCrc64(GOM::py::Result*, PyObject* args)
+extern "C" PyObject* CPF_STDCALL CpfCrc64(PyObject*, PyObject* args)
 {
 	char* strValue = nullptr;
 	if (!PyArg_ParseTuple(args, "s:crc64", &strValue))
@@ -179,8 +157,9 @@ bool Python3::_InitPython()
 	return false;
 }
 
-GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
+GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistryPtr createRegistry)
 {
+	mpCreateRegistry = createRegistry;
 	bool pythonInit = _InitPython();
 	(void)pythonInit;
 
@@ -209,23 +188,40 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath)
 		wpath.push_back(wchar_t(basePath[i]));
 	PySys_SetPath(wpath.c_str());
 
-
-	PyObject* pName = PyUnicode_DecodeFSDefault("test_gom");
-	PyObject* testGom = PyImport_Import(pName);
-	if (testGom)
+	// Run the gom tests.
 	{
-		PyObject* pFunc = PyObject_GetAttrString(testGom, "run_tests");
-		if (pFunc && PyCallable_Check(pFunc))
+		PyObject* pName = PyUnicode_DecodeFSDefault("test_gom");
+		PyObject* testGom = PyImport_Import(pName);
+		if (testGom)
 		{
-			PyObject_CallObject(pFunc, nullptr);
+			PyObject* pFunc = PyObject_GetAttrString(testGom, "run_tests");
+			if (pFunc && PyCallable_Check(pFunc))
+			{
+				PyObject_CallObject(pFunc, nullptr);
+			}
 		}
+		Py_DECREF(pName);
+		Py_DECREF(testGom);
 	}
-	else
-	{
+	if (PyErr_Occurred())
 		PyErr_Print();
+	{
+		// Run the plugin tests.
+		PyObject* pName = PyUnicode_DecodeFSDefault("test_plugin");
+		PyObject* testPlugin = PyImport_Import(pName);
+		if (testPlugin)
+		{
+			PyObject* pFunc = PyObject_GetAttrString(testPlugin, "run_tests");
+			if (pFunc && PyCallable_Check(pFunc))
+			{
+				PyObject_CallObject(pFunc, nullptr);
+			}
+		}
+		Py_DECREF(pName);
+		Py_DECREF(testPlugin);
 	}
-	Py_DECREF(pName);
-	Py_DECREF(testGom);
+	if (PyErr_Occurred())
+		PyErr_Print();
 
 	return GOM::kOK;
 }
@@ -234,4 +230,9 @@ GOM::Result CPF_STDCALL Python3::Shutdown()
 {
 	Py_FinalizeEx();
 	return GOM::kOK;
+}
+
+GOM::Result Python3::CreateRegistry(Plugin::iRegistry** reg) const
+{
+	return (*mpCreateRegistry)(reg);
 }

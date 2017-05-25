@@ -17,7 +17,7 @@ namespace Cpf
 		/** @brief The class instance interface.  Added to iRegistry to create component instances. */
 		struct iClassInstance : GOM::iBase
 		{
-			virtual GOM::Result CPF_STDCALL CreateInstance(iRegistry*, GOM::iBase*, GOM::iBase**) = 0;
+			virtual GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iBase*, iBase**) = 0;
 		};
 
 		/**
@@ -25,7 +25,7 @@ namespace Cpf
 		 * @tparam TYPE Type of instance to create.
 		 */
 		template <typename TYPE>
-		struct tClassInstance : public iClassInstance
+		struct tClassInstance : iClassInstance
 		{
 			tClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
 			virtual ~tClassInstance() {}
@@ -42,7 +42,7 @@ namespace Cpf
 				return mRefCount;
 			}
 
-			GOM::Result CPF_STDCALL CreateInstance(Plugin::iRegistry*, GOM::iBase* outer, GOM::iBase** outIface) override
+			GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iBase* outer, iBase** outIface) override
 			{
 				if (outIface)
 				{

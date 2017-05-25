@@ -1,6 +1,7 @@
 #include <gmock/gmock.h>
 #include "IO/Directory.hpp"
 #include "Plugin.hpp"
+#include "Plugin/Library.hpp"
 #include "TestPlugin/iTestPlugin.hpp"
 #include "PluginHost/Registry.hpp"
 
