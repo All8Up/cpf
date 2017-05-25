@@ -64,7 +64,7 @@ extern "C" PyObject* CPF_STDCALL RegistryUnload(py::Registry* self, PyObject* ar
 
 extern "C" PyObject* CPF_STDCALL RegistryExists(py::Registry* self, PyObject* args)
 {
-	
+	return nullptr;
 }
 
 PyMethodDef PluginRegistry_methods[] =
