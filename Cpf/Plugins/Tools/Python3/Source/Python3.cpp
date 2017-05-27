@@ -3,7 +3,6 @@
 #include "Logging/Logging.hpp"
 #include "rttr/registration.h"
 #include "Plugin/iRegistry.hpp"
-#include "Plugin/iClassInstance.hpp"
 #include "GOM/pyModule.hpp"
 #include "GOM/pyResult.hpp"
 #include "Plugin/pyModule.hpp"

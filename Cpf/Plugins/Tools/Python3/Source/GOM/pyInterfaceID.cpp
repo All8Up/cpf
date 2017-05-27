@@ -5,31 +5,59 @@
 using namespace Cpf;
 using namespace GOM;
 
-
-extern PyGetSetDef GOMInterfaceID_getseters[];
-
-extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(py::InterfaceID* self);
-
-extern "C" int CPF_STDCALL Init_GOMInterfaceID(py::InterfaceID* self, PyObject* args, PyObject* kwds)
+extern "C" int CPF_STDCALL Init_InterfaceID(py::InterfaceID* self, PyObject* args, PyObject*)
 {
 	char* name = nullptr;
 	if (!PyArg_ParseTuple(args, "|s", &name))
 	{
-		self->mID = GOM::InterfaceID(0);
+		self->mID = InterfaceID(0);
 		return -1;
 	}
-	self->mID = GOM::InterfaceID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
+	self->mID = InterfaceID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
 	return 0;
 }
 
+extern "C" Py_hash_t CPF_STDCALL Hash_InterfaceID(py::InterfaceID* self)
+{
+	return self->mID.GetID();
+}
 
-static PyTypeObject GOMInterfaceID_type =
+extern "C" PyObject* Compare_InterfaceID(PyObject *a, PyObject *b, int op)
+{
+	if (GOMInterfaceID_Check(b))
+	{
+		const GOM::InterfaceID& lhs = reinterpret_cast<py::InterfaceID*>(a)->mID;
+		const GOM::InterfaceID& rhs = reinterpret_cast<py::InterfaceID*>(b)->mID;
+		switch (op)
+		{
+		case Py_LT:
+			return lhs < rhs ? Py_True : Py_False;
+		case Py_LE:
+			return lhs <= rhs ? Py_True : Py_False;
+		case Py_EQ:
+			return lhs == rhs ? Py_True : Py_False;
+		case Py_NE:
+			return lhs != rhs ? Py_True : Py_False;
+		case Py_GT:
+			return lhs > rhs ? Py_True : Py_False;
+		case Py_GE:
+			return lhs >= rhs ? Py_True : Py_False;
+		default:
+			break;
+		}
+	}
+	return PyExc_TypeError;
+}
+
+extern PyGetSetDef GOMInterfaceID_getseters[];
+
+extern PyTypeObject py::InterfaceID_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
 	"gom.InterfaceID",						/* tp_name */
 	sizeof(py::InterfaceID),				/* tp_basicsize */
 	0,										/* tp_itemsize */
-	(destructor)Dealloc_GOMInterfaceID,		/* tp_dealloc */
+	nullptr,								/* tp_dealloc */
 	0,										/* tp_print */
 	0,										/* tp_getattr */
 	0,										/* tp_setattr */
@@ -38,7 +66,7 @@ static PyTypeObject GOMInterfaceID_type =
 	0,										/* tp_as_number */
 	0,										/* tp_as_sequence */
 	0,										/* tp_as_mapping */
-	0,										/* tp_hash  */
+	(hashfunc)Hash_InterfaceID,				/* tp_hash  */
 	0,										/* tp_call */
 	0,										/* tp_str */
 	0,										/* tp_getattro */
@@ -48,7 +76,7 @@ static PyTypeObject GOMInterfaceID_type =
 	"Cpf objects",							/* tp_doc */
 	nullptr,								/* tp_traverse */
 	nullptr,								/* tp_clear */
-	nullptr,								/* tp_richcompare */
+	(richcmpfunc)Compare_InterfaceID,		/* tp_richcompare */
 	0,										/* tp_weaklistoffset */
 	nullptr,								/* tp_iter */
 	nullptr,								/* tp_iternext */
@@ -60,7 +88,7 @@ static PyTypeObject GOMInterfaceID_type =
 	nullptr,								/* tp_descr_get */
 	nullptr,								/* tp_descr_set */
 	0,										/* tp_dictoffset */
-	(initproc)Init_GOMInterfaceID,			/* tp_init */
+	(initproc)Init_InterfaceID,				/* tp_init */
 	nullptr,								/* tp_alloc */
 	nullptr,								/* tp_new */
 	nullptr,								/* tp_free */
@@ -75,25 +103,6 @@ static PyTypeObject GOMInterfaceID_type =
 	nullptr									/* tp_finalize */
 };
 
-
-//////////////////////////////////////////////////////////////////////////
-extern "C" void CPF_STDCALL Dealloc_GOMInterfaceID(py::InterfaceID *self)
-{
-	PyObject_Del(self);
-}
-
-#define GOMInterfaceID_Check(v)      (Py_TYPE(v) == &GOMInterfaceID_type)
-
-extern "C" py::InterfaceID* CPF_STDCALL newGOMInterfaceID(PyObject *arg)
-{
-	(void)arg;
-	py::InterfaceID *self;
-	self = PyObject_New(py::InterfaceID, &GOMInterfaceID_type);
-	if (self == nullptr)
-		return nullptr;
-	self->mID = GOM::InterfaceID(0);
-	return self;
-}
 
 //////////////////////////////////////////////////////////////////////////
 extern "C" PyObject* CPF_STDCALL GOMInterfaceID_get_id(py::InterfaceID* self, void*)
@@ -117,11 +126,11 @@ PyGetSetDef GOMInterfaceID_getseters[] =
 //////////////////////////////////////////////////////////////////////////
 bool py::AddInterfaceIDType(PyObject* parent)
 {
-	GOMInterfaceID_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&GOMInterfaceID_type) < 0)
+	py::InterfaceID_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&py::InterfaceID_type) < 0)
 		return false;
-	Py_INCREF(&GOMInterfaceID_type);
-	PyModule_AddObject(parent, "InterfaceID", reinterpret_cast<PyObject*>(&GOMInterfaceID_type));
+	Py_INCREF(&py::InterfaceID_type);
+	PyModule_AddObject(parent, "InterfaceID", reinterpret_cast<PyObject*>(&py::InterfaceID_type));
 
 	return true;
 }

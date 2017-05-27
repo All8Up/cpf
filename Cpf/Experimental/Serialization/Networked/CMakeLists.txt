@@ -35,24 +35,6 @@ target_link_libraries (Networked
 )
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
 
-#[[
-foreach (file ${DataFiles})
-	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR} ${file})
-	set (target "${CMAKE_BINARY_DIR}/Debug/resources/${relative}")
-#	message ("src: ${file}  dst: ${target}")
-
-	set (copyCommands "")
-	foreach (config ${CMAKE_CONFIGURATION_TYPES})
-		set (copyCommands "${copyCommands}\nCOMMAND ${CMAKE_COMMAND} -E copy ${file} ${CMAKE_BINARY_DIR}/${config}/resources/${relative}")
-	endforeach ()
-	message ("${copyCommands}")
-
-	add_custom_command (OUTPUT ${target}
-		${copyCommands}
-		DEPENDS ${file}
-	)
-endforeach ()
-]]#
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/result.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/result.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/result.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/result.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/classid.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/classid.py COPYONLY)
@@ -71,7 +53,13 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/__init__.py ${
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_plugin/registry.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_plugin/registry.py COPYONLY)
 
-source_group (Data FILES ${DataFiles})
+foreach (file ${DataFiles})
+	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR}/networked ${file})
+	set (groupName "Data/${relative}")
+	get_filename_component (group ${groupName} DIRECTORY)
+	string (REPLACE "/" "\\\\" group ${group})
+	source_group (${group} FILES ${file})
+endforeach ()
 
 foreach (file ${DataFiles})
 	get_filename_component (ext "${file}" EXT)

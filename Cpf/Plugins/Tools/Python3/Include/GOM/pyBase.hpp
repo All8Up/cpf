@@ -14,7 +14,9 @@ namespace Cpf
 			{
 				PyObject_HEAD
 				iBase* mpBase;
+				PyObject* mpIID;
 			};
+			extern PyTypeObject Base_type;
 
 			bool AddBaseType(PyObject* parent);
 		}

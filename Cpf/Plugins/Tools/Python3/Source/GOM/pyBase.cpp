@@ -1,14 +1,18 @@
 //////////////////////////////////////////////////////////////////////////
 #include "GOM/pyBase.hpp"
 #include "Configuration.hpp"
+#include <structmember.h>
 
 using namespace Cpf;
 using namespace GOM;
+
+PyObject* s_pBaseID = nullptr;
 
 extern "C" int CPF_STDCALL BaseInit(py::Base* self, PyObject* args, PyObject* kwds)
 {
 	(void)args; (void)kwds;
 	self->mpBase = nullptr;
+	self->mpIID = s_pBaseID;
 //	if (!PyArg_ParseTuple(args, "|:", keys, &error, &subSys, &value))
 //	{
 //		return -1;
@@ -18,6 +22,7 @@ extern "C" int CPF_STDCALL BaseInit(py::Base* self, PyObject* args, PyObject* kw
 
 extern "C" void CPF_STDCALL BaseFree(py::Base *self)
 {
+	self->mpBase->Release();
 	PyObject_Del(self);
 }
 
@@ -42,6 +47,12 @@ PyMethodDef GOMBase_methods[] =
 	{ nullptr, nullptr }
 };
 
+PyMemberDef Base_members[] =
+{
+	{ "iid", T_OBJECT, offsetof(py::Base, mpIID), READONLY },
+	{ nullptr }
+};
+
 PyGetSetDef GOMBase_getseters[] =
 {
 	{ NULL }
@@ -49,7 +60,7 @@ PyGetSetDef GOMBase_getseters[] =
 
 
 //////////////////////////////////////////////////////////////////////////
-PyTypeObject GOMBase_type =
+PyTypeObject py::Base_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
 	"gom.Base",						/* tp_name */
@@ -81,7 +92,7 @@ PyTypeObject GOMBase_type =
 	nullptr,						/* tp_iter */
 	nullptr,						/* tp_iternext */
 	GOMBase_methods,				/* tp_methods */
-	nullptr,						/* tp_members */
+	Base_members,					/* tp_members */
 	GOMBase_getseters,				/* tp_getset */
 	nullptr,						/* tp_base */
 	nullptr,						/* tp_dict */
@@ -106,11 +117,13 @@ PyTypeObject GOMBase_type =
 //////////////////////////////////////////////////////////////////////////
 bool py::AddBaseType(PyObject* parent)
 {
-	GOMBase_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&GOMBase_type) < 0)
+	s_pBaseID = reinterpret_cast<PyObject*>(PyObject_New(GOM::py::Base, &GOM::py::Base_type));
+
+	Base_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&Base_type) < 0)
 		return false;
-	Py_INCREF(&GOMBase_type);
-	PyModule_AddObject(parent, "Base", reinterpret_cast<PyObject*>(&GOMBase_type));
+	Py_INCREF(&Base_type);
+	PyModule_AddObject(parent, "Base", reinterpret_cast<PyObject*>(&Base_type));
 
 	return true;
 }

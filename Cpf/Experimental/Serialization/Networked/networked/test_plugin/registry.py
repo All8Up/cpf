@@ -15,3 +15,5 @@ def run_tests():
 		print("Failure: registry.can_unload('plugins/Scene.cfp')")
 	if not registry.unload('plugins/Scene.cfp'):
 		print("Failure: registry.unload('plugins/Scene.cfp')")
+	print (plugin.Registry.iid)
+	print (registry.iid)

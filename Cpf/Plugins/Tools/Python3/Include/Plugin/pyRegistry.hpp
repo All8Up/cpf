@@ -12,8 +12,11 @@ namespace Cpf
 			struct Registry
 			{
 				GOM::py::Base mBase;
+				PyObject* mpIID;
 			};
 			extern PyTypeObject PluginRegistry_type;
+
+			extern "C" PyObject* CPF_STDCALL PyCreateRegistry(PyObject*, PyObject* args);
 
 			bool AddRegistryType(PyObject* parent);
 		}

@@ -13,10 +13,15 @@ namespace Cpf
 			struct InterfaceID
 			{
 				PyObject_HEAD
-					GOM::InterfaceID mID;
+				GOM::InterfaceID mID;
 			};
+			extern PyTypeObject InterfaceID_type;
+
 
 			bool AddInterfaceIDType(PyObject* parent);
 		}
 	}
 }
+
+
+#define GOMInterfaceID_Check(v) (Py_TYPE(v) == &Cpf::GOM::py::InterfaceID_type)

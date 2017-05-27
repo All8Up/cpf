@@ -5,7 +5,7 @@
 using namespace Cpf;
 using namespace GOM;
 
-extern "C" int CPF_STDCALL Init_GOMClassID(py::ClassID* self, PyObject* args, PyObject* kwds)
+extern "C" int CPF_STDCALL Init_GOMClassID(py::ClassID* self, PyObject* args, PyObject*)
 {
 	char* name = nullptr;
 	if (!PyArg_ParseTuple(args, "|s", &name))
@@ -17,9 +17,42 @@ extern "C" int CPF_STDCALL Init_GOMClassID(py::ClassID* self, PyObject* args, Py
 	return 0;
 }
 
+extern "C" Py_hash_t CPF_STDCALL ClassIDHash(py::ClassID* self)
+{
+	return self->mID.GetID();
+}
+
+extern "C" PyObject* ClassIDCompare(PyObject *a, PyObject *b, int op)
+{
+	if (GOMClassID_Check(b))
+	{
+		const GOM::ClassID& lhs = reinterpret_cast<py::ClassID*>(a)->mID;
+		const GOM::ClassID& rhs = reinterpret_cast<py::ClassID*>(b)->mID;
+		switch (op)
+		{
+		case Py_LT:
+			return lhs < rhs ? Py_True : Py_False;
+		case Py_LE:
+			return lhs <= rhs ? Py_True : Py_False;
+		case Py_EQ:
+			return lhs == rhs ? Py_True : Py_False;
+		case Py_NE:
+			return lhs != rhs ? Py_True : Py_False;
+		case Py_GT:
+			return lhs > rhs ? Py_True : Py_False;
+		case Py_GE:
+			return lhs >= rhs ? Py_True : Py_False;
+		default:
+			break;
+		}
+	}
+	return PyExc_TypeError;
+}
+
+//////////////////////////////////////////////////////////////////////////
 extern PyGetSetDef GOMClassID_getseters[];
 
-static PyTypeObject GOMClassID_type =
+PyTypeObject py::ClassID_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
 	"gom.ClassID",				/* tp_name */
@@ -34,7 +67,7 @@ static PyTypeObject GOMClassID_type =
 	nullptr,					/* tp_as_number */
 	nullptr,					/* tp_as_sequence */
 	nullptr,					/* tp_as_mapping */
-	nullptr,					/* tp_hash  */
+	(hashfunc)ClassIDHash,		/* tp_hash  */
 	nullptr,					/* tp_call */
 	nullptr,					/* tp_str */
 	nullptr,					/* tp_getattro */
@@ -44,7 +77,7 @@ static PyTypeObject GOMClassID_type =
 	"Cpf objects",				/* tp_doc */
 	nullptr,					/* tp_traverse */
 	nullptr,					/* tp_clear */
-	nullptr,					/* tp_richcompare */
+	ClassIDCompare,				/* tp_richcompare */
 	0,							/* tp_weaklistoffset */
 	nullptr,					/* tp_iter */
 	nullptr,					/* tp_iternext */
@@ -76,7 +109,6 @@ extern "C" void CPF_STDCALL Dealloc_GOMClassID(py::Result *self)
 	PyObject_Del(self);
 }
 
-#define GOMClassID_Check(v)      (Py_TYPE(v) == &GOMClassID_type)
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -101,11 +133,11 @@ PyGetSetDef GOMClassID_getseters[] =
 //////////////////////////////////////////////////////////////////////////
 bool py::AddClassIDType(PyObject* parent)
 {
-	GOMClassID_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&GOMClassID_type) < 0)
+	ClassID_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&ClassID_type) < 0)
 		return false;
-	Py_INCREF(&GOMClassID_type);
-	PyModule_AddObject(parent, "ClassID", reinterpret_cast<PyObject*>(&GOMClassID_type));
+	Py_INCREF(&ClassID_type);
+	PyModule_AddObject(parent, "ClassID", reinterpret_cast<PyObject*>(&ClassID_type));
 
 	return true;
 }
