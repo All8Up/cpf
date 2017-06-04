@@ -151,6 +151,10 @@ bool Python3::_InitPython()
 	if (PyImport_AppendInittab("cpf", &PyInit_cpf)==0)
 	{
 		Py_Initialize();
+		if (!PyEval_ThreadsInitialized())
+		{
+			PyEval_InitThreads();
+		}
 		return true;
 	}
 	return false;

@@ -23,5 +23,4 @@ namespace Cpf
 	}
 }
 
-
 #define GOMInterfaceID_Check(v) (Py_TYPE(v) == &Cpf::GOM::py::InterfaceID_type)

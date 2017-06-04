@@ -4,7 +4,6 @@
 #include "GOM/pyResult.hpp"
 #include "GOM/pyClassID.hpp"
 #include "GOM/pyInterfaceID.hpp"
-#include "GOM/pyBase.hpp"
 
 using namespace Cpf;
 using namespace GOM;
@@ -33,7 +32,6 @@ bool py::AddModule(PyObject* parent)
 	AddResultType(module);
 	AddClassIDType(module);
 	AddInterfaceIDType(module);
-	AddBaseType(module);
 
 	PyModule_AddObject(parent, "gom", module);
 	return true;

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <Python.h>
-#include "GOM/pyBase.hpp"
+#include "GOM/iBase.hpp"
 
 namespace Cpf
 {
@@ -11,7 +11,8 @@ namespace Cpf
 		{
 			struct Registry
 			{
-				GOM::py::Base mBase;
+				PyObject_HEAD
+				GOM::iBase* mpBase;
 				PyObject* mpIID;
 			};
 			extern PyTypeObject PluginRegistry_type;
@@ -22,3 +23,5 @@ namespace Cpf
 		}
 	}
 }
+
+#define PluginRegistry_Check(v)      (Py_TYPE(v) == &Cpf::Plugin::py::PluginRegistry_type)

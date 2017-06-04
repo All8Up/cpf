@@ -39,7 +39,7 @@ public:
 
 	GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, void*) override;
 	GOM::Result CPF_STDCALL InstanceRemove(GOM::InterfaceID id) override;
-	GOM::Result CPF_STDCALL GetInstances(GOM::InterfaceID id, void**) override;
+	GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, void**) override;
 
 private:
 	int32_t mRefCount;
@@ -340,7 +340,7 @@ GOM::Result CPF_STDCALL Registry::InstanceRemove(GOM::InterfaceID id)
 	return Plugin::kNotInstalled;
 }
 
-GOM::Result CPF_STDCALL Registry::GetInstances(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Registry::GetInstance(GOM::InterfaceID id, void** outIface)
 {
 	if (outIface)
 	{

@@ -8,12 +8,14 @@ using namespace GOM;
 extern "C" int CPF_STDCALL Init_InterfaceID(py::InterfaceID* self, PyObject* args, PyObject*)
 {
 	char* name = nullptr;
-	if (!PyArg_ParseTuple(args, "|s", &name))
+	if (PyArg_ParseTuple(args, "|s", &name))
 	{
-		self->mID = InterfaceID(0);
-		return -1;
+		if (name)
+			self->mID = InterfaceID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
+		else
+			self->mID = InterfaceID(0);
+		return 1;
 	}
-	self->mID = InterfaceID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
 	return 0;
 }
 

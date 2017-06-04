@@ -43,8 +43,6 @@ configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/interfaceid.py ${
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/interfaceid.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/interfaceid.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/methods.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/methods.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/methods.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/methods.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/base.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/base.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/base.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/base.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/__init__.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/__init__.py COPYONLY)
 

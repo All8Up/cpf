@@ -11,10 +11,10 @@ extern "C" int CPF_STDCALL Init_GOMClassID(py::ClassID* self, PyObject* args, Py
 	if (!PyArg_ParseTuple(args, "|s", &name))
 	{
 		self->mID = ClassID(0);
-		return -1;
+		return 1;
 	}
 	self->mID = ClassID(name ? Hash::Crc64(name, ::strlen(name)) : 0);
-	return 0;
+	return 1;
 }
 
 extern "C" Py_hash_t CPF_STDCALL ClassIDHash(py::ClassID* self)

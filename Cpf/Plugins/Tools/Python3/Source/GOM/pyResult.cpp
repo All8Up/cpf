@@ -28,8 +28,6 @@ extern "C" void CPF_STDCALL ResultFree(py::Result *self)
 	PyObject_Del(self);
 }
 
-#define GOMResult_Check(v)      (Py_TYPE(v) == &GOMResult_type)
-
 /* PyObject_GOMResult methods */
 extern "C" PyObject* CPF_STDCALL ResultIsSuccess(py::Result* self, PyObject* args)
 {
@@ -102,7 +100,7 @@ PyGetSetDef GOMResult_getseters[] =
 
 
 //////////////////////////////////////////////////////////////////////////
-static PyTypeObject GOMResult_type =
+PyTypeObject py::Result_type =
 {
 	PyVarObject_HEAD_INIT(nullptr, 0)
 	"gom.Result",					/* tp_name */
@@ -157,7 +155,7 @@ static PyTypeObject GOMResult_type =
 
 bool AddResultCode(PyObject* parent, const char* name, Result code)
 {
-	py::Result* result = PyObject_New(py::Result, &GOMResult_type);
+	py::Result* result = PyObject_New(py::Result, &py::Result_type);
 	if (result)
 	{
 		result->mResult = code;
@@ -170,11 +168,11 @@ bool AddResultCode(PyObject* parent, const char* name, Result code)
 //////////////////////////////////////////////////////////////////////////
 bool py::AddResultType(PyObject* parent)
 {
-	GOMResult_type.tp_new = PyType_GenericNew;
-	if (PyType_Ready(&GOMResult_type) < 0)
+	Result_type.tp_new = PyType_GenericNew;
+	if (PyType_Ready(&Result_type) < 0)
 		return false;
-	Py_INCREF(&GOMResult_type);
-	PyModule_AddObject(parent, "Result", reinterpret_cast<PyObject*>(&GOMResult_type));
+	Py_INCREF(&Result_type);
+	PyModule_AddObject(parent, "Result", reinterpret_cast<PyObject*>(&Result_type));
 
 	if (AddResultCode(parent, "kOK", kOK) &&
 		AddResultCode(parent, "kError", kError) &&

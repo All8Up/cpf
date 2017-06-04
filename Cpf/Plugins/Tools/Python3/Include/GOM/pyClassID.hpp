@@ -22,5 +22,4 @@ namespace Cpf
 	}
 }
 
-
 #define GOMClassID_Check(v)      (Py_TYPE(v) == &Cpf::GOM::py::ClassID_type)
