@@ -35,6 +35,9 @@ target_link_libraries (Networked
 )
 set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
 
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_integration/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_integration/__init__.py COPYONLY)
+
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/result.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/result.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/result.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/result.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/classid.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/classid.py COPYONLY)

@@ -154,6 +154,9 @@ bool Python3::_InitPython()
 		if (!PyEval_ThreadsInitialized())
 		{
 			PyEval_InitThreads();
+
+			wchar_t* args[] = {L""};
+			PySys_SetArgv(1, args);
 		}
 		return true;
 	}
@@ -185,11 +188,40 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 	}
 	CPF_LOG(Python3, Info) << "End rttr:   *******************************************";
 	//////////////////////////////////////////////////////////////////////////
-
+	char buffer[1024];
+	::strcpy(buffer,
+		"import sys\n"
+		"sys.path.append(\""
+	);
+	::strcat(buffer, basePath);
+	::strcat(buffer, "\")");
+	PyRun_SimpleString(buffer);
+	if (PyErr_Occurred())
+		PyErr_Print();
+	/*
 	WString wpath;
 	for (int i = 0; basePath[i] != 0; ++i)
 		wpath.push_back(wchar_t(basePath[i]));
 	PySys_SetPath(wpath.c_str());
+	*/
+
+	// Run the integration tests.
+	{
+		PyObject* pName = PyUnicode_DecodeFSDefault("test_integration");
+		PyObject* tesetIntegration = PyImport_Import(pName);
+		if (tesetIntegration)
+		{
+			PyObject* pFunc = PyObject_GetAttrString(tesetIntegration, "run_tests");
+			if (pFunc && PyCallable_Check(pFunc))
+			{
+				PyObject_CallObject(pFunc, nullptr);
+			}
+			Py_DECREF(tesetIntegration);
+		}
+		Py_DECREF(pName);
+	}
+	if (PyErr_Occurred())
+		PyErr_Print();
 
 	// Run the gom tests.
 	{
@@ -202,9 +234,9 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 			{
 				PyObject_CallObject(pFunc, nullptr);
 			}
+			Py_DECREF(testGom);
 		}
 		Py_DECREF(pName);
-		Py_DECREF(testGom);
 	}
 	if (PyErr_Occurred())
 		PyErr_Print();
@@ -219,9 +251,9 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 			{
 				PyObject_CallObject(pFunc, nullptr);
 			}
+			Py_DECREF(testPlugin);
 		}
 		Py_DECREF(pName);
-		Py_DECREF(testPlugin);
 	}
 	if (PyErr_Occurred())
 		PyErr_Print();
