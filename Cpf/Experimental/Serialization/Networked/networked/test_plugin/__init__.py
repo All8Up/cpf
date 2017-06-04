@@ -1,9 +1,9 @@
+import unittest
 from cpf import plugin
 from test_plugin import registry
 
-def run_tests():
-	print('--------------------------------')
-	print ('cpf.plugin contents:')
-	print (dir(plugin))
-	print('--------------------------------')
-	registry.run_tests()
+def GetSuite():
+	suite = unittest.TestSuite()
+	tests = unittest.defaultTestLoader.loadTestsFromTestCase(registry.Tests)
+	suite.addTests(tests)
+	return suite

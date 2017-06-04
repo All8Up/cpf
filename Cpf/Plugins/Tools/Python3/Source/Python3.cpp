@@ -210,49 +210,7 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 		PyObject* pName = PyUnicode_DecodeFSDefault("test_integration");
 		PyObject* tesetIntegration = PyImport_Import(pName);
 		if (tesetIntegration)
-		{
-			PyObject* pFunc = PyObject_GetAttrString(tesetIntegration, "run_tests");
-			if (pFunc && PyCallable_Check(pFunc))
-			{
-				PyObject_CallObject(pFunc, nullptr);
-			}
 			Py_DECREF(tesetIntegration);
-		}
-		Py_DECREF(pName);
-	}
-	if (PyErr_Occurred())
-		PyErr_Print();
-
-	// Run the gom tests.
-	{
-		PyObject* pName = PyUnicode_DecodeFSDefault("test_gom");
-		PyObject* testGom = PyImport_Import(pName);
-		if (testGom)
-		{
-			PyObject* pFunc = PyObject_GetAttrString(testGom, "run_tests");
-			if (pFunc && PyCallable_Check(pFunc))
-			{
-				PyObject_CallObject(pFunc, nullptr);
-			}
-			Py_DECREF(testGom);
-		}
-		Py_DECREF(pName);
-	}
-	if (PyErr_Occurred())
-		PyErr_Print();
-	{
-		// Run the plugin tests.
-		PyObject* pName = PyUnicode_DecodeFSDefault("test_plugin");
-		PyObject* testPlugin = PyImport_Import(pName);
-		if (testPlugin)
-		{
-			PyObject* pFunc = PyObject_GetAttrString(testPlugin, "run_tests");
-			if (pFunc && PyCallable_Check(pFunc))
-			{
-				PyObject_CallObject(pFunc, nullptr);
-			}
-			Py_DECREF(testPlugin);
-		}
 		Py_DECREF(pName);
 	}
 	if (PyErr_Occurred())

@@ -1,7 +1,20 @@
 import gc
+import unittest
 import cpf
 from cpf import plugin
 from cpf import gom
+
+class Tests(unittest.TestCase):
+	def setUp(self):
+		self.registry = plugin.create_registry()
+		self.assertTrue(self.registry.load('plugins/TestingPlugin.cfp'))
+
+	def tearDown(self):
+		self.assertTrue(self.registry.unload('plugins/TestingPlugin.cfp'))
+
+	def testCIDExists(self):
+		self.assertTrue(self.registry.exists(gom.ClassID('Testing::iTest')))
+
 
 def run_tests():
 	print('------ Testing plugin.Registry -----')

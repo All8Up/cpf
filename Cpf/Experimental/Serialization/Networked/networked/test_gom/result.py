@@ -1,39 +1,42 @@
+import unittest
 import cpf
 from cpf import gom
 
-def run_tests():
-	print('------ Testing gom.Result ------')
-	print("cpf.gom.Result contents:")
-	print(dir(gom.Result))
-	print('--------------------------------')
+class Tests(unittest.TestCase):
+	def setUp(self):
+		self.successResult = gom.Result(error=0, subsystem='Core', value='Not an error')
+		self.failureResult = gom.Result(error=1, subsystem='Core', value='An error')
 
-	successResult = gom.Result(error=0, subsystem='Core', value='Not an error')
-	failResult = gom.Result(error=1, subsystem='Core', value='An error')
+	def tearDown(self):
+		self.successResult = None
+		self.failureResult = None
 
-	# Test access of success code.
-	if successResult.error != 0:
-		print ("Failure: successResult.error != 0")
-	if successResult.subsystem != cpf.crc16('Core'):
-		print ("Failure: successResult.subsystem != cpf.crc16('Core')")
-	if successResult.value != cpf.crc15('Not an error'):
-		print ("Failure: successResult.value != cpf.crc15('Not an error')")
-	# Test helper checks.
-	if not gom.succeeded(successResult):
-		print ("Failure: gom.succeeded(successResult)")
-	if gom.failed(successResult):
-		print ("Failure: gom.failed(successResult)")
+	def testSuccess_Error(self):
+		self.assertEqual(self.successResult.error, 0, 'Error value should be zero')
 
-	# Test access of failure code.
-	if failResult.error != 1:
-		print ("Failure: failResult.error != 1")
-	if failResult.subsystem != cpf.crc16('Core'):
-		print ("Failure: failResult.subsystem != cpf.crc16('Core')")
-	if failResult.value != cpf.crc15('An error'):
-		print ("Failure: failResult.value != cpf.crc15('An error')")
-	# Test helper checks.
-	if gom.succeeded(failResult):
-		print ("Failure: gom.succeeded(failResult)")
-	if not gom.failed(failResult):
-		print ("Failure: gom.failed(failResult)")
+	def testSuccess_SubSystem(self):
+		self.assertEqual(self.successResult.subsystem, cpf.crc16('Core'), 'Invalid subsystem string crc')
 
-	print('------ Complete ------')
+	def testSuccess_Value(self):
+		self.assertEqual(self.successResult.value, cpf.crc15('Not an error'), 'Invalid error string crc')
+
+	def testHelper_SuccessPass(self):
+		self.assertTrue(gom.succeeded(self.successResult), 'Success result should pass')
+
+	def testHelper_FailedFail(self):
+		self.assertFalse(gom.failed(self.successResult), 'Success should not fail')
+
+	def testFailure_Error(self):
+		self.assertEqual(self.failureResult.error, 1, 'Error value should be one')
+
+	def testFailure_SubSystem(self):
+		self.assertEqual(self.failureResult.subsystem, cpf.crc16('Core'), 'Invalid subsystem string crc')
+
+	def testFailure_Value(self):
+		self.assertEqual(self.failureResult.value, cpf.crc15('An error'), 'Invalid error string crc')
+
+	def testHelper_FailurePass(self):
+		self.assertTrue(gom.failed(self.failureResult), 'Failure result should pass')
+
+	def testHelper_FailureFail(self):
+		self.assertFalse(gom.succeeded(self.failureResult), 'Failure should fail')
