@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <Python.h>
-#include "GOM/iBase.hpp"
+#include "Plugin/iRegistry.hpp"
 
 namespace Cpf
 {
@@ -12,7 +12,7 @@ namespace Cpf
 			struct Registry
 			{
 				PyObject_HEAD
-				GOM::iBase* mpBase;
+				iRegistry* mpRegistry;
 				PyObject* mpIID;
 			};
 			extern PyTypeObject PluginRegistry_type;

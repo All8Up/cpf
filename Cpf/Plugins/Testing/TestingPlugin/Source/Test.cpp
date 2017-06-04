@@ -7,6 +7,8 @@ using namespace Cpf;
 using namespace Testing;
 
 //////////////////////////////////////////////////////////////////////////
+static Plugin::IID_CID classPairs[] = { iTest::kIID, kTestCID };
+
 extern "C"
 GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
@@ -14,6 +16,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 	{
 		CPF_INIT_LOG(Testing);
 		registry->Install(kTestCID, new Plugin::tClassInstance<Test>());
+		registry->ClassInstall(1, classPairs);
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
@@ -30,6 +33,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
+		registry->ClassRemove(1, classPairs);
 		registry->Remove(kTestCID);
 		CPF_DROP_LOG(Testing);
 		return GOM::kOK;

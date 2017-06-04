@@ -106,7 +106,7 @@ namespace Cpf
 			 * @param [in,out] instance If non-null, the instance pointer to install.
 			 * @return A GOM::Result, kOK if all is ok.
 			 */
-			virtual GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, void* instance) = 0;
+			virtual GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, iBase* instance) = 0;
 
 			/**
 			 * @brief Remove an instance from the instances.
@@ -121,7 +121,7 @@ namespace Cpf
 			 * @param [in,out] outIface If non-null, the output.
 			 * @return The GOM::Result, kOK if the instance was found and put in the output.
 			 */
-			virtual GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, void** outIface) = 0;
+			virtual GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, iBase** outIface) = 0;
 		};
 	}
 }

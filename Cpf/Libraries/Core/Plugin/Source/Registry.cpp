@@ -37,9 +37,9 @@ public:
 	GOM::Result CPF_STDCALL ClassRemove(int32_t count, const Plugin::IID_CID* pairs) override;
 	GOM::Result CPF_STDCALL GetClasses(GOM::InterfaceID id, int32_t* count, GOM::ClassID*) override;
 
-	GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, void*) override;
+	GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, iBase*) override;
 	GOM::Result CPF_STDCALL InstanceRemove(GOM::InterfaceID id) override;
-	GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, void**) override;
+	GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, iBase**) override;
 
 private:
 	int32_t mRefCount;
@@ -54,7 +54,7 @@ private:
 	using ClassMap = Cpf::UnorderedMap<GOM::InterfaceID, ClassList>;
 	ClassMap mClasses;
 
-	using InstanceMap = Cpf::UnorderedMap<GOM::InterfaceID, void*>;
+	using InstanceMap = Cpf::UnorderedMap<GOM::InterfaceID, iBase*>;
 	InstanceMap mInstances;
 };
 
@@ -320,11 +320,12 @@ GOM::Result CPF_STDCALL Registry::ClassRemove(int32_t count, const Plugin::IID_C
 	return GOM::kOK;
 }
 
-GOM::Result CPF_STDCALL Registry::InstanceInstall(GOM::InterfaceID id, void* instance)
+GOM::Result CPF_STDCALL Registry::InstanceInstall(GOM::InterfaceID id, iBase* instance)
 {
 	auto it = mInstances.find(id);
 	if (it != mInstances.end())
 		return Plugin::kInstanceExists;
+	instance->AddRef();
 	mInstances[id] = instance;
 	return GOM::kOK;
 }
@@ -334,13 +335,14 @@ GOM::Result CPF_STDCALL Registry::InstanceRemove(GOM::InterfaceID id)
 	auto it = mInstances.find(id);
 	if (it != mInstances.end())
 	{
+		it->second->Release();
 		mInstances.erase(it);
 		return GOM::kOK;
 	}
 	return Plugin::kNotInstalled;
 }
 
-GOM::Result CPF_STDCALL Registry::GetInstance(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Registry::GetInstance(GOM::InterfaceID id, iBase** outIface)
 {
 	if (outIface)
 	{
@@ -348,6 +350,7 @@ GOM::Result CPF_STDCALL Registry::GetInstance(GOM::InterfaceID id, void** outIfa
 		if (it != mInstances.end())
 		{
 			*outIface = it->second;
+			(*outIface)->AddRef();
 			return GOM::kOK;
 		}
 

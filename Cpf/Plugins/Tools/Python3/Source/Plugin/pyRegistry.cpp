@@ -6,6 +6,7 @@
 #include "GOM/pyClassID.hpp"
 #include <structmember.h>
 #include "Python3.hpp"
+#include "Vector.hpp"
 
 using namespace Cpf;
 using namespace Plugin;
@@ -19,9 +20,9 @@ extern "C" PyObject* CPF_STDCALL py::PyCreateRegistry(PyObject*, PyObject* args)
 	if (s_Python3)
 	{
 		py::Registry* regy = PyObject_New(Plugin::py::Registry, reinterpret_cast<PyTypeObject*>(&Plugin::py::PluginRegistry_type));
-		regy->mpBase = nullptr;
+		regy->mpRegistry = nullptr;
 		regy->mpIID = s_pRegistryIID;
-		s_Python3->CreateRegistry(reinterpret_cast<Plugin::iRegistry**>(&regy->mpBase));
+		s_Python3->CreateRegistry(&regy->mpRegistry);
 		return reinterpret_cast<PyObject*>(regy);
 	}
 	return nullptr;
@@ -36,7 +37,7 @@ extern "C" int CPF_STDCALL New_Registry(py::Registry* self, PyObject* args, PyOb
 
 extern "C" void CPF_STDCALL Free_Registry(py::Registry* self)
 {
-	self->mpBase->Release();
+	self->mpRegistry->Release();
 	PyObject_Del(self);
 }
 
@@ -49,7 +50,7 @@ extern "C" PyObject* CPF_STDCALL RegistryLoad(py::Registry* self, PyObject* args
 		return nullptr;
 	}
 	{
-		if (Succeeded(reinterpret_cast<iRegistry*>(self->mpBase)->Load(name)))
+		if (Succeeded(self->mpRegistry->Load(name)))
 			return PyBool_FromLong(1);
 		PyErr_SetString(PyExc_RuntimeError, "Plugin load failure.");
 	}
@@ -65,7 +66,7 @@ extern "C" PyObject* CPF_STDCALL RegistryCanUnload(py::Registry* self, PyObject*
 		return nullptr;
 	}
 
-	if (Succeeded(reinterpret_cast<iRegistry*>(self->mpBase)->CanUnload(name)))
+	if (Succeeded(self->mpRegistry->CanUnload(name)))
 		return PyBool_FromLong(1);
 	return PyBool_FromLong(0);
 }
@@ -78,7 +79,7 @@ extern "C" PyObject* CPF_STDCALL RegistryUnload(py::Registry* self, PyObject* ar
 		PyErr_SetString(PyExc_RuntimeError, "Invalid argument.");
 		return nullptr;
 	}
-	if (Succeeded(reinterpret_cast<iRegistry*>(self->mpBase)->Unload(name)))
+	if (Succeeded(self->mpRegistry->Unload(name)))
 		return PyBool_FromLong(1);
 	return PyBool_FromLong(0);
 }
@@ -103,8 +104,7 @@ extern "C" PyObject* CPF_STDCALL RegistryExists(py::Registry* self, PyObject* ar
 	{
 		if (classId && GOMClassID_Check(classId))
 		{
-			if (Succeeded(reinterpret_cast<iRegistry*>(self->mpBase)->
-				Exists(reinterpret_cast<GOM::py::ClassID*>(classId)->mID)))
+			if (Succeeded(self->mpRegistry->Exists(reinterpret_cast<GOM::py::ClassID*>(classId)->mID)))
 			{
 				return PyBool_FromLong(1);
 			}
@@ -134,7 +134,7 @@ extern "C" PyObject* CPF_STDCALL RegistryCreate(py::Registry* self, PyObject* ar
 			GOM::py::InterfaceID* iid = reinterpret_cast<GOM::py::InterfaceID*>(interfaceId);
 			GOM::iBase* outerPtr = outer ? reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(outer, nullptr)) : nullptr;
 
-			if (Succeeded(reinterpret_cast<iRegistry*>(self->mpBase)->Create(outerPtr, cid->mID, iid->mID, reinterpret_cast<void**>(&result))))
+			if (Succeeded(self->mpRegistry->Create(outerPtr, cid->mID, iid->mID, reinterpret_cast<void**>(&result))))
 			{
 				auto capsule = PyCapsule_New(reinterpret_cast<void*>(result), nullptr, [](PyObject* obj) {
 					GOM::iBase* base = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(obj, nullptr));
@@ -166,24 +166,110 @@ extern "C" PyObject* CPF_STDCALL RegistryClassRemove(py::Registry* self, PyObjec
 extern "C" PyObject* CPF_STDCALL RegistryGetClasses(py::Registry* self, PyObject* args)
 {
 	// GOM::Result CPF_STDCALL GetClasses(GOM::InterfaceID id, int32_t* count, GOM::ClassID* cid) = 0;
+	// Will be a list return in python taking just the id as input and throwing an exception for errors.
+	PyObject* iid = nullptr;
+	if (!PyArg_ParseTuple(args, "O:get_classes", &iid))
+	{
+		PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
+		return nullptr;
+	}
+	if (GOMInterfaceID_Check(iid))
+	{
+		GOM::py::InterfaceID* iface = reinterpret_cast<GOM::py::InterfaceID*>(iid);
+		int32_t count = 0;
+		if (Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, nullptr)))
+		{
+			if (count == 0)
+				Py_RETURN_NONE;
+			Vector<GOM::ClassID> ids(count);
+			if (Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, ids.data())))
+			{
+				PyObject* list = PyList_New(count);
+				if (list)
+				{
+					for (int i=0; i<count; ++i)
+					{
+						GOM::py::ClassID* classId = PyObject_New(GOM::py::ClassID, reinterpret_cast<PyTypeObject*>(&GOM::py::ClassID_type));
+						classId->mID = ids[i];
+						PyList_SET_ITEM(list, i, reinterpret_cast<PyObject*>(classId));
+					}
+					return list;
+				}
+			}
+		}
+	}
+
+	PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
 	return nullptr;
 }
 
 extern "C" PyObject* CPF_STDCALL RegistryInstanceInstall(py::Registry* self, PyObject* args)
 {
 	// GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, void* instance) = 0;
+	GOM::py::InterfaceID* iid = nullptr;
+	PyObject* capsule = nullptr;
+	if (!PyArg_ParseTuple(args, "OO:instance_install", &iid, &capsule))
+	{
+		PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
+		return nullptr;
+	}
+	if (GOMInterfaceID_Check(iid) && PyCapsule_CheckExact(capsule))
+	{
+		GOM::iBase* instance = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(capsule, nullptr));
+		if (instance && Succeeded(self->mpRegistry->InstanceInstall(iid->mID, instance)))
+		{
+			Py_RETURN_NONE;
+		}
+	}
+
+	PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
 	return nullptr;
 }
 
 extern "C" PyObject* CPF_STDCALL RegistryInstanceRemove(py::Registry* self, PyObject* args)
 {
 	// GOM::Result CPF_STDCALL InstanceRemove(GOM::InterfaceID id) = 0;
+	GOM::py::InterfaceID* iid = nullptr;
+	if (!PyArg_ParseTuple(args, "O:instance_remove", &iid))
+	{
+		PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
+		return nullptr;
+	}
+	if (GOMInterfaceID_Check(iid))
+	{
+		if (Succeeded(self->mpRegistry->InstanceRemove(iid->mID)))
+		{
+			Py_RETURN_NONE;
+		}
+	}
+
+	PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
 	return nullptr;
 }
 
 extern "C" PyObject* CPF_STDCALL RegistryGetInstance(py::Registry* self, PyObject* args)
 {
 	// GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, void** outIface) = 0;
+	GOM::py::InterfaceID* iid = nullptr;
+	if (!PyArg_ParseTuple(args, "O:get_instance", &iid))
+	{
+		PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
+		return nullptr;
+	}
+	if (GOMInterfaceID_Check(iid))
+	{
+		GOM::iBase* instance = nullptr;
+		if (Succeeded(self->mpRegistry->GetInstance(iid->mID, &instance)))
+		{
+			return PyCapsule_New(instance, nullptr, [](PyObject* obj)
+			{
+				auto base = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(obj, nullptr));
+				base->Release();
+			});
+		}
+	}
+
+	PyErr_SetString(PyExc_RuntimeError, "Invalid arguments.");
 	return nullptr;
 }
 
