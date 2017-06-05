@@ -1,20 +1,89 @@
 import gc
 import unittest
 import cpf
+import ctypes
 from cpf import plugin
 from cpf import gom
+from builtins import object
+
+class GOMMethod(object):
+	''' Base wrapper for interface methods. '''
+	def __init__(self, rtype, *args):
+		self.rtype = rtype
+		self.args = args
+
+	def get(self):
+		return ctypes.WINFUNCTYPE(self.rtype, *self.args)
+
+class GOMMethodInstance(object):
+	''' Binding for an interface method. '''
+	def __init__(self, name, vtblidx, method):
+		self.name = name
+		self.vtblidx = vtblidx
+		self.method = method
+
+	def __get__(self, obj, tp):
+		if obj is not None:
+			def _call(*args):
+				return self.method.get()(self.vtblidx, self.name)(obj, *args)
+			return _call
+		raise AttributeError()
+
+class GOMBase(ctypes.Structure):
+	''' Interface pointers are just a vtable pointer, member data is hidden from the caller. '''
+	_fields_ = [('pVtable', ctypes.c_void_p)]
+
+class GOMMetaBase(type(ctypes.POINTER(GOMBase))):
+	''' This wraps the interface pointer to indirect through the vtable. '''
+	def __new__(cls, name, bases, dct):
+		methods = []
+		for base in bases[::-1]:
+			methods.extend(base.__dict__.get('_methods_', ()))
+		methods.extend(dct.get('_methods_', ()))
+
+		for i, (n, method) in enumerate(methods):
+			print (i, n)
+			dct[n] = GOMMethodInstance(n, i, method)
+		dct['_type_'] = GOMBase
+		return super(GOMMetaBase, cls).__new__(cls, name, bases, dct)
+
+Interface = GOMMetaBase(str('Interface'), (ctypes.POINTER(GOMBase),), {
+	'__doc__': 'GOM Interface pointer.',
+	})
+
+class iBase(Interface):
+	_methods_ =	[
+		('AddRef', GOMMethod(ctypes.c_int32)),
+		('Release', GOMMethod(ctypes.c_int32)),
+		('Cast', GOMMethod(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
+	]
+
+class iTest(iBase):
+	_methods_ = [
+		('Tester', GOMMethod(ctypes.c_int32, ctypes.c_int64))
+	]
+
+
+
 
 class Tests(unittest.TestCase):
 	def setUp(self):
 		self.registry = plugin.create_registry()
 		self.assertTrue(self.registry.load('plugins/TestingPlugin.cfp'))
+		self.testInstance = iTest()
+		self.registry.create(gom.ClassID('Testing::iTest'), gom.InterfaceID('Testing::iTest'), ctypes.byref(self.testInstance))
 
 	def tearDown(self):
+		self.assertEqual(self.testInstance.Release(), 0)
 		self.assertTrue(self.registry.unload('plugins/TestingPlugin.cfp'))
 
 	def testCIDExists(self):
 		self.assertTrue(self.registry.exists(gom.ClassID('Testing::iTest')))
 
+	def testCTypeWrapper(self):
+		for i in range(0, 10):
+			result = self.testInstance.Tester(i)
+			self.assertEqual(result, i)
 
 def run_tests():
 	print('------ Testing plugin.Registry -----')

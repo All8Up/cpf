@@ -11,6 +11,29 @@
 using namespace Cpf;
 using namespace Plugin;
 
+// TODO: Copied from python source: Modules/_ctypes/ctypes.h
+// The ffi type is void since I don't care about the contents.
+struct tagPyCArgObject {
+	PyObject_HEAD
+	void *pffi_type;
+	char tag;
+	union {
+		char c;
+		char b;
+		short h;
+		int i;
+		long l;
+		long long q;
+		long double D;
+		double d;
+		float f;
+		void *p;
+	} value;
+	PyObject *obj;
+	Py_ssize_t size; /* for the 'V' tag */
+};
+
+
 extern Tools::Python3* s_Python3;
 PyObject* s_pRegistryIID = nullptr;
 
@@ -118,29 +141,21 @@ extern "C" PyObject* CPF_STDCALL RegistryExists(py::Registry* self, PyObject* ar
 extern "C" PyObject* CPF_STDCALL RegistryCreate(py::Registry* self, PyObject* args)
 {
 	// GOM::Result CPF_STDCALL Create(iBase* outer, GOM::ClassID cid, GOM::InterfaceID iid, void** result) = 0;
-	// Python conversion:
-	//	Throws exceptions on error/failure.
-	//	Returns the object as a result.
-	//	cid, iid, [outer]
-	PyObject* classId = nullptr;
-	PyObject* interfaceId = nullptr;
+	GOM::py::ClassID* classId = nullptr;
+	GOM::py::InterfaceID* interfaceId = nullptr;
+	tagPyCArgObject* output = nullptr;
 	PyObject* outer = nullptr;
-	if (PyArg_ParseTuple(args, "OO|O:create", &classId, &interfaceId, &outer))
+	if (PyArg_ParseTuple(args, "OOO|O:create", &classId, &interfaceId, &output, &outer))
 	{
 		if (GOMClassID_Check(classId) && GOMInterfaceID_Check(interfaceId))
 		{
 			GOM::iBase* result = nullptr;
-			GOM::py::ClassID* cid = reinterpret_cast<GOM::py::ClassID*>(classId);
-			GOM::py::InterfaceID* iid = reinterpret_cast<GOM::py::InterfaceID*>(interfaceId);
 			GOM::iBase* outerPtr = outer ? reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(outer, nullptr)) : nullptr;
 
-			if (Succeeded(self->mpRegistry->Create(outerPtr, cid->mID, iid->mID, reinterpret_cast<void**>(&result))))
+			if (Succeeded(self->mpRegistry->Create(outerPtr, classId->mID, interfaceId->mID, reinterpret_cast<void**>(&result))))
 			{
-				auto capsule = PyCapsule_New(reinterpret_cast<void*>(result), nullptr, [](PyObject* obj) {
-					GOM::iBase* base = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(obj, nullptr));
-					base->Release();
-				});
-				return capsule;
+				*reinterpret_cast<void**>(output->value.p) = result;
+				Py_RETURN_NONE;
 			}
 			PyErr_SetString(PyExc_RuntimeError, "Failed to create the desired instance.");
 			return nullptr;

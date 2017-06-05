@@ -198,12 +198,6 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 	PyRun_SimpleString(buffer);
 	if (PyErr_Occurred())
 		PyErr_Print();
-	/*
-	WString wpath;
-	for (int i = 0; basePath[i] != 0; ++i)
-		wpath.push_back(wchar_t(basePath[i]));
-	PySys_SetPath(wpath.c_str());
-	*/
 
 	// Run the integration tests.
 	{

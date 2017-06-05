@@ -44,12 +44,25 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 
 //////////////////////////////////////////////////////////////////////////
 Test::Test(iBase*)
+	: mRefCount(1)
 {
-
 }
 
 Test::~Test()
 {}
+
+int32_t CPF_STDCALL Test::AddRef()
+{
+	return ++mRefCount;
+}
+
+int32_t CPF_STDCALL Test::Release()
+{
+	int32_t result = --mRefCount;
+	if (result == 0)
+		delete this;
+	return result;
+}
 
 GOM::Result CPF_STDCALL Test::Cast(GOM::InterfaceID id, void** outIface)
 {
@@ -72,4 +85,9 @@ GOM::Result CPF_STDCALL Test::Cast(GOM::InterfaceID id, void** outIface)
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
+}
+
+int32_t CPF_STDCALL Test::Tester(int64_t i)
+{
+	return int32_t(i);
 }
