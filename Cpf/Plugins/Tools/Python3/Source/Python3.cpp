@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Python3.hpp"
 #include "Logging/Logging.hpp"
-#include "rttr/registration.h"
 #include "Plugin/iRegistry.hpp"
 #include "GOM/pyModule.hpp"
 #include "GOM/pyResult.hpp"
@@ -43,19 +42,6 @@ GOM::Result CPF_STDCALL Python3::Cast(GOM::InterfaceID id, void** outIface)
 	}
 	return GOM::kInvalidParameter;
 }
-
-
-//////////////////////////////////////////////////////////////////////////
-/*
-* I think that the goal is going to be centralized around rttr.
-* Describe the API's to rttr and then pass those into the script
-* component which will then break it down into appropriate bindings.
-* This will allow multiple script languages at the cost of speed,
-* but since this is intended as only being a tool only solution
-* it doesn't matter much.
-* There will be a couple exceptions such as the GOM::Result, GOM::ClassID
-* and core bits which will likely be manually wrapped for best results.
-*/
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -169,25 +155,7 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 	bool pythonInit = _InitPython();
 	(void)pythonInit;
 
-	//////////////////////////////////////////////////////////////////////////
-	// List out the registered iRegistry.
-	CPF_LOG(Python3, Info) << "Begin rttr: *******************************************";
-	for (const auto& type : rttr::type::get_types())
-	{
-		if (type.is_class())
-		{
-			if (type.get_metadata("Test").is_valid())
-			{
-				CPF_LOG(Python3, Info) << type.get_name();
-				for (const auto& method : type.get_methods())
-				{
-					CPF_LOG(Python3, Info) << " :" << method.get_name() << " Args(" << method.get_parameter_infos().size() << ")";
-				}
-			}
-		}
-	}
-	CPF_LOG(Python3, Info) << "End rttr:   *******************************************";
-	//////////////////////////////////////////////////////////////////////////
+	// Setup the extended path.
 	char buffer[1024];
 	::strcpy(buffer,
 		"import sys\n"
