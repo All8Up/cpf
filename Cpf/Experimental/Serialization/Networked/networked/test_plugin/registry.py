@@ -112,18 +112,6 @@ def run_tests():
 	except RuntimeError:
 		print("Failure: registry.create failed to create test plugin.")
 
-	# Validate that we got the correct instance created.
-	test2 = gom.cast(test, gom.InterfaceID('Testing::iTest'))
-	if test != test2:
-		print("Failure: gom.cast failure")
-
-	# Call the generic add_ref and release just to test the instance.
-	gom.add_ref(test)
-	gom.release(test)
-
-	# Validate that the plugin says it can not be unloaded at this time.
-	# --- TODO
-
 	# Test that the interface id has a class instance associated with it.
 	classes = registry.get_classes(gom.InterfaceID('Testing::iTest'))
 	if classes == None or len(classes) != 1:
