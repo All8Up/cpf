@@ -45,20 +45,6 @@ GOM::Result CPF_STDCALL Python3::Cast(GOM::InterfaceID id, void** outIface)
 
 
 //////////////////////////////////////////////////////////////////////////
-PyMethodDef Cpf_methods[];
-static PyModuleDef cpfModuleDef =
-{
-	PyModuleDef_HEAD_INIT,
-	"cpf",
-	"Core module integration with the Cpf frameworks.",
-	-1,
-	Cpf_methods,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr
-};
-
 extern "C" PyObject* CPF_STDCALL CpfCrc15(PyObject*, PyObject* args)
 {
 	char* strValue = nullptr;
@@ -101,6 +87,19 @@ PyMethodDef Cpf_methods[] =
 	{ nullptr, nullptr }
 };
 
+static PyModuleDef cpfModuleDef =
+{
+	PyModuleDef_HEAD_INIT,
+	"_cpf",
+	"Core module integration with the Cpf frameworks.",
+	-1,
+	Cpf_methods,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr
+};
+
 
 PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
 {
@@ -108,11 +107,13 @@ PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
 	if (m == nullptr)
 		return nullptr;
 
+	/*
 	if (GOM::py::AddModule(m) &&
 		Plugin::py::AddModule(m))
 	{
 		return m;
 	}
+	*/
 
 	return nullptr;
 }
@@ -134,7 +135,7 @@ bool Python3::_InitPython()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create a Cpf module.
-	if (PyImport_AppendInittab("cpf", &PyInit_cpf)==0)
+	if (PyImport_AppendInittab("_cpf", &PyInit_cpf)==0)
 	{
 		Py_Initialize();
 		if (!PyEval_ThreadsInitialized())
@@ -162,7 +163,13 @@ GOM::Result CPF_STDCALL Python3::Initialize(const char* basePath, CreateRegistry
 		"sys.path.append(\""
 	);
 	::strcat(buffer, basePath);
-	::strcat(buffer, "\")");
+	::strcat(buffer, "networked/");
+	::strcat(buffer, "\")\n");
+
+	::strcat(buffer, "sys.path.append(\"");
+	::strcat(buffer, basePath);
+	::strcat(buffer, "plugins/py\")\n");
+
 	PyRun_SimpleString(buffer);
 	if (PyErr_Occurred())
 		PyErr_Print();

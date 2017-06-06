@@ -1,7 +1,7 @@
 import sys
 import io
 import unittest
-import test_gom
+#import test_gom
 import test_plugin
 
 class IntegrationTest(unittest.TestCase):
@@ -11,5 +11,5 @@ class IntegrationTest(unittest.TestCase):
 
 verbosity = 2
 runner = unittest.TextTestRunner(verbosity=verbosity)
-runner.run(test_gom.GetSuite())
+#runner.run(test_gom.GetSuite())
 runner.run(test_plugin.GetSuite())

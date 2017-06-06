@@ -41,6 +41,11 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		Source/Plugin/pyClassInstance.cpp
 	)
 
+	set (PYTHON_CPF_LIB_FILES
+		Script/cpf/__init__.py
+		Script/cpf/gom.py
+	)
+
 	# ###############################################
 	add_library (Python3 SHARED
 		${INCLUDE_FILES}
@@ -50,6 +55,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		${SOURCE_FILES}
 		${SOURCE_GOM_FILES}
 		${SOURCE_PLUGIN_FILES}
+		${PYTHON_CPF_LIB_FILES}
 	)
 	target_include_directories (Python3
 		PUBLIC
@@ -78,6 +84,9 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Python3> ${CPF_COMMON_PLUGINS}/Python3.cfp
 	)
 
+	configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Script/cpf/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/plugins/py/cpf/__init__.py COPYONLY)
+	configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Script/cpf/gom.py ${CMAKE_BINARY_DIR}/Debug/resources/plugins/py/cpf/gom.py COPYONLY)
+
 	# ###############################################
 	source_group (Headers FILES ${INCLUDE_FILES})
 	source_group (Headers\\GOM FILES ${INCLUDE_GOM_FILES})
@@ -86,6 +95,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	source_group (Sources FILES ${SOURCE_FILES})
 	source_group (Sources\\GOM FILES ${SOURCE_GOM_FILES})
 	source_group (Sources\\Plugins FILES ${SOURCE_PLUGIN_FILES})
+	source_group (Sources\\Python\\cpf FILES ${PYTHON_CPF_LIB_FILES})
 else ()
 	message ("Python not found.")
 endif ()

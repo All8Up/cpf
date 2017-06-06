@@ -59,8 +59,8 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	{
 		if (Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID, Tools::iPython3::kIID, mpPython3.AsVoidPP())))
 		{
-			String assetPath = exePath + "networked/";
-			mpPython3->Initialize(assetPath.c_str(), &PluginHost::CreateRegistry);
+			String basePath = exePath;
+			mpPython3->Initialize(basePath.c_str(), &PluginHost::CreateRegistry);
 		}
 	}
 

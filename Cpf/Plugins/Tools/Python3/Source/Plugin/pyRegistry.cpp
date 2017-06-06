@@ -42,11 +42,15 @@ extern "C" PyObject* CPF_STDCALL py::PyCreateRegistry(PyObject*, PyObject* args)
 {
 	if (s_Python3)
 	{
-		py::Registry* regy = PyObject_New(Plugin::py::Registry, reinterpret_cast<PyTypeObject*>(&Plugin::py::PluginRegistry_type));
-		regy->mpRegistry = nullptr;
-		regy->mpIID = s_pRegistryIID;
-		s_Python3->CreateRegistry(&regy->mpRegistry);
-		return reinterpret_cast<PyObject*>(regy);
+		iRegistry* regy = nullptr;
+		if (Succeeded(s_Python3->CreateRegistry(&regy)))
+		{
+			return PyCapsule_New(regy, nullptr, [](PyObject* obj)
+			{
+				auto base = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(obj, nullptr));
+				base->Release();
+			});
+		}
 	}
 	return nullptr;
 }
