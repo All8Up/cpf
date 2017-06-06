@@ -44,17 +44,17 @@ public:
 private:
 	int32_t mRefCount;
 
-	using LibraryMap = Cpf::UnorderedMap<String, Plugin::Library>;
-	using CreationMap = Cpf::UnorderedMap<GOM::ClassID, IntrusivePtr<Plugin::iClassInstance>>;
+	using LibraryMap = UnorderedMap<String, Plugin::Library>;
+	using CreationMap = UnorderedMap<GOM::ClassID, IntrusivePtr<Plugin::iClassInstance>>;
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
 
-	using ClassList = Cpf::Vector<GOM::ClassID>;
-	using ClassMap = Cpf::UnorderedMap<GOM::InterfaceID, ClassList>;
+	using ClassList = Vector<GOM::ClassID>;
+	using ClassMap = UnorderedMap<GOM::InterfaceID, ClassList>;
 	ClassMap mClasses;
 
-	using InstanceMap = Cpf::UnorderedMap<GOM::InterfaceID, iBase*>;
+	using InstanceMap = UnorderedMap<GOM::InterfaceID, iBase*>;
 	InstanceMap mInstances;
 };
 

@@ -44,3 +44,12 @@ class MetaBase(type(ctypes.POINTER(Base))):
 Interface = MetaBase(str('Interface'), (ctypes.POINTER(Base),), {
 	'__doc__': 'GOM Interface pointer.',
 	})
+
+Result = ctypes.c_uint32
+
+class iBase(Interface):
+	_methods_ =	[
+		('AddRef', Method(ctypes.c_int32)),
+		('Release', Method(ctypes.c_int32)),
+		('Cast', Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
+	]

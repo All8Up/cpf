@@ -4,7 +4,6 @@
 #include "Plugin/iRegistry.hpp"
 #include "GOM/pyModule.hpp"
 #include "GOM/pyResult.hpp"
-#include "Plugin/pyModule.hpp"
 
 using namespace Cpf;
 using namespace Tools;
@@ -77,6 +76,35 @@ extern "C" PyObject* CPF_STDCALL CpfCrc64(PyObject*, PyObject* args)
 	return PyLong_FromLongLong(Hash::Crc64(strValue, ::strlen(strValue)));
 }
 
+extern "C" PyObject* CPF_STDCALL CreateRegistry(PyObject*, PyObject*)
+{
+	if (s_Python3)
+	{
+		Plugin::iRegistry* regy = nullptr;
+		if (Succeeded(s_Python3->CreateRegistry(&regy)))
+		{
+			return PyCapsule_New(regy, nullptr, [](PyObject* obj)
+			{
+				auto base = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(obj, nullptr));
+				base->Release();
+			});
+		}
+	}
+	return nullptr;
+}
+
+extern "C" CPF_EXPORT void CpfCreateRegistry(void** regy)
+{
+	if (s_Python3)
+	{
+		Plugin::iRegistry* result = nullptr;
+		if (Succeeded(s_Python3->CreateRegistry(&result)))
+			*regy = result;
+		else
+			*regy = nullptr;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 PyMethodDef Cpf_methods[] =
 {
@@ -84,13 +112,14 @@ PyMethodDef Cpf_methods[] =
 	{ "crc16", (PyCFunction)CpfCrc16, METH_VARARGS, PyDoc_STR("Compute the crc16 of the given string.") },
 	{ "crc32", (PyCFunction)CpfCrc32, METH_VARARGS, PyDoc_STR("Compute the crc32 of the given string.") },
 	{ "crc64", (PyCFunction)CpfCrc64, METH_VARARGS, PyDoc_STR("Compute the crc64 of the given string.") },
+	{ "create_registry", (PyCFunction)CreateRegistry, METH_VARARGS, PyDoc_STR("Create a registry instance.") },
 	{ nullptr, nullptr }
 };
 
 static PyModuleDef cpfModuleDef =
 {
 	PyModuleDef_HEAD_INIT,
-	"_cpf",
+	"cpfcore",
 	"Core module integration with the Cpf frameworks.",
 	-1,
 	Cpf_methods,
@@ -100,22 +129,12 @@ static PyModuleDef cpfModuleDef =
 	nullptr
 };
 
-
 PyMODINIT_FUNC CPF_STDCALL PyInit_cpf()
 {
 	PyObject* m = PyModule_Create(&cpfModuleDef);
 	if (m == nullptr)
 		return nullptr;
-
-	/*
-	if (GOM::py::AddModule(m) &&
-		Plugin::py::AddModule(m))
-	{
-		return m;
-	}
-	*/
-
-	return nullptr;
+	return m;
 }
 
 bool Python3::_InitPython()
@@ -135,7 +154,7 @@ bool Python3::_InitPython()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create a Cpf module.
-	if (PyImport_AppendInittab("_cpf", &PyInit_cpf)==0)
+	if (PyImport_AppendInittab("cpfcore", &PyInit_cpf)==0)
 	{
 		Py_Initialize();
 		if (!PyEval_ThreadsInitialized())

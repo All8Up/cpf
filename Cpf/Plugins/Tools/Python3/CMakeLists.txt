@@ -44,6 +44,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	set (PYTHON_CPF_LIB_FILES
 		Script/cpf/__init__.py
 		Script/cpf/gom.py
+		Script/cpf/plugin.py
 	)
 
 	# ###############################################
@@ -86,6 +87,7 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 
 	configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Script/cpf/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/plugins/py/cpf/__init__.py COPYONLY)
 	configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Script/cpf/gom.py ${CMAKE_BINARY_DIR}/Debug/resources/plugins/py/cpf/gom.py COPYONLY)
+	configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Script/cpf/plugin.py ${CMAKE_BINARY_DIR}/Debug/resources/plugins/py/cpf/plugin.py COPYONLY)
 
 	# ###############################################
 	source_group (Headers FILES ${INCLUDE_FILES})
