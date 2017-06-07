@@ -172,7 +172,7 @@ GOM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool
 	CommandBuffer* result = new CommandBuffer(nullptr);
 	if (result)
 	{
-		if (Succeeded(result->Initialize(this, type, pool)))
+		if (GOM::Succeeded(result->Initialize(this, type, pool)))
 		{
 			*buffer = result;
 			return GOM::kOK;

@@ -43,7 +43,7 @@ extern "C" PyObject* CPF_STDCALL py::PyCreateRegistry(PyObject*, PyObject* args)
 	if (s_Python3)
 	{
 		iRegistry* regy = nullptr;
-		if (Succeeded(s_Python3->CreateRegistry(&regy)))
+		if (GOM::Succeeded(s_Python3->CreateRegistry(&regy)))
 		{
 			return PyCapsule_New(regy, nullptr, [](PyObject* obj)
 			{
@@ -77,7 +77,7 @@ extern "C" PyObject* CPF_STDCALL RegistryLoad(py::Registry* self, PyObject* args
 		return nullptr;
 	}
 	{
-		if (Succeeded(self->mpRegistry->Load(name)))
+		if (GOM::Succeeded(self->mpRegistry->Load(name)))
 			return PyBool_FromLong(1);
 		PyErr_SetString(PyExc_RuntimeError, "Plugin load failure.");
 	}
@@ -93,7 +93,7 @@ extern "C" PyObject* CPF_STDCALL RegistryCanUnload(py::Registry* self, PyObject*
 		return nullptr;
 	}
 
-	if (Succeeded(self->mpRegistry->CanUnload(name)))
+	if (GOM::Succeeded(self->mpRegistry->CanUnload(name)))
 		return PyBool_FromLong(1);
 	return PyBool_FromLong(0);
 }
@@ -106,7 +106,7 @@ extern "C" PyObject* CPF_STDCALL RegistryUnload(py::Registry* self, PyObject* ar
 		PyErr_SetString(PyExc_RuntimeError, "Invalid argument.");
 		return nullptr;
 	}
-	if (Succeeded(self->mpRegistry->Unload(name)))
+	if (GOM::Succeeded(self->mpRegistry->Unload(name)))
 		return PyBool_FromLong(1);
 	return PyBool_FromLong(0);
 }
@@ -131,7 +131,7 @@ extern "C" PyObject* CPF_STDCALL RegistryExists(py::Registry* self, PyObject* ar
 	{
 		if (classId && GOMClassID_Check(classId))
 		{
-			if (Succeeded(self->mpRegistry->Exists(reinterpret_cast<GOM::py::ClassID*>(classId)->mID)))
+			if (GOM::Succeeded(self->mpRegistry->Exists(reinterpret_cast<GOM::py::ClassID*>(classId)->mID)))
 			{
 				return PyBool_FromLong(1);
 			}
@@ -156,7 +156,7 @@ extern "C" PyObject* CPF_STDCALL RegistryCreate(py::Registry* self, PyObject* ar
 			GOM::iBase* result = nullptr;
 			GOM::iBase* outerPtr = outer ? reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(outer, nullptr)) : nullptr;
 
-			if (Succeeded(self->mpRegistry->Create(outerPtr, classId->mID, interfaceId->mID, reinterpret_cast<void**>(&result))))
+			if (GOM::Succeeded(self->mpRegistry->Create(outerPtr, classId->mID, interfaceId->mID, reinterpret_cast<void**>(&result))))
 			{
 				*reinterpret_cast<void**>(output->value.p) = result;
 				Py_RETURN_NONE;
@@ -196,12 +196,12 @@ extern "C" PyObject* CPF_STDCALL RegistryGetClasses(py::Registry* self, PyObject
 	{
 		GOM::py::InterfaceID* iface = reinterpret_cast<GOM::py::InterfaceID*>(iid);
 		int32_t count = 0;
-		if (Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, nullptr)))
+		if (GOM::Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, nullptr)))
 		{
 			if (count == 0)
 				Py_RETURN_NONE;
 			Vector<GOM::ClassID> ids(count);
-			if (Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, ids.data())))
+			if (GOM::Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, ids.data())))
 			{
 				PyObject* list = PyList_New(count);
 				if (list)
@@ -235,7 +235,7 @@ extern "C" PyObject* CPF_STDCALL RegistryInstanceInstall(py::Registry* self, PyO
 	if (GOMInterfaceID_Check(iid) && PyCapsule_CheckExact(capsule))
 	{
 		GOM::iBase* instance = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(capsule, nullptr));
-		if (instance && Succeeded(self->mpRegistry->InstanceInstall(iid->mID, instance)))
+		if (instance && GOM::Succeeded(self->mpRegistry->InstanceInstall(iid->mID, instance)))
 		{
 			Py_RETURN_NONE;
 		}
@@ -256,7 +256,7 @@ extern "C" PyObject* CPF_STDCALL RegistryInstanceRemove(py::Registry* self, PyOb
 	}
 	if (GOMInterfaceID_Check(iid))
 	{
-		if (Succeeded(self->mpRegistry->InstanceRemove(iid->mID)))
+		if (GOM::Succeeded(self->mpRegistry->InstanceRemove(iid->mID)))
 		{
 			Py_RETURN_NONE;
 		}
@@ -278,7 +278,7 @@ extern "C" PyObject* CPF_STDCALL RegistryGetInstance(py::Registry* self, PyObjec
 	if (GOMInterfaceID_Check(iid))
 	{
 		GOM::iBase* instance = nullptr;
-		if (Succeeded(self->mpRegistry->GetInstance(iid->mID, &instance)))
+		if (GOM::Succeeded(self->mpRegistry->GetInstance(iid->mID, &instance)))
 		{
 			return PyCapsule_New(instance, nullptr, [](PyObject* obj)
 			{

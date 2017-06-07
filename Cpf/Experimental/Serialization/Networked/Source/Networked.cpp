@@ -55,9 +55,9 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/MultiCore.cfp");
 	GetRegistry()->Load("plugins/DebugUI.cfp");
-	if (Succeeded(GetRegistry()->Load("plugins/Python3.cfp")))
+	if (GOM::Succeeded(GetRegistry()->Load("plugins/Python3.cfp")))
 	{
-		if (Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID, Tools::iPython3::kIID, mpPython3.AsVoidPP())))
+		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID, Tools::iPython3::kIID, mpPython3.AsVoidPP())))
 		{
 			String basePath = exePath;
 			mpPython3->Initialize(basePath.c_str(), &PluginHost::CreateRegistry);
@@ -76,13 +76,13 @@ GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
 	application->Cast(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
 
-	if (Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID, Concurrency::iScheduler::kIID, mpScheduler.AsVoidPP())))
+	if (GOM::Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID, Concurrency::iScheduler::kIID, mpScheduler.AsVoidPP())))
 	{
 		if (_CreateWindow() && _Install() && _InitializeMultiCore())
 		{
 			if (_InitializeResources() && _InitializePipeline())
 			{
-				if (Succeeded(_ConfigurePipeline()))
+				if (GOM::Succeeded(_ConfigurePipeline()))
 				{
 					_ConfigureDebugUI();
 

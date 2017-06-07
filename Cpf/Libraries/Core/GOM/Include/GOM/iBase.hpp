@@ -14,6 +14,9 @@ namespace Cpf
 		struct instance_tag;
 		using InstanceID = Hash::HashID<uint64_t, instance_tag>;
 
+		static_assert(sizeof(ClassID) == sizeof(uint64_t), "Size is incorrect.");
+		static_assert(sizeof(InterfaceID) == sizeof(uint64_t), "Size is incorrect.");
+
 		//////////////////////////////////////////////////////////////////////////
 		struct iBase : iRefCounted
 		{

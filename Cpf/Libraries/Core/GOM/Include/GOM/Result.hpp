@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Configuration.hpp"
 #include "Hash/HashID.hpp"
 
 namespace Cpf
@@ -7,31 +8,8 @@ namespace Cpf
 	namespace GOM
 	{
 		/** @brief A result code. */
-		struct Result
-		{
-			uint32_t Error : 1;
-			uint32_t SubSystem : 16;
-			uint32_t Value : 15;
-
-			uint32_t GetError() const { return Error; }
-			void SetError(uint32_t value) { Error = value == 0 ? 0 : 1; }
-			uint32_t GetSubSystem() const { return SubSystem; }
-			void SetSubSystem(uint32_t value) { SubSystem = value; }
-			uint32_t GetValue() const { return Value; }
-			void SetValue(uint32_t value) { Value = value; }
-		};
+		using Result = uint32_t;
 		static_assert(sizeof(Result) == 4, "Invalid result code size.");
-
-		/**
-		 * @brief Result code comparison.
-		 * @param lhs The left hand side.
-		 * @param rhs The right hand side.
-		 * @return True if equivalent.
-		 */
-		inline bool operator == (const Result lhs, const Result rhs)
-		{
-			return lhs.Error == rhs.Error && lhs.SubSystem == rhs.SubSystem && lhs.Value == rhs.Value;
-		}
 
 		/**
 		 * @brief Creates a result code.
@@ -40,21 +18,21 @@ namespace Cpf
 		 * @param v  The error code identifier.
 		 * @return The result code.
 		 */
-		constexpr Result CreateResult(uint8_t e, uint16_t ss, uint16_t v) { return Result{ e, ss, uint16_t(v & 0x7FFF) }; }
+		constexpr Result CreateResult(uint8_t e, uint16_t ss, uint16_t v) { return (e == 0 ? 0 : 1) << 31 | (ss & 0xFFFF) << 15 | (v&0x7FFF); }
 
 		/**
 		 * @brief Test a result code for sucess.
 		 * @param result The result code to test.
 		 * @return True if the result code is a non-error code.
 		 */
-		constexpr bool Succeeded(Result result) { return result.Error == 0; }
+		constexpr bool Succeeded(Result result) { return (result & 0x80000000) == 0; }
 
 		/**
 		 * @brief Test if a result code indicates an error.
 		 * @param result The result code to test.
 		 * @return True if the result code is a failure code.
 		 */
-		constexpr bool Failed(Result result) { return result.Error != 0; }
+		constexpr bool Failed(Result result) { return (result & 0x80000000) != 0; }
 
 		// Standard result codes.
 		static constexpr Result kOK = CreateResult(0, "Core"_crc16, "OK"_crc15);

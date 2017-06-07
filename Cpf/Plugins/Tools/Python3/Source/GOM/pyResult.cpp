@@ -11,7 +11,7 @@ extern "C" int CPF_STDCALL ResultInit(py::Result* self, PyObject* args, PyObject
 	int error = 0;
 	char* subSys = nullptr;
 	char* value = nullptr;
-	self->mResult = Result{ 0, 0, 0 };
+	self->mResult = 0;
 	char* keys[] = { "error", "subsystem", "value" };
 	
 	if (!PyArg_ParseTupleAndKeywords(args, kwds, "|iss", keys, &error, &subSys, &value))
@@ -19,7 +19,7 @@ extern "C" int CPF_STDCALL ResultInit(py::Result* self, PyObject* args, PyObject
 		return -1;
 	}
 	if (subSys && value)
-		self->mResult = Result{ uint32_t(error == 0 ? 0 : 1), Hash::Crc16(subSys, ::strlen(subSys)), Hash::Crc15(value, ::strlen(value)) };
+		self->mResult = GOM::CreateResult(uint32_t(error == 0 ? 0 : 1), Hash::Crc16(subSys, ::strlen(subSys)), Hash::Crc15(value, ::strlen(value)) );
 	return 0;
 }
 
@@ -33,51 +33,51 @@ extern "C" PyObject* CPF_STDCALL ResultIsSuccess(py::Result* self, PyObject* arg
 {
 	if (!PyArg_ParseTuple(args, ":is_success"))
 		return nullptr;
-	return PyBool_FromLong(self->mResult.Error == 0);
+	return PyBool_FromLong(0); // self->mResult.Error == 0);
 }
 
 extern "C" PyObject* CPF_STDCALL ResultIsError(py::Result* self, PyObject* args)
 {
 	if (!PyArg_ParseTuple(args, ":is_error"))
 		return nullptr;
-	return PyBool_FromLong(self->mResult.Error != 0);
+	return PyBool_FromLong(0); // self->mResult.Error != 0);
 }
 
 
 //////////////////////////////////////////////////////////////////////////
 extern "C" PyObject* CPF_STDCALL ResultGetError(py::Result* self, void*)
 {
-	return PyLong_FromLong(self->mResult.Error);
+	return PyLong_FromLong(0); // self->mResult.Error);
 }
 
 extern "C" int CPF_STDCALL ResultSetError(py::Result* self, PyObject* value, void*)
 {
 	auto v = PyLong_AsUnsignedLong(value);
-	self->mResult.Error = v;
+	self->mResult = 0;// .Error = v;
 	return 0;
 }
 
 extern "C" PyObject* CPF_STDCALL ResultGetSubSystem(py::Result* self, void*)
 {
-	return PyLong_FromLong(self->mResult.SubSystem);
+	return PyLong_FromLong(0); // self->mResult.SubSystem);
 }
 
 extern "C" int CPF_STDCALL ResultSetSubSystem(py::Result* self, PyObject* value, void*)
 {
 	auto v = PyLong_AsUnsignedLong(value);
-	self->mResult.SubSystem = v;
+	self->mResult = 0; // .SubSystem = v;
 	return 0;
 }
 
 extern "C" PyObject* CPF_STDCALL ResultGetValue(py::Result* self, void*)
 {
-	return PyLong_FromLong(self->mResult.Value);
+	return PyLong_FromLong(0); // self->mResult.Value);
 }
 
 extern "C" int CPF_STDCALL ResultSetValue(py::Result* self, PyObject* value, void*)
 {
 	auto v = PyLong_AsUnsignedLong(value);
-	self->mResult.Value = v;
+	self->mResult = 0;
 	return 0;
 }
 

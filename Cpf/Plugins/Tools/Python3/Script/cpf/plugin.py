@@ -4,7 +4,7 @@ from cpf import gom
 
 class iRegistry(gom.iBase):
 	_methods_ =	[
-		('Load', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
+		('Load', gom.Method(ctypes.c_uint32, ctypes.POINTER(ctypes.c_char))),
 		('CanUnload', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
 		('Unload', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
 		('Install', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p)),

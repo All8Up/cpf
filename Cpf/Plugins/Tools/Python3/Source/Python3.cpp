@@ -81,7 +81,7 @@ extern "C" PyObject* CPF_STDCALL CreateRegistry(PyObject*, PyObject*)
 	if (s_Python3)
 	{
 		Plugin::iRegistry* regy = nullptr;
-		if (Succeeded(s_Python3->CreateRegistry(&regy)))
+		if (GOM::Succeeded(s_Python3->CreateRegistry(&regy)))
 		{
 			return PyCapsule_New(regy, nullptr, [](PyObject* obj)
 			{
@@ -98,7 +98,7 @@ extern "C" CPF_EXPORT void CpfCreateRegistry(void** regy)
 	if (s_Python3)
 	{
 		Plugin::iRegistry* result = nullptr;
-		if (Succeeded(s_Python3->CreateRegistry(&result)))
+		if (GOM::Succeeded(s_Python3->CreateRegistry(&result)))
 			*regy = result;
 		else
 			*regy = nullptr;

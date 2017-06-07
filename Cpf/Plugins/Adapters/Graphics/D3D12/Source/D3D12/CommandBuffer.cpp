@@ -59,7 +59,7 @@ GOM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Gra
 		mType = type;
 
 		GOM::Result result = _AddCommandList();
-		if (Succeeded(result))
+		if (GOM::Succeeded(result))
 		{
 			End();
 			CPF_LOG(D3D12, Info) << "Created command buffer: " << intptr_t(this);

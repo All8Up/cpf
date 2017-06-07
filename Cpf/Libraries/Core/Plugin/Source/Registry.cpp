@@ -23,9 +23,9 @@ public:
 	GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void**) override;
 
 	// iRegistry overrides.
-	GOM::Result CPF_STDCALL Load(const char* const) override;
-	GOM::Result CPF_STDCALL CanUnload(const char* const library) override;
-	GOM::Result CPF_STDCALL Unload(const char* const library) override;
+	GOM::Result CPF_STDCALL Load(const char*) override;
+	GOM::Result CPF_STDCALL CanUnload(const char* library) override;
+	GOM::Result CPF_STDCALL Unload(const char* library) override;
 
 	GOM::Result CPF_STDCALL Create(GOM::iBase*, GOM::ClassID, GOM::InterfaceID, void**) override;
 
@@ -121,7 +121,7 @@ GOM::Result CPF_STDCALL Registry::Cast(GOM::InterfaceID id, void** outIface)
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::Load(const char* const name)
+GOM::Result CPF_STDCALL Registry::Load(const char* name)
 {
 	if (name)
 	{
@@ -146,7 +146,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* const name)
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::CanUnload(const char* const name)
+GOM::Result CPF_STDCALL Registry::CanUnload(const char* name)
 {
 	if (name)
 	{
@@ -166,7 +166,7 @@ GOM::Result CPF_STDCALL Registry::CanUnload(const char* const name)
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::Unload(const char* const name)
+GOM::Result CPF_STDCALL Registry::Unload(const char* name)
 {
 	if (name)
 	{
@@ -177,7 +177,7 @@ GOM::Result CPF_STDCALL Registry::Unload(const char* const name)
 		if (unload)
 		{
 			auto result = (*unload)(this);
-			if (Succeeded(result))
+			if (GOM::Succeeded(result))
 			{
 				if ((exists->second).Unload())
 				{

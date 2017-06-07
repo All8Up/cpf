@@ -89,7 +89,7 @@ GOM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapter
 						if (SUCCEEDED(adapter2->GetDesc2(&desc2)))
 						{
 							Graphics::iAdapter* adapterIface;
-							if (Succeeded(gContext.GetRegistry()->Create(nullptr, kAdapterCID, Graphics::iAdapter::kIID, reinterpret_cast<void**>(&adapterIface))))
+							if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kAdapterCID, Graphics::iAdapter::kIID, reinterpret_cast<void**>(&adapterIface))))
 							{
 								D3D12::Adapter* d3dAdapter = static_cast<D3D12::Adapter*>(adapterIface);
 								d3dAdapter->Initialize(adapter2);
@@ -126,10 +126,10 @@ GOM::Result Instance::CreateDevice(D3D12::Adapter::iAdapter* adapter, Graphics::
 {
 	if (adapter && device)
 	{
-		if (Succeeded(gContext.GetRegistry()->Create(nullptr, kDeviceCID, Graphics::iDevice::kIID, reinterpret_cast<void**>(device))))
+		if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kDeviceCID, Graphics::iDevice::kIID, reinterpret_cast<void**>(device))))
 		{
 			Device* dev = static_cast<Device*>(*device);
-			if (Succeeded(dev->Initialize(adapter)) && Succeeded(dev->Initialize()))
+			if (GOM::Succeeded(dev->Initialize(adapter)) && GOM::Succeeded(dev->Initialize()))
 				return GOM::kOK;
 			(*device)->Release();
 			*device = nullptr;

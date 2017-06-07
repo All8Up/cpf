@@ -13,7 +13,7 @@ extern "C" PyObject* CPF_STDCALL CpfGOMSucceeded(GOM::py::Result*, PyObject* arg
 	GOM::py::Result* result;
 	if (!PyArg_ParseTuple(args, "O:succeeded", &result))
 		return nullptr;
-	return PyBool_FromLong(result->mResult.Error == 0);
+	return PyBool_FromLong(0); // result->mResult.Error == 0);
 }
 
 extern "C" PyObject* CPF_STDCALL CpfGOMFailed(GOM::py::Result*, PyObject* args)
@@ -21,7 +21,7 @@ extern "C" PyObject* CPF_STDCALL CpfGOMFailed(GOM::py::Result*, PyObject* args)
 	GOM::py::Result* result;
 	if (!PyArg_ParseTuple(args, "O:failed", &result))
 		return nullptr;
-	return PyBool_FromLong(result->mResult.Error != 0);
+	return PyBool_FromLong(0); // result->mResult.Error != 0);
 }
 
 //////////////////////////////////////////////////////////////////////////

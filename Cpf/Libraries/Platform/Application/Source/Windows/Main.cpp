@@ -46,9 +46,9 @@ int main(int argc, char** argv)
 	if (app)
 	{
 		auto result = RunApplication(app);
-		return Cpf::GOM::Succeeded(result) ? 0 : -int(result.Value);
+		return Cpf::GOM::Succeeded(result) ? 0 : -int(result&0x7FFF);
 	}
-	return -int(Cpf::GOM::kOutOfMemory.Value);
+	return -int(Cpf::GOM::kOutOfMemory & 0x7FFF);
 }
 
 
@@ -60,8 +60,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 	if (app)
 	{
 		auto result = RunApplication(app);
-		return Cpf::GOM::Succeeded(result) ? 0 : -int(result.Value);
+		return Cpf::GOM::Succeeded(result) ? 0 : -int(result & 0x7FFF);
 	}
-	return -int(Cpf::GOM::kOutOfMemory.Value);
+	return -int(Cpf::GOM::kOutOfMemory & 0x7FFF);
 }
 #endif

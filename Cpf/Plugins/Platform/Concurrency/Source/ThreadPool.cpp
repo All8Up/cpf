@@ -38,9 +38,9 @@ GOM::Result CPF_STDCALL ThreadPool::Cast(GOM::InterfaceID id, void** outIface)
 
 bool ThreadPool::Initialize(Plugin::iRegistry* regy, int threadCount)
 {
-	if (Succeeded(regy->Create(nullptr, kSchedulerCID, iScheduler::kIID, mpScheduler.AsVoidPP())) &&
-		Succeeded(regy->Create(nullptr, kWorkBufferCID, iWorkBuffer::kIID, mpQueue.AsVoidPP())))
-		return Succeeded(mpScheduler->Initialize(threadCount, nullptr, nullptr, nullptr));
+	if (GOM::Succeeded(regy->Create(nullptr, kSchedulerCID, iScheduler::kIID, mpScheduler.AsVoidPP())) &&
+		GOM::Succeeded(regy->Create(nullptr, kWorkBufferCID, iWorkBuffer::kIID, mpQueue.AsVoidPP())))
+		return GOM::Succeeded(mpScheduler->Initialize(threadCount, nullptr, nullptr, nullptr));
 	return false;
 }
 

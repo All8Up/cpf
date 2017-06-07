@@ -47,7 +47,7 @@ GOM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
 
 bool RenderSystem::Initialize(Plugin::iRegistry* registry, GOM::ClassID rid, iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
-	if (Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
+	if (GOM::Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
 	{
 		if (_SelectAdapter() &&
 			GOM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&

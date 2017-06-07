@@ -8,8 +8,6 @@ class Tests(unittest.TestCase):
 		self.registry = plugin.create_registry()
 		print (self.registry.AddRef())
 		print (self.registry.Release())
-
-		result = self.registry.Cast(5, ctypes.c_void_p(None))
 		self.registry.Load("plugins/TestingPlugin.cfp".encode('utf-8'))
 
 	def tearDown(self):
