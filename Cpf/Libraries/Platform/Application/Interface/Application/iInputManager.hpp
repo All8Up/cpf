@@ -18,6 +18,6 @@ namespace Cpf
 
 		virtual Events::Emitter* CPF_STDCALL GetEmiter() = 0;
 		virtual GOM::Result CPF_STDCALL EnumerateDevices(EnumCallback, void*) = 0;
-		virtual GOM::Result CPF_STDCALL GetDevice(GOM::InstanceID, GOM::InterfaceID, void**) = 0;
+		virtual GOM::Result CPF_STDCALL GetDevice(uint64_t, uint64_t, void**) = 0;
 	};
 }

@@ -18,7 +18,7 @@ namespace Cpf
 			ThreadPool(iBase*);
 			~ThreadPool();
 
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 			bool CPF_STDCALL Initialize(Plugin::iRegistry* regy, int threadCount) override;
 			void CPF_STDCALL Shutdown() override;

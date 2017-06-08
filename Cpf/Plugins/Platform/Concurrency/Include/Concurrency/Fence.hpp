@@ -14,7 +14,7 @@ namespace Cpf
 			Fence(iBase*);
 			virtual ~Fence() {}
 
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 			void CPF_STDCALL Wait() override;
 			void CPF_STDCALL Signal() override;

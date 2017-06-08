@@ -16,7 +16,7 @@ namespace Cpf
 			EntityStage(iBase*);
 
 			// iBase overrides.
-			GOM::Result Cast(GOM::InterfaceID, void**) override;
+			GOM::Result Cast(uint64_t, void**) override;
 
 			// iStage overrides.
 			GOM::Result CPF_STDCALL Initialize(MultiCore::iSystem*, const char* const name) override;

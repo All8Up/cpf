@@ -49,21 +49,21 @@ namespace Cpf
 			 * @param [in,out] clsInst The class instance object.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL Install(GOM::ClassID cid, iClassInstance* clsInst) = 0;
+			virtual GOM::Result CPF_STDCALL Install(uint64_t cid, iClassInstance* clsInst) = 0;
 
 			/**
 			 * @brief Removes a class instance.
 			 * @param cid The instance id.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL Remove(GOM::ClassID cid) = 0;
+			virtual GOM::Result CPF_STDCALL Remove(uint64_t cid) = 0;
 
 			/**
 			 * @brief Check if a class id has a class instance installed.
 			 * @param cid The class instance id.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL Exists(GOM::ClassID cid) = 0;
+			virtual GOM::Result CPF_STDCALL Exists(uint64_t cid) = 0;
 
 			/**
 			 * @brief Creates an instance.
@@ -73,7 +73,7 @@ namespace Cpf
 			 * @param [out] result Various error codes or GOM::kOK.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL Create(iBase* outer, GOM::ClassID cid, GOM::InterfaceID iid, void** result) = 0;
+			virtual GOM::Result CPF_STDCALL Create(iBase* outer, uint64_t cid, uint64_t iid, void** result) = 0;
 
 			/**
 			 * @brief Install a set of class id's and instance id's.
@@ -98,7 +98,7 @@ namespace Cpf
 			 * @param [in,out] cid The output array of class id's.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL GetClasses(GOM::InterfaceID id, int32_t* count, GOM::ClassID* cid) = 0;
+			virtual GOM::Result CPF_STDCALL GetClasses(uint64_t id, int32_t* count, uint64_t* cid) = 0;
 
 			/**
 			 * @brief Install an instance for the given interface id.
@@ -106,14 +106,14 @@ namespace Cpf
 			 * @param [in,out] instance If non-null, the instance pointer to install.
 			 * @return A GOM::Result, kOK if all is ok.
 			 */
-			virtual GOM::Result CPF_STDCALL InstanceInstall(GOM::InterfaceID id, iBase* instance) = 0;
+			virtual GOM::Result CPF_STDCALL InstanceInstall(uint64_t id, iBase* instance) = 0;
 
 			/**
 			 * @brief Remove an instance from the instances.
 			 * @param id The interface id for the singleton.
 			 * @return A GOM::Result, kOK if the instance was removed.
 			 */
-			virtual GOM::Result CPF_STDCALL InstanceRemove(GOM::InterfaceID id) = 0;
+			virtual GOM::Result CPF_STDCALL InstanceRemove(uint64_t id) = 0;
 
 			/**
 			 * @brief Get the instance for the given interface.
@@ -121,7 +121,7 @@ namespace Cpf
 			 * @param [in,out] outIface If non-null, the output.
 			 * @return The GOM::Result, kOK if the instance was found and put in the output.
 			 */
-			virtual GOM::Result CPF_STDCALL GetInstance(GOM::InterfaceID id, iBase** outIface) = 0;
+			virtual GOM::Result CPF_STDCALL GetInstance(uint64_t id, iBase** outIface) = 0;
 		};
 	}
 }

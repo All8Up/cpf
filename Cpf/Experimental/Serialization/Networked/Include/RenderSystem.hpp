@@ -43,7 +43,7 @@ namespace Cpf
 		Graphics::iDebugUI* GetDebugUI();
 
 		// iBase
-		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;

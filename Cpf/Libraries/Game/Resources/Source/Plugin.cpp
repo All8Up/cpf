@@ -19,11 +19,11 @@ extern "C" void CPF_EXPORT InstallResources(Plugin::iRegistry* registry)
 	CPF_LOG_LEVEL(Resources, Warn);
 	Platform::IOInitializer::Install();
 
-	registry->Install(Resources::Caches::kCacheDefaultCID, new Plugin::tClassInstance<Resources::Caches::Default>());
-	registry->Install(Resources::kLocatorCID, new Plugin::tClassInstance<Resources::Locator>());
-	registry->Install(Resources::kMonitorFileSystemCID, new Plugin::tClassInstance<Resources::Monitors::FileSystem>());
-	registry->Install(Resources::kMonitorManualCID, new Plugin::tClassInstance<Resources::Monitors::Manual>());
-	registry->Install(Resources::kConfigurationCID, new Plugin::tClassInstance<Resources::Configuration>());
+	registry->Install(Resources::Caches::kCacheDefaultCID.GetID(), new Plugin::tClassInstance<Resources::Caches::Default>());
+	registry->Install(Resources::kLocatorCID.GetID(), new Plugin::tClassInstance<Resources::Locator>());
+	registry->Install(Resources::kMonitorFileSystemCID.GetID(), new Plugin::tClassInstance<Resources::Monitors::FileSystem>());
+	registry->Install(Resources::kMonitorManualCID.GetID(), new Plugin::tClassInstance<Resources::Monitors::Manual>());
+	registry->Install(Resources::kConfigurationCID.GetID(), new Plugin::tClassInstance<Resources::Configuration>());
 
 	Configuration::VolumeDescriptor fileSystemDesc
 	{
@@ -42,11 +42,11 @@ extern "C" void CPF_EXPORT InstallResources(Plugin::iRegistry* registry)
 
 extern "C" void CPF_EXPORT RemoveResources(Plugin::iRegistry* registry)
 {
-	registry->Remove(Resources::kConfigurationCID);
-	registry->Remove(Resources::kMonitorManualCID);
-	registry->Remove(Resources::kMonitorFileSystemCID);
-	registry->Remove(Resources::kLocatorCID);
-	registry->Remove(Resources::Caches::kCacheDefaultCID);
+	registry->Remove(Resources::kConfigurationCID.GetID());
+	registry->Remove(Resources::kMonitorManualCID.GetID());
+	registry->Remove(Resources::kMonitorFileSystemCID.GetID());
+	registry->Remove(Resources::kLocatorCID.GetID());
+	registry->Remove(Resources::Caches::kCacheDefaultCID.GetID());
 
 	Platform::IOInitializer::Remove();
 	CPF_DROP_LOG(Resources);

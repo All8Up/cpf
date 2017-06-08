@@ -21,7 +21,7 @@ namespace Cpf
 				ConstantBuffer(Device* device, const Graphics::ResourceDesc* desc, const void* initData);
 				virtual ~ConstantBuffer();
 
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				void Update(size_t offset, size_t size, const void* data) override;
 

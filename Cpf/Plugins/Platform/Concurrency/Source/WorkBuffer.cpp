@@ -19,11 +19,11 @@ WorkBuffer::~WorkBuffer()
 /**
  * @brief Query for an interface.
  */
-GOM::Result CPF_STDCALL WorkBuffer::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL WorkBuffer::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);

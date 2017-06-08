@@ -15,11 +15,11 @@ namespace Cpf
 			InputManager(GOM::iBase*);
 			virtual ~InputManager();
 
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID, void**) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t, void**) override;
 
 			Events::Emitter* CPF_STDCALL GetEmiter() override;
 			GOM::Result CPF_STDCALL EnumerateDevices(EnumCallback, void*) override;
-			GOM::Result CPF_STDCALL GetDevice(GOM::InstanceID, GOM::InterfaceID, void**) override;
+			GOM::Result CPF_STDCALL GetDevice(uint64_t, uint64_t, void**) override;
 
 		private:
 			Events::Emitter mEmitter;

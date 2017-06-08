@@ -44,7 +44,7 @@ namespace Cpf
 				GOM::Result Initialize(Graphics::iAdapter* adapter);
 
 				// Overrides from iBase.
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				// Overrides from iDevice.
 				GOM::Result CPF_STDCALL Initialize() override;

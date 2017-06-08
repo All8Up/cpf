@@ -34,11 +34,11 @@ GOM::Result D3D12::Adapter::Initialize(IDXGIAdapter2* adapter)
 	return GOM::kOK;
 }
 
-GOM::Result CPF_STDCALL D3D12::Adapter::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL D3D12::Adapter::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);

@@ -21,11 +21,11 @@ Pipeline::Pipeline(iBase*)
 Pipeline::~Pipeline()
 {}
 
-GOM::Result CPF_STDCALL Pipeline::Cast(GOM::InterfaceID id, void** iface)
+GOM::Result CPF_STDCALL Pipeline::Cast(uint64_t id, void** iface)
 {
 	if (iface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*iface = static_cast<GOM::iBase*>(this);
@@ -72,7 +72,7 @@ GOM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 	// Iterate the systems and setup the queue builder.
 	PipelineBuilder builder(regy, this);
 	mpQueue.Adopt(nullptr);
-	regy->Create(nullptr, Concurrency::kWorkBufferCID, Concurrency::iWorkBuffer::kIID, mpQueue.AsVoidPP());
+	regy->Create(nullptr, Concurrency::kWorkBufferCID.GetID(), Concurrency::iWorkBuffer::kIID.GetID(), mpQueue.AsVoidPP());
 	for (auto& system : mSystemMap)
 	{
 		// Iterate and add all blocks.

@@ -10,7 +10,7 @@ namespace Cpf
 		RenderSystem(GOM::iBase*);
 
 		// iBase.
-		GOM::Result Cast(GOM::InterfaceID id, void** outIface) override;
+		GOM::Result Cast(uint64_t id, void** outIface) override;
 
 		// iStageList.
 		GOM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;

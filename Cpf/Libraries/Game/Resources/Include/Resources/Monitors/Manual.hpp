@@ -15,7 +15,7 @@ namespace Cpf
 				Manual(iBase*);
 				virtual ~Manual();
 
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				bool CPF_STDCALL Touch(ID) override;
 				void CPF_STDCALL TouchAll() override;

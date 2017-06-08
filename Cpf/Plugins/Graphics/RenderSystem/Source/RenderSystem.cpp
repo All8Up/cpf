@@ -7,11 +7,11 @@ RenderSystem::RenderSystem(GOM::iBase*)
 {
 }
 
-GOM::Result CPF_STDCALL RenderSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch(id.GetID())
+		switch(id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -77,7 +77,7 @@ GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 {
 	(void)desc;
 	mID = MultiCore::SystemID(name, strlen(name));
-	rgy->Create(this, MultiCore::kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+	rgy->Create(this, MultiCore::kStageListCID.GetID(), iStageList::kIID.GetID(), mpStages.AsVoidPP());
 
 	return GOM::kOK;
 }

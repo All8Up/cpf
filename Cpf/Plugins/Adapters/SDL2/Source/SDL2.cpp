@@ -22,12 +22,12 @@ namespace
 {
 	Plugin::IID_CID sImplementations[] =
 	{
-		{ iWindowedApplication::kIID, SDL2::kWindowedApplicationCID },
-		{ iWindow::kIID, SDL2::kWindowCID },
-		{ iInputManager::kIID, SDL2::kInputManagerCID },
-		{ iMouseDevice::kIID, SDL2::kMouseDeviceCID },
-		{ iKeyboardDevice::kIID, SDL2::kKeyboardDeviceCID },
-		{ iClipboard::kIID, SDL2::kClipboardCID }
+		{ iWindowedApplication::kIID.GetID(), SDL2::kWindowedApplicationCID.GetID() },
+		{ iWindow::kIID.GetID(), SDL2::kWindowCID.GetID() },
+		{ iInputManager::kIID.GetID(), SDL2::kInputManagerCID.GetID() },
+		{ iMouseDevice::kIID.GetID(), SDL2::kMouseDeviceCID.GetID() },
+		{ iKeyboardDevice::kIID.GetID(), SDL2::kKeyboardDeviceCID.GetID() },
+		{ iClipboard::kIID.GetID(), SDL2::kClipboardCID.GetID() }
 	};
 }
 
@@ -41,12 +41,12 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 		if (SDL2::g_Context.AddRef() == 1)
 		{
 			SDL2::g_Context.SetRegistry(registry);
-			registry->Install(SDL2::kWindowCID, new Plugin::tClassInstance<SDL2::Window>());
-			registry->Install(SDL2::kWindowedApplicationCID, new Plugin::tClassInstance<SDL2::WindowedApp>());
-			registry->Install(SDL2::kInputManagerCID, new Plugin::tClassInstance<SDL2::InputManager>());
-			registry->Install(SDL2::kMouseDeviceCID, new Plugin::tClassInstance<SDL2::MouseDevice>());
-			registry->Install(SDL2::kKeyboardDeviceCID, new Plugin::tClassInstance<SDL2::KeyboardDevice>());
-			registry->Install(SDL2::kClipboardCID, new Plugin::tClassInstance<SDL2::Clipboard>());
+			registry->Install(SDL2::kWindowCID.GetID(), new Plugin::tClassInstance<SDL2::Window>());
+			registry->Install(SDL2::kWindowedApplicationCID.GetID(), new Plugin::tClassInstance<SDL2::WindowedApp>());
+			registry->Install(SDL2::kInputManagerCID.GetID(), new Plugin::tClassInstance<SDL2::InputManager>());
+			registry->Install(SDL2::kMouseDeviceCID.GetID(), new Plugin::tClassInstance<SDL2::MouseDevice>());
+			registry->Install(SDL2::kKeyboardDeviceCID.GetID(), new Plugin::tClassInstance<SDL2::KeyboardDevice>());
+			registry->Install(SDL2::kClipboardCID.GetID(), new Plugin::tClassInstance<SDL2::Clipboard>());
 			registry->ClassInstall(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
 		}
 		return GOM::kOK;
@@ -68,12 +68,12 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 		if (SDL2::g_Context.Release() == 0)
 		{
 			registry->ClassRemove(int32_t(sizeof(sImplementations) / sizeof(Plugin::IID_CID)), sImplementations);
-			registry->Remove(SDL2::kClipboardCID);
-			registry->Remove(SDL2::kKeyboardDeviceCID);
-			registry->Remove(SDL2::kMouseDeviceCID);
-			registry->Remove(SDL2::kInputManagerCID);
-			registry->Remove(SDL2::kWindowedApplicationCID);
-			registry->Remove(SDL2::kWindowCID);
+			registry->Remove(SDL2::kClipboardCID.GetID());
+			registry->Remove(SDL2::kKeyboardDeviceCID.GetID());
+			registry->Remove(SDL2::kMouseDeviceCID.GetID());
+			registry->Remove(SDL2::kInputManagerCID.GetID());
+			registry->Remove(SDL2::kWindowedApplicationCID.GetID());
+			registry->Remove(SDL2::kWindowCID.GetID());
 			SDL2::g_Context.SetRegistry(nullptr);
 		}
 		return GOM::kOK;

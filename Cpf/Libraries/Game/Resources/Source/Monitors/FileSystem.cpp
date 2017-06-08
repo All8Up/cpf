@@ -7,11 +7,11 @@ using namespace Cpf;
 using namespace Resources;
 using namespace Monitors;
 
-GOM::Result CPF_STDCALL FileSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL FileSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);

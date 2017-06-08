@@ -9,7 +9,7 @@ namespace Cpf
 	public:
 		Renderable(GOM::iBase*);
 
-		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 		// iComponent
 		void CPF_STDCALL SetSystem(MultiCore::iSystem*) override;

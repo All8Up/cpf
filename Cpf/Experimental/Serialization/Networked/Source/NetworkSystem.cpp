@@ -9,12 +9,12 @@ using namespace MultiCore;
 //////////////////////////////////////////////////////////////////////////
 GOM::Result NetworkSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kNetworkSystemCID, new Plugin::tClassInstance<NetworkSystem>());
+	return regy->Install(kNetworkSystemCID.GetID(), new Plugin::tClassInstance<NetworkSystem>());
 }
 
 GOM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)
 {
-	return regy->Remove(kNetworkSystemCID);
+	return regy->Remove(kNetworkSystemCID.GetID());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -29,11 +29,11 @@ void NetworkSystem::_Update(const Concurrency::WorkContext*, void* context)
 }
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL NetworkSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL NetworkSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -60,11 +60,11 @@ GOM::Result CPF_STDCALL NetworkSystem::Initialize(Plugin::iRegistry* rgy, const 
 	if (name)
 	{
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID.GetID(), iStageList::kIID.GetID(), mpStages.AsVoidPP());
 		if (GOM::Succeeded(result))
 		{
 			IntrusivePtr<iSingleUpdateStage> updateStage;
-			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, updateStage.AsVoidPP());
+			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), updateStage.AsVoidPP());
 			updateStage->Initialize(this, iStage::kExecute.GetString());
 			updateStage->SetUpdate(&NetworkSystem::_Update, this, BlockOpcode::eAll);
 			AddStage(updateStage);

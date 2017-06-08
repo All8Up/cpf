@@ -25,7 +25,7 @@ namespace Cpf
 				IndexBuffer(Device* device, const Graphics::ResourceDesc* desc, Graphics::Format format);
 				virtual ~IndexBuffer();
 
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				bool Map(void**, const Graphics::Range* = nullptr) override;
 				void Unmap(const Graphics::Range* range) override;

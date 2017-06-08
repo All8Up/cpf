@@ -8,7 +8,7 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-bool Entity::Create(EntityID id, iEntity** outEntity)
+bool Entity::Create(uint64_t id, iEntity** outEntity)
 {
 	CPF_ASSERT(outEntity != nullptr);
 	Entity* result = new Entity();
@@ -24,9 +24,9 @@ bool Entity::Create(EntityID id, iEntity** outEntity)
 
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result Entity::Cast(GOM::InterfaceID id, void** outPtr)
+GOM::Result Entity::Cast(uint64_t id, void** outPtr)
 {
-	switch (id.GetID())
+	switch (id)
 	{
 	case iBase::kIID.GetID():
 		{
@@ -54,7 +54,7 @@ GOM::Result Entity::Cast(GOM::InterfaceID id, void** outPtr)
 
 Entity::Entity()
 	: mpManager(nullptr)
-	, mID(kInvalidEntityID)
+	, mID(uint64_t(-1))
 	, mActive(false)
 	, mComponentCount(0)
 {}
@@ -91,12 +91,12 @@ void Entity::Deactivate()
 	mActive = false;
 }
 
-const EntityID& Entity::GetID() const
+const uint64_t Entity::GetID() const
 {
 	return mID;
 }
 
-void Entity::AddComponent(GOM::InterfaceID id, iComponent* component)
+void Entity::AddComponent(uint64_t id, iComponent* component)
 {
 	component->SetEntity(this);
 	CPF_ASSERT(mComponentCount < kMaxComponents);
@@ -120,7 +120,7 @@ void Entity::AddComponent(GOM::InterfaceID id, iComponent* component)
 		component->Activate();
 }
 
-int Entity::_GetComponentIndex(GOM::InterfaceID id) const
+int Entity::_GetComponentIndex(uint64_t id) const
 {
 	int low = 0;
 	int high = mComponentCount;
@@ -145,13 +145,13 @@ int Entity::_GetComponentIndex(GOM::InterfaceID id) const
 	return -1;
 }
 
-iComponent* Entity::GetComponent(GOM::InterfaceID id)
+iComponent* Entity::GetComponent(uint64_t id)
 {
 	int index = _GetComponentIndex(id);
 	return index==-1 ? nullptr : static_cast<iComponent*>(mComponents[index].second);
 }
 
-const iComponent* Entity::GetComponent(GOM::InterfaceID id) const
+const iComponent* Entity::GetComponent(uint64_t id) const
 {
 	int index = _GetComponentIndex(id);
 	return index == -1 ? nullptr : static_cast<const iComponent*>(mComponents[index].second);

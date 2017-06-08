@@ -10,8 +10,8 @@ namespace Cpf
 
 		struct IID_CID
 		{
-			GOM::InterfaceID mIID;
-			GOM::ClassID mCID;
+			uint64_t mIID;
+			uint64_t mCID;
 		};
 
 		/** @brief The class instance interface.  Added to iRegistry to create component instances. */
@@ -30,7 +30,7 @@ namespace Cpf
 			tClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
 			virtual ~tClassInstance() {}
 
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID, void**) override { return GOM::kNotImplemented; }
+			GOM::Result CPF_STDCALL Cast(uint64_t, void**) override { return GOM::kNotImplemented; }
 			int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
 			int32_t CPF_STDCALL Release() override
 			{

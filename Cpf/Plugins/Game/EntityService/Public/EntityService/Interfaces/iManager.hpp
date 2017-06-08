@@ -21,7 +21,7 @@ namespace Cpf
 
 			virtual MultiCore::iPipeline* GetPipeline() const = 0;
 
-			virtual iEntity* CreateEntity(EntityID id = kInvalidEntityID) = 0;
+			virtual iEntity* CreateEntity(uint64_t id = uint64_t(-1)) = 0;
 			virtual void Remove(iEntity*) = 0;
 			virtual void IterateEntities(Function<void(iEntity*)> cb) = 0;
 		};

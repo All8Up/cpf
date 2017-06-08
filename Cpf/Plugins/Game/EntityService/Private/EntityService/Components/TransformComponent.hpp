@@ -21,7 +21,7 @@ namespace Cpf
 			~TransformComponent() override;
 
 			//
-			GOM::Result Cast(GOM::InterfaceID id, void**) override;
+			GOM::Result Cast(uint64_t id, void**) override;
 
 			// Component overrides.
 			ComponentID GetID() const override;

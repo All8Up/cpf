@@ -20,7 +20,7 @@ namespace Cpf
 
 			int32_t CPF_STDCALL AddRef() override;
 			int32_t CPF_STDCALL Release() override;
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 			GOM::Result CPF_STDCALL FindStage(StageID id, iStage** outStage) const override;
 			GOM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;

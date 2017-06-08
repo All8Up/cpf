@@ -25,7 +25,7 @@ namespace Cpf
 					const char* const mpRoot;
 				};
 
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				// TODO: Remove.
 				static iVolume* Create(const VolumeDesc* const desc);

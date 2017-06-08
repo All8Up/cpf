@@ -27,7 +27,7 @@ namespace Cpf
 			virtual ~Locator();
 			
 			// iBase overrides.
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void**) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void**) override;
 
 			//
 			Events::Emitter& CPF_STDCALL GetEmitter() override { return mEmitter; }

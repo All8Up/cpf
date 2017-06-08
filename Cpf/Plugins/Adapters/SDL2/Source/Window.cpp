@@ -20,11 +20,11 @@ Window::~Window()
 	SDL_DestroyWindow(mpWindow);
 }
 
-GOM::Result CPF_STDCALL Window::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Window::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);

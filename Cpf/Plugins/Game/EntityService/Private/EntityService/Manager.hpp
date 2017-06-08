@@ -18,7 +18,7 @@ namespace Cpf
 		class Manager : public tRefCounted<iManager>
 		{
 		public:
-			using EntityIDMap = UnorderedMap<EntityID, IntrusivePtr<iEntity>>;
+			using EntityIDMap = UnorderedMap<uint64_t, IntrusivePtr<iEntity>>;
 			using EntityIDValue = EntityIDMap::value_type;
 
 			//
@@ -26,19 +26,19 @@ namespace Cpf
 			virtual ~Manager();
 
 			//
-			GOM::Result Cast(GOM::InterfaceID id, void**) override;
+			GOM::Result Cast(uint64_t id, void**) override;
 
 			// 
 			MultiCore::iPipeline* GetPipeline() const { return mpPipeline; }
 
 			// Service interface.
-			iEntity* CreateEntity(EntityID id = kInvalidEntityID);
+			iEntity* CreateEntity(uint64_t id = uint64_t(-1));
 			void Remove(iEntity*);
 			void IterateEntities(Function<void (iEntity*)> cb);
 
 		private:
 			//
-			static EntityID mNextID;
+			static uint64_t mNextID;
 			EntityIDMap mEntityIDMap;
 			MultiCore::iPipeline* mpPipeline;
 		};

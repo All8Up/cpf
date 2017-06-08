@@ -30,11 +30,11 @@ Timer::~Timer()
  @param [in,out] outIface The output interface pointer.
  @return Success/failure code.
  */
-GOM::Result CPF_STDCALL Timer::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Timer::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -66,7 +66,7 @@ GOM::Result CPF_STDCALL Timer::Initialize(Plugin::iRegistry* rgy, const char* na
 	mStart = Time::Now();
 	mTime = mStart;
 
-	rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, mpUpdate.AsVoidPP());
+	rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), mpUpdate.AsVoidPP());
 	mpUpdate->Initialize(this, iStage::kExecute.GetString());
 	mpUpdate->SetUpdate(&Timer::_Update, this);
 	AddStage(mpUpdate);

@@ -16,11 +16,11 @@ LoadBalancer::LoadBalancer(iBase*)
 LoadBalancer::~LoadBalancer()
 {}
 
-GOM::Result CPF_STDCALL LoadBalancer::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL LoadBalancer::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch(id.GetID())
+		switch(id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);
@@ -44,7 +44,7 @@ GOM::Result CPF_STDCALL LoadBalancer::Initialize(Plugin::iRegistry* regy, int co
 		mSchedulers.clear();
 		for (int i = 0; i < count; ++i)
 			mSchedulers.push_back(schedulers[i]);
-		return regy->Create(nullptr, kThreadTimeCID, iThreadTimes::kIID, mpDistTimeQuery.AsVoidPP());
+		return regy->Create(nullptr, kThreadTimeCID.GetID(), iThreadTimes::kIID.GetID(), mpDistTimeQuery.AsVoidPP());
 	}
 	return GOM::kInvalidParameter;
 }

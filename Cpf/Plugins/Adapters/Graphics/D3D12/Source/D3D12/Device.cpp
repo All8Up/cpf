@@ -95,11 +95,11 @@ GOM::Result Device::Initialize(Graphics::iAdapter* adapter)
 	return GOM::kOK;
 }
 
-GOM::Result CPF_STDCALL Device::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Device::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -277,7 +277,7 @@ GOM::Result CPF_STDCALL Device::CreateRenderPass(const Graphics::RenderPassDesc*
 	if (renderPass == nullptr)
 		return GOM::kInvalidParameter;
 
-	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kRenderPassCID, Graphics::iRenderPass::kIID, reinterpret_cast<void**>(renderPass))))
+	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kRenderPassCID.GetID(), Graphics::iRenderPass::kIID.GetID(), reinterpret_cast<void**>(renderPass))))
 	{
 		if (GOM::Succeeded(static_cast<RenderPass*>(*renderPass)->Initialize(desc)))
 			return GOM::kOK;
@@ -298,7 +298,7 @@ GOM::Result CPF_STDCALL Device::CreateFrameBuffer(const Graphics::FrameBufferDes
 	if (frameBuffer == nullptr)
 		return GOM::kInvalidParameter;
 
-	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kFrameBufferCID, Graphics::iFrameBuffer::kIID, reinterpret_cast<void**>(frameBuffer))))
+	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kFrameBufferCID.GetID(), Graphics::iFrameBuffer::kIID.GetID(), reinterpret_cast<void**>(frameBuffer))))
 	{
 		if (GOM::Succeeded(static_cast<FrameBuffer*>(*frameBuffer)->Initialize(desc)))
 			return GOM::kOK;

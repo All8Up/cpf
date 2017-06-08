@@ -7,7 +7,7 @@ using namespace Cpf;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityID Manager::mNextID = EntityID(0);
+uint64_t Manager::mNextID = uint64_t(0);
 
 //////////////////////////////////////////////////////////////////////////
 Manager::Manager(iBase*)
@@ -17,11 +17,11 @@ Manager::Manager(iBase*)
 Manager::~Manager()
 {}
 
-GOM::Result Manager::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result Manager::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -40,16 +40,16 @@ GOM::Result Manager::Cast(GOM::InterfaceID id, void** outIface)
 	return GOM::kInvalidParameter;
 }
 
-iEntity* Manager::CreateEntity(EntityID id)
+iEntity* Manager::CreateEntity(uint64_t id)
 {
-	EntityID realID = id;
-	if (id == kInvalidEntityID)
+	uint64_t realID = id;
+	if (id == uint64_t(-1))
 		realID = mNextID;
 
 	iEntity* result;
 	if (Entity::Create(realID, &result))
 	{
-		mNextID = EntityID(mNextID.GetID()+1);
+		mNextID = mNextID+1;
 		result->Initialize(this);
 		result->AddRef();
 		mEntityIDMap.emplace(realID, IntrusivePtr<iEntity>(result));

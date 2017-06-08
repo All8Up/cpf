@@ -21,7 +21,7 @@ bool PipelineBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) c
 PipelineBuilder::PipelineBuilder(Plugin::iRegistry* regy, iPipeline* pipeline)
 	: mpPipeline(pipeline)
 {
-	regy->Create(nullptr, Concurrency::kWorkBufferCID, Concurrency::iWorkBuffer::kIID, mpQueue.AsVoidPP());
+	regy->Create(nullptr, Concurrency::kWorkBufferCID.GetID(), Concurrency::iWorkBuffer::kIID.GetID(), mpQueue.AsVoidPP());
 }
 
 PipelineBuilder::~PipelineBuilder()

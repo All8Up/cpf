@@ -20,17 +20,17 @@ using namespace MultiCore;
 
 GOM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kMoverComponentCID, new Plugin::tClassInstance<MoverSystem::MoverComponent>());
+	return regy->Install(kMoverComponentCID.GetID(), new Plugin::tClassInstance<MoverSystem::MoverComponent>());
 }
 
 GOM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
 {
-	return regy->Remove(kMoverComponentCID);
+	return regy->Remove(kMoverComponentCID.GetID());
 }
 
-GOM::Result MoverSystem::MoverComponent::Cast(GOM::InterfaceID id, void** outPtr)
+GOM::Result MoverSystem::MoverComponent::Cast(uint64_t id, void** outPtr)
 {
-	if (id.GetID() == iMoverComponent::kIID.GetID())
+	if (id == iMoverComponent::kIID.GetID())
 	{
 		iMoverComponent* mover = static_cast<iMoverComponent*>(this);
 		mover->AddRef();
@@ -67,11 +67,11 @@ GOM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
 
 GOM::Result MoverSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kMoverSystemCID, new Plugin::tClassInstance<MoverSystem>());
+	return regy->Install(kMoverSystemCID.GetID(), new Plugin::tClassInstance<MoverSystem>());
 }
 GOM::Result MoverSystem::Remove(Plugin::iRegistry* regy)
 {
-	return regy->Remove(kMoverSystemCID);
+	return regy->Remove(kMoverSystemCID.GetID());
 }
 
 void MoverSystem::EnableMovement(bool flag)
@@ -109,7 +109,7 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	MultiCore::iTimer* timer = mover->mpTime;
 
-	int i = int(object->GetID().GetID());
+	int i = int(object->GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
 	int xc = (i % count);
 	int yc = (i / count) % count;
@@ -143,11 +143,11 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL MoverSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL MoverSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -182,13 +182,13 @@ GOM::Result CPF_STDCALL MoverSystem::Initialize(Plugin::iRegistry* rgy, const ch
 		mEnableMovement = true;
 
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID.GetID(), iStageList::kIID.GetID(), mpStages.AsVoidPP());
 		if (GOM::Succeeded(result))
 		{
 			mpApp = static_cast<const Desc*>(desc)->mpApplication;
 
 			// Build the stages.
-			rgy->Create(nullptr, kEntityStageCID, iEntityStage::kIID, mpThreadStage.AsVoidPP());
+			rgy->Create(nullptr, kEntityStageCID.GetID(), iEntityStage::kIID.GetID(), mpThreadStage.AsVoidPP());
 			mpThreadStage->Initialize(this, kUpdate.GetString());
 
 			// Add the stages to this system.

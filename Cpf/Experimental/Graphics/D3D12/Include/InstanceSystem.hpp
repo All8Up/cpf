@@ -36,7 +36,7 @@ namespace Cpf
 		Instance* GetInstances() const { return mpInstances; }
 
 		// iBase
-		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface);
+		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
@@ -55,11 +55,11 @@ namespace Cpf
 
 		static GOM::Result Install(Plugin::iRegistry* regy)
 		{
-			return regy->Install(kInstanceSystemCID, new Plugin::tClassInstance<InstanceSystem>());
+			return regy->Install(kInstanceSystemCID.GetID(), new Plugin::tClassInstance<InstanceSystem>());
 		}
 		static GOM::Result Remove(Plugin::iRegistry* regy)
 		{
-			return regy->Remove(kInstanceSystemCID);
+			return regy->Remove(kInstanceSystemCID.GetID());
 		}
 
 	private:

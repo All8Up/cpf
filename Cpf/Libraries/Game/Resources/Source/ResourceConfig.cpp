@@ -171,7 +171,7 @@ Configuration::Configuration(Plugin::iRegistry* regy, const String& filename)
 	CPF_INIT_LOG(ResourceConfig);
 	CPF_LOG_LEVEL(ResourceConfig, Info);
 
-	if (GOM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+	if (GOM::Failed(regy->Create(nullptr, kLocatorCID.GetID(), iLocator::kIID.GetID(), reinterpret_cast<void**>(&mpLocator))))
 		return;
 
 	if (mpLocator && File::Exists(filename))
@@ -217,7 +217,7 @@ Configuration::Configuration(iBase*)
 
 GOM::Result CPF_STDCALL Configuration::Initialize(Plugin::iRegistry* regy, const char* filename)
 {
-	if (GOM::Failed(regy->Create(nullptr, kLocatorCID, iLocator::kIID, reinterpret_cast<void**>(&mpLocator))))
+	if (GOM::Failed(regy->Create(nullptr, kLocatorCID.GetID(), iLocator::kIID.GetID(), reinterpret_cast<void**>(&mpLocator))))
 		return GOM::kError;
 
 	if (mpLocator && File::Exists(filename))
@@ -347,11 +347,11 @@ Configuration::~Configuration()
 		mpLocator->Release();
 }
 
-GOM::Result CPF_STDCALL Configuration::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Configuration::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);

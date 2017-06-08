@@ -19,7 +19,7 @@ namespace Cpf
 		Networked();
 		~Networked() override;
 
-		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID, void**) override { return GOM::kNotImplemented; }
+		GOM::Result CPF_STDCALL Cast(uint64_t, void**) override { return GOM::kNotImplemented; }
 
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, GOM::ClassID* appCid) override;
 		GOM::Result CPF_STDCALL Main(iApplication* application) override;

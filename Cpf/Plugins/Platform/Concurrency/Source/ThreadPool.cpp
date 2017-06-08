@@ -14,11 +14,11 @@ ThreadPool::~ThreadPool()
 	mpScheduler->Shutdown();
 }
 
-GOM::Result CPF_STDCALL ThreadPool::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL ThreadPool::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);
@@ -38,8 +38,8 @@ GOM::Result CPF_STDCALL ThreadPool::Cast(GOM::InterfaceID id, void** outIface)
 
 bool ThreadPool::Initialize(Plugin::iRegistry* regy, int threadCount)
 {
-	if (GOM::Succeeded(regy->Create(nullptr, kSchedulerCID, iScheduler::kIID, mpScheduler.AsVoidPP())) &&
-		GOM::Succeeded(regy->Create(nullptr, kWorkBufferCID, iWorkBuffer::kIID, mpQueue.AsVoidPP())))
+	if (GOM::Succeeded(regy->Create(nullptr, kSchedulerCID.GetID(), iScheduler::kIID.GetID(), mpScheduler.AsVoidPP())) &&
+		GOM::Succeeded(regy->Create(nullptr, kWorkBufferCID.GetID(), iWorkBuffer::kIID.GetID(), mpQueue.AsVoidPP())))
 		return GOM::Succeeded(mpScheduler->Initialize(threadCount, nullptr, nullptr, nullptr));
 	return false;
 }

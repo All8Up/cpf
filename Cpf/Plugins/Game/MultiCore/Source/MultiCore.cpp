@@ -24,10 +24,10 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* regist
 		spRegistry = registry;
 		CPF_INIT_LOG(MultiCore);
 		CPF_LOG(MultiCore, Trace) << "Initialized multicore library.";
-		spRegistry->Install(MultiCore::kPipelineCID, new Plugin::tClassInstance<MultiCore::Pipeline>());
-		spRegistry->Install(MultiCore::kTimerCID, new Plugin::tClassInstance<MultiCore::Timer>());
-		spRegistry->Install(MultiCore::kSingleUpdateStageCID, new Plugin::tClassInstance<MultiCore::SingleUpdateStage>());
-		spRegistry->Install(MultiCore::kStageListCID, new Plugin::tClassInstance<MultiCore::StageList>());
+		spRegistry->Install(MultiCore::kPipelineCID.GetID(), new Plugin::tClassInstance<MultiCore::Pipeline>());
+		spRegistry->Install(MultiCore::kTimerCID.GetID(), new Plugin::tClassInstance<MultiCore::Timer>());
+		spRegistry->Install(MultiCore::kSingleUpdateStageCID.GetID(), new Plugin::tClassInstance<MultiCore::SingleUpdateStage>());
+		spRegistry->Install(MultiCore::kStageListCID.GetID(), new Plugin::tClassInstance<MultiCore::StageList>());
 	}
 	return s_RefCount;
 }
@@ -37,10 +37,10 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
 	if (--s_RefCount == 0)
 	{
 		CPF_ASSERT(spRegistry != nullptr);
-		spRegistry->Remove(MultiCore::kStageListCID);
-		spRegistry->Remove(MultiCore::kSingleUpdateStageCID);
-		spRegistry->Remove(MultiCore::kTimerCID);
-		spRegistry->Remove(MultiCore::kPipelineCID);
+		spRegistry->Remove(MultiCore::kStageListCID.GetID());
+		spRegistry->Remove(MultiCore::kSingleUpdateStageCID.GetID());
+		spRegistry->Remove(MultiCore::kTimerCID.GetID());
+		spRegistry->Remove(MultiCore::kPipelineCID.GetID());
 		CPF_LOG(MultiCore, Trace) << "Shutdown multicore library.";
 		CPF_DROP_LOG(MultiCore);
 		spRegistry = nullptr;

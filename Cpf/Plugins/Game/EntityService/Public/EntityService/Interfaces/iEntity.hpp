@@ -22,11 +22,11 @@ namespace Cpf
 			virtual void Activate() = 0;
 			virtual void Deactivate() = 0;
 
-			virtual const EntityID& GetID() const = 0;
+			virtual const uint64_t GetID() const = 0;
 
-			virtual void AddComponent(GOM::InterfaceID id, iComponent* component) = 0;
-			virtual iComponent* GetComponent(GOM::InterfaceID id) = 0;
-			virtual const iComponent* GetComponent(GOM::InterfaceID id) const = 0;
+			virtual void AddComponent(uint64_t id, iComponent* component) = 0;
+			virtual iComponent* GetComponent(uint64_t id) = 0;
+			virtual const iComponent* GetComponent(uint64_t id) const = 0;
 
 			// Utilities.
 			template <typename TYPE>
@@ -52,7 +52,7 @@ namespace Cpf
 		template <typename TYPE>
 		TYPE* iEntity::AddComponent(TYPE* component)
 		{
-			AddComponent(TYPE::kIID, reinterpret_cast<iComponent*>(component));
+			AddComponent(TYPE::kIID.GetID(), reinterpret_cast<iComponent*>(component));
 			return component;
 		}
 
@@ -60,7 +60,7 @@ namespace Cpf
 		TYPE* iEntity::CreateComponent(Plugin::iRegistry* regy, const GOM::ClassID id, MultiCore::iSystem* system)
 		{
 			IntrusivePtr<TYPE> created;
-			regy->Create(nullptr, id, TYPE::kIID, created.AsVoidPP());
+			regy->Create(nullptr, id.GetID(), TYPE::kIID.GetID(), created.AsVoidPP());
 			if (created)
 			{
 				created->SetSystem(system);
@@ -73,13 +73,13 @@ namespace Cpf
 		template <typename TYPE>
 		TYPE* iEntity::GetComponent()
 		{
-			return static_cast<TYPE*>(GetComponent(TYPE::kIID));
+			return static_cast<TYPE*>(GetComponent(TYPE::kIID.GetID()));
 		}
 
 		template <typename TYPE>
 		const TYPE* iEntity::GetComponent() const
 		{
-			return static_cast<const TYPE*>(GetComponent(TYPE::kIID));
+			return static_cast<const TYPE*>(GetComponent(TYPE::kIID.GetID()));
 		}
 	}
 }

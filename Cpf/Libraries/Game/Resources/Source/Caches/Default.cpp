@@ -10,11 +10,11 @@ using namespace Caches;
 const char* const Default::kCacheName = "Default";
 
 
-GOM::Result CPF_STDCALL Default::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Default::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);

@@ -40,6 +40,7 @@ PyObject* s_pRegistryIID = nullptr;
 
 extern "C" PyObject* CPF_STDCALL py::PyCreateRegistry(PyObject*, PyObject* args)
 {
+	(void)args;
 	if (s_Python3)
 	{
 		iRegistry* regy = nullptr;
@@ -131,7 +132,7 @@ extern "C" PyObject* CPF_STDCALL RegistryExists(py::Registry* self, PyObject* ar
 	{
 		if (classId && GOMClassID_Check(classId))
 		{
-			if (GOM::Succeeded(self->mpRegistry->Exists(reinterpret_cast<GOM::py::ClassID*>(classId)->mID)))
+			if (GOM::Succeeded(self->mpRegistry->Exists(reinterpret_cast<GOM::py::ClassID*>(classId)->mID.GetID())))
 			{
 				return PyBool_FromLong(1);
 			}
@@ -156,7 +157,7 @@ extern "C" PyObject* CPF_STDCALL RegistryCreate(py::Registry* self, PyObject* ar
 			GOM::iBase* result = nullptr;
 			GOM::iBase* outerPtr = outer ? reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(outer, nullptr)) : nullptr;
 
-			if (GOM::Succeeded(self->mpRegistry->Create(outerPtr, classId->mID, interfaceId->mID, reinterpret_cast<void**>(&result))))
+			if (GOM::Succeeded(self->mpRegistry->Create(outerPtr, classId->mID.GetID(), interfaceId->mID.GetID(), reinterpret_cast<void**>(&result))))
 			{
 				*reinterpret_cast<void**>(output->value.p) = result;
 				Py_RETURN_NONE;
@@ -196,21 +197,21 @@ extern "C" PyObject* CPF_STDCALL RegistryGetClasses(py::Registry* self, PyObject
 	{
 		GOM::py::InterfaceID* iface = reinterpret_cast<GOM::py::InterfaceID*>(iid);
 		int32_t count = 0;
-		if (GOM::Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, nullptr)))
+		if (GOM::Succeeded(self->mpRegistry->GetClasses(iface->mID.GetID(), &count, nullptr)))
 		{
 			if (count == 0)
 				Py_RETURN_NONE;
-			Vector<GOM::ClassID> ids(count);
-			if (GOM::Succeeded(self->mpRegistry->GetClasses(iface->mID, &count, ids.data())))
+			Vector<uint64_t> ids(count);
+			if (GOM::Succeeded(self->mpRegistry->GetClasses(iface->mID.GetID(), &count, ids.data())))
 			{
 				PyObject* list = PyList_New(count);
 				if (list)
 				{
 					for (int i=0; i<count; ++i)
 					{
-						GOM::py::ClassID* classId = PyObject_New(GOM::py::ClassID, reinterpret_cast<PyTypeObject*>(&GOM::py::ClassID_type));
-						classId->mID = ids[i];
-						PyList_SET_ITEM(list, i, reinterpret_cast<PyObject*>(classId));
+// 						GOM::py::ClassID* classId = PyObject_New(GOM::py::ClassID, reinterpret_cast<PyTypeObject*>(&GOM::py::ClassID_type));
+// 						classId->mID = ids[i];
+// 						PyList_SET_ITEM(list, i, reinterpret_cast<PyObject*>(classId));
 					}
 					return list;
 				}
@@ -235,7 +236,7 @@ extern "C" PyObject* CPF_STDCALL RegistryInstanceInstall(py::Registry* self, PyO
 	if (GOMInterfaceID_Check(iid) && PyCapsule_CheckExact(capsule))
 	{
 		GOM::iBase* instance = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(capsule, nullptr));
-		if (instance && GOM::Succeeded(self->mpRegistry->InstanceInstall(iid->mID, instance)))
+		if (instance && GOM::Succeeded(self->mpRegistry->InstanceInstall(iid->mID.GetID(), instance)))
 		{
 			Py_RETURN_NONE;
 		}
@@ -256,7 +257,7 @@ extern "C" PyObject* CPF_STDCALL RegistryInstanceRemove(py::Registry* self, PyOb
 	}
 	if (GOMInterfaceID_Check(iid))
 	{
-		if (GOM::Succeeded(self->mpRegistry->InstanceRemove(iid->mID)))
+		if (GOM::Succeeded(self->mpRegistry->InstanceRemove(iid->mID.GetID())))
 		{
 			Py_RETURN_NONE;
 		}
@@ -278,7 +279,7 @@ extern "C" PyObject* CPF_STDCALL RegistryGetInstance(py::Registry* self, PyObjec
 	if (GOMInterfaceID_Check(iid))
 	{
 		GOM::iBase* instance = nullptr;
-		if (GOM::Succeeded(self->mpRegistry->GetInstance(iid->mID, &instance)))
+		if (GOM::Succeeded(self->mpRegistry->GetInstance(iid->mID.GetID(), &instance)))
 		{
 			return PyCapsule_New(instance, nullptr, [](PyObject* obj)
 			{

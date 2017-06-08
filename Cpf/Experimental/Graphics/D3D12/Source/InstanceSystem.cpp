@@ -23,11 +23,11 @@ void InstanceSystem::_End(const Concurrency::WorkContext*, void* context)
 
 
 // iBase
-GOM::Result CPF_STDCALL InstanceSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL InstanceSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);
@@ -54,16 +54,16 @@ GOM::Result CPF_STDCALL InstanceSystem::Initialize(Plugin::iRegistry* rgy, const
 		mRenderID = theDesc->mRenderSystemID;
 		mpInstances = nullptr;
 		mID = MultiCore::SystemID(name, strlen(name));
-		auto result = rgy->Create(this, MultiCore::kStageListCID, MultiCore::iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, MultiCore::kStageListCID.GetID(), MultiCore::iStageList::kIID.GetID(), mpStages.AsVoidPP());
 
 		// Build the stages and set the update function.
 		IntrusivePtr<MultiCore::iSingleUpdateStage> instanceBegin;
-		rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceBegin.AsVoidPP());
+		rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), instanceBegin.AsVoidPP());
 		instanceBegin->Initialize(this, kBegin.GetString());
 		instanceBegin->SetUpdate(&InstanceSystem::_Begin, this, MultiCore::BlockOpcode::eLast);
 
 		IntrusivePtr<MultiCore::iSingleUpdateStage> instanceEnd;
-		rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, instanceEnd.AsVoidPP());
+		rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), instanceEnd.AsVoidPP());
 		instanceEnd->Initialize(this, kEnd.GetString());
 		instanceEnd->SetUpdate(&InstanceSystem::_End, this, MultiCore::BlockOpcode::eLast);
 

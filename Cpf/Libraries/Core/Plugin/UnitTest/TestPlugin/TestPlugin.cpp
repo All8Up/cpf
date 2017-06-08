@@ -18,7 +18,7 @@ public:
 	int32_t Release() override;
 
 	// iBase overrides.
-	GOM::Result Cast(GOM::InterfaceID id, void**) override;
+	GOM::Result Cast(uint64_t id, void**) override;
 
 	// iTestPlugin overrides.
 	uint32_t Test() override;
@@ -38,7 +38,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return registry->Install(kTestPluginCID, new Plugin::tClassInstance<TestPlugin>());
+		return registry->Install(kTestPluginCID.GetID(), new Plugin::tClassInstance<TestPlugin>());
 	}
 	return GOM::kInvalidParameter;
 }
@@ -54,7 +54,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return registry->Remove(kTestPluginCID);
+		return registry->Remove(kTestPluginCID.GetID());
 	}
 	return GOM::kInvalidParameter;
 }
@@ -86,12 +86,12 @@ int32_t TestPlugin::Release()
 	return mRefCount;
 }
 
-GOM::Result TestPlugin::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result TestPlugin::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		*outIface = nullptr;
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);

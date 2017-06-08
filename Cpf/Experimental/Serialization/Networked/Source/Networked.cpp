@@ -57,7 +57,7 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	GetRegistry()->Load("plugins/DebugUI.cfp");
 	if (GOM::Succeeded(GetRegistry()->Load("plugins/Python3.cfp")))
 	{
-		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID, Tools::iPython3::kIID, mpPython3.AsVoidPP())))
+		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID.GetID(), Tools::iPython3::kIID.GetID(), mpPython3.AsVoidPP())))
 		{
 			String basePath = exePath;
 			mpPython3->Initialize(basePath.c_str(), &PluginHost::CreateRegistry);
@@ -74,9 +74,9 @@ void CPF_STDCALL Networked::Shutdown()
 
 GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
-	application->Cast(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpWindowedApplication));
+	application->Cast(iWindowedApplication::kIID.GetID(), reinterpret_cast<void**>(&mpWindowedApplication));
 
-	if (GOM::Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID, Concurrency::iScheduler::kIID, mpScheduler.AsVoidPP())))
+	if (GOM::Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID.GetID(), Concurrency::iScheduler::kIID.GetID(), mpScheduler.AsVoidPP())))
 	{
 		if (_CreateWindow() && _Install() && _InitializeMultiCore())
 		{
@@ -88,7 +88,7 @@ GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 
 					// Semaphore to track when the last submitted queue of work has completed.
 					IntrusivePtr<Concurrency::iFence> complete;
-					GetRegistry()->Create(nullptr, Concurrency::kFenceCID, Concurrency::iFence::kIID, complete.AsVoidPP());
+					GetRegistry()->Create(nullptr, Concurrency::kFenceCID.GetID(), Concurrency::iFence::kIID.GetID(), complete.AsVoidPP());
 
 					// Run the event loop for the window.
 					while (mpWindowedApplication->IsRunning())
@@ -188,7 +188,7 @@ bool Networked::_InitializeResources()
 //	Resources::Configuration config;
 //	config.Parse("./networked/resource_config.json");
 	Resources::iConfiguration* pConfig = nullptr;
-	GetRegistry()->Create(nullptr, Resources::kConfigurationCID, Resources::iConfiguration::kIID, reinterpret_cast<void**>(&pConfig));
+	GetRegistry()->Create(nullptr, Resources::kConfigurationCID.GetID(), Resources::iConfiguration::kIID.GetID(), reinterpret_cast<void**>(&pConfig));
 	pConfig->Initialize(GetRegistry(), "./Experimental/resource_config.json");
 	mpLocator.Adopt(pConfig->GetLocator());
 //	mpLocator.Adopt(Resources::Configuration(GetRegistry(), "./networked/resource_config.json").GetLocator());
@@ -207,11 +207,11 @@ bool Networked::_ShutdownResources()
 
 bool Networked::_InitializeMultiCore()
 {
-	GetRegistry()->Create(nullptr, kThreadPoolCID, iThreadPool::kIID, mpThreadPool.AsVoidPP());
+	GetRegistry()->Create(nullptr, kThreadPoolCID.GetID(), iThreadPool::kIID.GetID(), mpThreadPool.AsVoidPP());
 	if (GOM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
 		mpThreadPool->Initialize(GetRegistry(), Thread::GetHardwareThreadCount()))
 	{
-		GetRegistry()->Create(nullptr, Concurrency::kLoadBalancerCID, Concurrency::iLoadBalancer::kIID, mpLoadBalancer.AsVoidPP());
+		GetRegistry()->Create(nullptr, Concurrency::kLoadBalancerCID.GetID(), Concurrency::iLoadBalancer::kIID.GetID(), mpLoadBalancer.AsVoidPP());
 		Concurrency::iScheduler* schedulers[] = {mpScheduler, mpThreadPool->GetScheduler()};
 		mpLoadBalancer->Initialize(GetRegistry(), 2, schedulers);
 		return true;
@@ -228,13 +228,13 @@ bool Networked::_ShutdownMultiCore()
 
 bool Networked::_InitializePipeline()
 {
-	if (GOM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpPipeline.AsVoidPP())))
+	if (GOM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID.GetID(), MultiCore::iPipeline::kIID.GetID(), mpPipeline.AsVoidPP())))
 	{
-		GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, mpTimer.AsVoidPP());
+		GetRegistry()->Create(nullptr, MultiCore::kTimerCID.GetID(), MultiCore::iTimer::kIID.GetID(), mpTimer.AsVoidPP());
 		mpTimer->Initialize(GetRegistry(), "Game Time", nullptr);
 		mpPipeline->Install(mpTimer);
 
-		GetRegistry()->Create(nullptr, kNetworkSystemCID, NetworkSystem::kIID, mpNetworkSystem.AsVoidPP());
+		GetRegistry()->Create(nullptr, kNetworkSystemCID.GetID(), NetworkSystem::kIID.GetID(), mpNetworkSystem.AsVoidPP());
 		mpNetworkSystem->Initialize(GetRegistry(), "Networking", nullptr);
 		mpPipeline->Install(mpNetworkSystem);
 
@@ -242,19 +242,19 @@ bool Networked::_InitializePipeline()
 		// Find graphics driver implementations.
 		int32_t typeCount = 0;
 		GOM::ClassID selectedAPI;
-		if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
+		if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID.GetID(), &typeCount, nullptr)))
 		{
-			Vector<GOM::ClassID> classes(typeCount);
-			if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
+			Vector<uint64_t> classes(typeCount);
+			if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID.GetID(), &typeCount, classes.data())))
 			{
 				if (typeCount > 0)
-					selectedAPI = classes[0];
+					selectedAPI = GOM::ClassID(classes[0]);
 			}
 		}
 
 		RenderSystem::Desc renderDesc;
 		renderDesc.mTimer = mpTimer->GetID();
-		GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, mpRenderSystem.AsVoidPP());
+		GetRegistry()->Create(nullptr, kRenderSystemCID.GetID(), RenderSystem::kIID.GetID(), mpRenderSystem.AsVoidPP());
 		mpRenderSystem->Initialize(GetRegistry(), "Rendering", &renderDesc);
 		mpPipeline->Install(mpRenderSystem);
 		if (mpTimer && mpRenderSystem && mpRenderSystem->Initialize(GetRegistry(), selectedAPI, mpWindowedApplication->GetInputManager(), mpWindow, mpLocator))

@@ -7,7 +7,7 @@ using namespace Cpf;
 using namespace Testing;
 
 //////////////////////////////////////////////////////////////////////////
-static Plugin::IID_CID classPairs[] = { iTest::kIID, kTestCID };
+static Plugin::IID_CID classPairs[] = { iTest::kIID.GetID(), kTestCID.GetID() };
 
 extern "C"
 GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
@@ -15,7 +15,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 	if (registry)
 	{
 		CPF_INIT_LOG(Testing);
-		registry->Install(kTestCID, new Plugin::tClassInstance<Test>());
+		registry->Install(kTestCID.GetID(), new Plugin::tClassInstance<Test>());
 		registry->ClassInstall(1, classPairs);
 		return GOM::kOK;
 	}
@@ -34,7 +34,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 	if (registry)
 	{
 		registry->ClassRemove(1, classPairs);
-		registry->Remove(kTestCID);
+		registry->Remove(kTestCID.GetID());
 		CPF_DROP_LOG(Testing);
 		return GOM::kOK;
 	}
@@ -64,11 +64,11 @@ int32_t CPF_STDCALL Test::Release()
 	return result;
 }
 
-GOM::Result CPF_STDCALL Test::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Test::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);

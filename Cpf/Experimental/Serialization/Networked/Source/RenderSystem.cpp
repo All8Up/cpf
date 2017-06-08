@@ -31,12 +31,12 @@ using namespace Graphics;
 
 GOM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
+	return regy->Install(kRenderSystemCID.GetID(), new Plugin::tClassInstance<RenderSystem>());
 }
 
 GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 {
-	return regy->Remove(kRenderSystemCID);
+	return regy->Remove(kRenderSystemCID.GetID());
 }
 
 GOM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
@@ -47,7 +47,7 @@ GOM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
 
 bool RenderSystem::Initialize(Plugin::iRegistry* registry, GOM::ClassID rid, iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
-	if (GOM::Succeeded(registry->Create(nullptr, rid, Graphics::iInstance::kIID, mpInstance.AsVoidPP())))
+	if (GOM::Succeeded(registry->Create(nullptr, rid.GetID(), Graphics::iInstance::kIID.GetID(), mpInstance.AsVoidPP())))
 	{
 		if (_SelectAdapter() &&
 			GOM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
@@ -121,19 +121,19 @@ RenderSystem::~RenderSystem()
 void RenderSystem::_CreateStages()
 {
 	IntrusivePtr<iSingleUpdateStage> beginFrame;
-	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, beginFrame.AsVoidPP());
+	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), beginFrame.AsVoidPP());
 	beginFrame->Initialize(this, "Begin Frame");
 	beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, BlockOpcode::eFirst);
 	AddStage(beginFrame);
 
 	IntrusivePtr<iSingleUpdateStage> debugUI;
-	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, debugUI.AsVoidPP());
+	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), debugUI.AsVoidPP());
 	debugUI->Initialize(this, "DebugUI");
 	debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eLast);
 	AddStage(debugUI);
 
 	IntrusivePtr<iSingleUpdateStage> endFrame;
-	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, endFrame.AsVoidPP());
+	mpRegistry->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), endFrame.AsVoidPP());
 	endFrame->Initialize(this, "End Frame");
 	endFrame->SetUpdate(&RenderSystem::_EndFrame, this, BlockOpcode::eLast);
 	AddStage(endFrame);
@@ -352,7 +352,7 @@ bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resourc
 		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
 		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], CommandBufferType::kSecondary, mpDebugUIBuffer[i].AsTypePP());
 	}
-	mpRegistry->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
+	mpRegistry->Create(nullptr, kDebugUICID.GetID(), iDebugUI::kIID.GetID(), mpDebugUI.AsVoidPP());
 	mpDebugUI->Initialize(mpDevice, im, window, locator);
 
 	return true;
@@ -448,11 +448,11 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext*, void* context)
 }
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL RenderSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -480,7 +480,7 @@ GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 	{
 		mDesc = *static_cast<const Desc*>(desc);
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID.GetID(), iStageList::kIID.GetID(), mpStages.AsVoidPP());
 		if (GOM::Succeeded(result))
 			return GOM::kOK;
 		return result;

@@ -10,18 +10,18 @@ using namespace SDL2;
 
 InputManager::InputManager(GOM::iBase*)
 {
-	g_Context.GetRegistry()->Create(nullptr, kMouseDeviceCID, iMouseDevice::kIID, mpMouse.AsVoidPP());
-	g_Context.GetRegistry()->Create(nullptr, kKeyboardDeviceCID, iKeyboardDevice::kIID, mpKeyboard.AsVoidPP());
+	g_Context.GetRegistry()->Create(nullptr, kMouseDeviceCID.GetID(), iMouseDevice::kIID.GetID(), mpMouse.AsVoidPP());
+	g_Context.GetRegistry()->Create(nullptr, kKeyboardDeviceCID.GetID(), iKeyboardDevice::kIID.GetID(), mpKeyboard.AsVoidPP());
 }
 
 InputManager::~InputManager()
 {}
 
-GOM::Result CPF_STDCALL InputManager::Cast(GOM::InterfaceID iid, void** outIface)
+GOM::Result CPF_STDCALL InputManager::Cast(uint64_t iid, void** outIface)
 {
 	if (outIface)
 	{
-		switch (iid.GetID())
+		switch (iid)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -48,9 +48,9 @@ GOM::Result CPF_STDCALL InputManager::EnumerateDevices(EnumCallback, void*)
 	return GOM::kNotImplemented;
 }
 
-GOM::Result CPF_STDCALL InputManager::GetDevice(GOM::InstanceID id, GOM::InterfaceID iid, void** outIface)
+GOM::Result CPF_STDCALL InputManager::GetDevice(uint64_t id, uint64_t iid, void** outIface)
 {
-	switch (id.GetID())
+	switch (id)
 	{
 	case iMouseDevice::kDefault.GetID():
 		return mpMouse->Cast(iid, outIface);

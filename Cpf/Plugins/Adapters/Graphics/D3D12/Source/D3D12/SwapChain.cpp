@@ -90,11 +90,11 @@ SwapChain::~SwapChain()
 	CPF_LOG(D3D12, Info) << "Destroyed swapchain: " << intptr_t(this) << " - " << intptr_t(mpSwapChain.Ptr());
 }
 
-GOM::Result CPF_STDCALL SwapChain::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL SwapChain::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);

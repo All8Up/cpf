@@ -22,7 +22,7 @@ namespace Cpf
 		{
 			static constexpr InterfaceID kIID = InterfaceID("Cpf::GOM::iBase"_crc64);
 
-			virtual Result CPF_STDCALL Cast(InterfaceID id, void** outIface) = 0;
+			virtual Result CPF_STDCALL Cast(uint64_t id, void** outIface) = 0;
 		};
 	}
 }

@@ -21,11 +21,11 @@ Python3::~Python3()
 	s_Python3 = nullptr;
 }
 
-GOM::Result CPF_STDCALL Python3::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Python3::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);

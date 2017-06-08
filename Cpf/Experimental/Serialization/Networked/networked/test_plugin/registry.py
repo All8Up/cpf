@@ -6,16 +6,13 @@ from cpf import plugin
 class Tests(unittest.TestCase):
 	def setUp(self):
 		self.registry = plugin.create_registry()
-		print (self.registry.AddRef())
-		print (self.registry.Release())
 		self.registry.Load("plugins/TestingPlugin.cfp".encode('utf-8'))
 
 	def tearDown(self):
-		self.registry.Release()
-		pluginName = ctypes.c_char_p("plugins/TestingPlugin.cfp".encode('utf-8'))
-		print (pluginName)
-		self.registry.Unload(pluginName)
-		pass
+		self.registry.Unload("plugins/TestingPlugin.cfp".encode('utf-8'))
+		self.assertEqual(self.registry.Release(), 0)
 
-	def	test_paths(self):
-		print('System path:')
+	def test_AddRelease(self):
+		self.assertEqual(self.registry.AddRef(), 2)
+		self.assertEqual(self.registry.Release(), 1)
+

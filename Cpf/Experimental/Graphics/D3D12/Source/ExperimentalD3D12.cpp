@@ -72,7 +72,7 @@ void CPF_STDCALL ExperimentalD3D12::Shutdown()
 
 GOM::Result ExperimentalD3D12::Main(iApplication* application)
 {
-	application->Cast(iWindowedApplication::kIID, reinterpret_cast<void**>(&mpApplication));
+	application->Cast(iWindowedApplication::kIID.GetID(), reinterpret_cast<void**>(&mpApplication));
 
 	// Initialize logging.
 	CPF_INIT_LOG(Experimental);
@@ -93,14 +93,14 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	mAspectRatio = 1.0f;
 
 	//////////////////////////////////////////////////////////////////////////
-	GetRegistry()->Create(nullptr, EntityService::kManagerCID, EntityService::iManager::kIID, mpEntityManager.AsVoidPP());
+	GetRegistry()->Create(nullptr, EntityService::kManagerCID.GetID(), EntityService::iManager::kIID.GetID(), mpEntityManager.AsVoidPP());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Install object components.
 	MoverSystem::MoverComponent::Install(GetRegistry());
 	
 	//////////////////////////////////////////////////////////////////////////
-	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID, MultiCore::iPipeline::kIID, mpMultiCore.AsVoidPP());
+	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID.GetID(), MultiCore::iPipeline::kIID.GetID(), mpMultiCore.AsVoidPP());
 
 	// Install the systems this will use.
 	RenderSystem::Install(GetRegistry());
@@ -110,7 +110,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	//////////////////////////////////////////////////////////////////////////
 	// Create the primary game timer.
 	IntrusivePtr<MultiCore::iTimer> gameTime;
-	GetRegistry()->Create(nullptr, MultiCore::kTimerCID, MultiCore::iTimer::kIID, gameTime.AsVoidPP());
+	GetRegistry()->Create(nullptr, MultiCore::kTimerCID.GetID(), MultiCore::iTimer::kIID.GetID(), gameTime.AsVoidPP());
 	gameTime->Initialize(GetRegistry(), "Game Time", nullptr);
 
 	mpMultiCore->Install(gameTime);
@@ -120,7 +120,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
 	IntrusivePtr<RenderSystem> renderSystem;
-	GetRegistry()->Create(nullptr, kRenderSystemCID, RenderSystem::kIID, renderSystem.AsVoidPP());
+	GetRegistry()->Create(nullptr, kRenderSystemCID.GetID(), RenderSystem::kIID.GetID(), renderSystem.AsVoidPP());
 	renderSystem->Initialize(GetRegistry(), "Render System", &renderDesc);
 	mpMultiCore->Install(renderSystem);
 
@@ -129,7 +129,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
 	IntrusivePtr<InstanceSystem> instanceSystem;
-	GetRegistry()->Create(nullptr, kInstanceSystemCID, InstanceSystem::kIID, instanceSystem.AsVoidPP());
+	GetRegistry()->Create(nullptr, kInstanceSystemCID.GetID(), InstanceSystem::kIID.GetID(), instanceSystem.AsVoidPP());
 	instanceSystem->Initialize(GetRegistry(), "Instance System", &instanceDesc);
 	mpMultiCore->Install(instanceSystem);
 
@@ -138,7 +138,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	moverDesc.mpApplication = this;
 	moverDesc.mTimerID = gameTime->GetID();
 	moverDesc.mInstanceID = instanceSystem->GetID();
-	GetRegistry()->Create(nullptr, kMoverSystemCID, MoverSystem::kIID, mpMoverSystem.AsVoidPP());
+	GetRegistry()->Create(nullptr, kMoverSystemCID.GetID(), MoverSystem::kIID.GetID(), mpMoverSystem.AsVoidPP());
 	mpMoverSystem->Initialize(GetRegistry(), "Mover", &moverDesc);
 	mpMultiCore->Install(mpMoverSystem);
 
@@ -192,7 +192,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	//////////////////////////////////////////////////////////////////////////
 	// Create the virtual file system locator.
 	Resources::iConfiguration* pConfig = nullptr;
-	GetRegistry()->Create(nullptr, Resources::kConfigurationCID, Resources::iConfiguration::kIID, reinterpret_cast<void**>(&pConfig));
+	GetRegistry()->Create(nullptr, Resources::kConfigurationCID.GetID(), Resources::iConfiguration::kIID.GetID(), reinterpret_cast<void**>(&pConfig));
 	pConfig->Initialize(GetRegistry(), "./Experimental/resource_config.json");
 	mpLocator.Adopt(pConfig->GetLocator());
 
@@ -212,18 +212,18 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 			// Find graphics driver implementations.
 			int32_t typeCount = 0;
 			GOM::ClassID selectedAPI;
-			if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, nullptr)))
+			if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID.GetID(), &typeCount, nullptr)))
 			{
-				Vector<GOM::ClassID> classes(typeCount);
-				if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID, &typeCount, classes.data())))
+				Vector<uint64_t> classes(typeCount);
+				if (GOM::Succeeded(GetRegistry()->GetClasses(Graphics::iInstance::kIID.GetID(), &typeCount, classes.data())))
 				{
 					if (typeCount > 0)
-						selectedAPI = classes[0];
+						selectedAPI = GOM::ClassID(classes[0]);
 				}
 			}
 
 			IntrusivePtr<iInstance> gfxInstance;
-			GetRegistry()->Create(nullptr, selectedAPI, Graphics::iInstance::kIID, gfxInstance.AsVoidPP());
+			GetRegistry()->Create(nullptr, selectedAPI.GetID(), Graphics::iInstance::kIID.GetID(), gfxInstance.AsVoidPP());
 			if (gfxInstance)
 			{
 				IntrusivePtr<iAdapter> adapter;
@@ -261,12 +261,12 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 				}
 
 				//
-				GetRegistry()->Create(nullptr, kDebugUICID, iDebugUI::kIID, mpDebugUI.AsVoidPP());
+				GetRegistry()->Create(nullptr, kDebugUICID.GetID(), iDebugUI::kIID.GetID(), mpDebugUI.AsVoidPP());
 
 				//////////////////////////////////////////////////////////////////////////
 				// Start up the threading system.
 				// Allocates a command pool and buffer per thread.
-				GetRegistry()->Create(nullptr, kSchedulerCID, iScheduler::kIID, mpScheduler.AsVoidPP());
+				GetRegistry()->Create(nullptr, kSchedulerCID.GetID(), iScheduler::kIID.GetID(), mpScheduler.AsVoidPP());
 				mpScheduler->Initialize(Thread::GetHardwareThreadCount(),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_CreateWorkerData),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
@@ -281,7 +281,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 
 				// Currently only a single frame.  Will Eventually match the number of back buffers and other resources.
 				IntrusivePtr<Concurrency::iFence> concurrencyFence;
-				GetRegistry()->Create(nullptr, Concurrency::kFenceCID, Concurrency::iFence::kIID, concurrencyFence.AsVoidPP());
+				GetRegistry()->Create(nullptr, Concurrency::kFenceCID.GetID(), Concurrency::iFence::kIID.GetID(), concurrencyFence.AsVoidPP());
 				concurrencyFence->Signal();
 
 				// Create a graphics fence to track back buffers.

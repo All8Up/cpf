@@ -21,7 +21,7 @@ namespace Cpf
 			DebugUI(iBase* outer);
 			virtual ~DebugUI();
 
-			GOM::Result Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result Cast(uint64_t id, void** outIface) override;
 
 			//
 			bool Initialize(iDevice*, iInputManager* im, iWindow* window, Resources::iLocator*);

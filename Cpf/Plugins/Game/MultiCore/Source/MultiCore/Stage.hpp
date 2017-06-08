@@ -24,7 +24,7 @@ namespace Cpf
 			SingleUpdateStage(iBase*);
 
 			// iStage overrides.
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 			GOM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) override;
 			iSystem* CPF_STDCALL GetSystem() const override;
 			StageID CPF_STDCALL GetID() const override;

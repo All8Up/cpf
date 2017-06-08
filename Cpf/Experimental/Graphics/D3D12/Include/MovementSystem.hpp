@@ -48,7 +48,7 @@ namespace Cpf
 		void EnableMovement(bool flag);
 
 		// iBase
-		GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
@@ -102,7 +102,7 @@ namespace Cpf
 		//////////////////////////////////////////////////////////////////////////
 		MoverComponent(GOM::iBase*);
 
-		GOM::Result Cast(GOM::InterfaceID id, void**) override;
+		GOM::Result Cast(uint64_t id, void**) override;
 
 		//////////////////////////////////////////////////////////////////////////
 		EntityService::ComponentID GetID() const;

@@ -12,7 +12,7 @@ namespace Cpf
 			KeyboardDevice(GOM::iBase*);
 			virtual ~KeyboardDevice();
 
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 			GOM::Result CPF_STDCALL GetModifiers(KeyModifier*) override;
 		};

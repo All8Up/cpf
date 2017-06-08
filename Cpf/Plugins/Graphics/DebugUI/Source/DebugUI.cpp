@@ -70,7 +70,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 		{
 			CPF_ASSERT(g_Context.GetRegistry() == nullptr);
 			g_Context.SetRegistry(registry);
-			registry->Install(kDebugUICID, new Plugin::tClassInstance<DebugUI>());
+			registry->Install(kDebugUICID.GetID(), new Plugin::tClassInstance<DebugUI>());
 		}
 		CPF_ASSERT(g_Context.GetRegistry() == registry);
 		return GOM::kOK;
@@ -91,7 +91,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 	{
 		if (g_Context.Release() == 0)
 		{
-			registry->Remove(kDebugUICID);
+			registry->Remove(kDebugUICID.GetID());
 			g_Context.SetRegistry(nullptr);
 		}
 		return GOM::kOK;
@@ -120,11 +120,11 @@ DebugUI::~DebugUI()
 	CPF_DROP_LOG(DebugUI);
 }
 
-GOM::Result DebugUI::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result DebugUI::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case iBase::kIID.GetID():
 			*outIface = static_cast<iBase*>(this);
@@ -147,9 +147,9 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	CPF_ASSERT(locator != nullptr);
 	mpDevice = device;
 	mpLocator = locator;
-	im->GetDevice(iMouseDevice::kDefault, iMouseDevice::kIID, mpMouse.AsVoidPP());
-	im->GetDevice(iKeyboardDevice::kDefault, iKeyboardDevice::kIID, mpKeyboard.AsVoidPP());
-	im->GetDevice(iClipboard::kDefault, iClipboard::kIID, sClipboard.AsVoidPP());
+	im->GetDevice(iMouseDevice::kDefault.GetID(), iMouseDevice::kIID.GetID(), mpMouse.AsVoidPP());
+	im->GetDevice(iKeyboardDevice::kDefault.GetID(), iKeyboardDevice::kIID.GetID(), mpKeyboard.AsVoidPP());
+	im->GetDevice(iClipboard::kDefault.GetID(), iClipboard::kIID.GetID(), sClipboard.AsVoidPP());
 
 	// Load the shaders.
 	// TODO: Consider moving the debug UI out so we don't need a dependency on resources.
@@ -332,7 +332,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		data.mPitch = width * sizeof(int32_t);
 		data.mSlicePitch = data.mPitch * height;
 		IntrusivePtr<iResource> targetResource;
-		mpUIAtlas->Cast(iResource::kIID, targetResource.AsVoidPP());
+		mpUIAtlas->Cast(iResource::kIID.GetID(), targetResource.AsVoidPP());
 		tempCommands->UpdateSubResource(staging, targetResource, &data);
 		tempCommands->End();
 		iCommandBuffer* commandBuffers[] = { tempCommands };

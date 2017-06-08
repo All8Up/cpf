@@ -6,7 +6,7 @@ namespace Cpf
 {
 	static constexpr GOM::ClassID kTestPluginCID = GOM::ClassID("TestPlugin"_crc64);
 
-	struct iTestPlugin : public GOM::iBase
+	struct iTestPlugin : GOM::iBase
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iTestPlugin"_crc64);
 

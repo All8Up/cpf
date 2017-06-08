@@ -26,7 +26,7 @@ namespace Cpf
 				ImageView(Descriptor&& desc) : mDescriptor(Move(desc)) {}
 				ImageView(Device*, Image*, const Graphics::DepthStencilViewDesc*);
 
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				Descriptor& GetDescriptor() { return mDescriptor; }
 

@@ -21,8 +21,8 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 		{
 			CPF_ASSERT(g_Context.GetRegistry() == nullptr);
 			g_Context.SetRegistry(registry);
-			registry->Install(kRenderableCID, new Plugin::tClassInstance<Renderable>());
-			registry->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
+			registry->Install(kRenderableCID.GetID(), new Plugin::tClassInstance<Renderable>());
+			registry->Install(kRenderSystemCID.GetID(), new Plugin::tClassInstance<RenderSystem>());
 		}
 		CPF_ASSERT(g_Context.GetRegistry() == registry);
 		return GOM::kOK;
@@ -43,8 +43,8 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 	{
 		if (g_Context.Release() == 0)
 		{
-			registry->Remove(kRenderSystemCID);
-			registry->Remove(kRenderableCID);
+			registry->Remove(kRenderSystemCID.GetID());
+			registry->Remove(kRenderableCID.GetID());
 			g_Context.SetRegistry(nullptr);
 		}
 		return GOM::kOK;

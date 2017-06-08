@@ -7,17 +7,17 @@ using namespace EntityService;
 
 GOM::Result TransformComponent::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kTransformComponentCID, new Plugin::tClassInstance<TransformComponent>());
+	return regy->Install(kTransformComponentCID.GetID(), new Plugin::tClassInstance<TransformComponent>());
 }
 
 GOM::Result TransformComponent::Remove(Plugin::iRegistry* regy)
 {
-	return regy->Remove(kTransformComponentCID);
+	return regy->Remove(kTransformComponentCID.GetID());
 }
 
-GOM::Result TransformComponent::Cast(GOM::InterfaceID id, void** outPtr)
+GOM::Result TransformComponent::Cast(uint64_t id, void** outPtr)
 {
-	switch(id.GetID())
+	switch(id)
 	{
 	case iBase::kIID.GetID():
 		{

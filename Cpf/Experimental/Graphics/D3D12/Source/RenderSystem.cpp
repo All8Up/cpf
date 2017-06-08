@@ -9,12 +9,12 @@ using namespace MultiCore;
 
 GOM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kRenderSystemCID, new Plugin::tClassInstance<RenderSystem>());
+	return regy->Install(kRenderSystemCID.GetID(), new Plugin::tClassInstance<RenderSystem>());
 }
 
 GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 {
-	return regy->Remove(kRenderSystemCID);
+	return regy->Remove(kRenderSystemCID.GetID());
 }
 
 RenderSystem::RenderSystem(GOM::iBase*)
@@ -49,11 +49,11 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext* tc, void* context)
 
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL RenderSystem::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -84,7 +84,7 @@ GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 		mpApp = theDesc->mpApplication;
 		mCurrentBackBuffer = 0;
 		mID = SystemID(name, strlen(name));
-		auto result = rgy->Create(this, kStageListCID, iStageList::kIID, mpStages.AsVoidPP());
+		auto result = rgy->Create(this, kStageListCID.GetID(), iStageList::kIID.GetID(), mpStages.AsVoidPP());
 		if (GOM::Succeeded(result))
 		{
 			// Build the stages and set the update function for each.
@@ -92,23 +92,23 @@ GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 			// be two required barrier groups since the only thing required is that they
 			// run in order which is accomplished via series of eLast types.
 			IntrusivePtr<MultiCore::iSingleUpdateStage> beginFrame;
-			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID, MultiCore::iSingleUpdateStage::kIID, beginFrame.AsVoidPP());
+			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), beginFrame.AsVoidPP());
 			beginFrame->Initialize(this, kBeginFrame.GetString());
 			beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, MultiCore::BlockOpcode::eFirst);
 
 			// Paired in a group ^
 			IntrusivePtr<MultiCore::iSingleUpdateStage> drawInstances;
-			rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, drawInstances.AsVoidPP());
+			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), drawInstances.AsVoidPP());
 			drawInstances->Initialize(this, kDrawInstances.GetString());
 			drawInstances->SetUpdate(&RenderSystem::_Draw, this, MultiCore::BlockOpcode::eLast);
 
 			IntrusivePtr<MultiCore::iSingleUpdateStage> debugUI;
-			rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, debugUI.AsVoidPP());
+			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), debugUI.AsVoidPP());
 			debugUI->Initialize(this, kDebugUI.GetString());
 			debugUI->SetUpdate(&RenderSystem::_DebugUI, this, MultiCore::BlockOpcode::eLast);
 
 			IntrusivePtr<MultiCore::iSingleUpdateStage> endFrame;
-			rgy->Create(nullptr, kSingleUpdateStageCID, iSingleUpdateStage::kIID, endFrame.AsVoidPP());
+			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), endFrame.AsVoidPP());
 			endFrame->Initialize(this, kEndFrame.GetString());
 			endFrame->SetUpdate(&RenderSystem::_EndFrame, this, MultiCore::BlockOpcode::eLast);
 

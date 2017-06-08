@@ -23,11 +23,11 @@ Output::~Output()
 	CPF_LOG(D3D12, Info) << "Destroyed output: " << intptr_t(this) << " - " << intptr_t(mpOutput.Ptr());
 }
 
-GOM::Result CPF_STDCALL Output::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL Output::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);

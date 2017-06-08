@@ -32,11 +32,11 @@ WindowedApp::~WindowedApp()
 	CPF_DROP_LOG(Application);
 }
 
-GOM::Result CPF_STDCALL WindowedApp::Cast(GOM::InterfaceID id, void** outIface)
+GOM::Result CPF_STDCALL WindowedApp::Cast(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id.GetID())
+		switch (id)
 		{
 		case GOM::iBase::kIID.GetID():
 			*outIface = static_cast<GOM::iBase*>(this);
@@ -63,7 +63,7 @@ GOM::Result CPF_STDCALL WindowedApp::Initialize(Plugin::iRegistry* regy, iApplic
 		mpRegistry = regy;
 		mpApplicationMain = appMain;
 
-		regy->Create(nullptr, kInputManagerCID, iInputManager::kIID, mpInputManager.AsVoidPP());
+		regy->Create(nullptr, kInputManagerCID.GetID(), iInputManager::kIID.GetID(), mpInputManager.AsVoidPP());
 
 		return GOM::kOK;
 	}
@@ -144,10 +144,10 @@ GOM::Result CPF_STDCALL WindowedApp::Create(const WindowDesc* desc, iWindow** ou
 {
 	iWindow* win = nullptr;
 	int32_t classCount = 0;
-	GetRegistry()->GetClasses(iWindow::kIID, &classCount, nullptr);
-	Vector<GOM::ClassID> classes(classCount);
-	GetRegistry()->GetClasses(iWindow::kIID, &classCount, classes.data());
-	if (GOM::Succeeded(GetRegistry()->Create(nullptr, classes[0], iWindow::kIID, reinterpret_cast<void**>(&win))))
+	GetRegistry()->GetClasses(iWindow::kIID.GetID(), &classCount, nullptr);
+	Vector<uint64_t> classes(classCount);
+	GetRegistry()->GetClasses(iWindow::kIID.GetID(), &classCount, classes.data());
+	if (GOM::Succeeded(GetRegistry()->Create(nullptr, classes[0], iWindow::kIID.GetID(), reinterpret_cast<void**>(&win))))
 	{
 		if (win && win->Initialize(desc))
 			*outWindow = win;

@@ -18,7 +18,7 @@ namespace Cpf
 			virtual ~Timer();
 
 			// iBase overrides.
-			GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 			// System overrides.
 			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) override;

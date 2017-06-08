@@ -20,7 +20,7 @@ namespace Cpf
 				GOM::Result Initialize(IDXGIAdapter2* adapter);
 
 				// Overrides from iBase.
-				GOM::Result CPF_STDCALL Cast(GOM::InterfaceID id, void** outIface) override;
+				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
 
 				const char* CPF_STDCALL GetDescription() const override;
 				size_t CPF_STDCALL GetVideoMemory() const override;

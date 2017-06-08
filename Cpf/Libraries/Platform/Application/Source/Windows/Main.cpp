@@ -23,7 +23,7 @@ namespace
 				if (Cpf::GOM::Succeeded(appMain->Initialize(registry, &appId)))
 				{
 					Cpf::IntrusivePtr<Cpf::iApplication> app;
-					if (Cpf::GOM::Succeeded(result = registry->Create(nullptr, appId, Cpf::iApplication::kIID, app.AsVoidPP())))
+					if (Cpf::GOM::Succeeded(result = registry->Create(nullptr, appId.GetID(), Cpf::iApplication::kIID.GetID(), app.AsVoidPP())))
 					{
 						if (Cpf::GOM::Succeeded(app->Initialize(registry, appMain)))
 							result = app->Run();
