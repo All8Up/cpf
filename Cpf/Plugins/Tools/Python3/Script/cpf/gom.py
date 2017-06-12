@@ -1,4 +1,5 @@
 import ctypes
+import cpfcore
 from builtins import object
 
 class Method(object):
@@ -54,3 +55,10 @@ class iBase(Interface):
         ('Release', Method(ctypes.c_int32)),
         ('Cast', Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
     ]
+
+def MakeResult(err, ss, v):
+	result = 0
+	result = result | (err << 31) | (ss << 15) | v
+	return result
+
+OK = MakeResult(0, cpfcore.crc16('Core'), cpfcore.crc15('OK'))
