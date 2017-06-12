@@ -1,5 +1,5 @@
 import ctypes
-import cpfcore
+import cpf
 from builtins import object
 
 class Method(object):
@@ -61,4 +61,4 @@ def MakeResult(err, ss, v):
 	result = result | (err << 31) | (ss << 15) | v
 	return result
 
-OK = MakeResult(0, cpfcore.crc16('Core'), cpfcore.crc15('OK'))
+OK = MakeResult(0, cpf.crc16('Core'), cpf.crc15('OK'))

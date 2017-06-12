@@ -1,13 +1,12 @@
-import ctypes
 import unittest
-import cpfcore
+import ctypes
+import cpf
 from cpf import gom
 from cpf import plugin
 
-iTestCID = cpfcore.crc64('Testing::iTest')
-
+iTestCID = cpf.crc64('Testing::iTest')
 class iTest(gom.iBase):
-	iid = cpfcore.crc64('Testing::iTest')
+	iid = cpf.crc64('Testing::iTest')
 	_methods_ =	[
 		('Tester', gom.Method(ctypes.c_int32, ctypes.c_int64))
 	]
@@ -15,7 +14,7 @@ class iTest(gom.iBase):
 
 class Tests(unittest.TestCase):
 	def setUp(self):
-		self.pluginId = cpfcore.crc64('Testing::iTest')
+		self.pluginId = cpf.crc64('Testing::iTest')
 		self.registry = plugin.create_registry()
 		self.registry.Load("plugins/TestingPlugin.cfp".encode('utf-8'))
 		self.plugin = iTest()
