@@ -111,7 +111,7 @@ void CPF_STDCALL NetworkSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-GOM::Result CPF_STDCALL NetworkSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL NetworkSystem::GetDependencies(MultiCore::iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

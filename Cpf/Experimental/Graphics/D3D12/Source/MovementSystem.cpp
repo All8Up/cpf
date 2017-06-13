@@ -2,7 +2,7 @@
 #include "MovementSystem.hpp"
 #include "InstanceSystem.hpp"
 #include "ExperimentalD3D12.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "Math/Vector3v.hpp"
 #include "Math/Matrix33v.hpp"
 #include "Graphics/iImageView.hpp"
@@ -57,7 +57,7 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 	return mpInstances;
 }
 
-GOM::Result MoverSystem::Configure(MultiCore::iPipeline* pipeline)
+GOM::Result MoverSystem::Configure(MultiCore::iExecutionPlan* pipeline)
 {
 	if (GOM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
 		GOM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
@@ -235,7 +235,7 @@ void CPF_STDCALL MoverSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-GOM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

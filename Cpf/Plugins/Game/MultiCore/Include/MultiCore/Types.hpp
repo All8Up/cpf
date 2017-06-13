@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
-#include "MultiCore/Export.hpp"
 #include "Vector.hpp"
 #include "IntrusivePtr.hpp"
 #include "Hash/HashID.hpp"
@@ -12,7 +11,7 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		struct iPipeline;
+		struct iExecutionPlan;
 
 		struct SystemID_tag {};
 		using SystemID = Hash::HashString<SystemID_tag>;

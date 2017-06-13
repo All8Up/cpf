@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/System/iTimer.hpp"
 #include "Timer.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace Cpf;
@@ -152,7 +152,7 @@ void CPF_STDCALL Timer::AddDependency(BlockDependency dep)
 	mDependencies.push_back(dep);
 }
 
-GOM::Result CPF_STDCALL Timer::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL Timer::GetDependencies(iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
 {
 	if (count)
 	{
@@ -190,7 +190,7 @@ GOM::Result CPF_STDCALL Timer::GetDependencies(iPipeline* owner, int32_t* count,
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Timer::Configure(iPipeline*)
+GOM::Result CPF_STDCALL Timer::Configure(iExecutionPlan*)
 {
 	return GOM::kOK;
 }

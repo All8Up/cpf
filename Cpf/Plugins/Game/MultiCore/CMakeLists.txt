@@ -3,12 +3,11 @@ set (INCLUDE_FILES
 	Include/MultiCore.hpp
 )
 set (MULTICORE_INCLUDE_FILES
-	Include/MultiCore/Export.hpp
 	Include/MultiCore/Types.hpp
 	Include/MultiCore/iStage.hpp
 	Include/MultiCore/Container.hpp
 	Include/MultiCore/Partitioning.hpp
-	Include/MultiCore/iPipeline.hpp
+	Include/MultiCore/iExecutionPlan.hpp
 	Include/MultiCore/iSystem.hpp
 )
 set (MULTICORE_SYSTEM_INCLUDE_FILES
@@ -22,12 +21,12 @@ set (MULTICORE_SOURCE_FILES
 	Source/MultiCore/Types.cpp
 	Source/MultiCore/Stage.hpp
 	Source/MultiCore/Stage.cpp
-	Source/MultiCore/Pipeline.hpp
-	Source/MultiCore/Pipeline.cpp
+	Source/MultiCore/ExecutionPlan.hpp
+	Source/MultiCore/ExecutionPlan.cpp
 	Source/MultiCore/System.hpp
 	Source/MultiCore/System.cpp
-	Source/MultiCore/PipelineBuilder.hpp
-	Source/MultiCore/PipelineBuilder.cpp
+	Source/MultiCore/PlanBuilder.hpp
+	Source/MultiCore/PlanBuilder.cpp
 )
 set (MULTICORE_SYSTEM_SOURCE_FILES
 	Source/MultiCore/System/Timer.hpp

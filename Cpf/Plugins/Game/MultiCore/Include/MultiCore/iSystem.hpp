@@ -1,11 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "GOM/iBase.hpp"
-#include "MultiCore/Export.hpp"
 #include "MultiCore/Types.hpp"
 #include "Plugin/iRegistry.hpp"
-#include "RefCounted.hpp"
-#include "String.hpp"
 
 
 namespace Cpf
@@ -25,7 +22,7 @@ namespace Cpf
 
 			virtual GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) = 0;
 			virtual void CPF_STDCALL AddDependency(BlockDependency dep) = 0;
-			virtual GOM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) = 0;
+			virtual GOM::Result CPF_STDCALL GetDependencies(iExecutionPlan* owner, int32_t*, BlockDependency*) = 0;
 		};
 
 		struct iSystem : iStageList
@@ -37,7 +34,7 @@ namespace Cpf
 
 			virtual GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const Desc* desc) = 0;
 			virtual SystemID CPF_STDCALL GetID() const = 0;
-			virtual GOM::Result CPF_STDCALL Configure(iPipeline*) = 0;
+			virtual GOM::Result CPF_STDCALL Configure(iExecutionPlan*) = 0;
 		};
 	}
 }

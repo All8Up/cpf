@@ -109,7 +109,7 @@ void CPF_STDCALL InstanceSystem::AddDependency(MultiCore::BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-GOM::Result CPF_STDCALL InstanceSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, MultiCore::BlockDependency* deps)
+GOM::Result CPF_STDCALL InstanceSystem::GetDependencies(MultiCore::iExecutionPlan* owner, int32_t* count, MultiCore::BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

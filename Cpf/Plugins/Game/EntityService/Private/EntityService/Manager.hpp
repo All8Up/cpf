@@ -5,7 +5,7 @@
 #include "RefCounted.hpp"
 #include "Functional.hpp"
 #include "Plugin/iClassInstance.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 
 namespace Cpf
@@ -29,7 +29,7 @@ namespace Cpf
 			GOM::Result Cast(uint64_t id, void**) override;
 
 			// 
-			MultiCore::iPipeline* GetPipeline() const { return mpPipeline; }
+			MultiCore::iExecutionPlan* GetPipeline() const { return mpPipeline; }
 
 			// Service interface.
 			iEntity* CreateEntity(uint64_t id = uint64_t(-1));
@@ -40,7 +40,7 @@ namespace Cpf
 			//
 			static uint64_t mNextID;
 			EntityIDMap mEntityIDMap;
-			MultiCore::iPipeline* mpPipeline;
+			MultiCore::iExecutionPlan* mpPipeline;
 		};
 	}
 }

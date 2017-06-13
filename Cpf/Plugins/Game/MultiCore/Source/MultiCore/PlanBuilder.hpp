@@ -10,18 +10,18 @@ namespace Cpf
 {
 	namespace MultiCore
 	{
-		class PipelineBuilder
+		class PlanBuilder
 		{
 		public:
-			PipelineBuilder(Plugin::iRegistry*, iPipeline* pipeline);
-			~PipelineBuilder();
+			PlanBuilder(Plugin::iRegistry*, iExecutionPlan* pipeline);
+			~PlanBuilder();
 
 			void Add(const Instruction& instructions);
 			void Add(const BlockDependencies& dependencies);
 
 			bool Solve();
 
-			Concurrency::iWorkBuffer* GetQueue() { return mpQueue; }
+			Concurrency::iWorkBuffer* GetWorkBuffer() { return mpQueue; }
 
 			Vector<String> GetQueueInfo() const;
 
@@ -51,7 +51,7 @@ namespace Cpf
 
 			//
 			IntrusivePtr<Concurrency::iWorkBuffer> mpQueue;
-			iPipeline* mpPipeline;
+			iExecutionPlan* mpPipeline;
 			Vector<String> mQueueInfo;
 		};
 	}

@@ -2,7 +2,7 @@
 #pragma once
 #include "Application/iApplicationMain.hpp"
 #include "Application/iWindowedApplication.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "RenderSystem.hpp"
 #include "NetworkSystem.hpp"
 #include "Concurrency/iThreadPool.hpp"
@@ -52,7 +52,7 @@ namespace Cpf
 		IntrusivePtr<Concurrency::iLoadBalancer> mpLoadBalancer;
 		IntrusivePtr<Resources::iLocator> mpLocator;
 
-		IntrusivePtr<MultiCore::iPipeline> mpPipeline;
+		IntrusivePtr<MultiCore::iExecutionPlan> mpPipeline;
 		IntrusivePtr<MultiCore::iTimer> mpTimer;
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;

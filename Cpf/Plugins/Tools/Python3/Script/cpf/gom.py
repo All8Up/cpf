@@ -56,9 +56,15 @@ class iBase(Interface):
         ('Cast', Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
     ]
 
-def MakeResult(err, ss, v):
+def make_result(err, ss, v):
 	result = 0
 	result = result | (err << 31) | (ss << 15) | v
 	return result
 
-OK = MakeResult(0, cpf.crc16('Core'), cpf.crc15('OK'))
+OK = make_result(0, cpf.crc16('Core'), cpf.crc15('OK'))
+
+def success(result):
+	return (result & 0x80000000) == 0
+
+def failure(result):
+	return (result & 0x80000000) != 0

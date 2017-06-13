@@ -1,13 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "GOM/iBase.hpp"
-#include "MultiCore/Export.hpp"
 #include "MultiCore/Types.hpp"
-#include "Plugin/iRegistry.hpp"
 #include "RefCounted.hpp"
-#include "String.hpp"
 #include "MultiCore/iSystem.hpp"
-#include "Plugin/iClassInstance.hpp"
 
 namespace Cpf
 {
@@ -29,7 +25,7 @@ namespace Cpf
 
 			GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			void CPF_STDCALL AddDependency(BlockDependency dep) override;
-			GOM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
+			GOM::Result CPF_STDCALL GetDependencies(iExecutionPlan* owner, int32_t*, BlockDependency*) override;
 
 		private:
 			iBase* mpOuter;

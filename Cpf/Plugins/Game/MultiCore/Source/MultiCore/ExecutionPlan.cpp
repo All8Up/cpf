@@ -1,27 +1,27 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Pipeline.hpp"
+#include "ExecutionPlan.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
-#include "PipelineBuilder.hpp"
+#include "PlanBuilder.hpp"
 
 using namespace Cpf;
 using namespace MultiCore;
 
 
 //////////////////////////////////////////////////////////////////////////
-Pipeline::Pipeline(iBase*)
+ExecutionPlan::ExecutionPlan(iBase*)
 #ifdef CPF_DEBUG
 	: mChanged(false)
 #endif
 {
 }
 
-Pipeline::~Pipeline()
+ExecutionPlan::~ExecutionPlan()
 {}
 
-GOM::Result CPF_STDCALL Pipeline::Cast(uint64_t id, void** iface)
+GOM::Result CPF_STDCALL ExecutionPlan::Cast(uint64_t id, void** iface)
 {
 	if (iface)
 	{
@@ -31,8 +31,8 @@ GOM::Result CPF_STDCALL Pipeline::Cast(uint64_t id, void** iface)
 			*iface = static_cast<GOM::iBase*>(this);
 			AddRef();
 			return GOM::kOK;
-		case iPipeline::kIID.GetID():
-			*iface = static_cast<iPipeline*>(this);
+		case iExecutionPlan::kIID.GetID():
+			*iface = static_cast<iExecutionPlan*>(this);
 			AddRef();
 			return GOM::kOK;
 		}
@@ -40,7 +40,7 @@ GOM::Result CPF_STDCALL Pipeline::Cast(uint64_t id, void** iface)
 	return GOM::kInvalidParameter;
 }
 
-iSystem* CPF_STDCALL Pipeline::Install(iSystem* system)
+iSystem* CPF_STDCALL ExecutionPlan::Install(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -55,7 +55,7 @@ iSystem* CPF_STDCALL Pipeline::Install(iSystem* system)
 	return nullptr;
 }
 
-GOM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
+GOM::Result CPF_STDCALL ExecutionPlan::Remove(iSystem* system)
 {
 	SystemID id = system->GetID();
 	if (mSystemMap.find(id) == mSystemMap.end())
@@ -67,10 +67,10 @@ GOM::Result CPF_STDCALL Pipeline::Remove(iSystem* system)
 	return GOM::kOK;
 }
 
-GOM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
+GOM::Result CPF_STDCALL ExecutionPlan::Configure(Plugin::iRegistry* regy)
 {
 	// Iterate the systems and setup the queue builder.
-	PipelineBuilder builder(regy, this);
+	PlanBuilder builder(regy, this);
 	mpQueue.Adopt(nullptr);
 	regy->Create(nullptr, Concurrency::kWorkBufferCID.GetID(), Concurrency::iWorkBuffer::kIID.GetID(), mpQueue.AsVoidPP());
 	for (auto& system : mSystemMap)
@@ -102,9 +102,9 @@ GOM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 		CPF_LOG(MultiCore, Error) << "Error resolving block dependencies.";
 	}
 	else
-		mpQueue->Copy(builder.GetQueue());
+		mpQueue->Copy(builder.GetWorkBuffer());
 
-	// Let the systems configure to the new pipeline.
+	// Let the systems configure to the new ExecutionPlan.
 	// This allows systems to get pointers to other configured systems.
 	bool result = _ConfigureSystems();
 
@@ -116,11 +116,11 @@ GOM::Result CPF_STDCALL Pipeline::Configure(Plugin::iRegistry* regy)
 	return result ? GOM::kOK : kConfigurationError;
 }
 
-bool Pipeline::_ConfigureSystems()
+bool ExecutionPlan::_ConfigureSystems()
 {
 	bool result = true;
 
-	// Let the systems configure to the new pipeline.
+	// Let the systems configure to the new ExecutionPlan.
 	for (const auto& system : mSystemMap)
 	{
 		if (GOM::Failed(system.second->Configure(this)))
@@ -130,7 +130,7 @@ bool Pipeline::_ConfigureSystems()
 	return result;
 }
 
-GOM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
+GOM::Result CPF_STDCALL ExecutionPlan::GetSystem(SystemID id, iSystem** system) const
 {
 	if (system)
 	{
@@ -146,7 +146,7 @@ GOM::Result CPF_STDCALL Pipeline::GetSystem(SystemID id, iSystem** system) const
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** outSystem) const
+GOM::Result CPF_STDCALL ExecutionPlan::GetSystem(const char* const name, iSystem** outSystem) const
 {
 	if (outSystem)
 	{
@@ -155,7 +155,7 @@ GOM::Result CPF_STDCALL Pipeline::GetSystem(const char* const name, iSystem** ou
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, iStage** outStage)
+GOM::Result CPF_STDCALL ExecutionPlan::GetStage(SystemID systemID, StageID stageID, iStage** outStage)
 {
 	if (outStage)
 	{
@@ -174,7 +174,7 @@ GOM::Result CPF_STDCALL Pipeline::GetStage(SystemID systemID, StageID stageID, i
 	return GOM::kInvalidParameter;
 }
 
-void CPF_STDCALL Pipeline::Submit(Concurrency::iScheduler* scheduler)
+void CPF_STDCALL ExecutionPlan::Submit(Concurrency::iScheduler* scheduler)
 {
 #ifdef CPF_DEBUG
 	// Asserts can be enabled in release mode.
@@ -183,7 +183,7 @@ void CPF_STDCALL Pipeline::Submit(Concurrency::iScheduler* scheduler)
 	scheduler->Execute(mpQueue, false);
 }
 
-GOM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outString)
+GOM::Result CPF_STDCALL ExecutionPlan::GetQueueInfo(int32_t idx, const char** outString)
 {
 	if (outString)
 	{
@@ -196,7 +196,7 @@ GOM::Result CPF_STDCALL Pipeline::GetQueueInfo(int32_t idx, const char** outStri
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Pipeline::GetSystems(int32_t* count, iSystem** systems)
+GOM::Result CPF_STDCALL ExecutionPlan::GetSystems(int32_t* count, iSystem** systems)
 {
 	if (count)
 	{

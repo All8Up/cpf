@@ -10,14 +10,14 @@ namespace Cpf
 	{
 		struct iSystem;
 
-		static constexpr GOM::ClassID kPipelineCID = GOM::ClassID("Pipeline"_crc64);
+		static constexpr GOM::ClassID kExecutionPlanCID = GOM::ClassID("Cpf::MultiCore::iExecutionPlan"_crc64);
 
 		/**
-		 A multicore pipeline execution component.
+		 A multicore execution plan component.
 		 */
-		struct iPipeline : GOM::iBase
+		struct iExecutionPlan : GOM::iBase
 		{
-			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iPipeline"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::MultiCore::iExecutionPlan"_crc64);
 			static constexpr GOM::Result kConfigurationError = GOM::CreateResult(1, 50, 1);
 
 			virtual iSystem* CPF_STDCALL Install(iSystem*) = 0;
@@ -32,14 +32,14 @@ namespace Cpf
 		};
 
 		/**
-		 Helper to get a system by name from the given pipeline.
+		 Helper to get a system by name from the given execution plan.
 		 @tparam TYPE Type of the system.
-		 @param [in,out] pipeline The pipeline that contains the system.
+		 @param [in,out] pipeline The execution plan that contains the system.
 		 @param name The name of the system to get.
 		 @return Null if it fails, else the system.
 		 */
 		template <typename TYPE>
-		TYPE* GetSystem(iPipeline* pipeline, const String& name)
+		TYPE* GetSystem(iExecutionPlan* pipeline, const String& name)
 		{
 			iSystem* result = nullptr;
 			if (GOM::Succeeded(pipeline->GetSystem(name.c_str(), &result)))

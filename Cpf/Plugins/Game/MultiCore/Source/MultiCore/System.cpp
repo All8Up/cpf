@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "System.hpp"
 #include "UnorderedMap.hpp"
 #include "Logging/Logging.hpp"
@@ -152,7 +152,7 @@ void CPF_STDCALL StageList::AddDependency(BlockDependency dep)
 	mDependencies.push_back(dep);
 }
 
-GOM::Result CPF_STDCALL StageList::GetDependencies(iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL StageList::GetDependencies(iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
 {
 	if (count)
 	{

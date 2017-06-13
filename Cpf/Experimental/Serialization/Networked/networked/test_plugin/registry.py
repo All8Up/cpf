@@ -33,3 +33,16 @@ class Tests(unittest.TestCase):
 
 	def testPluginCall(self):
 		self.assertEqual(self.plugin.Tester(67), 67)
+
+	def testRemove(self):
+		# Go get the class instance first.
+		tempClassInstance = plugin.iClassInstance()
+		self.assertTrue(gom.success(self.registry.GetClassInstance(iTestCID, ctypes.byref(tempClassInstance))))
+
+		# Test removing the class instance and then double check it was actually removed.
+		self.assertTrue(gom.success(self.registry.Remove(iTestCID)))
+		self.assertFalse(gom.success(self.registry.Remove(iTestCID)))
+
+		# Put the class instance back into the factory.  The factory steals
+		# the reference given us by GetClassInstance, so we don't release.
+		self.assertTrue(gom.success(self.registry.Install(iTestCID, tempClassInstance)))

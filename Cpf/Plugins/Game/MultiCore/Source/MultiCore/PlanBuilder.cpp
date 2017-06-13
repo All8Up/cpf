@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
-#include "PipelineBuilder.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "PlanBuilder.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "Logging/Logging.hpp"
@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-bool PipelineBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) const
+bool PlanBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) const
 {
 	return mID < rhs.mID;
 }
@@ -18,21 +18,21 @@ bool PipelineBuilder::DependencyEntry::operator < (const DependencyEntry& rhs) c
 
 //////////////////////////////////////////////////////////////////////////
 
-PipelineBuilder::PipelineBuilder(Plugin::iRegistry* regy, iPipeline* pipeline)
+PlanBuilder::PlanBuilder(Plugin::iRegistry* regy, iExecutionPlan* pipeline)
 	: mpPipeline(pipeline)
 {
 	regy->Create(nullptr, Concurrency::kWorkBufferCID.GetID(), Concurrency::iWorkBuffer::kIID.GetID(), mpQueue.AsVoidPP());
 }
 
-PipelineBuilder::~PipelineBuilder()
+PlanBuilder::~PlanBuilder()
 {}
 
-void PipelineBuilder::Add(const Instruction& instruction)
+void PlanBuilder::Add(const Instruction& instruction)
 {
 	mInstructions.push_back(instruction);
 }
 
-void PipelineBuilder::Add(const BlockDependencies& dependencies)
+void PlanBuilder::Add(const BlockDependencies& dependencies)
 {
 	CPF_LOG(MultiCore, Info) << "--- Dependencies ---";
 	for (const auto& dep : dependencies)
@@ -51,7 +51,7 @@ void PipelineBuilder::Add(const BlockDependencies& dependencies)
 	CPF_LOG(MultiCore, Info) << "--- Dependencies ---";
 }
 
-void PipelineBuilder::_GatherStageDependencies()
+void PlanBuilder::_GatherStageDependencies()
 {
 	int32_t systemCount = 0;
 	mpPipeline->GetSystems(&systemCount, nullptr);
@@ -78,7 +78,7 @@ void PipelineBuilder::_GatherStageDependencies()
 	}
 }
 
-bool PipelineBuilder::Solve()
+bool PlanBuilder::Solve()
 {
 	_GatherStageDependencies();
 
@@ -121,7 +121,7 @@ bool PipelineBuilder::Solve()
 	return mInstructions.empty();
 }
 
-void PipelineBuilder::_BuildQueue()
+void PlanBuilder::_BuildQueue()
 {
 	mpQueue->Reset();
 	for (const auto& bucket : mBuckets)
@@ -160,12 +160,12 @@ void PipelineBuilder::_BuildQueue()
 	CPF_LOG(MultiCore, Info) << "--------------------- Queue disassembly ---------------------";
 }
 
-Vector<String> PipelineBuilder::GetQueueInfo() const
+Vector<String> PlanBuilder::GetQueueInfo() const
 {
 	return mQueueInfo;
 }
 
-void PipelineBuilder::_MakeQueueInfo()
+void PlanBuilder::_MakeQueueInfo()
 {
 	for (const auto& bucket : mBuckets)
 	{
@@ -203,7 +203,7 @@ void PipelineBuilder::_MakeQueueInfo()
 	}
 }
 
-bool PipelineBuilder::_Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation)
+bool PlanBuilder::_Solve(const DependencySet& dependencies, BucketVector::iterator& outLocation)
 {
 	// Copy the dependencies.  As dependencies are identified, they are removed from this.
 	// If this still has items in it after iterating through the stage buckets, we have failed
@@ -249,7 +249,7 @@ bool PipelineBuilder::_Solve(const DependencySet& dependencies, BucketVector::it
 	return false;
 }
 
-void PipelineBuilder::_AddToBucket(BucketVector::iterator it, const Instruction& data)
+void PlanBuilder::_AddToBucket(BucketVector::iterator it, const Instruction& data)
 {
 	if (it == mBuckets.end())
 	{

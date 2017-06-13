@@ -68,7 +68,7 @@ void CPF_STDCALL RenderSystem::AddDependency(MultiCore::BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-GOM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, MultiCore::BlockDependency* deps)
+GOM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iExecutionPlan* owner, int32_t* count, MultiCore::BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }
@@ -87,7 +87,7 @@ MultiCore::SystemID CPF_STDCALL RenderSystem::GetID() const
 	return mID;
 }
 
-GOM::Result CPF_STDCALL RenderSystem::Configure(MultiCore::iPipeline*)
+GOM::Result CPF_STDCALL RenderSystem::Configure(MultiCore::iExecutionPlan*)
 {
 	return GOM::kOK;
 }

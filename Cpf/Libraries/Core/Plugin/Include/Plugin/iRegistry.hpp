@@ -59,6 +59,14 @@ namespace Cpf
 			virtual GOM::Result CPF_STDCALL Remove(uint64_t cid) = 0;
 
 			/**
+			 Gets the class instance associated with the cid.
+			 @param cid The cid of intereste.
+			 @param clsInst Pointer to the resulting interface pointer.
+			 @return A result code.
+			 */
+			virtual GOM::Result CPF_STDCALL GetClassInstance(uint64_t cid, iClassInstance** clsInst) = 0;
+
+			/**
 			 * @brief Check if a class id has a class instance installed.
 			 * @param cid The class instance id.
 			 * @return A result code.

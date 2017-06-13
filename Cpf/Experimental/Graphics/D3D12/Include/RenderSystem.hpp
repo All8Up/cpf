@@ -49,14 +49,14 @@ namespace Cpf
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
 		MultiCore::SystemID CPF_STDCALL GetID() const override;
-		GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override { return GOM::kOK; }
+		GOM::Result CPF_STDCALL Configure(MultiCore::iExecutionPlan*) override { return GOM::kOK; }
 
 		// iStageList
 		GOM::Result CPF_STDCALL FindStage(MultiCore::StageID id, MultiCore::iStage** outStage) const override;
 		GOM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
 		GOM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
 		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
-		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iExecutionPlan* owner, int32_t*, MultiCore::BlockDependency*) override;
 
 		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;

@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/Export.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/System/iTimer.hpp"
@@ -27,8 +26,8 @@ namespace Cpf
 			GOM::Result CPF_STDCALL GetStages(int32_t* count, iStage** outStages) const override;
 			GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			void CPF_STDCALL AddDependency(BlockDependency dep) override;
-			GOM::Result CPF_STDCALL GetDependencies(iPipeline* owner, int32_t*, BlockDependency*) override;
-			GOM::Result CPF_STDCALL Configure(iPipeline*) override;
+			GOM::Result CPF_STDCALL GetDependencies(iExecutionPlan* owner, int32_t*, BlockDependency*) override;
+			GOM::Result CPF_STDCALL Configure(iExecutionPlan*) override;
 
 			// Timer interface.
 			Time::Value CPF_STDCALL GetTime() override;
@@ -55,7 +54,7 @@ namespace Cpf
 			// The internal update stage.
 			IntrusivePtr<iSingleUpdateStage> mpUpdate;
 
-			iPipeline* mpOwner;
+			iExecutionPlan* mpOwner;
 			StageVector mStages;
 			SystemID mID;
 			BlockDependencies mDependencies;

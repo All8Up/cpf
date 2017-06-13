@@ -2,7 +2,7 @@
 #include "Logging/Logging.hpp"
 #include "MultiCore.hpp"
 #include "MultiCore/iSystem.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
 #include "Resources/iConfiguration.hpp"
@@ -228,7 +228,7 @@ bool Networked::_ShutdownMultiCore()
 
 bool Networked::_InitializePipeline()
 {
-	if (GOM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kPipelineCID.GetID(), MultiCore::iPipeline::kIID.GetID(), mpPipeline.AsVoidPP())))
+	if (GOM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kExecutionPlanCID.GetID(), MultiCore::iExecutionPlan::kIID.GetID(), mpPipeline.AsVoidPP())))
 	{
 		GetRegistry()->Create(nullptr, MultiCore::kTimerCID.GetID(), MultiCore::iTimer::kIID.GetID(), mpTimer.AsVoidPP());
 		mpTimer->Initialize(GetRegistry(), "Game Time", nullptr);

@@ -100,7 +100,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	MoverSystem::MoverComponent::Install(GetRegistry());
 	
 	//////////////////////////////////////////////////////////////////////////
-	GetRegistry()->Create(nullptr, MultiCore::kPipelineCID.GetID(), MultiCore::iPipeline::kIID.GetID(), mpMultiCore.AsVoidPP());
+	GetRegistry()->Create(nullptr, MultiCore::kExecutionPlanCID.GetID(), MultiCore::iExecutionPlan::kIID.GetID(), mpMultiCore.AsVoidPP());
 
 	// Install the systems this will use.
 	RenderSystem::Install(GetRegistry());

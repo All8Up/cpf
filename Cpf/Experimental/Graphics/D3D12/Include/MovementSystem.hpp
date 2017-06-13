@@ -44,7 +44,7 @@ namespace Cpf
 
 		MoverSystem(GOM::iBase*);
 		InstanceSystem* GetInstanceSystem() const;
-		GOM::Result CPF_STDCALL Configure(MultiCore::iPipeline*) override;
+		GOM::Result CPF_STDCALL Configure(MultiCore::iExecutionPlan*) override;
 		void EnableMovement(bool flag);
 
 		// iBase
@@ -60,7 +60,7 @@ namespace Cpf
 		GOM::Result CPF_STDCALL GetStages(int32_t* count, MultiCore::iStage** outStages) const override;
 		GOM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
 		void CPF_STDCALL AddDependency(MultiCore::BlockDependency dep) override;
-		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iPipeline* owner, int32_t*, MultiCore::BlockDependency*) override;
+		GOM::Result CPF_STDCALL GetDependencies(MultiCore::iExecutionPlan* owner, int32_t*, MultiCore::BlockDependency*) override;
 
 		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore.hpp"
 #include "Logging/Logging.hpp"
-#include "MultiCore/Pipeline.hpp"
+#include "MultiCore/ExecutionPlan.hpp"
 #include "MultiCore/System/Timer.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/System.hpp"
@@ -14,7 +14,7 @@ namespace
 	Plugin::iRegistry* spRegistry = nullptr;
 }
 
-CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* registry)
+int MultiCoreInitializer::Install(Plugin::iRegistry* registry)
 {
 	// TODO: Currently only exists in a single registry.
 	// Will be fixed when this is a real plugin.
@@ -24,7 +24,7 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* regist
 		spRegistry = registry;
 		CPF_INIT_LOG(MultiCore);
 		CPF_LOG(MultiCore, Trace) << "Initialized multicore library.";
-		spRegistry->Install(MultiCore::kPipelineCID.GetID(), new Plugin::tClassInstance<MultiCore::Pipeline>());
+		spRegistry->Install(MultiCore::kExecutionPlanCID.GetID(), new Plugin::tClassInstance<MultiCore::ExecutionPlan>());
 		spRegistry->Install(MultiCore::kTimerCID.GetID(), new Plugin::tClassInstance<MultiCore::Timer>());
 		spRegistry->Install(MultiCore::kSingleUpdateStageCID.GetID(), new Plugin::tClassInstance<MultiCore::SingleUpdateStage>());
 		spRegistry->Install(MultiCore::kStageListCID.GetID(), new Plugin::tClassInstance<MultiCore::StageList>());
@@ -32,7 +32,7 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Install(Plugin::iRegistry* regist
 	return s_RefCount;
 }
 
-CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
+int MultiCoreInitializer::Remove()
 {
 	if (--s_RefCount == 0)
 	{
@@ -40,7 +40,7 @@ CPF_EXPORT_MULTICORE int MultiCoreInitializer::Remove()
 		spRegistry->Remove(MultiCore::kStageListCID.GetID());
 		spRegistry->Remove(MultiCore::kSingleUpdateStageCID.GetID());
 		spRegistry->Remove(MultiCore::kTimerCID.GetID());
-		spRegistry->Remove(MultiCore::kPipelineCID.GetID());
+		spRegistry->Remove(MultiCore::kExecutionPlanCID.GetID());
 		CPF_LOG(MultiCore, Trace) << "Shutdown multicore library.";
 		CPF_DROP_LOG(MultiCore);
 		spRegistry = nullptr;

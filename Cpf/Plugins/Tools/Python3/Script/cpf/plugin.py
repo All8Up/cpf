@@ -15,6 +15,7 @@ class iRegistry(gom.iBase):
 		('Unload', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
 		('Install', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p)),
 		('Remove', gom.Method(ctypes.c_uint32, ctypes.c_uint64)),
+		('GetClassInstance', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p)),
 		('Exists', gom.Method(ctypes.c_uint32, ctypes.c_uint64)),
 		('Create', gom.Method(ctypes.c_uint32, ctypes.c_void_p, ctypes.c_uint64, ctypes.c_uint64, ctypes.c_void_p)),
 		('ClassInstall', gom.Method(ctypes.c_uint32, ctypes.c_int32, ctypes.POINTER(IID_CID))),
@@ -23,6 +24,11 @@ class iRegistry(gom.iBase):
 		('InstanceInstall', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p)),
 		('InstanceRemove', gom.Method(ctypes.c_uint32, ctypes.c_uint64)),
 		('GetInstance', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
+	]
+
+class iClassInstance(gom.iBase):
+	_methods_ = [
+		('CreateInstance', gom.Method(ctypes.c_uint32, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p))
 	]
 
 

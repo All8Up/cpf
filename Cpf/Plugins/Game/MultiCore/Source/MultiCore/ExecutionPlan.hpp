@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "Plugin/iClassInstance.hpp"
 #include "UnorderedMap.hpp"
 
@@ -9,11 +9,11 @@ namespace Cpf
 	namespace MultiCore
 	{
 		/** @brief A multicore processing pipeline. */
-		class Pipeline : public tRefCounted<iPipeline>
+		class ExecutionPlan : public tRefCounted<iExecutionPlan>
 		{
 		public:
-			Pipeline(iBase*);
-			~Pipeline();
+			ExecutionPlan(iBase*);
+			~ExecutionPlan();
 
 			GOM::Result Cast(uint64_t id, void** iface) override;
 			iSystem* CPF_STDCALL Install(iSystem*) override;

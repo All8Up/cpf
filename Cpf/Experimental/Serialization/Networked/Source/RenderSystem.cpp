@@ -11,7 +11,7 @@
 #include "Graphics/iImageView.hpp"
 #include "Graphics/HeapType.hpp"
 #include "MultiCore/iStage.hpp"
-#include "MultiCore/iPipeline.hpp"
+#include "MultiCore/iExecutionPlan.hpp"
 #include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
@@ -39,7 +39,7 @@ GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kRenderSystemCID.GetID());
 }
 
-GOM::Result RenderSystem::Configure(MultiCore::iPipeline* pipeline)
+GOM::Result RenderSystem::Configure(MultiCore::iExecutionPlan* pipeline)
 {
 	mpTimer = GetSystem<iTimer>(pipeline, mDesc.mTimer.GetString());
 	return mpTimer != nullptr ? GOM::kOK : GOM::kInvalid;
@@ -523,7 +523,7 @@ void CPF_STDCALL RenderSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-GOM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iPipeline* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL RenderSystem::GetDependencies(MultiCore::iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }
