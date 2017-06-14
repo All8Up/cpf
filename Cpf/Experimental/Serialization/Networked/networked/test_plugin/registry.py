@@ -14,7 +14,6 @@ class iTest(gom.iBase):
 
 class Tests(unittest.TestCase):
 	def setUp(self):
-		self.pluginId = cpf.crc64('Testing::iTest')
 		self.registry = plugin.create_registry()
 		self.registry.Load("plugins/TestingPlugin.cfp".encode('utf-8'))
 		self.plugin = iTest()
@@ -29,7 +28,7 @@ class Tests(unittest.TestCase):
 		self.assertEqual(self.registry.Release(), 1)
 
 	def testExists(self):
-		self.assertEqual(self.registry.Exists(self.pluginId), gom.OK)
+		self.assertEqual(self.registry.Exists(iTestCID), gom.OK)
 
 	def testPluginCall(self):
 		self.assertEqual(self.plugin.Tester(67), 67)
@@ -40,8 +39,9 @@ class Tests(unittest.TestCase):
 		self.assertTrue(gom.success(self.registry.GetClassInstance(iTestCID, ctypes.byref(tempClassInstance))))
 
 		# Test removing the class instance and then double check it was actually removed.
+		self.assertTrue(gom.success(self.registry.Exists(iTestCID)))
 		self.assertTrue(gom.success(self.registry.Remove(iTestCID)))
-		self.assertFalse(gom.success(self.registry.Remove(iTestCID)))
+		self.assertTrue(gom.failure(self.registry.Exists(iTestCID)))
 
 		# Put the class instance back into the factory.  The factory steals
 		# the reference given us by GetClassInstance, so we don't release.
