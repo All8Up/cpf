@@ -5,19 +5,6 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	set (INCLUDE_FILES
 		Include/Python3.hpp
 	)
-	set (INCLUDE_GOM_FILES
-		Include/GOM/pyModule.hpp
-		Include/GOM/pyMethods.hpp
-		Include/GOM/pyResult.hpp
-		Include/GOM/pyClassID.hpp
-		Include/GOM/pyInterfaceID.hpp
-	)
-	set (INCLUDE_PLUGIN_FILES
-		Include/Plugin/pyModule.hpp
-		Include/Plugin/pyMethods.hpp
-		Include/Plugin/pyRegistry.hpp
-		Include/Plugin/pyClassInstance.hpp
-	)
 
 	set (INTERFACE_FILES
 		Interface/iPython.hpp
@@ -26,19 +13,6 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	set (SOURCE_FILES
 		Source/Plugin.cpp
 		Source/Python3.cpp
-	)
-	set (SOURCE_GOM_FILES
-		Source/GOM/pyModule.cpp
-		Source/GOM/pyMethods.cpp
-		Source/GOM/pyResult.cpp
-		Source/GOM/pyClassID.cpp
-		Source/GOM/pyInterfaceID.cpp
-	)
-	set (SOURCE_PLUGIN_FILES
-		Source/Plugin/pyModule.cpp
-		Source/Plugin/pyMethods.cpp
-		Source/Plugin/pyRegistry.cpp
-		Source/Plugin/pyClassInstance.cpp
 	)
 
 	set (PYTHON_CPF_LIB_FILES
@@ -50,12 +24,8 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 	# ###############################################
 	add_library (Python3 SHARED
 		${INCLUDE_FILES}
-		${INCLUDE_GOM_FILES}
-		${INCLUDE_PLUGIN_FILES}
 		${INTERFACE_FILES}
 		${SOURCE_FILES}
-		${SOURCE_GOM_FILES}
-		${SOURCE_PLUGIN_FILES}
 		${PYTHON_CPF_LIB_FILES}
 	)
 	target_include_directories (Python3
@@ -71,7 +41,6 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 		PUBLIC
 			Configuration Plugin Logging
 		PRIVATE
-			rttr_core
             debug ${PYTHON_DEBUG_LIBRARY}
             optimized ${PYTHON_LIBRARY}
 	)
@@ -91,12 +60,8 @@ if (PYTHON_LIBRARY AND PYTHON_DEBUG_LIBRARY)
 
 	# ###############################################
 	source_group (Headers FILES ${INCLUDE_FILES})
-	source_group (Headers\\GOM FILES ${INCLUDE_GOM_FILES})
-	source_group (Headers\\Plugins FILES ${INCLUDE_PLUGIN_FILES})
 	source_group (Interfaces FILES ${INTERFACE_FILES})
 	source_group (Sources FILES ${SOURCE_FILES})
-	source_group (Sources\\GOM FILES ${SOURCE_GOM_FILES})
-	source_group (Sources\\Plugins FILES ${SOURCE_PLUGIN_FILES})
 	source_group (Sources\\Python\\cpf FILES ${PYTHON_CPF_LIB_FILES})
 else ()
 	message ("Python not found.")

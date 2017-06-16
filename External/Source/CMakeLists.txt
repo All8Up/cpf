@@ -53,16 +53,6 @@ else ()
 	endif ()
 endif ()
 
-# Cereal
-if (NOT EXTERN_INLINE_CEREAL)
-else ()
-	if (IS_DIRECTORY "${CEREAL_SRC_DIR}")
-		set (CPF_HAVE_CEREAL ON PARENT_SCOPE)
-		set (JUST_INSTALL_CEREAL ON CACHE BOOL "" FORCE)
-		add_subdirectory (${CEREAL_SRC_DIR})
-	endif ()
-endif ()
-
 # ASIO
 if (NOT EXTERN_INLINE_ASIO)
 else ()
@@ -76,36 +66,10 @@ else ()
 	endif ()
 endif ()
 
-# Aurora
-if (NOT EXTERN_INLINE_AURORA)
-else ()
-	if (IS_DIRECTORY "${AURORA_SRC_DIR}")
-		set (BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-		set (GLFW_SYSTEM OFF CACHE BOOL "" FORCE)
-		add_subdirectory (${AURORA_SRC_DIR})
-		set_property (TARGET RuntimeCompiler PROPERTY FOLDER External)
-		set_property (TARGET RuntimeObjectSystem PROPERTY FOLDER External)
-	endif ()
-endif ()
-
 # Vulkan
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK")
 	add_library (vulkan INTERFACE)
 	target_include_directories (vulkan INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/Source/VulkanSDK/1.0.46.0/Include")
-endif ()
-
-# Rttr
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/Rttr-master")
-	set (BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
-	set (USE_PCH OFF CACHE BOOL "" FORCE)
-	set (BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
-	set (BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-	set (BUILD_DOCUMENTATION OFF CACHE BOOL "" FORCE)
-	set (BUILD_INSTALLER OFF CACHE BOOL "" FORCE)
-	set (BUILD_PACKAGE OFF CACHE BOOL "" FORCE)
-	set (CUSTOM_DOXYGEN_STYLE OFF CACHE BOOL "" FORCE)
-	add_subdirectory (${CMAKE_CURRENT_SOURCE_DIR}/Source/Rttr-master)
-	set_property (TARGET rttr_core PROPERTY FOLDER External)
 endif ()
 
 # jsoncons

@@ -17,17 +17,9 @@ option (EXTERN_INLINE_SDL2 "Include the source project for sdl2." ON)
 set (RAPIDJSON_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/rapidjson-1.1.0")
 option (EXTERN_INLINE_RAPIDJSON "Include the source project for rapidjson." ON)
 
-# Cereal
-set (CEREAL_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/cereal-1.2.2")
-option (EXTERN_INLINE_CEREAL "Include the source project for cereal." ON)
-
 # ASIO
 set (ASIO_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/asio-1.10.8")
 option (EXTERN_INLINE_ASIO "Include the source project for asio." ON)
-
-# Aurora
-set (AURORA_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/Aurora")
-option (EXTERN_INLINE_AURORA "Include the source project for Aurora" ON)
 
 # ################################
 include ("Source/CMakeLists.txt")

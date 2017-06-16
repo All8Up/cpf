@@ -2,8 +2,7 @@
 #include "Python3.hpp"
 #include "Logging/Logging.hpp"
 #include "Plugin/iRegistry.hpp"
-#include "GOM/pyModule.hpp"
-#include "GOM/pyResult.hpp"
+#include <Python.h>
 
 using namespace Cpf;
 using namespace Tools;
