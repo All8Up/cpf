@@ -21,5 +21,9 @@ option (EXTERN_INLINE_RAPIDJSON "Include the source project for rapidjson." ON)
 set (ASIO_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/asio-1.10.8")
 option (EXTERN_INLINE_ASIO "Include the source project for asio." ON)
 
+# flatbuffers
+set (FLATBUFFERS_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Source/flatbuffers-1.6.0")
+option (EXTERN_INLINE_FLATBUFFERS "Include the source project for flatbuffers." ON)
+
 # ################################
 include ("Source/CMakeLists.txt")

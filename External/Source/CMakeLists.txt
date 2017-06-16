@@ -78,5 +78,19 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2")
 	target_include_directories (jsoncons INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2/src)
 endif ()
 
+# flatbuffers
+if (NOT EXTERN_INLINE_FLATBUFFERS)
+else ()
+	if (IS_DIRECTORY "${FLATBUFFERS_SRC_DIR}")
+		set (FLATBUFFERS_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+		set (FLATBUFFERS_INSTALL OFF CACHE BOOL "" FORCE)
+		add_subdirectory ("${FLATBUFFERS_SRC_DIR}")
+		set_property (TARGET flatbuffers PROPERTY FOLDER External)
+		set_property (TARGET flatc PROPERTY FOLDER External)
+		set_property (TARGET flathash PROPERTY FOLDER External)
+	endif ()
+
+endif ()
+
 # Find installed Python 3.6.1 (or higher) for tools.
 find_package (PythonLibs 3)
