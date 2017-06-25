@@ -1,14 +1,34 @@
 use std::str::FromStr;
-use ast::{Numeric};
+use ast::{Data, NodePtr, Node, Tree};
 
 grammar;
 
-pub Numeric: Box<Numeric> =
+Import: NodePtr =
 {
-	Integral => Box::new(Numeric::Unsigned(<>))
+	"import" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> =>
+		Node::new(Data::Import {name: n.to_string()})
 };
 
-Integral: u64 =
+Namespace: NodePtr =
 {
-	r"[0-9]+" => u64::from_str(<>).unwrap()
+	"namespace" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> "{" "}" =>
+		Node::new(Data::Namespace {name: n.to_string()})
+};
+
+GlobalScopeStmt: NodePtr =
+{
+	Import,
+	Namespace
+};
+
+GlobalScopeStmts: NodePtr =
+{
+	<s:GlobalScopeStmt> => s,
+	<l:GlobalScopeStmt> <r:GlobalScopeStmts> => l
+};
+
+pub IDL: Tree =
+{
+	GlobalScopeStmts => Tree::new(),
+	=> Tree::new()
 };

@@ -1,32 +1,34 @@
-pub enum Numeric
-{
-	Signed(i64),
-	Unsigned(u64),
-	Float(f64)
-}
+use std::rc::Rc;
 
-type Index = usize;
 #[derive(Debug)]
 pub enum Data
 {
-	Namespace {name: &'static str}
+	Root,
+	Module {},
+	Import {name: String},
+	Namespace {name: String},
+	Interface {name: String},
+	CID {name: String, cid: u64},
+	IID {name: String, iid: u64}
 }
+
+pub type NodePtr = Box<Node>;
 
 #[derive(Debug)]
 pub struct Node
 {
-	parent: Option<Index>,
-	first_child: Option<Index>,
-	last_child: Option<Index>,
-	prev: Option<Index>,
-	next: Option<Index>,
+	parent: Option<Rc<NodePtr>>,
+	first_child: Option<Rc<NodePtr>>,
+	last_child: Option<Rc<NodePtr>>,
+	prev: Option<Rc<NodePtr>>,
+	next: Option<Rc<NodePtr>>,
 	data: Data
 }
 impl Node
 {
-	fn new(data: Data) -> Node
+	pub fn new(data: Data) -> Box<Node>
 	{
-		Node
+		Box::new(Node
 		{
 			parent: None,
 			first_child: None,
@@ -34,10 +36,66 @@ impl Node
 			prev: None,
 			next: None,
 			data: data
-		}
+		})
 	}
 }
 
+#[derive(Debug)]
+pub struct Tree
+{
+	root: Node
+}
+impl Tree
+{
+	pub fn new() -> Tree
+	{
+		Tree
+		{
+			root: Node
+			{
+				parent: None,
+				first_child: None,
+				last_child: None,
+				prev: None,
+				next: None,
+				data: Data::Root
+			}
+		}
+	}
+}
+impl<'a> IntoIterator for &'a Tree
+{
+	type Item = &'a Node;
+	type IntoIter = TreeIterator<'a>;
+
+	fn into_iter(self) -> Self::IntoIter
+	{
+		/*
+		match self.root.first_child
+		{
+			None => TreeIterator {stack: Vec::new(), tree: self},
+			Some(first) => TreeIterator {stack: vec![first], tree: self}
+		}
+		*/
+		TreeIterator {stack: Vec::new(), tree: self}
+	}
+}
+
+pub struct TreeIterator<'a>
+{
+	stack: Vec<Rc<NodePtr>>,
+	tree: &'a Tree
+}
+impl<'a> Iterator for TreeIterator<'a>
+{
+	type Item = &'a Node;
+	fn next(&mut self) -> Option<&'a Node>
+	{
+		return None;
+	}
+}
+
+/*
 #[derive(Debug)]
 pub struct Tree
 {
@@ -70,7 +128,6 @@ impl<'a> Iterator for TreeIterator<'a>
 	{
 		if self.stack.len() == 0
 		{
-			println!("Exiting iterator.");
 			return None;
 		}
 		let current = self.stack.pop().unwrap();
@@ -133,3 +190,4 @@ impl Tree
 		}
 	}
 }
+*/
