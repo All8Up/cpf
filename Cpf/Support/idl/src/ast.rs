@@ -39,15 +39,15 @@ impl Node
 }
 
 #[derive(Debug)]
-pub struct Tree<'a>
+pub struct Tree
 {
 	root: Option<Index>,
 	nodes: Vec<Node>
 }
-impl<'a> IntoIterator for Tree<'a>
+impl<'a> IntoIterator for &'a Tree
 {
 	type Item = &'a Node;
-	type IntoIter = &'a TreeIterator;
+	type IntoIter = TreeIterator<'a>;
 	fn into_iter(self) -> Self::IntoIter
 	{
 		match self.root
@@ -58,15 +58,15 @@ impl<'a> IntoIterator for Tree<'a>
 	}
 }
 
-pub struct TreeIterator<'b>
+pub struct TreeIterator<'a>
 {
 	stack: Vec<Index>,
-	tree: Tree // I assume this is going to copy the tree, we want a reference instead.
+	tree: &'a Tree // I assume this is going to copy the tree, we want a reference instead.
 }
-impl<'b> Iterator for TreeIterator<'b>
+impl<'a> Iterator for TreeIterator<'a>
 {
-	type Item = &'b Node;
-	fn next(&mut self) -> Option<&'b Node>
+	type Item = &'a Node;
+	fn next(&mut self) -> Option<&'a Node>
 	{
 		if self.stack.len() == 0
 		{

@@ -33,7 +33,7 @@ fn main()
 	test_tree.add_child(root_node, child_node);
 
 	println! ("Tree: {:?}", test_tree);
-	for node in test_tree
+	for node in &test_tree
 	{
 		println! ("Node idx: {:?}", node);
 	}
