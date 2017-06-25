@@ -12,23 +12,23 @@ pub enum Data
 	IID {name: String, iid: u64}
 }
 
-pub type NodePtr = Box<Node>;
+pub type NodePtr = Rc<Node>;
 
 #[derive(Debug)]
 pub struct Node
 {
-	parent: Option<Rc<NodePtr>>,
-	first_child: Option<Rc<NodePtr>>,
-	last_child: Option<Rc<NodePtr>>,
-	prev: Option<Rc<NodePtr>>,
-	next: Option<Rc<NodePtr>>,
+	parent: Option<NodePtr>,
+	first_child: Option<NodePtr>,
+	last_child: Option<NodePtr>,
+	prev: Option<NodePtr>,
+	next: Option<NodePtr>,
 	data: Data
 }
 impl Node
 {
-	pub fn new(data: Data) -> Box<Node>
+	pub fn new(data: Data) -> NodePtr
 	{
-		Box::new(Node
+		Rc::new(Node
 		{
 			parent: None,
 			first_child: None,
@@ -70,20 +70,20 @@ impl<'a> IntoIterator for &'a Tree
 
 	fn into_iter(self) -> Self::IntoIter
 	{
-		/*
 		match self.root.first_child
 		{
 			None => TreeIterator {stack: Vec::new(), tree: self},
-			Some(first) => TreeIterator {stack: vec![first], tree: self}
+			Some(ref first) =>
+			{
+				TreeIterator {stack: vec![first.clone()], tree: self}
+			}
 		}
-		*/
-		TreeIterator {stack: Vec::new(), tree: self}
 	}
 }
 
 pub struct TreeIterator<'a>
 {
-	stack: Vec<Rc<NodePtr>>,
+	stack: Vec<NodePtr>,
 	tree: &'a Tree
 }
 impl<'a> Iterator for TreeIterator<'a>
@@ -91,36 +91,24 @@ impl<'a> Iterator for TreeIterator<'a>
 	type Item = &'a Node;
 	fn next(&mut self) -> Option<&'a Node>
 	{
+		if self.stack.len() == 0
+		{
+			return None;
+		}
+		let current = self.stack.pop().unwrap();
+
+		// If there is a sibling, push it on the stack to be processed later.
+		match current.next
+		{
+			None => {},
+			Some(ref next) => {}
+		}
+
 		return None;
 	}
 }
 
 /*
-#[derive(Debug)]
-pub struct Tree
-{
-	root: Option<Index>,
-	nodes: Vec<Node>
-}
-impl<'a> IntoIterator for &'a Tree
-{
-	type Item = &'a Node;
-	type IntoIter = TreeIterator<'a>;
-	fn into_iter(self) -> Self::IntoIter
-	{
-		match self.root
-		{
-			None => TreeIterator {stack: Vec::new(), tree: self},
-			Some(root) => TreeIterator {stack: vec![root], tree: self}
-		}
-	}
-}
-
-pub struct TreeIterator<'a>
-{
-	stack: Vec<Index>,
-	tree: &'a Tree // I assume this is going to copy the tree, we want a reference instead.
-}
 impl<'a> Iterator for TreeIterator<'a>
 {
 	type Item = &'a Node;
