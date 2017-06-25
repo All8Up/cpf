@@ -1,0 +1,12 @@
+[package]
+name = "idl"
+version = "0.1.0"
+authors = ["Kelly Brock <All8Up@gmail.com>"]
+build = "build.rs"
+
+[build-dependencies]
+lalrpop = "*"
+
+[dependencies]
+lalrpop-util = "*"
+regex = "*"

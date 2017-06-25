@@ -20,7 +20,7 @@ namespace Cpf
 		 */
 		struct iRegistry : GOM::iBase
 		{
-			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iRegistry"_crc64);
+			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Plugin::iRegistry"_crc64);
 
 			/**
 			 * @brief Attempts to load a library as a plugin.

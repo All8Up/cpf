@@ -37,6 +37,8 @@ Networked::~Networked()
 	CPF_DROP_LOG(Networked);
 }
 
+#include "Platform/SharedLibrary.hpp"
+
 GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
 {
 	mpRegistry = registry;
@@ -55,6 +57,10 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/MultiCore.cfp");
 	GetRegistry()->Load("plugins/DebugUI.cfp");
+	if (GOM::Succeeded(GetRegistry()->Load("plugins/TestRust.cfp")))
+	{
+		printf("Loaded rust plugin.");
+	}
 	if (GOM::Succeeded(GetRegistry()->Load("plugins/Python3.cfp")))
 	{
 		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID.GetID(), Tools::iPython3::kIID.GetID(), mpPython3.AsVoidPP())))

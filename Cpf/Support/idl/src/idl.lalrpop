@@ -1,0 +1,14 @@
+use std::str::FromStr;
+use ast::{Numeric};
+
+grammar;
+
+pub Numeric: Box<Numeric> =
+{
+	Integral => Box::new(Numeric::Unsigned(<>))
+};
+
+Integral: u64 =
+{
+	r"[0-9]+" => u64::from_str(<>).unwrap()
+};

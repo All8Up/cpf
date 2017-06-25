@@ -1,0 +1,6 @@
+[package]
+name = "gom"
+version = "0.1.0"
+authors = ["Kelly Brock <All8Up@gmail.com>"]
+
+[dependencies]

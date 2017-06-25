@@ -8,3 +8,6 @@ External/lib64/
 *.iml
 cmake-build-debug/
 .idea/
+Cpf/Plugins/Rust/TestRust/target/
+Cpf/Support/idl/src/idl.rs
+Cpf/Support/idl/target/

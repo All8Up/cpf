@@ -135,7 +135,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 				auto install = library.GetAddress<int32_t(*)(iRegistry*)>(kPluginAPIInstall);
 				if (install)
 				{
-					if ((*install)(this) != 0)
+					if ((*install)(this) == GOM::kOK)
 					{
 						mLibraryMap.insert(LibraryMap::value_type{ String(name), Move(library) });
 						return GOM::kOK;
