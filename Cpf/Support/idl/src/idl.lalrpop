@@ -1,34 +1,49 @@
 use std::str::FromStr;
-use ast::{Data, NodePtr, Node, Tree};
+use ast::{Data, NodeRef};
 
 grammar;
 
-Import: NodePtr =
+
+Import: NodeRef<Data> =
 {
 	"import" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> =>
-		Node::new(Data::Import {name: n.to_string()})
+		NodeRef::new(Data::Import {name: n.to_string()})
 };
 
-Namespace: NodePtr =
+Namespace: NodeRef<Data> =
 {
-	"namespace" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> "{" "}" =>
-		Node::new(Data::Namespace {name: n.to_string()})
+	"namespace" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> "{" <i:NamespaceScopeStmt> "}" =>
+	{
+		let mut n = NodeRef::new(Data::Namespace {name: n.to_string()});
+		n.append(i);
+		n
+	}
 };
 
-GlobalScopeStmt: NodePtr =
+NamespaceScopeStmt: NodeRef<Data> =
+{
+	Namespace,
+	=> NodeRef::new(Data::Empty)
+};
+
+GlobalScopeStmt: NodeRef<Data> =
 {
 	Import,
 	Namespace
 };
 
-GlobalScopeStmts: NodePtr =
+GlobalScopeStmts: NodeRef<Data> =
 {
 	<s:GlobalScopeStmt> => s,
-	<l:GlobalScopeStmt> <r:GlobalScopeStmts> => l
+	<l:GlobalScopeStmts> <r:GlobalScopeStmt> =>
+	{
+		l.insert_after(r);
+		l
+	}
 };
 
-pub IDL: Tree =
+pub IDL: NodeRef<Data> =
 {
-	GlobalScopeStmts => Tree::new(),
-	=> Tree::new()
+	GlobalScopeStmts,
+	=> NodeRef::new(Data::Module)
 };

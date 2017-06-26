@@ -18,10 +18,17 @@ fn main()
 {
 	let test_string =
 	"import something
-	namespace test {}";
+	namespace test {
+		namespace test2 {
+
+		}
+	}";
 
 	println! ("------------------------------- Parsing IDL.");
 	let result = idl::parse_IDL(test_string);
-	println! ("Tree: {:?}", result);
+	for node in result.unwrap().following_siblings()
+	{
+		println!("{:?}", node);
+	}
 	println! ("-------------------------------");
 }
