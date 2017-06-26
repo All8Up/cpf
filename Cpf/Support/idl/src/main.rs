@@ -18,9 +18,11 @@ fn main()
 {
 	let test_string =
 	"import something
+	interface iTest;
 	namespace test {
 		namespace test2 {
-
+			interface iTest2;
+			interface iBlargo {}
 		}
 	}";
 

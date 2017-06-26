@@ -1,49 +1,72 @@
-use std::str::FromStr;
 use ast::{Data, NodeRef};
 
 grammar;
 
-
-Import: NodeRef<Data> =
+Identifier: &'input str =
 {
-	"import" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> =>
+	<s:r"[_a-zA-Z][_a-zA-Z0-9]+"> => s
+};
+
+Import: () = {"import"};
+Namespace: () = {"namespace"};
+Interface: () = {"interface"};
+
+ImportStmt: NodeRef<Data> =
+{
+	Import <n:Identifier> =>
 		NodeRef::new(Data::Import {name: n.to_string()})
 };
 
-Namespace: NodeRef<Data> =
+NamespaceStmt: NodeRef<Data> =
 {
-	"namespace" <n:r"[_a-zA-Z][_a-zA-Z0-9]+"> "{" <i:NamespaceScopeStmt> "}" =>
+	Namespace <n:Identifier> "{" <i:NamespaceScopeStmt> "}" =>
 	{
-		let mut n = NodeRef::new(Data::Namespace {name: n.to_string()});
+		let n = NodeRef::new(Data::Namespace {name: n.to_string()});
 		n.append(i);
 		n
 	}
 };
 
-NamespaceScopeStmt: NodeRef<Data> =
+InterfaceStmt: NodeRef<Data> =
 {
-	Namespace,
-	=> NodeRef::new(Data::Empty)
+	Interface <n:Identifier> ";" => NodeRef::new(Data::FwdInterface {name: n.to_string()}),
+	Interface <n:Identifier> "{" "}" =>
+	{
+		NodeRef::new(Data::Interface {name: n.to_string()})
+	}
 };
 
 GlobalScopeStmt: NodeRef<Data> =
 {
-	Import,
-	Namespace
+	ImportStmt,
+	InterfaceStmt,
+	NamespaceStmt
 };
 
+NamespaceScopeStmt: NodeRef<Data> =
+{
+	NamespaceStmt,
+	InterfaceStmt,
+	=> NodeRef::new(Data::Block)
+};
+
+// Returns a block of all global statments.
 GlobalScopeStmts: NodeRef<Data> =
 {
-	<s:GlobalScopeStmt> => s,
+	<s:GlobalScopeStmt> =>
+	{
+		let n = NodeRef::new(Data::Block);
+		n.append(s);
+		n
+	},
 	<l:GlobalScopeStmts> <r:GlobalScopeStmt> =>
 	{
-		l.insert_after(r);
+		l.append(r);
 		l
 	}
 };
 
 pub IDL: NodeRef<Data> =
 {
-	GlobalScopeStmts,
-	=> NodeRef::new(Data::Module)
+	GlobalScopeStmts
 };

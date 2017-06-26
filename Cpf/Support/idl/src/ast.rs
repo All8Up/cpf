@@ -6,11 +6,12 @@ use std::rc::{Rc, Weak};
 #[derive(Debug)]
 pub enum Data
 {
-	Empty,
+	Block,
 	Module,
 	Import {name: String},
 	Namespace {name: String},
 	Interface {name: String},
+	FwdInterface {name: String},
 	CID {name: String, cid: u64},
 	IID {name: String, iid: u64}
 }
