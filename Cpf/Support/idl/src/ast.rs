@@ -1,5 +1,3 @@
-#![feature(rc_weak)]
-
 use std::cell::{self, RefCell};
 use std::fmt;
 use std::ops::{Deref, DerefMut};
@@ -211,6 +209,12 @@ impl<T> NodeRef<T> {
             root: self.clone(),
             next: Some(NodeEdge::End(self.clone())),
         }
+    }
+
+    pub fn depth_first(&self) -> DepthFirst<T> {
+    	DepthFirst {
+    		stack: vec![self.clone()]
+    	}
     }
 
     /// Detach a node from its parent and siblings. Children are not affected.
@@ -497,6 +501,39 @@ pub enum NodeEdge<T> {
     End(NodeRef<T>),
 }
 
+
+pub struct DepthFirst<T>
+{
+	stack: Vec<NodeRef<T>>
+}
+impl<T> Iterator for DepthFirst<T>
+{
+	type Item = NodeRef<T>;
+	fn next(&mut self) -> Option<NodeRef<T>>
+	{
+		if self.stack.len() == 0
+		{
+			return None;
+		}
+		let current = self.stack.pop().unwrap();
+
+		// if current has a sibling, push it on the stack for later traversal.
+		match current.next_sibling()
+		{
+			Some(sibling) => self.stack.push(sibling),
+			None => {}
+		}
+
+		// if current has a child, push it on the stack for the next iteration.
+		match current.first_child()
+		{
+			Some(child) => self.stack.push(child),
+			None => {}
+		}
+
+		return Some(current);
+	}
+}
 
 /// An iterator of references to a given node and its descendants, in tree order.
 pub struct Traverse<T>

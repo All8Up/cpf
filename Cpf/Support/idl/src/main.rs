@@ -26,7 +26,7 @@ fn main()
 
 	println! ("------------------------------- Parsing IDL.");
 	let result = idl::parse_IDL(test_string);
-	for node in result.unwrap().following_siblings()
+	for node in result.unwrap().depth_first()
 	{
 		println!("{:?}", node);
 	}
