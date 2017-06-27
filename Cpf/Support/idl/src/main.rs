@@ -36,7 +36,7 @@ fn main()
 	{
 		Ok(tree) =>
 		{
-			display_ast(&tree);
+			display_ast(tree.clone());
 			for node in tree.depth_first()
 			{
 				println!("{:?}", node);
@@ -51,39 +51,37 @@ fn main()
 	println! ("-------------------------------");
 }
 
-fn display_ast(tree: &ast::NodeRef<ast::Data>)
+fn display_ast(tree: ast::NodeRef<ast::Data>)
 {
 	println!("------------------------");
 	display_siblings(tree, 0);
 	println!("------------------------");
 }
 
-fn display_siblings(tree: &ast::NodeRef<ast::Data>, indent: usize)
+fn display_siblings(tree: ast::NodeRef<ast::Data>, indent: usize)
 {
 	let mut current = tree.clone();
 	loop
 	{
 		display_indented(&current, indent);
-		display_children(&current, indent+2);
+		display_children(current.clone(), indent+2);
 		let sibling = current.next_sibling();
 		if sibling.is_none()
 		{
 			break
 		}
-		current = sibling.unwrap().clone();
+		current = sibling.unwrap();
 	}
 }
 
-fn display_children(tree: &ast::NodeRef<ast::Data>, indent: usize)
+fn display_children(tree: ast::NodeRef<ast::Data>, indent: usize)
 {
 	let mut current = tree.clone();
-	loop
-	{
-		let child = current.first_child();
-		if child.is_none() {break}
-		current = child.unwrap();
-		display_siblings(&current, indent);
-	}
+
+	let child = current.first_child();
+	if child.is_none() {return}
+	current = child.unwrap();
+	display_siblings(current.clone(), indent);
 }
 
 fn display_indented(node: &ast::NodeRef<ast::Data>, indent: usize)
