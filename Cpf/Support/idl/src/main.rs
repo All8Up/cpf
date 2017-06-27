@@ -4,14 +4,6 @@ pub mod ast;
 #[test]
 fn test_idl()
 {
-	let result = idl::parse_Numeric("123");
-	match *result.unwrap()
-	{
-		ast::Numeric::Signed(value) => {println!("Value: {}", value);},
-		ast::Numeric::Unsigned(value) => {println!("Value: {}", value);},
-		ast::Numeric::Float(value) => {println!("Value: {}", value);}
-	}
-	println!("--------------");
 }
 
 fn main()
@@ -40,26 +32,20 @@ fn main()
 
 	println! ("------------------------------- Parsing IDL.");
 	let result = idl::parse_IDL(test_string);
-	for node in result.unwrap().depth_first()
-	{
-		println!("{:?}", node);
-	}
-
-	/*
 	match result
 	{
-		Some(tree) =>
+		Ok(tree) =>
 		{
 			for node in tree.depth_first()
 			{
 				println!("{:?}", node);
 			}
 		},
-		None =>
+		Err(e) =>
 		{
-			println! ("Parsing error.");
+			println! ("Parsing error: {:?}", e);
 		}
 	}
-	*/
+
 	println! ("-------------------------------");
 }

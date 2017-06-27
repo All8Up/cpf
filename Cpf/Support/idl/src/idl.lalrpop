@@ -80,14 +80,14 @@ ImportStmt: NodeRef<Data> =
 
 NamespaceStmt: NodeRef<Data> =
 {
-	// Handle empty namespaces.
-	Namespace <n:Identifier> "{" "}" =>
-		NodeRef::new(Data::Namespace {name: n})
-	,
-	Namespace <n:Identifier> "{" <i:NamespaceBlock> "}" =>
+	Namespace <n:Identifier> "{" <i:(NamespaceBlock)?> "}" =>
 	{
 		let n = NodeRef::new(Data::Namespace {name: n});
-		n.append(i);
+		match i
+		{
+			None => (),
+			Some(block) => n.append(block)
+		}
 		n
 	}
 };
@@ -106,15 +106,9 @@ InterfaceBlock: NodeRef<Data> =
 InterfaceStmt: NodeRef<Data> =
 {
 	Interface <n:Identifier> ";" => NodeRef::new(Data::FwdInterface {name: n}),
-	Interface <n:Identifier> <b:InterfaceBlock> =>
+	Interface <n:Identifier> <q:(":" <QualifiedIdentifier>)?> <b:InterfaceBlock> =>
 	{
-		let node = NodeRef::new(Data::Interface {name: n, base: None});
-		node.append(b);
-		node
-	},
-	Interface <n:Identifier> ":" <q:QualifiedIdentifier> <b:InterfaceBlock> =>
-	{
-		let node = NodeRef::new(Data::Interface {name: n, base: Some(q)});
+		let node = NodeRef::new(Data::Interface {name: n, base: q});
 		node.append(b);
 		node
 	}
