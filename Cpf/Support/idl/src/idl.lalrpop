@@ -2,56 +2,158 @@ use ast::{Data, NodeRef};
 
 grammar;
 
-Identifier: &'input str =
+Identifier: String =
 {
-	<s:r"[_a-zA-Z][_a-zA-Z0-9]+"> => s
+	<s:r"[_a-zA-Z][_a-zA-Z0-9]+"> => s.to_string()
 };
 
+QualifiedIdentifier: String =
+{
+	Identifier,
+	<l:QualifiedIdentifier> "::" <r:Identifier> => {l + "::" + &r}
+};
+
+StringLiteral: String =
+{
+	<s:r"'.*'"> => s.to_string()
+};
+
+Access: () =
+{
+	"in",
+	"out",
+	"in_out"
+};
+
+Types: () =
+{
+	"u8",
+	"i8",
+	"u16",
+	"i16",
+	"u32",
+	"i32",
+	"u64",
+	"i64",
+	"f32",
+	"f64",
+	"char",
+	"wchar",
+	"void",
+	"result"
+};
+
+Success: () =
+{
+	"success"
+};
+Failure: () =
+{
+	"failure"
+};
+
+ClassID: () = {"class_id"};
+InterfaceID: () = {"interface_id"};
 Import: () = {"import"};
 Namespace: () = {"namespace"};
 Interface: () = {"interface"};
 
+// ------
+
+ClassIDStmt: NodeRef<Data> =
+{
+	ClassID <n:Identifier> "(" <v:StringLiteral> ")" ";" =>
+		NodeRef::new(Data::ClassID {name: n, cid: v})
+};
+
+InterfaceIDStmt: NodeRef<Data> =
+{
+	InterfaceID <n:Identifier> "(" <v:StringLiteral> ")" ";" =>
+		NodeRef::new(Data::InterfaceID {name: n, iid: v})
+};
+
 ImportStmt: NodeRef<Data> =
 {
 	Import <n:Identifier> =>
-		NodeRef::new(Data::Import {name: n.to_string()})
+		NodeRef::new(Data::Import {name: n})
 };
 
 NamespaceStmt: NodeRef<Data> =
 {
-	Namespace <n:Identifier> "{" <i:NamespaceScopeStmt> "}" =>
+	// Handle empty namespaces.
+	Namespace <n:Identifier> "{" "}" =>
+		NodeRef::new(Data::Namespace {name: n})
+	,
+	Namespace <n:Identifier> "{" <i:NamespaceBlock> "}" =>
 	{
-		let n = NodeRef::new(Data::Namespace {name: n.to_string()});
+		let n = NodeRef::new(Data::Namespace {name: n});
 		n.append(i);
 		n
 	}
 };
 
+InterfaceStmts: NodeRef<Data> =
+{
+	InterfaceIDStmt
+};
+
+InterfaceBlock: NodeRef<Data> =
+{
+	"{" "}" => NodeRef::new(Data::Block),
+	"{" InterfaceStmts "}" => NodeRef::new(Data::Block)
+};
+
 InterfaceStmt: NodeRef<Data> =
 {
-	Interface <n:Identifier> ";" => NodeRef::new(Data::FwdInterface {name: n.to_string()}),
-	Interface <n:Identifier> "{" "}" =>
+	Interface <n:Identifier> ";" => NodeRef::new(Data::FwdInterface {name: n}),
+	Interface <n:Identifier> <b:InterfaceBlock> =>
 	{
-		NodeRef::new(Data::Interface {name: n.to_string()})
+		let node = NodeRef::new(Data::Interface {name: n, base: None});
+		node.append(b);
+		node
+	},
+	Interface <n:Identifier> ":" <q:QualifiedIdentifier> <b:InterfaceBlock> =>
+	{
+		let node = NodeRef::new(Data::Interface {name: n, base: Some(q)});
+		node.append(b);
+		node
 	}
 };
+
+// --- Global statements ---
 
 GlobalScopeStmt: NodeRef<Data> =
 {
 	ImportStmt,
 	InterfaceStmt,
-	NamespaceStmt
+	NamespaceStmt,
+	ClassIDStmt
 };
 
 NamespaceScopeStmt: NodeRef<Data> =
 {
 	NamespaceStmt,
 	InterfaceStmt,
-	=> NodeRef::new(Data::Block)
+	ClassIDStmt
+};
+
+NamespaceBlock: NodeRef<Data> =
+{
+	<ns:NamespaceScopeStmt> =>
+	{
+		let n = NodeRef::new(Data::Block);
+		n.append(ns);
+		n
+	},
+	<l:NamespaceBlock> <r:NamespaceScopeStmt> =>
+	{
+		l.append(r);
+		l
+	}
 };
 
 // Returns a block of all global statments.
-GlobalScopeStmts: NodeRef<Data> =
+GlobalBlock: NodeRef<Data> =
 {
 	<s:GlobalScopeStmt> =>
 	{
@@ -59,7 +161,7 @@ GlobalScopeStmts: NodeRef<Data> =
 		n.append(s);
 		n
 	},
-	<l:GlobalScopeStmts> <r:GlobalScopeStmt> =>
+	<l:GlobalBlock> <r:GlobalScopeStmt> =>
 	{
 		l.append(r);
 		l
@@ -68,5 +170,5 @@ GlobalScopeStmts: NodeRef<Data> =
 
 pub IDL: NodeRef<Data> =
 {
-	GlobalScopeStmts
+	GlobalBlock
 };

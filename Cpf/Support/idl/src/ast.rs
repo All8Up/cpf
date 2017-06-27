@@ -10,10 +10,10 @@ pub enum Data
 	Module,
 	Import {name: String},
 	Namespace {name: String},
-	Interface {name: String},
+	Interface {name: String, base: Option<String>},
 	FwdInterface {name: String},
-	CID {name: String, cid: u64},
-	IID {name: String, iid: u64}
+	ClassID {name: String, cid: String},
+	InterfaceID {name: String, iid: String}
 }
 
 
