@@ -9,7 +9,7 @@ fn test_idl()
 fn main()
 {
 	let test_string =
-	"import something
+	"import \"something\"
 
 	interface iTest;
 
@@ -21,6 +21,10 @@ fn main()
 			interface iBlargo : test::test2::iTest2
 			{
 				interface_id iid('test::test2::iBlargo');
+				[in] u8
+				[in, out] const i8*
+				[out] u16
+				[out, in] i32
 			}
 			class_id iBlargoCID('test::test2::iBlargo');
 
@@ -37,10 +41,6 @@ fn main()
 		Ok(tree) =>
 		{
 			display_ast(tree.clone());
-			for node in tree.depth_first()
-			{
-				println!("{:?}", node);
-			}
 		},
 		Err(e) =>
 		{
@@ -65,11 +65,9 @@ fn display_siblings(tree: ast::NodeRef<ast::Data>, indent: usize)
 	{
 		display_indented(&current, indent);
 		display_children(current.clone(), indent+2);
+
 		let sibling = current.next_sibling();
-		if sibling.is_none()
-		{
-			break
-		}
+		if sibling.is_none() {return}
 		current = sibling.unwrap();
 	}
 }
@@ -81,6 +79,7 @@ fn display_children(tree: ast::NodeRef<ast::Data>, indent: usize)
 	let child = current.first_child();
 	if child.is_none() {return}
 	current = child.unwrap();
+
 	display_siblings(current.clone(), indent);
 }
 

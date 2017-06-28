@@ -1,4 +1,4 @@
-use ast::{Data, NodeRef};
+use ast::*;
 
 grammar;
 
@@ -13,45 +13,80 @@ QualifiedIdentifier: String =
 	<l:QualifiedIdentifier> "::" <r:Identifier> => {l + "::" + &r}
 };
 
-StringLiteral: String =
+SQuotedString: String =
 {
 	<s:r"'.*'"> => s.to_string()
 };
 
-Access: () =
+DQuotedString: String =
 {
-	"in",
-	"out",
-	"in_out"
+	<s:r#"".*""#> => s.to_string()
 };
 
-Types: () =
+Access: DirectionAnnotation =
 {
-	"u8",
-	"i8",
-	"u16",
-	"i16",
-	"u32",
-	"i32",
-	"u64",
-	"i64",
-	"f32",
-	"f64",
-	"char",
-	"wchar",
-	"void",
-	"result"
+	"in" => DirectionAnnotation::In,
+	"out" => DirectionAnnotation::Out
 };
 
-Success: () =
+Types: DataType =
 {
-	"success"
-};
-Failure: () =
-{
-	"failure"
+	"u8" => DataType::U8,
+	"i8" => DataType::U8,
+	"u16" => DataType::U8,
+	"i16" => DataType::U8,
+	"u32" => DataType::U8,
+	"i32" => DataType::U8,
+	"u64" => DataType::U8,
+	"i64" => DataType::U8,
+	"f32" => DataType::U8,
+	"f64" => DataType::U8,
+	"char" => DataType::U8,
+	"wchar" => DataType::U8,
+	"void" => DataType::U8,
+	"result" => DataType::U8
 };
 
+TypeQualifier: TypeQualifier =
+{
+	"const" => TypeQualifier::Const
+};
+
+// Type handling needs:
+//	[in] u8 c
+//	[in, out] u8* n
+//	[in] const u16* p
+//	[out] iTest** iface
+
+TypeAnnotation: Annotation =
+{
+	"[" <l:Access> <r:("," <Access>)?> "]" =>
+		Annotation {left: Some(l), right: r}
+};
+
+ModifiedType: ModifiedType =
+{
+	<q:(TypeQualifier)?> <t:Types> =>
+		ModifiedType {qualifier: q, data_type: t}
+};
+
+PointerDef: u32 =
+{
+	"*" => 1,
+	<p:PointerDef> "*" => p+1
+};
+
+BaseType: NodeRef<Data> =
+{
+	<a:(TypeAnnotation)?> <t:ModifiedType> =>
+		NodeRef::new(Data::TypeDecl {annotation: a, data_type: t, indirection_count: 0}),
+	<a:(TypeAnnotation)?> <t:ModifiedType> <p:PointerDef> =>
+		NodeRef::new(Data::TypeDecl {annotation: a, data_type: t, indirection_count: p})
+};
+
+
+Success: () = {"success"};
+Failure: () = {"failure"};
 ClassID: () = {"class_id"};
 InterfaceID: () = {"interface_id"};
 Import: () = {"import"};
@@ -62,54 +97,59 @@ Interface: () = {"interface"};
 
 ClassIDStmt: NodeRef<Data> =
 {
-	ClassID <n:Identifier> "(" <v:StringLiteral> ")" ";" =>
+	ClassID <n:Identifier> "(" <v:SQuotedString> ")" ";" =>
 		NodeRef::new(Data::ClassID {name: n, cid: v})
 };
 
 InterfaceIDStmt: NodeRef<Data> =
 {
-	InterfaceID <n:Identifier> "(" <v:StringLiteral> ")" ";" =>
+	InterfaceID <n:Identifier> "(" <v:SQuotedString> ")" ";" =>
 		NodeRef::new(Data::InterfaceID {name: n, iid: v})
 };
 
 ImportStmt: NodeRef<Data> =
 {
-	Import <n:Identifier> =>
+	Import <n:DQuotedString> =>
 		NodeRef::new(Data::Import {name: n})
-};
-
-NamespaceStmt: NodeRef<Data> =
-{
-	Namespace <n:Identifier> "{" <i:(NamespaceBlock)?> "}" =>
-	{
-		let n = NodeRef::new(Data::Namespace {name: n});
-		match i
-		{
-			None => (),
-			Some(block) => n.append(block)
-		}
-		n
-	}
 };
 
 InterfaceStmts: NodeRef<Data> =
 {
-	InterfaceIDStmt
+	InterfaceIDStmt,
+	BaseType
 };
 
 InterfaceBlock: NodeRef<Data> =
 {
-	"{" "}" => NodeRef::new(Data::Block),
-	"{" InterfaceStmts "}" => NodeRef::new(Data::Block)
+	<ns:InterfaceStmts> =>
+	{
+		ns
+	},
+	<l:InterfaceBlock> <r:InterfaceStmts> =>
+	{
+		let mut target = l.clone();
+		loop
+		{
+			match target.next_sibling()
+			{
+				None => {target.insert_after(r); break},
+				Some(next) => target = next
+			}
+		}
+		l
+	}
 };
 
 InterfaceStmt: NodeRef<Data> =
 {
 	Interface <n:Identifier> ";" => NodeRef::new(Data::FwdInterface {name: n}),
-	Interface <n:Identifier> <q:(":" <QualifiedIdentifier>)?> <b:InterfaceBlock> =>
+	Interface <n:Identifier> <q:(":" <QualifiedIdentifier>)?> "{" <b:InterfaceBlock> "}" =>
 	{
 		let node = NodeRef::new(Data::Interface {name: n, base: q});
-		node.append(b);
+		for nn in b.following_siblings()
+		{
+			node.append(nn);
+		}
 		node
 	}
 };
@@ -131,17 +171,44 @@ NamespaceScopeStmt: NodeRef<Data> =
 	ClassIDStmt
 };
 
+NamespaceStmt: NodeRef<Data> =
+{
+	Namespace <n:Identifier> "{" <i:(NamespaceBlock)?> "}" =>
+	{
+		let nn = NodeRef::new(Data::Namespace {name: n});
+		match i
+		{
+			None => (),
+			Some(block) =>
+			{
+				// TODO: append clears the prev/next sibling before insertion, I want to just 'set' the siblings to be block.
+				for node in block.following_siblings()
+				{
+					nn.append(node);
+				}
+			}
+		}
+		nn
+	}
+};
+
 NamespaceBlock: NodeRef<Data> =
 {
 	<ns:NamespaceScopeStmt> =>
 	{
-		let n = NodeRef::new(Data::Block);
-		n.append(ns);
-		n
+		ns
 	},
 	<l:NamespaceBlock> <r:NamespaceScopeStmt> =>
 	{
-		l.append(r);
+		let mut target = l.clone();
+		loop
+		{
+			match target.next_sibling()
+			{
+				None => {target.insert_after(r); break},
+				Some(next) => target = next
+			}
+		}
 		l
 	}
 };
@@ -151,13 +218,21 @@ GlobalBlock: NodeRef<Data> =
 {
 	<s:GlobalScopeStmt> =>
 	{
-		let n = NodeRef::new(Data::Block);
-		n.append(s);
-		n
+		s
 	},
 	<l:GlobalBlock> <r:GlobalScopeStmt> =>
 	{
-		l.append(r);
+		// TODO: Need an 'append_sibling' as this insert_after is not what we really want.
+		// TODO: In general the entire tree interface is non-intuitive and needs a refactor.
+		let mut target = l.clone();
+		loop
+		{
+			match target.next_sibling()
+			{
+				None => {target.insert_after(r); break},
+				Some(next) => target = next
+			}
+		}
 		l
 	}
 };

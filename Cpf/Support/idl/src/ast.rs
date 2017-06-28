@@ -4,6 +4,58 @@ use std::ops::{Deref, DerefMut};
 use std::rc::{Rc, Weak};
 
 #[derive(Debug)]
+pub enum DirectionAnnotation
+{
+    In,
+    Out
+}
+
+#[derive(Debug)]
+pub struct Annotation
+{
+    pub left: Option<DirectionAnnotation>,
+    pub right: Option<DirectionAnnotation>
+}
+
+#[derive(Debug)]
+pub enum TypeQualifier
+{
+    Const
+}
+
+#[derive(Debug)]
+pub struct TypeQualification
+{
+    qualifier: Option<TypeQualifier>
+}
+
+#[derive(Debug)]
+pub enum DataType
+{
+    U8,
+    I8,
+    U16,
+    I16,
+    U32,
+    I32,
+    U64,
+    I64,
+    F32,
+    F64,
+    Char,
+    WChar,
+    Void,
+    Result
+}
+
+#[derive(Debug)]
+pub struct ModifiedType
+{
+    pub qualifier: Option<TypeQualifier>,
+    pub data_type: DataType
+}
+
+#[derive(Debug)]
 pub enum Data
 {
 	Block,
@@ -13,7 +65,8 @@ pub enum Data
 	Interface {name: String, base: Option<String>},
 	FwdInterface {name: String},
 	ClassID {name: String, cid: String},
-	InterfaceID {name: String, iid: String}
+	InterfaceID {name: String, iid: String},
+    TypeDecl {annotation: Option<Annotation>, data_type: ModifiedType, indirection_count: u32}
 }
 
 
