@@ -45,6 +45,7 @@ pub enum DataType
     Char,
     WChar,
     Void,
+    SizeT,
     Result
 }
 
@@ -52,7 +53,15 @@ pub enum DataType
 pub struct ModifiedType
 {
     pub qualifier: Option<TypeQualifier>,
-    pub data_type: DataType
+    pub data_type: DataType,
+    pub indirection_count: u32
+}
+
+#[derive(Debug)]
+pub struct TypeDecl
+{
+    pub annotation: Option<Annotation>,
+    pub data_type: ModifiedType
 }
 
 #[derive(Debug)]
@@ -64,9 +73,11 @@ pub enum Data
 	Namespace {name: String},
 	Interface {name: String, base: Option<String>},
 	FwdInterface {name: String},
+    FwdStruct {name: String},
 	ClassID {name: String, cid: String},
 	InterfaceID {name: String, iid: String},
-    TypeDecl {annotation: Option<Annotation>, data_type: ModifiedType, indirection_count: u32}
+    ParamDecl {name: Option<String>, type_decl: TypeDecl},
+    MemberSignature {name: String, result_type: ModifiedType}
 }
 
 

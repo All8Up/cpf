@@ -10,3 +10,4 @@ lalrpop = "*"
 [dependencies]
 lalrpop-util = "*"
 regex = "*"
+clap = "*"

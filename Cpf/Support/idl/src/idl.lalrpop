@@ -23,6 +23,17 @@ DQuotedString: String =
 	<s:r#"".*""#> => s.to_string()
 };
 
+Success: () = {"success"};
+Failure: () = {"failure"};
+ClassID: () = {"class_id"};
+InterfaceID: () = {"interface_id"};
+Import: () = {"import"};
+Namespace: () = {"namespace"};
+Interface: () = {"interface"};
+Struct: () = {"struct"};
+
+
+//
 Access: DirectionAnnotation =
 {
 	"in" => DirectionAnnotation::In,
@@ -32,19 +43,20 @@ Access: DirectionAnnotation =
 Types: DataType =
 {
 	"u8" => DataType::U8,
-	"i8" => DataType::U8,
-	"u16" => DataType::U8,
-	"i16" => DataType::U8,
-	"u32" => DataType::U8,
-	"i32" => DataType::U8,
-	"u64" => DataType::U8,
-	"i64" => DataType::U8,
-	"f32" => DataType::U8,
-	"f64" => DataType::U8,
-	"char" => DataType::U8,
-	"wchar" => DataType::U8,
-	"void" => DataType::U8,
-	"result" => DataType::U8
+	"i8" => DataType::I8,
+	"u16" => DataType::U16,
+	"i16" => DataType::I16,
+	"u32" => DataType::U32,
+	"i32" => DataType::I32,
+	"u64" => DataType::U64,
+	"i64" => DataType::I64,
+	"f32" => DataType::F32,
+	"f64" => DataType::F64,
+	"char" => DataType::Char,
+	"wchar" => DataType::WChar,
+	"void" => DataType::Void,
+	"size_t" => DataType::SizeT,
+	"result" => DataType::Result
 };
 
 TypeQualifier: TypeQualifier =
@@ -64,34 +76,65 @@ TypeAnnotation: Annotation =
 		Annotation {left: Some(l), right: r}
 };
 
-ModifiedType: ModifiedType =
-{
-	<q:(TypeQualifier)?> <t:Types> =>
-		ModifiedType {qualifier: q, data_type: t}
-};
-
 PointerDef: u32 =
 {
 	"*" => 1,
 	<p:PointerDef> "*" => p+1
 };
 
-BaseType: NodeRef<Data> =
+ModifiedType: ModifiedType =
 {
-	<a:(TypeAnnotation)?> <t:ModifiedType> =>
-		NodeRef::new(Data::TypeDecl {annotation: a, data_type: t, indirection_count: 0}),
-	<a:(TypeAnnotation)?> <t:ModifiedType> <p:PointerDef> =>
-		NodeRef::new(Data::TypeDecl {annotation: a, data_type: t, indirection_count: p})
+	<q:(TypeQualifier)?> <t:Types> =>
+		ModifiedType {qualifier: q, data_type: t, indirection_count: 0},
+	<q:(TypeQualifier)?> <t:Types> <p:PointerDef> =>
+		ModifiedType {qualifier: q, data_type: t, indirection_count: p}
 };
 
+TypeDecl: TypeDecl =
+{
+	<a:(TypeAnnotation)?> <t:ModifiedType> =>
+		TypeDecl {annotation: a, data_type: t}
+};
 
-Success: () = {"success"};
-Failure: () = {"failure"};
-ClassID: () = {"class_id"};
-InterfaceID: () = {"interface_id"};
-Import: () = {"import"};
-Namespace: () = {"namespace"};
-Interface: () = {"interface"};
+// ------
+ParamDecl: NodeRef<Data> =
+{
+	<t:TypeDecl> <n:(Identifier)?> =>
+		NodeRef::new(Data::ParamDecl {name: n, type_decl: t})
+};
+
+ParamList: NodeRef<Data> =
+{
+	<p:ParamDecl> => p,
+	<l:ParamList> "," <r:ParamDecl> =>
+		{
+			let mut target = l.clone();
+			loop
+			{
+				match target.next_sibling()
+				{
+					None => {target.insert_after(r); break},
+					Some(next) => target = next
+				}
+			}
+			l
+		}
+};
+
+MemberSignature: NodeRef<Data> =
+{
+	<r:ModifiedType> <n:Identifier> "(" ")" ";" =>
+		NodeRef::new(Data::MemberSignature {name: n.to_string(), result_type: r}),
+	<r:ModifiedType> <n:Identifier> "(" <p:ParamList> ")" ";" =>
+	{
+		let node = NodeRef::new(Data::MemberSignature {name: n.to_string(), result_type: r});
+		for nn in p.following_siblings()
+		{
+			node.append(nn);
+		}
+		node
+	}
+};
 
 // ------
 
@@ -116,7 +159,7 @@ ImportStmt: NodeRef<Data> =
 InterfaceStmts: NodeRef<Data> =
 {
 	InterfaceIDStmt,
-	BaseType
+	MemberSignature
 };
 
 InterfaceBlock: NodeRef<Data> =
@@ -154,12 +197,18 @@ InterfaceStmt: NodeRef<Data> =
 	}
 };
 
+StructStmt: NodeRef<Data> =
+{
+	Struct <n:Identifier> ";" => NodeRef::new(Data::FwdStruct {name: n})
+};
+
 // --- Global statements ---
 
 GlobalScopeStmt: NodeRef<Data> =
 {
 	ImportStmt,
 	InterfaceStmt,
+	StructStmt,
 	NamespaceStmt,
 	ClassIDStmt
 };
@@ -168,6 +217,7 @@ NamespaceScopeStmt: NodeRef<Data> =
 {
 	NamespaceStmt,
 	InterfaceStmt,
+	StructStmt,
 	ClassIDStmt
 };
 
