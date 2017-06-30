@@ -24,12 +24,6 @@ pub enum TypeQualifier
 }
 
 #[derive(Debug)]
-pub struct TypeQualification
-{
-    qualifier: Option<TypeQualifier>
-}
-
-#[derive(Debug)]
 pub enum DataType
 {
     U8,

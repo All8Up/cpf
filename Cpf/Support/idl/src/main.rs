@@ -1,7 +1,13 @@
 extern crate clap;
-use clap::{Arg, App, SubCommand};
+use clap::{Arg, App}; //, SubCommand};
+use std::env;
+use std::fs::File;
+use std::io::prelude::*;
 pub mod idl;
 pub mod ast;
+use ast::{NodeRef, Data};
+pub mod lexer;
+use lexer::{LexicalError};
 
 #[test]
 fn test_idl()
@@ -12,7 +18,6 @@ fn main()
 {
 	let command_line = App::new("IDL")
 		.version("0.1")
-		.author("K Brock <toolzer@gmail.com>")
 		.about("Generate language bindings from IDL descriptions.")
 		.arg(Arg::with_name("INPUT")
 			.short("i")
@@ -42,68 +47,64 @@ fn main()
 			)
 		.get_matches();
 
+	let current_dir = env::current_dir().unwrap();
 	let input_file = command_line.value_of("INPUT").unwrap();
 	let output_file = command_line.value_of("OUTPUT").unwrap();
 	let language = command_line.value_of("LANGUAGE").unwrap();
 	let verbose = command_line.is_present("VERBOSE");
 
-	println!("Input: {}", input_file);
-	println!("Output: {}", output_file);
-	println!("Language: {}", language);
-	println!("Verbose: {}", verbose);
-
-	// Not sure that imports are needed given the ability to forward reference.
-	let test_string =
-	"import \"something\"
-
-	interface iTest;
-
-	namespace test
+	if verbose
 	{
-		namespace test2
-		{
-			interface iTest2;
-			struct DataTest;
-			interface iBlargo : test::test2::iTest2
-			{
-				interface_id iid('test::test2::iBlargo');
-
-				i64 Read([out] void* dst, size_t size);
-				i64 Write([in] const void* src, size_t size);
-			}
-			class_id iBlargoCID('test::test2::iBlargo');
-
-			namespace test3
-			{
-			}
-		}
-	}";
-
-	println! ("------------------------------- Parsing IDL.");
-	let result = idl::parse_IDL(test_string);
-	match result
-	{
-		Ok(tree) =>
-		{
-			display_ast(tree.clone());
-		},
-		Err(e) =>
-		{
-			println! ("Parsing error: {:?}", e);
-		}
+		println!("Current working directory: {:?}", current_dir);
+		println!("Input: {}", input_file);
+		println!("Output: {}", output_file);
+		println!("Language: {}", language);
+		println!("Verbose: {}", verbose);
 	}
 
-	println! ("-------------------------------");
+	let file_result = File::open(input_file);
+	match file_result
+	{
+		Err(e) => {
+			println!("Error: {}", e);
+		},
+		Ok(mut file) =>
+		{
+			let mut contents = String::new();
+			match file.read_to_string(&mut contents)
+			{
+				Err(e) => {
+					println!("Error: {:?}", e);
+				},
+				Ok(_) =>
+				{
+					println! ("------------------------------- Parsing IDL.");
+					match idl::parse_IDL(&contents)
+					{
+						Err(e) =>
+						{
+							println!("Error: {:?}", e);
+						},
+						Ok(tree) =>
+						{
+							display_ast(tree.clone());
+							println! ("-------------------------------");
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
-fn display_ast(tree: ast::NodeRef<ast::Data>)
+fn display_ast(tree: NodeRef<Data>)
 {
 	println!("------------------------");
 	display_siblings(tree, 0);
 	println!("------------------------");
 }
 
-fn display_siblings(tree: ast::NodeRef<ast::Data>, indent: usize)
+fn display_siblings(tree: NodeRef<Data>, indent: usize)
 {
 	let mut current = tree.clone();
 	loop
@@ -117,7 +118,7 @@ fn display_siblings(tree: ast::NodeRef<ast::Data>, indent: usize)
 	}
 }
 
-fn display_children(tree: ast::NodeRef<ast::Data>, indent: usize)
+fn display_children(tree: NodeRef<Data>, indent: usize)
 {
 	let mut current = tree.clone();
 
@@ -128,7 +129,7 @@ fn display_children(tree: ast::NodeRef<ast::Data>, indent: usize)
 	display_siblings(current.clone(), indent);
 }
 
-fn display_indented(node: &ast::NodeRef<ast::Data>, indent: usize)
+fn display_indented(node: &NodeRef<Data>, indent: usize)
 {
 	println!("{:indent$}{:?}", "", node, indent=indent);
 }
