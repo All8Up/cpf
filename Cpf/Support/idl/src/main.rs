@@ -3,16 +3,21 @@ use clap::{Arg, App}; //, SubCommand};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-pub mod idl;
+pub mod grammar;
 pub mod ast;
 use ast::{NodeRef, Data};
 pub mod lexer;
-use lexer::{LexicalError};
+pub mod gen;
 
 #[test]
 fn test_idl()
 {
 }
+
+// TODO:
+//	Write a custom lexer for the following:
+//		Handle comments.
+//		Handle import processing.
 
 fn main()
 {
@@ -36,7 +41,7 @@ fn main()
 		.arg(Arg::with_name("LANGUAGE")
 			.short("l")
 			.long("language")
-			.help("Language of generated output.")
+			.help("Language of generated output, can be one of: rust, cpp or python3.")
 			.required(true)
 			.takes_value(true)
 			)
@@ -62,6 +67,20 @@ fn main()
 		println!("Verbose: {}", verbose);
 	}
 
+	let selected_generator : Option<Box<gen::CodeGenerator>> = match language
+	{
+		"rust" => {gen::get_generator(gen::Language::Rust)},
+		"cpp" => {gen::get_generator(gen::Language::Cpp)},
+		"python3" => {gen::get_generator(gen::Language::Python3)},
+		_ => {None}
+	};
+	if selected_generator.is_none()
+	{
+		println!("Invalid language generation requested.");
+		return
+	}
+	let generator = selected_generator.unwrap();
+
 	let file_result = File::open(input_file);
 	match file_result
 	{
@@ -79,7 +98,7 @@ fn main()
 				Ok(_) =>
 				{
 					println! ("------------------------------- Parsing IDL.");
-					match idl::parse_IDL(&contents)
+					match grammar::parse_IDL(&contents)
 					{
 						Err(e) =>
 						{
@@ -87,6 +106,7 @@ fn main()
 						},
 						Ok(tree) =>
 						{
+							generator.generate(output_file);
 							display_ast(tree.clone());
 							println! ("-------------------------------");
 						}

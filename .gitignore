@@ -11,3 +11,4 @@ cmake-build-debug/
 Cpf/Plugins/Rust/TestRust/target/
 Cpf/Support/idl/src/idl.rs
 Cpf/Support/idl/target/
+Cpf/Support/idl/src/grammar/idl.rs
