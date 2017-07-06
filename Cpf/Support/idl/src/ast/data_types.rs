@@ -23,7 +23,8 @@ pub enum DataType
     WChar,
     Void,
     SizeT,
-    Result
+    Result,
+    NamedType {name: String}
 }
 
 #[derive(Debug)]

@@ -1,0 +1,49 @@
+import "GOM"
+
+namespace Cpf
+{
+	namespace GOM
+	{
+		result kOK = {0, "Core", "OK"};
+		result kError = {1, "Core", "Error"};
+		result kUnknownInterface = {1, "Core", "UnknownInterface"};
+		result kInvalidParameter = {1, "Core", "InvalidParameter"};
+		result kOutOfMemory = {1, "Core", "OutOfMemory"};
+		result kUnknownClass = {1, "Core", "UnknownClass"};
+		result kNotImplemented = {1, "Core", "NotImplemented"};
+		result kInvalid = {1, "Core", "Invalid"};
+		result kNotEnoughSpace = {1, "Core", "NotEnoughSpace"};
+		result kInUse = {0, "Core", "InUse"};
+		result kNotInitialized = {1, "Core", "NotInitialized"};
+		result kInitializationFailure = {1, "Core", "InitializationFailure"};
+		result kOutOfRange = {1, "Core", "OutOfRange"};
+		result kDuplicateCID = {1, "Core", "DuplicateCID"};
+		result kRegistryError = {1, "Core", "RegistryError"};
+		result kNotRunning = {1, "Core", "NotRunning"};
+	}
+
+	namespace Plugin
+	{
+		struct IID_CID;
+		interface iClassInstance;
+
+		interface iRegistry
+		{
+			result Cast(u64 id, void** outIface);
+			result Load(const char* library);
+			result CanUnload(const char* library);
+			result Unload(const char* library);
+			result Install(u64 cid, iClassInstance* clsInst);
+			result Remove(u64 cid);
+			result GetClassInstance(u64 cid, iClassInstance** clsInst);
+			result Exists(u64 cid);
+			result Create(iBase* outer, u64 cid, u64 iid, void** outIFace);
+			result ClassInstall(i32 count, const IID_CID* pairs);
+			result ClassRemove(i32 count, const IID_CID* pairs);
+			result GetClasses(u64 id, i32* count, u64* cid);
+			result InstanceInstall(u64 id, iBase* instance);
+			result InstanceRemove(u64 id);
+			result GetInstance(u64 id, iBase** outIface);
+		}
+	}
+}

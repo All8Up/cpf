@@ -1,3 +1,4 @@
+use ast;
 use gen::code_gen::CodeGenerator;
 
 pub struct Generator
@@ -5,9 +6,10 @@ pub struct Generator
 
 }
 
+#[allow(unused_variables)]
 impl CodeGenerator for Generator
 {
-	fn generate(&self, output: &str)
+	fn generate(&self, tree: ast::NodeRef<ast::Data>, output: &str)
 	{
 		println!("Generating rust code to: {}", output);
 	}

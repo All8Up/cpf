@@ -1,4 +1,5 @@
 use gen::*;
+use ast::*;
 
 pub enum Language
 {
@@ -9,7 +10,7 @@ pub enum Language
 
 pub trait CodeGenerator
 {
-	fn generate(&self, output: &str);
+	fn generate(&self, tree: NodeRef<Data>, ooutput: &str);
 }
 
 pub fn get_generator(language: Language) -> Option<Box<CodeGenerator>>

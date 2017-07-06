@@ -34,6 +34,10 @@ namespace Cpf
 		 */
 		constexpr bool Failed(Result result) { return (result & 0x80000000) != 0; }
 
+		constexpr uint16_t GetError(Result result) { return uint16_t((result & 0x80000000) >> 31); }
+		constexpr uint16_t GetSubSystem(Result result) { return uint16_t((result & 0x7FFF8000) >> 15); }
+		constexpr uint16_t GetCode(Result result) { return uint16_t(result & 0x00007fff); }
+
 		// Standard result codes.
 		static constexpr Result kOK = CreateResult(0, "Core"_crc16, "OK"_crc15);
 		static constexpr Result kError = CreateResult(1, "Core"_crc16, "Error"_crc15);
