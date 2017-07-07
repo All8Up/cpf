@@ -4,22 +4,30 @@ namespace Cpf
 {
 	namespace GOM
 	{
-		result kOK = {0, "Core", "OK"};
-		result kError = {1, "Core", "Error"};
-		result kUnknownInterface = {1, "Core", "UnknownInterface"};
-		result kInvalidParameter = {1, "Core", "InvalidParameter"};
-		result kOutOfMemory = {1, "Core", "OutOfMemory"};
-		result kUnknownClass = {1, "Core", "UnknownClass"};
-		result kNotImplemented = {1, "Core", "NotImplemented"};
-		result kInvalid = {1, "Core", "Invalid"};
-		result kNotEnoughSpace = {1, "Core", "NotEnoughSpace"};
-		result kInUse = {0, "Core", "InUse"};
-		result kNotInitialized = {1, "Core", "NotInitialized"};
-		result kInitializationFailure = {1, "Core", "InitializationFailure"};
-		result kOutOfRange = {1, "Core", "OutOfRange"};
-		result kDuplicateCID = {1, "Core", "DuplicateCID"};
-		result kRegistryError = {1, "Core", "RegistryError"};
-		result kNotRunning = {1, "Core", "NotRunning"};
+		success OK						= {"Core", "OK"};
+		success IN_USE 					= {"Core", "InUse"};
+
+		failure ERROR					= {"Core", "Error"};
+		failure UNKNOWN_INTERFACE		= {"Core", "UnknownInterface"};
+		failure INVALID_PARAMETER		= {"Core", "InvalidParameter"};
+		failure OUT_OF_MEMORY			= {"Core", "OutOfMemory"};
+		failure UNKNOWN_CLASS			= {"Core", "UnknownClass"};
+		failure NOT_IMPLEMENTED			= {"Core", "NotImplemented"};
+		failure INVALID					= {"Core", "Invalid"};
+		failure NOT_ENOUGH_SPACE		= {"Core", "NotEnoughSpace"};
+		failure NOT_INITIALIZED			= {"Core", "NotInitialized"};
+		failure INITIALIZATION_FAILURE	= {"Core", "InitializationFailure"};
+		failure OUT_OF_RANGE			= {"Core", "OutOfRange"};
+		failure DUPLICATE				= {"Core", "Duplicate"};
+		failure REGISTRY_ERROR			= {"Core", "RegistryError"};
+		failure NOT_RUNNING				= {"Core", "NotRunning"};
+
+		interface iBase
+		{
+			u32 AddRef();
+			u32 Release();
+			result Cast(u64 id, void** outIface);
+		}
 	}
 
 	namespace Plugin
@@ -27,9 +35,8 @@ namespace Cpf
 		struct IID_CID;
 		interface iClassInstance;
 
-		interface iRegistry
+		interface iRegistry : GOM::iBase
 		{
-			result Cast(u64 id, void** outIface);
 			result Load(const char* library);
 			result CanUnload(const char* library);
 			result Unload(const char* library);

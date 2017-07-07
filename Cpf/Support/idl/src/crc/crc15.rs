@@ -20,7 +20,6 @@ static CRC_TABLE: &'static [u16] =
 
 pub fn crc15(input: &str) -> u16
 {
-	println!("{}", input);
 	let mut result: u16 = 0;
 	for v in input.bytes()
 	{

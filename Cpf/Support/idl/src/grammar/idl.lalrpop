@@ -112,8 +112,10 @@ TypeDecl: TypeDecl =
 // Constant initializers.
 ConstDecl: NodeRef<Data> =
 {
-	Result <n:Identifier> "=" "{" <ie:BinaryChar> "," <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Data::ResultConst {name: n, is_error: if ie==0 {false} else {true}, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))})
+	Success <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
+		NodeRef::new(Data::ResultConst {name: n, is_error: false, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))}),
+	Failure <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
+		NodeRef::new(Data::ResultConst {name: n, is_error: true, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))})
 };
 
 // ------
@@ -179,7 +181,8 @@ ImportStmt: NodeRef<Data> =
 InterfaceStmts: NodeRef<Data> =
 {
 	InterfaceIDStmt,
-	MemberSignature
+	MemberSignature,
+	Comment => NodeRef::new(Data::Comment {content: <>.to_string()})
 };
 
 InterfaceBlock: NodeRef<Data> =
@@ -230,7 +233,8 @@ GlobalScopeStmt: NodeRef<Data> =
 	InterfaceStmt,
 	StructStmt,
 	NamespaceStmt,
-	ClassIDStmt
+	ClassIDStmt,
+	Comment => NodeRef::new(Data::Comment {content: <>.to_string()})
 };
 
 NamespaceScopeStmt: NodeRef<Data> =
@@ -239,7 +243,8 @@ NamespaceScopeStmt: NodeRef<Data> =
 	InterfaceStmt,
 	StructStmt,
 	ClassIDStmt,
-	ConstDecl
+	ConstDecl,
+	Comment => NodeRef::new(Data::Comment {content: <>.to_string()})
 };
 
 NamespaceStmt: NodeRef<Data> =
@@ -345,11 +350,12 @@ match {
 	"true" => True,
 	"false" => False,
 	";" => SemiColon,
-	r"[_a-zA-Z][_a-zA-Z0-9]*" => ID,
+	r"[_a-zA-Z][_a-zA-Z0-9]*" => ID
 } else {
 	"[0-9]" => Digit
 } else {
 	r#"'[^']*'"# => SQuotedString,
 	r#""[^"]*""# => DQuotedString,
+	r"/\*[.]*\*/" => Comment,
 	_
 }

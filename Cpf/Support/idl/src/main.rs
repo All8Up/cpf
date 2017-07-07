@@ -79,7 +79,7 @@ fn main()
 		println!("Invalid language generation requested.");
 		return
 	}
-	let generator = selected_generator.unwrap();
+	let mut generator = selected_generator.unwrap();
 
 	let file_result = File::open(input_file);
 	match file_result
