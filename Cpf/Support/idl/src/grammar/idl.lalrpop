@@ -110,22 +110,22 @@ TypeDecl: TypeDecl =
 };
 
 // Constant initializers.
-ConstDecl: NodeRef<Data> =
+ConstDecl: ASTRef =
 {
 	Success <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Data::ResultConst {name: n, is_error: false, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))}),
+		NodeRef::new(Box::new(ResultConst {name: n, is_error: false, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))})),
 	Failure <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Data::ResultConst {name: n, is_error: true, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))})
+		NodeRef::new(Box::new(ResultConst {name: n, is_error: true, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))}))
 };
 
 // ------
-ParamDecl: NodeRef<Data> =
+ParamDecl: ASTRef =
 {
 	<t:TypeDecl> <n:(Identifier)?> =>
-		NodeRef::new(Data::ParamDecl {name: n, type_decl: t})
+		NodeRef::new(Box::new(ParamDecl {name: n, type_decl: t}))
 };
 
-ParamList: NodeRef<Data> =
+ParamList: ASTRef =
 {
 	<p:ParamDecl> => p,
 	<l:ParamList> "," <r:ParamDecl> =>
@@ -143,13 +143,13 @@ ParamList: NodeRef<Data> =
 		}
 };
 
-MemberSignature: NodeRef<Data> =
+MemberSignature: ASTRef =
 {
 	<r:ModifiedType> <n:Identifier> "(" ")" SemiColon =>
-		NodeRef::new(Data::MemberSignature {name: n.to_string(), result_type: r}),
+		NodeRef::new(Box::new(MemberSignature {name: n.to_string(), result_type: r})),
 	<r:ModifiedType> <n:Identifier> "(" <p:ParamList> ")" SemiColon =>
 	{
-		let node = NodeRef::new(Data::MemberSignature {name: n.to_string(), result_type: r});
+		let node: ASTRef = NodeRef::new(Box::new(MemberSignature {name: n.to_string(), result_type: r}));
 		for nn in p.following_siblings()
 		{
 			node.append(nn);
@@ -160,32 +160,32 @@ MemberSignature: NodeRef<Data> =
 
 // ------
 
-ClassIDStmt: NodeRef<Data> =
+ClassIDStmt: ASTRef =
 {
 	ClassID <n:Identifier> "(" <v:SQuotedString> ")" SemiColon =>
-		NodeRef::new(Data::ClassID {name: n, cid: v.to_string()})
+		NodeRef::new(Box::new(ClassID {name: n, cid: v.to_string()}))
 };
 
-InterfaceIDStmt: NodeRef<Data> =
+InterfaceIDStmt: ASTRef =
 {
 	InterfaceID <n:Identifier> "(" <v:SQuotedString> ")" SemiColon =>
-		NodeRef::new(Data::InterfaceID {name: n, iid: v.to_string()})
+		NodeRef::new(Box::new(InterfaceID {name: n, iid: v.to_string()}))
 };
 
-ImportStmt: NodeRef<Data> =
+ImportStmt: ASTRef =
 {
 	Import <n:DQuotedString> =>
-		NodeRef::new(Data::Import {name: (n[1..n.len()-1]).to_string()})
+		NodeRef::new(Box::new(Import {name: (n[1..n.len()-1]).to_string()}))
 };
 
-InterfaceStmts: NodeRef<Data> =
+InterfaceStmts: ASTRef =
 {
 	InterfaceIDStmt,
 	MemberSignature,
-	Comment => NodeRef::new(Data::Comment {content: <>.to_string()})
+	Comment => NodeRef::new(Box::new(Comment {content: <>.to_string()}))
 };
 
-InterfaceBlock: NodeRef<Data> =
+InterfaceBlock: ASTRef =
 {
 	<ns:InterfaceStmts> =>
 	{
@@ -206,12 +206,12 @@ InterfaceBlock: NodeRef<Data> =
 	}
 };
 
-InterfaceStmt: NodeRef<Data> =
+InterfaceStmt: ASTRef =
 {
-	Interface <n:Identifier> SemiColon => NodeRef::new(Data::FwdInterface {name: n}),
+	Interface <n:Identifier> SemiColon => NodeRef::new(Box::new(FwdInterface {name: n})),
 	Interface <n:Identifier> <q:(":" <QualifiedIdentifier>)?> "{" <b:InterfaceBlock> "}" =>
 	{
-		let node = NodeRef::new(Data::Interface {name: n, base: q});
+		let node: ASTRef = NodeRef::new(Box::new(Interface {name: n, base: q}));
 		for nn in b.following_siblings()
 		{
 			node.append(nn);
@@ -220,38 +220,38 @@ InterfaceStmt: NodeRef<Data> =
 	}
 };
 
-StructStmt: NodeRef<Data> =
+StructStmt: ASTRef =
 {
-	Struct <n:Identifier> SemiColon => NodeRef::new(Data::FwdStruct {name: n})
+	Struct <n:Identifier> SemiColon => NodeRef::new(Box::new(FwdStruct {name: n}))
 };
 
 // --- Global statements ---
 
-GlobalScopeStmt: NodeRef<Data> =
+GlobalScopeStmt: ASTRef =
 {
 	ImportStmt,
 	InterfaceStmt,
 	StructStmt,
 	NamespaceStmt,
 	ClassIDStmt,
-	Comment => NodeRef::new(Data::Comment {content: <>.to_string()})
+	Comment => NodeRef::new(Box::new(Comment {content: <>.to_string()}))
 };
 
-NamespaceScopeStmt: NodeRef<Data> =
+NamespaceScopeStmt: ASTRef =
 {
 	NamespaceStmt,
 	InterfaceStmt,
 	StructStmt,
 	ClassIDStmt,
 	ConstDecl,
-	Comment => NodeRef::new(Data::Comment {content: <>.to_string()})
+	Comment => NodeRef::new(Box::new(Comment {content: <>.to_string()}))
 };
 
-NamespaceStmt: NodeRef<Data> =
+NamespaceStmt: ASTRef =
 {
 	Namespace <n:Identifier> "{" <i:(NamespaceBlock)?> "}" =>
 	{
-		let nn = NodeRef::new(Data::Namespace {name: n});
+		let nn: ASTRef = NodeRef::new(Box::new(Namespace {name: n}));
 		match i
 		{
 			None => (),
@@ -268,7 +268,7 @@ NamespaceStmt: NodeRef<Data> =
 	}
 };
 
-NamespaceBlock: NodeRef<Data> =
+NamespaceBlock: ASTRef =
 {
 	<ns:NamespaceScopeStmt> =>
 	{
@@ -290,7 +290,7 @@ NamespaceBlock: NodeRef<Data> =
 };
 
 // Returns a block of all global statments.
-GlobalBlock: NodeRef<Data> =
+GlobalBlock: ASTRef =
 {
 	<s:GlobalScopeStmt> =>
 	{
@@ -313,7 +313,7 @@ GlobalBlock: NodeRef<Data> =
 	}
 };
 
-pub IDL: NodeRef<Data> =
+pub IDL: ASTRef =
 {
 	GlobalBlock
 };

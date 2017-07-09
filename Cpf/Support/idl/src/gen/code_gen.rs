@@ -10,7 +10,7 @@ pub enum Language
 
 pub trait CodeGenerator
 {
-	fn generate(&mut self, tree: NodeRef<Data>, ooutput: &str);
+	fn generate(&mut self, tree: ASTRef, output: &str);
 }
 
 pub fn get_generator(language: Language) -> Option<Box<CodeGenerator>>

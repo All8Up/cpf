@@ -1,13 +1,13 @@
 use ast::*;
 
-pub fn display_ast(tree: NodeRef<Data>)
+pub fn display_ast(tree: ASTRef)
 {
 	println!("------------------------");
 	display_siblings(tree, 0);
 	println!("------------------------");
 }
 
-fn display_siblings(tree: NodeRef<Data>, indent: usize)
+fn display_siblings(tree: ASTRef, indent: usize)
 {
 	let mut current = tree.clone();
 	loop
@@ -21,7 +21,7 @@ fn display_siblings(tree: NodeRef<Data>, indent: usize)
 	}
 }
 
-fn display_children(tree: NodeRef<Data>, indent: usize)
+fn display_children(tree: ASTRef, indent: usize)
 {
 	let mut current = tree.clone();
 
@@ -32,7 +32,7 @@ fn display_children(tree: NodeRef<Data>, indent: usize)
 	display_siblings(current.clone(), indent);
 }
 
-fn display_indented(node: &NodeRef<Data>, indent: usize)
+fn display_indented(node: &ASTRef, indent: usize)
 {
-	println!("{:indent$}{:?}", "", node, indent=indent);
+//	println!("{:indent$}{:?}", "", node, indent=indent);
 }
