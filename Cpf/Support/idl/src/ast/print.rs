@@ -32,7 +32,7 @@ fn display_children(tree: ASTRef, indent: usize)
 	display_siblings(current.clone(), indent);
 }
 
-fn display_indented(node: &ASTRef, indent: usize)
+fn display_indented(_: &ASTRef, _: usize)
 {
 //	println!("{:indent$}{:?}", "", node, indent=indent);
 }

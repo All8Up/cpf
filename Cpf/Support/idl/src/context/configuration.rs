@@ -1,5 +1,4 @@
 use std::path::PathBuf;
-use language::*;
 use context::*;
 
 pub struct Configuration
@@ -25,7 +24,7 @@ impl Configuration
 		}
 	}
 
-	pub fn log(&self, context: &Context)
+	pub fn log(&self, _: &Context)
 	{
 		println!("Current working directory: {:?}", self.working_directory);
 		println!("Input: {}", self.input_file);

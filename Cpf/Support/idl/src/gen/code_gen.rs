@@ -10,8 +10,8 @@ pub enum ConstType
 pub trait CodeGenerator
 {
 	fn log(&self, context: &Context);
-	fn string_out(&mut self, s: &str) {}
-	fn indent_out(&mut self, s: &str) {}
+	fn string_out(&mut self, _: &str) {}
+	fn indent_out(&mut self, _: &str) {}
 	fn indent(&mut self) {}
 	fn unindent(&mut self) {}
 
@@ -19,8 +19,8 @@ pub trait CodeGenerator
 	fn push_scope(&mut self, name: &str);
 	fn pop_scope(&mut self);
 	fn get_scope(&self) -> Scope {Scope::new("")}
-	fn add_result(&mut self, name: &str, is_error: bool, subsys: &str, code: &str) -> bool {true}
-	fn add_constant(&mut self, t: ConstType, name: &str, value: u32) -> bool {true}
+	fn add_result(&mut self, _: &str, _: bool, _: &str, _: &str) -> bool {true}
+	fn add_constant(&mut self, _: ConstType, _: &str, _: u32) -> bool {true}
 }
 
 pub fn get_generator(language: Language) -> Option<Box<CodeGenerator>>

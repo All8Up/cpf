@@ -32,7 +32,7 @@ impl Scope
 // ------------------------
 struct ScopeEntry
 {
-	Scope: Scope,
+	scope: Scope,
 	children: Vec<usize>,
 	parent: usize
 }
@@ -41,7 +41,7 @@ impl ScopeEntry
 {
 	fn new(name: &str) -> ScopeEntry
 	{
-		ScopeEntry {Scope: Scope::new(name), children: vec![], parent: INVALID_HANDLE}
+		ScopeEntry {scope: Scope::new(name), children: vec![], parent: INVALID_HANDLE}
 	}
 }
 
@@ -49,7 +49,7 @@ impl ScopeEntry
 // ------------------------
 pub struct Scopes
 {
-	Scope_arena: Vec<ScopeEntry>,
+	scope_arena: Vec<ScopeEntry>,
 	root: Handle
 }
 
@@ -59,19 +59,19 @@ impl Scopes
 	{
 		Scopes
 		{
-			Scope_arena: vec![ScopeEntry::new("")],
+			scope_arena: vec![ScopeEntry::new("")],
 			root: INVALID_HANDLE
 		}
 	}
 
-	fn find(&self, scope: Scope) -> Handle
+	fn find(&self, _: Scope) -> Handle
 	{
 		INVALID_HANDLE
 	}
 
 	fn get_name(&self, handle: Handle) -> &Scope
 	{
-		return &self.Scope_arena[handle].Scope;
+		return &self.scope_arena[handle].scope;
 	}
 
 	pub fn get_scope(&self, handle: Handle) -> Scope
@@ -80,7 +80,7 @@ impl Scopes
 		let path = self.get_path(handle);
 		for element in path
 		{
-			result.append(&self.Scope_arena[element].Scope.0);
+			result.append(&self.scope_arena[element].scope.0);
 		}
 		result
 	}
@@ -92,7 +92,7 @@ impl Scopes
 		let mut current = handle;
 		loop
 		{
-			let parent = self.Scope_arena[current].parent;
+			let parent = self.scope_arena[current].parent;
 			if parent == INVALID_HANDLE
 			{
 				return result;

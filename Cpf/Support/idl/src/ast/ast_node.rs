@@ -48,7 +48,7 @@ pub struct Import
 }
 impl ASTNode for Import
 {
-	fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool
+	fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool
 	{
 		true
 	}
@@ -92,7 +92,7 @@ pub struct Interface
 
 impl ASTNode for Interface
 {
-	fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool
+	fn handle(&self, generator: &mut CodeGenerator, _: ASTRef) -> bool
 	{
 		// 	Load: extern fn(registry: *const iRegistry, name: *const c_char),
 		generator.string_out("");
@@ -134,12 +134,12 @@ impl ASTNode for Interface
 						    DataType::Void => "void".to_string(),
 						    DataType::SizeT => "size_t".to_string(),
 						    DataType::Result => "uint32_t".to_string(),
-						    DataType::NamedType {name: ref name} => " -> ".to_string() + &name
+						    DataType::NamedType {ref name} => " -> ".to_string() + &name
 						};
 						params += &dt;
 					}
 
-					let mut result = match rt.data_type
+					let result = match rt.data_type
 					{
 					    DataType::U8 => " -> uint8_t".to_string(),
 					    DataType::I8 => " -> int8_t".to_string(),
@@ -156,7 +156,7 @@ impl ASTNode for Interface
 					    DataType::Void => "".to_string(),
 					    DataType::SizeT => " -> size_t".to_string(),
 					    DataType::Result => " -> uint32_t".to_string(),
-					    DataType::NamedType {name: ref name} => " -> ".to_string() + &name
+					    DataType::NamedType {ref name} => " -> ".to_string() + &name
 					};
 					generator.indent_out(&format!("{}: extern fn({}){},", n, params, result));
 				}
@@ -171,15 +171,15 @@ impl ASTNode for Interface
 
 // ---------------
 #[derive(Debug)] pub struct FwdInterface {pub name: String}
-impl ASTNode for FwdInterface {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for FwdInterface {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}
 
 // ---------------
 #[derive(Debug)] pub struct FwdStruct {pub name: String}
-impl ASTNode for FwdStruct {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for FwdStruct {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}
 
 // ---------------
 #[derive(Debug)] pub struct ClassID {pub name: String, pub cid: String}
-impl ASTNode for ClassID {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for ClassID {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}
 
 // ---------------
 #[derive(Debug)]
@@ -190,7 +190,7 @@ pub struct InterfaceID
 }
 impl ASTNode for InterfaceID
 {
-	fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool
+	fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool
 	{
 		true
 	}
@@ -205,7 +205,7 @@ pub struct ParamDecl
 }
 impl ASTNode for ParamDecl
 {
-	fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool
+	fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool
 	{
 		true
 	}
@@ -221,7 +221,7 @@ pub struct MethodSignature
 }
 impl ASTNode for MethodSignature
 {
-	fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool
+	fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool
 	{
 		println!("Signature: {:?}", self);
 		true
@@ -230,15 +230,15 @@ impl ASTNode for MethodSignature
 
 // ---------------
 #[derive(Debug)] pub struct UnsignedConst {pub name: String, pub value: u64}
-impl ASTNode for UnsignedConst {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for UnsignedConst {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}
 
 // ---------------
 #[derive(Debug)] pub struct SignedConst {pub name: String, pub value: i64}
-impl ASTNode for SignedConst {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for SignedConst {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}
 
 // ---------------
 #[derive(Debug)] pub struct FloatConst {pub name: String, pub value: f64}
-impl ASTNode for FloatConst {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for FloatConst {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}
 
 // ---------------
 #[derive(Debug)] pub struct ResultConst
@@ -250,7 +250,7 @@ impl ASTNode for FloatConst {fn handle(&self, generator: &mut CodeGenerator, nod
 }
 impl ASTNode for ResultConst
 {
-	fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool
+	fn handle(&self, generator: &mut CodeGenerator, _: ASTRef) -> bool
 	{
 		generator.add_result(&self.name, self.is_error, &self.sub_system, &self.code)
 	}
@@ -258,4 +258,4 @@ impl ASTNode for ResultConst
 
 // ---------------
 #[derive(Debug)] pub struct Comment {pub content: String}
-impl ASTNode for Comment {fn handle(&self, generator: &mut CodeGenerator, node: ASTRef) -> bool {true}}
+impl ASTNode for Comment {fn handle(&self, _: &mut CodeGenerator, _: ASTRef) -> bool {true}}

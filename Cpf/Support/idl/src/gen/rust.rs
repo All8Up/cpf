@@ -1,5 +1,4 @@
 use ast::*;
-use ast::ast_node::ASTNode;
 use gen::code_gen::{CodeGenerator, ConstType};
 use gen::scope::*;
 use context::*;
@@ -17,7 +16,7 @@ pub struct Generator
 
 impl CodeGenerator for Generator
 {
-	fn log(&self, context: &Context)
+	fn log(&self, _: &Context)
 	{
 	}
 
@@ -50,7 +49,7 @@ impl CodeGenerator for Generator
 
 	fn push_scope(&mut self, name: &str)
 	{
-		let scope = Scope::new(name);
+//		let scope = Scope::new(name);
 		self.indent_out(&format!("mod {}", name));
 		self.indent_out("{");
 		self.indent += 1;
@@ -79,7 +78,7 @@ impl CodeGenerator for Generator
 		true
 	}
 
-	fn add_constant(&mut self, t: ConstType, name: &str, value: u32) -> bool
+	fn add_constant(&mut self, _: ConstType, name: &str, value: u32) -> bool
 	{
 		self.indent_out(&format!("const {} : u32 = 0x{:8X};", name, value));
 		true
