@@ -1,11 +1,11 @@
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum DirectionAnnotation
 {
     In,
     Out
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Annotation
 {
     pub left: Option<DirectionAnnotation>,

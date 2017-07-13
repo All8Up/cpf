@@ -1,12 +1,12 @@
 use ast::annotation::*;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum TypeQualifier
 {
     Const
 }
 
-#[derive(Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum DataType
 {
     U8,
@@ -27,7 +27,7 @@ pub enum DataType
     NamedType {name: String}
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct ModifiedType
 {
     pub qualifier: Option<TypeQualifier>,
@@ -35,7 +35,7 @@ pub struct ModifiedType
     pub indirection_count: u32
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct TypeDecl
 {
     pub annotation: Option<Annotation>,

@@ -113,48 +113,53 @@ TypeDecl: TypeDecl =
 ConstDecl: ASTRef =
 {
 	Success <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Box::new(ResultConst {name: n, is_error: false, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))})),
+		NodeRef::new(Box::new(ResultConst {
+			name: n, is_error: false, sub_system: ss[1..ss.len()-1].to_string(), code: v[1..v.len()-1].to_string()
+		})),
 	Failure <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Box::new(ResultConst {name: n, is_error: true, sub_system: crc16(&ss[1..ss.len()-1]), code: crc15(&(v[1..v.len()-1]))}))
+		NodeRef::new(Box::new(ResultConst {
+			name: n, is_error: true, sub_system: ss[1..ss.len()-1].to_string(), code: v[1..v.len()-1].to_string()
+		}))
 };
 
 // ------
-ParamDecl: ASTRef =
+ParamDecl: Parameter =
 {
-	<t:TypeDecl> <n:(Identifier)?> =>
-		NodeRef::new(Box::new(ParamDecl {name: n, type_decl: t}))
+	<t:TypeDecl> <n:Identifier> =>
+		Parameter {name: n, data_type: t}
 };
 
-ParamList: ASTRef =
+ParamList: ParameterList =
 {
-	<p:ParamDecl> => p,
+	<p:ParamDecl> =>
+	{
+		let mut param_list = ParameterList::new();
+		param_list.push(p);
+		param_list
+	},
 	<l:ParamList> "," <r:ParamDecl> =>
-		{
-			let mut target = l.clone();
-			loop
-			{
-				match target.next_sibling()
-				{
-					None => {target.insert_after(r); break},
-					Some(next) => target = next
-				}
-			}
-			l
-		}
+	{
+		let mut result = l.clone();
+		result.push(r.clone());
+		result
+	}
 };
 
-MemberSignature: ASTRef =
+MethodSignature: InterfaceStatement =
 {
 	<r:ModifiedType> <n:Identifier> "(" ")" SemiColon =>
-		NodeRef::new(Box::new(MemberSignature {name: n.to_string(), result_type: r})),
+		InterfaceStatement::Method {
+			name: n.to_string(),
+			result_type: r,
+			parameters: ParameterList::new()
+		},
 	<r:ModifiedType> <n:Identifier> "(" <p:ParamList> ")" SemiColon =>
 	{
-		let node: ASTRef = NodeRef::new(Box::new(MemberSignature {name: n.to_string(), result_type: r}));
-		for nn in p.following_siblings()
-		{
-			node.append(nn);
+		InterfaceStatement::Method {
+			name: n.to_string(),
+			result_type: r,
+			parameters: p
 		}
-		node
 	}
 };
 
@@ -166,10 +171,10 @@ ClassIDStmt: ASTRef =
 		NodeRef::new(Box::new(ClassID {name: n, cid: v.to_string()}))
 };
 
-InterfaceIDStmt: ASTRef =
+InterfaceIDStmt: InterfaceStatement =
 {
-	InterfaceID <n:Identifier> "(" <v:SQuotedString> ")" SemiColon =>
-		NodeRef::new(Box::new(InterfaceID {name: n, iid: v.to_string()}))
+	InterfaceID "(" <v:DQuotedString> ")" SemiColon =>
+		InterfaceStatement::IID {value: v.to_string()}
 };
 
 ImportStmt: ASTRef =
@@ -178,45 +183,35 @@ ImportStmt: ASTRef =
 		NodeRef::new(Box::new(Import {name: (n[1..n.len()-1]).to_string()}))
 };
 
-InterfaceStmts: ASTRef =
+InterfaceStmts: InterfaceStatement =
 {
 	InterfaceIDStmt,
-	MemberSignature,
-	Comment => NodeRef::new(Box::new(Comment {content: <>.to_string()}))
+	MethodSignature
 };
 
-InterfaceBlock: ASTRef =
+InterfaceBlock: InterfaceStatements =
 {
-	<ns:InterfaceStmts> =>
+	<stmt:InterfaceStmts> =>
 	{
-		ns
+		let mut s = InterfaceStatements::new();
+		s.push(stmt);
+		s
 	},
-	<l:InterfaceBlock> <r:InterfaceStmts> =>
+	<b:InterfaceBlock> <stmt:InterfaceStmts> =>
 	{
-		let mut target = l.clone();
-		loop
-		{
-			match target.next_sibling()
-			{
-				None => {target.insert_after(r); break},
-				Some(next) => target = next
-			}
-		}
-		l
+		let mut block = b.clone();
+		block.push(stmt);
+		block
 	}
 };
 
 InterfaceStmt: ASTRef =
 {
-	Interface <n:Identifier> SemiColon => NodeRef::new(Box::new(FwdInterface {name: n})),
+	Interface <n:Identifier> SemiColon =>
+		NodeRef::new(Box::new(FwdInterface {name: n})),
 	Interface <n:Identifier> <q:(":" <QualifiedIdentifier>)?> "{" <b:InterfaceBlock> "}" =>
 	{
-		let node: ASTRef = NodeRef::new(Box::new(Interface {name: n, base: q}));
-		for nn in b.following_siblings()
-		{
-			node.append(nn);
-		}
-		node
+		NodeRef::new(Box::new(Interface {name: n, base: q, statements: b}))
 	}
 };
 

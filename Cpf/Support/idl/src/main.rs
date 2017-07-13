@@ -1,5 +1,5 @@
 extern crate clap;
-use clap::{Arg, App}; //, SubCommand};
+use clap::{Arg, App};
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -8,11 +8,15 @@ pub mod ast;
 pub mod lexer;
 pub mod gen;
 pub mod crc;
+pub mod context;
+use context::*;
+
 
 #[test]
 fn test_idl()
 {
 }
+
 
 // TODO:
 //	Write a custom lexer for the following:
@@ -52,36 +56,27 @@ fn main()
 			)
 		.get_matches();
 
-	let current_dir = env::current_dir().unwrap();
-	let input_file = command_line.value_of("INPUT").unwrap();
-	let output_file = command_line.value_of("OUTPUT").unwrap();
-	let language = command_line.value_of("LANGUAGE").unwrap();
-	let verbose = command_line.is_present("VERBOSE");
-
-	if verbose
-	{
-		println!("Current working directory: {:?}", current_dir);
-		println!("Input: {}", input_file);
-		println!("Output: {}", output_file);
-		println!("Language: {}", language);
-		println!("Verbose: {}", verbose);
-	}
-
-	let selected_generator : Option<Box<gen::CodeGenerator>> = match language
-	{
-		"rust" => {gen::get_generator(gen::Language::Rust)},
-		"cpp" => {gen::get_generator(gen::Language::Cpp)},
-		"python3" => {gen::get_generator(gen::Language::Python3)},
-		_ => {None}
-	};
-	if selected_generator.is_none()
+	let language_value = language_from_str(command_line.value_of("LANGUAGE").unwrap());
+	if language_value == Language::Unknown
 	{
 		println!("Invalid language generation requested.");
 		return
 	}
-	let mut generator = selected_generator.unwrap();
 
-	let file_result = File::open(input_file);
+	let configuration : Configuration = Configuration::new(
+		env::current_dir().unwrap(),
+		command_line.value_of("INPUT").unwrap(),
+		command_line.value_of("OUTPUT").unwrap(),
+		language_value,
+		command_line.is_present("VERBOSE")
+	);
+
+	let generator = gen::get_generator(configuration.language).unwrap();
+	let mut context = Context::new(configuration, generator);
+
+	context.log();
+
+	let file_result = File::open(context.get_configuration().get_input_filename());
 	match file_result
 	{
 		Err(e) => {
@@ -106,7 +101,8 @@ fn main()
 						},
 						Ok(tree) =>
 						{
-							generator.generate(tree, output_file);
+							let output_filename = context.get_configuration().get_output_filename().clone();
+							context.get_generator().generate(tree, &output_filename);
 							println! ("-------------------------------");
 						}
 					}
