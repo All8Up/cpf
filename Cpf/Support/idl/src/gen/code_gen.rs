@@ -19,8 +19,12 @@ pub trait CodeGenerator
 	fn push_scope(&mut self, name: &str);
 	fn pop_scope(&mut self);
 	fn get_scope(&self) -> Scope {Scope::new("")}
-	fn add_result(&mut self, _: &str, _: bool, _: &str, _: &str) -> bool {true}
 	fn add_constant(&mut self, _: ConstType, _: &str, _: u32) -> bool {true}
+	fn data_type_to_string(&self, _data_type: DataType) -> String {return "".to_string();}
+
+    fn handle_const_result(&mut self, _const_result_node: &ConstResult, _node: ASTRef) -> bool {true}
+	fn handle_interface(&mut self, _interface_node: &Interface, _node: ASTRef) -> bool {true}
+    fn handle_import(&mut self, _import_node: &Import, _node: ASTRef) -> bool {true}
 }
 
 pub fn get_generator(language: Language) -> Option<Box<CodeGenerator>>

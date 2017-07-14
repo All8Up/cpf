@@ -27,6 +27,32 @@ pub enum DataType
     NamedType {name: String}
 }
 
+impl ToString for DataType
+{
+    fn to_string(&self) -> String
+    {
+        return match self
+            {
+                &DataType::U8 => "uint8_t".to_string(),
+                &DataType::I8 => "int8_t".to_string(),
+                &DataType::U16 => "uint16_t".to_string(),
+                &DataType::I16 => "int16_t".to_string(),
+                &DataType::U32 => "u32".to_string(),
+                &DataType::I32 => "i32".to_string(),
+                &DataType::U64 => "u64".to_string(),
+                &DataType::I64 => "i64".to_string(),
+                &DataType::F32 => "f32".to_string(),
+                &DataType::F64 => "f64".to_string(),
+                &DataType::Char => "c_char".to_string(),
+                &DataType::WChar => "wchar_t".to_string(),
+                &DataType::Void => "void".to_string(),
+                &DataType::SizeT => "size_t".to_string(),
+                &DataType::Result => "u32".to_string(),
+                &DataType::NamedType { ref name } => " -> ".to_string() + &name
+            }
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct ModifiedType
 {

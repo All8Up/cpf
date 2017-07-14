@@ -66,14 +66,14 @@ impl CodeGenerator for Generator
 		self.scopes.get_scope(self.current_scope)
 	}
 
-	fn add_result(&mut self, name: &str, is_error: bool, subsys: &str, code: &str) -> bool
+	fn handle_const_result(&mut self, const_result: &ConstResult, _node: ASTRef) -> bool
 	{
-		let value: u32 = if is_error == true {0x80000000} else {0} |
-			(crc16(subsys) as u32) << 15 | (crc15(code) as u32);
-		let left = format!("const {}", name);
+		let value: u32 = if const_result.is_error == true {0x80000000} else {0} |
+			(crc16(&const_result.sub_system) as u32) << 15 | (crc15(&const_result.code) as u32);
+		let left = format!("const {}", const_result.name);
 		self.indent_out(&format!(
 			"{:<38} : u32 = 0x{:8X};      // Sub-system: \"{}\" Code: \"{}\"",
-			left, value, subsys, code));
+			left, value, const_result.sub_system, const_result.code));
 
 		true
 	}
@@ -81,6 +81,69 @@ impl CodeGenerator for Generator
 	fn add_constant(&mut self, _: ConstType, name: &str, value: u32) -> bool
 	{
 		self.indent_out(&format!("const {} : u32 = 0x{:8X};", name, value));
+		true
+	}
+
+	fn data_type_to_string(&self, data_type: DataType) -> String
+	{
+		return match data_type
+			{
+				DataType::U8 => "uint8_t".to_string(),
+				DataType::I8 => "int8_t".to_string(),
+				DataType::U16 => "uint16_t".to_string(),
+				DataType::I16 => "int16_t".to_string(),
+				DataType::U32 => "u32".to_string(),
+				DataType::I32 => "i32".to_string(),
+				DataType::U64 => "u64".to_string(),
+				DataType::I64 => "i64".to_string(),
+				DataType::F32 => "f32".to_string(),
+				DataType::F64 => "f64".to_string(),
+				DataType::Char => "c_char".to_string(),
+				DataType::WChar => "wchar_t".to_string(),
+				DataType::Void => "void".to_string(),
+				DataType::SizeT => "size_t".to_string(),
+				DataType::Result => "u32".to_string(),
+				DataType::NamedType { ref name } => " -> ".to_string() + &name
+			}
+	}
+
+	fn handle_interface(&mut self, iface: &Interface, _node: ASTRef) -> bool
+	{
+		// 	Load: extern fn(registry: *const iRegistry, name: *const c_char),
+		self.string_out("");
+		self.indent_out(&format!("pub struct {}_Vtbl", iface.name));
+		self.indent_out("{");
+		self.indent();
+		for stmt in iface.statements.iter()
+			{
+				match stmt
+					{
+						&InterfaceStatement::IID {value: ref v} =>
+							self.indent_out(&format!("iid: {}", v)),
+						&InterfaceStatement::Method {name: ref n, result_type: ref rt, parameters: ref p} =>
+							{
+								let mut params : String = "".to_string();
+								for param in p
+									{
+										if !params.is_empty()
+											{
+												params += ", ";
+											}
+										params += &param.name;
+										params += ": ";
+
+										let dt = param.data_type.data_type.data_type.to_string();
+										params += &dt;
+									}
+
+								let result = " -> ".to_string() + &rt.data_type.to_string();
+								self.indent_out(&format!("{}: extern fn({}){},", n, params, result));
+							}
+					}
+			}
+		self.unindent();
+		self.indent_out("}");
+
 		true
 	}
 }

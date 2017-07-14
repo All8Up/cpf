@@ -33,6 +33,7 @@ impl Scope
 struct ScopeEntry
 {
 	scope: Scope,
+	#[allow(dead_code)]
 	children: Vec<usize>,
 	parent: usize
 }
@@ -50,6 +51,7 @@ impl ScopeEntry
 pub struct Scopes
 {
 	scope_arena: Vec<ScopeEntry>,
+	#[allow(dead_code)]
 	root: Handle
 }
 
@@ -64,11 +66,13 @@ impl Scopes
 		}
 	}
 
+	#[allow(dead_code)]
 	fn find(&self, _: Scope) -> Handle
 	{
 		INVALID_HANDLE
 	}
 
+	#[allow(dead_code)]
 	fn get_name(&self, handle: Handle) -> &Scope
 	{
 		return &self.scope_arena[handle].scope;

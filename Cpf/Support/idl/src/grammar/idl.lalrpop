@@ -112,11 +112,11 @@ TypeDecl: TypeDecl =
 ConstDecl: ASTRef =
 {
 	Success <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Box::new(ResultConst {
+		NodeRef::new(Box::new(ConstResult {
 			name: n, is_error: false, sub_system: ss[1..ss.len()-1].to_string(), code: v[1..v.len()-1].to_string()
 		})),
 	Failure <n:Identifier> "=" "{" <ss:DQuotedString> "," <v:DQuotedString> "}" SemiColon =>
-		NodeRef::new(Box::new(ResultConst {
+		NodeRef::new(Box::new(ConstResult {
 			name: n, is_error: true, sub_system: ss[1..ss.len()-1].to_string(), code: v[1..v.len()-1].to_string()
 		}))
 };
