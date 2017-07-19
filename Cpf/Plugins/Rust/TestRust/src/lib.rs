@@ -1,145 +1,79 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
-
+mod cpf;
+use cpf::*;
 extern crate libc;
 
-pub mod CPF
+// *****************
+struct iTestPlugin_Vtbl
 {
-    pub mod GOM
-    {
-        pub const OK                               : u32 = 0x72D622E4;      // Sub-system: "Core" Code: "OK"
-        pub const IN_USE                           : u32 = 0x72D65159;      // Sub-system: "Core" Code: "InUse"
-        pub const ERROR                            : u32 = 0xF2D60ECC;      // Sub-system: "Core" Code: "Error"
-        pub const UNKNOWN_INTERFACE                : u32 = 0xF2D623E7;      // Sub-system: "Core" Code: "UnknownInterface"
-        pub const INVALID_PARAMETER                : u32 = 0xF2D60CEA;      // Sub-system: "Core" Code: "InvalidParameter"
-        pub const OUT_OF_MEMORY                    : u32 = 0xF2D655B8;      // Sub-system: "Core" Code: "OutOfMemory"
-        pub const UNKNOWN_CLASS                    : u32 = 0xF2D67F71;      // Sub-system: "Core" Code: "UnknownClass"
-        pub const NOT_IMPLEMENTED                  : u32 = 0xF2D67EFE;      // Sub-system: "Core" Code: "NotImplemented"
-        pub const INVALID                          : u32 = 0xF2D63EDB;      // Sub-system: "Core" Code: "Invalid"
-        pub const NOT_ENOUGH_SPACE                 : u32 = 0xF2D6075E;      // Sub-system: "Core" Code: "NotEnoughSpace"
-        pub const NOT_INITIALIZED                  : u32 = 0xF2D66D72;      // Sub-system: "Core" Code: "NotInitialized"
-        pub const INITIALIZATION_FAILURE           : u32 = 0xF2D66346;      // Sub-system: "Core" Code: "InitializationFailure"
-        pub const OUT_OF_RANGE                     : u32 = 0xF2D6436A;      // Sub-system: "Core" Code: "OutOfRange"
-        pub const DUPLICATE                        : u32 = 0xF2D675B4;      // Sub-system: "Core" Code: "Duplicate"
-        pub const REGISTRY_ERROR                   : u32 = 0xF2D62784;      // Sub-system: "Core" Code: "RegistryError"
-        pub const NOT_RUNNING                      : u32 = 0xF2D67C4C;      // Sub-system: "Core" Code: "NotRunning"
+    pub AddRef: extern "stdcall" fn(this: *mut iTestPlugin) -> i32,
+    pub Release: extern "stdcall" fn(this: *mut iTestPlugin) -> i32,
+    pub Cast: extern "stdcall" fn(this: *mut iTestPlugin, id: u64, outIface: *mut *mut ::libc::c_void) -> u32,
+}
+struct iTestPlugin
+{
+    vtbl: *const iTestPlugin_Vtbl,
+    ref_count: i32
+}
 
-        pub struct iBase_Vtbl
-        {
-            pub AddRef: extern "stdcall" fn() -> u32,
-            pub Release: extern "stdcall" fn() -> u32,
-            pub Cast: extern "stdcall" fn(id: u64, outIface: ::libc::c_void) -> u32,
-        }
-        pub struct iBase
-        {
-        	pub vtbl: *const iBase_Vtbl
-        }
-        pub struct IID_CID
-        {}
+static TEST_PLUGIN_VTABLE: iTestPlugin_Vtbl = iTestPlugin_Vtbl
+{
+    AddRef: iTestPlugin_add_ref,
+    Release: iTestPlugin_release,
+    Cast: iTestPlugin_cast
+};
+
+extern "stdcall" fn iTestPlugin_add_ref(this: *mut iTestPlugin) -> i32
+{
+    unsafe
+    {
+        println!("Add ref'd the test rust plugin.");
+        (*this).ref_count += 1;
+        (*this).ref_count
     }
-    pub mod Plugin
+}
+extern "stdcall" fn iTestPlugin_release(this: *mut iTestPlugin) -> i32
+{
+    unsafe
     {
-
-        pub struct iRegistry_Vtbl
+        println!("Released the test rust plugin.");
+        (*this).ref_count -= 1;
+        if (*this).ref_count == 0
         {
-            pub Load: extern "stdcall" fn(library: ::libc::c_char) -> u32,
-            pub CanUnload: extern "stdcall" fn(library: ::libc::c_char) -> u32,
-            pub Unload: extern "stdcall" fn(library: ::libc::c_char) -> u32,
-            pub Install: extern "stdcall" fn(cid: u64, clsInst: iClassInstance) -> u32,
-            pub Remove: extern "stdcall" fn(cid: u64) -> u32,
-            pub GetClassInstance: extern "stdcall" fn(cid: u64, clsInst: iClassInstance) -> u32,
-            pub Exists: extern "stdcall" fn(cid: u64) -> u32,
-            pub Create: extern "stdcall" fn(outer: ::CPF::GOM::iBase, cid: u64, iid: u64, outIFace: ::libc::c_void) -> u32,
-            pub ClassInstall: extern "stdcall" fn(count: i32, pairs: ::CPF::GOM::IID_CID) -> u32,
-            pub ClassRemove: extern "stdcall" fn(count: i32, pairs: ::CPF::GOM::IID_CID) -> u32,
-            pub GetClasses: extern "stdcall" fn(id: u64, count: i32, cid: u64) -> u32,
-            pub InstanceInstall: extern "stdcall" fn(id: u64, instance: ::CPF::GOM::iBase) -> u32,
-            pub InstanceRemove: extern "stdcall" fn(id: u64) -> u32,
-            pub GetInstance: extern "stdcall" fn(id: u64, outIface: ::CPF::GOM::iBase) -> u32,
+            println!("And deleted the test rust plugin.");
+            Box::from_raw(this);
+            return 0;
         }
-        pub struct iRegistry
+        (*this).ref_count
+    }
+}
+extern "stdcall" fn iTestPlugin_cast(this: *mut iTestPlugin, iid: u64, out_iface: *mut *mut ::libc::c_void) -> u32
+{
+    unsafe
+    {
+        match iid
         {
-        	pub vtbl: *const iRegistry_Vtbl
-        }
-
-        pub struct iClassInstance_Vtbl
-        {
-            pub AddRef: extern "stdcall" fn(this: *mut iClassInstance) -> u32,
-            pub Release: extern "stdcall" fn(this: *mut iClassInstance) -> u32,
-            pub Cast: extern "stdcall" fn(this: *mut iClassInstance, id: u64, outIface: ::libc::c_void) -> u32,
-            pub CreateInstance: extern "stdcall" fn(this: *mut iClassInstance, registry: iRegistry, outer: ::CPF::GOM::iBase, outIface: ::CPF::GOM::iBase) -> u32,
-        }
-        pub struct iClassInstance
-        {
-        	pub vtbl: *const iClassInstance_Vtbl
+            // TODO: Need a method to generate IID's in Rust code.
+            // I would like to use a compiler plugin to add compile time CRC's but that requires non-mainline Rust.
+            1 =>
+            {
+                *out_iface = this as *mut ::libc::c_void;
+                iTestPlugin_add_ref(this);
+                gom::OK
+            },
+            _ =>
+            {
+                *out_iface = 0 as *mut ::libc::c_void;
+                gom::UNKNOWN_INTERFACE
+            }
         }
     }
 }
-
 
 // *****************
-struct TestRustCreator
-{
-    ref_count: u32
-}
-
-impl TestRustCreator
-{
-    pub fn add_ref(&mut self) -> u32
-    {
-        self.ref_count = self.ref_count + 1;
-        return self.ref_count;
-    }
-    pub fn release(&mut self) -> u32
-    {
-        self.ref_count -= 1;
-        return self.ref_count;
-    }
-    pub fn cast(&self, id: u64, out_iface: ::libc::c_void) -> u32
-    {
-        ::CPF::GOM::UNKNOWN_CLASS
-    }
-    pub fn create_instance(&self, registry: ::CPF::Plugin::iRegistry, outer: ::CPF::GOM::iBase, out_iface: ::CPF::GOM::iBase) -> u32
-    {
-        ::CPF::GOM::UNKNOWN_CLASS
-    }
-}
-
-extern "stdcall" fn add_ref(this: *mut ::CPF::Plugin::iClassInstance) -> u32
-{
-    unsafe
-    {
-        let ref mut This: TestRustCreator = *(this as *mut TestRustCreator);
-        This.add_ref()
-    }
-}
-extern "stdcall" fn release(this: *mut ::CPF::Plugin::iClassInstance) -> u32
-{
-    unsafe
-    {
-        let ref mut This: TestRustCreator = *(this as *mut TestRustCreator);
-        This.release()
-    }
-}
-extern "stdcall" fn cast(
-    this: *mut ::CPF::Plugin::iClassInstance,
-    iid: u64,
-    out_iface: ::libc::c_void) -> u32
-{
-    ::CPF::GOM::UNKNOWN_CLASS
-}
-
-extern "stdcall" fn test_create(
-    this: *mut ::CPF::Plugin::iClassInstance,
-    registry: ::CPF::Plugin::iRegistry,
-    outer: ::CPF::GOM::iBase,
-    outIface: ::CPF::GOM::iBase) -> u32
-{
-    CPF::GOM::OK
-}
-
-static sTestClassInstance: ::CPF::Plugin::iClassInstance_Vtbl = ::CPF::Plugin::iClassInstance_Vtbl
+static TEST_CLASS_INSTANCE_VTABLE: plugin::iClassInstance_Vtbl = plugin::iClassInstance_Vtbl
 {
     AddRef: add_ref,
     Release: release,
@@ -147,23 +81,94 @@ static sTestClassInstance: ::CPF::Plugin::iClassInstance_Vtbl = ::CPF::Plugin::i
     CreateInstance: test_create
 };
 
+extern "stdcall" fn add_ref(this: *mut plugin::iClassInstance) -> i32
+{
+    unsafe
+    {
+        println!("Add ref'd the test rust class instance.");
+        (*this).ref_count += 1;
+        (*this).ref_count
+    }
+}
+extern "stdcall" fn release(this: *mut plugin::iClassInstance) -> i32
+{
+    unsafe
+    {
+        println!("Released the test rust class instance.");
+        (*this).ref_count -= 1;
+        if (*this).ref_count == 0
+        {
+            Box::from_raw(this);
+            return 0;
+        }
+        (*this).ref_count
+    }
+}
+extern "stdcall" fn cast(
+    this: *mut plugin::iClassInstance,
+    iid: u64,
+    out_iface: *mut *mut ::libc::c_void) -> u32
+{
+    unsafe
+    {
+        match iid
+        {
+            // This should not be needed...
+            1 =>
+            {
+                *out_iface = this as *mut ::libc::c_void;
+                add_ref(this);
+                gom::OK
+            },
+            _ =>
+            {
+                *out_iface = 0 as *mut ::libc::c_void;
+                gom::UNKNOWN_INTERFACE
+            }
+        }
+    }
+}
+
+extern "stdcall" fn test_create(
+    _this: *mut plugin::iClassInstance,
+    _registry: *mut plugin::iRegistry,
+    _outer: *mut gom::iBase,
+    out_iface: *mut *mut gom::iBase) -> u32
+{
+    println!("Attempting to create the test rust plugin.");
+    unsafe
+    {
+        *out_iface = Box::into_raw(Box::new(iTestPlugin {vtbl: &TEST_PLUGIN_VTABLE, ref_count: 1})) as *mut gom::iBase;
+    }
+    gom::OK
+}
+
 // **************************
 #[no_mangle]
-pub extern "stdcall" fn Install(registry: *const ::CPF::Plugin::iRegistry) -> u32
+pub extern "stdcall" fn Install(registry: *mut plugin::iRegistry) -> u32
 {
-
-//    ((*(*registry).vtbl).Install)(0, sTestClassInstance);
-	CPF::GOM::OK
+    unsafe
+    {
+        let regy: *const plugin::iRegistry_Vtbl = (*registry).vtbl;
+        let result = Box::into_raw(
+            Box::new(plugin::iClassInstance {vtbl: &TEST_CLASS_INSTANCE_VTABLE, ref_count: 1})
+            );
+        ((*regy).Install)(registry, 1, result as *mut plugin::iClassInstance)
+    }
 }
 
 #[no_mangle]
 pub extern "stdcall" fn CanUnload() -> u32
 {
-	CPF::GOM::OK
+	gom::OK
 }
 
 #[no_mangle]
-pub extern "stdcall" fn Remove(registry: *const ::CPF::Plugin::iRegistry) -> u32
+pub extern "stdcall" fn Remove(registry: *mut plugin::iRegistry) -> u32
 {
-	CPF::GOM::OK
+    unsafe
+    {
+        let regy: *const plugin::iRegistry_Vtbl = (*registry).vtbl;
+        ((*regy).Remove)(registry, 1)
+    }
 }

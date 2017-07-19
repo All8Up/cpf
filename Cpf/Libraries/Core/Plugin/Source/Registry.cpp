@@ -246,12 +246,16 @@ GOM::Result CPF_STDCALL Registry::Create(iBase* outer, uint64_t cid, uint64_t id
 		if (creator != mCreationMap.end())
 		{
 			iBase* instance;
-			creator->second->CreateInstance(static_cast<iRegistry*>(this), outer, &instance);
-			if (instance)
+			if (GOM::Succeeded(creator->second->CreateInstance(static_cast<iRegistry*>(this), outer, &instance)))
 			{
-				GOM::Result result = instance->Cast(id, outIface);
-				instance->Release();
-				return result;
+				if (instance)
+				{
+					GOM::Result result = instance->Cast(id, outIface);
+					instance->Release();
+					return result;
+				}
+				// There is an error in the plugin.
+				return GOM::kInvalid;
 			}
 		}
 	}

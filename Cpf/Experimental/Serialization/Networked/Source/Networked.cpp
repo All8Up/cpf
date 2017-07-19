@@ -37,7 +37,11 @@ Networked::~Networked()
 	CPF_DROP_LOG(Networked);
 }
 
-#include "Platform/SharedLibrary.hpp"
+namespace
+{
+	const char* kRustPlugin = "plugins/TestRust.cfp";
+	const char* kPythonPlugin = "plugins/Python3.cfp";
+}
 
 GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
 {
@@ -57,16 +61,23 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/MultiCore.cfp");
 	GetRegistry()->Load("plugins/DebugUI.cfp");
-	if (GOM::Succeeded(GetRegistry()->Load("plugins/TestRust.cfp")))
-	{
-		printf("Loaded rust plugin.");
-	}
-	if (GOM::Succeeded(GetRegistry()->Load("plugins/Python3.cfp")))
+	if (GOM::Succeeded(GetRegistry()->Load(kPythonPlugin)))
 	{
 		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID.GetID(), Tools::iPython3::kIID.GetID(), mpPython3.AsVoidPP())))
 		{
 			String basePath = exePath;
 			mpPython3->Initialize(basePath.c_str(), &PluginHost::CreateRegistry);
+		}
+	}
+	if (GOM::Succeeded(GetRegistry()->Load(kRustPlugin)))
+	{
+		printf("Loaded rust plugin.");
+		// Attempt to create Rust plugin.
+		IntrusivePtr<iRefCounted> testRust;
+		if (GOM::Succeeded(GetRegistry()->Create(nullptr, 1, 1, testRust.AsVoidPP())))
+		{
+			static volatile int a = 0;
+			++a;
 		}
 	}
 
@@ -75,6 +86,8 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 
 void CPF_STDCALL Networked::Shutdown()
 {
+	GetRegistry()->Unload(kRustPlugin);
+	GetRegistry()->Unload(kPythonPlugin);
 	IOInitializer::Remove();
 }
 
