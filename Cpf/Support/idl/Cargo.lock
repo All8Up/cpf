@@ -5,6 +5,7 @@ dependencies = [
  "clap 2.25.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "lalrpop 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "lalrpop-util 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.24 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

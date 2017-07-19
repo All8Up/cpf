@@ -26,31 +26,34 @@ namespace Cpf
 		{
 			u32 AddRef();
 			u32 Release();
-			result Cast(u64 id, void** outIface);
+			result Cast(u64 id, [out] void** outIface);
 		}
 	}
 
 	namespace Plugin
 	{
 		struct IID_CID;
-		interface iClassInstance;
-
 		interface iRegistry : GOM::iBase
 		{
-			result Load(const char* library);
-			result CanUnload(const char* library);
-			result Unload(const char* library);
-			result Install(u64 cid, iClassInstance* clsInst);
+			result Load([in] char* library);
+			result CanUnload([in] char* library);
+			result Unload([in] char* library);
+			result Install(u64 cid, [in] iClassInstance* clsInst);
 			result Remove(u64 cid);
-			result GetClassInstance(u64 cid, iClassInstance** clsInst);
+			result GetClassInstance(u64 cid, [out] iClassInstance** clsInst);
 			result Exists(u64 cid);
-			result Create(iBase* outer, u64 cid, u64 iid, void** outIFace);
-			result ClassInstall(i32 count, const IID_CID* pairs);
-			result ClassRemove(i32 count, const IID_CID* pairs);
-			result GetClasses(u64 id, i32* count, u64* cid);
-			result InstanceInstall(u64 id, iBase* instance);
+			result Create([in] iBase* outer, u64 cid, u64 iid, [out] void** outIFace);
+			result ClassInstall(i32 count, [in] IID_CID* pairs);
+			result ClassRemove(i32 count, [in] IID_CID* pairs);
+			result GetClasses(u64 id, [in, out] i32* count, [out] u64* cid);
+			result InstanceInstall(u64 id, [in] iBase* instance);
 			result InstanceRemove(u64 id);
-			result GetInstance(u64 id, iBase** outIface);
+			result GetInstance(u64 id, [out] iBase** outIface);
+		}
+
+		interface iClassInstance
+		{
+			result CreateInstance([in] iRegistry* registry, [in] iBase* outer, [out] iBase** outIface);
 		}
 	}
 }

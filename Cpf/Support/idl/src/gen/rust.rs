@@ -40,9 +40,17 @@ impl CodeGenerator for Generator
 		self.indent -= 1;
 	}
 
+    fn preamble(&mut self, _tree: &ASTRef, _output: &str)
+    {
+        self.string_out(
+            "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n#![allow(dead_code)]\n\nextern crate libc;\n"
+        );
+    }
+
 	fn generate(&mut self, tree: ASTRef, output: &str)
 	{
 		println!("Generating rust code to: {}", output);
+		self.preamble(&tree, output);
 		self.traverse(tree.clone(), |_, _| -> () {});
 		self.tree = tree;
 	}
@@ -103,7 +111,7 @@ impl CodeGenerator for Generator
 				DataType::Void => "void".to_string(),
 				DataType::SizeT => "size_t".to_string(),
 				DataType::Result => "u32".to_string(),
-				DataType::NamedType { ref name } => " -> ".to_string() + &name
+				DataType::NamedType { ref name } => name.to_string()
 			}
 	}
 

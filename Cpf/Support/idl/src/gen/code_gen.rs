@@ -15,6 +15,7 @@ pub trait CodeGenerator
 	fn indent(&mut self) {}
 	fn unindent(&mut self) {}
 
+	fn preamble(&mut self, _tree: &ASTRef, _output: &str) {}
 	fn generate(&mut self, tree: ASTRef, output: &str);
 	fn push_scope(&mut self, name: &str);
 	fn pop_scope(&mut self);
