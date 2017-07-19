@@ -3,7 +3,6 @@
 #![allow(dead_code)]
 
 extern crate libc;
-use libc::{c_char};
 
 pub mod CPF
 {
@@ -28,13 +27,13 @@ pub mod CPF
 
         pub struct iBase_Vtbl
         {
-            AddRef: extern fn() -> u32,
-            Release: extern fn() -> u32,
-            Cast: extern fn(id: u64, outIface: ::libc::c_void) -> u32,
+            pub AddRef: extern "stdcall" fn() -> u32,
+            pub Release: extern "stdcall" fn() -> u32,
+            pub Cast: extern "stdcall" fn(id: u64, outIface: ::libc::c_void) -> u32,
         }
         pub struct iBase
         {
-        	vtbl: *const iBase_Vtbl
+        	pub vtbl: *const iBase_Vtbl
         }
         pub struct IID_CID
         {}
@@ -44,41 +43,116 @@ pub mod CPF
 
         pub struct iRegistry_Vtbl
         {
-            Load: extern fn(library: ::libc::c_char) -> u32,
-            CanUnload: extern fn(library: ::libc::c_char) -> u32,
-            Unload: extern fn(library: ::libc::c_char) -> u32,
-            Install: extern fn(cid: u64, clsInst: iClassInstance) -> u32,
-            Remove: extern fn(cid: u64) -> u32,
-            GetClassInstance: extern fn(cid: u64, clsInst: iClassInstance) -> u32,
-            Exists: extern fn(cid: u64) -> u32,
-            Create: extern fn(outer: ::CPF::GOM::iBase, cid: u64, iid: u64, outIFace: ::libc::c_void) -> u32,
-            ClassInstall: extern fn(count: i32, pairs: ::CPF::GOM::IID_CID) -> u32,
-            ClassRemove: extern fn(count: i32, pairs: ::CPF::GOM::IID_CID) -> u32,
-            GetClasses: extern fn(id: u64, count: i32, cid: u64) -> u32,
-            InstanceInstall: extern fn(id: u64, instance: ::CPF::GOM::iBase) -> u32,
-            InstanceRemove: extern fn(id: u64) -> u32,
-            GetInstance: extern fn(id: u64, outIface: ::CPF::GOM::iBase) -> u32,
+            pub Load: extern "stdcall" fn(library: ::libc::c_char) -> u32,
+            pub CanUnload: extern "stdcall" fn(library: ::libc::c_char) -> u32,
+            pub Unload: extern "stdcall" fn(library: ::libc::c_char) -> u32,
+            pub Install: extern "stdcall" fn(cid: u64, clsInst: iClassInstance) -> u32,
+            pub Remove: extern "stdcall" fn(cid: u64) -> u32,
+            pub GetClassInstance: extern "stdcall" fn(cid: u64, clsInst: iClassInstance) -> u32,
+            pub Exists: extern "stdcall" fn(cid: u64) -> u32,
+            pub Create: extern "stdcall" fn(outer: ::CPF::GOM::iBase, cid: u64, iid: u64, outIFace: ::libc::c_void) -> u32,
+            pub ClassInstall: extern "stdcall" fn(count: i32, pairs: ::CPF::GOM::IID_CID) -> u32,
+            pub ClassRemove: extern "stdcall" fn(count: i32, pairs: ::CPF::GOM::IID_CID) -> u32,
+            pub GetClasses: extern "stdcall" fn(id: u64, count: i32, cid: u64) -> u32,
+            pub InstanceInstall: extern "stdcall" fn(id: u64, instance: ::CPF::GOM::iBase) -> u32,
+            pub InstanceRemove: extern "stdcall" fn(id: u64) -> u32,
+            pub GetInstance: extern "stdcall" fn(id: u64, outIface: ::CPF::GOM::iBase) -> u32,
         }
         pub struct iRegistry
         {
-        	vtbl: *const iRegistry_Vtbl
+        	pub vtbl: *const iRegistry_Vtbl
         }
 
         pub struct iClassInstance_Vtbl
         {
-            CreateInstance: extern fn(registry: iRegistry, outer: ::CPF::GOM::iBase, outIface: ::CPF::GOM::iBase) -> u32,
+            pub AddRef: extern "stdcall" fn(this: *mut iClassInstance) -> u32,
+            pub Release: extern "stdcall" fn(this: *mut iClassInstance) -> u32,
+            pub Cast: extern "stdcall" fn(this: *mut iClassInstance, id: u64, outIface: ::libc::c_void) -> u32,
+            pub CreateInstance: extern "stdcall" fn(this: *mut iClassInstance, registry: iRegistry, outer: ::CPF::GOM::iBase, outIface: ::CPF::GOM::iBase) -> u32,
         }
         pub struct iClassInstance
         {
-        	vtbl: *const iClassInstance_Vtbl
+        	pub vtbl: *const iClassInstance_Vtbl
         }
     }
 }
 
 
+// *****************
+struct TestRustCreator
+{
+    ref_count: u32
+}
+
+impl TestRustCreator
+{
+    pub fn add_ref(&mut self) -> u32
+    {
+        self.ref_count = self.ref_count + 1;
+        return self.ref_count;
+    }
+    pub fn release(&mut self) -> u32
+    {
+        self.ref_count -= 1;
+        return self.ref_count;
+    }
+    pub fn cast(&self, id: u64, out_iface: ::libc::c_void) -> u32
+    {
+        ::CPF::GOM::UNKNOWN_CLASS
+    }
+    pub fn create_instance(&self, registry: ::CPF::Plugin::iRegistry, outer: ::CPF::GOM::iBase, out_iface: ::CPF::GOM::iBase) -> u32
+    {
+        ::CPF::GOM::UNKNOWN_CLASS
+    }
+}
+
+extern "stdcall" fn add_ref(this: *mut ::CPF::Plugin::iClassInstance) -> u32
+{
+    unsafe
+    {
+        let ref mut This: TestRustCreator = *(this as *mut TestRustCreator);
+        This.add_ref()
+    }
+}
+extern "stdcall" fn release(this: *mut ::CPF::Plugin::iClassInstance) -> u32
+{
+    unsafe
+    {
+        let ref mut This: TestRustCreator = *(this as *mut TestRustCreator);
+        This.release()
+    }
+}
+extern "stdcall" fn cast(
+    this: *mut ::CPF::Plugin::iClassInstance,
+    iid: u64,
+    out_iface: ::libc::c_void) -> u32
+{
+    ::CPF::GOM::UNKNOWN_CLASS
+}
+
+extern "stdcall" fn test_create(
+    this: *mut ::CPF::Plugin::iClassInstance,
+    registry: ::CPF::Plugin::iRegistry,
+    outer: ::CPF::GOM::iBase,
+    outIface: ::CPF::GOM::iBase) -> u32
+{
+    CPF::GOM::OK
+}
+
+static sTestClassInstance: ::CPF::Plugin::iClassInstance_Vtbl = ::CPF::Plugin::iClassInstance_Vtbl
+{
+    AddRef: add_ref,
+    Release: release,
+    Cast: cast,
+    CreateInstance: test_create
+};
+
+// **************************
 #[no_mangle]
 pub extern "stdcall" fn Install(registry: *const ::CPF::Plugin::iRegistry) -> u32
 {
+
+//    ((*(*registry).vtbl).Install)(0, sTestClassInstance);
 	CPF::GOM::OK
 }
 
