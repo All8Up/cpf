@@ -57,12 +57,6 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-GOM::Result CPF_EXPORT CanUnload()
-{
-	return (D3D12::gContext.GetRefCount() == 0) ? GOM::kOK : GOM::kInUse;
-}
-
-extern "C"
 GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)

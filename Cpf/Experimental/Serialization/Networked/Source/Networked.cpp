@@ -32,15 +32,19 @@ Networked::Networked()
 
 Networked::~Networked()
 {
-	if (mpPython3)
-		mpPython3->Shutdown();
 	CPF_DROP_LOG(Networked);
 }
 
 namespace
 {
-	const char* kRustPlugin = "plugins/TestRust.cfp";
+	const char* kResourcePlugin = "plugins/Resources.cfp";
+	const char* kConcurrencyPlugin = "plugins/Concurrency.cfp";
+	const char* kAdapterSDL2Plugin = "plugins/Adapter_SDL2.cfp";
+	const char* kAdapterD3D12Plugin = "plugins/AdapterD3D12.cfp";
+	const char* kMultiCorePlugin = "plugins/MultiCore.cfp";
+	const char* kDebugUIPlugin = "plugins/DebugUI.cfp";
 	const char* kPythonPlugin = "plugins/Python3.cfp";
+	const char* kRustPlugin = "plugins/TestRust.cfp";
 }
 
 GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
@@ -55,12 +59,12 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	exePath += "../resources/";
 	IO::Directory::SetWorkingDirectory(exePath);
 
-	GetRegistry()->Load("plugins/Resources.cfp");
-	GetRegistry()->Load("plugins/Concurrency.cfp");
-	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
-	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
-	GetRegistry()->Load("plugins/MultiCore.cfp");
-	GetRegistry()->Load("plugins/DebugUI.cfp");
+	GetRegistry()->Load(kResourcePlugin);
+	GetRegistry()->Load(kConcurrencyPlugin);
+	GetRegistry()->Load(kAdapterSDL2Plugin);
+	GetRegistry()->Load(kAdapterD3D12Plugin);
+	GetRegistry()->Load(kMultiCorePlugin);
+	GetRegistry()->Load(kDebugUIPlugin);
 	if (GOM::Succeeded(GetRegistry()->Load(kPythonPlugin)))
 	{
 		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID.GetID(), Tools::iPython3::kIID.GetID(), mpPython3.AsVoidPP())))
@@ -86,8 +90,28 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 
 void CPF_STDCALL Networked::Shutdown()
 {
+	// TODO: Need a solution to allow these pointers to be scoped such that
+	// they don't end up dangling when the plugins are unloaded.
+	mpPython3->Shutdown();
+	mpPython3.Adopt(nullptr);
+	mpRenderSystem.Adopt(nullptr);
+	mpNetworkSystem.Adopt(nullptr);
+	mpTimer.Adopt(nullptr);
+	mpPipeline.Adopt(nullptr);
+	mpLocator.Adopt(nullptr);
+	mpLoadBalancer.Adopt(nullptr);
+	mpThreadPool.Adopt(nullptr);
+	mpScheduler.Adopt(nullptr);
+	mpWindow.Adopt(nullptr);
+
 	GetRegistry()->Unload(kRustPlugin);
 	GetRegistry()->Unload(kPythonPlugin);
+	GetRegistry()->Unload(kDebugUIPlugin);
+	GetRegistry()->Unload(kMultiCorePlugin);
+	GetRegistry()->Unload(kAdapterD3D12Plugin);
+	GetRegistry()->Unload(kAdapterSDL2Plugin);
+	GetRegistry()->Unload(kConcurrencyPlugin);
+	GetRegistry()->Unload(kResourcePlugin);
 	IOInitializer::Remove();
 }
 

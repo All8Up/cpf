@@ -1,55 +1,68 @@
 #![allow(non_snake_case)]
 #![allow(non_camel_case_types)]
 #![allow(dead_code)]
+
+#[macro_use]
 mod cpf;
 use cpf::*;
 extern crate libc;
 
 // *****************
-struct iTestPlugin_Vtbl
-{
-    pub AddRef: extern "stdcall" fn(this: *mut iTestPlugin) -> i32,
-    pub Release: extern "stdcall" fn(this: *mut iTestPlugin) -> i32,
-    pub Cast: extern "stdcall" fn(this: *mut iTestPlugin, id: u64, outIface: *mut *mut ::libc::c_void) -> u32,
-}
-struct iTestPlugin
-{
-    vtbl: *const iTestPlugin_Vtbl,
-    ref_count: i32
-}
+// TODO: Add a macro gom_implement which adds member data to the implementation structure.
+gom_implementation!(
+    interface iTestPlugin : gom::iUnknown
+    {
+        vtable: iTestPlugin_Vtbl;
+        members: {
+            ref_count: i32,
+        }
+        fn test() -> u32;
+    }
+);
 
 static TEST_PLUGIN_VTABLE: iTestPlugin_Vtbl = iTestPlugin_Vtbl
 {
-    AddRef: iTestPlugin_add_ref,
-    Release: iTestPlugin_release,
-    Cast: iTestPlugin_cast
+    base: gom::iUnknown_Vtbl
+    {
+        add_ref: iUnknown_add_ref,
+        release: iUnknown_release,
+        query_interface: iUnknown_query_interface
+    },
+    test: iTestPlugin_test
 };
 
-extern "stdcall" fn iTestPlugin_add_ref(this: *mut iTestPlugin) -> i32
+struct test{
+    ref_count: i32
+}
+
+// TODO: these are wrong, need to actually do the ref counts here.
+extern "stdcall" fn iUnknown_add_ref(this: *mut gom::iUnknown) -> i32
 {
     unsafe
     {
-        println!("Add ref'd the test rust plugin.");
-        (*this).ref_count += 1;
-        (*this).ref_count
+        println!("AddRef'd the test rust instance.");
+        let ref mut This: iTestPlugin = *(this as *mut iTestPlugin);
+        This.ref_count += 1;
+        This.ref_count
     }
 }
-extern "stdcall" fn iTestPlugin_release(this: *mut iTestPlugin) -> i32
+extern "stdcall" fn iUnknown_release(this: *mut gom::iUnknown) -> i32
 {
     unsafe
     {
-        println!("Released the test rust plugin.");
-        (*this).ref_count -= 1;
-        if (*this).ref_count == 0
+        println!("Released the test rust instance.");
+        let ref mut This: iTestPlugin = *(this as *mut iTestPlugin);
+        This.ref_count -= 1;
+        if This.ref_count == 0
         {
-            println!("And deleted the test rust plugin.");
-            Box::from_raw(this);
+            println!("Deleting the test rust instance.");
+            Box::from_raw(This);
             return 0;
         }
-        (*this).ref_count
+        This.ref_count
     }
 }
-extern "stdcall" fn iTestPlugin_cast(this: *mut iTestPlugin, iid: u64, out_iface: *mut *mut ::libc::c_void) -> u32
+extern "stdcall" fn iUnknown_query_interface(this: *mut gom::iUnknown, iid: u64, out_iface: *mut *mut ::libc::c_void) -> u32
 {
     unsafe
     {
@@ -60,7 +73,7 @@ extern "stdcall" fn iTestPlugin_cast(this: *mut iTestPlugin, iid: u64, out_iface
             1 =>
             {
                 *out_iface = this as *mut ::libc::c_void;
-                iTestPlugin_add_ref(this);
+                ((*(*this).vtbl).add_ref)(this);
                 gom::OK
             },
             _ =>
@@ -70,6 +83,11 @@ extern "stdcall" fn iTestPlugin_cast(this: *mut iTestPlugin, iid: u64, out_iface
             }
         }
     }
+}
+
+extern "stdcall" fn iTestPlugin_test(_this: *mut iTestPlugin) -> u32
+{
+    5
 }
 
 // *****************
@@ -132,13 +150,13 @@ extern "stdcall" fn cast(
 extern "stdcall" fn test_create(
     _this: *mut plugin::iClassInstance,
     _registry: *mut plugin::iRegistry,
-    _outer: *mut gom::iBase,
-    out_iface: *mut *mut gom::iBase) -> u32
+    _outer: *mut gom::iUnknown,
+    out_iface: *mut *mut gom::iUnknown) -> u32
 {
     println!("Attempting to create the test rust plugin.");
     unsafe
     {
-        *out_iface = Box::into_raw(Box::new(iTestPlugin {vtbl: &TEST_PLUGIN_VTABLE, ref_count: 1})) as *mut gom::iBase;
+        *out_iface = Box::into_raw(Box::new(iTestPlugin {vtbl: &TEST_PLUGIN_VTABLE, ref_count: 1})) as *mut gom::iUnknown;
     }
     gom::OK
 }
@@ -155,12 +173,6 @@ pub extern "stdcall" fn Install(registry: *mut plugin::iRegistry) -> u32
             );
         ((*regy).Install)(registry, 1, result as *mut plugin::iClassInstance)
     }
-}
-
-#[no_mangle]
-pub extern "stdcall" fn CanUnload() -> u32
-{
-	gom::OK
 }
 
 #[no_mangle]

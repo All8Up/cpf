@@ -30,13 +30,6 @@ namespace Cpf
 			virtual GOM::Result CPF_STDCALL Load(const char* library) = 0;
 
 			/**
-			 * @brief Determine if the plugin can be unloaded.
-			 * @param library The library to check.
-			 * @return A result code.
-			 */
-			virtual GOM::Result CPF_STDCALL CanUnload(const char* library) = 0;
-
-			/**
 			 * @brief Unloads the given library.
 			 * @param library The library to unload.
 			 * @return A result code.

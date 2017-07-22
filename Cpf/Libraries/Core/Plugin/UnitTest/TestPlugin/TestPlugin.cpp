@@ -44,12 +44,6 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-GOM::Result CPF_EXPORT CanUnload()
-{
-	return (sRefCount == 0) ? GOM::kOK : GOM::kInUse;
-}
-
-extern "C"
 GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)

@@ -22,8 +22,8 @@ pub struct iClassInstance_Vtbl
     pub CreateInstance: extern "stdcall" fn(
     	this: *mut iClassInstance,
     	registry: *mut iRegistry,
-    	outer: *mut iBase,
-    	outIface: *mut *mut iBase
+    	outer: *mut iUnknown,
+    	outIface: *mut *mut iUnknown
     	) -> u32,
 }
 pub struct iClassInstance

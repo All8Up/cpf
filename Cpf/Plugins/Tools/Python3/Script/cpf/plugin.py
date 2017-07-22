@@ -11,7 +11,6 @@ class IID_CID(ctypes.Structure):
 class iRegistry(gom.iBase):
 	_methods_ =	[
 		('Load', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
-		('CanUnload', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
 		('Unload', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
 		('Install', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p)),
 		('Remove', gom.Method(ctypes.c_uint32, ctypes.c_uint64)),

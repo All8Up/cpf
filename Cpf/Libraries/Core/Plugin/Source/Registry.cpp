@@ -24,7 +24,6 @@ public:
 
 	// iRegistry overrides.
 	GOM::Result CPF_STDCALL Load(const char*) override;
-	GOM::Result CPF_STDCALL CanUnload(const char* library) override;
 	GOM::Result CPF_STDCALL Unload(const char* library) override;
 
 	GOM::Result CPF_STDCALL Create(iBase*, uint64_t, uint64_t, void**) override;
@@ -143,26 +142,6 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 				}
 			}
 		}
-	}
-	return GOM::kInvalidParameter;
-}
-
-GOM::Result CPF_STDCALL Registry::CanUnload(const char* name)
-{
-	if (name)
-	{
-		auto exists = mLibraryMap.find(name);
-		if (exists == mLibraryMap.end())
-			return Plugin::kNotLoaded;
-
-		auto canUnload = (exists->second).GetAddress<bool(*)()>(kPluginAPICanUnload);
-		if (canUnload)
-		{
-			if ((*canUnload)())
-				return GOM::kOK;
-			return Plugin::kCantUnload;
-		}
-		return Plugin::kExportMissing;
 	}
 	return GOM::kInvalidParameter;
 }

@@ -55,12 +55,6 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-GOM::Result CPF_EXPORT CanUnload()
-{
-	return SDL2::g_Context.GetRefCount() == 0 ? GOM::kOK : GOM::kInUse;
-}
-
-extern "C"
 GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)

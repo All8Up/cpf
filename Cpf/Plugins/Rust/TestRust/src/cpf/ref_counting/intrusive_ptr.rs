@@ -14,6 +14,11 @@ pub struct IntrusivePtr<T: RefCounted>
 pub unsafe trait AsPtr<T> {}
 unsafe impl<T: RefCounted> AsPtr<c_void> for T {}
 
+pub unsafe trait GomInterface: AsPtr<gom::iUnknown>
+{
+    #[doc(hidden)]
+    type Vtable;
+}
 
 // Implementation for intrusive_ptr.
 impl<T: RefCounted> IntrusivePtr<T>
@@ -45,7 +50,7 @@ impl<T: RefCounted> Clone for IntrusivePtr<T>
 	{
 		if !self.is_null()
 		{
-			unsafe { (*self.ptr).AddRef() }
+			unsafe { (*self.ptr).AddRef(); }
 		}
 		IntrusivePtr {ptr: self.ptr}
 	}
@@ -57,7 +62,7 @@ impl<T: RefCounted> Drop for IntrusivePtr<T>
 	{
 		if !self.is_null()
 		{
-			unsafe { (*self.ptr).Release() }
+			unsafe { (*self.ptr).Release(); }
 		}
 	}
 }
