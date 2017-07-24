@@ -92,7 +92,7 @@ void CPF_STDCALL Networked::Shutdown()
 {
 	// TODO: Need a solution to allow these pointers to be scoped such that
 	// they don't end up dangling when the plugins are unloaded.
-	mpPython3->Shutdown();
+	if (mpPython3) mpPython3->Shutdown();
 	mpPython3.Adopt(nullptr);
 	mpRenderSystem.Adopt(nullptr);
 	mpNetworkSystem.Adopt(nullptr);

@@ -8,3 +8,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 libc = "*"
+serde = "*"
+
+[dev-dependencies]
+serde = "*"
+serde_derive = "*"
