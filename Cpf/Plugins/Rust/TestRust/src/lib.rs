@@ -8,8 +8,7 @@ use cpf::*;
 extern crate libc;
 
 // *****************
-// TODO: Add a macro gom_implement which adds member data to the implementation structure.
-gom_implementation!(
+gom_implement!(
     interface iTestPlugin : gom::iUnknown
     {
         vtable: iTestPlugin_Vtbl;
@@ -35,7 +34,6 @@ struct test{
     ref_count: i32
 }
 
-// TODO: these are wrong, need to actually do the ref counts here.
 extern "stdcall" fn iUnknown_add_ref(this: *mut gom::iUnknown) -> i32
 {
     unsafe

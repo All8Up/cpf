@@ -29,7 +29,7 @@ macro_rules! gom_interface
 
 
 #[macro_export]
-macro_rules! gom_implementation
+macro_rules! gom_implement
 {
 	(
 		$(#[$attribs:meta])*
