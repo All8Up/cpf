@@ -6,157 +6,156 @@
 mod cpf;
 use cpf::*;
 extern crate libc;
+use libc::{c_void};
 
-// *****************
-gom_implement!(
-    interface iTestPlugin : gom::iUnknown
-    {
-        vtable: iTestPlugin_Vtbl;
-        members: {
-            ref_count: i32,
-        }
-        fn test() -> u32;
-    }
+extern crate log;
+extern crate env_logger;
+
+gom_interface!(
+	impl TestRustPlugin: iTestRustPlugin: "Cpf::Rust::iTestRustPlugin",
+	iTestRustPluginVTable,
+	methods
+	{
+		fn test(value: u32) -> u32;
+	}
 );
 
-static TEST_PLUGIN_VTABLE: iTestPlugin_Vtbl = iTestPlugin_Vtbl
+gom_impl!(
+	TestRustPlugin: iTestRustPluginVTable
+	{
+		test_value: u32,
+		registry: IntrusivePtr<plugin::iRegistry>,
+	}
+);
+
+impl TestRustPlugin
 {
-    base: gom::iUnknown_Vtbl
-    {
-        add_ref: iUnknown_add_ref,
-        release: iUnknown_release,
-        query_interface: iUnknown_query_interface
-    },
-    test: iTestPlugin_test
+	fn new(registry: *mut plugin::iRegistry) -> *mut *const iTestRustPluginVTable
+	{
+        let result = Box::into_raw(
+        	Box::new(
+        		TestRustPlugin
+        		{
+        			vtable: &TEST_RUST_PLUGIN_VTBL,
+        			ref_count: 1,
+        			test_value: 0,
+        			registry: IntrusivePtr::from_raw(registry)
+        		}
+        		)
+        	);
+        result as *mut *const iTestRustPluginVTable
+	}
+
+	extern "stdcall" fn test(inst: *mut iTestRustPlugin, value: u32) -> u32
+	{
+		unsafe
+		{
+	        let this : *mut TestRustPlugin = inst as *mut TestRustPlugin;
+
+			println!("Calling test function with value: {}", value);
+			(*this).test_value += value;
+			println!("Test function result value: {}", (*this).test_value);
+			println!("Test if this class exists in registry: {}", if (*this).registry.exists(1) == gom::OK {true} else {false});
+			(*this).test_value
+		}
+	}
+}
+
+// Global vtable for test plugin.
+static TEST_RUST_PLUGIN_VTBL : iTestRustPluginVTable = iTestRustPluginVTable
+{
+	base: gom::iUnknownVTable
+	{
+		add_ref: iTestRustPluginVTable::add_ref,
+		release: iTestRustPluginVTable::release,
+		query_interface: iTestRustPluginVTable::query_interface
+	},
+	test: TestRustPlugin::test
 };
-
-struct test{
-    ref_count: i32
-}
-
-extern "stdcall" fn iUnknown_add_ref(this: *mut gom::iUnknown) -> i32
-{
-    unsafe
-    {
-        println!("AddRef'd the test rust instance.");
-        let ref mut This: iTestPlugin = *(this as *mut iTestPlugin);
-        This.ref_count += 1;
-        This.ref_count
-    }
-}
-extern "stdcall" fn iUnknown_release(this: *mut gom::iUnknown) -> i32
-{
-    unsafe
-    {
-        println!("Released the test rust instance.");
-        let ref mut This: iTestPlugin = *(this as *mut iTestPlugin);
-        This.ref_count -= 1;
-        if This.ref_count == 0
-        {
-            println!("Deleting the test rust instance.");
-            Box::from_raw(This);
-            return 0;
-        }
-        This.ref_count
-    }
-}
-extern "stdcall" fn iUnknown_query_interface(this: *mut gom::iUnknown, iid: u64, out_iface: *mut *mut ::libc::c_void) -> u32
-{
-    unsafe
-    {
-        match iid
-        {
-            // TODO: Need a method to generate IID's in Rust code.
-            // I would like to use a compiler plugin to add compile time CRC's but that requires non-mainline Rust.
-            1 =>
-            {
-                *out_iface = this as *mut ::libc::c_void;
-                ((*(*this).vtbl).add_ref)(this);
-                gom::OK
-            },
-            _ =>
-            {
-                *out_iface = 0 as *mut ::libc::c_void;
-                gom::UNKNOWN_INTERFACE
-            }
-        }
-    }
-}
-
-extern "stdcall" fn iTestPlugin_test(_this: *mut iTestPlugin) -> u32
-{
-    5
-}
 
 // *****************
-static TEST_CLASS_INSTANCE_VTABLE: plugin::iClassInstance_Vtbl = plugin::iClassInstance_Vtbl
+static TEST_CLASS_INSTANCE_VTABLE: plugin::iClassInstanceVTable = plugin::iClassInstanceVTable
 {
-    AddRef: add_ref,
-    Release: release,
-    Cast: cast,
-    CreateInstance: test_create
+	base: gom::iUnknownVTable
+	{
+	    add_ref: plugin::iClassInstanceVTable::add_ref,
+	    release: plugin::iClassInstanceVTable::release,
+	    query_interface: plugin::iClassInstanceVTable::query_interface,
+	},
+    CreateInstance: plugin::iClassInstanceVTable::create
 };
 
-extern "stdcall" fn add_ref(this: *mut plugin::iClassInstance) -> i32
+impl plugin::iClassInstanceVTable
 {
-    unsafe
+    extern "stdcall" fn add_ref(inst: *mut gom::iUnknown) -> i32
     {
-        println!("Add ref'd the test rust class instance.");
-        (*this).ref_count += 1;
-        (*this).ref_count
-    }
-}
-extern "stdcall" fn release(this: *mut plugin::iClassInstance) -> i32
-{
-    unsafe
-    {
-        println!("Released the test rust class instance.");
-        (*this).ref_count -= 1;
-        if (*this).ref_count == 0
+        unsafe
         {
-            Box::from_raw(this);
-            return 0;
+            let this : *mut TestClassInstance = inst as *mut TestClassInstance;
+            (*this).ref_count += 1;
+            (*this).ref_count
         }
-        (*this).ref_count
     }
-}
-extern "stdcall" fn cast(
-    this: *mut plugin::iClassInstance,
-    iid: u64,
-    out_iface: *mut *mut ::libc::c_void) -> u32
-{
-    unsafe
+
+    extern "stdcall" fn release(inst: *mut gom::iUnknown) -> i32
     {
-        match iid
+        unsafe
         {
-            // This should not be needed...
-            1 =>
+            let this : *mut TestClassInstance = inst as *mut TestClassInstance;
+            (*this).ref_count -= 1;
+            if (*this).ref_count == 0
             {
-                *out_iface = this as *mut ::libc::c_void;
-                add_ref(this);
-                gom::OK
-            },
-            _ =>
-            {
-                *out_iface = 0 as *mut ::libc::c_void;
-                gom::UNKNOWN_INTERFACE
+                Box::from_raw(this);
+                return 0;
             }
+            (*this).ref_count
         }
     }
+
+	extern "stdcall" fn query_interface(
+	    _this: *mut gom::iUnknown,
+	    _iid: u64,
+	    _out_iface: *mut *mut ::libc::c_void) -> u32
+	{
+	    gom::NOT_IMPLEMENTED
+	}
+
+	extern "stdcall" fn create(
+	    _this: *mut plugin::iClassInstance,
+	    registry: *mut plugin::iRegistry,
+	    _outer: *mut gom::iUnknown,
+	    out_iface: *mut *mut gom::iUnknown) -> u32
+	{
+	    println!("Attempting to create the test rust plugin.");
+	    unsafe
+	    {
+	    	*out_iface = TestRustPlugin::new(registry) as *mut gom::iUnknown;
+	    }
+	    gom::OK
+	}
 }
 
-extern "stdcall" fn test_create(
-    _this: *mut plugin::iClassInstance,
-    _registry: *mut plugin::iRegistry,
-    _outer: *mut gom::iUnknown,
-    out_iface: *mut *mut gom::iUnknown) -> u32
+struct TestClassInstance
 {
-    println!("Attempting to create the test rust plugin.");
-    unsafe
-    {
-        *out_iface = Box::into_raw(Box::new(iTestPlugin {vtbl: &TEST_PLUGIN_VTABLE, ref_count: 1})) as *mut gom::iUnknown;
-    }
-    gom::OK
+	vtable: *const plugin::iClassInstanceVTable,
+	ref_count: i32
+}
+
+impl TestClassInstance
+{
+	fn new() -> *mut *const plugin::iClassInstanceVTable
+	{
+        let result = Box::into_raw(
+        	Box::new(
+        		TestClassInstance
+        		{
+        			vtable: &TEST_CLASS_INSTANCE_VTABLE,
+        			ref_count: 1
+        		}
+        		)
+        	);
+        result as *mut *const plugin::iClassInstanceVTable
+	}
 }
 
 // **************************
@@ -165,11 +164,11 @@ pub extern "stdcall" fn Install(registry: *mut plugin::iRegistry) -> u32
 {
     unsafe
     {
-        let regy: *const plugin::iRegistry_Vtbl = (*registry).vtbl;
-        let result = Box::into_raw(
-            Box::new(plugin::iClassInstance {vtbl: &TEST_CLASS_INSTANCE_VTABLE, ref_count: 1})
-            );
-        ((*regy).Install)(registry, 1, result as *mut plugin::iClassInstance)
+    	env_logger::init().unwrap();
+
+        let regy: *const plugin::iRegistryVTable = (*registry).vtable;
+        let result = TestClassInstance::new();
+        ((*regy).install)(registry, 1, result as *mut plugin::iClassInstance)
     }
 }
 
@@ -178,7 +177,7 @@ pub extern "stdcall" fn Remove(registry: *mut plugin::iRegistry) -> u32
 {
     unsafe
     {
-        let regy: *const plugin::iRegistry_Vtbl = (*registry).vtbl;
-        ((*regy).Remove)(registry, 1)
+        let regy: *const plugin::iRegistryVTable = (*registry).vtable;
+        ((*regy).remove)(registry, 1)
     }
 }

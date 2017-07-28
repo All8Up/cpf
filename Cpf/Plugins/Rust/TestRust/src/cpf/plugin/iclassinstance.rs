@@ -3,31 +3,19 @@
 #![allow(dead_code)]
 
 extern crate libc;
-use gom::*;
-use plugin::*;
+use libc::{c_void};
+use cpf::*;
 
-pub struct iClassInstance_Vtbl
-{
-    pub AddRef: extern "stdcall" fn(
-    	this: *mut iClassInstance
-  		) -> i32,
-    pub Release: extern "stdcall" fn(
-    	this: *mut iClassInstance
-    	) -> i32,
-    pub Cast: extern "stdcall" fn(
-    	this: *mut iClassInstance,
-    	id: u64,
-    	outIface: *mut *mut ::libc::c_void
-    	) -> u32,
-    pub CreateInstance: extern "stdcall" fn(
-    	this: *mut iClassInstance,
-    	registry: *mut iRegistry,
-    	outer: *mut iUnknown,
-    	outIface: *mut *mut iUnknown
-    	) -> u32,
-}
-pub struct iClassInstance
-{
-	pub vtbl: *const iClassInstance_Vtbl,
-	pub ref_count: i32
-}
+
+gom_interface!(
+    iClassInstance : "Cpf::Plugin::iClassInstance",
+    iClassInstanceVTable,
+    methods
+    {
+	    fn CreateInstance(
+	    	registry: *mut plugin::iRegistry,
+	    	outer: *mut gom::iUnknown,
+	    	outIface: *mut *mut gom::iUnknown
+	    	) -> u32;
+    }
+);

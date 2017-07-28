@@ -8,6 +8,8 @@ crate-type = ["cdylib"]
 
 [dependencies]
 libc = "*"
+log = "*"
+env_logger = "*"
 serde = "*"
 
 [dev-dependencies]

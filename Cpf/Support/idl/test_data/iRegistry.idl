@@ -1,59 +1,23 @@
-import "GOM"
-
-namespace Cpf
+struct IID_CID;
+interface iRegistry : GOM::iBase
 {
-	namespace GOM
-	{
-		success OK						= {"Core", "OK"};
-		success IN_USE 					= {"Core", "InUse"};
+	result Load([in] char* library);
+	result CanUnload([in] char* library);
+	result Unload([in] char* library);
+	result Install(u64 cid, [in] iClassInstance* clsInst);
+	result Remove(u64 cid);
+	result GetClassInstance(u64 cid, [out] iClassInstance** clsInst);
+	result Exists(u64 cid);
+	result Create([in] iBase* outer, u64 cid, u64 iid, [out] void** outIFace);
+	result ClassInstall(i32 count, [in] IID_CID* pairs);
+	result ClassRemove(i32 count, [in] IID_CID* pairs);
+	result GetClasses(u64 id, [in, out] i32* count, [out] u64* cid);
+	result InstanceInstall(u64 id, [in] iBase* instance);
+	result InstanceRemove(u64 id);
+	result GetInstance(u64 id, [out] iBase** outIface);
+}
 
-		failure ERROR					= {"Core", "Error"};
-		failure UNKNOWN_INTERFACE		= {"Core", "UnknownInterface"};
-		failure INVALID_PARAMETER		= {"Core", "InvalidParameter"};
-		failure OUT_OF_MEMORY			= {"Core", "OutOfMemory"};
-		failure UNKNOWN_CLASS			= {"Core", "UnknownClass"};
-		failure NOT_IMPLEMENTED			= {"Core", "NotImplemented"};
-		failure INVALID					= {"Core", "Invalid"};
-		failure NOT_ENOUGH_SPACE		= {"Core", "NotEnoughSpace"};
-		failure NOT_INITIALIZED			= {"Core", "NotInitialized"};
-		failure INITIALIZATION_FAILURE	= {"Core", "InitializationFailure"};
-		failure OUT_OF_RANGE			= {"Core", "OutOfRange"};
-		failure DUPLICATE				= {"Core", "Duplicate"};
-		failure REGISTRY_ERROR			= {"Core", "RegistryError"};
-		failure NOT_RUNNING				= {"Core", "NotRunning"};
-
-		interface iBase
-		{
-			u32 AddRef();
-			u32 Release();
-			result Cast(u64 id, [out] void** outIface);
-		}
-	}
-
-	namespace Plugin
-	{
-		struct IID_CID;
-		interface iRegistry : GOM::iBase
-		{
-			result Load([in] char* library);
-			result CanUnload([in] char* library);
-			result Unload([in] char* library);
-			result Install(u64 cid, [in] iClassInstance* clsInst);
-			result Remove(u64 cid);
-			result GetClassInstance(u64 cid, [out] iClassInstance** clsInst);
-			result Exists(u64 cid);
-			result Create([in] iBase* outer, u64 cid, u64 iid, [out] void** outIFace);
-			result ClassInstall(i32 count, [in] IID_CID* pairs);
-			result ClassRemove(i32 count, [in] IID_CID* pairs);
-			result GetClasses(u64 id, [in, out] i32* count, [out] u64* cid);
-			result InstanceInstall(u64 id, [in] iBase* instance);
-			result InstanceRemove(u64 id);
-			result GetInstance(u64 id, [out] iBase** outIface);
-		}
-
-		interface iClassInstance
-		{
-			result CreateInstance([in] iRegistry* registry, [in] iBase* outer, [out] iBase** outIface);
-		}
-	}
+interface iClassInstance
+{
+	result CreateInstance([in] iRegistry* registry, [in] iBase* outer, [out] iBase** outIface);
 }

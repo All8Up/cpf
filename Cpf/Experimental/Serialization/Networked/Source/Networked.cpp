@@ -47,6 +47,11 @@ namespace
 	const char* kRustPlugin = "plugins/TestRust.cfp";
 }
 
+struct iTestRust : public GOM::iBase
+{
+	virtual uint32_t CPF_STDCALL Test(uint32_t value) = 0;
+};
+
 GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
 {
 	mpRegistry = registry;
@@ -77,11 +82,12 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	{
 		printf("Loaded rust plugin.");
 		// Attempt to create Rust plugin.
-		IntrusivePtr<iRefCounted> testRust;
+		IntrusivePtr<iTestRust> testRust;
 		if (GOM::Succeeded(GetRegistry()->Create(nullptr, 1, 1, testRust.AsVoidPP())))
 		{
 			static volatile int a = 0;
 			++a;
+			testRust->Test(1);
 		}
 	}
 

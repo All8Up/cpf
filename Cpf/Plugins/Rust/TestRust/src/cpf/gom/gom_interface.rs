@@ -1,60 +1,155 @@
 #[macro_export]
 macro_rules! gom_interface
 {
-	(
-		$(#[$attribs:meta])*
-		interface $interface:ident: $base:ty
-		{
-			vtable: $vtable:ident;
-			$(
-				$(#[$fn_attr:meta])*
-				fn $func:ident($($i:ident: $t:ty),*) -> $rt:ty;
-			)*
-		}
-	) =>
-	{
+    (
+        $(#[$attribs:meta])*
+        $interface:ident : $iid_name:expr,
+        $vtable:ident,
+        methods {
+            $($(#[$fn_attr:meta])* fn $func:ident($($i:ident: $t:ty),*) -> $rt:ty;)*
+        }
+    ) => (
         #[repr(C)]
-        pub struct $vtable {
-            base: <$base as $crate::GomInterface>::Vtable,
-            $($func: extern "stdcall" fn(*mut $interface, $($t),*) -> $rt),*
+        #[derive(Debug)]
+        pub struct $interface
+        {
+            pub vtable: *const $vtable
         }
 
-		#[repr(C)]
-		pub struct $interface
-		{
-			pub vtbl: *const $vtable
-		}
-	};
-}
-
-
-#[macro_export]
-macro_rules! gom_implement
-{
-	(
-		$(#[$attribs:meta])*
-		interface $interface:ident: $base:ty
-		{
-			vtable: $vtable:ident;
-			members: { $($(#[$mbr_attr:meta])* $mbr:ident: $mbr_ty:ty,)* }
-			$( $(#[$fn_attr:meta])* fn $func:ident($($i:ident: $t:ty),*) -> $rt:ty; )*
-		}
-	) =>
-	{
         #[repr(C)]
         pub struct $vtable
         {
-            base: <$base as $crate::GomInterface>::Vtable,
-            $($func: extern "stdcall" fn(*mut $interface, $($t),*) -> $rt),*
+            pub base: gom::iUnknownVTable,
+            $(pub $func: extern "stdcall" fn(*mut $interface, $($i: $t),*) -> $rt),*
         }
 
-		#[repr(C)]
-		pub struct $interface
-		{
-			pub vtbl: *const $vtable,
-			$(pub $mbr: $mbr_ty),*
-		}
-	};
+        impl $interface
+        {
+            $(pub fn $func(&mut self, $($i: $t),*) -> $rt
+            { unsafe { ((*self.vtable).$func)(self as *mut _ as *mut $interface, $($i),*) } })*
+        }
+
+        unsafe impl AsPtr<gom::iUnknown> for $interface {}
+        unsafe impl ::GomInterface for $interface { type Vtable = $vtable; }
+
+        impl gom::Unknown for $interface
+        {
+            fn add_ref(&mut self) -> i32 { unsafe { ((*self.vtable).base.add_ref)(self as *mut _ as *mut gom::iUnknown) } }
+            fn release(&mut self) -> i32 { unsafe { ((*self.vtable).base.release)(self as *mut _ as *mut gom::iUnknown) } }
+            fn query_interface(&mut self, iid: u64, out_iface: *mut *mut c_void) -> u32
+            { unsafe { ((*self.vtable).base.query_interface)(self as *mut _ as *mut gom::iUnknown, iid, out_iface) } }
+        }
+    );
+
+    (
+        $(#[$attribs:meta])*
+        impl $impl: ident : $interface:ident : $iid_name:expr,
+        $vtable:ident,
+        methods {
+            $($(#[$fn_attr:meta])* fn $func:ident($($i:ident: $t:ty),*) -> $rt:ty;)*
+        }
+    ) => (
+        #[repr(C)]
+        #[derive(Debug)]
+        pub struct $interface
+        {
+            pub vtable: *const $vtable
+        }
+
+        #[repr(C)]
+        pub struct $vtable
+        {
+            pub base: gom::iUnknownVTable,
+            $(pub $func: extern "stdcall" fn(*mut $interface, $($t),*) -> $rt),*
+        }
+
+        unsafe impl AsPtr<gom::iUnknown> for $interface {}
+        unsafe impl ::GomInterface for $interface { type Vtable = $vtable; }
+
+        impl gom::Unknown for $interface
+        {
+            fn add_ref(&mut self) -> i32 { unsafe { ((*self.vtable).base.add_ref)(self as *mut _ as *mut gom::iUnknown) } }
+            fn release(&mut self) -> i32 { unsafe { ((*self.vtable).base.release)(self as *mut _ as *mut gom::iUnknown) } }
+            fn query_interface(&mut self, iid: u64, out_iface: *mut *mut c_void) -> u32
+            { unsafe { ((*self.vtable).base.query_interface)(self as *mut _ as *mut gom::iUnknown, iid, out_iface) } }
+        }
+
+        impl $vtable
+        {
+            extern "stdcall" fn add_ref(inst: *mut gom::iUnknown) -> i32
+            {
+                unsafe
+                {
+                    let this : *mut $impl = inst as *mut $impl;
+                    (*this).ref_count += 1;
+                    (*this).ref_count
+                }
+            }
+
+            extern "stdcall" fn release(inst: *mut gom::iUnknown) -> i32
+            {
+                unsafe
+                {
+                    let this : *mut $impl = inst as *mut $impl;
+                    (*this).ref_count -= 1;
+                    if (*this).ref_count == 0
+                    {
+                        // NOTE: Must use the cast pointer or the free will fail to drop internal references.
+                        Box::from_raw(this);
+                        return 0;
+                    }
+                    (*this).ref_count
+                }
+            }
+
+            extern "stdcall" fn query_interface(
+                inst: *mut gom::iUnknown,
+                iid: u64,
+                out_iface: *mut *mut ::libc::c_void
+                ) -> u32
+            {
+                unsafe
+                {
+                    let this : *mut $impl = inst as *mut $impl;
+                    match iid
+                    {
+                        // TODO: Need a method to generate IID's in Rust code.
+                        // I would like to use a compiler plugin to add compile time CRC's but
+                        // that requires non-mainline Rust.
+                        1 =>
+                        {
+                            *out_iface = inst as *mut ::libc::c_void;
+                            ((*(*this).vtable).base.add_ref)(inst as *mut gom::iUnknown);
+                            gom::OK
+                        },
+                        _ =>
+                        {
+                            *out_iface = 0 as *mut ::libc::c_void;
+                            gom::UNKNOWN_INTERFACE
+                        }
+                    }
+                }
+            }
+        }
+    );
+}
+
+#[macro_export]
+macro_rules! gom_impl
+{
+    (
+        $implstruct:ident : $vtable:ident
+        { $($mname:ident: $mtype:ty,)* }
+    )
+    =>
+    (
+        struct $implstruct
+        {
+            vtable: *const $vtable,
+            ref_count: i32,
+            $($mname: $mtype),*
+        }
+    )
 }
 
 #[macro_export]

@@ -43,7 +43,7 @@ impl CodeGenerator for Generator
     fn preamble(&mut self, _tree: &ASTRef, _output: &str)
     {
         self.string_out(
-            "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n#![allow(dead_code)]\n\nextern crate libc;\n"
+            "#![allow(non_snake_case)]\n#![allow(non_camel_case_types)]\n#![allow(dead_code)]\n\nextern crate libc;\nuse cpf::*;\nuse libc::{c_void};\n"
         );
     }
 
