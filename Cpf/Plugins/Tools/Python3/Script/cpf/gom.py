@@ -49,11 +49,11 @@ Interface = MetaBase(str('Interface'), (ctypes.POINTER(Base),), {
 
 Result = ctypes.c_uint32
 
-class iBase(Interface):
+class iUnknown(Interface):
     _methods_ =	[
         ('AddRef', Method(ctypes.c_int32)),
         ('Release', Method(ctypes.c_int32)),
-        ('Cast', Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
+        ('QueryInterface', Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
     ]
 
 def make_result(err, ss, v):

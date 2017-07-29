@@ -16,14 +16,14 @@ CommandPool::~CommandPool()
 	CPF_LOG(D3D12, Info) << "Destroyed command pool: " << intptr_t(this) << " - " << intptr_t(mpCommandPool.Ptr());
 }
 
-GOM::Result CPF_STDCALL CommandPool::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL CommandPool::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iCommandPool::kIID.GetID():
 			*outIface = static_cast<iCommandPool*>(this);

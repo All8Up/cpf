@@ -5,7 +5,7 @@
 using namespace Cpf;
 using namespace Concurrency;
 
-ThreadPool::ThreadPool(iBase*)
+ThreadPool::ThreadPool(iUnknown*)
 {
 }
 
@@ -14,14 +14,14 @@ ThreadPool::~ThreadPool()
 	mpScheduler->Shutdown();
 }
 
-GOM::Result CPF_STDCALL ThreadPool::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL ThreadPool::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case iThreadPool::kIID.GetID():
 			*outIface = static_cast<iThreadPool*>(this);

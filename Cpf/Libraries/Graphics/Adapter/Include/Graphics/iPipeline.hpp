@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iPipeline : GOM::iBase
+		struct iPipeline : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iPipeline"_crc64);
 		};

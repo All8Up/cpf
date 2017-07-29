@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -9,7 +9,7 @@ namespace Cpf
 		struct iDevice;
 		struct iAdapter;
 
-		struct iInstance : GOM::iBase
+		struct iInstance : GOM::iUnknown
 		{
 		public:
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iInstance"_crc64);

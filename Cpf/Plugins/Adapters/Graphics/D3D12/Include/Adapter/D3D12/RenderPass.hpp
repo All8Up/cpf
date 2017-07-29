@@ -19,9 +19,9 @@ namespace Cpf
 			class RenderPass : public tRefCounted<Graphics::iRenderPass>
 			{
 			public:
-				RenderPass(GOM::iBase*) {}
+				RenderPass(GOM::iUnknown*) {}
 
-				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				GOM::Result CPF_STDCALL Initialize(const Graphics::RenderPassDesc* desc);
 

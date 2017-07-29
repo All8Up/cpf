@@ -17,11 +17,11 @@ namespace Cpf
 			static GOM::Result Install(Plugin::iRegistry*);
 			static GOM::Result Remove(Plugin::iRegistry*);
 
-			TransformComponent(GOM::iBase*);
+			TransformComponent(GOM::iUnknown*);
 			~TransformComponent() override;
 
 			//
-			GOM::Result Cast(uint64_t id, void**) override;
+			GOM::Result QueryInterface(uint64_t id, void**) override;
 
 			// Component overrides.
 			ComponentID GetID() const override;

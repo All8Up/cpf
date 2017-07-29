@@ -20,7 +20,7 @@ namespace Cpf
 			using ComponentPair = Pair<uint64_t, IntrusivePtr<iComponent>>;
 
 			// iBase interface.
-			GOM::Result Cast(uint64_t id, void**) override;
+			GOM::Result QueryInterface(uint64_t id, void**) override;
 
 			// Object interface.
 			static bool Create(uint64_t id, iEntity**);

@@ -8,7 +8,7 @@ class IID_CID(ctypes.Structure):
 		('cid', ctypes.c_uint64)
 	]
 
-class iRegistry(gom.iBase):
+class iRegistry(gom.iUnknown):
 	_methods_ =	[
 		('Load', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
 		('Unload', gom.Method(ctypes.c_uint32, ctypes.c_char_p)),
@@ -25,7 +25,7 @@ class iRegistry(gom.iBase):
 		('GetInstance', gom.Method(ctypes.c_uint32, ctypes.c_uint64, ctypes.c_void_p))
 	]
 
-class iClassInstance(gom.iBase):
+class iClassInstance(gom.iUnknown):
 	_methods_ = [
 		('CreateInstance', gom.Method(ctypes.c_uint32, ctypes.c_void_p, ctypes.c_void_p, ctypes.c_void_p))
 	]

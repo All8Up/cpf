@@ -6,7 +6,7 @@ namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iImageView : GOM::iBase
+		struct iImageView : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iImageView"_crc64);
 		};

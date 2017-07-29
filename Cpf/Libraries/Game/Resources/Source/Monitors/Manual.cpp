@@ -7,14 +7,14 @@ using namespace Cpf;
 using namespace Resources;
 using namespace Monitors;
 
-GOM::Result CPF_STDCALL Manual::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Manual::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iMonitor*>(this);
@@ -42,7 +42,7 @@ void Manual::TouchAll()
 		GetLocator()->TouchAll();
 }
 
-Manual::Manual(iBase*)
+Manual::Manual(iUnknown*)
 {}
 
 Manual::~Manual()

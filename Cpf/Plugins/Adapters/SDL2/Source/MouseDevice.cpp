@@ -7,20 +7,20 @@ using namespace Cpf;
 using namespace SDL2;
 
 
-MouseDevice::MouseDevice(GOM::iBase*)
+MouseDevice::MouseDevice(GOM::iUnknown*)
 {}
 
 MouseDevice::~MouseDevice()
 {}
 
-GOM::Result CPF_STDCALL MouseDevice::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL MouseDevice::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iInputDevice::kIID.GetID():
 			*outIface = static_cast<iInputDevice*>(this);

@@ -18,11 +18,13 @@ namespace Cpf
 		static_assert(sizeof(InterfaceID) == sizeof(uint64_t), "Size is incorrect.");
 
 		//////////////////////////////////////////////////////////////////////////
-		struct iBase : iRefCounted
+		struct iUnknown
 		{
-			static constexpr InterfaceID kIID = InterfaceID("Cpf::GOM::iBase"_crc64);
+			static constexpr InterfaceID kIID = InterfaceID("Cpf::GOM::iUnknown"_crc64);
 
-			virtual Result CPF_STDCALL Cast(uint64_t id, void** outIface) = 0;
+			virtual int32_t CPF_STDCALL AddRef() = 0;
+			virtual int32_t CPF_STDCALL Release() = 0;
+			virtual Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) = 0;
 		};
 	}
 }

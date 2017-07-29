@@ -21,7 +21,7 @@ namespace Cpf
 		{};
 
 		// iBase
-		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+		GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;
@@ -38,7 +38,7 @@ namespace Cpf
 		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
-		NetworkSystem(GOM::iBase*);
+		NetworkSystem(GOM::iUnknown*);
 
 	private:
 		static void _Update(const Concurrency::WorkContext*, void*);

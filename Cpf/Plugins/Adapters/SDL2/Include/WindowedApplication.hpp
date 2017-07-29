@@ -13,11 +13,11 @@ namespace Cpf
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			WindowedApp(iBase*);
+			WindowedApp(iUnknown*);
 			~WindowedApp();
 
 			//
-			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 			// Overrides for iApplication.
 			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, iApplicationMain*) override;

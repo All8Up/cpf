@@ -10,7 +10,7 @@ using namespace Cpf;
 using namespace SDL2;
 
 //////////////////////////////////////////////////////////////////////////
-Window::Window(GOM::iBase*)
+Window::Window(GOM::iUnknown*)
 	: mpWindow(nullptr)
 {
 }
@@ -20,14 +20,14 @@ Window::~Window()
 	SDL_DestroyWindow(mpWindow);
 }
 
-GOM::Result CPF_STDCALL Window::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Window::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iWindow::kIID.GetID():
 			*outIface = static_cast<iWindow*>(this);

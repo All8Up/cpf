@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Graphics/iOutput.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iAdapter : GOM::iBase
+		struct iAdapter : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iAdapter"_crc64);
 

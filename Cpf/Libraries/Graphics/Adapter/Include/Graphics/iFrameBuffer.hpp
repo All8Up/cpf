@@ -1,12 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iFrameBuffer : GOM::iBase
+		struct iFrameBuffer : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iFrameBuffer"_crc64);
 		};

@@ -9,7 +9,7 @@ using namespace Tools;
 
 Python3* s_Python3 = nullptr;
 
-Python3::Python3(iBase*)
+Python3::Python3(iUnknown*)
 	: mpCreateRegistry(nullptr)
 {
 	s_Python3 = this;
@@ -20,14 +20,14 @@ Python3::~Python3()
 	s_Python3 = nullptr;
 }
 
-GOM::Result CPF_STDCALL Python3::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Python3::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iPython3*>(this);
@@ -84,7 +84,7 @@ extern "C" PyObject* CPF_STDCALL CreateRegistry(PyObject*, PyObject*)
 		{
 			return PyCapsule_New(regy, nullptr, [](PyObject* obj)
 			{
-				auto base = reinterpret_cast<GOM::iBase*>(PyCapsule_GetPointer(obj, nullptr));
+				auto base = reinterpret_cast<GOM::iUnknown*>(PyCapsule_GetPointer(obj, nullptr));
 				base->Release();
 			});
 		}

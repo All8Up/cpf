@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
 
@@ -40,7 +40,7 @@ namespace Cpf
 			kCopy = 3
 		};
 
-		struct iCommandBuffer : GOM::iBase
+		struct iCommandBuffer : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iCommandBuffer"_crc64);
 

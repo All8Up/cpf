@@ -11,7 +11,7 @@ using namespace MultiCore;
 
 
 //////////////////////////////////////////////////////////////////////////
-ExecutionPlan::ExecutionPlan(iBase*)
+ExecutionPlan::ExecutionPlan(iUnknown*)
 #ifdef CPF_DEBUG
 	: mChanged(false)
 #endif
@@ -21,14 +21,14 @@ ExecutionPlan::ExecutionPlan(iBase*)
 ExecutionPlan::~ExecutionPlan()
 {}
 
-GOM::Result CPF_STDCALL ExecutionPlan::Cast(uint64_t id, void** iface)
+GOM::Result CPF_STDCALL ExecutionPlan::QueryInterface(uint64_t id, void** iface)
 {
 	if (iface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*iface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*iface = static_cast<GOM::iUnknown*>(this);
 			AddRef();
 			return GOM::kOK;
 		case iExecutionPlan::kIID.GetID():

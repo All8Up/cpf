@@ -30,7 +30,7 @@ namespace Cpf
 		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
 
 		// Construction/Destruction.
-		RenderSystem(GOM::iBase*);
+		RenderSystem(GOM::iUnknown*);
 		virtual ~RenderSystem();
 
 		// Registration.
@@ -44,7 +44,7 @@ namespace Cpf
 		};
 
 		// iBase
-		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+		GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;

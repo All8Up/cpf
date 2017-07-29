@@ -12,10 +12,10 @@ namespace Cpf
 		class ExecutionPlan : public tRefCounted<iExecutionPlan>
 		{
 		public:
-			ExecutionPlan(iBase*);
+			ExecutionPlan(iUnknown*);
 			~ExecutionPlan();
 
-			GOM::Result Cast(uint64_t id, void** iface) override;
+			GOM::Result QueryInterface(uint64_t id, void** iface) override;
 			iSystem* CPF_STDCALL Install(iSystem*) override;
 			GOM::Result CPF_STDCALL Remove(iSystem*) override;
 			GOM::Result CPF_STDCALL Configure(Plugin::iRegistry* regy) override;

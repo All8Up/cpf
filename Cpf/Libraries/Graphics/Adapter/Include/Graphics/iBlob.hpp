@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Vector.hpp"
 
 namespace Cpf
 {
 	namespace Graphics
 	{
-		struct iBlob : GOM::iBase
+		struct iBlob : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iBase"_crc64);
 

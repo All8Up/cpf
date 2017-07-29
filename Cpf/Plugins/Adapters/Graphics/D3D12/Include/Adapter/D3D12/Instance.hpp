@@ -32,10 +32,10 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 			struct Instance : tRefCounted<Graphics::iInstance>
 			{
-				Instance(GOM::iBase*);
+				Instance(GOM::iUnknown*);
 				virtual ~Instance();
 
-				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				GOM::Result CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
 				GOM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;

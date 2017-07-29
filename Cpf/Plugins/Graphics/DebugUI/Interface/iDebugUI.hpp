@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Math/Vector2v.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Constants.hpp"
@@ -33,7 +33,7 @@ namespace Cpf
 		//////////////////////////////////////////////////////////////////////////
 		static constexpr GOM::ClassID kDebugUICID = GOM::ClassID("Graphics::iDebugUI"_crc64);
 
-		struct iDebugUI : GOM::iBase
+		struct iDebugUI : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iDebugUI"_crc64);
 

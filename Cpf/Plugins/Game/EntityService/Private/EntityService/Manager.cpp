@@ -10,21 +10,21 @@ using namespace EntityService;
 uint64_t Manager::mNextID = uint64_t(0);
 
 //////////////////////////////////////////////////////////////////////////
-Manager::Manager(iBase*)
+Manager::Manager(iUnknown*)
 	: mpPipeline(nullptr)
 {}
 
 Manager::~Manager()
 {}
 
-GOM::Result Manager::Cast(uint64_t id, void** outIface)
+GOM::Result Manager::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 
 		case iManager::kIID.GetID():

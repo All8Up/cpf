@@ -9,14 +9,14 @@ using namespace Std;
 using namespace Adapter;
 using namespace D3D12;
 
-GOM::Result CPF_STDCALL RenderPass::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL RenderPass::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case Graphics::iRenderPass::kIID.GetID():
 			*outIface = static_cast<iRenderPass*>(this);

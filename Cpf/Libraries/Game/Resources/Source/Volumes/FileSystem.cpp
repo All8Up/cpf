@@ -23,14 +23,14 @@ namespace
 const char* const FileSystem::kVolumeType = "FileSystem";
 
 
-GOM::Result CPF_STDCALL FileSystem::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL FileSystem::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case iVolume::kIID.GetID():
 			*outIface = static_cast<iVolume*>(this);

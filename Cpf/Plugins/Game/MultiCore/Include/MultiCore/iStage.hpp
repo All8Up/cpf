@@ -3,7 +3,7 @@
 #include "Pair.hpp"
 #include "Vector.hpp"
 #include "String.hpp"
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "MultiCore/Types.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "Plugin/iRegistry.hpp"
@@ -15,7 +15,7 @@ namespace Cpf
 		class PipelineBuilder;
 
 		static constexpr GOM::ClassID kStageClass = GOM::ClassID("StageClass"_crc64);
-		struct iStage : GOM::iBase
+		struct iStage : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iStage"_crc64);
 

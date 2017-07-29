@@ -107,7 +107,7 @@ iDebugUI* RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem(GOM::iBase*)
+RenderSystem::RenderSystem(GOM::iUnknown*)
 	: mpTimer(nullptr)
 	, mpRegistry(nullptr)
 	, mWidth(0)
@@ -448,14 +448,14 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext*, void* context)
 }
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL RenderSystem::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL RenderSystem::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);

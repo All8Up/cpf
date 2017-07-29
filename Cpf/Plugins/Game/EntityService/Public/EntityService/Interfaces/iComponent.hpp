@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "EntityService/Types.hpp"
 
 namespace Cpf
@@ -9,7 +9,7 @@ namespace Cpf
 	{
 		struct iEntity;
 
-		struct iComponent : GOM::iBase
+		struct iComponent : GOM::iUnknown
 		{
 			static constexpr auto kIID = GOM::InterfaceID("EntityService::iComponent"_crc64);
 

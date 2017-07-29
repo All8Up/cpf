@@ -24,13 +24,13 @@ bool Entity::Create(uint64_t id, iEntity** outEntity)
 
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result Entity::Cast(uint64_t id, void** outPtr)
+GOM::Result Entity::QueryInterface(uint64_t id, void** outPtr)
 {
 	switch (id)
 	{
-	case iBase::kIID.GetID():
+	case iUnknown::kIID.GetID():
 		{
-			iBase* result = static_cast<iBase*>(this);
+			iUnknown* result = static_cast<iUnknown*>(this);
 			result->AddRef();
 			*outPtr = result;
 			return GOM::kOK;

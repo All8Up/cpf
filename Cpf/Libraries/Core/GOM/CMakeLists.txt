@@ -1,7 +1,7 @@
 # ###############################################
 set (INCLUDE_FILES
 	Include/GOM.hpp
-	Include/GOM/iBase.hpp
+	Include/GOM/iUnknown.hpp
 	Include/GOM/Result.hpp
 )
 

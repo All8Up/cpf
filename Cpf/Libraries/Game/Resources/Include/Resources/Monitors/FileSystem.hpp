@@ -11,10 +11,10 @@ namespace Cpf
 			class FileSystem : public tRefCounted<iMonitor>
 			{
 			public:
-				FileSystem(iBase*);
+				FileSystem(iUnknown*);
 				~FileSystem() override;
 
-				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				bool CPF_STDCALL Touch(ID) override;
 				void CPF_STDCALL TouchAll() override;

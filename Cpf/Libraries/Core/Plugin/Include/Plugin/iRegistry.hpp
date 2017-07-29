@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -18,7 +18,7 @@ namespace Cpf
 		/**
 		 Class instance registry.
 		 */
-		struct iRegistry : GOM::iBase
+		struct iRegistry : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Plugin::iRegistry"_crc64);
 
@@ -74,7 +74,7 @@ namespace Cpf
 			 * @param [out] result Various error codes or GOM::kOK.
 			 * @return A result code.
 			 */
-			virtual GOM::Result CPF_STDCALL Create(iBase* outer, uint64_t cid, uint64_t iid, void** result) = 0;
+			virtual GOM::Result CPF_STDCALL Create(iUnknown* outer, uint64_t cid, uint64_t iid, void** result) = 0;
 
 			/**
 			 * @brief Install a set of class id's and instance id's.
@@ -107,7 +107,7 @@ namespace Cpf
 			 * @param [in,out] instance If non-null, the instance pointer to install.
 			 * @return A GOM::Result, kOK if all is ok.
 			 */
-			virtual GOM::Result CPF_STDCALL InstanceInstall(uint64_t id, iBase* instance) = 0;
+			virtual GOM::Result CPF_STDCALL InstanceInstall(uint64_t id, iUnknown* instance) = 0;
 
 			/**
 			 * @brief Remove an instance from the instances.
@@ -122,7 +122,7 @@ namespace Cpf
 			 * @param [in,out] outIface If non-null, the output.
 			 * @return The GOM::Result, kOK if the instance was found and put in the output.
 			 */
-			virtual GOM::Result CPF_STDCALL GetInstance(uint64_t id, iBase** outIface) = 0;
+			virtual GOM::Result CPF_STDCALL GetInstance(uint64_t id, iUnknown** outIface) = 0;
 		};
 	}
 }

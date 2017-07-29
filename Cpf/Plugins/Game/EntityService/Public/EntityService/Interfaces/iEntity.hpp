@@ -10,7 +10,7 @@ namespace Cpf
 
 		static constexpr GOM::ClassID kEntityCID = GOM::ClassID("EntityService::EntityClass"_crc64);
 
-		struct iEntity : GOM::iBase
+		struct iEntity : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("EntityService::iEntity"_crc64);
 

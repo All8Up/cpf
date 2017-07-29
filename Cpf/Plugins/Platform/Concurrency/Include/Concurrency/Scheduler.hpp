@@ -42,7 +42,7 @@ namespace Cpf
 
 
 			// iUnkown overrides.
-			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 			// iScheduler overrides.
 			GOM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) override;
@@ -67,7 +67,7 @@ namespace Cpf
 
 		private:
 			// Construction/Destruction.
-			explicit Scheduler(iBase*);
+			explicit Scheduler(iUnknown*);
 			~Scheduler();
 
 			template <typename TYPE>

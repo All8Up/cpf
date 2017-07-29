@@ -10,7 +10,7 @@ using namespace MultiCore;
 /**
  Default constructor.
  */
-Timer::Timer(iBase*)
+Timer::Timer(iUnknown*)
 	: mPaused(false)
 	, mpUpdate(nullptr)
 {
@@ -30,14 +30,14 @@ Timer::~Timer()
  @param [in,out] outIface The output interface pointer.
  @return Success/failure code.
  */
-GOM::Result CPF_STDCALL Timer::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Timer::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 
 		case iTimer::kIID.GetID():

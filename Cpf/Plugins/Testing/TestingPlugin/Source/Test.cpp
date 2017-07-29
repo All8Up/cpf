@@ -37,7 +37,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 
 
 //////////////////////////////////////////////////////////////////////////
-Test::Test(iBase*)
+Test::Test(iUnknown*)
 	: mRefCount(1)
 {
 }
@@ -58,14 +58,14 @@ int32_t CPF_STDCALL Test::Release()
 	return result;
 }
 
-GOM::Result CPF_STDCALL Test::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Test::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 
 		case kIID.GetID():

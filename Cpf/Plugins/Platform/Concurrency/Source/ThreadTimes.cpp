@@ -4,14 +4,14 @@
 using namespace Cpf;
 using namespace Concurrency;
 
-GOM::Result CPF_STDCALL ThreadTimes::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL ThreadTimes::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 
 		case kIID.GetID():

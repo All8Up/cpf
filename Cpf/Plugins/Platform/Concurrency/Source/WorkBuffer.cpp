@@ -9,7 +9,7 @@ using namespace Concurrency;
 /**
  * @brief Constructor.
  */
-WorkBuffer::WorkBuffer(iBase*)
+WorkBuffer::WorkBuffer(iUnknown*)
 {}
 
 /** @brief Destructor. */
@@ -19,14 +19,14 @@ WorkBuffer::~WorkBuffer()
 /**
  * @brief Query for an interface.
  */
-GOM::Result CPF_STDCALL WorkBuffer::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL WorkBuffer::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iWorkBuffer*>(this);

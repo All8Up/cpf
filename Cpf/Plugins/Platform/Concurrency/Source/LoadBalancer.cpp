@@ -8,7 +8,7 @@ using namespace Cpf;
 using namespace Concurrency;
 using namespace Threading;
 
-LoadBalancer::LoadBalancer(iBase*)
+LoadBalancer::LoadBalancer(iUnknown*)
 	: mLastUpdate(Time::Now())
 {
 }
@@ -16,14 +16,14 @@ LoadBalancer::LoadBalancer(iBase*)
 LoadBalancer::~LoadBalancer()
 {}
 
-GOM::Result CPF_STDCALL LoadBalancer::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL LoadBalancer::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch(id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iLoadBalancer*>(this);

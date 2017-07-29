@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -44,7 +44,7 @@ namespace Cpf
 		enum class ShaderType : int32_t;
 		enum class CommandBufferType : int32_t;
 
-		struct iDevice : GOM::iBase
+		struct iDevice : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Graphics::iDevice"_crc64);
 

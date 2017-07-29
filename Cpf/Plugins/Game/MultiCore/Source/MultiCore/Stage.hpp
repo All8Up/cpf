@@ -3,7 +3,7 @@
 #include "Pair.hpp"
 #include "Vector.hpp"
 #include "String.hpp"
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "MultiCore/Types.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "Plugin/iRegistry.hpp"
@@ -21,10 +21,10 @@ namespace Cpf
 		public:
 			static constexpr StageID kID = Hash::Create<StageID_tag>("Single Update Stage"_hashString);
 
-			SingleUpdateStage(iBase*);
+			SingleUpdateStage(iUnknown*);
 
 			// iStage overrides.
-			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 			GOM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) override;
 			iSystem* CPF_STDCALL GetSystem() const override;
 			StageID CPF_STDCALL GetID() const override;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 
 namespace Cpf
@@ -11,7 +11,7 @@ namespace Cpf
 		struct iLocator;
 		struct iResource;
 
-		struct iLoader : GOM::iBase
+		struct iLoader : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iLoader"_crc64);
 

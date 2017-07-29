@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Functional.hpp"
 
 namespace Cpf
@@ -12,7 +12,7 @@ namespace Cpf
 
 		struct CacheDesc {};
 
-		struct iCache : GOM::iBase
+		struct iCache : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::Resources::iCache"_crc64);
 

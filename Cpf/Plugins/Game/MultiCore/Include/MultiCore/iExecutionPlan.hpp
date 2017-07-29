@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/Types.hpp"
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Plugin/iRegistry.hpp"
 
 namespace Cpf
@@ -15,7 +15,7 @@ namespace Cpf
 		/**
 		 A multicore execution plan component.
 		 */
-		struct iExecutionPlan : GOM::iBase
+		struct iExecutionPlan : GOM::iUnknown
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::MultiCore::iExecutionPlan"_crc64);
 			static constexpr GOM::Result kConfigurationError = GOM::CreateResult(1, 50, 1);

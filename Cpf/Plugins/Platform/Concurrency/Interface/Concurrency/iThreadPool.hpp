@@ -7,7 +7,7 @@ namespace Cpf
 {
 	static constexpr GOM::ClassID kThreadPoolCID = GOM::ClassID("Cpf::iThreadPool"_crc64);
 
-	struct iThreadPool : GOM::iBase
+	struct iThreadPool : GOM::iUnknown
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iThreadPool"_crc64);
 

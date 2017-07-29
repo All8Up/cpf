@@ -20,7 +20,7 @@ namespace Cpf
 			void CPF_STDCALL Initialize(ID, iCache*) override;
 
 		protected:
-			ResourceBase(iBase*);
+			ResourceBase(iUnknown*);
 			virtual ~ResourceBase();
 
 		private:

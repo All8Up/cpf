@@ -31,12 +31,12 @@ namespace Cpf
 			ExperimentalD3D12* mpApplication;
 		};
 
-		InstanceSystem(GOM::iBase*);
+		InstanceSystem(GOM::iUnknown*);
 
 		Instance* GetInstances() const { return mpInstances; }
 
 		// iBase
-		GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+		GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 		// iSystem
 		GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* rgy, const char* name, const iSystem::Desc* desc) override;

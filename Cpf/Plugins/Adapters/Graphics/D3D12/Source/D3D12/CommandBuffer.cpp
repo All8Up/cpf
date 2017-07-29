@@ -31,7 +31,7 @@ using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
 
-CommandBuffer::CommandBuffer(GOM::iBase*)
+CommandBuffer::CommandBuffer(GOM::iUnknown*)
 	: mpDevice(nullptr)
 	, mpAllocator(nullptr)
 	, mCurrent(-1)
@@ -70,14 +70,14 @@ GOM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Gra
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL CommandBuffer::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL CommandBuffer::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iCommandBuffer::kIID.GetID():
 			*outIface = static_cast<iCommandBuffer*>(this);

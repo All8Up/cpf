@@ -11,10 +11,10 @@ namespace Cpf
 		class Fence : public tRefCounted<iFence>
 		{
 		public:
-			Fence(iBase*);
+			Fence(iUnknown*);
 			virtual ~Fence() {}
 
-			GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 			void CPF_STDCALL Wait() override;
 			void CPF_STDCALL Signal() override;

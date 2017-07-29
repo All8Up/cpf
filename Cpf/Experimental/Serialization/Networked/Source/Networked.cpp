@@ -47,7 +47,7 @@ namespace
 	const char* kRustPlugin = "plugins/TestRust.cfp";
 }
 
-struct iTestRust : public GOM::iBase
+struct iTestRust : public GOM::iUnknown
 {
 	virtual uint32_t CPF_STDCALL Test(uint32_t value) = 0;
 };
@@ -123,7 +123,7 @@ void CPF_STDCALL Networked::Shutdown()
 
 GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 {
-	application->Cast(iWindowedApplication::kIID.GetID(), reinterpret_cast<void**>(&mpWindowedApplication));
+	application->QueryInterface(iWindowedApplication::kIID.GetID(), reinterpret_cast<void**>(&mpWindowedApplication));
 
 	if (GOM::Succeeded(mpRegistry->Create(nullptr, Concurrency::kSchedulerCID.GetID(), Concurrency::iScheduler::kIID.GetID(), mpScheduler.AsVoidPP())))
 	{

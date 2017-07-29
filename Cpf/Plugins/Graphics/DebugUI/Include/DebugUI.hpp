@@ -18,10 +18,10 @@ namespace Cpf
 		class DebugUI : public tRefCounted<iDebugUI>
 		{
 		public:
-			DebugUI(iBase* outer);
+			DebugUI(iUnknown* outer);
 			virtual ~DebugUI();
 
-			GOM::Result Cast(uint64_t id, void** outIface) override;
+			GOM::Result QueryInterface(uint64_t id, void** outIface) override;
 
 			//
 			bool Initialize(iDevice*, iInputManager* im, iWindow* window, Resources::iLocator*);

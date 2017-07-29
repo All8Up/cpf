@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 #include "Events/Event.hpp"
 
 namespace Cpf
@@ -12,7 +12,7 @@ namespace Cpf
 	struct OSWindowData;
 	struct WindowDesc;
 
-	struct iWindow : GOM::iBase
+	struct iWindow : GOM::iUnknown
 	{
 		static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iWindow"_crc64);
 

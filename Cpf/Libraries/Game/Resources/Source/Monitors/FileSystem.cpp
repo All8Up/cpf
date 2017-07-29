@@ -7,14 +7,14 @@ using namespace Cpf;
 using namespace Resources;
 using namespace Monitors;
 
-GOM::Result CPF_STDCALL FileSystem::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL FileSystem::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case kIID.GetID():
 			*outIface = static_cast<iMonitor*>(this);
@@ -37,7 +37,7 @@ bool FileSystem::Touch(ID id)
 void FileSystem::TouchAll()
 {}
 
-FileSystem::FileSystem(iBase*)
+FileSystem::FileSystem(iUnknown*)
 {}
 
 FileSystem::~FileSystem()

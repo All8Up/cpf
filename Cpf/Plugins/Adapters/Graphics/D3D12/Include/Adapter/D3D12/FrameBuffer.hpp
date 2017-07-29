@@ -15,10 +15,10 @@ namespace Cpf
 			class FrameBuffer : public tRefCounted<Graphics::iFrameBuffer>
 			{
 			public:
-				FrameBuffer(GOM::iBase*);
+				FrameBuffer(GOM::iUnknown*);
 				virtual ~FrameBuffer();
 
-				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				GOM::Result CPF_STDCALL Initialize(const Graphics::FrameBufferDesc* desc);
 

@@ -10,7 +10,7 @@
 using namespace Cpf;
 using namespace SDL2;
 
-WindowedApp::WindowedApp(GOM::iBase*)
+WindowedApp::WindowedApp(GOM::iUnknown*)
 	: mRunning(false)
 	, mpApplicationMain(nullptr)
 	, mpRegistry(nullptr)
@@ -32,14 +32,14 @@ WindowedApp::~WindowedApp()
 	CPF_DROP_LOG(Application);
 }
 
-GOM::Result CPF_STDCALL WindowedApp::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL WindowedApp::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iApplication::kIID.GetID():
 			*outIface = static_cast<iApplication*>(this);

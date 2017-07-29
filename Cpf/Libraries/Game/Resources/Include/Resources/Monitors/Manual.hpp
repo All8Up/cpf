@@ -12,10 +12,10 @@ namespace Cpf
 			class Manual : public tRefCounted<iMonitor>
 			{
 			public:
-				Manual(iBase*);
+				Manual(iUnknown*);
 				virtual ~Manual();
 
-				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				bool CPF_STDCALL Touch(ID) override;
 				void CPF_STDCALL TouchAll() override;

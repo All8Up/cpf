@@ -5,7 +5,7 @@ from cpf import gom
 from cpf import plugin
 
 iTestCID = cpf.crc64('Testing::iTest')
-class iTest(gom.iBase):
+class iTest(gom.iUnknown):
 	iid = cpf.crc64('Testing::iTest')
 	_methods_ =	[
 		('Tester', gom.Method(ctypes.c_int32, ctypes.c_int64))

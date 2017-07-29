@@ -4,19 +4,19 @@
 using namespace Cpf;
 using namespace Concurrency;
 
-Fence::Fence(iBase*)
+Fence::Fence(iUnknown*)
 	: mSemaphore(0)
 {
 }
 
-GOM::Result CPF_STDCALL Fence::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Fence::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case iBase::kIID.GetID():
-			*outIface = static_cast<iBase*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 
 		case kIID.GetID():

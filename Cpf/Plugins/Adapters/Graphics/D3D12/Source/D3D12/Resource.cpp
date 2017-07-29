@@ -56,14 +56,14 @@ Resource::~Resource()
 	CPF_LOG(D3D12, Info) << "Destroyed resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }
 
-GOM::Result CPF_STDCALL Resource::Cast(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Resource::QueryInterface(uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
 		switch (id)
 		{
-		case GOM::iBase::kIID.GetID():
-			*outIface = static_cast<GOM::iBase*>(this);
+		case GOM::iUnknown::kIID.GetID():
+			*outIface = static_cast<GOM::iUnknown*>(this);
 			break;
 		case iResource::kIID.GetID():
 			*outIface = static_cast<iResource*>(this);

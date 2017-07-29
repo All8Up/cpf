@@ -24,7 +24,7 @@ namespace Cpf
 				Sampler(Device*, const Graphics::SamplerDesc* desc);
 				virtual ~Sampler();
 
-				GOM::Result CPF_STDCALL Cast(uint64_t id, void** outIface) override;
+				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				Descriptor& GetDescriptor() { return mDescriptor; }
 

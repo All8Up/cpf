@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "GOM/iBase.hpp"
+#include "GOM/iUnknown.hpp"
 
 namespace Cpf
 {
@@ -15,9 +15,9 @@ namespace Cpf
 		};
 
 		/** @brief The class instance interface.  Added to iRegistry to create component instances. */
-		struct iClassInstance : GOM::iBase
+		struct iClassInstance : GOM::iUnknown
 		{
-			virtual GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iBase*, iBase**) = 0;
+			virtual GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iUnknown*, iUnknown**) = 0;
 		};
 
 		/**
@@ -30,7 +30,7 @@ namespace Cpf
 			tClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
 			virtual ~tClassInstance() {}
 
-			GOM::Result CPF_STDCALL Cast(uint64_t, void**) override { return GOM::kNotImplemented; }
+			GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override { return GOM::kNotImplemented; }
 			int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
 			int32_t CPF_STDCALL Release() override
 			{
@@ -42,7 +42,7 @@ namespace Cpf
 				return mRefCount;
 			}
 
-			GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iBase* outer, iBase** outIface) override
+			GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iUnknown* outer, iUnknown** outIface) override
 			{
 				if (outIface)
 				{
