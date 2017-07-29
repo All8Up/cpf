@@ -7,6 +7,11 @@ pub enum ConstType
 	U32
 }
 
+pub trait Preamble
+{
+    fn generate(&mut self, generator: &CodeGenerator);
+}
+
 pub trait CodeGenerator
 {
 	fn log(&self, context: &Context);
