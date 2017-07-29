@@ -3,6 +3,7 @@ use gen::code_gen::{CodeGenerator, ConstType};
 use gen::scope::*;
 use context::*;
 use crc::*;
+use gen::name::*;
 
 
 // ------------------------
@@ -10,7 +11,6 @@ pub struct Generator
 {
 	tree: ASTRef,
 	scopes: Scopes,
-	current_scope: usize,
 	indent: usize
 }
 
@@ -57,21 +57,22 @@ impl CodeGenerator for Generator
 
 	fn push_scope(&mut self, name: &str)
 	{
-//		let scope = Scope::new(name);
-		self.indent_out(&format!("mod {}", name));
-		self.indent_out("{");
-		self.indent += 1;
+        println! ("Appending scope {:?} to {:?}", name, self.scopes.get_scope(self.scopes.get_current()));
+        let scope = self.scopes.push(name);
+		//self.indent_out(&format!("mod {}", name));
+		//self.indent_out("{");
+		//self.indent += 1;
 	}
 
 	fn pop_scope(&mut self)
 	{
-		self.indent -= 1;
-		self.indent_out("}");
+		//self.indent -= 1;
+		//self.indent_out("}");
 	}
 
 	fn get_scope(&self) -> Scope
 	{
-		self.scopes.get_scope(self.current_scope)
+		self.scopes.get_scope(self.scopes.get_current())
 	}
 
 	fn handle_const_result(&mut self, const_result: &ConstResult, _node: ASTRef) -> bool
@@ -119,7 +120,7 @@ impl CodeGenerator for Generator
 	{
 		// 	Load: extern fn(registry: *const iRegistry, name: *const c_char),
 		self.string_out("");
-		self.indent_out(&format!("pub struct {}_Vtbl", iface.name));
+		self.indent_out(&format!("gom_interface!( {} : , {}VTable", iface.name, iface.name));
 		self.indent_out("{");
 		self.indent();
 		for stmt in iface.statements.iter()
@@ -145,7 +146,8 @@ impl CodeGenerator for Generator
 									}
 
 								let result = " -> ".to_string() + &rt.data_type.to_string();
-								self.indent_out(&format!("{}: extern fn({}){},", n, params, result));
+                                let fn_name = Name::new(n);
+								self.indent_out(&format!("{}: extern fn({}){},", fn_name.to_lowercase_snake(), params, result));
 							}
 					}
 			}
@@ -164,7 +166,6 @@ impl Generator
 		{
 			tree: NodeRef::new(Box::new(Comment {content: "".to_string()})),
 			scopes: Scopes::new(),
-			current_scope: 0,
 			indent: 0
 		}
 	}

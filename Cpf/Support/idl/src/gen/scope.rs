@@ -7,6 +7,7 @@ const INVALID_HANDLE: usize = usize::MAX;
 
 
 // ------------------------
+#[derive(Debug)]
 pub struct Scope(String);
 
 impl Scope
@@ -52,27 +53,65 @@ pub struct Scopes
 {
 	scope_arena: Vec<ScopeEntry>,
 	#[allow(dead_code)]
-	root: Handle
+	root: Handle,
+    current_scope: Handle
 }
 
 impl Scopes
 {
 	pub fn new() -> Scopes
 	{
-		Scopes
+        let root = ScopeEntry::new("");
+		let result = Scopes
 		{
-			scope_arena: vec![ScopeEntry::new("")],
-			root: INVALID_HANDLE
-		}
+			scope_arena: vec![root],
+			root: 0,
+            current_scope: 0
+		};
+        result
 	}
 
-	#[allow(dead_code)]
+    pub fn get_current(&self) -> Handle
+    {
+        self.current_scope
+    }
+
+	pub fn push(&mut self, scope: &str) -> Handle
+	{
+        assert!(self.current_scope!=INVALID_HANDLE);
+
+        // Find if the resulting qualified namespace already exists.
+        let current = self.get_path(self.get_current());
+        if current.len() == 0
+        {
+            // Nothing in the current path.
+        }
+        else
+        {
+
+        }
+
+        let handle = self.add(scope);
+        handle
+	}
+
+    fn add(&mut self, scope: &str) -> Handle
+    {
+        let result = self.scope_arena.len();
+        self.scope_arena.push(ScopeEntry::new(scope));
+        result
+    }
+
+    fn size(&self) -> usize
+    {
+        self.scope_arena.len() as Handle
+    }
+
 	fn find(&self, _: Scope) -> Handle
 	{
 		INVALID_HANDLE
 	}
 
-	#[allow(dead_code)]
 	fn get_name(&self, handle: Handle) -> &Scope
 	{
 		return &self.scope_arena[handle].scope;
@@ -92,6 +131,10 @@ impl Scopes
 	fn get_path(&self, handle: Handle) -> Vec<Handle>
 	{
 		let mut result = Vec::new();
+        if handle==INVALID_HANDLE
+        {
+            return result;
+        }
 		result.push(handle);
 		let mut current = handle;
 		loop
@@ -105,4 +148,28 @@ impl Scopes
 			current = parent;
 		}
 	}
+}
+
+#[cfg(test)]
+mod tests
+{
+    use gen::scope::*;
+
+    #[test]
+    fn test_scopes_basic()
+    {
+        let cpf_name = "CPF";
+        let gom_name = "GOM";
+        let plugin_name = "Plugin";
+
+        let mut scopes = Scopes::new();
+        println!("***************************");
+        println!("Current: {:?}", scopes.get_path(scopes.get_current()));
+
+        // Add cpf.
+        scopes.push(cpf_name);
+        println!("Current: {:?}", scopes.get_path(scopes.get_current()));
+
+        println!("***************************");
+    }
 }

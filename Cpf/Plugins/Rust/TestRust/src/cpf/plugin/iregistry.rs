@@ -7,7 +7,7 @@ use cpf::*;
 use libc::{c_void};
 
 gom_interface!(
-    iRegistry : "Cpf::GOM::iRegistry",
+    iRegistry : "CPF::GOM::iRegistry",
     iRegistryVTable,
     methods
     {

@@ -8,5 +8,7 @@ pub mod cpp;
 pub use self::cpp::*;
 pub mod scope;
 pub use self::scope::*;
+pub mod name;
+pub use self::name::*;
 
 pub use context::*;
