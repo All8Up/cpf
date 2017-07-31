@@ -12,6 +12,7 @@ IMPORT                      : 'import';
 NAMESPACE                   : 'namespace';
 STRUCT                      : 'struct';
 INTERFACE                   : 'interface';
+ENUM                        : 'enum';
 
 IN                          : 'in';
 OUT                         : 'out';
@@ -21,6 +22,7 @@ SEMICOLON                   : ';';
 STAR                        : '*';
 DOT                         : '.';
 COMMA                       : ',';
+EQUALS                      : '=';
 QUOTE                       : '"';
 LBRACE                      : '{';
 RBRACE                      : '}';
@@ -37,6 +39,7 @@ CONST                       : 'const';
 // Types.
 VOID                        : 'void';
 RESULT                      : 'result';
+CLASS_ID                    : 'class_id';
 
 U8                          : 'u8';
 S8                          : 's8';
@@ -59,14 +62,12 @@ LONG                        : 'long';
 INT                         : 'int';
 FLOAT                       : 'float';
 DOUBLE                      : 'double';
+STRING                      : 'string';
 
 // Identifiers.
 IDENT                       : ALPHA_ (ALPHA_ | DIGIT)*;
 
 // Literals.
-NUMERIC_LIT                 : DECIMAL_LIT
-                            | HEX_LIT
-                            | OCT_DIGIT;
 DECIMAL_LIT                 : [1-9] DIGIT*;
 HEX_LIT                     : ('0x' | '0X') HEX_DIGIT+;
 OCT_LIT                     : '0' OCT_DIGIT+;
@@ -84,8 +85,9 @@ fragment ESC_CHAR           : '\\' [0\\tnr"']
                             ;
 
 // Floating point literal.
-FLOAT_LIT                   : DECIMAL_LIT DECIMAL_FRAC? DECIMAL_EXP?;
-fragment DECIMAL_FRAC       : '.' DECIMAL_LIT;
+FLOAT_LIT                   : DIGIT_SEQ? '.' DIGIT_SEQ DECIMAL_EXP?
+                            | DIGIT_SEQ '.' DECIMAL_EXP?;
+fragment DIGIT_SEQ          : DIGIT+;
 fragment DECIMAL_EXP        : FLOAT_EXP SIGN? DECIMAL_LIT;
 fragment FLOAT_EXP          : [eE];
 fragment SIGN               : [+\-];

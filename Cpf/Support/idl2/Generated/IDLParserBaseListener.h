@@ -82,11 +82,38 @@ public:
   virtual void enterParam_dir_qualifier(IDLParser::Param_dir_qualifierContext * /*ctx*/) override { }
   virtual void exitParam_dir_qualifier(IDLParser::Param_dir_qualifierContext * /*ctx*/) override { }
 
+  virtual void enterConst_def(IDLParser::Const_defContext * /*ctx*/) override { }
+  virtual void exitConst_def(IDLParser::Const_defContext * /*ctx*/) override { }
+
+  virtual void enterEnum_def(IDLParser::Enum_defContext * /*ctx*/) override { }
+  virtual void exitEnum_def(IDLParser::Enum_defContext * /*ctx*/) override { }
+
+  virtual void enterEnum_type(IDLParser::Enum_typeContext * /*ctx*/) override { }
+  virtual void exitEnum_type(IDLParser::Enum_typeContext * /*ctx*/) override { }
+
+  virtual void enterEnum_elements(IDLParser::Enum_elementsContext * /*ctx*/) override { }
+  virtual void exitEnum_elements(IDLParser::Enum_elementsContext * /*ctx*/) override { }
+
+  virtual void enterEnum_item(IDLParser::Enum_itemContext * /*ctx*/) override { }
+  virtual void exitEnum_item(IDLParser::Enum_itemContext * /*ctx*/) override { }
+
+  virtual void enterAny_literal(IDLParser::Any_literalContext * /*ctx*/) override { }
+  virtual void exitAny_literal(IDLParser::Any_literalContext * /*ctx*/) override { }
+
+  virtual void enterNumeric_lit(IDLParser::Numeric_litContext * /*ctx*/) override { }
+  virtual void exitNumeric_lit(IDLParser::Numeric_litContext * /*ctx*/) override { }
+
+  virtual void enterInteger_lit(IDLParser::Integer_litContext * /*ctx*/) override { }
+  virtual void exitInteger_lit(IDLParser::Integer_litContext * /*ctx*/) override { }
+
+  virtual void enterFloat_lit(IDLParser::Float_litContext * /*ctx*/) override { }
+  virtual void exitFloat_lit(IDLParser::Float_litContext * /*ctx*/) override { }
+
+  virtual void enterString_lit(IDLParser::String_litContext * /*ctx*/) override { }
+  virtual void exitString_lit(IDLParser::String_litContext * /*ctx*/) override { }
+
   virtual void enterQualified_ident(IDLParser::Qualified_identContext * /*ctx*/) override { }
   virtual void exitQualified_ident(IDLParser::Qualified_identContext * /*ctx*/) override { }
-
-  virtual void enterQualified_part_opt(IDLParser::Qualified_part_optContext * /*ctx*/) override { }
-  virtual void exitQualified_part_opt(IDLParser::Qualified_part_optContext * /*ctx*/) override { }
 
   virtual void enterQualified_part(IDLParser::Qualified_partContext * /*ctx*/) override { }
   virtual void exitQualified_part(IDLParser::Qualified_partContext * /*ctx*/) override { }
@@ -103,8 +130,8 @@ public:
   virtual void enterType_modifier(IDLParser::Type_modifierContext * /*ctx*/) override { }
   virtual void exitType_modifier(IDLParser::Type_modifierContext * /*ctx*/) override { }
 
-  virtual void enterPointer_opt_type(IDLParser::Pointer_opt_typeContext * /*ctx*/) override { }
-  virtual void exitPointer_opt_type(IDLParser::Pointer_opt_typeContext * /*ctx*/) override { }
+  virtual void enterPointer_type(IDLParser::Pointer_typeContext * /*ctx*/) override { }
+  virtual void exitPointer_type(IDLParser::Pointer_typeContext * /*ctx*/) override { }
 
   virtual void enterAny_type(IDLParser::Any_typeContext * /*ctx*/) override { }
   virtual void exitAny_type(IDLParser::Any_typeContext * /*ctx*/) override { }

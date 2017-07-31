@@ -1,8 +1,28 @@
 import "Std";
 import "Common";
 
+const float kSomething = 1.0;
+const int kSomething = 0xff00;
+
+enum Flags : s32
+{
+    eOK,
+    eError,
+    eResult = 3,
+    eBlargo = 4
+}
+
 struct Point2f
 {
+    enum Flags : s32
+    {
+        eOK,
+        eError,
+        eResult = 3,
+        eBlargo = 4
+    }
+    const float kSomething = 1.0;
+    const int kSomething = 0xff00;
     f32 x;
     f32 y;
 }
@@ -17,6 +37,15 @@ struct TEST1
 
 namespace Test
 {
+    enum Flags : s32
+    {
+        eOK,
+        eError,
+        eResult = 3,
+        eBlargo = 4
+    }
+    const float kSomething = 1.0;
+    const int kSomething = 0xff00;
     struct Point3f;
     namespace Test2
     {
@@ -28,8 +57,19 @@ namespace CPF
 	namespace Plugin
 	{
 		struct IID_CID;
+		const class_id RegistryCID = "CPF::Plugin::iRegistry";
 		interface iRegistry : GOM::iBase
 		{
+            enum Flags : s32
+            {
+                eOK,
+                eError,
+                eResult = 3,
+                eBlargo = 4
+            }
+            const float kSomething = 1.0;
+            const int kSomething = 0xff00;
+
 			result Load([in] char* library);
 			result CanUnload([in] char* library);
 			result Unload([in] char* library);

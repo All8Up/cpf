@@ -80,11 +80,38 @@ public:
   virtual void enterParam_dir_qualifier(IDLParser::Param_dir_qualifierContext *ctx) = 0;
   virtual void exitParam_dir_qualifier(IDLParser::Param_dir_qualifierContext *ctx) = 0;
 
+  virtual void enterConst_def(IDLParser::Const_defContext *ctx) = 0;
+  virtual void exitConst_def(IDLParser::Const_defContext *ctx) = 0;
+
+  virtual void enterEnum_def(IDLParser::Enum_defContext *ctx) = 0;
+  virtual void exitEnum_def(IDLParser::Enum_defContext *ctx) = 0;
+
+  virtual void enterEnum_type(IDLParser::Enum_typeContext *ctx) = 0;
+  virtual void exitEnum_type(IDLParser::Enum_typeContext *ctx) = 0;
+
+  virtual void enterEnum_elements(IDLParser::Enum_elementsContext *ctx) = 0;
+  virtual void exitEnum_elements(IDLParser::Enum_elementsContext *ctx) = 0;
+
+  virtual void enterEnum_item(IDLParser::Enum_itemContext *ctx) = 0;
+  virtual void exitEnum_item(IDLParser::Enum_itemContext *ctx) = 0;
+
+  virtual void enterAny_literal(IDLParser::Any_literalContext *ctx) = 0;
+  virtual void exitAny_literal(IDLParser::Any_literalContext *ctx) = 0;
+
+  virtual void enterNumeric_lit(IDLParser::Numeric_litContext *ctx) = 0;
+  virtual void exitNumeric_lit(IDLParser::Numeric_litContext *ctx) = 0;
+
+  virtual void enterInteger_lit(IDLParser::Integer_litContext *ctx) = 0;
+  virtual void exitInteger_lit(IDLParser::Integer_litContext *ctx) = 0;
+
+  virtual void enterFloat_lit(IDLParser::Float_litContext *ctx) = 0;
+  virtual void exitFloat_lit(IDLParser::Float_litContext *ctx) = 0;
+
+  virtual void enterString_lit(IDLParser::String_litContext *ctx) = 0;
+  virtual void exitString_lit(IDLParser::String_litContext *ctx) = 0;
+
   virtual void enterQualified_ident(IDLParser::Qualified_identContext *ctx) = 0;
   virtual void exitQualified_ident(IDLParser::Qualified_identContext *ctx) = 0;
-
-  virtual void enterQualified_part_opt(IDLParser::Qualified_part_optContext *ctx) = 0;
-  virtual void exitQualified_part_opt(IDLParser::Qualified_part_optContext *ctx) = 0;
 
   virtual void enterQualified_part(IDLParser::Qualified_partContext *ctx) = 0;
   virtual void exitQualified_part(IDLParser::Qualified_partContext *ctx) = 0;
@@ -101,8 +128,8 @@ public:
   virtual void enterType_modifier(IDLParser::Type_modifierContext *ctx) = 0;
   virtual void exitType_modifier(IDLParser::Type_modifierContext *ctx) = 0;
 
-  virtual void enterPointer_opt_type(IDLParser::Pointer_opt_typeContext *ctx) = 0;
-  virtual void exitPointer_opt_type(IDLParser::Pointer_opt_typeContext *ctx) = 0;
+  virtual void enterPointer_type(IDLParser::Pointer_typeContext *ctx) = 0;
+  virtual void exitPointer_type(IDLParser::Pointer_typeContext *ctx) = 0;
 
   virtual void enterAny_type(IDLParser::Any_typeContext *ctx) = 0;
   virtual void exitAny_type(IDLParser::Any_typeContext *ctx) = 0;
