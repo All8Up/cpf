@@ -1,0 +1,54 @@
+import "Std";
+import "Common";
+
+struct Point2f
+{
+    f32 x;
+    f32 y;
+}
+
+struct Vector3f;
+
+struct TEST1
+{
+    const u32* Data1;
+    Point2f* Data2;
+}
+
+namespace Test
+{
+    struct Point3f;
+    namespace Test2
+    {
+    }
+}
+
+namespace CPF
+{
+	namespace Plugin
+	{
+		struct IID_CID;
+		interface iRegistry : GOM::iBase
+		{
+			result Load([in] char* library);
+			result CanUnload([in] char* library);
+			result Unload([in] char* library);
+			result Install(u64 cid, [in] iClassInstance* clsInst);
+			result Remove(u64 cid);
+			result GetClassInstance(u64 cid, [out] iClassInstance** clsInst);
+			result Exists(u64 cid);
+			result Create([in] iBase* outer, u64 cid, u64 iid, [out] void** outIFace);
+			result ClassInstall(i32 count, [in] IID_CID* pairs);
+			result ClassRemove(i32 count, [in] IID_CID* pairs);
+			result GetClasses(u64 id, [in, out] i32* count, [out] u64* cid);
+			result InstanceInstall(u64 id, [in] iBase* instance);
+			result InstanceRemove(u64 id);
+			result GetInstance(u64 id, [out] iBase** outIface);
+		}
+
+		interface iClassInstance
+		{
+			result CreateInstance([in] iRegistry* registry, [in] iBase* outer, [out] iBase** outIface);
+		}
+	}
+}

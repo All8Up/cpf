@@ -1,44 +1,96 @@
 lexer grammar IDLLexer;
 
-LINE_COMMENT    :   '//' .*? EOF ;
-BLOCK_COMMENT   :   '/*' .*? '*/' ;
+fragment ALPHA              : [a-zA-Z];
+fragment ALPHA_             : [a-zA-Z_];
+fragment DIGIT              : [0-9];
+fragment HEX_DIGIT          : [0-9a-fA-F];
+fragment BIN_DIGIT          : [0-1];
+fragment OCT_DIGIT          : [0-7];
+fragment WS                 : [ \r\n\t];
 
-fragment
-ALPHA           :   [a-zA-Z] ;
-fragment
-ALPHANUMERIC    :   [a-zA-Z0-9] ;
-fragment
-HEXDIGIT        :   [a-fA-F0-9] ;
-fragment
-DIGIT           :   [0-9] ;
+IMPORT                      : 'import';
+NAMESPACE                   : 'namespace';
+STRUCT                      : 'struct';
+INTERFACE                   : 'interface';
 
-INTERFACE       :   'interface' ;
-STRUCT          :   'struct' ;
+IN                          : 'in';
+OUT                         : 'out';
 
-U8              :   'u8' ;
-I8              :   'i8' ;
-U16             :   'u16' ;
-I16             :   'i16' ;
-U32             :   'u32' ;
-I32             :   'i32' ;
-U64             :   'u64' ;
-I64             :   'i64' ;
-FLOAT           :   'f32' ;
-DOUBLE          :   'f64' ;
-CHAR            :   'char' ;
+COLON                       : ':';
+SEMICOLON                   : ';';
+STAR                        : '*';
+DOT                         : '.';
+COMMA                       : ',';
+QUOTE                       : '"';
+LBRACE                      : '{';
+RBRACE                      : '}';
+LPAREN                      : '(';
+RPAREN                      : ')';
+LBRACKET                    : '[';
+RBRACKET                    : ']';
+LT                          : '<';
+GT                          : '>';
 
-DOT             :   '.' ;
-COMMA           :   ',' ;
-COLON           :   ':' ;
-SEMICOLON       :   ';' ;
-QUOTE           :   '"' ;
-SINGLQUOTE      :   '\'' ;
-LESS            :   '<' ;
-GREATER         :   '>' ;
+// Type modifiers.
+CONST                       : 'const';
 
-LPAREN          :   '(' ;
-RPAREN          :   ')' ;
-LBRACE          :   '{' ;
-RBRACE          :   '}' ;
-LBRACKET        :   '[' ;
-RBRACKET        :   ']' ;
+// Types.
+VOID                        : 'void';
+RESULT                      : 'result';
+
+U8                          : 'u8';
+S8                          : 's8';
+U16                         : 'u16';
+S16                         : 's16';
+U32                         : 'u32';
+S32                         : 's32';
+U64                         : 'u64';
+S64                         : 's64';
+
+// Float types.
+F32                         : 'f32';
+F64                         : 'f64';
+
+// Alias's
+BYTE                        : 'byte';
+CHAR                        : 'char';
+SHORT                       : 'short';
+LONG                        : 'long';
+INT                         : 'int';
+FLOAT                       : 'float';
+DOUBLE                      : 'double';
+
+// Identifiers.
+IDENT                       : ALPHA_ (ALPHA_ | DIGIT)*;
+
+// Literals.
+NUMERIC_LIT                 : DECIMAL_LIT
+                            | HEX_LIT
+                            | OCT_DIGIT;
+DECIMAL_LIT                 : [1-9] DIGIT*;
+HEX_LIT                     : ('0x' | '0X') HEX_DIGIT+;
+OCT_LIT                     : '0' OCT_DIGIT+;
+BIN_LIT                     : ('0b' | '0B') BIN_DIGIT+;
+
+// String literal.
+STRING_LIT                  : QUOTE QUOTED_TEXT? QUOTE;
+fragment QUOTED_TEXT        : QUOTED_ITEM+;
+fragment QUOTED_ITEM        : ~["\n\r\\]
+                            | ESC_CHAR;
+fragment ESC_CHAR           : '\\' [0\\tnr"']
+                            | '\\x' HEX_DIGIT HEX_DIGIT
+                            | '\\u' '{' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT '}'
+                            | '\\u' '{' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT '}'
+                            ;
+
+// Floating point literal.
+FLOAT_LIT                   : DECIMAL_LIT DECIMAL_FRAC? DECIMAL_EXP?;
+fragment DECIMAL_FRAC       : '.' DECIMAL_LIT;
+fragment DECIMAL_EXP        : FLOAT_EXP SIGN? DECIMAL_LIT;
+fragment FLOAT_EXP          : [eE];
+fragment SIGN               : [+\-];
+
+// Ignored.
+WHITE_SPACE                 : WS+ -> skip;
+BLOCK_COMMENT               : '/*' (BLOCK_COMMENT|.)*? '*/'	-> skip;
+LINE_COMMENT                : '//' .*? ('\n'|EOF) -> skip;
