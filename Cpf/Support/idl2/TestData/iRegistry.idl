@@ -4,6 +4,9 @@ import "Common";
 const float kSomething = 1.0;
 const int kSomething = 0xff00;
 
+interface test : test::qualified::name
+{}
+
 enum Flags : s32
 {
     eOK,
@@ -58,7 +61,7 @@ namespace CPF
 	{
 		struct IID_CID;
 		const class_id RegistryCID = "CPF::Plugin::iRegistry";
-		interface iRegistry : GOM::iBase
+		interface iRegistry : GOM::iUnknown
 		{
             enum Flags : s32
             {
@@ -86,7 +89,7 @@ namespace CPF
 			result GetInstance(u64 id, [out] iBase** outIface);
 		}
 
-		interface iClassInstance
+		interface iClassInstance : GOM::iUnknown
 		{
 			result CreateInstance([in] iRegistry* registry, [in] iBase* outer, [out] iBase** outIface);
 		}

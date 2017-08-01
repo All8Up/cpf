@@ -14,7 +14,7 @@ global_statement        : import_stmt
                         | enum_def;
 
 // Import.
-import_stmt             : IMPORT STRING_LIT SEMICOLON;
+import_stmt             : IMPORT string_lit SEMICOLON;
 
 // Namespaces
 namespace_stmt          : NAMESPACE IDENT namespace_block;
@@ -89,7 +89,7 @@ float_lit               : FLOAT_LIT;
 string_lit              : STRING_LIT;
 
 // Qualified identifiers.
-qualified_ident         : qualified_separator? IDENT qualified_part?;
+qualified_ident         : qualified_separator? IDENT qualified_part*;
 qualified_part          : qualified_separator IDENT;
 qualified_separator     : COLON COLON;
 

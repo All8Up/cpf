@@ -145,7 +145,7 @@ public:
     Import_stmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IMPORT();
-    antlr4::tree::TerminalNode *STRING_LIT();
+    String_litContext *string_lit();
     antlr4::tree::TerminalNode *SEMICOLON();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -597,7 +597,8 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IDENT();
     Qualified_separatorContext *qualified_separator();
-    Qualified_partContext *qualified_part();
+    std::vector<Qualified_partContext *> qualified_part();
+    Qualified_partContext* qualified_part(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
