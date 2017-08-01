@@ -8,6 +8,14 @@
 
 class Listener : public IDLParserBaseListener
 {
+	void enterString_lit(IDLParser::String_litContext * ctx) override
+	{
+	}
+
+	void exitString_lit(IDLParser::String_litContext * ctx) override
+	{
+	}
+
 	void enterImport_stmt(IDLParser::Import_stmtContext * ctx) override
 	{
 		auto lit = ctx->STRING_LIT();

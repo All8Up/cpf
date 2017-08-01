@@ -1,5 +1,7 @@
 parser grammar IDLParser;
 
+options { tokenVocab = IDLLexer; }
+
 main                    : global_statements? EOF;
 
 // Statements allowed in global scope.
