@@ -9,7 +9,9 @@ using namespace IO;
 //////////////////////////////////////////////////////////////////////////
 TextReader::TextReader(Stream* strp)
 	: mpStream(strp)
-{}
+{
+	mpStream->AddRef();
+}
 
 TextReader::~TextReader()
 {}
@@ -143,4 +145,41 @@ TextReader::operator bool() const
 Stream* TextReader::GetStream() const
 {
 	return mpStream;
+}
+
+int64_t TextReader::ReadLine(String& out)
+{
+	int64_t result = 0;
+	int64_t state = 0;
+	uint8_t current;
+	out.clear();
+	while ((state = Read(current)))
+	{
+		if (current == 0x0d || current == 0x0a)
+		{
+			if (current == 0x0d)
+				continue;  // Skip it.
+			break;
+		}
+		else
+		{
+			++result;
+			out += current;
+		}
+	}
+	return result;
+}
+
+int64_t TextReader::ReadAll(String& out)
+{
+	int64_t result = 0;
+	out.clear();
+	uint8_t current;
+	int64_t state = 0;
+	while ((state = Read(current)))
+	{
+		++result;
+		out += current;
+	}
+	return result;
 }

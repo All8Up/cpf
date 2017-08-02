@@ -42,6 +42,10 @@ namespace Cpf
 
 				Stream* GetStream() const override;
 
+				// Text reader unique functions.
+				int64_t ReadLine(String& out);
+				int64_t ReadAll(String& out);
+
 			private:
 				StreamPtr mpStream;
 			};

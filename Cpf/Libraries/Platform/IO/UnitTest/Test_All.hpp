@@ -3,11 +3,6 @@
 #include "String.hpp"
 #include "Vector.hpp"
 #include "Algorithm.hpp"
-
-#if 0
-// TODO: Move to the adapter project.
-
-#include "Cpf/Platform.hpp"
 #include "Adapter/FileSystem.hpp"
 
 
@@ -22,7 +17,6 @@ public:
 
 	virtual void SetUp() override
 	{
-		Cpf::PlatformInitializer::Install();
 		Cpf::Platform::IOInitializer::Install();
 
 		Cpf::String paths[] =
@@ -70,7 +64,6 @@ public:
 	virtual void TearDown() override
 	{
 		Cpf::Platform::IOInitializer::Remove();
-		Cpf::PlatformInitializer::Remove();
 	}
 
 	struct TestRawBinary
@@ -91,6 +84,5 @@ public:
 #include "Test_BinaryWriter.hpp"
 #include "Test_TextReader.hpp"
 #include "Test_TextWriter.hpp"
-#include "Test_Archive.hpp"
-#include "Test_Serializer.hpp"
-#endif
+//#include "Test_Archive.hpp"
+//#include "Test_Serializer.hpp"

@@ -36,7 +36,6 @@ TEST(IO, DirectoryRecursive)
 	EXPECT_FALSE(Directory::Exists(testDir));
 }
 
-/* There is something about this test function which blows up VC during compile..  WTF.  Sometimes it compiles, sometimes it doesn't.
 TEST_F(IOTestFixture, DirectoryAndFileRecursive)
 {
 	using namespace Cpf;
@@ -70,7 +69,7 @@ TEST_F(IOTestFixture, DirectoryAndFileRecursive)
 	EXPECT_FALSE(Directory::Exists(testBase));
 	EXPECT_FALSE(Directory::Exists(testDir));
 }
-*/
+
 TEST(IO, Directory_File_Iterator)
 {
 	using namespace Cpf;
@@ -79,8 +78,10 @@ TEST(IO, Directory_File_Iterator)
 
 	Vector<String> contents;
 	Directory::Entries entries(".");
-	eastl::for_each(entries.begin(), entries.end(),
-		[&](const Directory::DirEntry& entry) {contents.push_back(entry.mName);});
+	for (const auto& entry : entries)
+	{
+		contents.push_back(entry.mName);
+	}
 
 	for (auto entry : Directory::Entries(".", [](const Directory::DirEntry& entry) {
 		// Only get cmake related files.

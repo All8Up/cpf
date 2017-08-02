@@ -9,7 +9,7 @@ using namespace IO;
 
 namespace
 {
-	class RawFileStream : tRefCounted<Stream>
+	class RawFileStream : public tRefCounted<Stream>
 	{
 	public:
 		//
@@ -158,7 +158,7 @@ CPF_EXPORT_IO Stream* File::Create(const String& name, StreamAccess access, Erro
 	{
 		if (error)
 			*error = Error::eNone;
-		return reinterpret_cast<Stream*>(filestream);
+		return static_cast<Stream*>(filestream);
 	}
 	return nullptr;
 }
