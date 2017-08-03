@@ -20,20 +20,60 @@ set (ListenerFiles
 	Generated/IDLParserListener.cpp
 )
 
-set (INCLUDE_FILES
+set (IncludeFiles
 	Include/Main.hpp
 	Include/Listener.hpp
 	Include/Handlers.hpp
 )
-set (SOURCE_FILES
+set (SourceFiles
 	Source/Main.cpp
 	Source/Listener.cpp
 	Source/Handlers.cpp
 )
+set (AstIncludes
+	Include/Ast/Scope.hpp
+)
+set (AstSources
+	Source/Ast/Scope.cpp
+)
+set (GeneratorsIncludes
+	Include/Generators/Generator.hpp
+)
+set (GeneratorsSources
+	Source/Generators/Generator.cpp
+)
+set (GeneratorsCppIncludes
+	Include/Generators/Cpp/Cpp.hpp
+)
+set (GeneratorsCppSources
+	Source/Generators/Cpp/Cpp.cpp
+)
+set (GeneratorsPython3Includes
+	Include/Generators/Python3/Python3.hpp
+)
+set (GeneratorsPython3Sources
+	Source/Generators/Python3/Python3.cpp
+)
+set (GeneratorsRustIncludes
+	Include/Generators/Rust/Rust.hpp
+)
+set (GeneratorsRustSources
+	Source/Generators/Rust/Rust.cpp
+)
 
 add_executable (IDL
-	${INCLUDE_FILES}
-	${SOURCE_FILES}
+	${IncludeFiles}
+	${SourceFiles}
+	${AstIncludes}
+	${AstSources}
+	${GeneratorsIncludes}
+	${GeneratorsSources}
+	${GeneratorsCppIncludes}
+	${GeneratorsCppSources}
+	${GeneratorsPython3Includes}
+	${GeneratorsPython3Sources}
+	${GeneratorsRustIncludes}
+	${GeneratorsRustSources}
 	${LexerFiles}
 	${ParserFiles}
 	${ListenerFiles}
@@ -43,8 +83,18 @@ set_property (TARGET IDL PROPERTY FOLDER Tools)
 source_group (Grammar\\Lexer FILES ${LexerFiles})
 source_group (Grammar\\Parser FILES ${ParserFiles})
 source_group (Grammar\\Listener FILES ${ListenerFiles})
-source_group (Includes FILES ${INCLUDE_FILES})
-source_group (Sources FILES ${SOURCE_FILES})
+source_group (Includes FILES ${IncludeFiles})
+source_group (Sources FILES ${SourceFiles})
+source_group (Includes\\Ast FILES ${AstIncludes})
+source_group (Sources\\Ast FILES ${AstSources})
+source_group (Includes\\Generators FILES ${GeneratorsIncludes})
+source_group (Sources\\Generators FILES ${GeneratorsSources})
+source_group (Includes\\Generators\\Cpp FILES ${GeneratorsCppIncludes})
+source_group (Sources\\Generators\\Cpp FILES ${GeneratorsCppSources})
+source_group (Includes\\Generators\\Python3 FILES ${GeneratorsPython3Includes})
+source_group (Sources\\Generators\\Python3 FILES ${GeneratorsPython3Sources})
+source_group (Includes\\Generators\\Rust FILES ${GeneratorsRustIncludes})
+source_group (Sources\\Generators\\Rust FILES ${GeneratorsRustSources})
 
 target_include_directories (IDL
 	PUBLIC

@@ -32,16 +32,17 @@ int64_t TextReader::ReadLine(String& out)
 	out.clear();
 	while (mpStream->Read(&current, sizeof(current)))
 	{
-		if (current == 0x0d || current == 0x0a)
+		switch (current)
 		{
-			if (current == 0x0d)
-				continue;  // Skip it.
+		case 0x0d:
+			continue;
+		case 0x0a:
 			break;
-		}
-		else
-		{
-			++result;
-			out += current;
+		default:
+			{
+				++result;
+				out += current;
+			}
 		}
 	}
 	return result;

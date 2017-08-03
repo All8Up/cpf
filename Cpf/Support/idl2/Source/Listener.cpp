@@ -4,6 +4,11 @@
 
 using namespace idl;
 
+void Listener::enterNamespace_stmt(IDLParser::Namespace_stmtContext * ctx)
+{
+
+}
+
 /**
  * @brief Exit import statement.
  * @param [in,out] ctx If non-null, the context.
