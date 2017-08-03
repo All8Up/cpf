@@ -34,7 +34,7 @@ namespace Cpf
 				bool CPF_STDCALL Mount(const char* const mountPoint) override;
 				void CPF_STDCALL Unmount() override;
 
-				Platform::IO::Stream* Open(ID) override;
+				IO::Stream* Open(ID) override;
 
 			private:
 				FileSystem(const String& relRoot);

@@ -7,7 +7,7 @@
 
 TEST_F(IOTestFixture, File_CreateForRead_Fail)
 {
-	using namespace Cpf::Platform::IO;
+	using namespace Cpf::IO;
 	EXPECT_FALSE(File::Exists("TestFile.test"));
 	auto file = File::Create("TestFile.test", StreamAccess::eRead);
 	EXPECT_FALSE(file);
@@ -15,7 +15,7 @@ TEST_F(IOTestFixture, File_CreateForRead_Fail)
 
 TEST_F(IOTestFixture, File_CreateForWrite_TestData)
 {
-	using namespace Cpf::Platform::IO;
+	using namespace Cpf::IO;
 	EXPECT_FALSE(File::Exists("TestFile.test"));
 	auto file = File::Create("TestFile.test", StreamAccess::eWrite);
 	EXPECT_TRUE(file!=nullptr);
@@ -32,7 +32,7 @@ TEST_F(IOTestFixture, File_CreateForWrite_TestData)
 
 TEST_F(IOTestFixture, File_CreateForRead_TestData)
 {
-	using namespace Cpf::Platform::IO;
+	using namespace Cpf::IO;
 	EXPECT_TRUE(File::Exists("TestFile.test"));
 	auto file = File::Create("TestFile.test", StreamAccess::eRead);
 	EXPECT_TRUE(file!=nullptr);
@@ -47,7 +47,7 @@ TEST_F(IOTestFixture, File_CreateForRead_TestData)
 
 TEST_F(IOTestFixture, File_Delete)
 {
-	using namespace Cpf::Platform::IO;
+	using namespace Cpf::IO;
 	EXPECT_TRUE(File::Exists("TestFile.test"));
 	EXPECT_TRUE(File::Delete("TestFile.test"));
 }

@@ -6,7 +6,6 @@
 #include "Std/Std.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 
 void ExperimentalD3D12::_UpdatePipelineDisplay()
 {

@@ -1,50 +1,44 @@
 #pragma once
-#include "IO/IO.hpp"
 #include "IO/Stream.hpp"
-#include "IO/Writer.hpp"
-
 
 namespace Cpf
 {
-	namespace Platform
+	namespace IO
 	{
-		namespace IO
+		class BinaryWriter
 		{
-			class BinaryWriter : public Writer
-			{
-			public:
-				BinaryWriter(Stream*);
-				~BinaryWriter() override;
+		public:
+			BinaryWriter(Stream*);
+			~BinaryWriter();
 
-				int64_t Write(bool&) override;
-				int64_t Write(String&) override;
-				int64_t Write(WString&) override;
+			int64_t Write(bool&);
+			int64_t Write(String&);
+			int64_t Write(WString&);
 
-				int64_t Write(char&) override;
-				int64_t Write(wchar_t&) override;
+			int64_t Write(char&);
+			int64_t Write(wchar_t&);
 
-				int64_t Write(int8_t&) override;
-				int64_t Write(int16_t&) override;
-				int64_t Write(int32_t&) override;
-				int64_t Write(int64_t&) override;
-				int64_t Write(uint8_t&) override;
-				int64_t Write(uint16_t&) override;
-				int64_t Write(uint32_t&) override;
-				int64_t Write(uint64_t&) override;
+			int64_t Write(int8_t&);
+			int64_t Write(int16_t&);
+			int64_t Write(int32_t&);
+			int64_t Write(int64_t&);
+			int64_t Write(uint8_t&);
+			int64_t Write(uint16_t&);
+			int64_t Write(uint32_t&);
+			int64_t Write(uint64_t&);
 
-				int64_t Write(float&) override;
-				int64_t Write(double&) override;
+			int64_t Write(float&);
+			int64_t Write(double&);
 
-				int64_t Align(int) override;
-				int64_t Pad(int) override;
+			int64_t Align(int);
+			int64_t Pad(int);
 
-				operator bool() const override;
+			operator bool() const;
 
-				Stream* GetStream() const override;
+			Stream* GetStream() const;
 
-			private:
-				StreamPtr mpStream;
-			};
-		}
+		private:
+			StreamPtr mpStream;
+		};
 	}
 }

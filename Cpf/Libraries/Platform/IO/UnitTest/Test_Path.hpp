@@ -6,17 +6,15 @@
 TEST(Path, Path_Construction)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
-	Cpf::String test = Path::Normalize("Test");
-	Cpf::WString wtest = Path::Normalize(L"Test");
+	String test = Path::Normalize("Test");
+	WString wtest = Path::Normalize(L"Test");
 }
 
 TEST_F(IOTestFixture, Normalize)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	int index = 0;
@@ -39,7 +37,6 @@ TEST_F(IOTestFixture, Normalize)
 TEST(Path, EnsureTrailingSeparator)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	{
@@ -59,7 +56,6 @@ TEST(Path, EnsureTrailingSeparator)
 TEST(Path, DetectRooted)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	{
@@ -87,7 +83,6 @@ TEST(Path, GetRoot)
 {
 	// NOTE: This is primarily for windows, nix roots are always empty.
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	{
@@ -100,7 +95,6 @@ TEST(Path, GetRoot)
 TEST(Path, HasExtension)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	{
@@ -112,7 +106,6 @@ TEST(Path, HasExtension)
 TEST(Path, Components)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	const String testPath(Path::Normalize("c:/this/is/a/test/"));
@@ -126,7 +119,6 @@ TEST(Path, Components)
 TEST(Path, Deconstruct_Reconstruct)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	{

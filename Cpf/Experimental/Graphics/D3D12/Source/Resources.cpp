@@ -24,7 +24,6 @@
 using namespace Cpf;
 using namespace Math;
 using namespace Graphics;
-using namespace Platform;
 
 
 bool ExperimentalD3D12::_CreateResources()

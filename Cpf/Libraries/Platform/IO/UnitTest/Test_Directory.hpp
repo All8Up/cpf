@@ -9,7 +9,6 @@
 TEST(IO, ExistsCreateDeleteDirectory)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	EXPECT_FALSE(Directory::Exists("TestDirectory"));
@@ -21,7 +20,6 @@ TEST(IO, ExistsCreateDeleteDirectory)
 TEST(IO, DirectoryRecursive)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 	String testBase = "TestDir";
 	String testDir = Path::Combine(testBase, "This/Is/A/Test/");
@@ -39,7 +37,6 @@ TEST(IO, DirectoryRecursive)
 TEST_F(IOTestFixture, DirectoryAndFileRecursive)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 	String testBase = "TestDir";
 	String testDir = Path::Combine(testBase, "This/Is/A/Test/");
@@ -73,7 +70,6 @@ TEST_F(IOTestFixture, DirectoryAndFileRecursive)
 TEST(IO, Directory_File_Iterator)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	Vector<String> contents;

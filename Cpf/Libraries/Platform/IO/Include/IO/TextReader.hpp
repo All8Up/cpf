@@ -1,54 +1,26 @@
 #pragma once
-#include "IO/IO.hpp"
 #include "IO/Stream.hpp"
-#include "IO/Reader.hpp"
-
 
 namespace Cpf
 {
-	namespace Platform
+	namespace IO
 	{
-		namespace IO
+		class TextReader
 		{
-			class TextReader : public Reader
-			{
-			public:
-				TextReader(Stream*);
-				~TextReader() override;
+		public:
+			TextReader(Stream*);
+			~TextReader();
 
-				int64_t Read(bool&) override;
-				int64_t Read(String&) override;
-				int64_t Read(WString&) override;
+			operator bool() const;
 
-				int64_t Read(char&) override;
-				int64_t Read(wchar_t&) override;
+			Stream* GetStream() const;
 
-				int64_t Read(int8_t&) override;
-				int64_t Read(int16_t&) override;
-				int64_t Read(int32_t&) override;
-				int64_t Read(int64_t&) override;
-				int64_t Read(uint8_t&) override;
-				int64_t Read(uint16_t&) override;
-				int64_t Read(uint32_t&) override;
-				int64_t Read(uint64_t&) override;
+			// Text reader unique functions.
+			int64_t ReadLine(String& out);
+			int64_t ReadAll(String& out);
 
-				int64_t Read(float&) override;
-				int64_t Read(double&) override;
-
-				int64_t Align(int) override;
-				int64_t Pad(int) override;
-
-				operator bool() const override;
-
-				Stream* GetStream() const override;
-
-				// Text reader unique functions.
-				int64_t ReadLine(String& out);
-				int64_t ReadAll(String& out);
-
-			private:
-				StreamPtr mpStream;
-			};
-		}
+		private:
+			StreamPtr mpStream;
+		};
 	}
 }

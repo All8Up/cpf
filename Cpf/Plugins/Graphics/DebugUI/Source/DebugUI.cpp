@@ -149,8 +149,8 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	// TODO: Consider moving the debug UI out so we don't need a dependency on resources.
 	// TODO: The decision will have to wait till later though, have to know how this ends up dealing with cross api shaders first.
 	{
-		IntrusivePtr<Platform::IO::Stream> vertexShaderHlsl(mpLocator->Open(RESOURCE_ID("shaders/", "ui_vs.hlsl")));
-		IntrusivePtr<Platform::IO::Stream> pixelShaderHlsl(mpLocator->Open(RESOURCE_ID("shaders/", "ui_ps.hlsl")));
+		IntrusivePtr<IO::Stream> vertexShaderHlsl(mpLocator->Open(RESOURCE_ID("shaders/", "ui_vs.hlsl")));
+		IntrusivePtr<IO::Stream> pixelShaderHlsl(mpLocator->Open(RESOURCE_ID("shaders/", "ui_ps.hlsl")));
 
 		if (vertexShaderHlsl && pixelShaderHlsl)
 		{

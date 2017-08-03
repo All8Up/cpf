@@ -47,7 +47,7 @@ namespace Cpf
 			bool CPF_STDCALL Remove(iLoader*) override;
 			const LoaderInfo* CPF_STDCALL GetLoader(uint32_t id) const override;
 
-			Platform::IO::Stream* CPF_STDCALL Open(ID) const override;
+			IO::Stream* CPF_STDCALL Open(ID) const override;
 			ResourceBase* CPF_STDCALL GetResource(ID) const override;
 
 			bool CPF_STDCALL Touch(ID) override;

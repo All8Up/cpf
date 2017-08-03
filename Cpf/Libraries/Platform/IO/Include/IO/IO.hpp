@@ -26,51 +26,48 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Cpf
 {
-	namespace Platform
+	struct IOInitializer
 	{
-		struct IOInitializer
-		{
-			CPF_EXPORT_IO static int Install();
-			CPF_EXPORT_IO static int Remove();
+		CPF_EXPORT_IO static int Install();
+		CPF_EXPORT_IO static int Remove();
 
-		private:
-			IOInitializer() = delete;
-			~IOInitializer() = delete;
+	private:
+		IOInitializer() = delete;
+		~IOInitializer() = delete;
+	};
+
+
+	namespace IO
+	{
+		//////////////////////////////////////////////////////////////////////////
+		class Stream;
+
+
+		/** @brief Error type enumeration. */
+		enum class Error : int64_t
+		{
+			eNone = 0,
+			eUnknownError = -1,
+			eOutOfMemory = 1,
+			eInvalidFile
 		};
 
 
-		namespace IO
+		/** @brief File attributes. */
+		namespace Attributes
 		{
-			//////////////////////////////////////////////////////////////////////////
-			class Stream;
-
-
-			/** @brief Error type enumeration. */
-			enum class Error : int64_t
+			enum
 			{
-				eNone = 0,
-				eUnknownError = -1,
-				eOutOfMemory = 1,
-				eInvalidFile
+				eFile = 1 << 0,
+				eDirectory = 1 << 1,
+				eHidden = 1 << 2,
+				eReadOnly = 1 << 3
 			};
-
-
-			/** @brief File attributes. */
-			namespace Attributes
-			{
-				enum
-				{
-					eFile = 1 << 0,
-					eDirectory = 1 << 1,
-					eHidden = 1 << 2,
-					eReadOnly = 1 << 3
-				};
-			}
-
-
-			//////////////////////////////////////////////////////////////////////////
-			enum class StreamAccess : int64_t;
-			enum class StreamOrigin : int64_t;
 		}
+
+
+		//////////////////////////////////////////////////////////////////////////
+		enum class StreamAccess : int64_t;
+		enum class StreamOrigin : int64_t;
 	}
 }

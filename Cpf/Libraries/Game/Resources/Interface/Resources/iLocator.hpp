@@ -51,7 +51,7 @@ namespace Cpf
 			virtual bool CPF_STDCALL Remove(iLoader*) = 0;
 			virtual const LoaderInfo* CPF_STDCALL GetLoader(uint32_t id) const = 0;
 
-			virtual Platform::IO::Stream* CPF_STDCALL Open(ID) const = 0;
+			virtual IO::Stream* CPF_STDCALL Open(ID) const = 0;
 			virtual iResource* CPF_STDCALL GetResource(ID) const = 0;
 
 			virtual bool CPF_STDCALL Touch(ID) = 0;

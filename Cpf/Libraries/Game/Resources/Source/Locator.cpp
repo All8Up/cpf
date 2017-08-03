@@ -151,9 +151,9 @@ const LoaderInfo* CPF_STDCALL Locator::GetLoader(uint32_t id) const
 	return nullptr;
 }
 
-Platform::IO::Stream* CPF_STDCALL Locator::Open(ID id) const
+IO::Stream* CPF_STDCALL Locator::Open(ID id) const
 {
-	Platform::IO::Stream* result = nullptr;
+	IO::Stream* result = nullptr;
 	for (const auto& volume : mVolumes)
 	{
 		result = volume.mpVolume->Open(id);

@@ -3,7 +3,6 @@
 #include "IO/FileSystem.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace IO;
 
 //////////////////////////////////////////////////////////////////////////
@@ -15,13 +14,10 @@ namespace
 
 namespace Cpf
 {
-	namespace Platform
+	namespace IO
 	{
-		namespace IO
-		{
-			extern CPF_EXPORT_IO iFileSystem* CreateFileSystem();
-			extern CPF_EXPORT_IO void DestroyFileSystem(iFileSystem*);
-		}
+		extern CPF_EXPORT_IO iFileSystem* CreateFileSystem();
+		extern CPF_EXPORT_IO void DestroyFileSystem(iFileSystem*);
 	}
 }
 
@@ -44,11 +40,3 @@ CPF_EXPORT_IO int IOInitializer::Remove()
 	}
 	return s_RefCount;
 }
-
-
-//////////////////////////////////////////////////////////////////////////
-#include "IO/Reader.hpp"
-Reader::~Reader() {}
-
-#include "IO/Writer.hpp"
-Writer::~Writer() {}

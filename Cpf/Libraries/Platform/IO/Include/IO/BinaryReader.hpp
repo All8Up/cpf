@@ -1,49 +1,44 @@
 #pragma once
 #include "IO/Stream.hpp"
-#include "IO/Reader.hpp"
-
 
 namespace Cpf
 {
-	namespace Platform
+	namespace IO
 	{
-		namespace IO
+		class BinaryReader
 		{
-			class BinaryReader : public Reader
-			{
-			public:
-				BinaryReader(Stream*);
-				~BinaryReader() override;
+		public:
+			BinaryReader(Stream*);
+			~BinaryReader();
 
-				int64_t Read(bool&) override;
-				int64_t Read(String&) override;
-				int64_t Read(WString&) override;
+			int64_t Read(bool&);
+			int64_t Read(String&);
+			int64_t Read(WString&);
 
-				int64_t Read(char&) override;
-				int64_t Read(wchar_t&) override;
+			int64_t Read(char&);
+			int64_t Read(wchar_t&);
 
-				int64_t Read(int8_t&) override;
-				int64_t Read(int16_t&) override;
-				int64_t Read(int32_t&) override;
-				int64_t Read(int64_t&) override;
-				int64_t Read(uint8_t&) override;
-				int64_t Read(uint16_t&) override;
-				int64_t Read(uint32_t&) override;
-				int64_t Read(uint64_t&) override;
+			int64_t Read(int8_t&);
+			int64_t Read(int16_t&);
+			int64_t Read(int32_t&);
+			int64_t Read(int64_t&);
+			int64_t Read(uint8_t&);
+			int64_t Read(uint16_t&);
+			int64_t Read(uint32_t&);
+			int64_t Read(uint64_t&);
 
-				int64_t Read(float&) override;
-				int64_t Read(double&) override;
+			int64_t Read(float&);
+			int64_t Read(double&);
 
-				int64_t Align(int) override;
-				int64_t Pad(int) override;
+			int64_t Align(int);
+			int64_t Pad(int);
 
-				operator bool() const override;
+			operator bool() const;
 
-				Stream* GetStream() const override;
+			Stream* GetStream() const;
 
-			private:
-				StreamPtr mpStream;
-			};
-		}
+		private:
+			StreamPtr mpStream;
+		};
 	}
 }

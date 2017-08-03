@@ -4,7 +4,6 @@
 #include "IO/Path.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace IO;
 
 

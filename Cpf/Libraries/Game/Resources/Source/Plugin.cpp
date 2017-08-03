@@ -17,13 +17,13 @@ extern "C" void CPF_EXPORT InstallResources(Plugin::iRegistry* registry)
 {
 	CPF_INIT_LOG(Resources);
 	CPF_LOG_LEVEL(Resources, Warn);
-	Platform::IOInitializer::Install();
+	IOInitializer::Install();
 
-	registry->Install(Resources::Caches::kCacheDefaultCID.GetID(), new Plugin::tClassInstance<Resources::Caches::Default>());
-	registry->Install(Resources::kLocatorCID.GetID(), new Plugin::tClassInstance<Resources::Locator>());
-	registry->Install(Resources::kMonitorFileSystemCID.GetID(), new Plugin::tClassInstance<Resources::Monitors::FileSystem>());
-	registry->Install(Resources::kMonitorManualCID.GetID(), new Plugin::tClassInstance<Resources::Monitors::Manual>());
-	registry->Install(Resources::kConfigurationCID.GetID(), new Plugin::tClassInstance<Resources::Configuration>());
+	registry->Install(Caches::kCacheDefaultCID.GetID(), new Plugin::tClassInstance<Caches::Default>());
+	registry->Install(kLocatorCID.GetID(), new Plugin::tClassInstance<Locator>());
+	registry->Install(kMonitorFileSystemCID.GetID(), new Plugin::tClassInstance<Monitors::FileSystem>());
+	registry->Install(kMonitorManualCID.GetID(), new Plugin::tClassInstance<Monitors::Manual>());
+	registry->Install(kConfigurationCID.GetID(), new Plugin::tClassInstance<Configuration>());
 
 	Configuration::VolumeDescriptor fileSystemDesc
 	{
@@ -42,13 +42,13 @@ extern "C" void CPF_EXPORT InstallResources(Plugin::iRegistry* registry)
 
 extern "C" void CPF_EXPORT RemoveResources(Plugin::iRegistry* registry)
 {
-	registry->Remove(Resources::kConfigurationCID.GetID());
-	registry->Remove(Resources::kMonitorManualCID.GetID());
-	registry->Remove(Resources::kMonitorFileSystemCID.GetID());
-	registry->Remove(Resources::kLocatorCID.GetID());
-	registry->Remove(Resources::Caches::kCacheDefaultCID.GetID());
+	registry->Remove(kConfigurationCID.GetID());
+	registry->Remove(kMonitorManualCID.GetID());
+	registry->Remove(kMonitorFileSystemCID.GetID());
+	registry->Remove(kLocatorCID.GetID());
+	registry->Remove(Caches::kCacheDefaultCID.GetID());
 
-	Platform::IOInitializer::Remove();
+	IOInitializer::Remove();
 	CPF_DROP_LOG(Resources);
 }
 

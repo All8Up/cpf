@@ -2,7 +2,6 @@
 #include "IO/BinaryWriter.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace IO;
 
 

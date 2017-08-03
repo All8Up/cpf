@@ -14,7 +14,6 @@
 
 using namespace Cpf;
 using namespace Math;
-using namespace Platform;
 using namespace EntityService;
 using namespace MultiCore;
 

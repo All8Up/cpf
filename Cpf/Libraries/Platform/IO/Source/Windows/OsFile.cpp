@@ -2,7 +2,6 @@
 #include "IO/File.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace IO;
 
 CPF_EXPORT_IO bool File::Exists(const String& name)

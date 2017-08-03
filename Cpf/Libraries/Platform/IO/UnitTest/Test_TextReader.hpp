@@ -5,7 +5,7 @@
 TEST(IO, TextReader)
 {
 	using namespace Cpf;
-	using namespace Cpf::Platform::IO;
+	using namespace IO;
 
 	String line0("This is a test file.");
 	String line1("It has two lines of text.");
@@ -20,7 +20,7 @@ TEST(IO, TextReader)
 
 	{
 		IntrusivePtr<Stream> readStream(
-			File::Create("TestTextFile.txt", Cpf::Platform::IO::StreamAccess::eRead));
+			File::Create("TestTextFile.txt", StreamAccess::eRead));
 		TextReader reader(readStream);
 
 		String firstLine, secondLine;

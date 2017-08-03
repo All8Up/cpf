@@ -1,7 +1,7 @@
 #include "IO/Globbing.hpp"
 
 using namespace Cpf;
-using namespace Platform;
+using namespace IO;
 
 /**
  * @brief Provides a globbing algorithm to search for patterns in strings.

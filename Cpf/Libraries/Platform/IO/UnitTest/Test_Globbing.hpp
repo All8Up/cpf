@@ -7,7 +7,6 @@
 TEST(Globbing, Match)
 {
 	using namespace Cpf;
-	using namespace Platform;
 	using namespace IO;
 
 	const String simple("test.test");

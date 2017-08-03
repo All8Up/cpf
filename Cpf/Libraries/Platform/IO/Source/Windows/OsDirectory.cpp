@@ -6,7 +6,6 @@
 
 
 using namespace Cpf;
-using namespace Platform;
 using namespace IO;
 
 CPF_EXPORT_IO void Directory::SetWorkingDirectory(const String& dir)

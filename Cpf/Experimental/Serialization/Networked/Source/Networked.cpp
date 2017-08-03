@@ -18,7 +18,6 @@
 #include "PluginHost/Registry.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace Threading;
 using namespace MultiCore;
 

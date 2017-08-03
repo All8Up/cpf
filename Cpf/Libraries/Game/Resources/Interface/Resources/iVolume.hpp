@@ -4,12 +4,9 @@
 
 namespace Cpf
 {
-	namespace Platform
+	namespace IO
 	{
-		namespace IO
-		{
-			class Stream;
-		}
+		class Stream;
 	}
 
 	namespace Resources
@@ -25,7 +22,7 @@ namespace Cpf
 			virtual bool CPF_STDCALL Mount(const char* const) = 0;
 			virtual void CPF_STDCALL Unmount() = 0;
 
-			virtual Platform::IO::Stream* CPF_STDCALL Open(ID) = 0;
+			virtual IO::Stream* CPF_STDCALL Open(ID) = 0;
 		};
 	}
 }

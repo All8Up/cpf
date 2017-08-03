@@ -17,7 +17,7 @@ public:
 
 	virtual void SetUp() override
 	{
-		Cpf::Platform::IOInitializer::Install();
+		Cpf::IOInitializer::Install();
 
 		Cpf::String paths[] =
 		{
@@ -63,7 +63,7 @@ public:
 
 	virtual void TearDown() override
 	{
-		Cpf::Platform::IOInitializer::Remove();
+		Cpf::IOInitializer::Remove();
 	}
 
 	struct TestRawBinary

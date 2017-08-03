@@ -3,7 +3,9 @@
  */
 #include "IO/Stream.hpp"
 
-Cpf::Vector<char> CPF_EXPORT_IO Cpf::Platform::IO::ReadText(Stream* stream)
+using namespace Cpf;
+
+Vector<char> CPF_EXPORT_IO IO::ReadText(Stream* stream)
 {
 	Vector<char> result;
 	int64_t streamLen = stream->GetLength();
@@ -13,7 +15,7 @@ Cpf::Vector<char> CPF_EXPORT_IO Cpf::Platform::IO::ReadText(Stream* stream)
 	return result;
 }
 
-Cpf::Vector<uint8_t> CPF_EXPORT_IO Cpf::Platform::IO::ReadBinary(Stream* stream)
+Vector<uint8_t> CPF_EXPORT_IO IO::ReadBinary(Stream* stream)
 {
 	Vector<uint8_t> result;
 	if (stream)

@@ -35,7 +35,6 @@
 using namespace Cpf;
 using namespace Math;
 using namespace Graphics;
-using namespace Platform;
 using namespace Threading;
 using namespace Concurrency;
 

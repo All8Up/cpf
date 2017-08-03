@@ -6,8 +6,6 @@ set( INCLUDE_FILES
 	Include/IO/Stream.hpp
 	Include/IO/Path.hpp
 	Include/IO/Globbing.hpp
-	Include/IO/Reader.hpp
-	Include/IO/Writer.hpp
 	Include/IO/BinaryReader.hpp
 	Include/IO/BinaryWriter.hpp
 	Include/IO/TextReader.hpp

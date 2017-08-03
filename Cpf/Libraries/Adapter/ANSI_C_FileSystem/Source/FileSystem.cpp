@@ -1,34 +1,32 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/FileSystem.hpp"
 #include "Logging/Logging.hpp"
-#include "IO/Stream.hpp"
 #include "IO/Path.hpp"
+#include "IO/Stream.hpp"
 #include "Std/String.hpp"
 #include "Std/IO.hpp"
 
 using namespace Cpf;
 using namespace Adapter;
+using namespace IO;
 
 namespace Cpf
 {
-	namespace Platform
+	namespace IO
 	{
-		namespace IO
+		CPF_EXPORT_ANSI_C_FILESYSTEM iFileSystem* CreateFileSystem()
 		{
-			CPF_EXPORT_ANSI_C_FILESYSTEM iFileSystem* CreateFileSystem()
-			{
-				CPF_INIT_LOG(ANSI_C_FileSystem);
-				CPF_LOG(ANSI_C_FileSystem, Info) << "Installing ANSI C FileSystem";
-				CPF_ASSERT(GetFileSystem() == nullptr);
-				return new ANSI_C_FileSystem;
-			}
-			CPF_EXPORT_ANSI_C_FILESYSTEM void DestroyFileSystem(iFileSystem*)
-			{
-				CPF_LOG(ANSI_C_FileSystem, Info) << "Removing ANSI C FileSystem";
-				delete GetFileSystem();
-				SetFileSystem(nullptr);
-				CPF_DROP_LOG(ANSI_C_FileSystem);
-			}
+			CPF_INIT_LOG(ANSI_C_FileSystem);
+			CPF_LOG(ANSI_C_FileSystem, Info) << "Installing ANSI C FileSystem";
+			CPF_ASSERT(GetFileSystem() == nullptr);
+			return new ANSI_C_FileSystem;
+		}
+		CPF_EXPORT_ANSI_C_FILESYSTEM void DestroyFileSystem(iFileSystem*)
+		{
+			CPF_LOG(ANSI_C_FileSystem, Info) << "Removing ANSI C FileSystem";
+			delete GetFileSystem();
+			SetFileSystem(nullptr);
+			CPF_DROP_LOG(ANSI_C_FileSystem);
 		}
 	}
 }
@@ -37,7 +35,7 @@ namespace Cpf
 ANSI_C_FileSystem::~ANSI_C_FileSystem()
 {}
 
-Platform::IO::FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAccess access, Error* error)
+IO::FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAccess access, Error* error)
 {
 	char mode[4];
 	switch (access)
@@ -53,7 +51,7 @@ Platform::IO::FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAcces
 		break;
 	}
 
-	FileHandle handle = Std::FOpen(Platform::IO::Path::ToOS(name).c_str(), mode);
+	FileHandle handle = Std::FOpen(IO::Path::ToOS(name).c_str(), mode);
 
 	if (error && handle == nullptr)
 	{
@@ -143,7 +141,7 @@ int64_t ANSI_C_FileSystem::Write(FileHandle handle, const void* buffer, int64_t 
 	return len;
 }
 
-Platform::IO::Error ANSI_C_FileSystem::GetError(FileHandle handle)
+IO::Error ANSI_C_FileSystem::GetError(FileHandle handle)
 {
 	auto error = Std::FError((FILE*)handle);
 	Error result = Error::eNone;

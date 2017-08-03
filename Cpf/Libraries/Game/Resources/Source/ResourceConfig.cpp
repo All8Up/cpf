@@ -10,7 +10,6 @@
 
 using namespace Cpf;
 using namespace Resources;
-using namespace Platform;
 using namespace IO;
 
 namespace

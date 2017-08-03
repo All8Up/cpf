@@ -2,7 +2,6 @@
 #include "IO/BinaryReader.hpp"
 
 using namespace Cpf;
-using namespace Platform;
 using namespace IO;
 
 
@@ -133,7 +132,6 @@ int64_t BinaryReader::Pad(int v)
 		mpStream->Read(&v, 1);
 	return v;
 }
-
 
 BinaryReader::operator bool() const
 {

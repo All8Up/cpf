@@ -25,13 +25,13 @@ namespace Cpf
 {
 	namespace Adapter
 	{
-		class ANSI_C_FileSystem : public Platform::IO::iFileSystem
+		class ANSI_C_FileSystem : public IO::iFileSystem
 		{
 		public:
-			using Error = Platform::IO::Error;
-			using FileHandle = Platform::IO::FileHandle;
-			using StreamAccess = Platform::IO::StreamAccess;
-			using StreamOrigin = Platform::IO::StreamOrigin;
+			using Error = IO::Error;
+			using FileHandle = IO::FileHandle;
+			using StreamAccess = IO::StreamAccess;
+			using StreamOrigin = IO::StreamOrigin;
 
 			~ANSI_C_FileSystem() override;
 
