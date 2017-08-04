@@ -2,11 +2,24 @@
 #include "Listener.hpp"
 #include "Handlers.hpp"
 
-using namespace idl;
+using namespace IDL;
 
-void Listener::enterNamespace_stmt(IDLParser::Namespace_stmtContext * ctx)
+void Listener::exitNamespace_stmt(IDLParser::Namespace_stmtContext * ctx)
 {
+	if (ctx->namespace_name())
+	{
+		std::string name = ctx->namespace_name()->getText();
+		printf("Namespace: %s\n", name.c_str());
+	}
+}
 
+void Listener::exitEnum_def(IDLParser::Enum_defContext * ctx)
+{
+	if (ctx->IDENT())
+	{
+		std::string name = ctx->IDENT()->toString();
+		printf("Enum: %s\n", name.c_str());
+	}
 }
 
 /**

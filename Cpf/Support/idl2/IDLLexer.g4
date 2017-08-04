@@ -68,10 +68,10 @@ STRING                      : 'string';
 IDENT                       : ALPHA_ (ALPHA_ | DIGIT)*;
 
 // Literals.
-DECIMAL_LIT                 : [1-9] DIGIT*;
-HEX_LIT                     : ('0x' | '0X') HEX_DIGIT+;
-OCT_LIT                     : '0' OCT_DIGIT+;
-BIN_LIT                     : ('0b' | '0B') BIN_DIGIT+;
+DECIMAL_LIT                 : SIGN? [1-9] DIGIT*;
+HEX_LIT                     : SIGN? ('0x' | '0X') HEX_DIGIT+;
+OCT_LIT                     : SIGN? '0' OCT_DIGIT+;
+BIN_LIT                     : SIGN? ('0b' | '0B') BIN_DIGIT+;
 
 // String literal.
 STRING_LIT                  : QUOTE QUOTED_TEXT? QUOTE;

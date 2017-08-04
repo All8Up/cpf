@@ -29,6 +29,9 @@ public:
   virtual void enterNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) = 0;
   virtual void exitNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) = 0;
 
+  virtual void enterNamespace_name(IDLParser::Namespace_nameContext *ctx) = 0;
+  virtual void exitNamespace_name(IDLParser::Namespace_nameContext *ctx) = 0;
+
   virtual void enterNamespace_block(IDLParser::Namespace_blockContext *ctx) = 0;
   virtual void exitNamespace_block(IDLParser::Namespace_blockContext *ctx) = 0;
 
@@ -40,6 +43,9 @@ public:
 
   virtual void enterStruct_decl(IDLParser::Struct_declContext *ctx) = 0;
   virtual void exitStruct_decl(IDLParser::Struct_declContext *ctx) = 0;
+
+  virtual void enterStruct_name(IDLParser::Struct_nameContext *ctx) = 0;
+  virtual void exitStruct_name(IDLParser::Struct_nameContext *ctx) = 0;
 
   virtual void enterStruct_fwd(IDLParser::Struct_fwdContext *ctx) = 0;
   virtual void exitStruct_fwd(IDLParser::Struct_fwdContext *ctx) = 0;
@@ -82,6 +88,21 @@ public:
 
   virtual void enterConst_def(IDLParser::Const_defContext *ctx) = 0;
   virtual void exitConst_def(IDLParser::Const_defContext *ctx) = 0;
+
+  virtual void enterConst_integral_def(IDLParser::Const_integral_defContext *ctx) = 0;
+  virtual void exitConst_integral_def(IDLParser::Const_integral_defContext *ctx) = 0;
+
+  virtual void enterConst_float_def(IDLParser::Const_float_defContext *ctx) = 0;
+  virtual void exitConst_float_def(IDLParser::Const_float_defContext *ctx) = 0;
+
+  virtual void enterConst_string_def(IDLParser::Const_string_defContext *ctx) = 0;
+  virtual void exitConst_string_def(IDLParser::Const_string_defContext *ctx) = 0;
+
+  virtual void enterConst_class_id_def(IDLParser::Const_class_id_defContext *ctx) = 0;
+  virtual void exitConst_class_id_def(IDLParser::Const_class_id_defContext *ctx) = 0;
+
+  virtual void enterEnum_fwd(IDLParser::Enum_fwdContext *ctx) = 0;
+  virtual void exitEnum_fwd(IDLParser::Enum_fwdContext *ctx) = 0;
 
   virtual void enterEnum_def(IDLParser::Enum_defContext *ctx) = 0;
   virtual void exitEnum_def(IDLParser::Enum_defContext *ctx) = 0;

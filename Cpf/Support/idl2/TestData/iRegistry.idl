@@ -2,18 +2,51 @@ import "Std";
 import "Common";
 
 const float kSomething = 1.0;
+const int kDecConst = 1234;
+const int kNegInt = -1234;
+const int kOctConst = 01234;
 const int kSomething = 0xff00;
+const int kBinConst = 0b00011001;
+const string kName = "Something";
+const class_id kID = "CPF::GOM::iRegistry";
+
+enum TestFwd : u32;
+enum Flags : s32
+{
+	eOK,
+	eError,
+	eResult = 3,
+	eBlargo = 4
+}
+
+struct Vector3f;
+
+struct TEST1
+{
+	const u32* Data1;
+	Point2f* Data2;
+}
+
+namespace Test
+{
+	enum FlagsXX : s32
+	{
+		eOK,
+		eError,
+		eResult = 3,
+		eBlargo = 4
+	}
+	const float kSomething = 1.0;
+	const int kSomething = 0xff00;
+	struct Point3f;
+	namespace Test2
+	{
+	}
+}
+
 
 interface test : test::qualified::name
 {}
-
-enum Flags : s32
-{
-    eOK,
-    eError,
-    eResult = 3,
-    eBlargo = 4
-}
 
 struct Point2f
 {
@@ -30,30 +63,6 @@ struct Point2f
     f32 y;
 }
 
-struct Vector3f;
-
-struct TEST1
-{
-    const u32* Data1;
-    Point2f* Data2;
-}
-
-namespace Test
-{
-    enum Flags : s32
-    {
-        eOK,
-        eError,
-        eResult = 3,
-        eBlargo = 4
-    }
-    const float kSomething = 1.0;
-    const int kSomething = 0xff00;
-    struct Point3f;
-    namespace Test2
-    {
-    }
-}
 
 namespace CPF
 {

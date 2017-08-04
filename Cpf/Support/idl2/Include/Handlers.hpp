@@ -3,7 +3,7 @@
 #include <string>
 #include "IDLParser.h"
 
-namespace idl
+namespace IDL
 {
 	std::string GetQualifiedIdent(IDLParser::Qualified_identContext* ctx);
 }

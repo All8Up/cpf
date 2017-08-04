@@ -31,6 +31,9 @@ public:
   virtual void enterNamespace_stmt(IDLParser::Namespace_stmtContext * /*ctx*/) override { }
   virtual void exitNamespace_stmt(IDLParser::Namespace_stmtContext * /*ctx*/) override { }
 
+  virtual void enterNamespace_name(IDLParser::Namespace_nameContext * /*ctx*/) override { }
+  virtual void exitNamespace_name(IDLParser::Namespace_nameContext * /*ctx*/) override { }
+
   virtual void enterNamespace_block(IDLParser::Namespace_blockContext * /*ctx*/) override { }
   virtual void exitNamespace_block(IDLParser::Namespace_blockContext * /*ctx*/) override { }
 
@@ -42,6 +45,9 @@ public:
 
   virtual void enterStruct_decl(IDLParser::Struct_declContext * /*ctx*/) override { }
   virtual void exitStruct_decl(IDLParser::Struct_declContext * /*ctx*/) override { }
+
+  virtual void enterStruct_name(IDLParser::Struct_nameContext * /*ctx*/) override { }
+  virtual void exitStruct_name(IDLParser::Struct_nameContext * /*ctx*/) override { }
 
   virtual void enterStruct_fwd(IDLParser::Struct_fwdContext * /*ctx*/) override { }
   virtual void exitStruct_fwd(IDLParser::Struct_fwdContext * /*ctx*/) override { }
@@ -84,6 +90,21 @@ public:
 
   virtual void enterConst_def(IDLParser::Const_defContext * /*ctx*/) override { }
   virtual void exitConst_def(IDLParser::Const_defContext * /*ctx*/) override { }
+
+  virtual void enterConst_integral_def(IDLParser::Const_integral_defContext * /*ctx*/) override { }
+  virtual void exitConst_integral_def(IDLParser::Const_integral_defContext * /*ctx*/) override { }
+
+  virtual void enterConst_float_def(IDLParser::Const_float_defContext * /*ctx*/) override { }
+  virtual void exitConst_float_def(IDLParser::Const_float_defContext * /*ctx*/) override { }
+
+  virtual void enterConst_string_def(IDLParser::Const_string_defContext * /*ctx*/) override { }
+  virtual void exitConst_string_def(IDLParser::Const_string_defContext * /*ctx*/) override { }
+
+  virtual void enterConst_class_id_def(IDLParser::Const_class_id_defContext * /*ctx*/) override { }
+  virtual void exitConst_class_id_def(IDLParser::Const_class_id_defContext * /*ctx*/) override { }
+
+  virtual void enterEnum_fwd(IDLParser::Enum_fwdContext * /*ctx*/) override { }
+  virtual void exitEnum_fwd(IDLParser::Enum_fwdContext * /*ctx*/) override { }
 
   virtual void enterEnum_def(IDLParser::Enum_defContext * /*ctx*/) override { }
   virtual void exitEnum_def(IDLParser::Enum_defContext * /*ctx*/) override { }

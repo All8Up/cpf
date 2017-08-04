@@ -11,32 +11,37 @@ global_statement        : import_stmt
                         | struct_stmt
                         | interface_stmt
                         | const_def
-                        | enum_def;
+                        | enum_def
+                        | enum_fwd;
 
 // Import.
 import_stmt             : IMPORT string_lit SEMICOLON;
 
 // Namespaces
-namespace_stmt          : NAMESPACE IDENT namespace_block;
+namespace_stmt          : NAMESPACE namespace_name namespace_block;
+namespace_name          : IDENT;
 namespace_block         : LBRACE namespace_item* RBRACE;
 // Statements allowed at namespace scope.
 namespace_item          : struct_stmt
                         | namespace_stmt
                         | interface_stmt
                         | const_def
-                        | enum_def;
+                        | enum_def
+                        | enum_fwd;
 
 // Structures
 struct_stmt             : struct_decl
                         | struct_fwd;
-struct_decl             : STRUCT IDENT struct_block;
+struct_decl             : STRUCT struct_name struct_block;
+struct_name             : IDENT;
 struct_fwd              : STRUCT IDENT SEMICOLON;
 
 struct_block            : LBRACE struct_item* RBRACE;
 // Statements allowed at struct scope.
 struct_item             : member_decl
                         | const_def
-                        | enum_def;
+                        | enum_def
+                        | enum_fwd;
 
 // Interfaces
 interface_stmt          : interface_decl
@@ -50,7 +55,8 @@ interface_block         : LBRACE interface_item* RBRACE;
 // Statements allowed at interface scope.
 interface_item          : function_decl
                         | const_def
-                        | enum_def;
+                        | enum_def
+                        | enum_fwd;
 
 // Function declarations.
 function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN SEMICOLON;
@@ -64,12 +70,18 @@ param_dir_qualifier     : LBRACKET IN RBRACKET
                         | LBRACKET IN COMMA OUT RBRACKET;
 
 // Constant definitions.
-const_def               : CONST integral_type IDENT EQUALS integer_lit SEMICOLON
-                        | CONST float_type IDENT EQUALS float_lit SEMICOLON
-                        | CONST STRING IDENT EQUALS string_lit SEMICOLON
-                        | CONST CLASS_ID IDENT EQUALS string_lit SEMICOLON;
+const_def               : const_integral_def
+                        | const_float_def
+                        | const_string_def
+                        | const_class_id_def;
+
+const_integral_def      : CONST integral_type IDENT EQUALS integer_lit SEMICOLON;
+const_float_def         : CONST float_type IDENT EQUALS float_lit SEMICOLON;
+const_string_def        : CONST STRING IDENT EQUALS string_lit SEMICOLON;
+const_class_id_def      : CONST CLASS_ID IDENT EQUALS string_lit SEMICOLON;
 
 // Enumerations.
+enum_fwd                : ENUM IDENT enum_type? SEMICOLON;
 enum_def                : ENUM IDENT enum_type? LBRACE enum_elements RBRACE;
 enum_type               : COLON integral_type;
 enum_elements           : enum_item (COMMA enum_item)*;

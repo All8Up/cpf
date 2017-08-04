@@ -19,22 +19,54 @@ set (ListenerFiles
 	Generated/IDLParserListener.h
 	Generated/IDLParserListener.cpp
 )
+set (VisitorFiles
+	Generated/IDLParserBaseVisitor.h
+	Generated/IDLParserBaseVisitor.cpp
+	Generated/IDLParserVisitor.h
+	Generated/IDLParserVisitor.cpp
+)
 
 set (IncludeFiles
 	Include/Main.hpp
 	Include/Listener.hpp
+	Include/Visitor.hpp
 	Include/Handlers.hpp
 )
 set (SourceFiles
 	Source/Main.cpp
 	Source/Listener.cpp
+	Source/Visitor.cpp
 	Source/Handlers.cpp
 )
-set (AstIncludes
-	Include/Ast/Scope.hpp
+set (ASTIncludes
+	Include/AST/Alias.hpp
+	Include/AST/Const.hpp
+	Include/AST/DataMember.hpp
+	Include/AST/Enum.hpp
+	Include/AST/ForwardRef.hpp
+	Include/AST/Function.hpp
+	Include/AST/Import.hpp
+	Include/AST/Interface.hpp
+	Include/AST/Namespaces.hpp
+	Include/AST/Parameter.hpp
+	Include/AST/Path.hpp
+	Include/AST/Struct.hpp
+	Include/AST/Types.hpp
 )
-set (AstSources
-	Source/Ast/Scope.cpp
+set (ASTSources
+	Source/AST/Alias.cpp
+	Source/AST/Const.cpp
+	Source/AST/DataMember.cpp
+	Source/AST/Enum.cpp
+	Source/AST/ForwardRef.cpp
+	Source/AST/Function.cpp
+	Source/AST/Import.cpp
+	Source/AST/Interface.cpp
+	Source/AST/Namespaces.cpp
+	Source/AST/Parameter.cpp
+	Source/AST/Path.cpp
+	Source/AST/Struct.cpp
+	Source/AST/Types.cpp
 )
 set (GeneratorsIncludes
 	Include/Generators/Generator.hpp
@@ -64,8 +96,8 @@ set (GeneratorsRustSources
 add_executable (IDL
 	${IncludeFiles}
 	${SourceFiles}
-	${AstIncludes}
-	${AstSources}
+	${ASTIncludes}
+	${ASTSources}
 	${GeneratorsIncludes}
 	${GeneratorsSources}
 	${GeneratorsCppIncludes}
@@ -77,16 +109,18 @@ add_executable (IDL
 	${LexerFiles}
 	${ParserFiles}
 	${ListenerFiles}
+	${VisitorFiles}
 )
 set_property (TARGET IDL PROPERTY FOLDER Tools)
 
 source_group (Grammar\\Lexer FILES ${LexerFiles})
 source_group (Grammar\\Parser FILES ${ParserFiles})
 source_group (Grammar\\Listener FILES ${ListenerFiles})
+source_group (Grammar\\Visitor FILES ${VisitorFiles})
 source_group (Includes FILES ${IncludeFiles})
 source_group (Sources FILES ${SourceFiles})
-source_group (Includes\\Ast FILES ${AstIncludes})
-source_group (Sources\\Ast FILES ${AstSources})
+source_group (Includes\\AST FILES ${ASTIncludes})
+source_group (Sources\\AST FILES ${ASTSources})
 source_group (Includes\\Generators FILES ${GeneratorsIncludes})
 source_group (Sources\\Generators FILES ${GeneratorsSources})
 source_group (Includes\\Generators\\Cpp FILES ${GeneratorsCppIncludes})
