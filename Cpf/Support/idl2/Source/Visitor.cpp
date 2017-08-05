@@ -155,8 +155,12 @@ antlrcpp::Any Visitor::visitNamespace_stmt(IDLParser::Namespace_stmtContext *con
 	printf("Namespace: %s\n", name.c_str());
 
 	// Push the new namespace onto the scope stack.
+	std::shared_ptr<AST::Symbol> newNamespace(mSymbolTable.PushScope(name));
+
 	auto any = visitChildren(context);
+
 	// Pop the namespace off the scope stack.
+	mSymbolTable.PopScope();
 
 	return any;
 }

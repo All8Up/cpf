@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "IDLParserBaseVisitor.h"
+#include "AST/SymbolTable.hpp"
 
 namespace IDL
 {
@@ -21,5 +22,8 @@ namespace IDL
 		antlrcpp::Any visitInterface_fwd(IDLParser::Interface_fwdContext *context) override;
 		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *context) override;
 		antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *context) override;
+
+	private:
+		AST::SymbolTable mSymbolTable;
 	};
 }
