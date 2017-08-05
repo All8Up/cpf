@@ -1,21 +1,24 @@
 //////////////////////////////////////////////////////////////////////////
 #include "AST/SymbolTable.hpp"
 #include <cassert>
+#include "AST/Namespace.hpp"
 
 using namespace AST;
 
-const std::string SymbolTable::mGlobalScopeName = "::";
+const std::string SymbolTable::mGlobalNamespace = "::";
 
 SymbolTable::SymbolTable()
 {
+	// Add the global namespace.
+	mCurrentNamespace = _AddNamespace(ScopeVector(), "");
 }
 
-std::string SymbolTable::GetCurrentScope() const
+SymbolTable::ScopeVector SymbolTable::GetCurrentScope() const
 {
-	return "";
+	return mCurrentScope;
 }
 
-std::shared_ptr<Symbol> SymbolTable::PushScope(const std::string& name)
+void SymbolTable::PushScope(const std::string& name)
 {
 	// Create the current scope string.
 	ScopeNameHandle scopeName = _FindScopeName(name);
@@ -23,18 +26,40 @@ std::shared_ptr<Symbol> SymbolTable::PushScope(const std::string& name)
 		scopeName = _AddScopeName(name);
 
 	// Append the new scope.
+	ScopeVector scope = _GetCurrentScope();
+	scope.push_back(scopeName);
+	mCurrentScope = scope;
 
-
-	// If the scope already exists, return the symbol.
-	// If the scope does not exist, make it and return it.
-
-	std::string currentScope = "::" + name;
-	return std::shared_ptr<Symbol>(Symbol::Create<Symbol::Type::eNamespace>(currentScope));
+	// If the namespace already exists, return the symbol.
+	std::shared_ptr<Symbol> ns;
+	if (_FindNamespace(scope, ns))
+	{
+		mCurrentNamespace = ns;
+		AddSymbol(ns);
+		return;
+	}
+	AddSymbol(_AddNamespace(scope, name));
 }
 
 bool SymbolTable::PopScope()
 {
-	return false;
+	assert(!mCurrentScope.empty());
+	if (mCurrentScope.empty())
+		return false;
+
+	mCurrentScope.pop_back();
+	_FindNamespace(mCurrentScope, mCurrentNamespace);
+	return true;
+}
+
+void SymbolTable::AddSymbol(SymbolPtr ptr)
+{
+	mSymbols.push_back(ptr);
+}
+
+std::string SymbolTable::GetScopeString(SymbolPtr ptr) const
+{
+	return _ToString(ptr->GetScope());
 }
 
 SymbolTable::ScopeNameHandle SymbolTable::_AddScopeName(const std::string& name)
@@ -62,7 +87,7 @@ SymbolTable::ScopeNameHandle SymbolTable::_FindScopeName(const std::string& name
 const std::string& SymbolTable::_GetScopeName(ScopeNameHandle handle) const
 {
 	if (handle == InvalidScopeName)
-		return mGlobalScopeName;
+		return mGlobalNamespace;
 	assert(handle != InvalidScopeName && handle < mScopeArena.size());
 	return mScopeArena[handle];
 }
@@ -76,8 +101,27 @@ std::string SymbolTable::_ToString(const ScopeVector& path) const
 {
 	std::string result;
 	if (path.empty())
-		return mGlobalScopeName;
+		return mGlobalNamespace;
 	for (const auto it : path)
-		result += mGlobalScopeName + _GetScopeName(it);
+		result += mGlobalNamespace + _GetScopeName(it);
+	return result;
+}
+
+bool SymbolTable::_FindNamespace(const ScopeVector& scope, std::shared_ptr<Symbol>& ns) const
+{
+	auto it = mNamespaces.find(scope);
+	if (it != mNamespaces.end())
+	{
+		ns = it->second;
+		return true;
+	}
+	return false;
+}
+
+std::shared_ptr<Symbol> SymbolTable::_AddNamespace(const ScopeVector& scope, const std::string& name)
+{
+	assert(mNamespaces.find(scope) == mNamespaces.end());
+	SymbolPtr result(std::make_shared<Namespace>(mCurrentScope, name));
+	mNamespaces[scope] = result;
 	return result;
 }

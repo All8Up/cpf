@@ -45,7 +45,7 @@ set (ASTIncludes
 	Include/AST/Function.hpp
 	Include/AST/Import.hpp
 	Include/AST/Interface.hpp
-	Include/AST/Namespaces.hpp
+	Include/AST/Namespace.hpp
 	Include/AST/Parameter.hpp
 	Include/AST/Path.hpp
 	Include/AST/Struct.hpp
@@ -62,7 +62,7 @@ set (ASTSources
 	Source/AST/Function.cpp
 	Source/AST/Import.cpp
 	Source/AST/Interface.cpp
-	Source/AST/Namespaces.cpp
+	Source/AST/Namespace.cpp
 	Source/AST/Parameter.cpp
 	Source/AST/Path.cpp
 	Source/AST/Struct.cpp

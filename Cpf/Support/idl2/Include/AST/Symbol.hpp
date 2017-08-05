@@ -2,36 +2,50 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <vector>
 
 namespace AST
 {
+	class Symbol;
+	using SymbolPtr = std::shared_ptr<Symbol>;
+
+	enum class SymbolType : int32_t
+	{
+		eUnknown,
+		eNamespace,
+		eIntegralConst,
+		eFloatConst,
+		eStringConst,
+		eClassIDConst,
+		eEnum,
+		eStruct,
+		eInterface
+	};
+
 	class Symbol
 	{
 	public:
-		enum class Type : int32_t
-		{
-			eUnknown,
-			eNamespace
-		};
+		using ScopeNameHandle = size_t;
+		static const ScopeNameHandle InvalidScopeName = size_t(~0);
+		using ScopeVector = std::vector<ScopeNameHandle>;
 
-		Type GetType() const;
+		virtual ~Symbol() {}
 
-		template<int32_t Type> static
-		std::shared_ptr<Symbol> Create(const std::string& name);
+		virtual SymbolType GetType() const = 0;
+		virtual std::string ToString() const { return std::string(); }
 
-	private:
-		Symbol(Type type, const std::string& name)
-			: mType(type)
-			, mName(name)
+		const std::string& GetName() const { return mName; }
+		const ScopeVector& GetScope() const { return mScope; }
+
+	protected:
+		Symbol(const ScopeVector& scope, const std::string& name)
+			: mName(name)
+			, mScope(scope)
 		{
 		}
 
-		Type mType;
+	private:
 		std::string mName;
+		ScopeVector mScope;
 	};
-
-	template<> inline std::shared_ptr<Symbol> Symbol::Create<Symbol::Type::eNamespace>(const std::string& name)
-	{
-		return std::shared_ptr<Symbol>(new Symbol(Symbol::Type::eNamespace, name));
-	}
 }

@@ -1,10 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "AST/Types.hpp"
-#include <string>
+#include "AST/Symbol.hpp"
 #include <memory>
 #include <vector>
-
 
 namespace AST
 {
@@ -23,23 +22,20 @@ namespace AST
 	using EnumItemArray = std::vector<EnumItem>;
 
 
-	class Enum
+	class Enum : public Symbol
 	{
 	public:
-		static std::shared_ptr<Enum> Create(const std::string& name);
-		static std::shared_ptr<Enum> Create(const std::string& name, IntegralType type);
+		Enum(const ScopeVector& scope, const std::string& name);
+		Enum(const ScopeVector& scope, const std::string& name, IntegralType type);
+		virtual ~Enum() {}
 
-		const std::string& GetName() const { return mName; }
-		IntegralType GetType() const { return mType; }
+		SymbolType GetType() const override { return SymbolType::eEnum; }
+		std::string ToString() const override { return std::string("Enum: ") + GetName(); }
 
 		void SetItems(const EnumItemArray& items) { mItems = items; }
 		const EnumItemArray& GetItems() const { return mItems; }
 
 	private:
-		Enum(const std::string& name);
-		Enum(const std::string& name, IntegralType type);
-
-		std::string mName;
 		IntegralType mType;
 		EnumItemArray mItems;
 	};

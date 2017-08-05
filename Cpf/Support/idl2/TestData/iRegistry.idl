@@ -50,6 +50,12 @@ namespace Test
 	}
 }
 
+// Verify namespace re-entrancy.
+namespace Test
+{
+	namespace Test2
+	{}
+}
 
 struct Point2f
 {

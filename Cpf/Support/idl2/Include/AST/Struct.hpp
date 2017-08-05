@@ -1,18 +1,18 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include <string>
-#include <memory>
+#include <AST/Symbol.hpp>
 
 namespace AST
 {
-	class Struct
+	class Struct : public Symbol
 	{
 	public:
-		static std::shared_ptr<Struct> Create(const std::string& name);
+		Struct(const ScopeVector& scope, const std::string& name);
+		virtual ~Struct();
+
+		SymbolType GetType() const override { return SymbolType::eStruct; }
+		std::string ToString() const override { return std::string("Struct: ") + GetName(); }
 
 	private:
-		Struct(const std::string& name);
-
-		std::string mName;
 	};
 }

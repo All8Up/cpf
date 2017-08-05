@@ -3,7 +3,3 @@
 
 using namespace AST;
 
-Symbol::Type Symbol::GetType() const
-{
-	return mType;
-}

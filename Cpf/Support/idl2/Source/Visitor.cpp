@@ -11,7 +11,6 @@ using namespace IDL;
 
 antlrcpp::Any Visitor::visitMain(IDLParser::MainContext *context)
 {
-	printf("********************\n");
 	return visitChildren(context);
 }
 
@@ -30,8 +29,7 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 	auto name = context->IDENT()->toString();
 	auto value = Handle(context->integer_lit());
 
-	auto result = AST::Const::Create(name, value);
-	printf("Const int: %s = %llu\n", name.c_str(), value);
+	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, value));
 	return visitChildren(context);
 }
 
@@ -39,8 +37,7 @@ antlrcpp::Any Visitor::visitConst_float_def(IDLParser::Const_float_defContext *c
 {
 	auto name = context->IDENT()->toString();
 	auto value = Handle(context->float_lit());
-	auto result = AST::Const::Create(name, value);
-	printf("Const float: %s = %f\n", name.c_str(), value);
+	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, value));
 	return visitChildren(context);
 }
 
@@ -48,8 +45,7 @@ antlrcpp::Any Visitor::visitConst_string_def(IDLParser::Const_string_defContext 
 {
 	auto name = context->IDENT()->toString();
 	auto value = context->string_lit()->STRING_LIT()->toString();
-	auto result = AST::Const::Create(name, AST::Const::Type::eString, value);
-	printf("Const string: %s = %s\n", name.c_str(), value.c_str());
+	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, AST::Const::Type::eString, value));
 	return visitChildren(context);
 }
 
@@ -57,8 +53,7 @@ antlrcpp::Any Visitor::visitConst_class_id_def(IDLParser::Const_class_id_defCont
 {
 	auto name = context->IDENT()->toString();
 	auto value = context->string_lit()->STRING_LIT()->toString();
-	auto result = AST::Const::Create(name, AST::Const::Type::eClassID, value);
-	printf("Const class id: %s = %s\n", name.c_str(), value.c_str());
+	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, AST::Const::Type::eClassID, value));
 	return visitChildren(context);
 }
 
@@ -68,13 +63,11 @@ antlrcpp::Any Visitor::visitEnum_fwd(IDLParser::Enum_fwdContext *context)
 	if (context->enum_type() && context->enum_type()->integral_type())
 	{
 		auto type = Handle(context->enum_type()->integral_type());
-		auto result = AST::Enum::Create(name, type);
-		printf("Enum forward: %s - %s\n", name.c_str(), TypeString(type).c_str());
+		mSymbolTable.AddSymbol(std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name, type));
 	}
 	else
 	{
-		printf("Enum forward: %s - Unknown\n", name.c_str());
-		auto result = AST::Enum::Create(name);
+		mSymbolTable.AddSymbol(std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name));
 	}
 
 	return visitChildren(context);
@@ -87,13 +80,12 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 	if (context->enum_type() && context->enum_type()->integral_type())
 	{
 		auto type = Handle(context->enum_type()->integral_type());
-		result = std::shared_ptr<AST::Enum>(AST::Enum::Create(name, type));
+		result = std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name, type);
 	}
 	else
 	{
-		result = std::shared_ptr<AST::Enum>(AST::Enum::Create(name));
+		result = std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name);
 	}
-	printf("Enum: %s - %s\n", result->GetName().c_str(), TypeString(result->GetType()).c_str());
 
 	// Enumerate the contents.
 	const auto entries = context->enum_elements()->enum_item();
@@ -101,20 +93,19 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 	for (const auto entry : entries)
 	{
 		auto entryName = entry->IDENT()->toString();
-		printf(" - %s\n", entryName.c_str());
 		entryArray.emplace_back(AST::EnumItem(entryName, 0));
 	}
 	result->SetItems(entryArray);
 
+	mSymbolTable.AddSymbol(result);
 	return visitChildren(context);
 }
 
 antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto result = AST::Struct::Create(name);
-
-	printf("Struct fwd: %s\n", name.c_str());
+	auto result = std::make_shared<AST::Struct>(mSymbolTable.GetCurrentScope(), name);
+	mSymbolTable.AddSymbol(result);
 
 	return visitChildren(context);
 }
@@ -122,9 +113,8 @@ antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *context)
 antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *context)
 {
 	auto name = context->struct_name()->IDENT()->toString();
-	auto result = AST::Struct::Create(name);
-
-	printf("Struct: %s\n", name.c_str());
+	auto result = std::make_shared<AST::Struct>(mSymbolTable.GetCurrentScope(), name);
+	mSymbolTable.AddSymbol(result);
 
 	return visitChildren(context);
 }
@@ -132,9 +122,8 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *context)
 antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto result = AST::Interface::Create(name);
-
-	printf("Interface fwd: %s\n", name.c_str());
+	auto result = std::make_shared<AST::Interface>(mSymbolTable.GetCurrentScope(), name);
+	mSymbolTable.AddSymbol(result);
 
 	return visitChildren(context);
 }
@@ -142,21 +131,21 @@ antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *conte
 antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto result = AST::Interface::Create(name);
-
-	printf("Interface: %s\n", name.c_str());
+	auto result = std::make_shared<AST::Interface>(mSymbolTable.GetCurrentScope(), name);
+	mSymbolTable.AddSymbol(result);
 
 	return visitChildren(context);
 }
 
 antlrcpp::Any Visitor::visitNamespace_stmt(IDLParser::Namespace_stmtContext *context)
 {
+	// Get the name.
 	auto name = context->namespace_name()->IDENT()->toString();
-	printf("Namespace: %s\n", name.c_str());
 
 	// Push the new namespace onto the scope stack.
-	std::shared_ptr<AST::Symbol> newNamespace(mSymbolTable.PushScope(name));
+	mSymbolTable.PushScope(name);
 
+	// Process children of the new namespace.
 	auto any = visitChildren(context);
 
 	// Pop the namespace off the scope stack.

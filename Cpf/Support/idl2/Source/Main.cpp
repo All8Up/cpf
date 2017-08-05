@@ -17,10 +17,18 @@ int main(int argc, char** argv)
 	{
 		IDL::Visitor visitor;
 		visitor.visit(tree);
+		printf("-------------------------------------\n");
+		for (auto it : visitor.GetSymbolTable())
+		{
+			auto scope = visitor.GetSymbolTable().GetScopeString(it);
+			printf("%s = %s\n", scope.c_str(), it->ToString().c_str());
+		}
 	}
 
+	/*
 	std::wstring s = antlrcpp::s2ws(tree->toStringTree(&parser)) + L"\n";
 	OutputDebugString(s.data());
+	*/
 
 	return 0;
 }

@@ -23,6 +23,8 @@ namespace IDL
 		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *context) override;
 		antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *context) override;
 
+		const AST::SymbolTable& GetSymbolTable() const { return mSymbolTable; }
+
 	private:
 		AST::SymbolTable mSymbolTable;
 	};

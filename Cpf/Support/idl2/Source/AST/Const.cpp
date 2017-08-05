@@ -3,38 +3,23 @@
 
 using namespace AST;
 
-std::shared_ptr<Const> Const::Create(const std::string& name, uint64_t value)
-{
-	return std::shared_ptr<Const>(new Const(name, value));
-}
-
-std::shared_ptr<Const> Const::Create(const std::string& name, double value)
-{
-	return std::shared_ptr<Const>(new Const(name, value));
-}
-
-std::shared_ptr<Const> Const::Create(const std::string& name, Type type, const std::string& value)
-{
-	return std::shared_ptr<Const>(new Const(name, type, value));
-}
-
-Const::Const(const std::string& name, uint64_t value)
-	: mType(Type::eIntegral)
-	, mName(name)
+Const::Const(const ScopeVector& scope, const std::string& name, uint64_t value)
+	: Symbol(scope, name)
+	, mType(Type::eIntegral)
 {
 	mUInt64 = value;
 }
 
-Const::Const(const std::string& name, double value)
-	: mType(Type::eFloat)
-	, mName(name)
+Const::Const(const ScopeVector& scope, const std::string& name, double value)
+	: Symbol(scope, name)
+	, mType(Type::eFloat)
 {
 	mDouble = value;
 }
 
-Const::Const(const std::string& name, Type type, const std::string& value)
-	: mType(type)
-	, mName(name)
+Const::Const(const ScopeVector& scope, const std::string& name, Type type, const std::string& value)
+	: Symbol(scope, name)
+	, mType(type)
 {
 	mpString = new char[value.length() + 1];
 	::strcpy(mpString, value.c_str());

@@ -1,18 +1,17 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include <string>
-#include <memory>
+#include <AST/Symbol.hpp>
 
 namespace AST
 {
-	class Interface
+	class Interface : public Symbol
 	{
 	public:
-		static std::shared_ptr<Interface> Create(const std::string& name);
+		Interface(const ScopeVector& scope, const std::string& name);
+
+		SymbolType GetType() const override { return SymbolType::eInterface; }
+		std::string ToString() const override { return std::string("Interface: ") + GetName(); }
 
 	private:
-		Interface(const std::string& name);
-
-		std::string mName;
 	};
 }
