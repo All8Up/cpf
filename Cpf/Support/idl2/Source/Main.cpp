@@ -1,6 +1,5 @@
 #include "antlr4-runtime.h"
 #include "IDLLexer.h"
-#include "Listener.hpp"
 #include "Visitor.hpp"
 #include <Windows.h>
 #undef INTERFACE
@@ -11,10 +10,6 @@ int main(int argc, char** argv)
 	IDLLexer lexer(&input);
 	antlr4::CommonTokenStream tokenStream(&lexer);
 	IDLParser parser(&tokenStream);
-
-	// Add listener for the moment, may end up using it again later.
-//	IDL::Listener listener;
-//	parser.addParseListener(&listener);
 
 	antlr4::tree::ParseTree* tree = parser.main();
 

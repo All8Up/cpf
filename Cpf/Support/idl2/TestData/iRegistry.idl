@@ -13,6 +13,7 @@ const class_id kID = "CPF::GOM::iRegistry";
 enum TestFwd : u32;
 enum Flags : s32
 {
+	// TODO: Consider adding computation support for things like 1<<1, eBlargo = eResult + 5 etc.
 	eOK,
 	eError,
 	eResult = 3,

@@ -28,13 +28,11 @@ set (VisitorFiles
 
 set (IncludeFiles
 	Include/Main.hpp
-	Include/Listener.hpp
 	Include/Visitor.hpp
 	Include/Handlers.hpp
 )
 set (SourceFiles
 	Source/Main.cpp
-	Source/Listener.cpp
 	Source/Visitor.cpp
 	Source/Handlers.cpp
 )
@@ -51,6 +49,8 @@ set (ASTIncludes
 	Include/AST/Parameter.hpp
 	Include/AST/Path.hpp
 	Include/AST/Struct.hpp
+	Include/AST/Symbol.hpp
+	Include/AST/SymbolTable.hpp
 	Include/AST/Types.hpp
 )
 set (ASTSources
@@ -66,6 +66,8 @@ set (ASTSources
 	Source/AST/Parameter.cpp
 	Source/AST/Path.cpp
 	Source/AST/Struct.cpp
+	Source/AST/Symbol.cpp
+	Source/AST/SymbolTable.cpp
 	Source/AST/Types.cpp
 )
 set (GeneratorsIncludes
