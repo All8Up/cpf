@@ -16,5 +16,10 @@ namespace IDL
 		antlrcpp::Any visitConst_class_id_def(IDLParser::Const_class_id_defContext *context) override;
 		antlrcpp::Any visitEnum_fwd(IDLParser::Enum_fwdContext *context) override;
 		antlrcpp::Any visitEnum_def(IDLParser::Enum_defContext *context) override;
+		antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *context) override;
+		antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *context) override;
+		antlrcpp::Any visitInterface_fwd(IDLParser::Interface_fwdContext *context) override;
+		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *context) override;
+		antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *context) override;
 	};
 }

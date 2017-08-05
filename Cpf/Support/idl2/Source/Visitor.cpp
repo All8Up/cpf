@@ -4,6 +4,8 @@
 #include "AST/Import.hpp"
 #include "AST/Const.hpp"
 #include "AST/Enum.hpp"
+#include "AST/Struct.hpp"
+#include "AST/Interface.hpp"
 
 using namespace IDL;
 
@@ -102,6 +104,59 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 		printf(" - %s\n", entryName.c_str());
 		entryArray.emplace_back(AST::EnumItem(entryName, 0));
 	}
+	result->SetItems(entryArray);
 
 	return visitChildren(context);
+}
+
+antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *context)
+{
+	auto name = context->IDENT()->toString();
+	auto result = AST::Struct::Create(name);
+
+	printf("Struct fwd: %s\n", name.c_str());
+
+	return visitChildren(context);
+}
+
+antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *context)
+{
+	auto name = context->struct_name()->IDENT()->toString();
+	auto result = AST::Struct::Create(name);
+
+	printf("Struct: %s\n", name.c_str());
+
+	return visitChildren(context);
+}
+
+antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *context)
+{
+	auto name = context->IDENT()->toString();
+	auto result = AST::Interface::Create(name);
+
+	printf("Interface fwd: %s\n", name.c_str());
+
+	return visitChildren(context);
+}
+
+antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *context)
+{
+	auto name = context->IDENT()->toString();
+	auto result = AST::Interface::Create(name);
+
+	printf("Interface: %s\n", name.c_str());
+
+	return visitChildren(context);
+}
+
+antlrcpp::Any Visitor::visitNamespace_stmt(IDLParser::Namespace_stmtContext *context)
+{
+	auto name = context->namespace_name()->IDENT()->toString();
+	printf("Namespace: %s\n", name.c_str());
+
+	// Push the new namespace onto the scope stack.
+	auto any = visitChildren(context);
+	// Pop the namespace off the scope stack.
+
+	return any;
 }

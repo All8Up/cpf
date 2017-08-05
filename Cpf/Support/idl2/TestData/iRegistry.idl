@@ -28,6 +28,11 @@ struct TEST1
 	Point2f* Data2;
 }
 
+interface Ba;
+interface test : test::qualified::name
+{}
+
+
 namespace Test
 {
 	enum FlagsXX : s32
@@ -45,9 +50,6 @@ namespace Test
 	}
 }
 
-
-interface test : test::qualified::name
-{}
 
 struct Point2f
 {
