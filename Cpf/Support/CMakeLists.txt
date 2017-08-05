@@ -1,1 +1,1 @@
-add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/idl2")
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/idl")
