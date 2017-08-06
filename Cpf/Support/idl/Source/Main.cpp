@@ -6,7 +6,7 @@
 
 int main(int argc, char** argv)
 {
-	antlr4::ANTLRFileStream input("C:/Projects/cpf/Cpf/Support/idl2/TestData/iRegistry.idl");
+	antlr4::ANTLRFileStream input("C:/Projects/cpf/Cpf/Support/idl/TestData/iRegistry.idl");
 	IDLLexer lexer(&input);
 	antlr4::CommonTokenStream tokenStream(&lexer);
 	IDLParser parser(&tokenStream);
