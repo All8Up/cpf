@@ -31,12 +31,14 @@ set (VisitorIncludes
 	Include/Visitor/Literal.hpp
 	Include/Visitor/QualifiedIdentifier.hpp
 	Include/Visitor/Enum.hpp
+	Include/Visitor/DataMember.hpp
 )
 set (VisitorSources
 	Source/Visitor/Visitor.cpp
 	Source/Visitor/Literal.cpp
 	Source/Visitor/QualifiedIdentifier.cpp
 	Source/Visitor/Enum.cpp
+	Source/Visitor/DataMember.cpp
 )
 set (IncludeFiles
 	Include/Main.hpp

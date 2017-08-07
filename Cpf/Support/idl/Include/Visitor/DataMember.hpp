@@ -1,0 +1,8 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+#include "AST/Struct.hpp"
+
+namespace IDL
+{
+	AST::DataMemberVector GetDataMembers();
+}

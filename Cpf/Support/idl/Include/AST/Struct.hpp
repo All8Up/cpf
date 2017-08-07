@@ -4,6 +4,16 @@
 
 namespace AST
 {
+	class DataMember
+	{
+	public:
+		DataMember(const std::string& name);
+
+	private:
+		std::string mName;
+	};
+	using DataMemberVector = std::vector<DataMember>;
+
 	class Struct : public Symbol
 	{
 	public:
@@ -11,8 +21,9 @@ namespace AST
 		virtual ~Struct();
 
 		SymbolType GetType() const override { return SymbolType::eStruct; }
-		std::string ToString() const override { return std::string("Struct: ") + GetName(); }
+		std::string ToString() const override;
 
 	private:
+		DataMemberVector mDataMembers;
 	};
 }
