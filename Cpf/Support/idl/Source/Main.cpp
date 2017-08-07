@@ -1,8 +1,8 @@
+//////////////////////////////////////////////////////////////////////////
 #include "antlr4-runtime.h"
 #include "IDLLexer.h"
 #include "Visitor.hpp"
 #include <Windows.h>
-#undef INTERFACE
 
 int main(int argc, char** argv)
 {

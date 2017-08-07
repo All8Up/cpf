@@ -26,5 +26,64 @@ namespace Cpf
 			virtual int32_t CPF_STDCALL Release() = 0;
 			virtual Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) = 0;
 		};
+
+		//////////////////////////////////////////////////////////////////////////
+		// Utility helper to implement iUnknown objects.
+		template<typename BASE = iUnknown>
+		class tUnknown : public BASE
+		{
+		public:
+			template<typename... PARAMS>
+			tUnknown(PARAMS... params);
+			tUnknown();
+
+			virtual ~tUnknown() {}
+
+			virtual int32_t CPF_STDCALL AddRef() override;
+			virtual int32_t CPF_STDCALL Release() override;
+			virtual Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
+
+		private:
+			int32_t mRefCount;
+		};
+
+		//////////////////////////////////////////////////////////////////////////
+		template<typename BASE>
+		template<typename... PARAMS> inline
+			tUnknown<BASE>::tUnknown(PARAMS... params)
+			: BASE(params...)
+			, mRefCount(1)
+		{}
+
+		template<typename BASE> inline
+			tUnknown<BASE>::tUnknown()
+			: mRefCount(1)
+		{}
+
+		template<typename BASE> inline
+			int32_t CPF_STDCALL tUnknown<BASE>::AddRef()
+		{
+			CPF_ASSERT(mRefCount > 0);
+			return ++mRefCount;
+		}
+
+		template<typename BASE> inline
+			int32_t CPF_STDCALL tUnknown<BASE>::Release()
+		{
+			CPF_ASSERT(mRefCount > 0);
+			if (--mRefCount == 0)
+			{
+				delete this;
+				return 0;
+			}
+			return mRefCount;
+		}
+
+		template<typename BASE> inline
+			Result CPF_STDCALL tUnknown<BASE>::QueryInterface(uint64_t id, void** outIface)
+		{
+			(void)id; (void)outIface;
+			return kNotImplemented;
+		}
 	}
 }

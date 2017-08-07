@@ -30,8 +30,14 @@ namespace Cpf
 			tClassInstance(int32_t* externalRef = nullptr) : mRefCount(1), mExternalRef(externalRef) {}
 			virtual ~tClassInstance() {}
 
-			GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override { return GOM::kNotImplemented; }
-			int32_t CPF_STDCALL AddRef() override { return ++mRefCount; }
+			GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override
+			{
+				return GOM::kNotImplemented;
+			}
+			int32_t CPF_STDCALL AddRef() override
+			{
+				return ++mRefCount;
+			}
 			int32_t CPF_STDCALL Release() override
 			{
 				if (--mRefCount == 0)

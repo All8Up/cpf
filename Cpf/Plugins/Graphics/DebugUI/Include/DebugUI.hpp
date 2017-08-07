@@ -15,7 +15,7 @@ namespace Cpf
 
 	namespace Graphics
 	{
-		class DebugUI : public tRefCounted<iDebugUI>
+		class DebugUI : public GOM::tUnknown<iDebugUI>
 		{
 		public:
 			DebugUI(iUnknown* outer);
