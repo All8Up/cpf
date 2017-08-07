@@ -1,27 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Handlers.hpp"
+#include "Visitor/Literal.hpp"
 
-/**
- * @brief Gets qualified identifier.
- * @param [in,out] ctx If non-null, the context.
- * @return The qualified identifier.
- */
-std::string IDL::Handle(IDLParser::Qualified_identContext* ctx)
-{
-	std::string result;
+using namespace IDL;
 
-	result = ctx->IDENT()->toString();
-	const auto& parts = ctx->qualified_part();
-	for (auto* part : parts)
-	{
-		result += "::" + part->IDENT()->toString();
-	}
-
-	return result;
-}
-
-
-uint64_t IDL::Handle(IDLParser::Integer_litContext* context)
+uint64_t IDL::GetIntegerLiteral(IDLParser::Integer_litContext* context)
 {
 	bool negate = false;
 	uint64_t result = 0;
@@ -106,14 +88,14 @@ uint64_t IDL::Handle(IDLParser::Integer_litContext* context)
 	return negate ? uint64_t(-int64_t(result)) : result;
 }
 
-double IDL::Handle(IDLParser::Float_litContext* context)
+double IDL::GetFloatLiteral(IDLParser::Float_litContext* context)
 {
 	auto f = context->FLOAT_LIT();
 	auto strValue = f->toString();
 	return ::atof(strValue.c_str());
 }
 
-AST::IntegralType IDL::Handle(IDLParser::Integral_typeContext* ctx)
+AST::IntegralType IDL::GetType(IDLParser::Integral_typeContext* ctx)
 {
 	AST::IntegralType result = AST::IntegralType::Unknown;
 	if (ctx->U8()) result = AST::IntegralType::U8;

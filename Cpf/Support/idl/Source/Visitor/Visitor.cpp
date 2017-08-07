@@ -1,11 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Visitor.hpp"
-#include "Handlers.hpp"
+#include "Visitor/Visitor.hpp"
 #include "AST/Import.hpp"
 #include "AST/Const.hpp"
 #include "AST/Enum.hpp"
 #include "AST/Struct.hpp"
 #include "AST/Interface.hpp"
+#include "Visitor/Literal.hpp"
+#include "Visitor/Enum.hpp"
 
 using namespace IDL;
 
@@ -27,7 +28,7 @@ antlrcpp::Any Visitor::visitImport_stmt(IDLParser::Import_stmtContext *context)
 antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto value = Handle(context->integer_lit());
+	auto value = GetIntegerLiteral(context->integer_lit());
 
 	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, value));
 	return visitChildren(context);
@@ -36,7 +37,7 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 antlrcpp::Any Visitor::visitConst_float_def(IDLParser::Const_float_defContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto value = Handle(context->float_lit());
+	auto value = GetFloatLiteral(context->float_lit());
 	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, value));
 	return visitChildren(context);
 }
@@ -62,7 +63,7 @@ antlrcpp::Any Visitor::visitEnum_fwd(IDLParser::Enum_fwdContext *context)
 	auto name = context->IDENT()->toString();
 	if (context->enum_type() && context->enum_type()->integral_type())
 	{
-		auto type = Handle(context->enum_type()->integral_type());
+		auto type = GetType(context->enum_type()->integral_type());
 		mSymbolTable.AddSymbol(std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name, type));
 	}
 	else
@@ -79,7 +80,7 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 	auto name = context->IDENT()->toString();
 	if (context->enum_type() && context->enum_type()->integral_type())
 	{
-		auto type = Handle(context->enum_type()->integral_type());
+		auto type = GetType(context->enum_type()->integral_type());
 		result = std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name, type);
 	}
 	else
@@ -88,13 +89,7 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 	}
 
 	// Enumerate the contents.
-	const auto entries = context->enum_elements()->enum_item();
-	AST::EnumItemArray entryArray;
-	for (const auto entry : entries)
-	{
-		auto entryName = entry->IDENT()->toString();
-		entryArray.emplace_back(AST::EnumItem(entryName, 0));
-	}
+	AST::EnumItemArray entryArray = GetEnumValues(context->enum_elements());
 	result->SetItems(entryArray);
 
 	mSymbolTable.AddSymbol(result);

@@ -10,10 +10,12 @@ namespace AST
 	class EnumItem
 	{
 	public:
+		EnumItem(const std::string& name);
 		EnumItem(const std::string& name, uint64_t value);
 
 		const std::string& GetName() const { return mName; }
 		uint64_t GetValue() const { return mValue; }
+		void SetValue(uint64_t v) { mValue = v; }
 
 	private:
 		std::string mName;
@@ -30,7 +32,7 @@ namespace AST
 		virtual ~Enum() {}
 
 		SymbolType GetType() const override { return SymbolType::eEnum; }
-		std::string ToString() const override { return std::string("Enum: ") + GetName(); }
+		std::string ToString() const override;
 
 		void SetItems(const EnumItemArray& items) { mItems = items; }
 		const EnumItemArray& GetItems() const { return mItems; }

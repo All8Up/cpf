@@ -26,15 +26,23 @@ set (VisitorFiles
 	Generated/IDLParserVisitor.cpp
 )
 
+set (VisitorIncludes
+	Include/Visitor/Visitor.hpp
+	Include/Visitor/Literal.hpp
+	Include/Visitor/QualifiedIdentifier.hpp
+	Include/Visitor/Enum.hpp
+)
+set (VisitorSources
+	Source/Visitor/Visitor.cpp
+	Source/Visitor/Literal.cpp
+	Source/Visitor/QualifiedIdentifier.cpp
+	Source/Visitor/Enum.cpp
+)
 set (IncludeFiles
 	Include/Main.hpp
-	Include/Visitor.hpp
-	Include/Handlers.hpp
 )
 set (SourceFiles
 	Source/Main.cpp
-	Source/Visitor.cpp
-	Source/Handlers.cpp
 )
 set (ASTIncludes
 	Include/AST/Alias.hpp
@@ -98,6 +106,8 @@ set (GeneratorsRustSources
 add_executable (IDL
 	${IncludeFiles}
 	${SourceFiles}
+	${VisitorIncludes}
+	${VisitorSources}
 	${ASTIncludes}
 	${ASTSources}
 	${GeneratorsIncludes}
@@ -121,6 +131,8 @@ source_group (Grammar\\Listener FILES ${ListenerFiles})
 source_group (Grammar\\Visitor FILES ${VisitorFiles})
 source_group (Includes FILES ${IncludeFiles})
 source_group (Sources FILES ${SourceFiles})
+source_group (Includes\\Visitor FILES ${VisitorIncludes})
+source_group (Sources\\Visitor FILES ${VisitorSources})
 source_group (Includes\\AST FILES ${ASTIncludes})
 source_group (Sources\\AST FILES ${ASTSources})
 source_group (Includes\\Generators FILES ${GeneratorsIncludes})
