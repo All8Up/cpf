@@ -1,0 +1,72 @@
+module cpf::Graphics;
+import cpf::gom::iUnknown;
+import cpf::math::Rectangle;
+import cpf::math::Vector4v;
+
+struct iImage;
+struct iDevice;
+struct iSampler;
+struct Viewport;
+struct iResource;
+struct iPipeline;
+struct iImageView;
+struct iSwapChain;
+struct iCommandPool;
+struct ResourceData;
+struct iIndexBuffer;
+struct iVertexBuffer;
+struct iConstantBuffer;
+struct iResourceBinding;
+struct RenderPassBeginDesc;
+
+enum class PrimitiveTopology;
+enum class SubResource : int32_t;
+enum class ResourceState : int32_t;
+enum class DepthStencilClearFlag : int32_t;
+
+failure AlreadyInRenderPass("Graphics", "Already in render pass");
+failure kNotInRenderPass("Graphics", "Not in a render pass");
+
+enum CommandBufferType : int32_t
+{
+	kPrimary,
+	kSecondary,
+	kCompute,
+	kCopy
+};
+
+interface iCommandBuffer : gom::iUnknown
+{
+	void Begin(iCommandBuffer* primary);
+	void End();
+
+	void Reset(iCommandPool*);
+	void UpdateSubResource(iResource* src, iResource* dst, const ResourceData* data);
+	void CopyResource(iResource* src, iResource* dst);
+
+	void ResourceBarrier(iResource* resource, ResourceState startStart, ResourceState endState);
+	void ImageTransition(iImage* image, ResourceState startState, ResourceState endState, SubResource subResources);
+
+	void SetResourceBinding(iResourceBinding* binding);
+	void SetPipeline(iPipeline* pipeline);
+	void SetViewports(int32_t count, const Viewport* rects);
+	void SetScissorRects(int32_t count, const Math::Rectanglei* rects);
+	void SetTopology(PrimitiveTopology topology);
+	void SetVertexBuffers(int32_t startSlot, int32_t viewCount, iVertexBuffer**);
+	void SetIndexBuffer(iIndexBuffer*);
+	void SetConstantBuffer(int32_t index, iConstantBuffer*);
+	void SetConstants(int32_t index, int32_t count, const void*, int32_t offset);
+	void SetSampler(int32_t index, iSampler*);
+	void SetImage(int32_t index, iImage*);
+
+	void DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance);
+	void DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance);
+
+	// Render passes.
+	result BeginRenderPass(RenderPassBeginDesc*);
+	result NextSubPass();
+	result EndRenderPass();
+
+	// Secondary command buffer insertion.
+	result Insert(int32_t count, iCommandBuffer* const*);
+};

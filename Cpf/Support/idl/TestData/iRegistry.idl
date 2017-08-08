@@ -1,115 +1,25 @@
-import "Std";
-import "Common";
+module cpf::plugin;
+import gom::iUnknown;
 
-const float kSomething = 1.0;
-const int kDecConst = 1234;
-const int kNegInt = -1234;
-const int kOctConst = 01234;
-const int kSomething = 0xff00;
-const int kBinConst = 0b00011001;
-const string kName = "Something";
-const class_id kID = "CPF::GOM::iRegistry";
+struct plugin::IID_CID;
+interface plugin::iClassInstance;
 
-enum TestFwd : u32;
-enum Flags : s32
+interface iRegistry : gom::iUnknown
 {
-	// TODO: Consider adding computation support for things like 1<<1, eBlargo = eResult + 5 etc.
-	eOK,
-	eError,
-	eResult = 3,
-	eBlargo = 4
+	result Load([in] char* library);
+	result CanUnload([in] char* library);
+	result Unload([in] char* library);
+	result Install(u64 cid, [in] iClassInstance* clsInst);
+	result Remove(u64 cid);
+	result GetClassInstance(u64 cid, [out] iClassInstance** clsInst);
+	result Exists(u64 cid);
+	result Create([in] iUnknown* outer, u64 cid, u64 iid, [out] void** outIFace);
+	result ClassInstall(i32 count, [in] IID_CID* pairs);
+	result ClassRemove(i32 count, [in] IID_CID* pairs);
+	result GetClasses(u64 id, [in, out] i32* count, [out] u64* cid);
+	result InstanceInstall(u64 id, [in] iUnknown* instance);
+	result InstanceRemove(u64 id);
+	result GetInstance(u64 id, [out] iUnknown** outIface);
 }
 
-struct Vector3f;
-
-struct TEST1
-{
-	const u32* Data1;
-	Point2f* Data2;
-}
-
-interface Ba;
-interface test : test::qualified::name
-{}
-
-
-namespace Test
-{
-	enum FlagsXX : s32
-	{
-		eOK,
-		eError,
-		eResult = 3,
-		eBlargo = 4
-	}
-	const float kSomething = 1.0;
-	const int kSomething = 0xff00;
-	struct Point3f;
-	namespace Test2
-	{
-	}
-}
-
-// Verify namespace re-entrancy.
-namespace Test
-{
-	namespace Test2
-	{}
-}
-
-struct Point2f
-{
-    enum Flags : s32
-    {
-        eOK,
-        eError,
-        eResult = 3,
-        eBlargo = 4
-    }
-    const float kSomething = 1.0;
-    const int kSomething = 0xff00;
-    f32 x;
-    f32 y;
-}
-
-
-namespace CPF
-{
-	namespace Plugin
-	{
-		struct IID_CID;
-		const class_id RegistryCID = "CPF::Plugin::iRegistry";
-		interface iRegistry : GOM::iUnknown
-		{
-            enum Flags : s32
-            {
-                eOK,
-                eError,
-                eResult = 3,
-                eBlargo = 4
-            }
-            const float kSomething = 1.0;
-            const int kSomething = 0xff00;
-
-			result Load([in] char* library);
-			result CanUnload([in] char* library);
-			result Unload([in] char* library);
-			result Install(u64 cid, [in] iClassInstance* clsInst);
-			result Remove(u64 cid);
-			result GetClassInstance(u64 cid, [out] iClassInstance** clsInst);
-			result Exists(u64 cid);
-			result Create([in] iBase* outer, u64 cid, u64 iid, [out] void** outIFace);
-			result ClassInstall(i32 count, [in] IID_CID* pairs);
-			result ClassRemove(i32 count, [in] IID_CID* pairs);
-			result GetClasses(u64 id, [in, out] i32* count, [out] u64* cid);
-			result InstanceInstall(u64 id, [in] iBase* instance);
-			result InstanceRemove(u64 id);
-			result GetInstance(u64 id, [out] iBase** outIface);
-		}
-
-		interface iClassInstance : GOM::iUnknown
-		{
-			result CreateInstance([in] iRegistry* registry, [in] iBase* outer, [out] iBase** outIface);
-		}
-	}
-}
+class_id RegistryCID("CPF::Plugin::iRegistry");

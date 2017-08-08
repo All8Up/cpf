@@ -1,0 +1,8 @@
+module cpf.graphics;
+import cpf.types;
+
+flags DepthStencilClearFlag : int32_t
+{
+	Depth = 1 << 0,
+	Stencil = 1 << 1
+}

@@ -1,0 +1,22 @@
+module cpf::graphics;
+import cpf::types;
+
+enum LogicOp : int32_t
+{
+	Clear = 0,
+	Set,
+	Copy,
+	CopyInverted,
+	Noop,
+	Invert,
+	And,
+	Nand,
+	Or,
+	Nor,
+	Xor,
+	Equiv,
+	AndReverse,
+	AndInverted,
+	OrReverse,
+	OrInverted
+};
