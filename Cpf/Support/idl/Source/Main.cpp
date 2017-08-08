@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "antlr4-runtime.h"
 #include "IDLLexer.h"
-#include "Visitor.hpp"
+#include "Visitor/Visitor.hpp"
+#include "Generators/Generator.hpp"
 #include <Windows.h>
 
 int main(int argc, char** argv)
@@ -17,12 +18,12 @@ int main(int argc, char** argv)
 	{
 		IDL::Visitor visitor;
 		visitor.visit(tree);
-		printf("-------------------------------------\n");
-		for (auto it : visitor.GetSymbolTable())
-		{
-			auto scope = visitor.GetSymbolTable().GetScopeString(it);
-			printf("%s = %s\n", scope.c_str(), it->ToString().c_str());
-		}
+
+		// Test the Cpp generator.
+		auto generator = IDL::Generator::Create(IDL::Generator::Type::Cpp);
+		assert(generator != nullptr);
+		IDL::Context context;
+		generator->Generate(context, visitor.GetSymbolTable());
 	}
 
 	/*

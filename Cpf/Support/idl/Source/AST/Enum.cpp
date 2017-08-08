@@ -19,10 +19,10 @@ EnumItem::EnumItem(const std::string& name, uint64_t value)
 //////////////////////////////////////////////////////////////////////////
 Enum::Enum(const ScopeVector& scope, const std::string& name)
 	: Symbol(scope, name)
-	, mType(IntegralType::Unknown)
+	, mType(AllTypes::Unknown)
 {}
 
-Enum::Enum(const ScopeVector& scope, const std::string& name, IntegralType type)
+Enum::Enum(const ScopeVector& scope, const std::string& name, AllTypes type)
 	: Symbol(scope, name)
 	, mType(type)
 {}

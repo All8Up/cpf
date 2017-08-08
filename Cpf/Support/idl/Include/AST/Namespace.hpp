@@ -16,4 +16,14 @@ namespace AST
 
 	protected:
 	};
+
+	class EndNamespace : public Symbol
+	{
+	public:
+		EndNamespace(const ScopeVector& scope, const std::string& name);
+		virtual ~EndNamespace();
+
+		SymbolType GetType() const override;
+		std::string ToString() const override { return std::string("EndNamespace: ") + GetName(); }
+	};
 }

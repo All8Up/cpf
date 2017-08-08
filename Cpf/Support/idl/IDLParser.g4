@@ -40,8 +40,7 @@ struct_block            : LBRACE struct_item* RBRACE;
 // Statements allowed at struct scope.
 struct_item             : member_decl
                         | const_def
-                        | enum_def
-                        | enum_fwd;
+                        | enum_def;
 
 // Interfaces
 interface_stmt          : interface_decl
@@ -55,8 +54,7 @@ interface_block         : LBRACE interface_item* RBRACE;
 // Statements allowed at interface scope.
 interface_item          : function_decl
                         | const_def
-                        | enum_def
-                        | enum_fwd;
+                        | enum_def;
 
 // Function declarations.
 function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN SEMICOLON;

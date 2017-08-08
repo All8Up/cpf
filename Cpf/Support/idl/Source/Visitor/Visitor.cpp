@@ -7,6 +7,7 @@
 #include "AST/Interface.hpp"
 #include "Visitor/Literal.hpp"
 #include "Visitor/Enum.hpp"
+#include "Visitor/DataMember.hpp"
 
 using namespace IDL;
 
@@ -19,9 +20,7 @@ antlrcpp::Any Visitor::visitImport_stmt(IDLParser::Import_stmtContext *context)
 {
 	auto* module = context->string_lit();
 	auto value = module->STRING_LIT()->toString();
-	auto result = AST::Import::Create(value);
-
-	printf("Import: %s\n", value.c_str());
+	mSymbolTable.AddImport(std::make_shared<AST::Import>(value));
 	return visitChildren(context);
 }
 
@@ -109,6 +108,7 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *context)
 {
 	auto name = context->struct_name()->IDENT()->toString();
 	auto result = std::make_shared<AST::Struct>(mSymbolTable.GetCurrentScope(), name);
+	result->SetDataMembers(GetDataMembers(context));
 	mSymbolTable.AddSymbol(result);
 
 	return visitChildren(context);
@@ -120,7 +120,11 @@ antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *conte
 	auto result = std::make_shared<AST::Interface>(mSymbolTable.GetCurrentScope(), name);
 	mSymbolTable.AddSymbol(result);
 
-	return visitChildren(context);
+	// When visiting the children, push this struct as a scope.
+	mSymbolTable.PushScope(name, false);
+	auto visitResult = visitChildren(context);
+	mSymbolTable.PopScope(false);
+	return visitResult;
 }
 
 antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *context)
@@ -129,7 +133,11 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *con
 	auto result = std::make_shared<AST::Interface>(mSymbolTable.GetCurrentScope(), name);
 	mSymbolTable.AddSymbol(result);
 
-	return visitChildren(context);
+	// When visiting the children, push this struct as a scope.
+	mSymbolTable.PushScope(name, false);
+	auto visitResult = visitChildren(context);
+	mSymbolTable.PopScope(false);
+	return visitResult;
 }
 
 antlrcpp::Any Visitor::visitNamespace_stmt(IDLParser::Namespace_stmtContext *context)
@@ -138,13 +146,13 @@ antlrcpp::Any Visitor::visitNamespace_stmt(IDLParser::Namespace_stmtContext *con
 	auto name = context->namespace_name()->IDENT()->toString();
 
 	// Push the new namespace onto the scope stack.
-	mSymbolTable.PushScope(name);
+	mSymbolTable.PushScope(name, true);
 
 	// Process children of the new namespace.
 	auto any = visitChildren(context);
 
 	// Pop the namespace off the scope stack.
-	mSymbolTable.PopScope();
+	mSymbolTable.PopScope(true);
 
 	return any;
 }

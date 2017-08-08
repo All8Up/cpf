@@ -82,9 +82,11 @@ set (ASTSources
 )
 set (GeneratorsIncludes
 	Include/Generators/Generator.hpp
+	Include/Generators/Context.hpp
 )
 set (GeneratorsSources
 	Source/Generators/Generator.cpp
+	Source/Generators/Context.cpp
 )
 set (GeneratorsCppIncludes
 	Include/Generators/Cpp/Cpp.hpp

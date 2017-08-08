@@ -29,12 +29,10 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		// Utility helper to implement iUnknown objects.
-		template<typename BASE = iUnknown>
-		class tUnknown : public BASE
+		template<typename IFACE>
+		class tUnknown : public IFACE
 		{
 		public:
-			template<typename... PARAMS>
-			tUnknown(PARAMS... params);
 			tUnknown();
 
 			virtual ~tUnknown() {}
@@ -48,27 +46,20 @@ namespace Cpf
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		template<typename BASE>
-		template<typename... PARAMS> inline
-			tUnknown<BASE>::tUnknown(PARAMS... params)
-			: BASE(params...)
-			, mRefCount(1)
-		{}
-
-		template<typename BASE> inline
-			tUnknown<BASE>::tUnknown()
+		template<typename IFACE>
+		tUnknown<IFACE>::tUnknown()
 			: mRefCount(1)
 		{}
 
-		template<typename BASE> inline
-			int32_t CPF_STDCALL tUnknown<BASE>::AddRef()
+		template<typename IFACE>
+		int32_t CPF_STDCALL tUnknown<IFACE>::AddRef()
 		{
 			CPF_ASSERT(mRefCount > 0);
 			return ++mRefCount;
 		}
 
-		template<typename BASE> inline
-			int32_t CPF_STDCALL tUnknown<BASE>::Release()
+		template<typename IFACE>
+		int32_t CPF_STDCALL tUnknown<IFACE>::Release()
 		{
 			CPF_ASSERT(mRefCount > 0);
 			if (--mRefCount == 0)
@@ -79,11 +70,26 @@ namespace Cpf
 			return mRefCount;
 		}
 
-		template<typename BASE> inline
-			Result CPF_STDCALL tUnknown<BASE>::QueryInterface(uint64_t id, void** outIface)
+		template<typename IFACE>
+		Result CPF_STDCALL tUnknown<IFACE>::QueryInterface(uint64_t id, void** outIface)
 		{
-			(void)id; (void)outIface;
-			return kNotImplemented;
+			if (outIface)
+			{
+				switch (id)
+				{
+				case iUnknown::kIID.GetID():
+					*outIface = static_cast<iUnknown*>(this);
+					break;
+				case IFACE::kIID.GetID():
+					*outIface = static_cast<IFACE*>(this);
+					break;
+				default:
+					return kUnknownInterface;
+				}
+				AddRef();
+				return kOK;
+			}
+			return kInvalidParameter;
 		}
 	}
 }

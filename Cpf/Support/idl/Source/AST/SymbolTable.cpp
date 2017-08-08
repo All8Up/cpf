@@ -18,7 +18,7 @@ SymbolTable::ScopeVector SymbolTable::GetCurrentScope() const
 	return mCurrentScope;
 }
 
-void SymbolTable::PushScope(const std::string& name)
+void SymbolTable::PushScope(const std::string& name, bool isNamespace)
 {
 	// Create the current scope string.
 	ScopeNameHandle scopeName = _FindScopeName(name);
@@ -35,21 +35,33 @@ void SymbolTable::PushScope(const std::string& name)
 	if (_FindNamespace(scope, ns))
 	{
 		mCurrentNamespace = ns;
-		AddSymbol(ns);
+		if (isNamespace)
+			AddSymbol(ns);
 		return;
 	}
-	AddSymbol(_AddNamespace(scope, name));
+
+	ns = _AddNamespace(scope, name);
+	if (isNamespace)
+		AddSymbol(ns);
 }
 
-bool SymbolTable::PopScope()
+bool SymbolTable::PopScope(bool isNamespace)
 {
 	assert(!mCurrentScope.empty());
 	if (mCurrentScope.empty())
 		return false;
 
+	auto name = _GetScopeName(mCurrentScope.back());
 	mCurrentScope.pop_back();
 	_FindNamespace(mCurrentScope, mCurrentNamespace);
+	if (isNamespace)
+		AddSymbol(std::make_shared<EndNamespace>(mCurrentScope, name));
 	return true;
+}
+
+void SymbolTable::AddImport(ImportPtr ptr)
+{
+	mImports.push_back(ptr);
 }
 
 void SymbolTable::AddSymbol(SymbolPtr ptr)

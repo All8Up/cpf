@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "AST/Symbol.hpp"
+#include "AST/Import.hpp"
 #include <vector>
 #include <map>
 
@@ -13,12 +14,17 @@ namespace AST
 		using ScopeNameHandle = Symbol::ScopeNameHandle;
 		static const ScopeNameHandle InvalidScopeName = Symbol::InvalidScopeName;
 		using ScopeVector = Symbol::ScopeVector;
+		using ImportPtr = std::shared_ptr<Import>;
+		using ImportVector = std::vector<ImportPtr>;
 
 		SymbolTable();
 
 		ScopeVector GetCurrentScope() const;
-		void PushScope(const std::string& name);
-		bool PopScope();
+		void PushScope(const std::string& name, bool isNamespace);
+		bool PopScope(bool isNamespace);
+
+		void AddImport(ImportPtr ptr);
+		const ImportVector& GetImports() const { return mImports; }
 
 		void AddSymbol(SymbolPtr ptr);
 		std::string GetScopeString(SymbolPtr ptr) const;
@@ -53,6 +59,9 @@ namespace AST
 
 		// Vector in order of submission for later in order generation.
 		SymbolVector mSymbols;
+
+		// Imports.
+		ImportVector mImports;
 
 		// Name of the global namespace.
 		static const std::string mGlobalNamespace;

@@ -13,6 +13,7 @@ namespace AST
 	{
 		eUnknown,
 		eNamespace,
+		eEndNamespace,
 		eIntegralConst,
 		eFloatConst,
 		eStringConst,

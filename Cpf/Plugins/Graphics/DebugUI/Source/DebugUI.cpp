@@ -114,27 +114,6 @@ DebugUI::~DebugUI()
 	CPF_DROP_LOG(DebugUI);
 }
 
-GOM::Result DebugUI::QueryInterface(uint64_t id, void** outIface)
-{
-	if (outIface)
-	{
-		switch (id)
-		{
-		case iUnknown::kIID.GetID():
-			*outIface = static_cast<iUnknown*>(this);
-			break;
-		case kIID.GetID():
-			*outIface = static_cast<iDebugUI*>(this);
-			break;
-		default:
-			return GOM::kUnknownInterface;
-		}
-		AddRef();
-		return GOM::kOK;
-	}
-	return GOM::kInvalidParameter;
-}
-
 bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Resources::iLocator* locator)
 {
 	CPF_ASSERT(device != nullptr);

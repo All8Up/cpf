@@ -15,3 +15,18 @@ Namespace::Namespace(const ScopeVector& scope, const std::string& name)
 
 Namespace::~Namespace()
 {}
+
+
+//////////////////////////////////////////////////////////////////////////
+SymbolType EndNamespace::GetType() const
+{
+	return SymbolType::eEndNamespace;
+}
+
+EndNamespace::EndNamespace(const ScopeVector& scope, const std::string& name)
+	: Symbol(scope, name)
+{
+}
+
+EndNamespace::~EndNamespace()
+{}

@@ -20,5 +20,9 @@ Struct::~Struct()
 std::string Struct::ToString() const
 {
 	std::string result = "Struct: " + GetName() + "\n";
+	for (const auto& item : mDataMembers)
+	{
+		result += "  " + item.GetName() + " - " + TypeString(item.GetType().mType) + "\n";
+	}
 	return result;
 }

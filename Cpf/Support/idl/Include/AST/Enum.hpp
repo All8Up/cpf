@@ -28,7 +28,7 @@ namespace AST
 	{
 	public:
 		Enum(const ScopeVector& scope, const std::string& name);
-		Enum(const ScopeVector& scope, const std::string& name, IntegralType type);
+		Enum(const ScopeVector& scope, const std::string& name, AllTypes type);
 		virtual ~Enum() {}
 
 		SymbolType GetType() const override { return SymbolType::eEnum; }
@@ -38,7 +38,7 @@ namespace AST
 		const EnumItemArray& GetItems() const { return mItems; }
 
 	private:
-		IntegralType mType;
+		AllTypes mType;
 		EnumItemArray mItems;
 	};
 }
