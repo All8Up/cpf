@@ -16,12 +16,11 @@ public:
     OUT = 7, COLON = 8, SEMICOLON = 9, STAR = 10, DOT = 11, COMMA = 12, 
     EQUALS = 13, QUOTE = 14, LBRACE = 15, RBRACE = 16, LPAREN = 17, RPAREN = 18, 
     LBRACKET = 19, RBRACKET = 20, LT = 21, GT = 22, CONST = 23, VOID = 24, 
-    RESULT = 25, CLASS_ID = 26, U8 = 27, S8 = 28, U16 = 29, S16 = 30, U32 = 31, 
-    S32 = 32, U64 = 33, S64 = 34, F32 = 35, F64 = 36, BYTE = 37, CHAR = 38, 
-    SHORT = 39, LONG = 40, INT = 41, FLOAT = 42, DOUBLE = 43, STRING = 44, 
-    IDENT = 45, DECIMAL_LIT = 46, HEX_LIT = 47, OCT_LIT = 48, BIN_LIT = 49, 
-    STRING_LIT = 50, FLOAT_LIT = 51, WHITE_SPACE = 52, BLOCK_COMMENT = 53, 
-    LINE_COMMENT = 54
+    RESULT = 25, CLASS_ID = 26, STRING = 27, U8 = 28, S8 = 29, U16 = 30, 
+    S16 = 31, U32 = 32, S32 = 33, U64 = 34, S64 = 35, F32 = 36, F64 = 37, 
+    IDENT = 38, DECIMAL_LIT = 39, HEX_LIT = 40, OCT_LIT = 41, BIN_LIT = 42, 
+    STRING_LIT = 43, FLOAT_LIT = 44, WHITE_SPACE = 45, BLOCK_COMMENT = 46, 
+    LINE_COMMENT = 47
   };
 
   enum {
@@ -942,14 +941,10 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *U8();
     antlr4::tree::TerminalNode *S8();
-    antlr4::tree::TerminalNode *CHAR();
-    antlr4::tree::TerminalNode *BYTE();
     antlr4::tree::TerminalNode *U16();
     antlr4::tree::TerminalNode *S16();
-    antlr4::tree::TerminalNode *SHORT();
     antlr4::tree::TerminalNode *U32();
     antlr4::tree::TerminalNode *S32();
-    antlr4::tree::TerminalNode *INT();
     antlr4::tree::TerminalNode *U64();
     antlr4::tree::TerminalNode *S64();
 
@@ -967,9 +962,7 @@ public:
     Float_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *F32();
-    antlr4::tree::TerminalNode *FLOAT();
     antlr4::tree::TerminalNode *F64();
-    antlr4::tree::TerminalNode *DOUBLE();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

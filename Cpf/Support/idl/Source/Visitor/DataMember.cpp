@@ -25,9 +25,9 @@ AST::DataMember GetTypeDecl(const std::string& name, IDLParser::Type_declContext
 	else if (baseType->float_type())
 	{
 		auto typeContext = baseType->float_type();
-		if (typeContext->FLOAT() || typeContext->F32())
+		if (typeContext->F32())
 			typeDecl.mType = AST::AllTypes::F32;
-		else if (typeContext->DOUBLE() || typeContext->F64())
+		else if (typeContext->F64())
 			typeDecl.mType = AST::AllTypes::F64;
 	}
 	else if (baseType->utility_type())

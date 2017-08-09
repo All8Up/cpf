@@ -40,6 +40,7 @@ CONST                       : 'const';
 VOID                        : 'void';
 RESULT                      : 'result';
 CLASS_ID                    : 'class_id';
+STRING                      : 'string';
 
 U8                          : 'u8';
 S8                          : 's8';
@@ -53,16 +54,6 @@ S64                         : 's64';
 // Float types.
 F32                         : 'f32';
 F64                         : 'f64';
-
-// Alias's
-BYTE                        : 'byte';
-CHAR                        : 'char';
-SHORT                       : 'short';
-LONG                        : 'long';
-INT                         : 'int';
-FLOAT                       : 'float';
-DOUBLE                      : 'double';
-STRING                      : 'string';
 
 // Identifiers.
 IDENT                       : ALPHA_ (ALPHA_ | DIGIT)*;

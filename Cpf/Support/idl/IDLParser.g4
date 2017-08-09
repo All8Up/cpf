@@ -122,11 +122,10 @@ any_type                : integral_type
 utility_type            : VOID
                         | RESULT;
 
-integral_type           : U8 | S8 | CHAR | BYTE
-                        | U16 | S16 | SHORT
-                        | U32 | S32 | INT
+integral_type           : U8 | S8
+                        | U16 | S16
+                        | U32 | S32
                         | U64 | S64
                         ;
 
-float_type              : F32 | FLOAT
-                        | F64 | DOUBLE;
+float_type              : F32 | F64;

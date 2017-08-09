@@ -1,41 +1,47 @@
-module cpf::Graphics;
-import cpf::gom::iUnknown;
-import cpf::math::Rectangle;
-import cpf::math::Vector4v;
+module cpf::graphics;
 
+// Imports.
+import types from cpf;
+import iUnknown from cpf::gom;
+import Rectangle from cpf::math;
+
+// Forward refereneces.
 struct iImage;
 struct iDevice;
 struct iSampler;
-struct Viewport;
 struct iResource;
 struct iPipeline;
 struct iImageView;
 struct iSwapChain;
 struct iCommandPool;
-struct ResourceData;
 struct iIndexBuffer;
 struct iVertexBuffer;
 struct iConstantBuffer;
 struct iResourceBinding;
+
+struct Viewport;
+struct ResourceData;
 struct RenderPassBeginDesc;
 
-enum class PrimitiveTopology;
-enum class SubResource : int32_t;
-enum class ResourceState : int32_t;
-enum class DepthStencilClearFlag : int32_t;
+enum PrimitiveTopology : i32;
+enum SubResource : i32;
+enum ResourceState : i32;
+enum DepthStencilClearFlag : i32;
 
+// Errors specific to this interface.
 failure AlreadyInRenderPass("Graphics", "Already in render pass");
-failure kNotInRenderPass("Graphics", "Not in a render pass");
+failure NotInRenderPass("Graphics", "Not in a render pass");
 
-enum CommandBufferType : int32_t
+enum CommandBufferType : i32
 {
-	kPrimary,
-	kSecondary,
-	kCompute,
-	kCopy
-};
+	Primary,
+	Secondary,
+	Compute,
+	Copy
+}
 
-interface iCommandBuffer : gom::iUnknown
+// The interface.
+interface iCommandBuffer : iUnknown
 {
 	void Begin(iCommandBuffer* primary);
 	void End();
@@ -49,18 +55,18 @@ interface iCommandBuffer : gom::iUnknown
 
 	void SetResourceBinding(iResourceBinding* binding);
 	void SetPipeline(iPipeline* pipeline);
-	void SetViewports(int32_t count, const Viewport* rects);
-	void SetScissorRects(int32_t count, const Math::Rectanglei* rects);
+	void SetViewports(i32 count, const Viewport* rects);
+	void SetScissorRects(i32 count, const Math::Rectanglei* rects);
 	void SetTopology(PrimitiveTopology topology);
-	void SetVertexBuffers(int32_t startSlot, int32_t viewCount, iVertexBuffer**);
+	void SetVertexBuffers(i32 startSlot, i32 viewCount, iVertexBuffer**);
 	void SetIndexBuffer(iIndexBuffer*);
-	void SetConstantBuffer(int32_t index, iConstantBuffer*);
-	void SetConstants(int32_t index, int32_t count, const void*, int32_t offset);
-	void SetSampler(int32_t index, iSampler*);
-	void SetImage(int32_t index, iImage*);
+	void SetConstantBuffer(i32 index, iConstantBuffer*);
+	void SetConstants(i32 index, i32 count, const void*, i32 offset);
+	void SetSampler(i32 index, iSampler*);
+	void SetImage(i32 index, iImage*);
 
-	void DrawInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t startInstance);
-	void DrawIndexedInstanced(int32_t vertsPerInstance, int32_t instances, int32_t startVert, int32_t offset, int32_t startInstance);
+	void DrawInstanced(i32 vertsPerInstance, i32 instances, i32 startVert, i32 startInstance);
+	void DrawIndexedInstanced(i32 vertsPerInstance, i32 instances, i32 startVert, i32 offset, i32 startInstance);
 
 	// Render passes.
 	result BeginRenderPass(RenderPassBeginDesc*);
@@ -68,5 +74,5 @@ interface iCommandBuffer : gom::iUnknown
 	result EndRenderPass();
 
 	// Secondary command buffer insertion.
-	result Insert(int32_t count, iCommandBuffer* const*);
+	result Insert(i32 count, iCommandBuffer* const*);
 };

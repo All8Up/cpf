@@ -1,10 +1,11 @@
 module cpf::plugin;
-import gom::iUnknown;
+import types from cpf;
+import iUnknown from cpf::gom;
 
-struct plugin::IID_CID;
-interface plugin::iClassInstance;
+struct IID_CID;
+interface iClassInstance;
 
-interface iRegistry : gom::iUnknown
+interface iRegistry : iUnknown
 {
 	result Load([in] char* library);
 	result CanUnload([in] char* library);

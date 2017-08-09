@@ -1,7 +1,7 @@
 module cpf::graphics;
-import cpf::types;
+import types from cpf;
 
-enum LogicOp : int32_t
+enum LogicOp : i32
 {
 	Clear = 0,
 	Set,
@@ -19,4 +19,4 @@ enum LogicOp : int32_t
 	AndInverted,
 	OrReverse,
 	OrInverted
-};
+}

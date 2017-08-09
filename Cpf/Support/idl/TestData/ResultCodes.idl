@@ -1,5 +1,4 @@
 module cpf::gom;
-import gom::result;
 
 success OK("Core", "OK");
 failure Error("Core", "Error");

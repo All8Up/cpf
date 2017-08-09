@@ -1,9 +1,10 @@
 module cpf::plugin;
-import plugin::iUnknown;
+import types from cpf;
+import iUnknown from cpf::gom;
 
-interface plugin::iRegistry;
+interface iRegistry;
 
-interface iClassInstance : gom::iUnknown
+interface iClassInstance : iUnknown
 {
 	result CreateInstance([in] iRegistry* registry, [in] iUnknown* outer, [out] iUnknown** outIface);
 }
