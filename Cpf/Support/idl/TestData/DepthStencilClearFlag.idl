@@ -1,7 +1,7 @@
-module cpf.graphics;
+module cpf::graphics;
 import types from cpf;
 
-enum DepthStencilClearFlag : i32
+enum DepthStencilClearFlag : s32
 {
 	Depth = 1 << 0,
 	Stencil = 1 << 1

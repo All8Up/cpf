@@ -25,6 +25,24 @@ public:
   virtual void enterGlobal_statement(IDLParser::Global_statementContext * /*ctx*/) override { }
   virtual void exitGlobal_statement(IDLParser::Global_statementContext * /*ctx*/) override { }
 
+  virtual void enterEmpty_stmt(IDLParser::Empty_stmtContext * /*ctx*/) override { }
+  virtual void exitEmpty_stmt(IDLParser::Empty_stmtContext * /*ctx*/) override { }
+
+  virtual void enterModule_stmt(IDLParser::Module_stmtContext * /*ctx*/) override { }
+  virtual void exitModule_stmt(IDLParser::Module_stmtContext * /*ctx*/) override { }
+
+  virtual void enterError_code_stmt(IDLParser::Error_code_stmtContext * /*ctx*/) override { }
+  virtual void exitError_code_stmt(IDLParser::Error_code_stmtContext * /*ctx*/) override { }
+
+  virtual void enterSuccess_stmt(IDLParser::Success_stmtContext * /*ctx*/) override { }
+  virtual void exitSuccess_stmt(IDLParser::Success_stmtContext * /*ctx*/) override { }
+
+  virtual void enterFailure_stmt(IDLParser::Failure_stmtContext * /*ctx*/) override { }
+  virtual void exitFailure_stmt(IDLParser::Failure_stmtContext * /*ctx*/) override { }
+
+  virtual void enterImport_from_stmt(IDLParser::Import_from_stmtContext * /*ctx*/) override { }
+  virtual void exitImport_from_stmt(IDLParser::Import_from_stmtContext * /*ctx*/) override { }
+
   virtual void enterImport_stmt(IDLParser::Import_stmtContext * /*ctx*/) override { }
   virtual void exitImport_stmt(IDLParser::Import_stmtContext * /*ctx*/) override { }
 
@@ -117,6 +135,21 @@ public:
 
   virtual void enterEnum_item(IDLParser::Enum_itemContext * /*ctx*/) override { }
   virtual void exitEnum_item(IDLParser::Enum_itemContext * /*ctx*/) override { }
+
+  virtual void enterEnum_expr(IDLParser::Enum_exprContext * /*ctx*/) override { }
+  virtual void exitEnum_expr(IDLParser::Enum_exprContext * /*ctx*/) override { }
+
+  virtual void enterExpr_add_sub(IDLParser::Expr_add_subContext * /*ctx*/) override { }
+  virtual void exitExpr_add_sub(IDLParser::Expr_add_subContext * /*ctx*/) override { }
+
+  virtual void enterExpr_mul_div(IDLParser::Expr_mul_divContext * /*ctx*/) override { }
+  virtual void exitExpr_mul_div(IDLParser::Expr_mul_divContext * /*ctx*/) override { }
+
+  virtual void enterExpr_shift(IDLParser::Expr_shiftContext * /*ctx*/) override { }
+  virtual void exitExpr_shift(IDLParser::Expr_shiftContext * /*ctx*/) override { }
+
+  virtual void enterExpr_value(IDLParser::Expr_valueContext * /*ctx*/) override { }
+  virtual void exitExpr_value(IDLParser::Expr_valueContext * /*ctx*/) override { }
 
   virtual void enterAny_literal(IDLParser::Any_literalContext * /*ctx*/) override { }
   virtual void exitAny_literal(IDLParser::Any_literalContext * /*ctx*/) override { }

@@ -12,7 +12,27 @@ global_statement        : import_stmt
                         | interface_stmt
                         | const_def
                         | enum_def
-                        | enum_fwd;
+                        | enum_fwd
+
+                        | module_stmt
+                        | error_code_stmt
+                        | empty_stmt
+                        | import_from_stmt;
+
+// Allow semi-colons even if not needed.
+empty_stmt              : SEMICOLON;
+
+// Module support.
+module_stmt             : MODULE qualified_ident SEMICOLON;
+
+// Error code handling.
+error_code_stmt         : success_stmt
+                        | failure_stmt;
+success_stmt            : SUCCESS IDENT LPAREN STRING_LIT COMMA STRING_LIT RPAREN;
+failure_stmt            : FAILURE IDENT LPAREN STRING_LIT COMMA STRING_LIT RPAREN;
+
+// Symbol import.
+import_from_stmt        : IMPORT IDENT FROM qualified_ident SEMICOLON;
 
 // Import.
 import_stmt             : IMPORT string_lit SEMICOLON;
@@ -61,7 +81,7 @@ function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN SEM
 
 function_param_list     : function_param (COMMA function_param)*;
 
-function_param          : param_dir_qualifier? any_type pointer_type? IDENT;
+function_param          : param_dir_qualifier? type_modifier? any_type pointer_type? IDENT;
 
 param_dir_qualifier     : LBRACKET IN RBRACKET
                         | LBRACKET OUT RBRACKET
@@ -76,7 +96,7 @@ const_def               : const_integral_def
 const_integral_def      : CONST integral_type IDENT EQUALS integer_lit SEMICOLON;
 const_float_def         : CONST float_type IDENT EQUALS float_lit SEMICOLON;
 const_string_def        : CONST STRING IDENT EQUALS string_lit SEMICOLON;
-const_class_id_def      : CONST CLASS_ID IDENT EQUALS string_lit SEMICOLON;
+const_class_id_def      : CONST CLASS_ID IDENT LPAREN string_lit RPAREN SEMICOLON;
 
 // Enumerations.
 enum_fwd                : ENUM IDENT enum_type? SEMICOLON;
@@ -84,7 +104,21 @@ enum_def                : ENUM IDENT enum_type? LBRACE enum_elements RBRACE;
 enum_type               : COLON integral_type;
 enum_elements           : enum_item (COMMA enum_item)*;
 enum_item               : IDENT
-                        | IDENT EQUALS integer_lit;
+                        | IDENT EQUALS enum_expr;
+
+// Enumeration assignment expression handling.
+enum_expr               : expr_add_sub;
+expr_add_sub            : expr_add_sub PLUS expr_mul_div
+                        | expr_add_sub MINUS expr_mul_div
+                        | expr_mul_div;
+expr_mul_div            : expr_mul_div STAR expr_shift
+                        | expr_mul_div SLASH expr_shift
+                        | expr_shift;
+expr_shift              : expr_shift LSHIFT expr_value
+                        | expr_shift RSHIFT expr_value
+                        | expr_value;
+expr_value              : integer_lit
+                        | LPAREN enum_expr RPAREN;
 
 // Literals.
 any_literal             : numeric_lit
@@ -111,7 +145,7 @@ type_decl               : type_modifier? any_type pointer_type?;
 
 type_modifier           : CONST;
 
-pointer_type            : STAR+;
+pointer_type            : (CONST? STAR)+;
 
 // Any valid type.
 any_type                : integral_type

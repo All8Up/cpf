@@ -23,16 +23,16 @@ struct Viewport;
 struct ResourceData;
 struct RenderPassBeginDesc;
 
-enum PrimitiveTopology : i32;
-enum SubResource : i32;
-enum ResourceState : i32;
-enum DepthStencilClearFlag : i32;
+enum PrimitiveTopology : s32;
+enum SubResource : s32;
+enum ResourceState : s32;
+enum DepthStencilClearFlag : s32;
 
 // Errors specific to this interface.
 failure AlreadyInRenderPass("Graphics", "Already in render pass");
 failure NotInRenderPass("Graphics", "Not in a render pass");
 
-enum CommandBufferType : i32
+enum CommandBufferType : s32
 {
 	Primary,
 	Secondary,
@@ -46,7 +46,7 @@ interface iCommandBuffer : iUnknown
 	void Begin(iCommandBuffer* primary);
 	void End();
 
-	void Reset(iCommandPool*);
+	void Reset(iCommandPool* pool);
 	void UpdateSubResource(iResource* src, iResource* dst, const ResourceData* data);
 	void CopyResource(iResource* src, iResource* dst);
 
@@ -55,24 +55,24 @@ interface iCommandBuffer : iUnknown
 
 	void SetResourceBinding(iResourceBinding* binding);
 	void SetPipeline(iPipeline* pipeline);
-	void SetViewports(i32 count, const Viewport* rects);
-	void SetScissorRects(i32 count, const Math::Rectanglei* rects);
+	void SetViewports(s32 count, const Viewport* rects);
+	void SetScissorRects(s32 count, const Rectanglei* rects);
 	void SetTopology(PrimitiveTopology topology);
-	void SetVertexBuffers(i32 startSlot, i32 viewCount, iVertexBuffer**);
-	void SetIndexBuffer(iIndexBuffer*);
-	void SetConstantBuffer(i32 index, iConstantBuffer*);
-	void SetConstants(i32 index, i32 count, const void*, i32 offset);
-	void SetSampler(i32 index, iSampler*);
-	void SetImage(i32 index, iImage*);
+	void SetVertexBuffers(s32 startSlot, s32 viewCount, iVertexBuffer** vertexBuffer);
+	void SetIndexBuffer(iIndexBuffer* indexBuffer);
+	void SetConstantBuffer(s32 index, iConstantBuffer* constantBuffer);
+	void SetConstants(s32 index, s32 count, const void* constantData, s32 offset);
+	void SetSampler(s32 index, iSampler* sampler);
+	void SetImage(s32 index, iImage* image);
 
-	void DrawInstanced(i32 vertsPerInstance, i32 instances, i32 startVert, i32 startInstance);
-	void DrawIndexedInstanced(i32 vertsPerInstance, i32 instances, i32 startVert, i32 offset, i32 startInstance);
+	void DrawInstanced(s32 vertsPerInstance, s32 instances, s32 startVert, s32 startInstance);
+	void DrawIndexedInstanced(s32 vertsPerInstance, s32 instances, s32 startVert, s32 offset, s32 startInstance);
 
 	// Render passes.
-	result BeginRenderPass(RenderPassBeginDesc*);
+	result BeginRenderPass(RenderPassBeginDesc* passBeginDesc);
 	result NextSubPass();
 	result EndRenderPass();
 
 	// Secondary command buffer insertion.
-	result Insert(i32 count, iCommandBuffer* const*);
+	result Insert(s32 count, iCommandBuffer* const* commandBuffer);
 };

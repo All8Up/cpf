@@ -23,4 +23,4 @@ interface iRegistry : iUnknown
 	result GetInstance(u64 id, [out] iUnknown** outIface);
 }
 
-class_id RegistryCID("CPF::Plugin::iRegistry");
+const class_id RegistryCID("CPF::Plugin::iRegistry");

@@ -27,6 +27,30 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitEmpty_stmt(IDLParser::Empty_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitModule_stmt(IDLParser::Module_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitError_code_stmt(IDLParser::Error_code_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitSuccess_stmt(IDLParser::Success_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFailure_stmt(IDLParser::Failure_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -148,6 +172,26 @@ public:
   }
 
   virtual antlrcpp::Any visitEnum_item(IDLParser::Enum_itemContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitEnum_expr(IDLParser::Enum_exprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_add_sub(IDLParser::Expr_add_subContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_mul_div(IDLParser::Expr_mul_divContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_shift(IDLParser::Expr_shiftContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_value(IDLParser::Expr_valueContext *ctx) override {
     return visitChildren(ctx);
   }
 

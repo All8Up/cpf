@@ -1,7 +1,7 @@
 module cpf::graphics;
 import types from cpf;
 
-enum LogicOp : i32
+enum LogicOp : s32
 {
 	Clear = 0,
 	Set,

@@ -1,14 +1,14 @@
 import "Std";
 import "Common";
 
-const float kSomething = 1.0;
-const int kDecConst = 1234;
-const int kNegInt = -1234;
-const int kOctConst = 01234;
-const int kSomething = 0xff00;
-const int kBinConst = 0b00011001;
+const f32 kSomething = 1.0;
+const s32 kDecConst = 1234;
+const s32 kNegInt = -1234;
+const s32 kOctConst = 01234;
+const s32 kSomething = 0xff00;
+const s32 kBinConst = 0b00011001;
 const string kName = "Something";
-const class_id kID = "CPF::GOM::iRegistry";
+const class_id kCID("CPF::GOM::iRegistry");
 
 enum TestFwd : u32;
 enum Flags : s32
@@ -42,8 +42,8 @@ namespace Test
 		eResult = 3,
 		eBlargo = 4
 	}
-	const float kSomething = 1.0;
-	const int kSomething = 0xff00;
+	const f32 kSomething = 1.0;
+	const s32 kSomething = 0xff00;
 	struct Point3f;
 	namespace Test2
 	{
@@ -66,8 +66,8 @@ struct Point2f
         eResult = 3,
         eBlargo = 4
     }
-    const float kSomething = 1.0;
-    const int kSomething = 0xff00;
+    const f32 kSomething = 1.0;
+    const s32 kSomething = 0xff00;
     f32 x;
     f32 y;
 }
@@ -78,7 +78,7 @@ namespace CPF
 	namespace Plugin
 	{
 		struct IID_CID;
-		const class_id RegistryCID = "CPF::Plugin::iRegistry";
+		const class_id RegistryCID("CPF::Plugin::iRegistry");
 		interface iRegistry : GOM::iUnknown
 		{
             enum Flags : s32
@@ -88,8 +88,8 @@ namespace CPF
                 eResult = 3,
                 eBlargo = 4
             }
-            const float kSomething = 1.0;
-            const int kSomething = 0xff00;
+            const f32 kSomething = 1.0;
+            const s32 kSomething = 0xff00;
 
 			result Load([in] char* library);
 			result CanUnload([in] char* library);

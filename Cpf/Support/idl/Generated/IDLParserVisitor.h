@@ -25,6 +25,18 @@ public:
 
     virtual antlrcpp::Any visitGlobal_statement(IDLParser::Global_statementContext *context) = 0;
 
+    virtual antlrcpp::Any visitEmpty_stmt(IDLParser::Empty_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitModule_stmt(IDLParser::Module_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitError_code_stmt(IDLParser::Error_code_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitSuccess_stmt(IDLParser::Success_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitFailure_stmt(IDLParser::Failure_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *context) = 0;
+
     virtual antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *context) = 0;
@@ -86,6 +98,16 @@ public:
     virtual antlrcpp::Any visitEnum_elements(IDLParser::Enum_elementsContext *context) = 0;
 
     virtual antlrcpp::Any visitEnum_item(IDLParser::Enum_itemContext *context) = 0;
+
+    virtual antlrcpp::Any visitEnum_expr(IDLParser::Enum_exprContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_add_sub(IDLParser::Expr_add_subContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_mul_div(IDLParser::Expr_mul_divContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_shift(IDLParser::Expr_shiftContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_value(IDLParser::Expr_valueContext *context) = 0;
 
     virtual antlrcpp::Any visitAny_literal(IDLParser::Any_literalContext *context) = 0;
 

@@ -13,6 +13,8 @@ NAMESPACE                   : 'namespace';
 STRUCT                      : 'struct';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';
+MODULE                      : 'module';
+FROM                        : 'from';
 
 IN                          : 'in';
 OUT                         : 'out';
@@ -20,6 +22,7 @@ OUT                         : 'out';
 COLON                       : ':';
 SEMICOLON                   : ';';
 STAR                        : '*';
+SLASH                       : '/';
 DOT                         : '.';
 COMMA                       : ',';
 EQUALS                      : '=';
@@ -32,6 +35,10 @@ LBRACKET                    : '[';
 RBRACKET                    : ']';
 LT                          : '<';
 GT                          : '>';
+PLUS                        : '+';
+MINUS                       : '-';
+LSHIFT                      : '<<';
+RSHIFT                      : '>>';
 
 // Type modifiers.
 CONST                       : 'const';
@@ -39,6 +46,8 @@ CONST                       : 'const';
 // Types.
 VOID                        : 'void';
 RESULT                      : 'result';
+SUCCESS                     : 'success';
+FAILURE                     : 'failure';
 CLASS_ID                    : 'class_id';
 STRING                      : 'string';
 
@@ -59,10 +68,10 @@ F64                         : 'f64';
 IDENT                       : ALPHA_ (ALPHA_ | DIGIT)*;
 
 // Literals.
-DECIMAL_LIT                 : SIGN? [1-9] DIGIT*;
+DECIMAL_LIT                 : SIGN? ('0' | [1-9] DIGIT*);
 HEX_LIT                     : SIGN? ('0x' | '0X') HEX_DIGIT+;
-OCT_LIT                     : SIGN? '0' OCT_DIGIT+;
 BIN_LIT                     : SIGN? ('0b' | '0B') BIN_DIGIT+;
+OCT_LIT                     : SIGN? '0' OCT_DIGIT+;
 
 // String literal.
 STRING_LIT                  : QUOTE QUOTED_TEXT? QUOTE;

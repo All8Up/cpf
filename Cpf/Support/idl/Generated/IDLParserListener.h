@@ -23,6 +23,24 @@ public:
   virtual void enterGlobal_statement(IDLParser::Global_statementContext *ctx) = 0;
   virtual void exitGlobal_statement(IDLParser::Global_statementContext *ctx) = 0;
 
+  virtual void enterEmpty_stmt(IDLParser::Empty_stmtContext *ctx) = 0;
+  virtual void exitEmpty_stmt(IDLParser::Empty_stmtContext *ctx) = 0;
+
+  virtual void enterModule_stmt(IDLParser::Module_stmtContext *ctx) = 0;
+  virtual void exitModule_stmt(IDLParser::Module_stmtContext *ctx) = 0;
+
+  virtual void enterError_code_stmt(IDLParser::Error_code_stmtContext *ctx) = 0;
+  virtual void exitError_code_stmt(IDLParser::Error_code_stmtContext *ctx) = 0;
+
+  virtual void enterSuccess_stmt(IDLParser::Success_stmtContext *ctx) = 0;
+  virtual void exitSuccess_stmt(IDLParser::Success_stmtContext *ctx) = 0;
+
+  virtual void enterFailure_stmt(IDLParser::Failure_stmtContext *ctx) = 0;
+  virtual void exitFailure_stmt(IDLParser::Failure_stmtContext *ctx) = 0;
+
+  virtual void enterImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) = 0;
+  virtual void exitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) = 0;
+
   virtual void enterImport_stmt(IDLParser::Import_stmtContext *ctx) = 0;
   virtual void exitImport_stmt(IDLParser::Import_stmtContext *ctx) = 0;
 
@@ -115,6 +133,21 @@ public:
 
   virtual void enterEnum_item(IDLParser::Enum_itemContext *ctx) = 0;
   virtual void exitEnum_item(IDLParser::Enum_itemContext *ctx) = 0;
+
+  virtual void enterEnum_expr(IDLParser::Enum_exprContext *ctx) = 0;
+  virtual void exitEnum_expr(IDLParser::Enum_exprContext *ctx) = 0;
+
+  virtual void enterExpr_add_sub(IDLParser::Expr_add_subContext *ctx) = 0;
+  virtual void exitExpr_add_sub(IDLParser::Expr_add_subContext *ctx) = 0;
+
+  virtual void enterExpr_mul_div(IDLParser::Expr_mul_divContext *ctx) = 0;
+  virtual void exitExpr_mul_div(IDLParser::Expr_mul_divContext *ctx) = 0;
+
+  virtual void enterExpr_shift(IDLParser::Expr_shiftContext *ctx) = 0;
+  virtual void exitExpr_shift(IDLParser::Expr_shiftContext *ctx) = 0;
+
+  virtual void enterExpr_value(IDLParser::Expr_valueContext *ctx) = 0;
+  virtual void exitExpr_value(IDLParser::Expr_valueContext *ctx) = 0;
 
   virtual void enterAny_literal(IDLParser::Any_literalContext *ctx) = 0;
   virtual void exitAny_literal(IDLParser::Any_literalContext *ctx) = 0;
