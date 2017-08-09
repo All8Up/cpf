@@ -3,7 +3,9 @@
 #include "IDLLexer.h"
 #include "Visitor/Visitor.hpp"
 #include "Generators/Generator.hpp"
-#include <Windows.h>
+#ifdef _WIN32
+#   include <Windows.h>
+#endif
 
 int main(int argc, char** argv)
 {

@@ -164,15 +164,17 @@ target_link_libraries (IDL
 	antlr4_static
 )
 
-target_compile_options (IDL
-	PUBLIC "/GR"
-)
-target_compile_options (antlr4_static
-	PUBLIC "/GR"
-)
-target_compile_definitions (antlr4_static
-	PUBLIC
-		ANTLR4CPP_STATIC
-		UNICODE
-		_UNICODE
-)
+if (WIN32)
+    target_compile_options (IDL
+        PUBLIC "/GR"
+    )
+    target_compile_options (antlr4_static
+        PUBLIC "/GR"
+    )
+    target_compile_definitions (antlr4_static
+        PUBLIC
+            ANTLR4CPP_STATIC
+            UNICODE
+            _UNICODE
+    )
+endif ()
