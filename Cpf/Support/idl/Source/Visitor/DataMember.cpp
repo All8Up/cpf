@@ -1,18 +1,18 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Visitor/DataMember.hpp"
 #include "Visitor/Literal.hpp"
-#include "AST/Types.hpp"
+#include "IDLTree/Types.hpp"
 
-using namespace IDL;
+using namespace IDLTree;
 
-AST::DataMember GetTypeDecl(const std::string& name, IDLParser::Type_declContext* context)
+DataMember GetTypeDecl(const std::string& name, IDLParser::Type_declContext* context)
 {
-	AST::DataMember result(name);
-	AST::TypeDecl typeDecl;
+	DataMember result(name);
+	TypeDecl typeDecl;
 	if (context->type_modifier())
 	{
 		// Has a const modifier.
-		typeDecl.mModifiers = AST::TypeModifier::Const;
+		typeDecl.mModifiers = TypeModifier::Const;
 	}
 	assert(context->any_type() != nullptr);
 	auto baseType = context->any_type();
@@ -20,27 +20,27 @@ AST::DataMember GetTypeDecl(const std::string& name, IDLParser::Type_declContext
 	if (baseType->integral_type())
 	{
 		auto typeContext = baseType->integral_type();
-		typeDecl.mType = GetType(typeContext);
+		typeDecl.mType = IDL::GetType(typeContext);
 	}
 	else if (baseType->float_type())
 	{
 		auto typeContext = baseType->float_type();
 		if (typeContext->F32())
-			typeDecl.mType = AST::AllTypes::F32;
+			typeDecl.mType = AllTypes::F32;
 		else if (typeContext->F64())
-			typeDecl.mType = AST::AllTypes::F64;
+			typeDecl.mType = AllTypes::F64;
 	}
 	else if (baseType->utility_type())
 	{
 		auto typeContext = baseType->utility_type();
 		if (typeContext->VOID())
-			typeDecl.mType = AST::AllTypes::Void;
+			typeDecl.mType = AllTypes::Void;
 		else if (typeContext->RESULT())
-			typeDecl.mType = AST::AllTypes::Result;
+			typeDecl.mType = AllTypes::Result;
 	}
 	else if (baseType->IDENT())
 	{
-		typeDecl.mType = AST::AllTypes::Identifier;
+		typeDecl.mType = AllTypes::Identifier;
 		typeDecl.mIdentifier = baseType->IDENT()->toString();
 	}
 	result.SetType(typeDecl);
@@ -48,9 +48,9 @@ AST::DataMember GetTypeDecl(const std::string& name, IDLParser::Type_declContext
 	return result;
 }
 
-AST::DataMemberVector IDL::GetDataMembers(IDLParser::Struct_declContext *context)
+DataMemberVector IDL::GetDataMembers(IDLParser::Struct_declContext *context)
 {
-	AST::DataMemberVector members;
+	DataMemberVector members;
 	auto blockContext = context->struct_block();
 	const auto& items = blockContext->struct_item();
 	for (const auto& item : items)

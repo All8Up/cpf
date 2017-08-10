@@ -1,16 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Generators/Generator.hpp"
-#include <string>
 
 namespace Cpp
 {
 	class Generator : public IDL::Generator
 	{
 	public:
-		bool Generate(IDL::Context& context, const AST::SymbolTable& symtab) override;
+		bool Generate(IDL::CodeWriter& context, const IDLTree::SymbolTable& symtab) override;
 
 	private:
-		static bool _Prelude(IDL::Context& context, const AST::SymbolTable& symtab);
+		static bool _Prelude(IDL::CodeWriter& context, const IDLTree::SymbolTable& symtab);
 	};
 }

@@ -4,19 +4,20 @@
 
 using namespace IDL;
 
-AST::EnumItemArray IDL::GetEnumValues(IDLParser::Enum_elementsContext* context)
+IDLTree::EnumItemArray IDL::GetEnumValues(IDLParser::Enum_elementsContext* context)
 {
-	AST::EnumItemArray result;
+	IDLTree::EnumItemArray result;
 	int current = 0;
 
 	for (const auto entry : context->enum_item())
 	{
 		auto entryName = entry->IDENT()->toString();
-		AST::EnumItem item(entryName);
+		IDLTree::EnumItem item(entryName);
 		if (entry->EQUALS())
 		{
 			// Has a defined value.
-			item.SetValue(GetIntegerLiteral(entry->integer_lit()));
+			// TODO: Handle the evaluations..
+//			item.SetValue(GetIntegerLiteral(entry->integer_lit()));
 		}
 		else
 		{

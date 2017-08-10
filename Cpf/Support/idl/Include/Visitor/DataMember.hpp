@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "AST/Struct.hpp"
-#include "IDLParser.h"
-#include "AST/SymbolTable.hpp"
+#include "IDLTree/Struct.hpp"
+#include "IDLTree/SymbolTable.hpp"
+#include "../../Generated/IDLParser.h"
 
 
 namespace IDL
 {
-	AST::DataMemberVector GetDataMembers(IDLParser::Struct_declContext *context);
+	IDLTree::DataMemberVector GetDataMembers(IDLParser::Struct_declContext *context);
 }

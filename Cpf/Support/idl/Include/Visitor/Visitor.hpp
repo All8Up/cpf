@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "IDLParserBaseVisitor.h"
-#include "AST/SymbolTable.hpp"
+#include "../../Generated/IDLParserBaseVisitor.h"
+#include "IDLTree/SymbolTable.hpp"
 
 namespace IDL
 {
@@ -23,9 +23,9 @@ namespace IDL
 		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *context) override;
 		antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *context) override;
 
-		const AST::SymbolTable& GetSymbolTable() const { return mSymbolTable; }
+		const IDLTree::SymbolTable& GetSymbolTable() const { return mSymbolTable; }
 
 	private:
-		AST::SymbolTable mSymbolTable;
+		IDLTree::SymbolTable mSymbolTable;
 	};
 }

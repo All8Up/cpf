@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "IDLParser.h"
+#include "../../Generated/IDLParser.h"
+
 
 namespace IDL
 {

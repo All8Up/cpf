@@ -40,53 +40,35 @@ set (VisitorSources
 	Source/Visitor/Enum.cpp
 	Source/Visitor/DataMember.cpp
 )
-set (IncludeFiles
-	Include/Main.hpp
+set (IDLTreeIncludes
+	Include/IDLTree/Const.hpp
+	Include/IDLTree/Enum.hpp
+	Include/IDLTree/Import.hpp
+	Include/IDLTree/Interface.hpp
+	Include/IDLTree/Namespace.hpp
+	Include/IDLTree/Struct.hpp
+	Include/IDLTree/Symbol.hpp
+	Include/IDLTree/SymbolTable.hpp
+	Include/IDLTree/Types.hpp
 )
-set (SourceFiles
-	Source/Main.cpp
-)
-set (ASTIncludes
-	Include/AST/Alias.hpp
-	Include/AST/Const.hpp
-	Include/AST/DataMember.hpp
-	Include/AST/Enum.hpp
-	Include/AST/ForwardRef.hpp
-	Include/AST/Function.hpp
-	Include/AST/Import.hpp
-	Include/AST/Interface.hpp
-	Include/AST/Namespace.hpp
-	Include/AST/Parameter.hpp
-	Include/AST/Path.hpp
-	Include/AST/Struct.hpp
-	Include/AST/Symbol.hpp
-	Include/AST/SymbolTable.hpp
-	Include/AST/Types.hpp
-)
-set (ASTSources
-	Source/AST/Alias.cpp
-	Source/AST/Const.cpp
-	Source/AST/DataMember.cpp
-	Source/AST/Enum.cpp
-	Source/AST/ForwardRef.cpp
-	Source/AST/Function.cpp
-	Source/AST/Import.cpp
-	Source/AST/Interface.cpp
-	Source/AST/Namespace.cpp
-	Source/AST/Parameter.cpp
-	Source/AST/Path.cpp
-	Source/AST/Struct.cpp
-	Source/AST/Symbol.cpp
-	Source/AST/SymbolTable.cpp
-	Source/AST/Types.cpp
+set (IDLTreeSources
+	Source/IDLTree/Const.cpp
+	Source/IDLTree/Enum.cpp
+	Source/IDLTree/Import.cpp
+	Source/IDLTree/Interface.cpp
+	Source/IDLTree/Namespace.cpp
+	Source/IDLTree/Struct.cpp
+	Source/IDLTree/Symbol.cpp
+	Source/IDLTree/SymbolTable.cpp
+	Source/IDLTree/Types.cpp
 )
 set (GeneratorsIncludes
 	Include/Generators/Generator.hpp
-	Include/Generators/Context.hpp
+	Include/Generators/CodeWriter.hpp
 )
 set (GeneratorsSources
 	Source/Generators/Generator.cpp
-	Source/Generators/Context.cpp
+	Source/Generators/CodeWriter.cpp
 )
 set (GeneratorsCppIncludes
 	Include/Generators/Cpp/Cpp.hpp
@@ -107,13 +89,79 @@ set (GeneratorsRustSources
 	Source/Generators/Rust/Rust.cpp
 )
 
+set (Includes
+	Include/Main.hpp
+)
+set (Sources
+	Source/Main.cpp
+)
+
+set (IDLIncludes
+	Include/IDL/Settings.hpp
+	Include/IDL/SymbolTable.hpp
+	Include/IDL/SyntaxTree.hpp
+)
+set (IDLSources
+	Source/IDL/Settings.cpp
+	Source/IDL/SymbolTable.cpp
+	Source/IDL/SyntaxTree.cpp
+)
+
+set (IDLCodeGenIncludes
+	Include/IDL/CodeGen/CodeWriter.hpp
+	Include/IDL/CodeGen/Context.hpp
+	Include/IDL/CodeGen/Generator.hpp
+)
+set (IDLCodeGenSources
+	Source/IDL/CodeGen/CodeWriter.cpp
+	Source/IDL/CodeGen/Context.cpp
+	Source/IDL/CodeGen/Generator.cpp
+)
+
+set (IDLCodeGenCppIncludes
+	Include/IDL/CodeGen/Cpp/CodeGen.hpp
+)
+set (IDLCodeGenCppSources
+	Source/IDL/CodeGen/Cpp/CodeGen.cpp
+)
+
+set (IDLNodesIncludes
+	Include/IDL/Nodes/Node.hpp
+)
+set (IDLNodesSources
+	Source/IDL/Nodes/Node.cpp
+)
+
+set (IDLParseTreeIncludes
+	Include/IDL/ParseTree/Visitor.hpp
+)
+set (IDLParseTreeSources
+	Source/IDL/ParseTree/Visitor.cpp
+)
+
 add_executable (IDL
-	${IncludeFiles}
-	${SourceFiles}
+	${Includes}
+	${Sources}
+	${IDLIncludes}
+	${IDLSources}
+	${IDLCodeGenIncludes}
+	${IDLCodeGenSources}
+	${IDLCodeGenCppIncludes}
+	${IDLCodeGenCppSources}
+	${IDLNodesIncludes}
+	${IDLNodesSources}
+	${IDLParseTreeIncludes}
+	${IDLParseTreeSources}
+
+	${LexerFiles}
+	${ParserFiles}
+	${ListenerFiles}
+	${VisitorFiles}
+#[[
 	${VisitorIncludes}
 	${VisitorSources}
-	${ASTIncludes}
-	${ASTSources}
+	${IDLTreeIncludes}
+	${IDLTreeSources}
 	${GeneratorsIncludes}
 	${GeneratorsSources}
 	${GeneratorsCppIncludes}
@@ -122,23 +170,33 @@ add_executable (IDL
 	${GeneratorsPython3Sources}
 	${GeneratorsRustIncludes}
 	${GeneratorsRustSources}
-	${LexerFiles}
-	${ParserFiles}
-	${ListenerFiles}
-	${VisitorFiles}
+#]]
 )
 set_property (TARGET IDL PROPERTY FOLDER Tools)
+
+source_group (Includes FILES ${Includes})
+source_group (Sources FILES ${Sources})
+source_group (Includes\\IDL FILES ${IDLIncludes})
+source_group (Sources\\IDL FILES ${IDLSources})
+source_group (Includes\\IDL\\CodeGen FILES ${IDLCodeGenIncludes})
+source_group (Sources\\IDL\\CodeGen FILES ${IDLCodeGenSources})
+source_group (Includes\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppIncludes})
+source_group (Sources\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppSources})
+source_group (Includes\\IDL\\Nodes FILES ${IDLNodesIncludes})
+source_group (Sources\\IDL\\Nodes FILES ${IDLNodesSources})
+source_group (Includes\\IDL\\ParseTree FILES ${IDLParseTreeIncludes})
+source_group (Sources\\IDL\\ParseTree FILES ${IDLParseTreeSources})
 
 source_group (Grammar\\Lexer FILES ${LexerFiles})
 source_group (Grammar\\Parser FILES ${ParserFiles})
 source_group (Grammar\\Listener FILES ${ListenerFiles})
 source_group (Grammar\\Visitor FILES ${VisitorFiles})
-source_group (Includes FILES ${IncludeFiles})
-source_group (Sources FILES ${SourceFiles})
+
+#[[
 source_group (Includes\\Visitor FILES ${VisitorIncludes})
 source_group (Sources\\Visitor FILES ${VisitorSources})
-source_group (Includes\\AST FILES ${ASTIncludes})
-source_group (Sources\\AST FILES ${ASTSources})
+source_group (Includes\\IDLTree FILES ${IDLTreeIncludes})
+source_group (Sources\\IDLTree FILES ${IDLTreeSources})
 source_group (Includes\\Generators FILES ${GeneratorsIncludes})
 source_group (Sources\\Generators FILES ${GeneratorsSources})
 source_group (Includes\\Generators\\Cpp FILES ${GeneratorsCppIncludes})
@@ -147,6 +205,7 @@ source_group (Includes\\Generators\\Python3 FILES ${GeneratorsPython3Includes})
 source_group (Sources\\Generators\\Python3 FILES ${GeneratorsPython3Sources})
 source_group (Includes\\Generators\\Rust FILES ${GeneratorsRustIncludes})
 source_group (Sources\\Generators\\Rust FILES ${GeneratorsRustSources})
+#]]
 
 target_include_directories (IDL
 	PUBLIC
@@ -178,3 +237,18 @@ if (WIN32)
             _UNICODE
     )
 endif ()
+
+add_executable (Test_IDL
+	UnitTest/Test_All.hpp
+	../../Libraries/Core/Test/UnitTestMain.cpp
+)
+add_test (IDL Test_IDL COMMAND Test_IDL)
+target_link_libraries (Test_IDL gmock Std antlr4_static)
+target_include_directories (Test_IDL
+	PUBLIC
+		Include
+		Generated
+		${CMAKE_CURRENT_SOURCE_DIR}/Antlr4/Cpp/runtime/src
+		UnitTest
+)
+set_property (TARGET Test_IDL PROPERTY FOLDER UnitTests/IDL)

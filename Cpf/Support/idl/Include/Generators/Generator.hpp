@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <memory>
-#include "Generators/Context.hpp"
+#include "Generators/CodeWriter.hpp"
 
-namespace AST
+namespace IDLTree
 {
 	class SymbolTable;
 }
@@ -24,7 +24,7 @@ namespace IDL
 
 		static std::shared_ptr<Generator> Create(Type type);
 
-		virtual bool Generate(Context& context, const AST::SymbolTable& symtab) = 0;
+		virtual bool Generate(CodeWriter& context, const IDLTree::SymbolTable& symtab) = 0;
 
 	protected:
 	private:

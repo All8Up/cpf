@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "IDLParser.h"
-#include "AST/Enum.hpp"
+#include "../../Generated/IDLParser.h"
+#include "IDLTree/Enum.hpp"
+
 
 namespace IDL
 {
-	AST::EnumItemArray GetEnumValues(IDLParser::Enum_elementsContext* context);
+	IDLTree::EnumItemArray GetEnumValues(IDLParser::Enum_elementsContext* context);
 }

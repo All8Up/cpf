@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Visitor/Visitor.hpp"
-#include "AST/Import.hpp"
-#include "AST/Const.hpp"
-#include "AST/Enum.hpp"
-#include "AST/Struct.hpp"
-#include "AST/Interface.hpp"
+#include "IDLTree/Import.hpp"
+#include "IDLTree/Const.hpp"
+#include "IDLTree/Enum.hpp"
+#include "IDLTree/Struct.hpp"
+#include "IDLTree/Interface.hpp"
 #include "Visitor/Literal.hpp"
 #include "Visitor/Enum.hpp"
 #include "Visitor/DataMember.hpp"
@@ -20,7 +20,7 @@ antlrcpp::Any Visitor::visitImport_stmt(IDLParser::Import_stmtContext *context)
 {
 	auto* module = context->string_lit();
 	auto value = module->STRING_LIT()->toString();
-	mSymbolTable.AddImport(std::make_shared<AST::Import>(value));
+	mSymbolTable.AddImport(std::make_shared<IDLTree::Import>(value));
 	return visitChildren(context);
 }
 
@@ -29,7 +29,7 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 	auto name = context->IDENT()->toString();
 	auto value = GetIntegerLiteral(context->integer_lit());
 
-	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, value));
+	mSymbolTable.AddSymbol(std::make_shared<IDLTree::Const>(mSymbolTable.GetCurrentScope(), name, value));
 	return visitChildren(context);
 }
 
@@ -37,7 +37,7 @@ antlrcpp::Any Visitor::visitConst_float_def(IDLParser::Const_float_defContext *c
 {
 	auto name = context->IDENT()->toString();
 	auto value = GetFloatLiteral(context->float_lit());
-	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, value));
+	mSymbolTable.AddSymbol(std::make_shared<IDLTree::Const>(mSymbolTable.GetCurrentScope(), name, value));
 	return visitChildren(context);
 }
 
@@ -45,7 +45,7 @@ antlrcpp::Any Visitor::visitConst_string_def(IDLParser::Const_string_defContext 
 {
 	auto name = context->IDENT()->toString();
 	auto value = context->string_lit()->STRING_LIT()->toString();
-	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, AST::Const::Type::eString, value));
+	mSymbolTable.AddSymbol(std::make_shared<IDLTree::Const>(mSymbolTable.GetCurrentScope(), name, IDLTree::Const::Type::eString, value));
 	return visitChildren(context);
 }
 
@@ -53,7 +53,7 @@ antlrcpp::Any Visitor::visitConst_class_id_def(IDLParser::Const_class_id_defCont
 {
 	auto name = context->IDENT()->toString();
 	auto value = context->string_lit()->STRING_LIT()->toString();
-	mSymbolTable.AddSymbol(std::make_shared<AST::Const>(mSymbolTable.GetCurrentScope(), name, AST::Const::Type::eClassID, value));
+	mSymbolTable.AddSymbol(std::make_shared<IDLTree::Const>(mSymbolTable.GetCurrentScope(), name, IDLTree::Const::Type::eClassID, value));
 	return visitChildren(context);
 }
 
@@ -63,11 +63,11 @@ antlrcpp::Any Visitor::visitEnum_fwd(IDLParser::Enum_fwdContext *context)
 	if (context->enum_type() && context->enum_type()->integral_type())
 	{
 		auto type = GetType(context->enum_type()->integral_type());
-		mSymbolTable.AddSymbol(std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name, type));
+		mSymbolTable.AddSymbol(std::make_shared<IDLTree::Enum>(mSymbolTable.GetCurrentScope(), name, type));
 	}
 	else
 	{
-		mSymbolTable.AddSymbol(std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name));
+		mSymbolTable.AddSymbol(std::make_shared<IDLTree::Enum>(mSymbolTable.GetCurrentScope(), name));
 	}
 
 	return visitChildren(context);
@@ -75,20 +75,20 @@ antlrcpp::Any Visitor::visitEnum_fwd(IDLParser::Enum_fwdContext *context)
 
 antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 {
-	std::shared_ptr<AST::Enum> result;
+	std::shared_ptr<IDLTree::Enum> result;
 	auto name = context->IDENT()->toString();
 	if (context->enum_type() && context->enum_type()->integral_type())
 	{
 		auto type = GetType(context->enum_type()->integral_type());
-		result = std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name, type);
+		result = std::make_shared<IDLTree::Enum>(mSymbolTable.GetCurrentScope(), name, type);
 	}
 	else
 	{
-		result = std::make_shared<AST::Enum>(mSymbolTable.GetCurrentScope(), name);
+		result = std::make_shared<IDLTree::Enum>(mSymbolTable.GetCurrentScope(), name);
 	}
 
 	// Enumerate the contents.
-	AST::EnumItemArray entryArray = GetEnumValues(context->enum_elements());
+	IDLTree::EnumItemArray entryArray = GetEnumValues(context->enum_elements());
 	result->SetItems(entryArray);
 
 	mSymbolTable.AddSymbol(result);
@@ -98,7 +98,7 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *context)
 antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto result = std::make_shared<AST::Struct>(mSymbolTable.GetCurrentScope(), name);
+	auto result = std::make_shared<IDLTree::Struct>(mSymbolTable.GetCurrentScope(), name);
 	mSymbolTable.AddSymbol(result);
 
 	return visitChildren(context);
@@ -107,7 +107,7 @@ antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *context)
 antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *context)
 {
 	auto name = context->struct_name()->IDENT()->toString();
-	auto result = std::make_shared<AST::Struct>(mSymbolTable.GetCurrentScope(), name);
+	auto result = std::make_shared<IDLTree::Struct>(mSymbolTable.GetCurrentScope(), name);
 	result->SetDataMembers(GetDataMembers(context));
 	mSymbolTable.AddSymbol(result);
 
@@ -117,7 +117,7 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *context)
 antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto result = std::make_shared<AST::Interface>(mSymbolTable.GetCurrentScope(), name);
+	auto result = std::make_shared<IDLTree::Interface>(mSymbolTable.GetCurrentScope(), name);
 	mSymbolTable.AddSymbol(result);
 
 	// When visiting the children, push this struct as a scope.
@@ -130,7 +130,7 @@ antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *conte
 antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *context)
 {
 	auto name = context->IDENT()->toString();
-	auto result = std::make_shared<AST::Interface>(mSymbolTable.GetCurrentScope(), name);
+	auto result = std::make_shared<IDLTree::Interface>(mSymbolTable.GetCurrentScope(), name);
 	mSymbolTable.AddSymbol(result);
 
 	// When visiting the children, push this struct as a scope.

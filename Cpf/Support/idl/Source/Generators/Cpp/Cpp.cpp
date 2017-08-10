@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Generators/Cpp/Cpp.hpp"
-#include "AST/SymbolTable.hpp"
-#include "AST/Const.hpp"
+#include "IDLTree/SymbolTable.hpp"
+#include "IDLTree/Const.hpp"
 
 using namespace Cpp;
 
@@ -11,7 +11,7 @@ std::string GetStrippedName(const std::string& str)
 	return result;
 }
 
-bool Generator::_Prelude(IDL::Context& context, const AST::SymbolTable& symtab)
+bool Generator::_Prelude(IDL::CodeWriter& context, const IDLTree::SymbolTable& symtab)
 {
 	context.OutputLine("//////////////////////////////////////////////////////////////////////////");
 	context.OutputLine("#pragma once");
@@ -25,7 +25,7 @@ bool Generator::_Prelude(IDL::Context& context, const AST::SymbolTable& symtab)
 	return true;
 }
 
-bool Generator::Generate(IDL::Context& context, const AST::SymbolTable& symtab)
+bool Generator::Generate(IDL::CodeWriter& context, const IDLTree::SymbolTable& symtab)
 {
 	_Prelude(context, symtab);
 
@@ -33,37 +33,37 @@ bool Generator::Generate(IDL::Context& context, const AST::SymbolTable& symtab)
 	{
 		switch (symbol->GetType())
 		{
-		case AST::SymbolType::eIntegralConst:
+		case IDLTree::SymbolType::eIntegralConst:
 		{
-			std::shared_ptr<AST::Const> cval = std::static_pointer_cast<AST::Const>(symbol);
+			auto cval = std::static_pointer_cast<IDLTree::Const>(symbol);
 			uint64_t value = cval->GetAsInteger();
 			context.OutputLine("static const int %s = %llu;", cval->GetName().c_str(), value);
 		}
 		break;
-		case AST::SymbolType::eFloatConst:
+		case IDLTree::SymbolType::eFloatConst:
 		{
-			std::shared_ptr<AST::Const> cval = std::static_pointer_cast<AST::Const>(symbol);
+			auto cval = std::static_pointer_cast<IDLTree::Const>(symbol);
 			float value = float(cval->GetAsDouble());
 			context.OutputLine("static const float %s = %f;", cval->GetName().c_str(), value);
 		}
 		break;
-		case AST::SymbolType::eStringConst:
+		case IDLTree::SymbolType::eStringConst:
 		{
-			std::shared_ptr<AST::Const> cval = std::static_pointer_cast<AST::Const>(symbol);
+			auto cval = std::static_pointer_cast<IDLTree::Const>(symbol);
 			std::string value = cval->GetAsString();
 			context.OutputLine("static const char %s[] = %s;", cval->GetName().c_str(), value.c_str());
 		}
 		break;
-		case AST::SymbolType::eClassIDConst:
+		case IDLTree::SymbolType::eClassIDConst:
 		{
-			std::shared_ptr<AST::Const> cval = std::static_pointer_cast<AST::Const>(symbol);
+			auto cval = std::static_pointer_cast<IDLTree::Const>(symbol);
 			std::string value = cval->GetAsString();
 			// TODO: Decide how to generate the Crc's.  Use the CPF compile time stuff or
 			// generate it here.  Probably going with generation here for max compatibility.
 			context.OutputLine("static const !!!char %s[] = %s;", cval->GetName().c_str(), value.c_str());
 		}
 		break;
-		case AST::SymbolType::eNamespace:
+		case IDLTree::SymbolType::eNamespace:
 		{
 			// TODO: How to end a namespace with the current structure?
 			// TODO: Probably need to make symbols hierarchical.
@@ -72,7 +72,7 @@ bool Generator::Generate(IDL::Context& context, const AST::SymbolTable& symtab)
 			context.Indent();
 		}
 		break;
-		case AST::SymbolType::eEndNamespace:
+		case IDLTree::SymbolType::eEndNamespace:
 		{
 			context.Unindent();
 			context.OutputLine("}");

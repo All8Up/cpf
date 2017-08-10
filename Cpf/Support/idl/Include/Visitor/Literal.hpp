@@ -1,11 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "IDLParser.h"
-#include "AST/Types.hpp"
+#include "../../Generated/IDLParser.h"
+#include "IDLTree/Types.hpp"
+
 
 namespace IDL
 {
 	uint64_t GetIntegerLiteral(IDLParser::Integer_litContext* context);
 	double GetFloatLiteral(IDLParser::Float_litContext* context);
-	AST::AllTypes GetType(IDLParser::Integral_typeContext* ctx);
+	IDLTree::AllTypes GetType(IDLParser::Integral_typeContext* ctx);
 }

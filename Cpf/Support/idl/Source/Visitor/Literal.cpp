@@ -95,16 +95,16 @@ double IDL::GetFloatLiteral(IDLParser::Float_litContext* context)
 	return ::atof(strValue.c_str());
 }
 
-AST::AllTypes IDL::GetType(IDLParser::Integral_typeContext* ctx)
+IDLTree::AllTypes IDL::GetType(IDLParser::Integral_typeContext* ctx)
 {
-	AST::AllTypes result = AST::AllTypes::Unknown;
-	if (ctx->U8()) result = AST::AllTypes::U8;
-	if (ctx->S8()) result = AST::AllTypes::S8;
-	if (ctx->U16()) result = AST::AllTypes::U16;
-	if (ctx->S16()) result = AST::AllTypes::S16;
-	if (ctx->U32()) result = AST::AllTypes::U32;
-	if (ctx->S32()) result = AST::AllTypes::S32;
-	if (ctx->U64()) result = AST::AllTypes::U64;
-	if (ctx->S64()) result = AST::AllTypes::S64;
+	IDLTree::AllTypes result = IDLTree::AllTypes::Unknown;
+	if (ctx->U8()) result = IDLTree::AllTypes::U8;
+	if (ctx->S8()) result = IDLTree::AllTypes::S8;
+	if (ctx->U16()) result = IDLTree::AllTypes::U16;
+	if (ctx->S16()) result = IDLTree::AllTypes::S16;
+	if (ctx->U32()) result = IDLTree::AllTypes::U32;
+	if (ctx->S32()) result = IDLTree::AllTypes::S32;
+	if (ctx->U64()) result = IDLTree::AllTypes::U64;
+	if (ctx->S64()) result = IDLTree::AllTypes::S64;
 	return result;
 }
