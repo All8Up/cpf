@@ -5,11 +5,11 @@
 using namespace IDL;
 using namespace CodeGen;
 
-std::shared_ptr<Generator> Generator::Create(Type type)
+std::shared_ptr<Generator> CodeGen::Create(Language type)
 {
 	switch(type)
 	{
-	case Type::Cpp:
+	case Language::Cpp:
 		return std::make_shared<Cpp::Generator>();
 	}
 

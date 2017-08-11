@@ -11,7 +11,7 @@ namespace IDL
 			class Generator : public CodeGen::Generator
 			{
 			public:
-				bool Generate(CodeWriter& context, const SymbolTable& symtab) override;
+				bool Generate(CodeWriter& context, SyntaxTree& src) override;
 			};
 		}
 	}

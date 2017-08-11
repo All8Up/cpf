@@ -4,7 +4,7 @@
 using namespace IDL;
 using namespace CodeGen;
 
-bool Cpp::Generator::Generate(CodeWriter& context, const SymbolTable& symtab)
+bool Cpp::Generator::Generate(CodeWriter& context, SyntaxTree& source)
 {
 	return false;
 }

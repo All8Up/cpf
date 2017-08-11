@@ -4,6 +4,12 @@
 #include "Generators/CodeWriter.hpp"
 #include "IDL/SymbolTable.hpp"
 
+
+namespace IDL
+{
+	class SyntaxTree;
+}
+
 namespace IDL
 {
 	namespace CodeGen
@@ -11,21 +17,20 @@ namespace IDL
 		class Generator
 		{
 		public:
-			enum class Type : int32_t
-			{
-				Cpp,
-				Python3,
-				Rust
-			};
-
 			virtual ~Generator() {}
 
-			static std::shared_ptr<Generator> Create(Type type);
-
-			virtual bool Generate(CodeWriter& context, const SymbolTable& symtab) = 0;
+			virtual bool Generate(CodeWriter& context, SyntaxTree&) = 0;
 
 		protected:
 		private:
 		};
+
+		enum class Language
+		{
+			Cpp,
+			Rust,
+			Python3
+		};
+		std::shared_ptr<Generator> Create(Language language);
 	}
 }
