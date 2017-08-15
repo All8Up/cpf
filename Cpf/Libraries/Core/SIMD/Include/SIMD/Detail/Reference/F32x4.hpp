@@ -13,155 +13,158 @@ namespace Cpf
 	{
 		namespace Reference
 		{
-			struct float4
+			//////////////////////////////////////////////////////////////////////////
+			struct alignas(16) float4
 			{
+				using Type = float;
+				static constexpr int Alignment = 16;
+				static constexpr int LaneCount = 4; 
+				
 				float4() {}
-				float4(float v0) : mData{ v0, v0, v0, v0 } {}
-				float4(float v0, float v1) : mData{ v0, v1, v0, v0 } {}
-				float4(float v0, float v1, float v2) : mData{ v0, v1, v2, v0 } {}
-				float4(float v0, float v1, float v2, float v3) : mData{ v0, v1, v2, v3 } {}
+				explicit constexpr float4(float v0) : mData{ v0, v0, v0, v0 } {}
+				explicit constexpr float4(float v0, float v1) : mData{ v0, v1, v0, v0 } {}
+				explicit constexpr float4(float v0, float v1, float v2) : mData{ v0, v1, v2, v0 } {}
+				explicit constexpr float4(float v0, float v1, float v2, float v3) : mData{ v0, v1, v2, v3 } {}
 
 				float mData[4];
 			};
 
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) F32x4;
 
 			//////////////////////////////////////////////////////////////////////////
-			template<int COUNT>
-			struct alignas(16) F32x4<float4, 16, 4, float, COUNT>
-			{
-				static constexpr int kAlignment = 16;
-				using Type = float4;
-				static constexpr int kLanes = 4;
-				using Element = float;
-				static constexpr int kCount = COUNT;
-				static constexpr int kLaneMask = (1 << kCount) - 1;
+			template <typename STORAGE, typename LANE_TYPE, int LANES_USED>
+			struct alignas(16) F32x4;
 
-				using Lanes_1 = F32x4<Type, 16, 4, float, 1>;
-				using Lanes_2 = F32x4<Type, 16, 4, float, 2>;
-				using Lanes_3 = F32x4<Type, 16, 4, float, 3>;
-				using Lanes_4 = F32x4<Type, 16, 4, float, 4>;
+			//////////////////////////////////////////////////////////////////////////
+			template<int LANES_USED>
+			struct alignas(16) F32x4<float4, float, LANES_USED>
+			{
+				using StorageType = float4;
+				using LaneType = typename StorageType::Type;
+				static constexpr int LaneCount = LANES_USED;
+				static constexpr int LaneMask = (1 << LaneCount) - 1;
+
+				using Lanes_1 = F32x4<float4, float, 1>;
+				using Lanes_2 = F32x4<float4, float, 2>;
+				using Lanes_3 = F32x4<float4, float, 3>;
+				using Lanes_4 = F32x4<float4, float, 4>;
 
 				F32x4() {}
-				explicit F32x4(Element value) : mVector{ value, value, value, value } {}
-				template <typename = typename std::enable_if<COUNT == 2, Element>::type>
-				F32x4(Element v0, Element v1) : mVector(v0, v1) {}
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				F32x4(Element v0, Element v1, Element v2) : mVector(v0, v1, v2) {}
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
-				F32x4(Element v0, Element v1, Element v2, Element v3) : mVector(v0, v1, v2, v3) {}
+				explicit F32x4(StorageType value) : mSIMD(value) {}
+				
+				//////////////////////////////////////////////////////////////////////////
+				explicit F32x4(LaneType value) : mSIMD{ value, value, value, value } {}
 
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				F32x4(Lanes_2 v01, Element v2)
-					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2)
+				//////////////////////////////////////////////////////////////////////////
+				F32x4(LaneType v0, LaneType v1)
+					: mSIMD(v0, v1) {}
+				F32x4(LaneType v0, LaneType v1, LaneType v2)
+					: mSIMD(v0, v1, v2) {}
+				F32x4(LaneType v0, LaneType v1, LaneType v2, LaneType v3)
+					: mSIMD(v0, v1, v2, v3) {}
+
+				//////////////////////////////////////////////////////////////////////////
+				template <typename = typename std::enable_if<(LANES_USED >= 3), LaneType>>
+				F32x4(Lanes_2 v01, LaneType v2)
+					: mSIMD(v01.mSIMD.mData[0], v01.mSIMD.mData[1], v2)
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				F32x4(Element v0, Lanes_2 v12)
-					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1])
+				template <typename = typename std::enable_if<(LANES_USED >= 3), LaneType>>
+				F32x4(LaneType v0, Lanes_2 v12)
+					: mSIMD(v0, v12.mSIMD.mData[0], v12.mSIMD.mData[1])
 				{
 				}
 
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
-				F32x4(Lanes_2 v01, Element v2, Element v3)
-					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2, v3)
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				F32x4(Lanes_2 v01, LaneType v2, LaneType v3)
+					: mSIMD(v01.mSIMD.mData[0], v01.mSIMD.mData[1], v2, v3)
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
-				F32x4(float v0, Lanes_2 v12, Element v3)
-					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1], v3)
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				F32x4(float v0, Lanes_2 v12, LaneType v3)
+					: mSIMD(v0, v12.mSIMD.mData[0], v12.mSIMD.mData[1], v3)
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
 				F32x4(float v0, float v1, Lanes_2 v23)
-					: mVector(v0, v1, v23.mVector.mData[0], v23.mVector.mData[1])
+					: mSIMD(v0, v1, v23.mSIMD.mData[0], v23.mSIMD.mData[1])
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
 				F32x4(Lanes_2 v01, Lanes_2 v23)
-					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v23.mVector.mData[0], v23.mVector.mData[1])
+					: mSIMD(v01.mSIMD.mData[0], v01.mSIMD.mData[1], v23.mSIMD.mData[0], v23.mSIMD.mData[1])
 				{
 				}
 
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
-				F32x4(Lanes_3 v012, Element v3)
-					: mVector(v012.mVector.mData[0], v012.mVector.mData[1], v012.mVector.mData[2], v3)
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				F32x4(Lanes_3 v012, LaneType v3)
+					: mSIMD(v012.mSIMD.mData[0], v012.mSIMD.mData[1], v012.mSIMD.mData[2], v3)
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
-				F32x4(Element v0, Lanes_3 v123)
-					: mVector(v0, v123.mVector.mData[0], v123.mVector.mData[1], v123.mVector.mData[2])
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				F32x4(LaneType v0, Lanes_3 v123)
+					: mSIMD(v0, v123.mSIMD.mData[0], v123.mSIMD.mData[1], v123.mSIMD.mData[2])
 				{
 				}
 
-				explicit constexpr F32x4(Type value) : mVector(value) {}
+				F32x4& operator = (StorageType value) { mSIMD = value; return *this; }
 
-				F32x4& operator = (Type value) { mVector = value; return *this; }
+				template <typename = typename std::enable_if<LANES_USED == 1, LaneType>>
+				constexpr operator const LaneType() const { return mSIMD.mData[0]; }
 
-				explicit operator Type () const { return mVector; }
-
-				template <typename = typename std::enable_if<COUNT == 1, Element>::type>
-				operator Lanes_1 () const { return mVector; }
-				template <typename = typename std::enable_if<COUNT == 2, Element>::type>
-				operator Lanes_2 () const { return mVector; }
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				operator Lanes_3 () const { return mVector; }
-				template <typename = typename std::enable_if<COUNT == 4, Element>::type>
-				operator Lanes_4 () const { return mVector; }
-
-				template <typename = typename std::enable_if<kCount == 1, Element>::type>
-				constexpr operator const Element() const { return mVector.mData[0]; }
-
-				template <int INDEX>
-				Element GetLane() const
-				{
-					return mVector.mData[INDEX];
-				}
-				Element GetLane(int index) const
-				{
-					return mVector.mData[index];
-				}
 				void SetLane(int index, float value)
 				{
-					mVector.mData[index] = value;
+					mSIMD.mData[index] = value;
 				}
-				template <int I0, int I1>
-				Type GetLanes() const
-				{
-					Type result(mVector.mData[I0], mVector.mData[I1]);
-					return result;
-				}
-				template <int I0, int I1, int I2>
-				Type GetLanes() const
-				{
-					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
-					return result;
-				}
-				template <int I0, int I1, int I2, int I3>
-				Type GetLanes() const
-				{
-					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2], mVector.mData[i3]);
-					return result;
-				}
+				template <int I0> LaneType GetLane() const;
+				template <int I0, int I1> Lanes_2 GetLanes() const;
+				template <int I0, int I1, int I2> Lanes_3 GetLanes() const;
+				template <int I0, int I1, int I2, int I3> Lanes_4 GetLanes() const;
 
-				Type mVector;
+				StorageType mSIMD;
 			};
 
+			
 			template<int COUNT>
-			using F32x4_ = F32x4<float4, 16, 4, float, COUNT>;
+			using F32x4_ = F32x4<float4, float, COUNT>;
+
+			//////////////////////////////////////////////////////////////////////////
+			template <int LANES_USED>
+			template <int I0>
+			typename F32x4<float4, float, LANES_USED>::LaneType F32x4<float4, float, LANES_USED>::GetLane() const
+			{
+				return mSIMD.mData[I0];
+			};
+
+			template<int LANES_USED>
+			template <int I0, int I1>
+			typename F32x4<float4, float, LANES_USED>::Lanes_2 F32x4<float4, float, LANES_USED>::GetLanes() const
+			{
+				return Lanes_2{ mSIMD.mData[I0], mSIMD.mData[I1] };
+			}
+			template<int LANES_USED>
+			template <int I0, int I1, int I2>
+			typename F32x4<float4, float, LANES_USED>::Lanes_3 F32x4<float4, float, LANES_USED>::GetLanes() const
+			{
+				return Lanes_3{ mSIMD.mData[I0], mSIMD.mData[I1], mSIMD.mData[I2] };
+			}
+			template<int LANES_USED>
+			template <int I0, int I1, int I2, int I3>
+			typename F32x4<float4, float, LANES_USED>::Lanes_4 F32x4<float4, float, LANES_USED>::GetLanes() const
+			{
+				return Lanes_4{ mSIMD.mData[I0], mSIMD.mData[I1], mSIMD.mData[I2], mSIMD.mData[I3] };
+			}
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x4_<COUNT> Cross(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
+			CPF_FORCE_INLINE F32x4_<COUNT> Cross(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs);
 
 			template <>
-			CPF_FORCE_INLINE typename F32x4_<3> Cross(const F32x4_<3> lhs, const F32x4_<3> rhs)
+			CPF_FORCE_INLINE F32x4_<3> Cross(const F32x4_<3> lhs, const F32x4_<3> rhs)
 			{
 				return F32x4_<3>(
-					lhs.mVector.mData[1] * rhs.mVector.mData[2] - rhs.mVector.mData[1] * lhs.mVector.mData[2],
-					lhs.mVector.mData[2] * rhs.mVector.mData[0] - rhs.mVector.mData[2] * lhs.mVector.mData[0],
-					lhs.mVector.mData[0] * rhs.mVector.mData[1] - rhs.mVector.mData[0] * lhs.mVector.mData[1]);
+					lhs.mSIMD.mData[1] * rhs.mSIMD.mData[2] - rhs.mSIMD.mData[1] * lhs.mSIMD.mData[2],
+					lhs.mSIMD.mData[2] * rhs.mSIMD.mData[0] - rhs.mSIMD.mData[2] * lhs.mSIMD.mData[0],
+					lhs.mSIMD.mData[0] * rhs.mSIMD.mData[1] - rhs.mSIMD.mData[0] * lhs.mSIMD.mData[1]);
 			}
 
 
@@ -172,7 +175,7 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] == rhs.mVector.mData[i])
+					if (lhs.mSIMD.mData[i] == rhs.mSIMD.mData[i])
 						result |= 1<<i;
 				return result;
 			}
@@ -181,7 +184,7 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] != rhs.mVector.mData[i])
+					if (lhs.mSIMD.mData[i] != rhs.mSIMD.mData[i])
 						result |= 1<<i;
 				return result;
 			}
@@ -190,7 +193,7 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] < rhs.mVector.mData[i])
+					if (lhs.mSIMD.mData[i] < rhs.mSIMD.mData[i])
 						result |= 1<<i;
 				return result;
 			}
@@ -199,7 +202,7 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] <= rhs.mVector.mData[i])
+					if (lhs.mSIMD.mData[i] <= rhs.mSIMD.mData[i])
 						result |= 1 << i;
 				return result;
 			}
@@ -208,7 +211,7 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] > rhs.mVector.mData[i])
+					if (lhs.mSIMD.mData[i] > rhs.mSIMD.mData[i])
 						result |= 1 << i;
 				return result;
 			}
@@ -217,7 +220,7 @@ namespace Cpf
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
-					if (lhs.mVector.mData[i] >= rhs.mVector.mData[i])
+					if (lhs.mSIMD.mData[i] >= rhs.mSIMD.mData[i])
 						result |= 1 << i;
 				return result;
 			}
@@ -228,7 +231,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = -value.mVector.mData[i];
+					result.mSIMD.mData[i] = -value.mSIMD.mData[i];
 				return result;
 			}
 
@@ -237,7 +240,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = lhs.mVector.mData[i] + rhs.mVector.mData[i];
+					result.mSIMD.mData[i] = lhs.mSIMD.mData[i] + rhs.mSIMD.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -245,7 +248,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = lhs.mVector.mData[i] - rhs.mVector.mData[i];
+					result.mSIMD.mData[i] = lhs.mSIMD.mData[i] - rhs.mSIMD.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -253,7 +256,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = lhs.mVector.mData[i] * rhs.mVector.mData[i];
+					result.mSIMD.mData[i] = lhs.mSIMD.mData[i] * rhs.mSIMD.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -261,7 +264,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = lhs.mVector.mData[i] / rhs.mVector.mData[i];
+					result.mSIMD.mData[i] = lhs.mSIMD.mData[i] / rhs.mSIMD.mData[i];
 				return result;
 			}
 
@@ -271,15 +274,15 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = lhs.mVector.mData[i] <= rhs.mVector.mData[i] ? lhs.mVector.mData[i] : rhs.mVector.mData[i];
+					result.mSIMD.mData[i] = lhs.mSIMD.mData[i] <= rhs.mSIMD.mData[i] ? lhs.mSIMD.mData[i] : rhs.mSIMD.mData[i];
 				return result;
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<1> HMin(const F32x4_<COUNT> value)
 			{
-				float result = value.mVector.mData[0];
+				float result = value.mSIMD.mData[0];
 				for (int i = 1; i < COUNT; ++i)
-					result = result < value.mVector.mData[i] ? result : value.mVector.mData[i];
+					result = result < value.mSIMD.mData[i] ? result : value.mSIMD.mData[i];
 				return F32x4_<1>(result);
 			}
 			template <int COUNT>
@@ -287,15 +290,15 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = lhs.mVector.mData[i] >= rhs.mVector.mData[i] ? lhs.mVector.mData[i] : rhs.mVector.mData[i];
+					result.mSIMD.mData[i] = lhs.mSIMD.mData[i] >= rhs.mSIMD.mData[i] ? lhs.mSIMD.mData[i] : rhs.mSIMD.mData[i];
 				return result;
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE F32x4_<1> HMax(const F32x4_<COUNT> value)
 			{
-				float result = value.mVector.mData[0];
+				float result = value.mSIMD.mData[0];
 				for (int i = 1; i < COUNT; ++i)
-					result = result >= value.mVector.mData[i] ? result : value.mVector.mData[i];
+					result = result >= value.mSIMD.mData[i] ? result : value.mSIMD.mData[i];
 				return F32x4_<1>(result);
 			}
 			template <int COUNT>
@@ -303,7 +306,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::sqrt(value.mVector.mData[i]);
+					result.mSIMD.mData[i] = std::sqrt(value.mSIMD.mData[i]);
 				return result;
 			}
 			template <int COUNT>
@@ -311,7 +314,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = 1.0f / value.mVector.mData[i];
+					result.mSIMD.mData[i] = 1.0f / value.mSIMD.mData[i];
 				return result;
 			}
 			template <int COUNT>
@@ -319,35 +322,35 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = 1.0f / std::sqrt(value.mVector.mData[i]);
+					result.mSIMD.mData[i] = 1.0f / std::sqrt(value.mSIMD.mData[i]);
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x4_<COUNT> Clamp(const F32x4_<COUNT> value, typename F32x4_<COUNT>::Element low, typename F32x4_<COUNT>::Element high)
+			CPF_FORCE_INLINE F32x4_<COUNT> Clamp(const F32x4_<COUNT> value, typename F32x4_<COUNT>::LaneType low, typename F32x4_<COUNT>::LaneType high)
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = (value.mVector.mData[i] <= low) ? low : value.mVector.mData[i] >= high ? high : value.mVector.mData[i];
+					result.mSIMD.mData[i] = (value.mSIMD.mData[i] <= low) ? low : value.mSIMD.mData[i] >= high ? high : value.mSIMD.mData[i];
 				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element Dot(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::LaneType Dot(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				typename F32x4_<COUNT>::Element result = 0.0f;
+				typename F32x4_<COUNT>::LaneType result = 0.0f;
 				for (int i = 0; i < COUNT; ++i)
-					result += lhs.mVector.mData[i] * rhs.mVector.mData[i];
+					result += lhs.mSIMD.mData[i] * rhs.mSIMD.mData[i];
 				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element Magnitude(const F32x4_<COUNT> value)
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::LaneType Magnitude(const F32x4_<COUNT> value)
 			{
 				return std::sqrt(Dot(value, value));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x4_<COUNT>::Element MagnitudeSq(const F32x4_<COUNT> value)
+			CPF_FORCE_INLINE typename F32x4_<COUNT>::LaneType MagnitudeSq(const F32x4_<COUNT> value)
 			{
 				return Dot(value, value);
 			}
@@ -367,22 +370,22 @@ namespace Cpf
 					switch (mode)
 					{
 					case Rounding::eCurrent:
-						result.mVector.mData[i] = std::round(value.mVector.mData[i]);
+						result.mSIMD.mData[i] = std::round(value.mSIMD.mData[i]);
 						break;
 					case Rounding::eUp:
-						result.mVector.mData[i] = std::ceil(value.mVector.mData[i]);
+						result.mSIMD.mData[i] = std::ceil(value.mSIMD.mData[i]);
 						break;
 					case Rounding::eDown:
-						result.mVector.mData[i] = std::floor(value.mVector.mData[i]);
+						result.mSIMD.mData[i] = std::floor(value.mSIMD.mData[i]);
 						break;
 					case Rounding::eTruncate:
 						{
-							int32_t v = int32_t(value.mVector.mData[i]);
-							result.mVector.mData[i] = float(v);
+							int32_t v = int32_t(value.mSIMD.mData[i]);
+							result.mSIMD.mData[i] = float(v);
 						}
 						break;
 					case Rounding::eNearest:
-						result.mVector.mData[i] = std::round(value.mVector.mData[i]);
+						result.mSIMD.mData[i] = std::round(value.mSIMD.mData[i]);
 						break;
 					}
 				}
@@ -394,7 +397,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::floor(value.mVector.mData[i]);
+					result.mSIMD.mData[i] = std::floor(value.mSIMD.mData[i]);
 				return result;
 			}
 
@@ -403,7 +406,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::ceil(value.mVector.mData[i]);
+					result.mSIMD.mData[i] = std::ceil(value.mSIMD.mData[i]);
 				return result;
 			}
 
@@ -412,7 +415,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::fmod(lhs.mVector.mData[i], rhs.mVector.mData[i]);
+					result.mSIMD.mData[i] = std::fmod(lhs.mSIMD.mData[i], rhs.mSIMD.mData[i]);
 				return result;
 			}
 
@@ -421,7 +424,7 @@ namespace Cpf
 			{
 				F32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mVector.mData[i] = std::abs(value.mVector.mData[i]);
+					result.mSIMD.mData[i] = std::abs(value.mSIMD.mData[i]);
 				return result;
 			}
 
@@ -433,21 +436,21 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Near(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs, float tolerance)
 			{
-				return (Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance)) == F32x4_<COUNT>::kLaneMask;
+				return (Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance)) == F32x4_<COUNT>::LaneMask;
 			}
 
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Valid(const F32x4_<COUNT> value)
 			{
 				F32x4_<COUNT> test(value * F32x4_<COUNT>{ 0.0f });
-				return (test == F32x4_<COUNT>{0.0f}) == F32x4_<COUNT>::kLaneMask;
+				return (test == F32x4_<COUNT>{0.0f}) == F32x4_<COUNT>::LaneMask;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			using F32x4_1 = F32x4<float4, 16, 4, float, 1>;
-			using F32x4_2 = F32x4<float4, 16, 4, float, 2>;
-			using F32x4_3 = F32x4<float4, 16, 4, float, 3>;
-			using F32x4_4 = F32x4<float4, 16, 4, float, 4>;
+			using F32x4_1 = F32x4<float4, float, 1>;
+			using F32x4_2 = F32x4<float4, float, 2>;
+			using F32x4_3 = F32x4<float4, float, 3>;
+			using F32x4_4 = F32x4<float4, float, 4>;
 		}
 	}
 }

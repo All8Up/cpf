@@ -62,58 +62,58 @@ namespace Cpf
 		template<>
 		struct Constants< float >
 		{
-			static constexpr float kPI = Math::kPI;
-			static constexpr float kTwoPI = Math::kTwoPI;
-			static constexpr float kDegToRad = Math::kDegToRad;
-			static constexpr float kRadToDeg = Math::kRadToDeg;
-			static constexpr float kHalfPI = Math::kHalfPI;
-			static constexpr float kQuarterPI = Math::kQuarterPI;
-			static constexpr float kOneOverPI = Math::kOneOverPI;
-			static constexpr float kSqrtPI = Math::kSqrtPI;
-			static constexpr float kSqrtTwoPI = Math::kSqrtTwoPI;
-			static constexpr float kSqrtTwo = Math::kSqrtTwo;
-			static constexpr float kSqrtThree = Math::kSqrtThree;
-			static constexpr float kSqrtTen = Math::kSqrtTen;
-			static constexpr float kSqrtE = Math::kSqrtE;
-			static constexpr float kSqrtHalf = Math::kSqrtHalf;
-			static constexpr float kSqrtLn2 = Math::kSqrtLn2;
-			static constexpr float kE = Math::kE;
-			static constexpr float kGolden = Math::kGolden;
-			static constexpr float kLn10 = Math::kLn10;
-			static constexpr float kLn2 = Math::kLn2;
-			static constexpr float kLog10E = Math::kLog10E;
-			static constexpr float kLog2E = Math::kLog2E;
-			static constexpr float kLogP5 = Math::kLogP5;
-			static constexpr float kC = Math::kC;
+			static constexpr float kPI = kPI;
+			static constexpr float kTwoPI = kTwoPI;
+			static constexpr float kDegToRad = kDegToRad;
+			static constexpr float kRadToDeg = kRadToDeg;
+			static constexpr float kHalfPI = kHalfPI;
+			static constexpr float kQuarterPI = kQuarterPI;
+			static constexpr float kOneOverPI = kOneOverPI;
+			static constexpr float kSqrtPI = kSqrtPI;
+			static constexpr float kSqrtTwoPI = kSqrtTwoPI;
+			static constexpr float kSqrtTwo = kSqrtTwo;
+			static constexpr float kSqrtThree = kSqrtThree;
+			static constexpr float kSqrtTen = kSqrtTen;
+			static constexpr float kSqrtE = kSqrtE;
+			static constexpr float kSqrtHalf = kSqrtHalf;
+			static constexpr float kSqrtLn2 = kSqrtLn2;
+			static constexpr float kE = kE;
+			static constexpr float kGolden = kGolden;
+			static constexpr float kLn10 = kLn10;
+			static constexpr float kLn2 = kLn2;
+			static constexpr float kLog10E = kLog10E;
+			static constexpr float kLog2E = kLog2E;
+			static constexpr float kLogP5 = kLogP5;
+			static constexpr float kC = kC;
 		};
 
 
 		template<>
 		struct Constants< double >
 		{
-			static constexpr double kPI = Math::kPI_d;
-			static constexpr double kTwoPI = Math::kTwoPI_d;
-			static constexpr double kDegToRad = Math::kDegToRad_d;
-			static constexpr double kRadToDeg = Math::kRadToDeg_d;
-			static constexpr double kHalfPI = Math::kHalfPI_d;
-			static constexpr double kQuarterPI = Math::kQuarterPI_d;
-			static constexpr double kOneOverPI = Math::kOneOverPI_d;
-			static constexpr double kSqrtPI = Math::kSqrtPI_d;
-			static constexpr double kSqrtTwoPI = Math::kSqrtTwoPI_d;
-			static constexpr double kSqrtTwo = Math::kSqrtTwo_d;
-			static constexpr double kSqrtThree = Math::kSqrtThree_d;
-			static constexpr double kSqrtTen = Math::kSqrtTen_d;
-			static constexpr double kSqrtE = Math::kSqrtE_d;
-			static constexpr double kSqrtHalf = Math::kSqrtHalf_d;
-			static constexpr double kSqrtLn2 = Math::kSqrtLn2_d;
-			static constexpr double kE = Math::kE_d;
-			static constexpr double kGolden = Math::kGolden_d;
-			static constexpr double kLn10 = Math::kLn10_d;
-			static constexpr double kLn2 = Math::kLn2_d;
-			static constexpr double kLog10E = Math::kLog10E_d;
-			static constexpr double kLog2E = Math::kLog2E_d;
-			static constexpr double kLogP5 = Math::kLogP5_d;
-			static constexpr double kC = Math::kC_d;
+			static constexpr double kPI = kPI_d;
+			static constexpr double kTwoPI = kTwoPI_d;
+			static constexpr double kDegToRad = kDegToRad_d;
+			static constexpr double kRadToDeg = kRadToDeg_d;
+			static constexpr double kHalfPI = kHalfPI_d;
+			static constexpr double kQuarterPI = kQuarterPI_d;
+			static constexpr double kOneOverPI = kOneOverPI_d;
+			static constexpr double kSqrtPI = kSqrtPI_d;
+			static constexpr double kSqrtTwoPI = kSqrtTwoPI_d;
+			static constexpr double kSqrtTwo = kSqrtTwo_d;
+			static constexpr double kSqrtThree = kSqrtThree_d;
+			static constexpr double kSqrtTen = kSqrtTen_d;
+			static constexpr double kSqrtE = kSqrtE_d;
+			static constexpr double kSqrtHalf = kSqrtHalf_d;
+			static constexpr double kSqrtLn2 = kSqrtLn2_d;
+			static constexpr double kE = kE_d;
+			static constexpr double kGolden = kGolden_d;
+			static constexpr double kLn10 = kLn10_d;
+			static constexpr double kLn2 = kLn2_d;
+			static constexpr double kLog10E = kLog10E_d;
+			static constexpr double kLog2E = kLog2E_d;
+			static constexpr double kLogP5 = kLogP5_d;
+			static constexpr double kC = kC_d;
 		};
 	}
 }

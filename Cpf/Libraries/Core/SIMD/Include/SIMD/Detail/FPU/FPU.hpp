@@ -92,23 +92,23 @@ namespace Cpf
 			};
 
 			//////////////////////////////////////////////////////////////////////////
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) F32x1;
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) F32x2;
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) F32x3;
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) F32x4;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) F32x1;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) F32x2;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) F32x3;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) F32x4;
 
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) I32x1;
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) I32x2;
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) I32x3;
-			template <typename TYPE, int ALIGNMENT, int LANES, typename ELEMENT, int COUNT>
-			struct alignas(ALIGNMENT) I32x4;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) I32x1;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) I32x2;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) I32x3;
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) I32x4;
 		}
 	}
 }

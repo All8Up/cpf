@@ -11,10 +11,8 @@ namespace Cpf
 		class Ref32x4_1
 		{
 		public:
-			using Element = typename TYPE::Element;
-
-			Ref32x4_1& operator = (Element value);
-			operator Element() const;
+			Ref32x4_1& operator = (typename TYPE::LaneType value);
+			operator typename TYPE::LaneType() const;
 
 		private:
 			TYPE* _Data();
@@ -28,13 +26,11 @@ namespace Cpf
 		class Ref32x4_Index
 		{
 		public:
-			using Element = typename TYPE::Element;
-
 			Ref32x4_Index(TYPE& v, int idx);
 			Ref32x4_Index(const Ref32x4_Index& rhs);
 
-			Ref32x4_Index& operator = (Element value);
-			operator Element() const;
+			Ref32x4_Index& operator = (typename TYPE::LaneType value);
+			operator typename TYPE::LaneType() const;
 
 		private:
 			TYPE& mVector;

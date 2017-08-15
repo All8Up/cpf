@@ -14,7 +14,9 @@ TEST(SIMD, IntersectRayBox)
 
 	struct Test
 	{
+#if CPF_TARGET_WINDOWS
 		__declspec(noinline)
+#endif
 		static bool  CPF_VECTORCALL Intersect(
 			Vector3v<F32x4_3> rayOrg,
 			Vector3v<F32x4_3> invDir,

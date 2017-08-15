@@ -10,7 +10,6 @@ namespace Cpf
 {
 	namespace SIMD
 	{
-		// Currently only one level of SSE.
 #if CPF_SIMD_AVX2 || CPF_SIMD_AVX || CPF_SIMD_SSE4a || CPF_SIMD_SSE4_2 || CPF_SIMD_SSE4_1 || CPF_SIMD_SSE3
 		//////////////////////////////////////////////////////////////////////////
 		using F32x4_1 = SSE4_1::F32x4_1;

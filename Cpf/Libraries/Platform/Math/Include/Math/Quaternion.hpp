@@ -18,13 +18,13 @@ namespace Cpf
 		{
 			//////////////////////////////////////////////////////////////////////////
 			using Type = TYPE;
-			using Storage = typename TYPE::Type;
-			using Element = typename TYPE::Element;
-			static constexpr int kLaneMask = TYPE::kLaneMask;
+			using Storage = typename TYPE::StorageType;
+			using Element = typename TYPE::LaneType;
+			static constexpr int LaneMask = TYPE::LaneMask;
 
 			//////////////////////////////////////////////////////////////////////////
 			Quaternion();
-			explicit Quaternion(typename TYPE::Element value);
+			explicit Quaternion(typename TYPE::LaneType value);
 			Quaternion(TYPE value);
 			Quaternion(Element v0, Element v1, Element v2, Element v3);
 			template <int I0, int I1, int I2, int I3>

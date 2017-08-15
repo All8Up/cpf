@@ -12,21 +12,21 @@ namespace Cpf
 		union Vector2v
 		{
 			//////////////////////////////////////////////////////////////////////////
-			using Storage = typename TYPE::Type;
-			using Element = typename TYPE::Element;
-			static constexpr int kLaneMask = TYPE::kLaneMask;
+			using LaneType = typename TYPE::LaneType;
+			static constexpr int LaneMask = TYPE::LaneMask;
 
 			//////////////////////////////////////////////////////////////////////////
 			Vector2v();
-			explicit Vector2v(typename TYPE::Element value);
+			
+			explicit Vector2v(typename TYPE::LaneType value);
 			explicit Vector2v(TYPE value);
-			Vector2v(Element v0, Element v1);
+			Vector2v(LaneType v0, LaneType v1);
 			template <int I0, int I1>
 			explicit Vector2v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
-			Element CPF_VECTORCALL operator [](int idx) const;
+			LaneType CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
 			Vector2v& CPF_VECTORCALL operator += (const Vector2v& rhs);
@@ -35,10 +35,10 @@ namespace Cpf
 			Vector2v& CPF_VECTORCALL operator /= (const Vector2v& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
-			explicit operator Storage () const;
+			explicit operator typename TYPE::Lanes_2() const;
 
 			//////////////////////////////////////////////////////////////////////////
-			TYPE mVector;
+			TYPE mSIMD;
 			REF32X4_1_SWIZZLE(TYPE);
 			REF32X4_2_SWIZZLE(TYPE);
 		};

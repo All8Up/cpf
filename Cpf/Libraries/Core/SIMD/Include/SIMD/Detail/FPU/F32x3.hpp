@@ -14,91 +14,79 @@ namespace Cpf
 		{
 			//////////////////////////////////////////////////////////////////////////
 			template<int COUNT>
-			struct alignas(4) F32x3<float3, 4, 3, float, COUNT>
+			struct alignas(4) F32x3<float3, float, COUNT>
 			{
-				static constexpr int kAlignment = 4;
-				using Type = float3;
-				static constexpr int kLanes = 3;
-				using Element = float;
-				static constexpr int kCount = COUNT;
-				static constexpr int kLaneMask = (1 << kCount) - 1;
+				using StorageType = float3;
+				using LaneType = float;
+				static constexpr int LaneCount = COUNT;
+				static constexpr int LaneMask = (1 << LaneCount) - 1;
 
-				using Lanes_1 = F32x3<Type, 4, 3, float, 1>;
-				using Lanes_2 = F32x3<Type, 4, 3, float, 2>;
-				using Lanes_3 = F32x3<Type, 4, 3, float, 3>;
+				using Lanes_1 = F32x4<float3, float, 1>;
+				using Lanes_2 = F32x4<float3, float, 2>;
+				using Lanes_3 = F32x4<float3, float, 3>;
+				using Lanes_4 = F32x4<float3, float, 4>;
 
 				F32x3() {}
-				explicit F32x3(Element value) : mVector{ value, value, value } {}
-				template <typename = typename std::enable_if<COUNT == 2, Element>::type>
-				F32x3(Element v0, Element v1) : mVector(v0, v1) {}
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				F32x3(Element v0, Element v1, Element v2) : mVector(v0, v1, v2) {}
+				explicit F32x3(LaneType value) : mVector{ value, value, value } {}
+				template <typename = typename std::enable_if<COUNT == 2, LaneType>::type>
+				F32x3(LaneType v0, LaneType v1) : mVector(v0, v1) {}
+				template <typename = typename std::enable_if<COUNT == 3, LaneType>::type>
+				F32x3(LaneType v0, LaneType v1, LaneType v2) : mVector(v0, v1, v2) {}
 
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				F32x3(Lanes_2 v01, Element v2)
+				template <typename = typename std::enable_if<COUNT == 3, LaneType>::type>
+				F32x3(Lanes_2 v01, LaneType v2)
 					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2)
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				F32x3(Element v0, Lanes_2 v12)
+				template <typename = typename std::enable_if<COUNT == 3, LaneType>::type>
+				F32x3(LaneType v0, Lanes_2 v12)
 					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1])
 				{
 				}
 
 
-				explicit constexpr F32x3(Type value) : mVector(value) {}
+				explicit constexpr F32x3(StorageType value) : mVector(value) {}
 
-				F32x3& operator = (Type value) { mVector = value; return *this; }
+				F32x3& operator = (StorageType value) { mVector = value; return *this; }
 
-				explicit operator Type () const { return mVector; }
+				explicit operator StorageType () const { return mVector; }
 
-				template <typename = typename std::enable_if<COUNT == 1, Element>::type>
-				operator Lanes_1 () const { return mVector; }
-				template <typename = typename std::enable_if<COUNT == 2, Element>::type>
-				operator Lanes_2 () const { return mVector; }
-				template <typename = typename std::enable_if<COUNT == 3, Element>::type>
-				operator Lanes_3 () const { return mVector; }
+				template <typename = typename std::enable_if<std::equal_to<int>()(kCount, 1), LaneType>::type>
+				operator const LaneType() const { return mVector.mData[0]; }
 
-				template <typename = typename std::enable_if<std::equal_to<int>()(kCount, 1), Element>::type>
-				operator const Element() const { return mVector.mData[0]; }
-
-				template <int INDEX>
-				Element GetLane() const
-				{
-					return mVector.mData[INDEX];
-				}
-				Element GetLane(int index) const
-				{
-					return mVector.mData[index];
-				}
 				void SetLane(int index, float value)
 				{
 					mVector.mData[index] = value;
 				}
-				template <int I0, int I1>
-				Type GetLanes() const
+				template <int INDEX>
+				LaneType GetLane() const
 				{
-					Type result(mVector.mData[I0], mVector.mData[I1]);
+					return mVector.mData[INDEX];
+				}
+				template <int I0, int I1>
+				StorageType GetLanes() const
+				{
+					StorageType result(mVector.mData[I0], mVector.mData[I1]);
 					return result;
 				}
 				template <int I0, int I1, int I2>
-				Type GetLanes() const
+				StorageType GetLanes() const
 				{
-					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
+					StorageType result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
 					return result;
 				}
 				template <int I0, int I1, int I2, int I3>
-				Type GetLanes() const
+				StorageType GetLanes() const
 				{
-					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2], mVector.mData[i3]);
+					StorageType result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2], mVector.mData[i3]);
 					return result;
 				}
 
-				Type mVector;
+				StorageType mVector;
 			};
 
 			template<int COUNT>
-			using F32x3_ = F32x3<float3, 4, 3, float, COUNT>;
+			using F32x3_ = F32x3<float3, float, COUNT>;
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
@@ -272,7 +260,7 @@ namespace Cpf
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x3_<COUNT> Clamp(const F32x3_<COUNT> value, typename F32x3_<COUNT>::Element low, typename F32x3_<COUNT>::Element high)
+			CPF_FORCE_INLINE F32x3_<COUNT> Clamp(const F32x3_<COUNT> value, typename F32x3_<COUNT>::LaneType low, typename F32x3_<COUNT>::LaneType high)
 			{
 				F32x3_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -281,22 +269,22 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x3_<COUNT>::Element Dot(const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE typename F32x3_<COUNT>::LaneType Dot(const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
 			{
-				typename F32x3_<COUNT>::Element result = 0.0f;
+				typename F32x3_<COUNT>::LaneType result = 0.0f;
 				for (int i = 0; i < COUNT; ++i)
 					result += lhs.mVector.mData[i] * rhs.mVector.mData[i];
 				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x3_<COUNT>::Element Magnitude(const F32x3_<COUNT> value)
+			CPF_FORCE_INLINE typename F32x3_<COUNT>::LaneType Magnitude(const F32x3_<COUNT> value)
 			{
 				return std::sqrt(Dot(value, value));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x3_<COUNT>::Element MagnitudeSq(const F32x3_<COUNT> value)
+			CPF_FORCE_INLINE typename F32x3_<COUNT>::LaneType MagnitudeSq(const F32x3_<COUNT> value)
 			{
 				return Dot(value, value);
 			}
@@ -388,7 +376,7 @@ namespace Cpf
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			using F32x3_3 = F32x3<float3, 4, 3, float, 3>;
+			using F32x3_3 = F32x3<float3, float, 3>;
 		}
 	}
 }

@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Trigonometric.hpp"
 
 namespace Cpf
 {
@@ -95,8 +94,8 @@ namespace Cpf
 			Matrix22<TYPE> CPF_VECTORCALL Transpose(const Matrix22<TYPE>& value)
 		{
 			return Matrix22<TYPE>(
-				lhs[0][0], lhs[1][0],
-				lhs[0][1], lhs[1][1]
+				value[0][0], value[1][0],
+				value[0][1], value[1][1]
 				);
 		}
 

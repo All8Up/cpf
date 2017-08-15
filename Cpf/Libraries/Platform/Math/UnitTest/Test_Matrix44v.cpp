@@ -23,8 +23,8 @@ TYPED_TEST_CASE(TypedTest_Matrix44, Data32_4_Types);
 
 TYPED_TEST(TypedTest_Matrix44, BasicConstruction)
 {
-	using Type = typename Matrix44<TypeParam>;
-	using Element = typename TypeParam::Element;
+	using Type = Matrix44<TypeParam>;
+	using Element = typename TypeParam::LaneType;
 
 	Type t0; // Garbage.
 	Type t1(Element(0)); // Zero'd.

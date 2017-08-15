@@ -19,7 +19,7 @@ TYPED_TEST_CASE(TypedTest_F32x4_4, F32x4_4_Types);
 
 TYPED_TEST(TypedTest_F32x4_4, Construction_BasicAccess_Near)
 {
-	using Type = typename TypeParam;
+	using Type = TypeParam;
 
 	// Test splat construction.
 	Type a(1.0f);
@@ -37,7 +37,7 @@ TYPED_TEST(TypedTest_F32x4_4, Construction_BasicAccess_Near)
 
 TYPED_TEST(TypedTest_F32x4_4, Addition)
 {
-	using Type = typename TypeParam;
+	using Type = TypeParam;
 	Type a = { 1.0f, 2.0f, 3.0f, 4.0f };
 	Type b(3.0f, 4.0f, 5.0f, 6.0f);
 
@@ -48,7 +48,7 @@ TYPED_TEST(TypedTest_F32x4_4, Addition)
 
 TYPED_TEST(TypedTest_F32x4_4, Subtraction)
 {
-	using Type = typename TypeParam;
+	using Type = TypeParam;
 	Type a = { 1.0f, 2.0f, 3.0f, 4.0f };
 	Type b(2.0f, 4.0f, 5.0f, 6.0f);
 
@@ -59,7 +59,7 @@ TYPED_TEST(TypedTest_F32x4_4, Subtraction)
 
 TYPED_TEST(TypedTest_F32x4_4, Multiplication)
 {
-	using Type = typename TypeParam;
+	using Type = TypeParam;
 	Type a = { 1.0f, 2.0f, 3.0f, 4.0f };
 	Type b(2.0f, 3.0f, 4.0f, 5.0f);
 
@@ -70,7 +70,7 @@ TYPED_TEST(TypedTest_F32x4_4, Multiplication)
 
 TYPED_TEST(TypedTest_F32x4_4, Division)
 {
-	using Type = typename TypeParam;
+	using Type = TypeParam;
 	Type a = { 1.0f, 2.0f, 3.0f, 4.0f };
 	Type b(2.0f, 3.0f, 4.0f, 5.0f);
 

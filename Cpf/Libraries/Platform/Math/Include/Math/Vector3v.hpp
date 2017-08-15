@@ -13,42 +13,45 @@ namespace Cpf
 		union Vector3v
 		{
 			//////////////////////////////////////////////////////////////////////////
-			using Storage = typename TYPE::Type;
-			using Element = typename TYPE::Element;
-			static constexpr int kLaneMask = TYPE::kLaneMask;
+			using StorageType = typename TYPE::StorageType;
+			using LaneType = typename TYPE::LaneType;
+			static constexpr int LaneMask = TYPE::LaneMask;
 
 			//////////////////////////////////////////////////////////////////////////
 			Vector3v();
-			explicit Vector3v(typename TYPE::Element value);
+			explicit Vector3v(typename TYPE::LaneType value);
 			Vector3v(TYPE value);
-			Vector3v(Element v0, Element v1, Element v2);
+			Vector3v(StorageType value);
+			Vector3v(LaneType v0, LaneType v1, LaneType v2);
 			template <int I0, int I1, int I2>
 			Vector3v(Cpf::SIMD::Ref32x4_3<TYPE, I0, I1, I2>& ref);
 			template <int I0, int I1>
-			Vector3v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, Element v2);
+			Vector3v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, LaneType v2);
 			template <int I1, int I2>
-			Vector3v(Element v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
-			explicit Vector3v(const Element* data);
+			Vector3v(LaneType v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
+			explicit Vector3v(const LaneType* data);
 
 			template <typename RTYPE, int I0, int I1, int I2>
 			explicit Vector3v(const SIMD::Ref32x4_3<RTYPE, I0, I1, I2>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
-			Element CPF_VECTORCALL operator [](int idx) const;
+			LaneType CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
 			Vector3v& CPF_VECTORCALL operator += (const Vector3v& rhs);
 			Vector3v& CPF_VECTORCALL operator -= (const Vector3v& rhs);
 			Vector3v& CPF_VECTORCALL operator *= (const Vector3v& rhs);
+			Vector3v& CPF_VECTORCALL operator *= (LaneType rhs);
 			Vector3v& CPF_VECTORCALL operator /= (const Vector3v& rhs);
+			Vector3v& CPF_VECTORCALL operator /= (LaneType rhs);
 
 			//////////////////////////////////////////////////////////////////////////
-			explicit operator Storage () const { return static_cast<Storage>(mVector); }
-			operator typename TYPE::Lanes_3() const { return mVector; }
+			explicit operator typename TYPE::Lanes_3 () const { return static_cast<typename TYPE::Lanes_3>(mSIMD); }
+			explicit operator StorageType () const { return StorageType(mSIMD); }
 
 			//////////////////////////////////////////////////////////////////////////
-			TYPE mVector;
+			TYPE mSIMD;
 			REF32X4_1_SWIZZLE(TYPE);
 			REF32X4_2_SWIZZLE(TYPE);
 			REF32X4_3_SWIZZLE(TYPE);

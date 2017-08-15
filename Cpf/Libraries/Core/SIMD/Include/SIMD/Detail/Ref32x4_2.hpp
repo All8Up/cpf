@@ -10,7 +10,7 @@ namespace Cpf
 		class Ref32x4_2
 		{
 		public:
-			constexpr operator typename TYPE::Lanes_2() const;
+			operator typename TYPE::Lanes_2() const;
 
 		private:
 			typename TYPE::Lanes_2* _Data();

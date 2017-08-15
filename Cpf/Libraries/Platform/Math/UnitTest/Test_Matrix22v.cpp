@@ -22,9 +22,9 @@ TYPED_TEST_CASE(TypedTest_Matrix22, Data32_2_Types);
 
 TYPED_TEST(TypedTest_Matrix22, Construction)
 {
-	using Element = typename TypeParam::Element;
-	using VType = Cpf::Math::Vector2v<typename TypeParam>;
-	using Type = Cpf::Math::Matrix22<typename TypeParam>;
+	using Element = typename TypeParam::LaneType;
+	using VType = Cpf::Math::Vector2v<TypeParam>;
+	using Type = Cpf::Math::Matrix22<TypeParam>;
 
 	Type t0;  // Should be a garbage type.
 	Type t1(VType(Element(0.0f)), VType(Element(0.0f)));
@@ -43,8 +43,8 @@ TYPED_TEST(TypedTest_Matrix22, Construction)
 
 TYPED_TEST(TypedTest_Matrix22, Identity)
 {
-	using Type = Cpf::Math::Matrix22<typename TypeParam>;
-	using Element = typename TypeParam::Element;
+	using Type = Cpf::Math::Matrix22<TypeParam>;
+	using Element = typename TypeParam::LaneType;
 
 	Type t0 = Type::Identity();
 	EXPECT_TRUE(Near(t0, Type(Element(1), Element(0), Element(0), Element(1)), Element(0.01f)));
@@ -52,8 +52,8 @@ TYPED_TEST(TypedTest_Matrix22, Identity)
 
 TYPED_TEST(TypedTest_Matrix22, Rotation)
 {
-	using Type = Cpf::Math::Matrix22<typename TypeParam>;
-	using Element = typename TypeParam::Element;
+	using Type = Cpf::Math::Matrix22<TypeParam>;
+	using Element = typename TypeParam::LaneType;
 
 	Type t0 = Type::Rotation(Element(Cpf::Math::kDegToRad * 90.0f));
 	EXPECT_TRUE(Near(t0, Type(Element(0), Element(-1), Element(1), Element(0)), Element(0.01f)));
@@ -61,8 +61,8 @@ TYPED_TEST(TypedTest_Matrix22, Rotation)
 
 TYPED_TEST(TypedTest_Matrix22, Scale)
 {
-	using Type = Cpf::Math::Matrix22<typename TypeParam>;
-	using Element = typename TypeParam::Element;
+	using Type = Cpf::Math::Matrix22<TypeParam>;
+	using Element = typename TypeParam::LaneType;
 
 	Type t0 = Type::Scale(Element(0.5), Element(0.5));
 	EXPECT_TRUE(Near(t0, Type(Element(0.5), Element(0.0), Element(0.0), Element(0.5)), Element(0.01f)));

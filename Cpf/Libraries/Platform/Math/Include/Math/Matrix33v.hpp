@@ -15,7 +15,7 @@ namespace Cpf
 		public:
 			//////////////////////////////////////////////////////////////////////////
 			using Row = Vector3v<typename TYPE::Lanes_3>;
-			using Element = typename Vector3v<TYPE>::Element;
+			using Element = typename Vector3v<TYPE>::LaneType;
 
 			//////////////////////////////////////////////////////////////////////////
 			Matrix33();

@@ -22,8 +22,8 @@ TYPED_TEST_CASE(TypedTest_Vector2, F32x4_1_Types);
 
 TYPED_TEST(TypedTest_Vector2, Construction)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = {Element(1), Element(2)};
 	EXPECT_TRUE(Near(t0, { Element(1), Element(2) }, Element(0.01f)));
@@ -34,8 +34,8 @@ TYPED_TEST(TypedTest_Vector2, Construction)
 
 TYPED_TEST(TypedTest_Vector2, ArrayAccess)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	EXPECT_NEAR(t0[0], Element(1), Element(0.01f));
@@ -49,8 +49,8 @@ TYPED_TEST(TypedTest_Vector2, ArrayAccess)
 
 TYPED_TEST(TypedTest_Vector2, ElementAccess)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 	Type t0 = { Element(1), Element(2) };
 
 	// NOTE: Have to cast it back to a vector type here to get the Near function to resolve.
@@ -63,56 +63,56 @@ TYPED_TEST(TypedTest_Vector2, ElementAccess)
 
 TYPED_TEST(TypedTest_Vector2, OperatorAddAssign)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	t0 += t1;
 
-	EXPECT_TRUE((t0 == Type(Element(4), Element(6))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 == Type(Element(4), Element(6))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorSubtractAssign)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	t0 -= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(-2), Element(-2))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 == Type(Element(-2), Element(-2))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorMultiplyAssign)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	t0 *= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(3), Element(8))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 == Type(Element(3), Element(8))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorDivideAssign)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(12), Element(20) };
 	Type t1 = { Element(3), Element(4) };
 	t0 /= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(4), Element(5))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 == Type(Element(4), Element(5))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorNegate)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = -t0;
@@ -122,104 +122,104 @@ TYPED_TEST(TypedTest_Vector2, OperatorNegate)
 
 TYPED_TEST(TypedTest_Vector2, OperatorEquals)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 
-	EXPECT_TRUE((t0 == Type(Element(1), Element(2))) == Type::kLaneMask);
+	EXPECT_TRUE((t0 == Type(Element(1), Element(2))) == Type::LaneMask);
 	EXPECT_FALSE(t0 == t1);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorNotEquals)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 
-	EXPECT_FALSE((t0 != Type(Element(1), Element(2))) == Type::kLaneMask);
-	EXPECT_TRUE((t0 != t1) == Type::kLaneMask);
+	EXPECT_FALSE((t0 != Type(Element(1), Element(2))) == Type::LaneMask);
+	EXPECT_TRUE((t0 != t1) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorLessThan)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 
 	EXPECT_TRUE((t0 < Type(Element(1), Element(2))) == 0);
-	EXPECT_TRUE((t0 < t1) == Type::kLaneMask);
+	EXPECT_TRUE((t0 < t1) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorLessThanEqual)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 
-	EXPECT_TRUE((t0 <= Type(Element(1), Element(2))) == Type::kLaneMask);
-	EXPECT_TRUE((t0 <= t1) == Type::kLaneMask);
+	EXPECT_TRUE((t0 <= Type(Element(1), Element(2))) == Type::LaneMask);
+	EXPECT_TRUE((t0 <= t1) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorGreaterThan)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 
 	EXPECT_TRUE((t0 > Type(Element(1), Element(2))) == 0);
-	EXPECT_FALSE((t0 > t1) == Type::kLaneMask);
+	EXPECT_FALSE((t0 > t1) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorGreaterThanEqual)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 
-	EXPECT_TRUE((t0 >= Type(Element(1), Element(2))) == Type::kLaneMask);
-	EXPECT_FALSE((t0 >= t1) == Type::kLaneMask);
+	EXPECT_TRUE((t0 >= Type(Element(1), Element(2))) == Type::LaneMask);
+	EXPECT_FALSE((t0 >= t1) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorAdd)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	Type t2 = t0 + t1;
 
-	EXPECT_TRUE((t2 == Type(Element(4), Element(6))) == Type::kLaneMask);
+	EXPECT_TRUE((t2 == Type(Element(4), Element(6))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorSubtract)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	Type t2 = t0 - t1;
 
-	EXPECT_TRUE((t2 == Type(Element(-2), Element(-2))) == Type::kLaneMask);
+	EXPECT_TRUE((t2 == Type(Element(-2), Element(-2))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorMultiply)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
@@ -230,8 +230,8 @@ TYPED_TEST(TypedTest_Vector2, OperatorMultiply)
 
 TYPED_TEST(TypedTest_Vector2, OperatorMultiplyScalar)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t2 = t0 * Element(2);
@@ -241,8 +241,8 @@ TYPED_TEST(TypedTest_Vector2, OperatorMultiplyScalar)
 
 TYPED_TEST(TypedTest_Vector2, OperatorScalarMultiply)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t2 = Element(2) * t0;
@@ -252,8 +252,8 @@ TYPED_TEST(TypedTest_Vector2, OperatorScalarMultiply)
 
 TYPED_TEST(TypedTest_Vector2, OperatorDevide)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
@@ -264,20 +264,20 @@ TYPED_TEST(TypedTest_Vector2, OperatorDevide)
 
 TYPED_TEST(TypedTest_Vector2, Min)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	Type t2 = Min(t0, t1);
 
-	EXPECT_TRUE((t2 == Type(Element(1.0f), Element(2.0f))) == Type::kLaneMask);
+	EXPECT_TRUE((t2 == Type(Element(1.0f), Element(2.0f))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, HMin)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Element t1 = HMin(t0);
@@ -287,20 +287,20 @@ TYPED_TEST(TypedTest_Vector2, HMin)
 
 TYPED_TEST(TypedTest_Vector2, Max)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Type t1 = { Element(3), Element(4) };
 	Type t2 = Max(t0, t1);
 
-	EXPECT_TRUE((t2 == Type(Element(3.0f), Element(4.0f))) == Type::kLaneMask);
+	EXPECT_TRUE((t2 == Type(Element(3.0f), Element(4.0f))) == Type::LaneMask);
 }
 
 TYPED_TEST(TypedTest_Vector2, HMax)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(1), Element(2) };
 	Element t1 = HMax(t0);
@@ -310,8 +310,8 @@ TYPED_TEST(TypedTest_Vector2, HMax)
 
 TYPED_TEST(TypedTest_Vector2, Sqrt)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(9), Element(25) };
 	Type t1 = Sqrt(t0);
@@ -322,8 +322,8 @@ TYPED_TEST(TypedTest_Vector2, Sqrt)
 
 TYPED_TEST(TypedTest_Vector2, Clamp)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 
 	Type t0 = { Element(9), Element(25) };
 	Type t1 = Clamp(t0, Element(12), Element(16));
@@ -335,8 +335,8 @@ TYPED_TEST(TypedTest_Vector2, Clamp)
 
 TYPED_TEST(TypedTest_Vector2, Modulus)
 {
-	using Type = typename TypeParam;
-	using Element = typename Type::Element;
+	using Type = TypeParam;
+	using Element = typename Type::LaneType;
 	Type t0 = { Element(5.25f), Element(12.85f) };
 	Type t1 = { Element(3.0f), Element(4.0f) };
 	Type t2 = Modulus(t0, t1);
@@ -439,6 +439,7 @@ TEST(Vector2fv, Reciprocal_Reference)
 	EXPECT_NEAR(t1.x, 1.0f / t0.x, 0.01f);
 	EXPECT_NEAR(t1.y, 1.0f / t0.y, 0.01f);
 }
+
 TEST(Vector2fv, Reciprocal_SSE4_1)
 {
 	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
@@ -458,6 +459,7 @@ TEST(Vector2fv, RSqrt_Reference)
 	EXPECT_NEAR(t1.x, 1.0f / std::sqrt(t0.x), 0.01f);
 	EXPECT_NEAR(t1.y, 1.0f / std::sqrt(t0.y), 0.01f);
 }
+
 TEST(Vector2fv, RSqrt_SSE4_1)
 {
 	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
@@ -477,6 +479,7 @@ TEST(Vector2fv, Round_Truncate_Reference)
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f }, 0.01f));
 }
+
 TEST(Vector2fv, Round_Truncate_SSE4_1)
 {
 	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
@@ -494,6 +497,7 @@ TEST(Vector2fv, Floor_Reference)
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f }, 0.01f));
 }
+
 TEST(Vector2fv, Floor_SSE4_1)
 {
 	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;
@@ -511,6 +515,7 @@ TEST(Vector2fv, Ceil_Reference)
 
 	EXPECT_TRUE(Near(t1, { 6.0f, 13.0f }, 0.01f));
 }
+
 TEST(Vector2fv, Ceil_SSE4_1)
 {
 	using Vector2fv = Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>;

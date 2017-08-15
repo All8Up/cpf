@@ -12,7 +12,7 @@ namespace Cpf
 		public:
 			constexpr operator typename TYPE::Lanes_3() const;
 			
-			typename TYPE::Element GetLane(int idx) const;
+			typename TYPE::LaneType GetLane(int idx) const;
 
 		private:
 			TYPE* _Data();

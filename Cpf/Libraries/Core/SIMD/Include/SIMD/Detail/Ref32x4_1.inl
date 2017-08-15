@@ -7,17 +7,17 @@ namespace Cpf
 	{
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE, int INDEX>
-		Ref32x4_1<TYPE, INDEX>& Ref32x4_1<TYPE, INDEX>::operator =(Element value)
+		Ref32x4_1<TYPE, INDEX>& Ref32x4_1<TYPE, INDEX>::operator =(typename TYPE::LaneType value)
 		{
 			_Data()->SetLane(INDEX, value);
 			return *this;
 		}
 
 		template <typename TYPE, int INDEX>
-		Ref32x4_1<TYPE, INDEX>::operator typename Ref32x4_1<TYPE, INDEX>::Element() const
+		Ref32x4_1<TYPE, INDEX>::operator typename TYPE::LaneType() const
 		{
-			Element result = _Data()->GetLane<INDEX>();
-			return result;
+			auto data = *_Data();
+			return data.template GetLane<INDEX>();
 		}
 
 		template <typename TYPE, int INDEX>
@@ -46,15 +46,25 @@ namespace Cpf
 		{}
 
 		template <typename TYPE>
-		Ref32x4_Index<TYPE>& Ref32x4_Index<TYPE>::operator = (Element value)
+		Ref32x4_Index<TYPE>& Ref32x4_Index<TYPE>::operator = (typename TYPE::LaneType value)
 		{
-			mVector.SetLane(mIndex, value); return *this;
+			mVector.SetLane(mIndex, value);
+			return *this;
 		}
 
 		template <typename TYPE>
-		Ref32x4_Index<TYPE>::operator Element() const
+		Ref32x4_Index<TYPE>::operator typename TYPE::LaneType() const
 		{
-			return mVector.GetLane(mIndex);
+			switch (mIndex)
+			{
+			case 0: return mVector.template GetLane<0>();
+			case 1: return mVector.template GetLane<1>();
+			case 2: return mVector.template GetLane<2>();
+			case 3: return mVector.template GetLane<3>();
+			default:
+				CPF_ASSERT_ALWAYS;
+				return mVector.template GetLane<3>();
+			}
 		}
 	}
 }

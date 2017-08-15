@@ -12,7 +12,7 @@ namespace Cpf
 		{}
 
 		template <typename TYPE>
-		Quaternion<TYPE>::Quaternion(typename TYPE::Element value)
+		Quaternion<TYPE>::Quaternion(typename TYPE::LaneType value)
 			: mVector(value)
 		{}
 
@@ -109,7 +109,7 @@ namespace Cpf
 		{
 			const float a = radians * Element(0.5);
 			const float s = std::sin(a);
-			return Quaternion<TYPE>(axis * s, std::cos(a));
+			return Quaternion<TYPE>(typename TYPE::Lanes_3(axis * s), std::cos(a));
 		}
 
 		template <typename TYPE>
@@ -134,7 +134,7 @@ namespace Cpf
 				Quaternion<TYPE> result = Conjugate(value) * invLength;
 				return result;
 			}
-			return Zero();
+			return Quaternion<TYPE>(Element(0));
 		}
 
 		/*

@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Math/Quaternion.hpp"
-#include "Math/Trigonometric.hpp"
 
 namespace Cpf
 {
@@ -34,10 +33,10 @@ namespace Cpf
 		template <typename TYPE> CPF_FORCE_INLINE
 			Matrix33<TYPE>::Matrix33(Quaternion<typename TYPE::Lanes_4> value)
 		{
-			Element x2 = q.x + q.x;  Element y2 = q.y + q.y;  Element z2 = q.z + q.z;
-			Element xx = q.x * x2;   Element xy = q.x * y2;   Element xz = q.x * z2;
-			Element yy = q.y * y2;   Element yz = q.y * z2;   Element zz = q.z * z2;
-			Element wx = q.w * x2;   Element wy = q.w * y2;   Element wz = q.w * z2;
+			Element x2 = value.x + value.x;  Element y2 = value.y + value.y;  Element z2 = value.z + value.z;
+			Element xx = value.x * x2;   Element xy = value.x * y2;   Element xz = value.x * z2;
+			Element yy = value.y * y2;   Element yz = value.y * z2;   Element zz = value.z * z2;
+			Element wx = value.w * x2;   Element wy = value.w * y2;   Element wz = value.w * z2;
 
 			mRows[0] = Row(Element(1) - (yy + zz), xy + wz, xz - wy);
 			mRows[1] = Row(xy - wz, Element(1) - (xx + zz), yz + wx);
@@ -146,7 +145,7 @@ namespace Cpf
 			Element sa = Sin(radians);
 			Element ca = Cos(radians);
 
-			return Matrix33v<TYPE>(
+			return Matrix33<TYPE>(
 				ca, sa, 0,
 				-sa, ca, 0,
 				0, 0, 1

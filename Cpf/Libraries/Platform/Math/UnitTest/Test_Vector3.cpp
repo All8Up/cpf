@@ -1,13 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest/gtest.h>
 #include "SIMD.hpp"
-#include "SIMD/Detail/FPU/F32x2.hpp"
-#include "SIMD/Detail/FPU/I32x2.hpp"
-#include "SIMD/Detail/FPU/F32x3.hpp"
-#include "SIMD/Detail/FPU/I32x3.hpp"
 #include "Math/Vector2v.hpp"
 #include "Math/Vector3v.hpp"
 
+#if 0
 //////////////////////////////////////////////////////////////////////////
 using Vector3f = Cpf::Math::Vector3v<Cpf::SIMD::FPU::F32x3_3>;
 
@@ -82,6 +79,19 @@ TYPED_TEST(TypedTest_Vector3_fpu, ElementAccess)
 	EXPECT_TRUE(Near(Type(t0.xyx), { Element(1), Element(2), Element(1) }, Element(0.01f)));
 	EXPECT_TRUE(Near(Type(t0.yyz), { Element(2), Element(2), Element(3) }, Element(0.01f)));
 	EXPECT_TRUE(Near(Type(t0.zyx), { Element(3), Element(2), Element(1) }, Element(0.01f)));
+}
+
+TYPED_TEST(TypedTest_Vector3_fpu, MemoryLayout)
+{
+	using Type = typename TypeParam;
+	using Element = typename Type::Element;
+
+	Type t0 = { Element(1), Element(2), Element(3) };
+	Element* data = reinterpret_cast<Element*>(&t0);
+
+	EXPECT_NEAR(Element(1), data[0], 0.0001f);
+	EXPECT_NEAR(Element(2), data[1], 0.0001f);
+	EXPECT_NEAR(Element(3), data[2], 0.0001f);
 }
 
 TYPED_TEST(TypedTest_Vector3_fpu, OperatorAddAssign)
@@ -471,3 +481,5 @@ TEST(Vector3f, Cross_Reference)
 
 	EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
 }
+
+#endif

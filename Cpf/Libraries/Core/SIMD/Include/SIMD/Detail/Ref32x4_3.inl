@@ -8,11 +8,11 @@ namespace Cpf
 		template <typename TYPE, int I0, int I1, int I2>
 		constexpr Ref32x4_3<TYPE, I0, I1, I2>::operator typename TYPE::Lanes_3() const
 		{
-			return TYPE::Lanes_3(_Data()->GetLanes<I0, I1, I2>());
+			return _Data()->template GetLanes<I0, I1, I2>();
 		}
 
 		template <typename TYPE, int I0, int I1, int I2>
-		typename TYPE::Element Ref32x4_3<TYPE, I0, I1, I2>::GetLane(int idx) const
+		typename TYPE::LaneType Ref32x4_3<TYPE, I0, I1, I2>::GetLane(int idx) const
 		{
 			return _Data()->GetLane(idx);
 		}
@@ -38,7 +38,17 @@ namespace Cpf
 		public:
 			constexpr operator const typename TYPE::Lanes_3() const { return *reinterpret_cast<const typename TYPE::Lanes_3*>(_Data()); }
 
-			typename TYPE::Element GetLane(int idx) const { return _Data()->GetLane(idx); }
+			typename TYPE::LaneType GetLane(int idx) const
+			{
+				switch (idx)
+				{
+				case 0: return _Data()->GetLane<0>();
+				case 1: return _Data()->GetLane<1>();
+				case 2: return _Data()->GetLane<2>();
+				case 3: return _Data()->GetLane<3>();
+				default: CPF_ASSERT_ALWAYS; return TYPE::LaneType(0);
+				}
+			}
 
 		private:
 			TYPE* _Data()
