@@ -11,6 +11,11 @@ namespace Cpf
 		{
 		public:
 			AABB();
+			AABB(Vector3v<TYPE> point);
+			AABB(const Std::Array<Vector3v<TYPE>>& points);
+			AABB(const AABB& rhs);
+
+			AABB& operator += (const Vector3v<TYPE>& rhs);
 
 		private:
 			Vector3v<TYPE> mMin;
@@ -18,3 +23,5 @@ namespace Cpf
 		};
 	}
 }
+
+#include "Math/Detail/AABB.inl"

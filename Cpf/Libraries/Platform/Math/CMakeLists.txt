@@ -67,15 +67,19 @@ source_group (Interface\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
 # ###############################################
 MakeUnitTest (LIBRARY Math GROUP Platform
 	TEST_FILES
+		UnitTest/Test_AABB.cpp
 		UnitTest/Test_All.hpp
+		UnitTest/Test_BitManipulation.cpp
 		UnitTest/Test_CodeGen.cpp
+		UnitTest/Test_Matrix22v.cpp
+		UnitTest/Test_Matrix33v.cpp
+		UnitTest/Test_Matrix44v.cpp
+		UnitTest/Test_OBB.cpp
+		UnitTest/Test_Quaternion.cpp
 		UnitTest/Test_Vector2v.cpp
 		UnitTest/Test_Vector3.cpp
 		UnitTest/Test_Vector3v.cpp
 		UnitTest/Test_Vector4v.cpp
-		UnitTest/Test_Matrix22v.cpp
-		UnitTest/Test_Matrix33v.cpp
-		UnitTest/Test_Matrix44v.cpp
 		UnitTest/Test_Quaternion.cpp
 		../../Core/Test/UnitTestMain.cpp
 )
