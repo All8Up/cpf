@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
+#include "SIMD/Detail/SSE4_1/Bool4.hpp"
 #include <emmintrin.h>
 #include <smmintrin.h>
 
@@ -25,6 +26,7 @@ namespace Cpf
 				// Implementation details.
 				using StorageType = __m128;
 				using LaneType = float;
+				using BoolType = Bool4<__m128i, bool, LANES_USED>;
 				static constexpr int LaneCount = LANES_USED;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 

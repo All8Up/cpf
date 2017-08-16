@@ -89,37 +89,37 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		CPF_FORCE_INLINE int CPF_VECTORCALL operator == (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator == (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mSIMD == rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE int CPF_VECTORCALL operator != (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator != (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mSIMD != rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE int CPF_VECTORCALL operator < (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator < (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mSIMD < rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE int CPF_VECTORCALL operator <= (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator <= (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mSIMD <= rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE int CPF_VECTORCALL operator > (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator > (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mSIMD > rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE int CPF_VECTORCALL operator >= (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
+		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator >= (Vector3v<TYPE> lhs, Vector3v<TYPE> rhs)
 		{
 			return lhs.mSIMD >= rhs.mSIMD;
 		}

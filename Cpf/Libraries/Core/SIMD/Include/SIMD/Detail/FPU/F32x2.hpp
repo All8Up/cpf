@@ -17,6 +17,8 @@ namespace Cpf
 			template<int COUNT>
 			struct alignas(4) F32x2<float2, 4, 2, float, COUNT>
 			{
+				using BoolType = Bool4<int32_t, bool, COUNT>;
+
 				static constexpr int kAlignment = 4;
 				using Type = float3;
 				static constexpr int kLanes = 2;

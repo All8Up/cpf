@@ -13,21 +13,21 @@ namespace Cpf
 
 
 			template <typename STORAGE_TYPE, typename LANE_TYPE, int COUNT>
-			struct alignas(16)Bool4;
+			struct alignas(16) Bool4;
 
 			//////////////////////////////////////////////////////////////////////////
 			template<int LANES_USED>
-			struct alignas(16) Bool4<__m128i, int32_t, LANES_USED>
+			struct alignas(16) Bool4<__m128i, bool, LANES_USED>
 			{
 				using StorageType = __m128i;
-				using LaneType = int32_t;
+				using LaneType = bool;
 				static constexpr int LaneCount = LANES_USED;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 
-				using Lanes_1 = Bool4<__m128i, int32_t, 1>;
-				using Lanes_2 = Bool4<__m128i, int32_t, 2>;
-				using Lanes_3 = Bool4<__m128i, int32_t, 3>;
-				using Lanes_4 = Bool4<__m128i, int32_t, 4>;
+				using Lanes_1 = Bool4<__m128i, bool, 1>;
+				using Lanes_2 = Bool4<__m128i, bool, 2>;
+				using Lanes_3 = Bool4<__m128i, bool, 3>;
+				using Lanes_4 = Bool4<__m128i, bool, 4>;
 
 				static constexpr int32_t True = 0xFFFFFFFF;
 				static constexpr int32_t False = 0x00000000;
@@ -128,12 +128,12 @@ namespace Cpf
 			};
 
 			template<int COUNT>
-			using Bool4_ = Bool4<__m128i, int32_t, COUNT>;
+			using Bool4_ = Bool4<__m128i, bool, COUNT>;
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int LANES_USED>
 			template <int I0>
-			typename Bool4<__m128i, int32_t, LANES_USED>::LaneType Bool4<__m128i, int32_t, LANES_USED>::GetLane() const
+			typename Bool4<__m128i, bool, LANES_USED>::LaneType Bool4<__m128i, bool, LANES_USED>::GetLane() const
 			{
 				LaneType result;
 				_MM_EXTRACT_FLOAT(*reinterpret_cast<float*>(&result), _mm_castsi128_ps(static_cast<__m128i>(mVector)), I0);
@@ -142,7 +142,7 @@ namespace Cpf
 
 			template<int LANES_USED>
 			template <int I0, int I1>
-			typename Bool4<__m128i, int32_t, LANES_USED>::Lanes_2 Bool4<__m128i, int32_t, LANES_USED>::GetLanes() const
+			typename Bool4<__m128i, bool, LANES_USED>::Lanes_2 Bool4<__m128i, bool, LANES_USED>::GetLanes() const
 			{
 				return Lanes_2(cpf_shuffle_epi32(
 					static_cast<__m128i>(mVector),
@@ -151,7 +151,7 @@ namespace Cpf
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2>
-			typename Bool4<__m128i, int32_t, LANES_USED>::Lanes_3 Bool4<__m128i, int32_t, LANES_USED>::GetLanes() const
+			typename Bool4<__m128i, bool, LANES_USED>::Lanes_3 Bool4<__m128i, bool, LANES_USED>::GetLanes() const
 			{
 				return Lanes_3(cpf_shuffle_epi32(
 					static_cast<__m128i>(mVector),
@@ -160,7 +160,7 @@ namespace Cpf
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2, int I3>
-			typename Bool4<__m128i, int32_t, LANES_USED>::Lanes_4 Bool4<__m128i, int32_t, LANES_USED>::GetLanes() const
+			typename Bool4<__m128i, bool, LANES_USED>::Lanes_4 Bool4<__m128i, bool, LANES_USED>::GetLanes() const
 			{
 				return Lanes_4(cpf_shuffle_epi32(
 					static_cast<__m128i>(mVector),
@@ -170,18 +170,18 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				auto cmp = _mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs));
-				return Bool4_<COUNT>(cmp);
+				return Bool4_<COUNT>(cmp).ToMask() == Bool4_<COUNT>::LaneMask;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			CPF_FORCE_INLINE bool CPF_VECTORCALL operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(lhs)),
 					_mm_set_epi32(~0, ~0, ~0, ~0));
-				return Bool4_<COUNT>(cmp);
+				return Bool4_<COUNT>(cmp).ToMask() == Bool4_<COUNT>::LaneMask;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -197,11 +197,17 @@ namespace Cpf
 				return value.ToMask() == Bool4_<COUNT>::LaneMask;
 			}
 
+			template <int COUNT>
+			CPF_FORCE_INLINE bool None(const Bool4_<COUNT> value)
+			{
+				return value.ToMask() == 0;
+			}
+
 			//////////////////////////////////////////////////////////////////////////
-			using Bool4_1 = Bool4<__m128i, int32_t, 1>;
-			using Bool4_2 = Bool4<__m128i, int32_t, 2>;
-			using Bool4_3 = Bool4<__m128i, int32_t, 3>;
-			using Bool4_4 = Bool4<__m128i, int32_t, 4>;
+			using Bool4_1 = Bool4<__m128i, bool, 1>;
+			using Bool4_2 = Bool4<__m128i, bool, 2>;
+			using Bool4_3 = Bool4<__m128i, bool, 3>;
+			using Bool4_4 = Bool4<__m128i, bool, 4>;
 		}
 	}
 }

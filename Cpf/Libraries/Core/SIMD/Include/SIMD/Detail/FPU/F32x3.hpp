@@ -17,6 +17,8 @@ namespace Cpf
 			template<int COUNT>
 			struct alignas(4) F32x3<float3, float, COUNT>
 			{
+				using BoolType = Bool4<int32_t, bool, COUNT>;
+
 				using StorageType = float3;
 				using LaneType = float;
 				static constexpr int LaneCount = COUNT;
@@ -106,7 +108,7 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator == (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
