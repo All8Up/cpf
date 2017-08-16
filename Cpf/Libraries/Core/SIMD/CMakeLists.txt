@@ -18,6 +18,7 @@ set (SIMD_DETAIL_INCLUDE_FILES
 	Include/SIMD/Detail/Ref32x4_4.inl
 )
 set (SIMD_DETAIL_FPU_INCLUDE_FILES
+	Include/SIMD/Detail/FPU/Bool4.hpp
 	Include/SIMD/Detail/FPU/F32x1.hpp
 	Include/SIMD/Detail/FPU/F32x2.hpp
 	Include/SIMD/Detail/FPU/F32x3.hpp
@@ -29,10 +30,12 @@ set (SIMD_DETAIL_FPU_INCLUDE_FILES
 	Include/SIMD/Detail/FPU/I32x4.hpp
 )
 set (SIMD_DETAIL_REFERENCE_INCLUDE_FILES
+	Include/SIMD/Detail/Reference/Bool4.hpp
 	Include/SIMD/Detail/Reference/F32x4.hpp
 	Include/SIMD/Detail/Reference/I32x4.hpp
 )
 set (SIMD_DETAIL_SSE3_INCLUDE_FILES
+	Include/SIMD/Detail/SSE3/Bool4.hpp
 	Include/SIMD/Detail/SSE3/F32x4.hpp
 	Include/SIMD/Detail/SSE3/F32x4_access.inl
 	Include/SIMD/Detail/SSE3/F32x4_comparison.inl
@@ -41,6 +44,7 @@ set (SIMD_DETAIL_SSE3_INCLUDE_FILES
 	Include/SIMD/Detail/SSE3/I32x4.hpp
 )
 set (SIMD_DETAIL_SSE4_1_INCLUDE_FILES
+	Include/SIMD/Detail/SSE4_1/Bool4.hpp
 	Include/SIMD/Detail/SSE4_1/F32x4.hpp
 	Include/SIMD/Detail/SSE4_1/F32x4_access.inl
 	Include/SIMD/Detail/SSE4_1/F32x4_comparison.inl
@@ -87,6 +91,7 @@ source_group (Interface\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDE
 # ###############################################
 MakeUnitTest (LIBRARY SIMD GROUP Core
 	TEST_FILES
+		UnitTest/Test_Bool4.cpp
 		UnitTest/Test_F32x4_1.cpp
 		UnitTest/Test_F32x4_2.cpp
 		UnitTest/Test_F32x4_3.cpp

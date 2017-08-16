@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Detail/FPU/FPU.hpp"
+#include "SIMD/Detail/FPU/Bool4.hpp"
 
 namespace Cpf
 {
@@ -90,7 +91,7 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator == (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -98,11 +99,11 @@ namespace Cpf
 					if (lhs.mVector.mData[i] == rhs.mVector.mData[i])
 						result |= 1 << i;
 				}
-				return result & I32x3_<COUNT>::kLaneMask;
+				return Bool4_<COUNT>(result);
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator != (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator != (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -110,11 +111,11 @@ namespace Cpf
 					if (lhs.mVector.mData[i] != rhs.mVector.mData[i])
 						result |= 1 << i;
 				}
-				return result & I32x3_<COUNT>::kLaneMask;
+				return Bool4_<COUNT>(result);
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator < (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator < (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -122,11 +123,11 @@ namespace Cpf
 					if (lhs.mVector.mData[i] < rhs.mVector.mData[i])
 						result |= 1 << i;
 				}
-				return result & I32x3_<COUNT>::kLaneMask;
+				return Bool4_<COUNT>(result);
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator <= (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator <= (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -138,7 +139,7 @@ namespace Cpf
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator > (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator > (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -146,11 +147,11 @@ namespace Cpf
 					if (lhs.mVector.mData[i] > rhs.mVector.mData[i])
 						result |= 1 << i;
 				}
-				return result & I32x3_<COUNT>::kLaneMask;
+				return Bool4_<COUNT>(result);
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator >= (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator >= (const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -158,7 +159,7 @@ namespace Cpf
 					if (lhs.mVector.mData[i] >= rhs.mVector.mData[i])
 						result |= 1 << i;
 				}
-				return result & I32x3_<COUNT>::kLaneMask;
+				return Bool4_<COUNT>(result);
 			}
 
 			//////////////////////////////////////////////////////////////////////////

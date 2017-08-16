@@ -109,6 +109,9 @@ namespace Cpf
 			struct alignas(4) I32x3;
 			template <typename TYPE, typename LANE_TYPE, int COUNT>
 			struct alignas(4) I32x4;
+
+			template <typename TYPE, typename LANE_TYPE, int COUNT>
+			struct alignas(4) Bool4;
 		}
 	}
 }

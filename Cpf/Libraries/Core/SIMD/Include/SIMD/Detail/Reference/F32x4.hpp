@@ -5,6 +5,7 @@
 #include "SIMD/Detail/Ref32x4_2.hpp"
 #include "SIMD/Detail/Ref32x4_3.hpp"
 #include "SIMD/Detail/Ref32x4_4.hpp"
+#include "SIMD/Detail/Reference/Bool4.hpp"
 #include <cmath>
 
 namespace Cpf
@@ -171,57 +172,57 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator == (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mSIMD.mData[i] == rhs.mSIMD.mData[i])
-						result |= 1<<i;
+						result.SetLane(i, Bool4_<COUNT>::True);
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator != (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator != (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mSIMD.mData[i] != rhs.mSIMD.mData[i])
-						result |= 1<<i;
+						result.SetLane(i, Bool4_<COUNT>::True);
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mSIMD.mData[i] < rhs.mSIMD.mData[i])
-						result |= 1<<i;
+						result.SetLane(i, Bool4_<COUNT>::True);
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mSIMD.mData[i] <= rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, Bool4_<COUNT>::True);
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mSIMD.mData[i] > rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, Bool4_<COUNT>::True);
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mSIMD.mData[i] >= rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, Bool4_<COUNT>::True);
 				return result;
 			}
 

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "FPU.hpp"
+#include "SIMD/Detail/FPU/Bool4.hpp"
 
 namespace Cpf
 {
@@ -69,15 +70,6 @@ namespace Cpf
 
 				explicit operator StorageType () const { return mVector; }
 
-				template <typename = std::enable_if<COUNT == 1, LaneType>::type>
-				operator Lanes_1 () const { return mVector; }
-				template <typename = std::enable_if<COUNT == 2, LaneType>::type>
-				operator Lanes_2 () const { return mVector; }
-				template <typename = std::enable_if<COUNT == 3, LaneType>::type>
-				operator Lanes_3 () const { return mVector; }
-				template <typename = std::enable_if<COUNT == 4, LaneType>::type>
-				operator Lanes_4 () const { return mVector; }
-
 				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), LaneType>::type>
 				operator const LaneType() const { return mVector.mData[0]; }
 
@@ -132,58 +124,58 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator == (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mVector.mData[i] == rhs.mVector.mData[i])
 						result |= 1 << i;
-				return result;
+				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator != (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator != (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mVector.mData[i] != rhs.mVector.mData[i])
 						result |= 1 << i;
-				return result;
+				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator < (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mVector.mData[i] < rhs.mVector.mData[i])
 						result |= 1 << i;
-				return result;
+				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator <= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mVector.mData[i] <= rhs.mVector.mData[i])
 						result |= 1 << i;
-				return result;
+				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator > (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mVector.mData[i] > rhs.mVector.mData[i])
 						result |= 1 << i;
-				return result;
+				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator >= (const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
 					if (lhs.mVector.mData[i] >= rhs.mVector.mData[i])
 						result |= 1 << i;
-				return result;
+				return Bool4_<COUNT>(result);
 			}
 
 			//////////////////////////////////////////////////////////////////////////
