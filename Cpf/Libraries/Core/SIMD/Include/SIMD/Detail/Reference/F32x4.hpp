@@ -446,7 +446,7 @@ namespace Cpf
 			CPF_FORCE_INLINE bool Valid(const F32x4_<COUNT> value)
 			{
 				F32x4_<COUNT> test(value * F32x4_<COUNT>{ 0.0f });
-				return (test == F32x4_<COUNT>{0.0f}) == F32x4_<COUNT>::LaneMask;
+				return All(test == F32x4_<COUNT>{0.0f});
 			}
 
 			//////////////////////////////////////////////////////////////////////////

@@ -13,15 +13,16 @@ namespace Cpf
 			template<int COUNT>
 			struct alignas(4) I32x3<int3, int32_t, COUNT>
 			{
+				using BoolType = Bool4_<COUNT>;
 				using StorageType = int3;
 				using LaneType = int32_t;
 				static constexpr int LaneCount = COUNT;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 
-				using Lanes_1 = I32x4<int3, int32_t, 1>;
-				using Lanes_2 = I32x4<int3, int32_t, 2>;
-				using Lanes_3 = I32x4<int3, int32_t, 3>;
-				using Lanes_4 = I32x4<int3, int32_t, 4>;
+				using Lanes_1 = I32x3<int3, int32_t, 1>;
+				using Lanes_2 = I32x3<int3, int32_t, 2>;
+				using Lanes_3 = I32x3<int3, int32_t, 3>;
+				using Lanes_4 = I32x3<int3, int32_t, 4>;
 
 				I32x3() {}
 				I32x3(LaneType value) : mVector{ value, value, value } {}
@@ -66,19 +67,19 @@ namespace Cpf
 				template <int I0, int I1>
 				StorageType GetLanes() const
 				{
-					Type result(mVector.mData[I0], mVector.mData[I1]);
+					StorageType result(mVector.mData[I0], mVector.mData[I1]);
 					return result;
 				}
 				template <int I0, int I1, int I2>
 				StorageType GetLanes() const
 				{
-					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
+					StorageType result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2]);
 					return result;
 				}
 				template <int I0, int I1, int I2, int I3>
 				StorageType GetLanes() const
 				{
-					Type result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2], mVector.mData[i3]);
+					StorageType result(mVector.mData[I0], mVector.mData[I1], mVector.mData[I2], mVector.mData[i3]);
 					return result;
 				}
 
@@ -135,7 +136,7 @@ namespace Cpf
 					if (lhs.mVector.mData[i] <= rhs.mVector.mData[i])
 						result |= 1 << i;
 				}
-				return result & I32x3_<COUNT>::kLaneMask;
+				return Bool4_<COUNT>(result);
 			}
 
 			template <int COUNT>
@@ -290,7 +291,7 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Near(const I32x3_<COUNT> lhs, const I32x3_<COUNT> rhs, int32_t tolerance)
 			{
-				return (Abs(lhs - rhs) <= I32x3_<COUNT>(tolerance)) == I32x3_<COUNT>::kLaneMask;
+				return All(Abs(lhs - rhs) <= I32x3_<COUNT>(tolerance));
 			}
 
 			//////////////////////////////////////////////////////////////////////////

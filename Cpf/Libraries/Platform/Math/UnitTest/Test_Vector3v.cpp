@@ -100,7 +100,7 @@ TYPED_TEST(TypedTest_Vector3, OperatorAddAssign)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	t0 += t1;
 
-	EXPECT_TRUE((t0 == Type(Element(4), Element(6), Element(8))) == Type::LaneMask);
+	EXPECT_TRUE(All(t0 == Type(Element(4), Element(6), Element(8))));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorSubtractAssign)
@@ -112,7 +112,7 @@ TYPED_TEST(TypedTest_Vector3, OperatorSubtractAssign)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	t0 -= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(-2), Element(-2), Element(-2))) == Type::LaneMask);
+	EXPECT_TRUE(All(t0 == Type(Element(-2), Element(-2), Element(-2))));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorMultiplyAssign)
@@ -124,7 +124,7 @@ TYPED_TEST(TypedTest_Vector3, OperatorMultiplyAssign)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	t0 *= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(3), Element(8), Element(15))) == Type::LaneMask);
+	EXPECT_TRUE(All(t0 == Type(Element(3), Element(8), Element(15))));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorDivideAssign)
@@ -136,7 +136,7 @@ TYPED_TEST(TypedTest_Vector3, OperatorDivideAssign)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	t0 /= t1;
 
-	EXPECT_TRUE((t0 == Type(Element(4), Element(5), Element(5))) == Type::LaneMask);
+	EXPECT_TRUE(All(t0 == Type(Element(4), Element(5), Element(5))));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorNegate)
@@ -158,8 +158,8 @@ TYPED_TEST(TypedTest_Vector3, OperatorEquals)
 	Type t0 = { Element(1), Element(2), Element(3) };
 	Type t1 = { Element(3), Element(4), Element(5) };
 
-	EXPECT_TRUE((t0 == Type(Element(1), Element(2), Element(3))) == Type::LaneMask);
-	EXPECT_FALSE(t0 == t1);
+	EXPECT_TRUE(All(t0 == Type(Element(1), Element(2), Element(3))));
+	EXPECT_FALSE(All(t0 == t1));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorNotEquals)
@@ -170,8 +170,8 @@ TYPED_TEST(TypedTest_Vector3, OperatorNotEquals)
 	Type t0 = { Element(1), Element(2), Element(3) };
 	Type t1 = { Element(3), Element(4), Element(5) };
 
-	EXPECT_FALSE((t0 != Type(Element(1), Element(2), Element(3))) == Type::LaneMask);
-	EXPECT_TRUE((t0 != t1) == Type::LaneMask);
+	EXPECT_FALSE(All(t0 != Type(Element(1), Element(2), Element(3))));
+	EXPECT_TRUE(All(t0 != t1));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorLessThan)
@@ -182,8 +182,8 @@ TYPED_TEST(TypedTest_Vector3, OperatorLessThan)
 	Type t0 = { Element(1), Element(2), Element(3) };
 	Type t1 = { Element(3), Element(4), Element(5) };
 
-	EXPECT_TRUE((t0 < Type(Element(1), Element(2), Element(3))) == 0);
-	EXPECT_TRUE((t0 < t1) == Type::LaneMask);
+	EXPECT_TRUE(None(t0 < Type(Element(1), Element(2), Element(3))));
+	EXPECT_TRUE(All(t0 < t1));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorLessThanEqual)
@@ -194,8 +194,8 @@ TYPED_TEST(TypedTest_Vector3, OperatorLessThanEqual)
 	Type t0 = { Element(1), Element(2), Element(3) };
 	Type t1 = { Element(3), Element(4), Element(5) };
 
-	EXPECT_TRUE((t0 <= Type(Element(1), Element(2), Element(3))) == Type::LaneMask);
-	EXPECT_TRUE((t0 <= t1) == Type::LaneMask);
+	EXPECT_TRUE(All(t0 <= Type(Element(1), Element(2), Element(3))));
+	EXPECT_TRUE(All(t0 <= t1));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorGreaterThan)
@@ -206,8 +206,8 @@ TYPED_TEST(TypedTest_Vector3, OperatorGreaterThan)
 	Type t0 = { Element(1), Element(2), Element(3) };
 	Type t1 = { Element(3), Element(4), Element(5) };
 
-	EXPECT_TRUE((t0 > Type(Element(1), Element(2), Element(3))) == 0);
-	EXPECT_FALSE((t0 > t1) == Type::LaneMask);
+	EXPECT_TRUE(None(t0 > Type(Element(1), Element(2), Element(3))));
+	EXPECT_FALSE(All(t0 > t1));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorGreaterThanEqual)
@@ -218,8 +218,8 @@ TYPED_TEST(TypedTest_Vector3, OperatorGreaterThanEqual)
 	Type t0 = { Element(1), Element(2), Element(3) };
 	Type t1 = { Element(3), Element(4), Element(5) };
 
-	EXPECT_TRUE((t0 >= Type(Element(1), Element(2), Element(3))) == Type::LaneMask);
-	EXPECT_FALSE((t0 >= t1) == Type::LaneMask);
+	EXPECT_TRUE(All(t0 >= Type(Element(1), Element(2), Element(3))));
+	EXPECT_FALSE(All(t0 >= t1));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorAdd)
@@ -231,7 +231,7 @@ TYPED_TEST(TypedTest_Vector3, OperatorAdd)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	Type t2 = t0 + t1;
 
-	EXPECT_TRUE((t2 == Type(Element(4), Element(6), Element(8))) == Type::LaneMask);
+	EXPECT_TRUE(All(t2 == Type(Element(4), Element(6), Element(8))));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorSubtract)
@@ -243,7 +243,7 @@ TYPED_TEST(TypedTest_Vector3, OperatorSubtract)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	Type t2 = t0 - t1;
 
-	EXPECT_TRUE((t2 == Type(Element(-2), Element(-2), Element(-2))) == Type::LaneMask);
+	EXPECT_TRUE(All(t2 == Type(Element(-2), Element(-2), Element(-2))));
 }
 
 TYPED_TEST(TypedTest_Vector3, OperatorMultiply)
@@ -301,7 +301,7 @@ TYPED_TEST(TypedTest_Vector3, Min)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	Type t2 = Min(t0, t1);
 
-	EXPECT_TRUE((t2 == Type(Element(1.0f), Element(2.0f), Element(3.0f))) == Type::LaneMask);
+	EXPECT_TRUE(All(t2 == Type(Element(1.0f), Element(2.0f), Element(3.0f))));
 }
 
 TYPED_TEST(TypedTest_Vector3, HMin)
@@ -324,7 +324,7 @@ TYPED_TEST(TypedTest_Vector3, Max)
 	Type t1 = { Element(3), Element(4), Element(5) };
 	Type t2 = Max(t0, t1);
 
-	EXPECT_TRUE((t2 == Type(Element(3.0f), Element(4.0f), Element(5.0f))) == Type::LaneMask);
+	EXPECT_TRUE(All(t2 == Type(Element(3.0f), Element(4.0f), Element(5.0f))));
 }
 
 TYPED_TEST(TypedTest_Vector3, HMax)

@@ -8,7 +8,7 @@ namespace Cpf
 		template <typename TYPE, int I0, int I1, int I2>
 		constexpr Ref32x4_3<TYPE, I0, I1, I2>::operator typename TYPE::Lanes_3() const
 		{
-			return _Data()->template GetLanes<I0, I1, I2>();
+			return typename TYPE::Lanes_3(_Data()->template GetLanes<I0, I1, I2>());
 		}
 
 		template <typename TYPE, int I0, int I1, int I2>

@@ -160,7 +160,7 @@ namespace Cpf
 			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs));
-				return Bool4_<COUNT>(_mm_castsi128_ps(cmp));
+				return Bool4_<COUNT>(cmp);
 			}
 			template <int COUNT>
 			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
@@ -173,30 +173,28 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return Bool4_<COUNT>(_mm_castsi128_ps(
-					_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs))));
+				return Bool4_<COUNT>(_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
 					_mm_set_epi32(~0, ~0, ~0, ~0));
-				return Bool4_<COUNT>(_mm_castsi128_ps(cmp));
+				return Bool4_<COUNT>(cmp);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return Bool4_<COUNT>(_mm_castsi128_ps(
-					_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs))));
+				return Bool4_<COUNT>(_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
 					_mm_set_epi32(~0, ~0, ~0, ~0));
-				return Bool4_<COUNT>(_mm_castsi128_ps(cmp));
+				return Bool4_<COUNT>(cmp);
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -343,7 +341,7 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool CPF_VECTORCALL Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
 			{
-				return (Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance)) == I32x4_<COUNT>::LaneMask;
+				return All(Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance));
 			}
 
 			//////////////////////////////////////////////////////////////////////////

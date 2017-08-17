@@ -11,9 +11,9 @@ public:
 };
 
 typedef ::testing::Types <
-//	Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>,
-//	Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>,
-//	Cpf::Math::Vector2v<Cpf::SIMD::Reference::I32x4_2>,
+	Cpf::Math::Vector2v<Cpf::SIMD::Reference::F32x4_2>,
+	Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::F32x4_2>,
+	Cpf::Math::Vector2v<Cpf::SIMD::Reference::I32x4_2>,
 	Cpf::Math::Vector2v<Cpf::SIMD::SSE4_1::I32x4_2>
 > F32x4_1_Types;
 
@@ -129,7 +129,7 @@ TYPED_TEST(TypedTest_Vector2, OperatorEquals)
 	Type t1 = { Element(3), Element(4) };
 
 	EXPECT_TRUE(All(t0 == Type(Element(1), Element(2))));
-	EXPECT_FALSE(None(t0 == t1));
+	EXPECT_FALSE(Any(t0 == t1));
 }
 
 TYPED_TEST(TypedTest_Vector2, OperatorNotEquals)

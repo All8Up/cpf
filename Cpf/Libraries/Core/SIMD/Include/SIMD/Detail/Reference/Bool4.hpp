@@ -32,7 +32,7 @@ namespace Cpf
 			struct alignas(16) Bool4<boolx4, bool, LANES_USED>
 			{
 				using StorageType = boolx4;
-				using LaneType = typename StorageType::Type;
+				using LaneType = bool;
 				static constexpr int LaneCount = LANES_USED;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 

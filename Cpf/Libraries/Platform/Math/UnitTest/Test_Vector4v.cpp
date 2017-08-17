@@ -15,10 +15,10 @@ public:
 };
 
 typedef ::testing::Types <
-//	Vector4fv_Reference,
-	Vector4fv_SSE4_1 //,
-//	Cpf::Math::Vector4v<Cpf::SIMD::Reference::I32x4_4>,
-//	Cpf::Math::Vector4v<Cpf::SIMD::SSE4_1::I32x4_4>
+	Vector4fv_Reference,
+	Vector4fv_SSE4_1,
+	Cpf::Math::Vector4v<Cpf::SIMD::Reference::I32x4_4>,
+	Cpf::Math::Vector4v<Cpf::SIMD::SSE4_1::I32x4_4>
 > x32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector4, x32x4_1_Types);
@@ -159,7 +159,7 @@ TYPED_TEST(TypedTest_Vector4, OperatorEquals)
 	Type t1 = { Element(3), Element(4), Element(5), Element(6) };
 
 	EXPECT_TRUE(All(t0 == Type(Element(1), Element(2), Element(3), Element(4))));
-	EXPECT_FALSE(None(t0 == t1));
+	EXPECT_FALSE(Any(t0 == t1));
 }
 
 TYPED_TEST(TypedTest_Vector4, OperatorNotEquals)
@@ -206,8 +206,8 @@ TYPED_TEST(TypedTest_Vector4, OperatorGreaterThan)
 	Type t0 = { Element(1), Element(2), Element(3), Element(4) };
 	Type t1 = { Element(3), Element(4), Element(5), Element(6) };
 
-	EXPECT_TRUE(None(t0 > Type(Element(1), Element(2), Element(3), Element(4))) == 0);
-	EXPECT_FALSE(All(t0 > t1));
+	EXPECT_TRUE(None(t0 > Type(Element(1), Element(2), Element(3), Element(4))));
+	EXPECT_FALSE(Any(t0 > t1));
 }
 
 TYPED_TEST(TypedTest_Vector4, OperatorGreaterThanEqual)
@@ -361,8 +361,7 @@ TYPED_TEST(TypedTest_Vector4, ComparisonEquals)
 	using Element = typename TypeParam::LaneType;
 	TypeParam t0 = { Element(1.0f), Element(2.0f), Element(3.0f), Element(4.0f) };
 
-	auto result = t0 == t0;
-	EXPECT_TRUE(Cpf::SIMD::SSE4_1::All(result));
+	EXPECT_TRUE(All(t0 == t0));
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,8 @@ namespace Cpf
 			template<int LANES_USED>
 			struct alignas(16) I32x4<int32x4, int32_t, LANES_USED>
 			{
+				using BoolType = Bool4_<LANES_USED>;
+
 				using StorageType = int32x4;
 				using LaneType = typename StorageType::Type;
 				static constexpr int LaneCount = LANES_USED;
@@ -134,75 +136,75 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] == rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, true);
 				}
-				return result & I32x4_<COUNT>::LaneMask;
+				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] != rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, true);
 				}
-				return result & I32x4_<COUNT>::LaneMask;
+				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] < rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, true);
 				}
-				return result & I32x4_<COUNT>::LaneMask;
+				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] <= rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, true);
 				}
-				return result & I32x4_<COUNT>::LaneMask;
+				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] > rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, true);
 				}
-				return result & I32x4_<COUNT>::LaneMask;
+				return result;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				int result = 0;
+				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] >= rhs.mSIMD.mData[i])
-						result |= 1 << i;
+						result.SetLane(i, true);
 				}
-				return result & I32x4_<COUNT>::LaneMask;
+				return result;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -351,7 +353,7 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
 			{
-				return (Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance)) == I32x4_<COUNT>::LaneMask;
+				return All(Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance));
 			}
 
 			//////////////////////////////////////////////////////////////////////////

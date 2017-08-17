@@ -8,8 +8,6 @@ namespace Cpf
 	{
 		namespace FPU
 		{
-			// TODO: Should this use an int32_t typed bool value?
-
 			//////////////////////////////////////////////////////////////////////////
 			template<int COUNT>
 			struct alignas(4) Bool4<int32_t, bool, COUNT>
@@ -25,6 +23,9 @@ namespace Cpf
 				using Lanes_4 = Bool4<int32_t, bool, 4>;
 
 				Bool4() {}
+				explicit constexpr Bool4(StorageType value)
+					: mVector(value)
+				{}
 				explicit Bool4(LaneType value)
 				{
 					mVector = value ? LaneMask : 0;
@@ -44,52 +45,48 @@ namespace Cpf
 
 				Bool4(Lanes_2 v01, LaneType v2)
 				{
-					mVector = v01.mVector & LaneMask;
+					mVector = v01.ToMask() & LaneMask;
 					mVector |= v2 ? 4 : 0;
 				}
 				Bool4(LaneType v0, Lanes_2 v12)
 				{
 					mVector = v0 ? 1 : 0;
-					mVector |= (v12 & 0x03) << 1;
+					mVector |= (v12.ToMask() & 0x03) << 1;
 				}
 
 				Bool4(Lanes_2 v01, LaneType v2, LaneType v3)
 				{
-					mVector = v01.mVector & 0x03;
+					mVector = v01.ToMask() & 0x03;
 					mVector |= v2 ? 4 : 0;
 					mVector |= v3 ? 8 : 0;
 				}
 				Bool4(LaneType v0, Lanes_2 v12, LaneType v3)
 				{
 					mVector = v0 ? 1 : 0;
-					mVector |= (v12.mVector & 0x03) << 1;
+					mVector |= (v12.ToMask() & 0x03) << 1;
 					mVector |= v3 ? 8 : 0;
 				}
 				Bool4(LaneType v0, LaneType v1, Lanes_2 v23)
 				{
 					mVector = (v0 ? 1 : 0) | (v1 ? 2 : 0);
-					mVector |= (v23.mVector & 0x03) << 2;
+					mVector |= (v23.ToMask() & 0x03) << 2;
 				}
 				Bool4(Lanes_2 v01, Lanes_2 v23)
 				{
-					mVector = v01.mVector;
-					mVector |= (v23.mVector & 0x03) << 2;
+					mVector = v01.ToMask();
+					mVector |= (v23.ToMask() & 0x03) << 2;
 				}
 
 				Bool4(Lanes_3 v012, LaneType v3)
 				{
-					mVector = v012.mVector & 0x07;
+					mVector = v012.ToMask() & 0x07;
 					mVector |= v3 ? 8 : 0;
 				}
 				Bool4(LaneType v0, Lanes_3 v123)
 				{
 					mVector = v0 ? 1 : 0;
-					mVector |= (v123 & 0x07) << 1;
+					mVector |= (v123.ToMask() & 0x07) << 1;
 				}
-
-				explicit constexpr Bool4(StorageType value)
-					: mVector(value)
-				{}
 
 				Bool4& operator = (StorageType value)
 				{
@@ -105,7 +102,7 @@ namespace Cpf
 				void SetLane(int index, bool value)
 				{
 					StorageType bit = 1 << index;
-					mVector.mData = (mVector.mData & ~bit) | bit;
+					mVector.mData = (mVector.mData & ~bit) | value ? bit : 0;
 				}
 				template <int INDEX>
 				LaneType GetLane() const
@@ -115,20 +112,17 @@ namespace Cpf
 				template <int I0, int I1>
 				StorageType GetLanes() const
 				{
-					StorageType result(GetLane<I0>(), GetLane<I1>());
-					return result;
+					return StorageType(GetLane<I0>(), GetLane<I1>());
 				}
 				template <int I0, int I1, int I2>
 				StorageType GetLanes() const
 				{
-					StorageType result(GetLane<I0>(), GetLane<I1>(), GetLane<I2>());
-					return result;
+					return StorageType(GetLane<I0>(), GetLane<I1>(), GetLane<I2>());
 				}
 				template <int I0, int I1, int I2, int I3>
 				StorageType GetLanes() const
 				{
-					StorageType result(GetLane<I0>(), GetLane<I1>(), GetLane<I2>(), GetLane<I3>());
-					return result;
+					return StorageType(GetLane<I0>(), GetLane<I1>(), GetLane<I2>(), GetLane<I3>());
 				}
 
 				int32_t ToMask() const
@@ -139,6 +133,7 @@ namespace Cpf
 				StorageType mVector;
 			};
 
+			//////////////////////////////////////////////////////////////////////////
 			template<int COUNT>
 			using Bool4_ = Bool4<int32_t, bool, COUNT>;
 
@@ -165,6 +160,12 @@ namespace Cpf
 			CPF_FORCE_INLINE bool All(const Bool4_<COUNT> value)
 			{
 				return value.mVector == Bool4_<COUNT>::LaneMask;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE bool None(const Bool4_<COUNT> value)
+			{
+				return value.mVector == 0;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
