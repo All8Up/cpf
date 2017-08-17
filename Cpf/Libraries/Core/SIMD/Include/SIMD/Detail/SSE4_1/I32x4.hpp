@@ -27,6 +27,7 @@ namespace Cpf
 			template<int LANES_USED>
 			struct alignas(16) I32x4<__m128i, int32_t, LANES_USED>
 			{
+				using BoolType = Bool4_<LANES_USED>;
 				using StorageType = __m128i;
 				using LaneType = int32_t;
 				static constexpr int LaneCount = LANES_USED;
@@ -156,36 +157,44 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs));
-				auto mask = _mm_movemask_ps(_mm_castsi128_ps(cmp));
-				return I32x4_<COUNT>::LaneMask & mask;
+				return Bool4_<COUNT>(cmp);
 			}
-			template <typename TYPE>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator != (const TYPE lhs, const TYPE rhs)
+			template <int COUNT>
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return (~(lhs==rhs)) & TYPE::LaneMask;
+				auto cmp = _mm_andnot_si128(
+					_mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
+					_mm_set_epi32(~0, ~0, ~0, ~0));
+				return Bool4_<COUNT>(cmp);
 			}
-			template <typename TYPE>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator < (const TYPE lhs, const TYPE rhs)
+			template <int COUNT>
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return TYPE::LaneMask & _mm_movemask_ps(_mm_castsi128_ps(_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs))));
+				return Bool4_<COUNT>(_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
-			template <typename TYPE>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator <= (const TYPE lhs, const TYPE rhs)
+			template <int COUNT>
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return (lhs < rhs) | (lhs == rhs);
+				auto cmp = _mm_andnot_si128(
+					_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
+					_mm_set_epi32(~0, ~0, ~0, ~0));
+				return Bool4_<COUNT>(cmp);
 			}
-			template <typename TYPE>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator > (const TYPE lhs, const TYPE rhs)
+			template <int COUNT>
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return TYPE::LaneMask & _mm_movemask_ps(_mm_castsi128_ps(_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs))));
+				return Bool4_<COUNT>(_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
-			template <typename TYPE>
-			CPF_FORCE_INLINE int CPF_VECTORCALL operator >= (const TYPE lhs, const TYPE rhs)
+			template <int COUNT>
+			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
-				return (lhs > rhs) | (lhs == rhs);
+				auto cmp = _mm_andnot_si128(
+					_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
+					_mm_set_epi32(~0, ~0, ~0, ~0));
+				return Bool4_<COUNT>(cmp);
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -332,7 +341,7 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool CPF_VECTORCALL Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
 			{
-				return (Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance)) == I32x4_<COUNT>::LaneMask;
+				return All(Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance));
 			}
 
 			//////////////////////////////////////////////////////////////////////////

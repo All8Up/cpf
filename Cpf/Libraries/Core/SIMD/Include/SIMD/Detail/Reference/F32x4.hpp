@@ -39,6 +39,8 @@ namespace Cpf
 			template<int LANES_USED>
 			struct alignas(16) F32x4<float4, float, LANES_USED>
 			{
+				using BoolType = Bool4_<LANES_USED>;
+
 				using StorageType = float4;
 				using LaneType = typename StorageType::Type;
 				static constexpr int LaneCount = LANES_USED;
@@ -437,14 +439,14 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Near(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs, float tolerance)
 			{
-				return (Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance)) == F32x4_<COUNT>::LaneMask;
+				return All(Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance));
 			}
 
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Valid(const F32x4_<COUNT> value)
 			{
 				F32x4_<COUNT> test(value * F32x4_<COUNT>{ 0.0f });
-				return (test == F32x4_<COUNT>{0.0f}) == F32x4_<COUNT>::LaneMask;
+				return All(test == F32x4_<COUNT>{0.0f});
 			}
 
 			//////////////////////////////////////////////////////////////////////////

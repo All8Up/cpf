@@ -17,15 +17,17 @@ namespace Cpf
 			template<int COUNT>
 			struct alignas(4) F32x3<float3, float, COUNT>
 			{
+				using BoolType = Bool4<int32_t, bool, COUNT>;
+
 				using StorageType = float3;
 				using LaneType = float;
 				static constexpr int LaneCount = COUNT;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 
-				using Lanes_1 = F32x4<float3, float, 1>;
-				using Lanes_2 = F32x4<float3, float, 2>;
-				using Lanes_3 = F32x4<float3, float, 3>;
-				using Lanes_4 = F32x4<float3, float, 4>;
+				using Lanes_1 = F32x3<float3, float, 1>;
+				using Lanes_2 = F32x3<float3, float, 2>;
+				using Lanes_3 = F32x3<float3, float, 3>;
+				using Lanes_4 = F32x3<float3, float, 4>;
 
 				F32x3() {}
 				explicit F32x3(LaneType value) : mVector{ value, value, value } {}
@@ -106,7 +108,7 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE int operator == (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
+			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -366,7 +368,7 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Near(const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs, float tolerance)
 			{
-				return (Abs(lhs - rhs) <= F32x3_<COUNT>(tolerance)) == F32x3_<COUNT>::kLaneMask;
+				return All(Abs(lhs - rhs) <= F32x3_<COUNT>(tolerance));
 			}
 
 			template <int COUNT>

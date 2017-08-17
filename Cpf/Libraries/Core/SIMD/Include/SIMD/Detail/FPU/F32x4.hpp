@@ -13,6 +13,8 @@ namespace Cpf
 			template<int COUNT>
 			struct alignas(4) F32x4<float4, float, COUNT>
 			{
+				using BoolType = Bool4<int32_t, bool, COUNT>;
+
 				using StorageType = float4;
 				using LaneType = float;
 				static constexpr int LaneCount = COUNT;

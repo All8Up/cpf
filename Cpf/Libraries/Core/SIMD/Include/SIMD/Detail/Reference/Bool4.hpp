@@ -29,17 +29,17 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			template<int LANES_USED>
-			struct alignas(16) Bool4<boolx4, int32_t, LANES_USED>
+			struct alignas(16) Bool4<boolx4, bool, LANES_USED>
 			{
 				using StorageType = boolx4;
-				using LaneType = typename StorageType::Type;
+				using LaneType = bool;
 				static constexpr int LaneCount = LANES_USED;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 
-				using Lanes_1 = Bool4<boolx4, int32_t, 1>;
-				using Lanes_2 = Bool4<boolx4, int32_t, 2>;
-				using Lanes_3 = Bool4<boolx4, int32_t, 3>;
-				using Lanes_4 = Bool4<boolx4, int32_t, 4>;
+				using Lanes_1 = Bool4<boolx4, bool, 1>;
+				using Lanes_2 = Bool4<boolx4, bool, 2>;
+				using Lanes_3 = Bool4<boolx4, bool, 3>;
+				using Lanes_4 = Bool4<boolx4, bool, 4>;
 
 				static constexpr int32_t True = 0xFFFFFFFF;
 				static constexpr int32_t False = 0x00000000;
@@ -89,10 +89,10 @@ namespace Cpf
 
 				Bool4& operator = (StorageType value) { mSIMD = value; return *this; }
 
-				explicit operator StorageType () const { return mSIMD; }
+//				explicit operator StorageType () const { return mSIMD; }
 
-				template <typename = std::enable_if<LANES_USED == 1, LaneType>>
-				operator const LaneType() const { return mSIMD.mData[0]; }
+//				template <typename = std::enable_if<LANES_USED == 1, LaneType>>
+//				operator const LaneType() const { return mSIMD.mData[0]; }
 
 				void SetLane(int index, LaneType value)
 				{
@@ -116,31 +116,31 @@ namespace Cpf
 			};
 
 			template<int COUNT>
-			using Bool4_ = Bool4<boolx4, int32_t, COUNT>;
+			using Bool4_ = Bool4<boolx4, bool, COUNT>;
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int LANES_USED>
 			template <int I0>
-			typename Bool4<boolx4, int32_t, LANES_USED>::LaneType Bool4<boolx4, int32_t, LANES_USED>::GetLane() const
+			typename Bool4<boolx4, bool, LANES_USED>::LaneType Bool4<boolx4, bool, LANES_USED>::GetLane() const
 			{
 				return mSIMD.mData[I0];
 			};
 
 			template<int LANES_USED>
 			template <int I0, int I1>
-			typename Bool4<boolx4, int32_t, LANES_USED>::Lanes_2 Bool4<boolx4, int32_t, LANES_USED>::GetLanes() const
+			typename Bool4<boolx4, bool, LANES_USED>::Lanes_2 Bool4<boolx4, bool, LANES_USED>::GetLanes() const
 			{
 				return Lanes_2{ mSIMD.mData[I0], mSIMD.mData[I1] };
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2>
-			typename Bool4<boolx4, int32_t, LANES_USED>::Lanes_3 Bool4<boolx4, int32_t, LANES_USED>::GetLanes() const
+			typename Bool4<boolx4, bool, LANES_USED>::Lanes_3 Bool4<boolx4, bool, LANES_USED>::GetLanes() const
 			{
 				return Lanes_3{ mSIMD.mData[I0], mSIMD.mData[I1], mSIMD.mData[I2] };
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2, int I3>
-			typename Bool4<boolx4, int32_t, LANES_USED>::Lanes_4 Bool4<boolx4, int32_t, LANES_USED>::GetLanes() const
+			typename Bool4<boolx4, bool, LANES_USED>::Lanes_4 Bool4<boolx4, bool, LANES_USED>::GetLanes() const
 			{
 				return Lanes_4{ mSIMD.mData[I0], mSIMD.mData[I1], mSIMD.mData[I2], mSIMD.mData[I3] };
 			}
@@ -148,55 +148,60 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			CPF_FORCE_INLINE bool operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
-				Bool4_<COUNT> result(Bool4_<COUNT>::False);
-				for (int i = 0; i < COUNT; ++i)
-				{
-					if (lhs.mSIMD.mData[i] == rhs.mSIMD.mData[i])
-						result.SetLane(i, Bool4_<COUNT>::True);
-				}
-				return result;
-			}
-
-			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
-			{
-				Bool4_<COUNT> result(Bool4_<COUNT>::False);
 				for (int i = 0; i < COUNT; ++i)
 				{
 					if (lhs.mSIMD.mData[i] != rhs.mSIMD.mData[i])
-						result.SetLane(i, Bool4_<COUNT>::True);
+						return false;
 				}
-				return result;
+				return true;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE bool operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			{
+				for (int i = 0; i < COUNT; ++i)
+				{
+					if (lhs.mSIMD.mData[i] != rhs.mSIMD.mData[i])
+						return true;
+				}
+				return false;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
 			CPF_FORCE_INLINE bool Any(const Bool4_<COUNT> value)
 			{
-				return
-					(value.mSIMD.mData[0] != 0) |
-					(value.mSIMD.mData[1] != 0) |
-					(value.mSIMD.mData[2] != 0) |
-					(value.mSIMD.mData[3] != 0);
+				for (int i = 0; i < COUNT; ++i)
+					if (value.mSIMD.mData[i] != 0)
+						return true;
+				return false;
 			}
 
 			template <int COUNT>
 			CPF_FORCE_INLINE bool All(const Bool4_<COUNT> value)
 			{
-				return
-					(value.mSIMD.mData[0] != 0) &
-					(value.mSIMD.mData[1] != 0) &
-					(value.mSIMD.mData[2] != 0) &
-					(value.mSIMD.mData[3] != 0);
+				for (int i = 0; i < COUNT; ++i)
+					if (value.mSIMD.mData[i] == 0)
+						return false;
+				return true;
+			}
+
+			template <int COUNT>
+			CPF_FORCE_INLINE bool None(const Bool4_<COUNT> value)
+			{
+				for (int i = 0; i < COUNT; ++i)
+					if (value.mSIMD.mData[i] != 0)
+						return false;
+				return true;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			using Bool4_1 = Bool4<boolx4, int32_t, 1>;
-			using Bool4_2 = Bool4<boolx4, int32_t, 2>;
-			using Bool4_3 = Bool4<boolx4, int32_t, 3>;
-			using Bool4_4 = Bool4<boolx4, int32_t, 4>;
+			using Bool4_1 = Bool4<boolx4, bool, 1>;
+			using Bool4_2 = Bool4<boolx4, bool, 2>;
+			using Bool4_3 = Bool4<boolx4, bool, 3>;
+			using Bool4_4 = Bool4<boolx4, bool, 4>;
 		}
 	}
 }

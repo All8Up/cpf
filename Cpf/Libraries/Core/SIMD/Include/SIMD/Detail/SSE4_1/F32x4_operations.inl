@@ -308,7 +308,7 @@ namespace Cpf
 			template <int COUNT>
 			CPF_FORCE_INLINE bool CPF_VECTORCALL Near(const F32x4_<COUNT> lhs, const F32x4_<COUNT> rhs, float tolerance)
 			{
-				return (Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance)) == F32x4_<COUNT>::LaneMask;
+				return All(Abs(lhs - rhs) <= F32x4_<COUNT>(tolerance));
 			}
 
 			template <int COUNT>
