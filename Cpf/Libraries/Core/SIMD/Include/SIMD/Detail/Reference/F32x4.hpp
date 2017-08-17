@@ -66,44 +66,44 @@ namespace Cpf
 					: mSIMD(v0, v1, v2, v3) {}
 
 				//////////////////////////////////////////////////////////////////////////
-				template <typename = typename std::enable_if<(LANES_USED >= 3), LaneType>>
+				template <typename = typename std::enable_if<(LANES_USED >= 3), LaneType>::type>
 				F32x4(Lanes_2 v01, LaneType v2)
 					: mSIMD(v01.mSIMD.mData[0], v01.mSIMD.mData[1], v2)
 				{
 				}
-				template <typename = typename std::enable_if<(LANES_USED >= 3), LaneType>>
+				template <typename = typename std::enable_if<(LANES_USED >= 3), LaneType>::type>
 				F32x4(LaneType v0, Lanes_2 v12)
 					: mSIMD(v0, v12.mSIMD.mData[0], v12.mSIMD.mData[1])
 				{
 				}
 
-				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>::type>
 				F32x4(Lanes_2 v01, LaneType v2, LaneType v3)
 					: mSIMD(v01.mSIMD.mData[0], v01.mSIMD.mData[1], v2, v3)
 				{
 				}
-				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>::type>
 				F32x4(float v0, Lanes_2 v12, LaneType v3)
 					: mSIMD(v0, v12.mSIMD.mData[0], v12.mSIMD.mData[1], v3)
 				{
 				}
-				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>::type>
 				F32x4(float v0, float v1, Lanes_2 v23)
 					: mSIMD(v0, v1, v23.mSIMD.mData[0], v23.mSIMD.mData[1])
 				{
 				}
-				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>::type>
 				F32x4(Lanes_2 v01, Lanes_2 v23)
 					: mSIMD(v01.mSIMD.mData[0], v01.mSIMD.mData[1], v23.mSIMD.mData[0], v23.mSIMD.mData[1])
 				{
 				}
 
-				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>::type>
 				F32x4(Lanes_3 v012, LaneType v3)
 					: mSIMD(v012.mSIMD.mData[0], v012.mSIMD.mData[1], v012.mSIMD.mData[2], v3)
 				{
 				}
-				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 4, LaneType>::type>
 				F32x4(LaneType v0, Lanes_3 v123)
 					: mSIMD(v0, v123.mSIMD.mData[0], v123.mSIMD.mData[1], v123.mSIMD.mData[2])
 				{
@@ -111,7 +111,7 @@ namespace Cpf
 
 				F32x4& operator = (StorageType value) { mSIMD = value; return *this; }
 
-				template <typename = typename std::enable_if<LANES_USED == 1, LaneType>>
+				template <typename = typename std::enable_if<LANES_USED == 1, LaneType>::type>
 				constexpr operator const LaneType() const { return mSIMD.mData[0]; }
 
 				void SetLane(int index, float value)

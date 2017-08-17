@@ -11,6 +11,7 @@ set( INCLUDE_FILES
 	Include/IO/TextReader.hpp
 	Include/IO/TextWriter.hpp
 	Include/IO/FileSystem.hpp
+	Include/IO/Result.hpp
 )
 set( SOURCE_FILES
 	Source/IO.cpp

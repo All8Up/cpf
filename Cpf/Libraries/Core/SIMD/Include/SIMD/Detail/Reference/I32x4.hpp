@@ -88,7 +88,7 @@ namespace Cpf
 
 				explicit operator StorageType () const { return mSIMD; }
 
-				template <typename = std::enable_if<LANES_USED == 1, LaneType>>
+				template <typename = typename std::enable_if<(LANES_USED == 1), LaneType>::type>
 				operator const LaneType() const { return mSIMD.mData[0]; }
 
 				void SetLane(int index, int32_t value)

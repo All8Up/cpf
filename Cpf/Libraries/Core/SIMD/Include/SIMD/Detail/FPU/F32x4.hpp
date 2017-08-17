@@ -72,7 +72,7 @@ namespace Cpf
 
 				explicit operator StorageType () const { return mVector; }
 
-				template <typename = std::enable_if<std::equal_to<int>()(kCount, 1), LaneType>::type>
+				template <typename = typename std::enable_if<(COUNT == 1), LaneType>::type>
 				operator const LaneType() const { return mVector.mData[0]; }
 
 				void SetLane(int index, float value)

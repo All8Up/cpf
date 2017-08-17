@@ -86,3 +86,13 @@ public:
 #include "Test_TextWriter.hpp"
 //#include "Test_Archive.hpp"
 //#include "Test_Serializer.hpp"
+
+#include "IO/Result.hpp"
+
+TEST(IO, Result)
+{
+	using namespace Cpf::IO;
+	using TestResult = Result<int64_t, std::string>;
+
+	TestResult t0;
+}
