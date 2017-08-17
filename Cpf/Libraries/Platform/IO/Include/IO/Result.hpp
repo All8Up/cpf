@@ -12,9 +12,10 @@ namespace Cpf
 		public:
 			Result();
 			Result(Result&&);
-			Result(OK_TYPE ok);
-			Result(ERROR_TYPE error);
 			~Result();
+
+			static Result OK(OK_TYPE&&);
+			static Result Error(ERROR_TYPE&&);
 
 			Result& operator = (Result&&);
 
@@ -74,19 +75,6 @@ namespace Cpf
 		}
 
 		template <typename OK_TYPE, typename ERROR_TYPE>
-		Result<OK_TYPE, ERROR_TYPE>::Result(OK_TYPE ok)
-			: mType(Type::eOK)
-		{
-			new (&mData.mOK) OK_TYPE(std::move(ok));
-		}
-
-		template <typename OK_TYPE, typename ERROR_TYPE>
-		Result<OK_TYPE, ERROR_TYPE>::Result(ERROR_TYPE error)
-		{
-			new (&mData.mError) ERROR_TYPE(std::move(error));
-		}
-
-		template <typename OK_TYPE, typename ERROR_TYPE>
 		Result<OK_TYPE, ERROR_TYPE>::~Result()
 		{
 			switch (mType)
@@ -100,6 +88,24 @@ namespace Cpf
 				mData.mError.~ERROR_TYPE();
 				break;
 			}
+		}
+
+		template <typename OK_TYPE, typename ERROR_TYPE>
+		Result<OK_TYPE, ERROR_TYPE> Result<OK_TYPE, ERROR_TYPE>::OK(OK_TYPE&& ok)
+		{
+			Result result;
+			result.mType = Type::eOK;
+			new (&result.mData.mOK) OK_TYPE(std::move(ok));
+			return result;
+		}
+
+		template <typename OK_TYPE, typename ERROR_TYPE>
+		Result<OK_TYPE, ERROR_TYPE> Result<OK_TYPE, ERROR_TYPE>::Error(ERROR_TYPE&& error)
+		{
+			Result result;
+			result.mType = Type::eError;
+			new (&result.mData.mError) ERROR_TYPE(std::move(error));
+			return result;
 		}
 
 		template <typename OK_TYPE, typename ERROR_TYPE>

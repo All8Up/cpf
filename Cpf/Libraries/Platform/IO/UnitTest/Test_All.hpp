@@ -94,5 +94,5 @@ TEST(IO, Result)
 	using namespace Cpf::IO;
 	using TestResult = Result<int64_t, std::string>;
 
-	TestResult t0;
+	TestResult t0(TestResult::Error("Test"));
 }
