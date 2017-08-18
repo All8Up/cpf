@@ -89,11 +89,6 @@ namespace Cpf
 
 				Bool4& operator = (StorageType value) { mSIMD = value; return *this; }
 
-//				explicit operator StorageType () const { return mSIMD; }
-
-//				template <typename = std::enable_if<LANES_USED == 1, LaneType>>
-//				operator const LaneType() const { return mSIMD.mData[0]; }
-
 				void SetLane(int index, LaneType value)
 				{
 					mSIMD.mData[index] = GetValue(value);
