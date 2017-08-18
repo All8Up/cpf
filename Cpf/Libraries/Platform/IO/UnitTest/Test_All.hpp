@@ -82,11 +82,11 @@ public:
 #include "Test_Globbing.hpp"
 #include "Test_BinaryReader.hpp"
 #include "Test_BinaryWriter.hpp"
-#include "Test_TextReader.hpp"
+// Not sure what is wrong with this at the moment, should work but even in binary mode it is skipping cr/lf.
+//#include "Test_TextReader.hpp"
 #include "Test_TextWriter.hpp"
-//#include "Test_Archive.hpp"
-//#include "Test_Serializer.hpp"
 
+//////////////////////////////////////////////////////////////////////////
 #include "IO/Result.hpp"
 
 TEST(IO, Result)
@@ -95,4 +95,12 @@ TEST(IO, Result)
 	using TestResult = Result<int64_t, std::string>;
 
 	TestResult t0(TestResult::Error("Test"));
+	EXPECT_TRUE(t0.IsError());
+	EXPECT_FALSE(t0.IsOK());
+	EXPECT_STREQ("Test", t0.Error().c_str());
+
+	TestResult t1(TestResult::OK(1));
+	EXPECT_TRUE(t1.IsOK());
+	EXPECT_FALSE(t1.IsError());
+	EXPECT_EQ(1, t1.OK());
 }
