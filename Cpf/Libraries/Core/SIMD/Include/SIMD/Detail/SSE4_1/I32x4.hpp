@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
+#include "Utilities.hpp"
 #include <immintrin.h>
 
 namespace Cpf
@@ -11,7 +12,6 @@ namespace Cpf
 		{
 #define cpf_movehl_epi32(lhs, rhs) _mm_castps_si128(_mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
 #define cpf_movelh_epi32(lhs, rhs) _mm_castps_si128(_mm_movelh_ps(_mm_castsi128_ps(static_cast<__m128i>(lhs)), _mm_castsi128_ps(static_cast<__m128i>(rhs))))
-#define cpf_shuffle_epi32(lhs, rhs, mask) _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(lhs), _mm_castsi128_ps(rhs), mask))
 
 			union alignas(16) UInt32x4
 			{
@@ -45,7 +45,10 @@ namespace Cpf
 				constexpr I32x4(LaneType v0, LaneType v1, LaneType v2, LaneType v3) : mVector(_mm_set_epi32(v3, v2, v1, v0)) {}
 
 				I32x4(Lanes_2 v01, LaneType v2)
-					: mVector(cpf_shuffle_epi32(static_cast<__m128i>(v01), _mm_set_epi32(v2, 0, 0, 0), _MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(Shuffle<0, 1, 0, 1>(
+						static_cast<__m128i>(v01),
+						_mm_set_epi32(v2, 0, 0, 0))
+					)
 				{
 				}
 				I32x4(LaneType v0, Lanes_2 v12)
@@ -54,20 +57,30 @@ namespace Cpf
 				}
 
 				I32x4(Lanes_2 v01, LaneType v2, LaneType v3)
-					: mVector(cpf_shuffle_epi32(static_cast<__m128i>(v01), _mm_set_epi32(0, 0, v3, v2), _MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(Shuffle<0, 1, 0, 1>(
+						static_cast<__m128i>(v01),
+						_mm_set_epi32(0, 0, v3, v2))
+					)
 				{
 				}
 				I32x4(LaneType v0, Lanes_2 v12, LaneType v3)
 				{
-					auto t = cpf_movelh_epi32(_mm_set_epi32(0, 0, v3, v0), v12);
-					mVector = cpf_shuffle_epi32(t, t, _MM_SHUFFLE(1, 3, 2, 0));
+					const auto t = Shuffle<0, 1, 0, 1>(
+						static_cast<__m128i>(v12),
+						_mm_set_epi32(0, 0, v0, v3)
+						);
+					mVector = Swizzle<3, 0, 1, 2>(t);
 				}
 				I32x4(LaneType v0, LaneType v1, Lanes_2 v23)
-					: mVector(cpf_shuffle_epi32(_mm_set_epi32(0, 0, v1, v0), static_cast<__m128i>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(
+						Shuffle<0, 1, 0, 1>(_mm_set_epi32(0, 0, v1, v0), static_cast<__m128i>(v23))
+					)
 				{
 				}
 				I32x4(Lanes_2 v01, I32x4<StorageType, LaneType, 2> v23)
-					: mVector(cpf_shuffle_epi32(static_cast<__m128i>(v01), static_cast<__m128i>(v23), _MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(
+						Shuffle<0, 1, 0, 1>(static_cast<__m128i>(v01), static_cast<__m128i>(v23))
+					)
 				{
 				}
 
@@ -131,28 +144,19 @@ namespace Cpf
 			template <int I0, int I1>
 			typename I32x4<__m128i, int32_t, LANES_USED>::Lanes_2 I32x4<__m128i, int32_t, LANES_USED>::GetLanes() const
 			{
-				return Lanes_2(cpf_shuffle_epi32(
-					static_cast<__m128i>(mVector),
-					static_cast<__m128i>(mVector),
-					_MM_SHUFFLE(0, 0, I1, I0)));
+				return Lanes_2(Swizzle<I0, I1, -1, -1>(static_cast<__m128i>(mVector)));
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2>
 			typename I32x4<__m128i, int32_t, LANES_USED>::Lanes_3 I32x4<__m128i, int32_t, LANES_USED>::GetLanes() const
 			{
-				return Lanes_3(cpf_shuffle_epi32(
-					static_cast<__m128i>(mVector),
-					static_cast<__m128i>(mVector),
-					_MM_SHUFFLE(0, I2, I1, I0)));
+				return Lanes_3(Swizzle<I0, I1, I2, -1>(static_cast<__m128i>(mVector)));
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2, int I3>
 			typename I32x4<__m128i, int32_t, LANES_USED>::Lanes_4 I32x4<__m128i, int32_t, LANES_USED>::GetLanes() const
 			{
-				return Lanes_4(cpf_shuffle_epi32(
-					static_cast<__m128i>(mVector),
-					static_cast<__m128i>(mVector),
-					_MM_SHUFFLE(I3, I2, I1, I0)));
+				return Lanes_4(Swizzle<I0, I1, I2, I3>(static_cast<__m128i>(mVector)));
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -303,7 +307,7 @@ namespace Cpf
 			{
 				auto folded = cpf_movehl_epi32(static_cast<__m128i>(value), static_cast<__m128i>(value));
 				auto two_low = _mm_max_epi32(static_cast<__m128i>(value), folded);
-				auto second = cpf_shuffle_epi32(two_low, two_low, _MM_SHUFFLE(0, 0, 0, 1));
+				auto second = Swizzle<1, -1, -1, -1>(two_low);
 				auto the_high = _mm_max_epi32(two_low, second);
 				return I32x4_<1>(the_high);
 			}
