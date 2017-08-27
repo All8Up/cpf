@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "Utilities.hpp"
 
 namespace Cpf
 {
@@ -44,30 +45,21 @@ namespace Cpf
 			template <int I0, int I1>
 			typename F32x4<__m128, float, COUNT>::Lanes_2 F32x4<__m128, float, COUNT>::GetLanes() const
 			{
-				return _mm_shuffle_ps(
-					static_cast<__m128>(mSIMD),
-					static_cast<__m128>(mSIMD),
-					_MM_SHUFFLE(0, 0, I1, I0));
+				return Swizzle<I0, I1, -1, -1>(static_cast<__m128>(mSIMD));
 			}
 
 			template<int COUNT>
 			template <int I0, int I1, int I2>
 			typename F32x4<__m128, float, COUNT>::Lanes_3 F32x4<__m128, float, COUNT>::GetLanes() const
 			{
-				return _mm_shuffle_ps(
-					static_cast<__m128>(mSIMD),
-					static_cast<__m128>(mSIMD),
-					_MM_SHUFFLE(0, I2, I1, I0));
+				return Swizzle<I0, I1, I2, -1>(static_cast<__m128>(mSIMD));
 			}
 
 			template<int COUNT>
 			template <int I0, int I1, int I2, int I3>
 			typename F32x4<__m128, float, COUNT>::Lanes_4 F32x4<__m128, float, COUNT>::GetLanes() const
 			{
-				return _mm_shuffle_ps(
-					static_cast<__m128>(mSIMD),
-					static_cast<__m128>(mSIMD),
-					_MM_SHUFFLE(I3, I2, I1, I0));
+				return Swizzle<I0, I1, I2, I3>(static_cast<__m128>(mSIMD));
 			}
 		}
 	}

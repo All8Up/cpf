@@ -1,10 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
-#include "SIMD/Detail/Ref32x4_1.hpp"
-#include "SIMD/Detail/Ref32x4_2.hpp"
-#include "SIMD/Detail/Ref32x4_3.hpp"
-#include "SIMD/Detail/Ref32x4_4.hpp"
+#include "SIMD/Detail/LaneRef.hpp"
+#include "SIMD/Detail/LaneIndex.hpp"
 #include "SIMD/Detail/Reference/Bool4.hpp"
 #include <cmath>
 

@@ -8,14 +8,14 @@ set (SIMD_INCLUDE_FILES
 	Include/SIMD/Rounding.hpp
 )
 set (SIMD_DETAIL_INCLUDE_FILES
-	Include/SIMD/Detail/Ref32x4_1.hpp
-	Include/SIMD/Detail/Ref32x4_2.hpp
-	Include/SIMD/Detail/Ref32x4_3.hpp
-	Include/SIMD/Detail/Ref32x4_4.hpp
-	Include/SIMD/Detail/Ref32x4_1.inl
-	Include/SIMD/Detail/Ref32x4_2.inl
-	Include/SIMD/Detail/Ref32x4_3.inl
-	Include/SIMD/Detail/Ref32x4_4.inl
+	Include/SIMD/Detail/Accessor.hpp
+	Include/SIMD/Detail/LaneIndex.hpp
+	Include/SIMD/Detail/LaneRef.hpp
+	Include/SIMD/Detail/LaneRef_1.inl
+	Include/SIMD/Detail/LaneRef_2.inl
+	Include/SIMD/Detail/LaneRef_3.inl
+	Include/SIMD/Detail/LaneRef_4.inl
+	Include/SIMD/Detail/Swizzles.hpp
 )
 set (SIMD_DETAIL_FPU_INCLUDE_FILES
 	Include/SIMD/Detail/FPU/Bool4.hpp
@@ -51,6 +51,7 @@ set (SIMD_DETAIL_SSE4_1_INCLUDE_FILES
 	Include/SIMD/Detail/SSE4_1/F32x4_construction.inl
 	Include/SIMD/Detail/SSE4_1/F32x4_operations.inl
 	Include/SIMD/Detail/SSE4_1/I32x4.hpp
+	Include/SIMD/Detail/SSE4_1/Utilities.hpp
 )
 
 add_library (SIMD INTERFACE)
@@ -97,5 +98,6 @@ MakeUnitTest (LIBRARY SIMD GROUP Core
 		UnitTest/Test_F32x4_3.cpp
 		UnitTest/Test_F32x4_4.cpp
 		UnitTest/Test_FPU_F32x3.cpp
+		UnitTest/Test_SSE4_1_Utilities.cpp
 		../Test/UnitTestMain.cpp
 )

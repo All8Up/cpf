@@ -7,13 +7,11 @@ namespace Cpf
 	namespace Math
 	{
 		template <typename TYPE>
-		class OBB
+		struct OBB
 		{
-		public:
-			OBB();
-
-		private:
-			Vector3<TYPE> mAxis[3];
+			Vector3v<TYPE> mXAxis;
+			Vector3v<TYPE> mYAxis;
+			Vector3v<TYPE> mZAxis;
 		};
 	}
 }

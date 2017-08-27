@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
-#include "SIMD/Detail/Ref32x4_1.hpp"
-#include "SIMD/Detail/Ref32x4_2.hpp"
-#include "SIMD/Detail/Ref32x4_3.hpp"
+#include "SIMD/Detail/LaneRef.hpp"
+#include "SIMD/Detail/LaneIndex.hpp"
+#include "SIMD/Detail/Swizzles.hpp"
 
 namespace Cpf
 {
@@ -24,18 +24,18 @@ namespace Cpf
 			Vector3v(StorageType value);
 			Vector3v(LaneType v0, LaneType v1, LaneType v2);
 			template <int I0, int I1, int I2>
-			Vector3v(Cpf::SIMD::Ref32x4_3<TYPE, I0, I1, I2>& ref);
+			Vector3v(const SIMD::LaneRef_3<TYPE, I0, I1, I2>& ref);
 			template <int I0, int I1>
-			Vector3v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, LaneType v2);
+			Vector3v(const SIMD::LaneRef_2<TYPE, I0, I1>& ref, LaneType v2);
 			template <int I1, int I2>
-			Vector3v(LaneType v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref);
+			Vector3v(LaneType v0, const SIMD::LaneRef_2<TYPE, I1, I2>& ref);
 			explicit Vector3v(const LaneType* data);
 
 			template <typename RTYPE, int I0, int I1, int I2>
-			explicit Vector3v(const SIMD::Ref32x4_3<RTYPE, I0, I1, I2>& ref);
+			explicit Vector3v(const SIMD::LaneRef_3<RTYPE, I0, I1, I2>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
-			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
+			SIMD::LaneIndex<TYPE> CPF_VECTORCALL operator [](int idx);
 			LaneType CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,9 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			TYPE mSIMD;
-			REF32X4_1_SWIZZLE(TYPE);
-			REF32X4_2_SWIZZLE(TYPE);
-			REF32X4_3_SWIZZLE(TYPE);
+			LANEREF_1_SWIZZLE(TYPE);
+			LANEREF_2_SWIZZLE(TYPE);
+			LANEREF_3_SWIZZLE(TYPE);
 		};
 	}
 }

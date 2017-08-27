@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Configuration.hpp"
 #include "gmock/gmock.h"
-#include "Std/String.hpp"
 
 /**
 @cond CPF_INTERNAL
@@ -49,9 +48,9 @@ int CPF_CDECL main( int argc, char** argv )
 			_argv[i] = ::strdup(argv[i]);
 		// Add xml output param.
 		char buffer[1024];
-		Std::StrCpy(buffer, "--gtest_output=xml:");
-		Std::StrCat(buffer, argv[0]);
-		Std::StrCat(buffer, ".xml");
+		strcpy(buffer, "--gtest_output=xml:");
+		strcat(buffer, argv[0]);
+		strcat(buffer, ".xml");
 		_argv[argc] = buffer;
 		::testing::InitGoogleTest(&_argc, _argv);
 	}

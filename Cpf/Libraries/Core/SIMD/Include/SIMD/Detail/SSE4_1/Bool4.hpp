@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
-#include <immintrin.h>
+#include "Utilities.hpp"
 
 namespace Cpf
 {
@@ -9,9 +9,6 @@ namespace Cpf
 	{
 		namespace SSE4_1
 		{
-#define cpf_shuffle_epi32(lhs, rhs, mask) _mm_castps_si128(_mm_shuffle_ps(_mm_castsi128_ps(lhs), _mm_castsi128_ps(rhs), mask))
-
-
 			template <typename STORAGE_TYPE, typename LANE_TYPE, int COUNT>
 			struct alignas(16) Bool4;
 
@@ -41,10 +38,11 @@ namespace Cpf
 				constexpr Bool4(LaneType v0, LaneType v1, LaneType v2, LaneType v3) : mVector(_mm_set_epi32(ToValue(v3), ToValue(v2), ToValue(v1), ToValue(v0))) {}
 
 				Bool4(Lanes_2 v01, LaneType v2)
-					: mVector(cpf_shuffle_epi32(
-						static_cast<__m128i>(v01),
-						_mm_set_epi32(ToValue(v2), 0, 0, 0),
-						_MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(
+						Shuffle<1, 0, 1, 0>(
+							static_cast<__m128i>(v01),
+							_mm_set_epi32(ToValue(v2), 0, 0, 0))
+					)
 				{
 				}
 				Bool4(LaneType v0, Lanes_2 v12)
@@ -53,29 +51,32 @@ namespace Cpf
 				}
 
 				Bool4(Lanes_2 v01, LaneType v2, LaneType v3)
-					: mVector(cpf_shuffle_epi32(
-						static_cast<__m128i>(v01),
-						_mm_set_epi32(0, 0, ToValue(v3), ToValue(v2)),
-						_MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(
+						Shuffle<1, 0, 1, 0>(
+							static_cast<__m128i>(v01),
+							_mm_set_epi32(0, 0, ToValue(v3), ToValue(v2)))
+					)
 				{
 				}
 				Bool4(LaneType v0, Lanes_2 v12, LaneType v3)
 				{
-					auto t = cpf_movelh_epi32(_mm_set_epi32(0, 0, ToValue(v3), ToValue(v0)), v12);
-					mVector = cpf_shuffle_epi32(t, t, _MM_SHUFFLE(1, 3, 2, 0));
+					auto t = Shuffle<2, 3, -1, -1>(_mm_set_epi32(0, 0, ToValue(v3), ToValue(v0)), v12);
+					mVector = Swizzle<1, 3, 2, -1>(t);
 				}
 				Bool4(LaneType v0, LaneType v1, Lanes_2 v23)
-					: mVector(cpf_shuffle_epi32(
-						_mm_set_epi32(0, 0, ToValue(v1), ToValue(v0)),
-						static_cast<__m128i>(v23),
-						_MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(
+						Shuffle<1, 0, 1, 0>(
+							_mm_set_epi32(0, 0, ToValue(v1), ToValue(v0)),
+							static_cast<__m128i>(v23))
+					)
 				{
 				}
 				Bool4(Lanes_2 v01, Lanes_2 v23)
-					: mVector(cpf_shuffle_epi32(
-						static_cast<__m128i>(v01),
-						static_cast<__m128i>(v23),
-						_MM_SHUFFLE(1, 0, 1, 0)))
+					: mVector(
+						Shuffle<0, 1, 0, 1>(
+							static_cast<__m128i>(v01),
+							static_cast<__m128i>(v23))
+					)
 				{
 				}
 
@@ -144,28 +145,25 @@ namespace Cpf
 			template <int I0, int I1>
 			typename Bool4<__m128i, bool, LANES_USED>::Lanes_2 Bool4<__m128i, bool, LANES_USED>::GetLanes() const
 			{
-				return Lanes_2(cpf_shuffle_epi32(
-					static_cast<__m128i>(mVector),
-					static_cast<__m128i>(mVector),
-					_MM_SHUFFLE(0, 0, I1, I0)));
+				return Lanes_2(
+					Swizzle<I0, I1, -1, -1>(mVector)
+				);
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2>
 			typename Bool4<__m128i, bool, LANES_USED>::Lanes_3 Bool4<__m128i, bool, LANES_USED>::GetLanes() const
 			{
-				return Lanes_3(cpf_shuffle_epi32(
-					static_cast<__m128i>(mVector),
-					static_cast<__m128i>(mVector),
-					_MM_SHUFFLE(0, I2, I1, I0)));
+				return Lanes_3(
+					Swizzle<I0, I1, I2, -1>(mVector)
+				);
 			}
 			template<int LANES_USED>
 			template <int I0, int I1, int I2, int I3>
 			typename Bool4<__m128i, bool, LANES_USED>::Lanes_4 Bool4<__m128i, bool, LANES_USED>::GetLanes() const
 			{
-				return Lanes_4(cpf_shuffle_epi32(
-					static_cast<__m128i>(mVector),
-					static_cast<__m128i>(mVector),
-					_MM_SHUFFLE(I3, I2, I1, I0)));
+				return Lanes_4(
+					Swizzle<I0, I1, I2, I3>(mVector)
+				);
 			}
 
 			//////////////////////////////////////////////////////////////////////////
