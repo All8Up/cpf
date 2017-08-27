@@ -31,28 +31,29 @@ namespace Cpf
 
 		template <typename TYPE>
 		template <int I0, int I1, int I2>
-		Vector3v<TYPE>::Vector3v(Cpf::SIMD::Ref32x4_3<TYPE, I0, I1, I2>& ref)
-			: mSIMD(ref)
+		Vector3v<TYPE>::Vector3v(const SIMD::LaneRef_3<TYPE, I0, I1, I2>& ref)
+			: mSIMD(typename TYPE::Lanes_3(ref))
 		{}
 
 		template <typename TYPE>
 		template <int I0, int I1>
-		Vector3v<TYPE>::Vector3v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref, LaneType v2)
+		Vector3v<TYPE>::Vector3v(const SIMD::LaneRef_2<TYPE, I0, I1>& ref, LaneType v2)
 			: mSIMD(typename TYPE::Lanes_2(ref), v2)
 		{}
 
 		template <typename TYPE>
 		template <int I1, int I2>
-		Vector3v<TYPE>::Vector3v(LaneType v0, Cpf::SIMD::Ref32x4_2<TYPE, I1, I2>& ref)
+		Vector3v<TYPE>::Vector3v(LaneType v0, const SIMD::LaneRef_2<TYPE, I1, I2>& ref)
 			: mSIMD(v0, typename TYPE::Lanes_2(ref))
 		{}
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
 		template <typename RTYPE, int I0, int I1, int I2>
-		Vector3v<TYPE>::Vector3v(const SIMD::Ref32x4_3<RTYPE, I0, I1, I2>& ref)
-			: mSIMD(ref.GetLane(0), ref.GetLane(1), ref.GetLane(2))
-		{}
+		Vector3v<TYPE>::Vector3v(const SIMD::LaneRef_3<RTYPE, I0, I1, I2>& ref)
+			: mSIMD(ref.GetLane<I0>(), ref.GetLane<I1>(), ref.GetLane<I2>())
+		{
+		}
 
 		template <typename TYPE>
 		Vector3v<TYPE>::Vector3v(const LaneType* data)
@@ -61,9 +62,9 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL Vector3v<TYPE>::operator [](int idx)
+		SIMD::LaneIndex<TYPE> CPF_VECTORCALL Vector3v<TYPE>::operator [](int idx)
 		{
-			return SIMD::Ref32x4_Index<TYPE>(mSIMD, idx);
+			return SIMD::LaneIndex<TYPE>(mSIMD, idx);
 		}
 
 		template <typename TYPE>

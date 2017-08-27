@@ -28,7 +28,7 @@ namespace Cpf
 
 		template <typename TYPE>
 		template <int I0, int I1, int I2, int I3>
-		constexpr Quaternion<TYPE>::Quaternion(Cpf::SIMD::Ref32x4_4<TYPE, I0, I1, I2, I3>& ref)
+		constexpr Quaternion<TYPE>::Quaternion(SIMD::LaneRef_4<TYPE, I0, I1, I2, I3>& ref)
 			: mVector(ref)
 		{}
 
@@ -39,9 +39,9 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL Quaternion<TYPE>::operator [](int idx)
+		SIMD::LaneIndex<TYPE> CPF_VECTORCALL Quaternion<TYPE>::operator [](int idx)
 		{
-			return SIMD::Ref32x4_Index<TYPE>(mVector, idx);
+			return SIMD::LaneIndex<TYPE>(mVector, idx);
 		}
 
 		template <typename TYPE>

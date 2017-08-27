@@ -12,6 +12,7 @@ include (CMake/InstallInformation.cmake)
 include (CMake/Utilities/AddLibrary.cmake)
 include (CMake/Utilities/TypedLibrary.cmake)
 include (CMake/Utilities/CheckValue.cmake)
+include (CMake/Utilities/PreferredInclude.cmake)
 include (CMake/UnitTesting/UnitTesting.cmake)
 
 include (CMake/Doxygen/BuildDocs.cmake)

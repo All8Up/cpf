@@ -8,14 +8,10 @@ set (SIMD_INCLUDE_FILES
 	Include/SIMD/Rounding.hpp
 )
 set (SIMD_DETAIL_INCLUDE_FILES
-	Include/SIMD/Detail/Ref32x4_1.hpp
-	Include/SIMD/Detail/Ref32x4_2.hpp
-	Include/SIMD/Detail/Ref32x4_3.hpp
-	Include/SIMD/Detail/Ref32x4_4.hpp
-	Include/SIMD/Detail/Ref32x4_1.inl
-	Include/SIMD/Detail/Ref32x4_2.inl
-	Include/SIMD/Detail/Ref32x4_3.inl
-	Include/SIMD/Detail/Ref32x4_4.inl
+	Include/SIMD/Detail/Accessor.hpp
+	Include/SIMD/Detail/LaneIndex.hpp
+	Include/SIMD/Detail/LaneRef.hpp
+	Include/SIMD/Detail/Swizzles.hpp
 )
 set (SIMD_DETAIL_FPU_INCLUDE_FILES
 	Include/SIMD/Detail/FPU/Bool4.hpp

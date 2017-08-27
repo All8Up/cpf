@@ -1,8 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "SIMD/Rounding.hpp"
-#include "SIMD/Detail/Ref32x4_1.hpp"
-#include "SIMD/Detail/Ref32x4_2.hpp"
+#include "SIMD/Detail/LaneRef.hpp"
+#include "SIMD/Detail/LaneIndex.hpp"
+#include "SIMD/Detail/Swizzles.hpp"
 
 namespace Cpf
 {
@@ -22,10 +23,10 @@ namespace Cpf
 			explicit Vector2v(TYPE value);
 			Vector2v(LaneType v0, LaneType v1);
 			template <int I0, int I1>
-			explicit Vector2v(Cpf::SIMD::Ref32x4_2<TYPE, I0, I1>& ref);
+			explicit Vector2v(Cpf::SIMD::LaneRef_2<TYPE, I0, I1>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
-			SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL operator [](int idx);
+			SIMD::LaneIndex<TYPE> CPF_VECTORCALL operator [](int idx);
 			LaneType CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
@@ -39,8 +40,8 @@ namespace Cpf
 
 			//////////////////////////////////////////////////////////////////////////
 			TYPE mSIMD;
-			REF32X4_1_SWIZZLE(TYPE);
-			REF32X4_2_SWIZZLE(TYPE);
+			LANEREF_1_SWIZZLE(TYPE);
+			LANEREF_2_SWIZZLE(TYPE);
 		};
 	}
 }

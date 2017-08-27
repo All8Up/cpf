@@ -26,29 +26,24 @@ namespace Cpf
 
 				I32x3() {}
 				I32x3(LaneType value) : mVector{ value, value, value } {}
-				template <typename = typename std::enable_if<COUNT == 2, LaneType>::type>
 				I32x3(LaneType v0, LaneType v1) : mVector(v0, v1) {}
-				template <typename = typename std::enable_if<COUNT == 3, LaneType>::type>
 				I32x3(LaneType v0, LaneType v1, LaneType v2) : mVector(v0, v1, v2) {}
 
-				template <typename = typename std::enable_if<COUNT == 3, LaneType>::type>
 				I32x3(Lanes_2 v01, LaneType v2)
 					: mVector(v01.mVector.mData[0], v01.mVector.mData[1], v2)
 				{
 				}
-				template <typename = typename std::enable_if<COUNT == 3, LaneType>::type>
 				I32x3(LaneType v0, Lanes_2 v12)
 					: mVector(v0, v12.mVector.mData[0], v12.mVector.mData[1])
 				{
 				}
 
-				explicit constexpr I32x3(StorageType value) : mVector(value) {}
+				constexpr I32x3(StorageType value) : mVector(value) {}
 
 				I32x3& operator = (StorageType value) { mVector = value; return *this; }
 
 				explicit operator StorageType () const { return mVector; }
 
-				template <typename = typename std::enable_if<(COUNT == 1), LaneType>::type>
 				operator const LaneType() const { return mVector.mData[0]; }
 
 				template <int INDEX>

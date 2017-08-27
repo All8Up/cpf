@@ -26,7 +26,7 @@ namespace Cpf
 
 		template <typename TYPE>
 		template <int I0, int I1, int I2, int I3>
-		Vector4v<TYPE>::Vector4v(Cpf::SIMD::Ref32x4_4<TYPE, I0, I1, I2, I3>& ref) : mSIMD(ref) {}
+		Vector4v<TYPE>::Vector4v(SIMD::LaneRef_4<TYPE, I0, I1, I2, I3>& ref) : mSIMD(ref) {}
 
 		template <typename TYPE>
 		Vector4v<TYPE>::Vector4v(Lanes_2 v01, LaneType v2, LaneType v3)
@@ -60,9 +60,9 @@ namespace Cpf
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		SIMD::Ref32x4_Index<TYPE> CPF_VECTORCALL Vector4v<TYPE>::operator [](int idx)
+		SIMD::LaneIndex<TYPE> CPF_VECTORCALL Vector4v<TYPE>::operator [](int idx)
 		{
-			return SIMD::Ref32x4_Index<TYPE>(mSIMD, idx);
+			return SIMD::LaneIndex<TYPE>(mSIMD, idx);
 		}
 
 		template <typename TYPE>
