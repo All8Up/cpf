@@ -1,0 +1,85 @@
+Math
+	Vector 2-4
+	Matrix 2-4
+	Quaternion
+	Constants
+	Algorithm
+	BitManipulation
+	Exponential
+	Hyperbolic
+	Power
+	Rounding
+	Trigonometric
+	Ballistics
+	Color 3-4, spaces?
+	Half
+
+	Signal
+		Step
+		Pulse
+		SmoothStep
+		BoxStep
+		Gain
+		Bias
+		Gamma
+
+	Interpolation
+		Lerp
+		Hermite
+		Smooth
+		Spline
+
+	Distance
+		Vector2 ->	Line2
+					Ray2
+					Segment2
+					Circle
+					Rectangle
+					HalfSpace2
+		Vector3 ->	Line3
+					Ray3
+					Segment3
+					Sphere
+					Cone
+					Cylinder
+					Capsule
+		Some of the geometry types versus other geometry types.
+
+	Intersect
+		Ray2 ->		2D geometry
+		Ray3 ->		3D geometry
+		Certain geometry types versus other geometry types.
+
+	Containment
+		(eInside, eOutside, eIntersects)
+		>0 area geometry versus points and other geometry
+
+	Geometry
+		Frustum2
+		Frustum3
+		Line2 - Unbounded
+		Line3
+		Ray2 - Bounded at start
+		Ray3
+		Segment2 - Bounded at both ends
+		Segment3
+		Circle (2D)
+		Sphere (3D)
+		Cone (3D)
+		Cylinder (3D)
+		Capsule (3D)
+		Torus (3D)
+		Rectangle (2D)
+		Box (3D)
+		HalfSpace2
+		HalfSpace3
+
+	Bounds
+		Sphere
+		OBB
+		AABB
+		ConvexHull
+
+--- Need homes
+Clamp
+
