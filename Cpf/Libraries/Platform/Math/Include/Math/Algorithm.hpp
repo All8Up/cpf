@@ -29,5 +29,13 @@ namespace Cpf
 		{
 			return comp(lhs, rhs) ? lhs : rhs;
 		}
+
+		template <typename TYPE>
+		TYPE Clamp(TYPE value, TYPE low, TYPE high)
+		{
+			return value < low ? low :
+				value > high ? high :
+				value;
+		}
 	}
 }

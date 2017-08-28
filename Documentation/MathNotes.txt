@@ -1,33 +1,6 @@
 Math
-	Vector 2-4
-	Matrix 2-4
-	Quaternion
-	Constants
-	Algorithm
-	BitManipulation
-	Exponential
-	Hyperbolic
-	Power
-	Rounding
-	Trigonometric
-	Ballistics
 	Color 3-4, spaces?
 	Half
-
-	Signal
-		Step
-		Pulse
-		SmoothStep
-		BoxStep
-		Gain
-		Bias
-		Gamma
-
-	Interpolation
-		Lerp
-		Hermite
-		Smooth
-		Spline
 
 	Distance
 		Vector2 ->	Line2
@@ -73,13 +46,3 @@ Math
 		Box (3D)
 		HalfSpace2
 		HalfSpace3
-
-	Bounds
-		Sphere
-		OBB
-		AABB
-		ConvexHull
-
---- Need homes
-Clamp
-

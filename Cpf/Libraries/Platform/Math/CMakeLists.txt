@@ -2,10 +2,12 @@
 set (MATH_INCLUDE_FILES
 	Include/Math/AABB.hpp
 	Include/Math/Algorithm.hpp
+	Include/Math/Ballistics.hpp
 	Include/Math/BitManipulation.hpp
 	Include/Math/Constants.hpp
 	Include/Math/Exponential.hpp
 	Include/Math/Hyperbolic.hpp
+	Include/Math/Interpolation.hpp
 	Include/Math/Matrix22v.hpp
 	Include/Math/Matrix33v.hpp
 	Include/Math/Matrix44v.hpp
@@ -14,12 +16,18 @@ set (MATH_INCLUDE_FILES
 	Include/Math/Quaternion.hpp
 	Include/Math/Rectangle.hpp
 	Include/Math/Rounding.hpp
+	Include/Math/Signal.hpp
 	Include/Math/Transform.hpp
 	Include/Math/Trigonometric.hpp
 	Include/Math/Types.hpp
 	Include/Math/Vector2v.hpp
 	Include/Math/Vector3v.hpp
 	Include/Math/Vector4v.hpp
+)
+set (MATH_BOUNDS_INCLUDE_FILES
+	Include/Math/Bounds/AABB.hpp
+	Include/Math/Bounds/OBB.hpp
+	Include/Math/Bounds/Sphere.hpp
 )
 set (MATH_DETAIL_INCLUDE_FILES
 	Include/Math/Detail/AABB.inl
@@ -46,6 +54,7 @@ target_include_directories (Math
 add_custom_target (Math_IDE SOURCES
 	Include/Math.hpp
 	${MATH_INCLUDE_FILES}
+	${MATH_BOUNDS_INCLUDE_FILES}
 	${MATH_DETAIL_INCLUDE_FILES}
 )
 
@@ -62,6 +71,7 @@ install (EXPORT MathConfig
 set_property (TARGET Math_IDE PROPERTY FOLDER Libraries/Interface/Core)
 source_group (Interface FILES Include/Math.hpp)
 source_group (Interface\\Math FILES ${MATH_INCLUDE_FILES})
+source_group (Interface\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDE_FILES})
 source_group (Interface\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
 
 # ###############################################
