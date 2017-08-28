@@ -2,7 +2,7 @@
 #pragma once
 #include "RayTracer/RayTracer.hpp"
 #include "RayTracer/Model.hpp"
-
+#include "Math/Geometry/Sphere.hpp"
 
 namespace RayTracer
 {
@@ -16,7 +16,6 @@ namespace RayTracer
 		Vector3 CPF_VECTORCALL Normal(Vector3Param hp) const override;
 
 	private:
-		Vector3 mPosition;
-		float mRadius;
+		Cpf::Math::Geometry::Sphere<Vector3> mSphere;
 	};
 }
