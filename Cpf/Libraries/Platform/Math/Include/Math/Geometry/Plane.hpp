@@ -5,11 +5,11 @@ namespace Cpf
 {
 	namespace Math
 	{
-		template <typename VTYPE, typename RTYPE=float>
-		struct Sphere
+		template <typename VTYPE, typename DTYPE = float>
+		struct Plane
 		{
-			VTYPE Position;
-			RTYPE Radius;
+			VTYPE Normal;
+			DTYPE Distance;
 		};
 	}
 }

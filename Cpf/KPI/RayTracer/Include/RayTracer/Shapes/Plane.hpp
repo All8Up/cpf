@@ -1,9 +1,8 @@
+//////////////////////////////////////////////////////////////////////////
 #pragma once
-
-
 #include "RayTracer/RayTracer.hpp"
 #include "RayTracer/Model.hpp"
-
+#include "Math/Geometry/Plane.hpp"
 
 namespace RayTracer
 {
@@ -15,7 +14,6 @@ namespace RayTracer
 		Vector3 CPF_VECTORCALL Normal(Vector3Param hp) const override;
 
 	private:
-		Vector3 mNormal;
-		float mDistance;
+		Cpf::Math::Plane<Vector3> mPlane;
 	};
 }

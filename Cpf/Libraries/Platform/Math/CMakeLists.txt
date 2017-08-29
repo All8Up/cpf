@@ -27,15 +27,20 @@ set (MATH_BOUNDS_INCLUDE_FILES
 	Include/Math/Bounds/OBB.hpp
 	Include/Math/Bounds/Sphere.hpp
 )
+set (MATH_DISTANCE_INCLUDE_FILES
+	Include/Math/Distance/Vector_Plane.hpp
+)
 set (MATH_GEOMETRY_INCLUDE_FILES
 	Include/Math/Geometry/AABB.hpp
 	Include/Math/Geometry/OBB.hpp
 	Include/Math/Geometry/Ray3.hpp
 	Include/Math/Geometry/Sphere.hpp
+	Include/Math/Geometry/Plane.hpp
 )
 set (MATH_INTERSECTION_INCLUDE_FILES
 	Include/Math/Intersection/Intersection.hpp
 	Include/Math/Intersection/Ray3_Sphere.hpp
+	Include/Math/Intersection/Ray3_Plane.hpp
 )
 set (MATH_DETAIL_INCLUDE_FILES
 	Include/Math/Detail/Matrix22v.inl
@@ -61,6 +66,7 @@ add_custom_target (Math_IDE SOURCES
 	Include/Math.hpp
 	${MATH_INCLUDE_FILES}
 	${MATH_BOUNDS_INCLUDE_FILES}
+	${MATH_DISTANCE_INCLUDE_FILES}
 	${MATH_GEOMETRY_INCLUDE_FILES}
 	${MATH_INTERSECTION_INCLUDE_FILES}
 	${MATH_DETAIL_INCLUDE_FILES}
@@ -80,6 +86,7 @@ set_property (TARGET Math_IDE PROPERTY FOLDER Libraries/Interface/Core)
 source_group (Interface FILES Include/Math.hpp)
 source_group (Interface\\Math FILES ${MATH_INCLUDE_FILES})
 source_group (Interface\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDE_FILES})
+source_group (Interface\\Math\\Distance FILES ${MATH_DISTANCE_INCLUDE_FILES})
 source_group (Interface\\Math\\Geometry FILES ${MATH_GEOMETRY_INCLUDE_FILES})
 source_group (Interface\\Math\\Intersection FILES ${MATH_INTERSECTION_INCLUDE_FILES})
 source_group (Interface\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})

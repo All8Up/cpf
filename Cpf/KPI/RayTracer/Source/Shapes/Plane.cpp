@@ -1,6 +1,6 @@
 #include "RayTracer/Shapes/Plane.hpp"
 #include "RayTracer/ParseTypes.hpp"
-
+#include "Math/Intersection/Ray3_Plane.hpp"
 
 using namespace RayTracer;
 
@@ -11,10 +11,10 @@ bool Plane::Parse( Scene& s, JSONValue* v )
 	if( !::Parse( v, "Position", position ) )
 		return false;
 
-	if( !::Parse( v, "Normal", mNormal ) )
+	if( !::Parse( v, "Normal", mPlane.Normal ) )
 		return false;
-	mNormal = Normalize(mNormal);
-	mDistance	=	Dot(position, mNormal);
+	mPlane.Normal = Normalize(mPlane.Normal);
+	mPlane.Distance	=	Dot(position, mPlane.Normal);
 
 	return Model::Parse( s, v );
 }
@@ -22,23 +22,20 @@ bool Plane::Parse( Scene& s, JSONValue* v )
 
 bool CPF_VECTORCALL Plane::Intersect(const Ray3& ray, float& t) const
 {
-	auto test = Dot(mNormal, ray.Direction);
-
-	if (test >= 0.0f)
-		return false;
-	auto dist = (-Dot(mNormal, ray.Origin) + mDistance) / test;
-
-	if (dist > 0.0f && dist < t)
+	float distance;
+	if (Cpf::Math::Intersect(ray, mPlane, distance))
 	{
-		t = dist;
-		return true;
+		if (distance < t)
+		{
+			t = distance;
+			return true;
+		}
 	}
-
 	return false;
 }
 
 
 Vector3 CPF_VECTORCALL Plane::Normal(Vector3Param /* hp */) const
 {
-	return mNormal;
+	return mPlane.Normal;
 }
