@@ -10,6 +10,11 @@ namespace Cpf
 		Vector3v<TYPE>::Vector3v() {}
 
 		template <typename TYPE>
+		Vector3v<TYPE>::Vector3v(const Vector3v& rhs)
+			: mSIMD(rhs.mSIMD)
+		{}
+
+		template <typename TYPE>
 		Vector3v<TYPE>::Vector3v(typename TYPE::LaneType value)
 			: mSIMD(value)
 		{}

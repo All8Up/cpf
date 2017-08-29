@@ -1,5 +1,6 @@
 #include "RayTracer/Shapes/Sphere.hpp"
 #include "RayTracer/ParseTypes.hpp"
+#include "Math/Intersection/Ray3_Sphere.hpp"
 
 
 using namespace RayTracer;
@@ -13,45 +14,33 @@ Sphere::Sphere()
 
 bool Sphere::Parse( Scene& s, JSONValue* v )
 {
-	if( !::Parse( v, "Position", mSphere.mPosition ) )
+	if( !::Parse( v, "Position", mSphere.Position ) )
 		return false;
 
-	if( !::Parse( v, "Radius", mSphere.mRadius ) )
+	if( !::Parse( v, "Radius", mSphere.Radius ) )
 		return false;
 
 	return Model::Parse( s, v );
 }
 
 
-bool CPF_VECTORCALL Sphere::Intersect(Vector3Param origin, Vector3Param dir, float& t) const
+bool CPF_VECTORCALL Sphere::Intersect(const Ray3& ray, float& t) const
 {
-	Vector3 dist = mSphere.mPosition - Vector3(origin);
-	auto B = Dot(Vector3(dir), dist);
-	auto D = B*B - Dot(dist, dist) + mSphere.mRadius*mSphere.mRadius;
-
-	if (D < 0.0f)
-		return false;
-
-	auto t0 = B - std::sqrt(D);
-	auto t1 = B + std::sqrt(D);
-	bool retvalue = false;
-
-	if ((t0 > 0.0f) && (t0 < t))
+	float result = 0.0f;
+	if (Cpf::Math::Intersect(ray, mSphere, result))
 	{
-		t = t0;
-		retvalue = true;
+		if (result < t)
+		{
+			t = result;
+			return true;
+		}
 	}
-	if ((t1 > 0.0f) && (t1 < t))
-	{
-		t = t1;
-		retvalue = true;
-	}
-	return retvalue;
+	return false;
 }
 
 
 Vector3 CPF_VECTORCALL Sphere::Normal(Vector3Param hp) const
 {
-	Vector3	result(Vector3(hp) - mSphere.mPosition);
+	Vector3	result(Vector3(hp) - mSphere.Position);
 	return Normalize(result);
 }

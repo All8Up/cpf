@@ -1,13 +1,9 @@
+//////////////////////////////////////////////////////////////////////////
 #pragma once
-
-
 #include "RayTracer/RayTracer.hpp"
-#include "Math/Ray3.hpp"
-
 
 // Forward reference.
 class JSONValue;
-
 
 namespace RayTracer
 {
@@ -27,7 +23,7 @@ namespace RayTracer
 		Environment();
 
 		bool					Parse( Scene& s, JSONValue* v );
-		Vector4					Color( const Math::Ray3& r );
+		Vector4					Color( const Ray3& r );
 
 	private:
 		//

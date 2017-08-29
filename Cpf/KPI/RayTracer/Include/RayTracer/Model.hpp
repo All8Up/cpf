@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "RayTracer/RayTracer.hpp"
-#include "Math/Ray3.hpp"
 #include <vector>
 
 // Forward references.
@@ -31,7 +30,7 @@ namespace RayTracer
 		virtual ~Model();
 
 		virtual bool Parse(Scene& s, JSONValue* v);
-		virtual bool CPF_VECTORCALL Intersect(Vector3Param origin, Vector3Param dir, float& t) const = 0;
+		virtual bool CPF_VECTORCALL Intersect(const Ray3& ray, float& t) const = 0;
 		virtual Vector3 CPF_VECTORCALL Normal(Vector3Param hp) const;
 		Material* Material() const { return mpMaterial; }
 
@@ -51,8 +50,8 @@ namespace RayTracer
 
 		bool Parse(Scene& s, JSONValue* v);
 
-		Material* CPF_VECTORCALL Intersect(const Math::Ray3& r, Vector3& hp, Vector3& n, float& t) const;
-		bool CPF_VECTORCALL Shadowed(const Math::Ray3& r, float dist) const;
+		Material* CPF_VECTORCALL Intersect(const Ray3& r, Vector3& hp, Vector3& n, float& t) const;
+		bool CPF_VECTORCALL Shadowed(const Ray3& r, float dist) const;
 
 		void Reset() { mTests = 0; }
 		int64_t GetTests() const { return mTests; }

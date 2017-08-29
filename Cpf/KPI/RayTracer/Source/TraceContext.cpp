@@ -26,7 +26,7 @@ bool TraceContext::Parse( JSONValue* v )
 }
 
 
-Material* TraceContext::Intersect( const Math::Ray3& r, Vector3& hp, Vector3& n, float& t )
+Material* TraceContext::Intersect( const Ray3& r, Vector3& hp, Vector3& n, float& t )
 {
 	return mScene.Models().Intersect( r, hp, n, t );
 }

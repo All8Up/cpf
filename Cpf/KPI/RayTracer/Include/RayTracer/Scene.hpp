@@ -40,7 +40,7 @@ namespace RayTracer
 	private:
 		//////////////////////////////////////////////////////////////////////////
 		void							Initialize( TraceContext& ctx );
-		Vector4							Trace( TraceContext& ctx, const Math::Ray3& ray, uint32_t recursions, bool inside=false );
+		Vector4							Trace( TraceContext& ctx, const Ray3& ray, uint32_t recursions, bool inside=false );
 		Vector4							Light( Material& mat, const Vector3& hitPoint, const Vector3& incidence, const Vector3& normal );
 
 		//////////////////////////////////////////////////////////////////////////

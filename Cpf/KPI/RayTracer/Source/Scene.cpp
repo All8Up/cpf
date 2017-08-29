@@ -42,7 +42,7 @@ void Scene::Render( TraceContext& ctx )
 
 	for( uint32_t x=0; x<width; ++x )
 	{
-		Math::Ray3		ray( ctx.Scene().Camera().Position(), Vector3(0.0f) );
+		Ray3 ray( ctx.Scene().Camera().Position(), Vector3(0.0f) );
 
 		for( uint32_t y=0; y<height; ++y )
 		{
@@ -57,7 +57,7 @@ void Scene::Render( TraceContext& ctx )
 						Vector3		yOffset	=	(float( y ) + yy )*mScreenY;
 
 						Vector3		dir	=	Normalize( mUpperLeft + xOffset - yOffset );
-						ray.Direction( dir );
+						ray.Direction = dir;
 
 						color				+=	Trace( ctx, ray, recursions );
 					}
@@ -71,7 +71,7 @@ void Scene::Render( TraceContext& ctx )
 				Vector3		yOffset	=	float( y )*mScreenY;
 
 				Vector3		dir	=	Normalize( mUpperLeft + xOffset - yOffset );
-				ray.Direction( dir );
+				ray.Direction = dir;
 
 				*ctx.Scene().Output().FindPixel( x, y )	=	Trace( ctx, ray, recursions );
 			}
@@ -92,7 +92,7 @@ inline Vector3 Refract(const Vector3& i, const Vector3& n, float eta)
 
 // NOTE: This is a quick hacked up item to get stuff on the screen, it is not "proper" in any
 // manner.
-Vector4 Scene::Trace( TraceContext& ctx, const Math::Ray3& ray, uint32_t recursions, bool inside )
+Vector4 Scene::Trace( TraceContext& ctx, const Ray3& ray, uint32_t recursions, bool inside )
 {
 	if( recursions==0 )
 	{
@@ -108,28 +108,28 @@ Vector4 Scene::Trace( TraceContext& ctx, const Math::Ray3& ray, uint32_t recursi
 		Material*	material	= ctx.Intersect(ray, hitPoint, normal, t);
 		if(material)
 		{
-			Vector3		incident	=	Normalize( hitPoint - ray.Origin() );
+			Vector3		incident	=	Normalize( hitPoint - ray.Origin );
 
 			result					=	material->Ambient();
 			result					+=	Light( *material, hitPoint, incident, normal );
 
 			if( material->HasReflection() )
 			{
-				Vector3 reflected	=	Reflect( -ray.Direction(), normal );
-				Math::Ray3				refRay( hitPoint+reflected*0.001f, reflected );
+				Vector3 reflected	=	Reflect( -ray.Direction, normal );
+				Ray3 refRay( hitPoint+reflected*0.001f, reflected );
 				Vector4 refColor	=	Trace( ctx, refRay, recursions-1 );
 				result				+=	material->Reflection() * refColor;
 			}
 			if( material->HasTranslucency() )
 			{
 				Vector3 refRay		=	inside
-					?	Refract( ray.Direction(), normal, material->IOR() )
-					:	Refract( ray.Direction(), normal, 1.0f/material->IOR() );
+					?	Refract( ray.Direction, normal, material->IOR() )
+					:	Refract( ray.Direction, normal, 1.0f/material->IOR() );
 
 				if( MagnitudeSq( refRay ) > 0.0001f )
 				{
 					refRay				=	Normalize( refRay );
-					Math::Ray3				transRay( hitPoint+refRay*0.0001f, refRay );
+					Ray3 transRay( hitPoint+refRay*0.0001f, refRay );
 					Vector4 transColor	=	Trace( ctx, transRay, recursions-1, inside ? false : true );
 					result				+=	material->Translucency() * transColor;
 				}
@@ -155,7 +155,7 @@ Vector4 Scene::Light( Material& mat, const Vector3& hitPoint, const Vector3& inc
 		float	dist	=	Magnitude( incid );
 		incid = Normalize(incid);
 		
-		Math::Ray3		lightRay( hitPoint+incid*0.001f, incid );
+		Ray3 lightRay( hitPoint+incid*0.001f, incid );
 		if( !Models().Shadowed( lightRay, dist ) )
 		{
 			result			+=	l->Evaluate( incid, dist ) * mat.Diffuse();

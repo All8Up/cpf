@@ -16,7 +16,7 @@ namespace RayTracer
 	public:
 		bool							Parse( JSONValue* v );
 
-		Material*						Intersect( const Math::Ray3& r, Vector3& hp, Vector3& n, float& t );
+		Material*						Intersect( const Ray3& r, Vector3& hp, Vector3& n, float& t );
 
 		RayTracer::Scene&				Scene()						{return mScene;}
 

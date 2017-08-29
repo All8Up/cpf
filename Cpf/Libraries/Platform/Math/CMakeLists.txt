@@ -1,6 +1,5 @@
 # ###############################################
 set (MATH_INCLUDE_FILES
-	Include/Math/AABB.hpp
 	Include/Math/Algorithm.hpp
 	Include/Math/Ballistics.hpp
 	Include/Math/BitManipulation.hpp
@@ -11,7 +10,6 @@ set (MATH_INCLUDE_FILES
 	Include/Math/Matrix22v.hpp
 	Include/Math/Matrix33v.hpp
 	Include/Math/Matrix44v.hpp
-	Include/Math/OBB.hpp
 	Include/Math/Power.hpp
 	Include/Math/Quaternion.hpp
 	Include/Math/Rectangle.hpp
@@ -30,6 +28,9 @@ set (MATH_BOUNDS_INCLUDE_FILES
 	Include/Math/Bounds/Sphere.hpp
 )
 set (MATH_GEOMETRY_INCLUDE_FILES
+	Include/Math/Geometry/AABB.hpp
+	Include/Math/Geometry/OBB.hpp
+	Include/Math/Geometry/Ray3.hpp
 	Include/Math/Geometry/Sphere.hpp
 )
 set (MATH_INTERSECTION_INCLUDE_FILES
@@ -37,11 +38,9 @@ set (MATH_INTERSECTION_INCLUDE_FILES
 	Include/Math/Intersection/Ray3_Sphere.hpp
 )
 set (MATH_DETAIL_INCLUDE_FILES
-	Include/Math/Detail/AABB.inl
 	Include/Math/Detail/Matrix22v.inl
 	Include/Math/Detail/Matrix33v.inl
 	Include/Math/Detail/Matrix44v.inl
-	Include/Math/Detail/OBB.inl
 	Include/Math/Detail/Quaternion.inl
 	Include/Math/Detail/Rectangle.inl
 	Include/Math/Detail/Transform.inl

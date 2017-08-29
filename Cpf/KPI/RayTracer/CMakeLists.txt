@@ -22,7 +22,6 @@ SET( INCLUDE_FILES
 	Include/RayTracer/ParseTypes.hpp
 	Include/RayTracer/JSON.h
 	Include/RayTracer/JSONValue.h
-	Include/Math/Ray3.hpp
 )
 
 
@@ -43,7 +42,6 @@ SET( SOURCE_FILES
 	Source/JSON.cpp
 	Source/JSONValue.cpp
 	Source/Main.cpp
-	Source/Ray3.cpp
 )
 
 # ##########################################

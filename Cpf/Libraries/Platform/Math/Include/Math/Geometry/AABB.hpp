@@ -1,18 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector3.hpp"
 
 namespace Cpf
 {
 	namespace Math
 	{
-		template <typename TYPE>
+		template <typename VTYPE>
 		struct AABB
 		{
-			Vector3v<TYPE> mMin;
-			Vector3v<TYPE> mMax;
+			VTYPE Min;
+			VTYPE Max;
 		};
 	}
 }
-
-#include "Math/Detail/AABB.inl"

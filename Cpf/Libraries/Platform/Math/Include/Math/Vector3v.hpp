@@ -20,6 +20,7 @@ namespace Cpf
 			//////////////////////////////////////////////////////////////////////////
 			Vector3v();
 			explicit Vector3v(typename TYPE::LaneType value);
+			Vector3v(const Vector3v& rhs);
 			Vector3v(TYPE value);
 			Vector3v(StorageType value);
 			Vector3v(LaneType v0, LaneType v1, LaneType v2);

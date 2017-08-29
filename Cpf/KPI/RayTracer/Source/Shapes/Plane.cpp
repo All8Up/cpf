@@ -20,13 +20,13 @@ bool Plane::Parse( Scene& s, JSONValue* v )
 }
 
 
-bool CPF_VECTORCALL Plane::Intersect(Vector3Param origin, Vector3Param dir, float& t) const
+bool CPF_VECTORCALL Plane::Intersect(const Ray3& ray, float& t) const
 {
-	auto test = Dot(mNormal, Vector3(dir));
+	auto test = Dot(mNormal, ray.Direction);
 
 	if (test >= 0.0f)
 		return false;
-	auto dist = (-Dot(mNormal, Vector3(origin)) + mDistance) / test;
+	auto dist = (-Dot(mNormal, ray.Origin) + mDistance) / test;
 
 	if (dist > 0.0f && dist < t)
 	{

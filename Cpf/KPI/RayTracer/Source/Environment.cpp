@@ -31,8 +31,7 @@ bool Environment::Parse( Scene& /*s*/, JSONValue* v )
 	return true;
 }
 
-
-Vector4 Environment::Color( const Math::Ray3& /*r*/ )
+Vector4 Environment::Color( const Ray3& /* r */ )
 {
 	return mColor;
 }

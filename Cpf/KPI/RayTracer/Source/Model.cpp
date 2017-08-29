@@ -107,14 +107,14 @@ bool ModelSet::Parse( Scene& s, JSONValue* v )
 }
 
 
-Material* CPF_VECTORCALL ModelSet::Intersect(const Math::Ray3& r, Vector3& hp, Vector3& n, float& t) const
+Material* CPF_VECTORCALL ModelSet::Intersect(const Ray3& r, Vector3& hp, Vector3& n, float& t) const
 {
 	Model* hitModel = nullptr;
 	for (auto it : mModels)
 	{
 		++mTests;
 		float d = std::numeric_limits< float >::max();
-		if (it->Intersect(Vector3AsParam(r.Origin()), Vector3AsParam(r.Direction()), d))
+		if (it->Intersect(r, d))
 		{
 			if (d < t)
 			{
@@ -125,7 +125,7 @@ Material* CPF_VECTORCALL ModelSet::Intersect(const Math::Ray3& r, Vector3& hp, V
 	}
 	if (hitModel)
 	{
-		hp = r.Origin() + r.Direction() * t;
+		hp = r.Origin + r.Direction * t;
 		n = hitModel->Normal(Vector3AsParam(hp));
 	}
 
@@ -133,13 +133,13 @@ Material* CPF_VECTORCALL ModelSet::Intersect(const Math::Ray3& r, Vector3& hp, V
 }
 
 
-bool CPF_VECTORCALL ModelSet::Shadowed( const Math::Ray3& r, float dist ) const
+bool CPF_VECTORCALL ModelSet::Shadowed( const Ray3& r, float dist ) const
 {
 	for( auto it : mModels )
 	{
 		float	d	=	std::numeric_limits< float >::max();
 		++mTests;
-		if( it->Intersect(Vector3AsParam(r.Origin()), Vector3AsParam(r.Direction()), d ) )
+		if( it->Intersect(r, d ) )
 		{
 			if( d>0 && d<dist )
 				return true;

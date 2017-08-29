@@ -34,6 +34,7 @@ namespace Cpf
 			struct float3
 			{
 				float3() {}
+				float3(const float3& rhs) : mData{ rhs.mData[0], rhs.mData[1], rhs.mData[2] } {}
 				float3(float v0) : mData{ v0, v0, v0 } {}
 				float3(float v0, float v1) : mData{ v0, v1, v0 } {}
 				float3(float v0, float v1, float v2) : mData{ v0, v1, v2 } {}

@@ -9,8 +9,8 @@
 		"Output":
 		{
 			"Name"			:	"BasicScene.tga",
-			"Width"			:	800,
-			"Height"		:	800,
+			"Width"			:	100,
+			"Height"		:	100,
 			"SuperSampling"	:	1
 		},
 		"Camera":
