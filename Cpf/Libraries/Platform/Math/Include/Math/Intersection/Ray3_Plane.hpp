@@ -10,11 +10,11 @@ namespace Cpf
 	namespace Math
 	{
 		template <typename VTYPE>
-		bool Intersect(const Ray3<VTYPE>& ray, const Plane<VTYPE>& plane, float& t);
+		bool Intersect(const Ray3<VTYPE>& ray, const Plane<VTYPE>& plane, typename VTYPE::LaneType& t);
 
 
 		template <typename VTYPE>
-		bool Intersect(const Ray3<VTYPE>& ray, const Plane<VTYPE>& plane, float& t)
+		bool Intersect(const Ray3<VTYPE>& ray, const Plane<VTYPE>& plane, typename VTYPE::LaneType& t)
 		{
 			auto test = Dot(plane.Normal, ray.Direction);
 			if (test >= 0)

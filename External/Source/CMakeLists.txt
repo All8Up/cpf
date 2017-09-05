@@ -76,6 +76,7 @@ endif ()
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2")
 	add_library (jsoncons INTERFACE)
 	target_include_directories (jsoncons INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/Source/jsoncons-0.99.7.2/src)
+	target_compile_definitions (jsoncons INTERFACE JSONCONS_NO_DEPRECATED)
 endif ()
 
 # flatbuffers

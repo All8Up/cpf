@@ -1,12 +1,5 @@
 # ##########################################
-SET( INCLUDE_DIRS
-	${CMAKE_CURRENT_LIST_DIR}/Include
-)
-INCLUDE_DIRECTORIES( ${INCLUDE_DIRS} ${MATH_INCLUDE_DIRS} ${MATH_SIMD_INCLUDE_DIRS} )
-
-
-# ##########################################
-SET( INCLUDE_FILES
+set (INCLUDE_FILES
 	Include/RayTracer/RayTracer.hpp
 	Include/RayTracer/Application.hpp
 	Include/RayTracer/Output.hpp
@@ -22,11 +15,13 @@ SET( INCLUDE_FILES
 	Include/RayTracer/ParseTypes.hpp
 	Include/RayTracer/JSON.h
 	Include/RayTracer/JSONValue.h
+
+	Include/RayTracer/SceneReader.hpp
 )
 
 
 # ##########################################
-SET( SOURCE_FILES
+set (SOURCE_FILES
 	Source/Application.cpp
 	Source/TraceContext.cpp
 	Source/Output.cpp
@@ -42,23 +37,30 @@ SET( SOURCE_FILES
 	Source/JSON.cpp
 	Source/JSONValue.cpp
 	Source/Main.cpp
+
+	Source/SceneReader.cpp
 )
 
 # ##########################################
-# Let's make things pretty in IDE's.
 
-
-# ##########################################
-
-ADD_EXECUTABLE( RayTracer
+add_executable (RayTracer
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
 )
-TARGET_LINK_LIBRARIES( RayTracer
+target_link_libraries (RayTracer
 	Math
+	s_IO
+	Patterns
+	jsoncons
+	s_ANSI_C_FileSystem
 	${CMAKE_THREAD_LIBS_INIT}
 )
+target_include_directories (RayTracer
+	PUBLIC
+		${CMAKE_CURRENT_LIST_DIR}/Include
+)
+
 
 # ##########################################
 # Group the applications.
-SET_PROPERTY( TARGET RayTracer PROPERTY FOLDER Experimental )
+set_property (TARGET RayTracer PROPERTY FOLDER Experimental)

@@ -177,7 +177,6 @@ Vector4 Scene::Light( Material& mat, const Vector3& hitPoint, const Vector3& inc
 	return result;
 }
 
-
 bool Scene::Parse( JSONValue* v )
 {
 	if( v )

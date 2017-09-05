@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "SceneReader.hpp"
 
 
 class JSONValue;
@@ -27,8 +28,12 @@ namespace RayTracer
 		bool				OpenOutput();
 
 		//
+		bool InstallNodeTypes();
+
+		//
 		std::string			mSceneFilename;
 		TraceContext		mContext;
 		std::ofstream		mLog;
+		SceneReader::NodeFactory mNodeTypes;
 	};
 }

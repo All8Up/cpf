@@ -137,9 +137,9 @@ bool CPF_VECTORCALL ModelSet::Shadowed( const Ray3& r, float dist ) const
 {
 	for( auto it : mModels )
 	{
-		float	d	=	std::numeric_limits< float >::max();
+		float d	= std::numeric_limits< float >::max();
 		++mTests;
-		if( it->Intersect(r, d ) )
+		if( it->Intersect(r, d) )
 		{
 			if( d>0 && d<dist )
 				return true;

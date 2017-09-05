@@ -72,7 +72,7 @@ namespace Cpf
 		};
 
 		/** @brief Utility to read the contents of a stream as a text file. */
-		Vector<char> CPF_EXPORT_IO ReadText(Stream*);
+		String CPF_EXPORT_IO ReadText(Stream*);
 		Vector<uint8_t> CPF_EXPORT_IO ReadBinary(Stream*);
 	}
 }

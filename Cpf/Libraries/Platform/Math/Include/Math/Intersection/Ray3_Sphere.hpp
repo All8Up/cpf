@@ -10,17 +10,17 @@ namespace Cpf
 	namespace Math
 	{
 		template <typename VTYPE>
-		bool Intersect(const Ray3<VTYPE>& ray, const Sphere<VTYPE>& sphere, float& t);
+		bool Intersect(const Ray3<VTYPE>& ray, const Sphere<VTYPE>& sphere, typename VTYPE::LaneType& t);
 
 
 		template <typename VTYPE>
-		bool Intersect(const Ray3<VTYPE>& ray, const Sphere<VTYPE>& sphere, float& t)
+		bool Intersect(const Ray3<VTYPE>& ray, const Sphere<VTYPE>& sphere, typename VTYPE::LaneType& t)
 		{
 			auto dist = sphere.Position - ray.Origin;
 			auto b = Dot(ray.Direction, dist);
 			auto d = b*b - Dot(dist, dist) + sphere.Radius*sphere.Radius;
 
-			if (d < 0.0f)
+			if (d < 0)
 				return false;
 
 			auto t0 = b - Sqrt(d);

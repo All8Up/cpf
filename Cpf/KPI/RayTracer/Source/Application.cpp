@@ -4,7 +4,8 @@
 #include <fstream>
 #include <streambuf>
 #include <chrono>
-
+#include "IO/Stream.hpp"
+#include "IO/File.hpp"
 
 using namespace RayTracer;
 typedef std::chrono::high_resolution_clock	Clock_t;
@@ -14,12 +15,15 @@ Application::Application( const std::string& scene )
 :	mSceneFilename( scene )
 ,	mLog( "Log.txt" )
 {
+	Cpf::IOInitializer::Install();
+	InstallNodeTypes();
 }
 
 
 Application::~Application()
 {
 	mLog.close();
+	Cpf::IOInitializer::Remove();
 }
 
 
@@ -77,6 +81,18 @@ std::ostream& Application::Log()
 
 bool Application::OpenScene()
 {
+	//////////////////////////////////////////////////////////////////////////
+	{
+		Cpf::IntrusivePtr<Cpf::IO::Stream> stream(
+			Cpf::IO::File::Create(mSceneFilename, Cpf::IO::StreamAccess::eRead));
+		SceneReader reader(mContext.Scene(), mNodeTypes);
+		if (reader.Load(stream))
+		{
+			printf("Loaded scene successfully.\n");
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////
 	std::ifstream	inStream( mSceneFilename );
 
 	if( inStream.bad() )
@@ -96,5 +112,25 @@ bool Application::OpenScene()
 
 bool Application::OpenOutput()
 {
+	return true;
+}
+
+bool Application::InstallNodeTypes()
+{
+	class SceneNode : public Node
+	{
+	public:
+		bool Parse(const jsoncons::json& inJson, Scene&) const override
+		{
+			for (const auto& entry : inJson.object_range())
+			{
+
+			}
+			return true;
+		}
+	};
+
+	mNodeTypes.Install("Scene", { []() {return new SceneNode; } });
+
 	return true;
 }
