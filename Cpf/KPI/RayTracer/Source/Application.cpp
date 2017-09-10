@@ -124,7 +124,7 @@ bool Application::InstallNodeTypes()
 		{
 			for (const auto& entry : inJson.object_range())
 			{
-
+				(void)entry;
 			}
 			return true;
 		}

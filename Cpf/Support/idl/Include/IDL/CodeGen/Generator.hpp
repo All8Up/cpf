@@ -1,8 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <memory>
-#include "Generators/CodeWriter.hpp"
-#include "IDL/SymbolTable.hpp"
+#include "IDL/CodeGen/Context.hpp"
 
 
 namespace IDL
@@ -19,7 +18,7 @@ namespace IDL
 		public:
 			virtual ~Generator() {}
 
-			virtual bool Generate(CodeWriter& context, SyntaxTree&) = 0;
+			virtual bool Generate(Context& context, SyntaxTree&) = 0;
 
 		protected:
 		private:
@@ -31,6 +30,7 @@ namespace IDL
 			Rust,
 			Python3
 		};
+		std::shared_ptr<NodeFactory> CreateNodeFactory(Language language);
 		std::shared_ptr<Generator> Create(Language language);
 	}
 }

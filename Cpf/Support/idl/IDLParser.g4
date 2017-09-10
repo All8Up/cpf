@@ -7,6 +7,7 @@ main                    : global_statements? EOF;
 // Statements allowed in global scope.
 global_statements       : global_statement+;
 global_statement        : import_stmt
+                        | import_all_from_stmt
                         | namespace_stmt
                         | struct_stmt
                         | interface_stmt
@@ -32,6 +33,7 @@ success_stmt            : SUCCESS IDENT LPAREN STRING_LIT COMMA STRING_LIT RPARE
 failure_stmt            : FAILURE IDENT LPAREN STRING_LIT COMMA STRING_LIT RPAREN;
 
 // Symbol import.
+import_all_from_stmt    : IMPORT STAR FROM qualified_ident SEMICOLON;
 import_from_stmt        : IMPORT IDENT FROM qualified_ident SEMICOLON;
 
 // Import.

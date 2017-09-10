@@ -11,9 +11,11 @@
 
 int main(int argc, char** argv)
 {
+	(void)argc; (void)argv;
+
 	//////////////////////////////////////////////////////////////////////////
 	// Parse the IDL file.
-	antlr4::ANTLRFileStream input("C:/Projects/cpf/Cpf/Support/idl/TestData/FeatureTest.idl");
+	antlr4::ANTLRFileStream input("C:/Projects/cpf/Cpf/Support/idl/TestData/iUnknown.idl");
 	IDLLexer lexer(&input);
 	antlr4::CommonTokenStream tokenStream(&lexer);
 	IDLParser parser(&tokenStream);
@@ -22,14 +24,14 @@ int main(int argc, char** argv)
 	//////////////////////////////////////////////////////////////////////////
 	// Transform the parse tree to the IDL syntax tree.
 	IDL::SyntaxTree syntaxTree;
-	IDL::Visitor visitor(syntaxTree);
+	IDL::CodeGen::CodeWriter writer;
+	auto nodeFactory = CreateNodeFactory(IDL::CodeGen::Language::Cpp);
+	IDL::CodeGen::Context context(writer, nodeFactory);
+	IDL::Visitor visitor(context, syntaxTree);
 	visitor.visit(parseTree);
 
-	//////////////////////////////////////////////////////////////////////////
-	// Generate the output code.
-	IDL::CodeGen::CodeWriter writer;
 	auto generator = Create(IDL::CodeGen::Language::Cpp);
-	generator->Generate(writer, syntaxTree);
+	generator->Generate(context, syntaxTree);
 
 	/*
 	std::wstring s = antlrcpp::s2ws(tree->toStringTree(&parser)) + L"\n";

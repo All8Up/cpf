@@ -15,3 +15,16 @@ std::shared_ptr<Generator> CodeGen::Create(Language type)
 
 	return std::shared_ptr<Generator>();
 }
+
+std::shared_ptr<NodeFactory> CodeGen::CreateNodeFactory(Language language)
+{
+	std::shared_ptr<NodeFactory> result(new NodeFactory);
+	switch (language)
+	{
+	case Language::Cpp:
+	{
+		Cpp::PopulateNodeFactory(result);
+	}
+	}
+	return result;
+}

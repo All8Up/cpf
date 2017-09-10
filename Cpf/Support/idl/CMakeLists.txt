@@ -127,9 +127,13 @@ set (IDLCodeGenCppSources
 
 set (IDLNodesIncludes
 	Include/IDL/Nodes/Node.hpp
+	Include/IDL/Nodes/Success.hpp
+	Include/IDL/Nodes/Failure.hpp
 )
 set (IDLNodesSources
 	Source/IDL/Nodes/Node.cpp
+	Source/IDL/Nodes/Success.cpp
+	Source/IDL/Nodes/Failure.cpp
 )
 
 set (IDLParseTreeIncludes
@@ -221,6 +225,8 @@ target_compile_definitions (IDL
 )
 target_link_libraries (IDL
 	antlr4_static
+	s_Collections
+	Patterns
 )
 
 if (WIN32)

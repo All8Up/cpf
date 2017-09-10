@@ -35,6 +35,8 @@ public:
 
     virtual antlrcpp::Any visitFailure_stmt(IDLParser::Failure_stmtContext *context) = 0;
 
+    virtual antlrcpp::Any visitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *context) = 0;
+
     virtual antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *context) = 0;

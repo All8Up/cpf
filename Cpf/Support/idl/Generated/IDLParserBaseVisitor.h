@@ -47,6 +47,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) override {
     return visitChildren(ctx);
   }

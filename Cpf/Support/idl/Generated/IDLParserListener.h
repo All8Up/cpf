@@ -38,6 +38,9 @@ public:
   virtual void enterFailure_stmt(IDLParser::Failure_stmtContext *ctx) = 0;
   virtual void exitFailure_stmt(IDLParser::Failure_stmtContext *ctx) = 0;
 
+  virtual void enterImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) = 0;
+  virtual void exitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) = 0;
+
   virtual void enterImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) = 0;
   virtual void exitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) = 0;
 
