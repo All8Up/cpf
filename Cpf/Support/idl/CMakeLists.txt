@@ -97,14 +97,10 @@ set (Sources
 )
 
 set (IDLIncludes
-	Include/IDL/Settings.hpp
 	Include/IDL/SymbolTable.hpp
-	Include/IDL/SyntaxTree.hpp
 )
 set (IDLSources
-	Source/IDL/Settings.cpp
 	Source/IDL/SymbolTable.cpp
-	Source/IDL/SyntaxTree.cpp
 )
 
 set (IDLCodeGenIncludes
@@ -215,6 +211,7 @@ target_link_libraries (IDL
 	s_ANSI_C_FileSystem
 	GOM
 	Events
+	gflags_static
 )
 
 if (WIN32)

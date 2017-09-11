@@ -2,6 +2,7 @@
 #pragma once
 #include <memory>
 #include "IDL/ParseTree/Visitor.hpp"
+#include "IDL/CodeGen/CodeWriter.hpp"
 
 namespace IDL
 {
