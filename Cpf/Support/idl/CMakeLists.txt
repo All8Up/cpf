@@ -125,17 +125,6 @@ set (IDLCodeGenCppSources
 	Source/IDL/CodeGen/Cpp/CodeGen.cpp
 )
 
-set (IDLNodesIncludes
-	Include/IDL/Nodes/Node.hpp
-	Include/IDL/Nodes/Success.hpp
-	Include/IDL/Nodes/Failure.hpp
-)
-set (IDLNodesSources
-	Source/IDL/Nodes/Node.cpp
-	Source/IDL/Nodes/Success.cpp
-	Source/IDL/Nodes/Failure.cpp
-)
-
 set (IDLParseTreeIncludes
 	Include/IDL/ParseTree/Visitor.hpp
 )
@@ -152,8 +141,6 @@ add_executable (IDL
 	${IDLCodeGenSources}
 	${IDLCodeGenCppIncludes}
 	${IDLCodeGenCppSources}
-	${IDLNodesIncludes}
-	${IDLNodesSources}
 	${IDLParseTreeIncludes}
 	${IDLParseTreeSources}
 
@@ -186,8 +173,6 @@ source_group (Includes\\IDL\\CodeGen FILES ${IDLCodeGenIncludes})
 source_group (Sources\\IDL\\CodeGen FILES ${IDLCodeGenSources})
 source_group (Includes\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppIncludes})
 source_group (Sources\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppSources})
-source_group (Includes\\IDL\\Nodes FILES ${IDLNodesIncludes})
-source_group (Sources\\IDL\\Nodes FILES ${IDLNodesSources})
 source_group (Includes\\IDL\\ParseTree FILES ${IDLParseTreeIncludes})
 source_group (Sources\\IDL\\ParseTree FILES ${IDLParseTreeSources})
 
@@ -227,6 +212,7 @@ target_link_libraries (IDL
 	antlr4_static
 	s_Collections
 	Patterns
+	Events
 )
 
 if (WIN32)

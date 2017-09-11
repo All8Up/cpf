@@ -2,78 +2,68 @@
 #include "IDL/CodeGen/Cpp/CodeGen.hpp"
 #include "IDL/SyntaxTree.hpp"
 #include "IDL/CodeGen/CodeWriter.hpp"
-#include "IDL/Nodes/Node.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
-
-void Cpp::PopulateNodeFactory(std::shared_ptr<NodeFactory> factory)
-{
-
-}
-
+using namespace Cpf::Placeholders;
+using Visitor = IDL::Visitor;
 
 //////////////////////////////////////////////////////////////////////////
-bool Cpp::Generator::Generate(Context& context, SyntaxTree& source)
+void Cpp::Generator::Begin(Visitor& visitor, IDL::CodeGen::CodeWriter& writer)
 {
-	if (HandleProlog(context, source))
-	{
-		if (HandleNode(context, source, source.GetRoot()))
-		{
-			if (HandleEpilog(context, source))
-			{
-				return true;
-			}
-		}
-	}
-	return false;
+	mpWriter = &writer;
+
+	visitor.On<Visitor::Start>(Cpf::Bind(&Cpp::Generator::OnStart, this));
+	visitor.On<Visitor::ModuleStmt>(Cpf::Bind(&Cpp::Generator::OnModule, this, _1));
+	visitor.On<Visitor::SuccessType>(Cpf::Bind(&Cpp::Generator::OnSuccessType, this, _1, _2, _3));
+	visitor.On<Visitor::FailureType>(Cpf::Bind(&Cpp::Generator::OnFailureType, this, _1, _2, _3));
+	visitor.On<Visitor::ImportAllStmt>(Cpf::Bind(&Cpp::Generator::OnImportAllStmt, this, _1));
 }
 
-bool Cpp::Generator::HandleProlog(Context& context, SyntaxTree& src)
+void Cpp::Generator::End()
 {
-	const auto& module = src.GetModule();
-	if (!module.Empty())
+	for (const auto& part : mModule.GetPath())
 	{
-		for (const auto& part : module.GetPath())
-		{
-			context.GetWriter().OutputLine("namespace %s", part.c_str());
-			context.GetWriter().OutputLine("{");
-			context.GetWriter().Indent();
-		}
+		(void)part;
+		mpWriter->Unindent();
+		mpWriter->OutputLine("}");
 	}
-
-	return true;
 }
 
-bool Cpp::Generator::HandleEpilog(Context& context, SyntaxTree& src)
+//
+
+void Cpp::Generator::OnStart()
 {
-	const auto& module = src.GetModule();
-	if (!module.Empty())
-	{
-		for (const auto& part : module.GetPath())
-		{
-			(void)part;
-			context.GetWriter().Unindent();
-			context.GetWriter().OutputLine("}");
-		}
-	}
-	return true;
+	mpWriter->OutputLine("//////////////////////////////////////////////////////////////////////////");
+	mpWriter->OutputLine("#pragma once");
 }
 
-bool Cpp::Generator::HandleNode(Context& context, SyntaxTree& src, const Node& node)
+void Cpp::Generator::OnModule(const SymbolPath& path)
 {
-	if (node.WriteProlog(context, src))
+	mModule = path;
+	for (const auto& part : path.GetPath())
 	{
-		for (const auto& child : node.GetChildren())
-		{
-			if (!HandleNode(context, src, *child))
-				return false;
-		}
-
-		if (node.WriteEpilog(context, src))
-		{
-			return true;
-		}
+		mpWriter->OutputLine("namespace %s", part.c_str());
+		mpWriter->OutputLine("{");
+		mpWriter->Indent();
 	}
-	return false;
+}
+
+void Cpp::Generator::OnSuccessType(const String& name, const String& subSystem, const String& desc)
+{
+	mpWriter->OutputLine("static constexpr Result k%s = CreateResult(0, \"%s\"_crc15, \"%s\"_crc16);",
+		name.c_str(), subSystem.c_str(), desc.c_str());
+}
+
+void Cpp::Generator::OnFailureType(const String& name, const String& subSystem, const String& desc)
+{
+	mpWriter->OutputLine("static constexpr Result k%s = CreateResult(1, \"%s\"_crc15, \"%s\"_crc16);",
+		name.c_str(), subSystem.c_str(), desc.c_str());
+}
+
+void Cpp::Generator::OnImportAllStmt(const String& from)
+{
+	(void)from;
+	mpWriter->OutputLine("#include \"GOM/Result.hpp\"");
+	mpWriter->OutputLine("");
 }

@@ -1,13 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <memory>
-#include "IDL/CodeGen/Context.hpp"
-
-
-namespace IDL
-{
-	class SyntaxTree;
-}
+#include "IDL/ParseTree/Visitor.hpp"
 
 namespace IDL
 {
@@ -18,7 +12,8 @@ namespace IDL
 		public:
 			virtual ~Generator() {}
 
-			virtual bool Generate(Context& context, SyntaxTree&) = 0;
+			virtual void Begin(IDL::Visitor&, IDL::CodeGen::CodeWriter&) = 0;
+			virtual void End() = 0;
 
 		protected:
 		private:
@@ -30,7 +25,6 @@ namespace IDL
 			Rust,
 			Python3
 		};
-		std::shared_ptr<NodeFactory> CreateNodeFactory(Language language);
 		std::shared_ptr<Generator> Create(Language language);
 	}
 }

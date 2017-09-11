@@ -1,7 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #include "IDL/ParseTree/Visitor.hpp"
-#include "IDL/Nodes/Success.hpp"
-#include "IDL/Nodes/Failure.hpp"
 
 using namespace IDL;
 
@@ -15,13 +13,12 @@ Cpf::String TrimStringLit(const Cpf::String& lit)
 
 
 //////////////////////////////////////////////////////////////////////////
-Visitor::Visitor(CodeGen::Context& context, SyntaxTree& tree)
-	: mContext(context)
-	, mSyntaxTree(tree)
+Visitor::Visitor()
 {}
 
 antlrcpp::Any Visitor::visitMain(IDLParser::MainContext *ctx)
 {
+	Emit<Start>();
 	return visitChildren(ctx);
 }
 
@@ -37,21 +34,15 @@ antlrcpp::Any Visitor::visitGlobal_statement(IDLParser::Global_statementContext 
 
 antlrcpp::Any Visitor::visitModule_stmt(IDLParser::Module_stmtContext *ctx)
 {
-	if (mSyntaxTree.GetModule().Empty())
-	{
-		const auto ident = ctx->qualified_ident()->IDENT()->toString();
-		SymbolPath path(ident);
+	const auto ident = ctx->qualified_ident()->IDENT()->toString();
+	SymbolPath path(ident);
 
-		for (const auto& p : ctx->qualified_ident()->qualified_part())
-		{
-			path.Push(Cpf::String(p->IDENT()->toString().c_str()));
-		}
-		mSyntaxTree.SetModule(path);
-	}
-	else
+	for (const auto& p : ctx->qualified_ident()->qualified_part())
 	{
-		// TODO: Add an error stream/log system.
+		path.Push(Cpf::String(p->IDENT()->toString().c_str()));
 	}
+	Emit<ModuleStmt>(path);
+
 	return visitChildren(ctx);
 }
 
@@ -65,12 +56,8 @@ antlrcpp::Any Visitor::visitSuccess_stmt(IDLParser::Success_stmtContext *ctx)
 	auto name = ctx->IDENT()->toString();
 	auto subSystem = TrimStringLit(ctx->STRING_LIT()[0]->toString());
 	auto desc = TrimStringLit(ctx->STRING_LIT()[1]->toString());
+	Emit<SuccessType>(name, subSystem, desc);
 
-	/*
-	mSyntaxTree.Append(mContext.GetNodeFactory().Create("Success"_crc64, name, subSystem, desc));
-	*/
-
-//	mSyntaxTree.Append(new Success(name, subSystem, desc));
 	return visitChildren(ctx);
 }
 
@@ -79,7 +66,7 @@ antlrcpp::Any Visitor::visitFailure_stmt(IDLParser::Failure_stmtContext *ctx)
 	auto name = ctx->IDENT()->toString();
 	auto subSystem = TrimStringLit(ctx->STRING_LIT()[0]->toString());
 	auto desc = TrimStringLit(ctx->STRING_LIT()[1]->toString());
-//	mSyntaxTree.Append(new Failure(name, subSystem, desc));
+	Emit<FailureType>(name, subSystem, desc);
 	return visitChildren(ctx);
 }
 
@@ -87,6 +74,7 @@ antlrcpp::Any Visitor::visitImport_all_from_stmt(IDLParser::Import_all_from_stmt
 {
 	// TODO: Remove this special case and add a path type to the grammar
 	// which includes * as a valid terminal symbol.
+	Emit<ImportAllStmt>(ctx->FROM()->toString());
 	return visitChildren(ctx);
 }
 

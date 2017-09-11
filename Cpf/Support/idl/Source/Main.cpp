@@ -23,15 +23,14 @@ int main(int argc, char** argv)
 
 	//////////////////////////////////////////////////////////////////////////
 	// Transform the parse tree to the IDL syntax tree.
-	IDL::SyntaxTree syntaxTree;
+	IDL::Visitor visitor;
 	IDL::CodeGen::CodeWriter writer;
-	auto nodeFactory = CreateNodeFactory(IDL::CodeGen::Language::Cpp);
-	IDL::CodeGen::Context context(writer, nodeFactory);
-	IDL::Visitor visitor(context, syntaxTree);
-	visitor.visit(parseTree);
-
-	auto generator = Create(IDL::CodeGen::Language::Cpp);
-	generator->Generate(context, syntaxTree);
+	{
+		auto generator = Create(IDL::CodeGen::Language::Cpp);
+		generator->Begin(visitor, writer);
+		visitor.visit(parseTree);
+		generator->End();
+	}
 
 	/*
 	std::wstring s = antlrcpp::s2ws(tree->toStringTree(&parser)) + L"\n";

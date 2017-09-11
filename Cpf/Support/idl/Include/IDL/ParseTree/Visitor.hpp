@@ -3,14 +3,25 @@
 #include "IDLParserBaseVisitor.h"
 #include "IDL/SyntaxTree.hpp"
 #include "IDL/CodeGen/Context.hpp"
+#include "Events/Emitter.hpp"
 
 namespace IDL
 {
-	class Visitor : public IDLParserBaseVisitor
+	class Visitor
+		: public IDLParserBaseVisitor
+		, public Cpf::Events::Emitter
 	{
 	public:
-		Visitor(CodeGen::Context& context, SyntaxTree& tree);
+		using String = Cpf::String;
+		typedef Cpf::Events::Event<0, Cpf::Function<void(void)>> Start;
+		typedef Cpf::Events::Event<1, Cpf::Function<void (const SymbolPath&)>> ModuleStmt;
+		typedef Cpf::Events::Event<2, Cpf::Function<void(const String&, const String&, const String&)>> SuccessType;
+		typedef Cpf::Events::Event<3, Cpf::Function<void(const String&, const String&, const String&)>> FailureType;
+		typedef Cpf::Events::Event<4, Cpf::Function<void(const String&)>> ImportAllStmt;
 
+		Visitor();
+
+	protected:
 		antlrcpp::Any visitMain(IDLParser::MainContext *ctx) override;
 		antlrcpp::Any visitGlobal_statements(IDLParser::Global_statementsContext *ctx) override;
 		antlrcpp::Any visitGlobal_statement(IDLParser::Global_statementContext *ctx) override;
@@ -23,9 +34,5 @@ namespace IDL
 		antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *ctx) override;
 		antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) override;
 		antlrcpp::Any visitInterface_stmt(IDLParser::Interface_stmtContext *ctx) override;
-
-	private:
-		CodeGen::Context& mContext;
-		SyntaxTree& mSyntaxTree;
 	};
 }

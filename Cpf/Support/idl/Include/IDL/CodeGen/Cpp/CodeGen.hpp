@@ -1,30 +1,31 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "IDL/CodeGen/Generator.hpp"
-#include "IDL/Nodes/Success.hpp"
 
 namespace IDL
 {
-	class Node;
-
 	namespace CodeGen
 	{
 		namespace Cpp
 		{
-			void PopulateNodeFactory(std::shared_ptr<NodeFactory> factory);
-
 			class Generator : public CodeGen::Generator
 			{
 			public:
-				bool Generate(Context& context, SyntaxTree& src) override;
-				bool HandleProlog(Context& context, SyntaxTree& src);
-				bool HandleEpilog(Context& context, SyntaxTree& src);
-				bool HandleNode(Context& context, SyntaxTree& src, const Node& node);
-			};
+				void Begin(IDL::Visitor&, IDL::CodeGen::CodeWriter&) override;
+				void End() override;
 
-			class Success : public IDL::Success
-			{
+			private:
+				using String = Cpf::String;
 
+				void OnStart();
+				void OnModule(const SymbolPath& path);
+				void OnSuccessType(const String&, const String&, const String&);
+				void OnFailureType(const String&, const String&, const String&);
+				void OnImportAllStmt(const String&);
+
+				IDL::CodeGen::CodeWriter* mpWriter;
+
+				SymbolPath mModule;
 			};
 		}
 	}
