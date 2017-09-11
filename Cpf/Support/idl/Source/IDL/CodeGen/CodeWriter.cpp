@@ -2,12 +2,14 @@
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <cassert>
 #include <cstdarg>
+#include "Std/String.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
 
-CodeWriter::CodeWriter(bool useTabs, int indentSpaces)
-	: mIndent(0)
+CodeWriter::CodeWriter(Cpf::IO::TextWriter& writer, bool useTabs, int indentSpaces)
+	: mWriter(writer)
+	, mIndent(0)
 	, mUseTabs(useTabs)
 	, mIndentSpaces(indentSpaces)
 {
@@ -17,24 +19,29 @@ CodeWriter::CodeWriter(bool useTabs, int indentSpaces)
 		mIndentString = std::string(256, ' ');
 }
 
-void CodeWriter::Output(const char* const format, ...) const
+void CodeWriter::Output(const char* const format, ...)
 {
 	va_list args;
 	va_start(args, format);
-	vprintf(format, args);
+	char buffer[2048];
+	vsprintf(buffer, format, args);
 	va_end(args);
+	mWriter.Write(buffer, Cpf::Std::StrLen(buffer));
 }
 
-void CodeWriter::OutputLine(const char* const format, ...) const
+void CodeWriter::OutputLine(const char* const format, ...)
 {
-	printf("%s", GetIndentString().c_str());
+	Cpf::String indention = GetIndentString();
+	mWriter.Write(indention.c_str(), indention.length());
 	{
 		va_list args;
 		va_start(args, format);
-		vprintf(format, args);
+		char buffer[2048];
+		vsprintf(buffer, format, args);
 		va_end(args);
+		mWriter.Write(buffer, Cpf::Std::StrLen(buffer));
 	}
-	printf("\n");
+	mWriter.Write("\n", 1);
 }
 
 int CodeWriter::Indent()

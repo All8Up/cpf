@@ -17,6 +17,19 @@ namespace IDL
 		bool Empty() const { return mPath.empty(); }
 		void Push(const Cpf::String& part) { mPath.push_back(part); }
 		const Path& GetPath() const { return mPath; }
+		Cpf::String ToString(const Cpf::String& separator) const
+		{
+			Cpf::String result;
+			if (Empty())
+				return result;
+			result = mPath[0];
+			for (auto it = mPath.begin() + 1; it != mPath.end(); ++it)
+			{
+				result += separator;
+				result += *it;
+			}
+			return result;
+		}
 
 	private:
 		Path mPath;

@@ -1,4 +1,4 @@
-import * from cpf;  // C++ this turns into include "CPF.hpp"
+import * from gom;  // C++ this turns into include "GOM.hpp"
 module cpf::gom;  // C++ this puts all the following into namespace CPF::GOM.
 
 success OK ("Core", "OK");
@@ -20,7 +20,8 @@ failure NotRunning ("Core", "Not running");
 
 interface iUnknown
 {
-	int32_t AddRef();
-	int32_t Release();
+	/* Test Comment. */
+	s32 AddRef();
+	s32 Release();
 	result QueryInterface(u64 id, [out] void** outIface);
 }

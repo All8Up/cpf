@@ -40,26 +40,11 @@ public:
   virtual void enterFailure_stmt(IDLParser::Failure_stmtContext * /*ctx*/) override { }
   virtual void exitFailure_stmt(IDLParser::Failure_stmtContext * /*ctx*/) override { }
 
-  virtual void enterImport_all_from_stmt(IDLParser::Import_all_from_stmtContext * /*ctx*/) override { }
-  virtual void exitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext * /*ctx*/) override { }
-
   virtual void enterImport_from_stmt(IDLParser::Import_from_stmtContext * /*ctx*/) override { }
   virtual void exitImport_from_stmt(IDLParser::Import_from_stmtContext * /*ctx*/) override { }
 
   virtual void enterImport_stmt(IDLParser::Import_stmtContext * /*ctx*/) override { }
   virtual void exitImport_stmt(IDLParser::Import_stmtContext * /*ctx*/) override { }
-
-  virtual void enterNamespace_stmt(IDLParser::Namespace_stmtContext * /*ctx*/) override { }
-  virtual void exitNamespace_stmt(IDLParser::Namespace_stmtContext * /*ctx*/) override { }
-
-  virtual void enterNamespace_name(IDLParser::Namespace_nameContext * /*ctx*/) override { }
-  virtual void exitNamespace_name(IDLParser::Namespace_nameContext * /*ctx*/) override { }
-
-  virtual void enterNamespace_block(IDLParser::Namespace_blockContext * /*ctx*/) override { }
-  virtual void exitNamespace_block(IDLParser::Namespace_blockContext * /*ctx*/) override { }
-
-  virtual void enterNamespace_item(IDLParser::Namespace_itemContext * /*ctx*/) override { }
-  virtual void exitNamespace_item(IDLParser::Namespace_itemContext * /*ctx*/) override { }
 
   virtual void enterStruct_stmt(IDLParser::Struct_stmtContext * /*ctx*/) override { }
   virtual void exitStruct_stmt(IDLParser::Struct_stmtContext * /*ctx*/) override { }
@@ -177,6 +162,9 @@ public:
 
   virtual void enterQualified_separator(IDLParser::Qualified_separatorContext * /*ctx*/) override { }
   virtual void exitQualified_separator(IDLParser::Qualified_separatorContext * /*ctx*/) override { }
+
+  virtual void enterAll_or_ident(IDLParser::All_or_identContext * /*ctx*/) override { }
+  virtual void exitAll_or_ident(IDLParser::All_or_identContext * /*ctx*/) override { }
 
   virtual void enterMember_decl(IDLParser::Member_declContext * /*ctx*/) override { }
   virtual void exitMember_decl(IDLParser::Member_declContext * /*ctx*/) override { }

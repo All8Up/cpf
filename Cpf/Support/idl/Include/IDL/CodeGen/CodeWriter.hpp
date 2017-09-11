@@ -1,6 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <string>
+#include "IO/TextWriter.hpp"
+
 
 namespace IDL
 {
@@ -9,16 +11,17 @@ namespace IDL
 		class CodeWriter
 		{
 		public:
-			CodeWriter(bool useTabs = false, int indentSpaces = 4);
+			CodeWriter(Cpf::IO::TextWriter& outWriter, bool useTabs = false, int indentSpaces = 4);
 
-			void Output(const char* const format, ...) const;
-			void OutputLine(const char* const format, ...) const;
+			void Output(const char* const format, ...);
+			void OutputLine(const char* const format, ...);
 
 			int Indent();
 			int Unindent();
 			std::string GetIndentString() const;
 
 		private:
+			Cpf::IO::TextWriter mWriter;
 			int mIndent;
 			bool mUseTabs = true;
 			int mIndentSpaces = 0;

@@ -12,37 +12,36 @@
 class  IDLParser : public antlr4::Parser {
 public:
   enum {
-    IMPORT = 1, NAMESPACE = 2, STRUCT = 3, INTERFACE = 4, ENUM = 5, MODULE = 6, 
-    FROM = 7, IN = 8, OUT = 9, COLON = 10, SEMICOLON = 11, STAR = 12, SLASH = 13, 
-    DOT = 14, COMMA = 15, EQUALS = 16, QUOTE = 17, LBRACE = 18, RBRACE = 19, 
-    LPAREN = 20, RPAREN = 21, LBRACKET = 22, RBRACKET = 23, LT = 24, GT = 25, 
-    PLUS = 26, MINUS = 27, LSHIFT = 28, RSHIFT = 29, CONST = 30, VOID = 31, 
-    RESULT = 32, SUCCESS = 33, FAILURE = 34, CLASS_ID = 35, STRING = 36, 
-    U8 = 37, S8 = 38, U16 = 39, S16 = 40, U32 = 41, S32 = 42, U64 = 43, 
-    S64 = 44, F32 = 45, F64 = 46, IDENT = 47, DECIMAL_LIT = 48, HEX_LIT = 49, 
-    BIN_LIT = 50, OCT_LIT = 51, STRING_LIT = 52, FLOAT_LIT = 53, WHITE_SPACE = 54, 
-    BLOCK_COMMENT = 55, LINE_COMMENT = 56
+    IMPORT = 1, STRUCT = 2, INTERFACE = 3, ENUM = 4, MODULE = 5, FROM = 6, 
+    IN = 7, OUT = 8, COLON = 9, SEMICOLON = 10, STAR = 11, SLASH = 12, DOT = 13, 
+    COMMA = 14, EQUALS = 15, QUOTE = 16, LBRACE = 17, RBRACE = 18, LPAREN = 19, 
+    RPAREN = 20, LBRACKET = 21, RBRACKET = 22, LT = 23, GT = 24, PLUS = 25, 
+    MINUS = 26, LSHIFT = 27, RSHIFT = 28, CONST = 29, Void = 30, RESULT = 31, 
+    SUCCESS = 32, FAILURE = 33, CLASS_ID = 34, STRING = 35, U8 = 36, S8 = 37, 
+    U16 = 38, S16 = 39, U32 = 40, S32 = 41, U64 = 42, S64 = 43, F32 = 44, 
+    F64 = 45, IDENT = 46, DECIMAL_LIT = 47, HEX_LIT = 48, BIN_LIT = 49, 
+    OCT_LIT = 50, STRING_LIT = 51, FLOAT_LIT = 52, WHITE_SPACE = 53, BLOCK_COMMENT = 54, 
+    LINE_COMMENT = 55
   };
 
   enum {
     RuleMain = 0, RuleGlobal_statements = 1, RuleGlobal_statement = 2, RuleEmpty_stmt = 3, 
     RuleModule_stmt = 4, RuleError_code_stmt = 5, RuleSuccess_stmt = 6, 
-    RuleFailure_stmt = 7, RuleImport_all_from_stmt = 8, RuleImport_from_stmt = 9, 
-    RuleImport_stmt = 10, RuleNamespace_stmt = 11, RuleNamespace_name = 12, 
-    RuleNamespace_block = 13, RuleNamespace_item = 14, RuleStruct_stmt = 15, 
-    RuleStruct_decl = 16, RuleStruct_name = 17, RuleStruct_fwd = 18, RuleStruct_block = 19, 
-    RuleStruct_item = 20, RuleInterface_stmt = 21, RuleInterface_fwd = 22, 
-    RuleInterface_decl = 23, RuleInterface_super = 24, RuleInterface_block = 25, 
-    RuleInterface_item = 26, RuleFunction_decl = 27, RuleFunction_param_list = 28, 
-    RuleFunction_param = 29, RuleParam_dir_qualifier = 30, RuleConst_def = 31, 
-    RuleConst_integral_def = 32, RuleConst_float_def = 33, RuleConst_string_def = 34, 
-    RuleConst_class_id_def = 35, RuleEnum_fwd = 36, RuleEnum_def = 37, RuleEnum_type = 38, 
-    RuleEnum_elements = 39, RuleEnum_item = 40, RuleEnum_expr = 41, RuleExpr_add_sub = 42, 
-    RuleExpr_mul_div = 43, RuleExpr_shift = 44, RuleExpr_value = 45, RuleAny_literal = 46, 
-    RuleNumeric_lit = 47, RuleInteger_lit = 48, RuleFloat_lit = 49, RuleString_lit = 50, 
-    RuleQualified_ident = 51, RuleQualified_part = 52, RuleQualified_separator = 53, 
-    RuleMember_decl = 54, RuleType_decl = 55, RuleType_modifier = 56, RulePointer_type = 57, 
-    RuleAny_type = 58, RuleUtility_type = 59, RuleIntegral_type = 60, RuleFloat_type = 61
+    RuleFailure_stmt = 7, RuleImport_from_stmt = 8, RuleImport_stmt = 9, 
+    RuleStruct_stmt = 10, RuleStruct_decl = 11, RuleStruct_name = 12, RuleStruct_fwd = 13, 
+    RuleStruct_block = 14, RuleStruct_item = 15, RuleInterface_stmt = 16, 
+    RuleInterface_fwd = 17, RuleInterface_decl = 18, RuleInterface_super = 19, 
+    RuleInterface_block = 20, RuleInterface_item = 21, RuleFunction_decl = 22, 
+    RuleFunction_param_list = 23, RuleFunction_param = 24, RuleParam_dir_qualifier = 25, 
+    RuleConst_def = 26, RuleConst_integral_def = 27, RuleConst_float_def = 28, 
+    RuleConst_string_def = 29, RuleConst_class_id_def = 30, RuleEnum_fwd = 31, 
+    RuleEnum_def = 32, RuleEnum_type = 33, RuleEnum_elements = 34, RuleEnum_item = 35, 
+    RuleEnum_expr = 36, RuleExpr_add_sub = 37, RuleExpr_mul_div = 38, RuleExpr_shift = 39, 
+    RuleExpr_value = 40, RuleAny_literal = 41, RuleNumeric_lit = 42, RuleInteger_lit = 43, 
+    RuleFloat_lit = 44, RuleString_lit = 45, RuleQualified_ident = 46, RuleQualified_part = 47, 
+    RuleQualified_separator = 48, RuleAll_or_ident = 49, RuleMember_decl = 50, 
+    RuleType_decl = 51, RuleType_modifier = 52, RulePointer_type = 53, RuleAny_type = 54, 
+    RuleUtility_type = 55, RuleIntegral_type = 56, RuleFloat_type = 57
   };
 
   IDLParser(antlr4::TokenStream *input);
@@ -63,13 +62,8 @@ public:
   class Error_code_stmtContext;
   class Success_stmtContext;
   class Failure_stmtContext;
-  class Import_all_from_stmtContext;
   class Import_from_stmtContext;
   class Import_stmtContext;
-  class Namespace_stmtContext;
-  class Namespace_nameContext;
-  class Namespace_blockContext;
-  class Namespace_itemContext;
   class Struct_stmtContext;
   class Struct_declContext;
   class Struct_nameContext;
@@ -109,6 +103,7 @@ public:
   class Qualified_identContext;
   class Qualified_partContext;
   class Qualified_separatorContext;
+  class All_or_identContext;
   class Member_declContext;
   class Type_declContext;
   class Type_modifierContext;
@@ -155,8 +150,6 @@ public:
     Global_statementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Import_stmtContext *import_stmt();
-    Import_all_from_stmtContext *import_all_from_stmt();
-    Namespace_stmtContext *namespace_stmt();
     Struct_stmtContext *struct_stmt();
     Interface_stmtContext *interface_stmt();
     Const_defContext *const_def();
@@ -266,31 +259,12 @@ public:
 
   Failure_stmtContext* failure_stmt();
 
-  class  Import_all_from_stmtContext : public antlr4::ParserRuleContext {
-  public:
-    Import_all_from_stmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *IMPORT();
-    antlr4::tree::TerminalNode *STAR();
-    antlr4::tree::TerminalNode *FROM();
-    Qualified_identContext *qualified_ident();
-    antlr4::tree::TerminalNode *SEMICOLON();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Import_all_from_stmtContext* import_all_from_stmt();
-
   class  Import_from_stmtContext : public antlr4::ParserRuleContext {
   public:
     Import_from_stmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IMPORT();
-    antlr4::tree::TerminalNode *IDENT();
+    All_or_identContext *all_or_ident();
     antlr4::tree::TerminalNode *FROM();
     Qualified_identContext *qualified_ident();
     antlr4::tree::TerminalNode *SEMICOLON();
@@ -320,76 +294,6 @@ public:
   };
 
   Import_stmtContext* import_stmt();
-
-  class  Namespace_stmtContext : public antlr4::ParserRuleContext {
-  public:
-    Namespace_stmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *NAMESPACE();
-    Namespace_nameContext *namespace_name();
-    Namespace_blockContext *namespace_block();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Namespace_stmtContext* namespace_stmt();
-
-  class  Namespace_nameContext : public antlr4::ParserRuleContext {
-  public:
-    Namespace_nameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *IDENT();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Namespace_nameContext* namespace_name();
-
-  class  Namespace_blockContext : public antlr4::ParserRuleContext {
-  public:
-    Namespace_blockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *LBRACE();
-    antlr4::tree::TerminalNode *RBRACE();
-    std::vector<Namespace_itemContext *> namespace_item();
-    Namespace_itemContext* namespace_item(size_t i);
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Namespace_blockContext* namespace_block();
-
-  class  Namespace_itemContext : public antlr4::ParserRuleContext {
-  public:
-    Namespace_itemContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    Struct_stmtContext *struct_stmt();
-    Namespace_stmtContext *namespace_stmt();
-    Interface_stmtContext *interface_stmt();
-    Const_defContext *const_def();
-    Enum_defContext *enum_def();
-    Enum_fwdContext *enum_fwd();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Namespace_itemContext* namespace_item();
 
   class  Struct_stmtContext : public antlr4::ParserRuleContext {
   public:
@@ -635,11 +539,9 @@ public:
   public:
     Function_paramContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Any_typeContext *any_type();
+    Type_declContext *type_decl();
     antlr4::tree::TerminalNode *IDENT();
     Param_dir_qualifierContext *param_dir_qualifier();
-    Type_modifierContext *type_modifier();
-    Pointer_typeContext *pointer_type();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1074,6 +976,22 @@ public:
 
   Qualified_separatorContext* qualified_separator();
 
+  class  All_or_identContext : public antlr4::ParserRuleContext {
+  public:
+    All_or_identContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *IDENT();
+    antlr4::tree::TerminalNode *STAR();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  All_or_identContext* all_or_ident();
+
   class  Member_declContext : public antlr4::ParserRuleContext {
   public:
     Member_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -1163,7 +1081,7 @@ public:
   public:
     Utility_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *VOID();
+    antlr4::tree::TerminalNode *Void();
     antlr4::tree::TerminalNode *RESULT();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;

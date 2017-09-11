@@ -11,7 +11,7 @@ namespace IDL
 			class Generator : public CodeGen::Generator
 			{
 			public:
-				void Begin(IDL::Visitor&, IDL::CodeGen::CodeWriter&) override;
+				void Begin(Visitor&, CodeWriter&) override;
 				void End() override;
 
 			private:
@@ -21,10 +21,12 @@ namespace IDL
 				void OnModule(const SymbolPath& path);
 				void OnSuccessType(const String&, const String&, const String&);
 				void OnFailureType(const String&, const String&, const String&);
-				void OnImportAllStmt(const String&);
+				void OnImportStmt(const String&, const SymbolPath&);
+				void OnInterfaceDeclStmt(const Visitor::InterfaceDecl&);
 
-				IDL::CodeGen::CodeWriter* mpWriter;
+				static String TypeToString(const Visitor::TypeDecl& decl);
 
+				CodeWriter* mpWriter;
 				SymbolPath mModule;
 			};
 		}

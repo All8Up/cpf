@@ -9,7 +9,6 @@ fragment OCT_DIGIT          : [0-7];
 fragment WS                 : [ \r\n\t];
 
 IMPORT                      : 'import';
-NAMESPACE                   : 'namespace';
 STRUCT                      : 'struct';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';
@@ -44,7 +43,8 @@ RSHIFT                      : '>>';
 CONST                       : 'const';
 
 // Types.
-VOID                        : 'void';
+// NOTE: Void does not follow naming convention due to windows stupidity.
+Void                        : 'void';
 RESULT                      : 'result';
 SUCCESS                     : 'success';
 FAILURE                     : 'failure';

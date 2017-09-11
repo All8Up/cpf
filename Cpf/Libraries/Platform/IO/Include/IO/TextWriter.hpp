@@ -14,6 +14,8 @@ namespace Cpf
 
 			operator bool() const;
 
+			int64_t Write(const void* inBuffer, int64_t length, Error* error = nullptr);
+
 			Stream* GetStream() const;
 
 		private:

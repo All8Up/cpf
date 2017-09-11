@@ -7,6 +7,7 @@ set (BOX2D_BUILD_STATIC ON CACHE BOOL "" FORCE)
 set (BOX2D_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory (Source/Box2D-2.3.1/Box2D/Box2D)
 set_property (TARGET Box2D PROPERTY FOLDER External/Physics)
+target_compile_options (Box2D PRIVATE "/wd4456")
 
 # ###############################################
 set (INCLUDE_FILES

@@ -38,26 +38,11 @@ public:
   virtual void enterFailure_stmt(IDLParser::Failure_stmtContext *ctx) = 0;
   virtual void exitFailure_stmt(IDLParser::Failure_stmtContext *ctx) = 0;
 
-  virtual void enterImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) = 0;
-  virtual void exitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) = 0;
-
   virtual void enterImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) = 0;
   virtual void exitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) = 0;
 
   virtual void enterImport_stmt(IDLParser::Import_stmtContext *ctx) = 0;
   virtual void exitImport_stmt(IDLParser::Import_stmtContext *ctx) = 0;
-
-  virtual void enterNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) = 0;
-  virtual void exitNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) = 0;
-
-  virtual void enterNamespace_name(IDLParser::Namespace_nameContext *ctx) = 0;
-  virtual void exitNamespace_name(IDLParser::Namespace_nameContext *ctx) = 0;
-
-  virtual void enterNamespace_block(IDLParser::Namespace_blockContext *ctx) = 0;
-  virtual void exitNamespace_block(IDLParser::Namespace_blockContext *ctx) = 0;
-
-  virtual void enterNamespace_item(IDLParser::Namespace_itemContext *ctx) = 0;
-  virtual void exitNamespace_item(IDLParser::Namespace_itemContext *ctx) = 0;
 
   virtual void enterStruct_stmt(IDLParser::Struct_stmtContext *ctx) = 0;
   virtual void exitStruct_stmt(IDLParser::Struct_stmtContext *ctx) = 0;
@@ -175,6 +160,9 @@ public:
 
   virtual void enterQualified_separator(IDLParser::Qualified_separatorContext *ctx) = 0;
   virtual void exitQualified_separator(IDLParser::Qualified_separatorContext *ctx) = 0;
+
+  virtual void enterAll_or_ident(IDLParser::All_or_identContext *ctx) = 0;
+  virtual void exitAll_or_ident(IDLParser::All_or_identContext *ctx) = 0;
 
   virtual void enterMember_decl(IDLParser::Member_declContext *ctx) = 0;
   virtual void exitMember_decl(IDLParser::Member_declContext *ctx) = 0;

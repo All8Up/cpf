@@ -47,31 +47,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitNamespace_name(IDLParser::Namespace_nameContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitNamespace_block(IDLParser::Namespace_blockContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitNamespace_item(IDLParser::Namespace_itemContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -228,6 +208,10 @@ public:
   }
 
   virtual antlrcpp::Any visitQualified_separator(IDLParser::Qualified_separatorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAll_or_ident(IDLParser::All_or_identContext *ctx) override {
     return visitChildren(ctx);
   }
 

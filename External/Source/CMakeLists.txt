@@ -1,14 +1,3 @@
-# Gmock
-if (NOT EXTERN_INLINE_GMOCK)
-	# Detect that the binaries exist.
-else ()
-	if (IS_DIRECTORY "${GMOCK_SRC_DIR}")
-		add_library (gmock STATIC ${GMOCK_SRC_DIR}/fused-src/gmock-gtest-all.cc)
-		target_include_directories (gmock PUBLIC ${GMOCK_SRC_DIR}/fused-src)
-		set_property (TARGET gmock PROPERTY FOLDER External)
-	endif ()
-endif ()
-
 # Spdlog
 if (NOT EXTERN_INLINE_SPDLOG)
 else ()
@@ -41,6 +30,7 @@ else ()
 #		set_property (TARGET SDL2-static PROPERTY FOLDER External/SDL2)
 		set_property (TARGET uninstall PROPERTY FOLDER External/SDL2)
 		target_include_directories (SDL2 PUBLIC ${SDL2_SRC_DIR}/include)
+		target_compile_options (SDL2 PRIVATE /wd4267 /wd4018 /wd4311)
 	endif ()
 endif ()
 
@@ -95,3 +85,38 @@ endif ()
 
 # Find installed Python 3.6.1 (or higher) for tools.
 find_package (PythonLibs 3)
+
+# Add the utility modules directory for external libraries.
+LIST (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Source/Modules")
+
+# gflags
+set (BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_PACKAGING OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_gflags_LIB ON CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_gflags_nothreads_LIB OFF CACHE BOOL "" FORCE)
+set (GFLAGS_INSTALL_STATIC_LIBS ON CACHE BOOL "" FORCE)
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/gflags-2.2.1")
+set_property (TARGET gflags_static PROPERTY FOLDER External/gflags-2.2.1)
+target_compile_options (gflags_static PRIVATE /wd4127 /wd4100 /wd4459)
+
+# glog
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/glog-0.3.5")
+set_property (TARGET glog PROPERTY FOLDER External/glog-0.3.5)
+target_compile_options (glog PRIVATE /wd4722 /wd4267 /wd4100 /wd4505)
+
+# gtest
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/googletest-release-1.8.0")
+set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set_property (TARGET gmock PROPERTY FOLDER External/gtest-1.8.0)
+set_property (TARGET gmock_main PROPERTY FOLDER External/gtest-1.8.0)
+set_property (TARGET gtest PROPERTY FOLDER External/gtest-1.8.0)
+set_property (TARGET gtest_main PROPERTY FOLDER External/gtest-1.8.0)
+
+# benchmark
+set (BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/benchmark-1.2.0")
+set_property (TARGET benchmark PROPERTY FOLDER External/benchmark-1.2.0)
+target_compile_options (benchmark PRIVATE /wd4722)

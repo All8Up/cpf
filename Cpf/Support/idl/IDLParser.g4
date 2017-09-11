@@ -7,8 +7,6 @@ main                    : global_statements? EOF;
 // Statements allowed in global scope.
 global_statements       : global_statement+;
 global_statement        : import_stmt
-                        | import_all_from_stmt
-                        | namespace_stmt
                         | struct_stmt
                         | interface_stmt
                         | const_def
@@ -33,23 +31,10 @@ success_stmt            : SUCCESS IDENT LPAREN STRING_LIT COMMA STRING_LIT RPARE
 failure_stmt            : FAILURE IDENT LPAREN STRING_LIT COMMA STRING_LIT RPAREN;
 
 // Symbol import.
-import_all_from_stmt    : IMPORT STAR FROM qualified_ident SEMICOLON;
-import_from_stmt        : IMPORT IDENT FROM qualified_ident SEMICOLON;
+import_from_stmt        : IMPORT all_or_ident FROM qualified_ident SEMICOLON;
 
 // Import.
 import_stmt             : IMPORT string_lit SEMICOLON;
-
-// Namespaces
-namespace_stmt          : NAMESPACE namespace_name namespace_block;
-namespace_name          : IDENT;
-namespace_block         : LBRACE namespace_item* RBRACE;
-// Statements allowed at namespace scope.
-namespace_item          : struct_stmt
-                        | namespace_stmt
-                        | interface_stmt
-                        | const_def
-                        | enum_def
-                        | enum_fwd;
 
 // Structures
 struct_stmt             : struct_decl
@@ -83,7 +68,7 @@ function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN SEM
 
 function_param_list     : function_param (COMMA function_param)*;
 
-function_param          : param_dir_qualifier? type_modifier? any_type pointer_type? IDENT;
+function_param          : param_dir_qualifier? type_decl IDENT;
 
 param_dir_qualifier     : LBRACKET IN RBRACKET
                         | LBRACKET OUT RBRACKET
@@ -139,6 +124,10 @@ qualified_ident         : qualified_separator? IDENT qualified_part*;
 qualified_part          : qualified_separator IDENT;
 qualified_separator     : COLON COLON;
 
+// All or identifier.
+all_or_ident            : IDENT
+                        | STAR;
+
 // Data member declaration.
 member_decl             : type_decl IDENT SEMICOLON;
 
@@ -155,7 +144,7 @@ any_type                : integral_type
                         | utility_type
                         | IDENT;
 
-utility_type            : VOID
+utility_type            : Void
                         | RESULT;
 
 integral_type           : U8 | S8

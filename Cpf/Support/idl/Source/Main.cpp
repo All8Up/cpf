@@ -8,10 +8,16 @@
 #ifdef _WIN32
 #   include <Windows.h>
 #endif
+#include "IO/IO.hpp"
+#include "IO/Stream.hpp"
+#include "IO/File.hpp"
+#include "IO/TextWriter.hpp"
+
 
 int main(int argc, char** argv)
 {
 	(void)argc; (void)argv;
+	Cpf::IOInitializer::Install();
 
 	//////////////////////////////////////////////////////////////////////////
 	// Parse the IDL file.
@@ -24,7 +30,9 @@ int main(int argc, char** argv)
 	//////////////////////////////////////////////////////////////////////////
 	// Transform the parse tree to the IDL syntax tree.
 	IDL::Visitor visitor;
-	IDL::CodeGen::CodeWriter writer;
+	Cpf::IO::StreamPtr outStream(Cpf::IO::File::Create("iUnknown.txt", Cpf::IO::StreamAccess::eWrite));
+	Cpf::IO::TextWriter textWriter(outStream);
+	IDL::CodeGen::CodeWriter writer(textWriter);
 	{
 		auto generator = Create(IDL::CodeGen::Language::Cpp);
 		generator->Begin(visitor, writer);
@@ -37,5 +45,6 @@ int main(int argc, char** argv)
 	OutputDebugString(s.data());
 	*/
 
+	Cpf::IOInitializer::Remove();
 	return 0;
 }

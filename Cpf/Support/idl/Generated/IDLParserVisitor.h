@@ -35,19 +35,9 @@ public:
 
     virtual antlrcpp::Any visitFailure_stmt(IDLParser::Failure_stmtContext *context) = 0;
 
-    virtual antlrcpp::Any visitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *context) = 0;
-
     virtual antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *context) = 0;
-
-    virtual antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *context) = 0;
-
-    virtual antlrcpp::Any visitNamespace_name(IDLParser::Namespace_nameContext *context) = 0;
-
-    virtual antlrcpp::Any visitNamespace_block(IDLParser::Namespace_blockContext *context) = 0;
-
-    virtual antlrcpp::Any visitNamespace_item(IDLParser::Namespace_itemContext *context) = 0;
 
     virtual antlrcpp::Any visitStruct_stmt(IDLParser::Struct_stmtContext *context) = 0;
 
@@ -126,6 +116,8 @@ public:
     virtual antlrcpp::Any visitQualified_part(IDLParser::Qualified_partContext *context) = 0;
 
     virtual antlrcpp::Any visitQualified_separator(IDLParser::Qualified_separatorContext *context) = 0;
+
+    virtual antlrcpp::Any visitAll_or_ident(IDLParser::All_or_identContext *context) = 0;
 
     virtual antlrcpp::Any visitMember_decl(IDLParser::Member_declContext *context) = 0;
 

@@ -211,7 +211,9 @@ target_compile_definitions (IDL
 target_link_libraries (IDL
 	antlr4_static
 	s_Collections
-	Patterns
+	s_IO
+	s_ANSI_C_FileSystem
+	GOM
 	Events
 )
 
@@ -235,7 +237,7 @@ add_executable (Test_IDL
 	../../Libraries/Core/Test/UnitTestMain.cpp
 )
 add_test (IDL Test_IDL COMMAND Test_IDL)
-target_link_libraries (Test_IDL gmock Std antlr4_static)
+target_link_libraries (Test_IDL gtest gmock Std antlr4_static)
 target_include_directories (Test_IDL
 	PUBLIC
 		Include

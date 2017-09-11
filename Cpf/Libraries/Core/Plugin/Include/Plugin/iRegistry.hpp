@@ -9,11 +9,11 @@ namespace Cpf
 		struct IID_CID;
 		struct iClassInstance;
 
-		static constexpr GOM::Result kInstanceExists = GOM::CreateResult(1, "Plugin"_crc16, "Instance already exists"_crc15);
-		static constexpr GOM::Result kNotInstalled = GOM::CreateResult(1, "Plugin"_crc16, "Instance not installed"_crc15);
-		static constexpr GOM::Result kNotLoaded = GOM::CreateResult(1, "Plugin"_crc16, "Plugin not loaded"_crc15);
-		static constexpr GOM::Result kCantUnload = GOM::CreateResult(1, "Plugin"_crc16, "Plugin can not be unloaded"_crc15);
-		static constexpr GOM::Result kExportMissing = GOM::CreateResult(1, "Plugin"_crc16, "Plugin does not expose correct function"_crc15);
+		static constexpr GOM::Result kInstanceExists = GOM::CreateResult(1, "Plugin"_crc15, "Instance already exists"_crc16);
+		static constexpr GOM::Result kNotInstalled = GOM::CreateResult(1, "Plugin"_crc15, "Instance not installed"_crc16);
+		static constexpr GOM::Result kNotLoaded = GOM::CreateResult(1, "Plugin"_crc15, "Plugin not loaded"_crc16);
+		static constexpr GOM::Result kCantUnload = GOM::CreateResult(1, "Plugin"_crc15, "Plugin can not be unloaded"_crc16);
+		static constexpr GOM::Result kExportMissing = GOM::CreateResult(1, "Plugin"_crc15, "Plugin does not expose correct function"_crc16);
 
 		/**
 		 Class instance registry.

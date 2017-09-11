@@ -13,11 +13,58 @@ namespace IDL
 	{
 	public:
 		using String = Cpf::String;
-		typedef Cpf::Events::Event<0, Cpf::Function<void(void)>> Start;
+		enum class Type : int32_t
+		{
+			Ident,
+
+			U8, S8,
+			U16, S16,
+			U32, S32,
+			U64, S64,
+
+			F32, F64,
+
+			Void, Result
+		};
+		struct Pointer
+		{
+			bool mConst;
+		};
+		struct TypeDecl
+		{
+			TypeDecl() : mConst(false) {}
+
+			bool mConst;
+			Type mType;
+			String mIdent;
+			Cpf::Vector<Pointer> mPointer;
+		};
+		struct ParamDecl
+		{
+			String mName;
+			TypeDecl mType;
+		};
+		struct FunctionDecl
+		{
+			String mName;
+			TypeDecl mReturnType;
+			Cpf::Vector<ParamDecl> mParams;
+		};
+		struct InterfaceDecl
+		{
+			String mName;
+			SymbolPath mSuper;
+
+			using Functions = Cpf::Vector<FunctionDecl>;
+			Functions mFunctions;
+		};
+
+		typedef Cpf::Events::Event<0, Cpf::Function<void()>> Start;
 		typedef Cpf::Events::Event<1, Cpf::Function<void (const SymbolPath&)>> ModuleStmt;
 		typedef Cpf::Events::Event<2, Cpf::Function<void(const String&, const String&, const String&)>> SuccessType;
 		typedef Cpf::Events::Event<3, Cpf::Function<void(const String&, const String&, const String&)>> FailureType;
-		typedef Cpf::Events::Event<4, Cpf::Function<void(const String&)>> ImportAllStmt;
+		typedef Cpf::Events::Event<4, Cpf::Function<void(const String&, const SymbolPath&)>> ImportStmt;
+		typedef Cpf::Events::Event<5, Cpf::Function<void(const InterfaceDecl&)>> InterfaceDeclStmt;
 
 		Visitor();
 
@@ -29,10 +76,11 @@ namespace IDL
 		antlrcpp::Any visitError_code_stmt(IDLParser::Error_code_stmtContext *ctx) override;
 		antlrcpp::Any visitSuccess_stmt(IDLParser::Success_stmtContext *ctx) override;
 		antlrcpp::Any visitFailure_stmt(IDLParser::Failure_stmtContext *ctx) override;
-		antlrcpp::Any visitImport_all_from_stmt(IDLParser::Import_all_from_stmtContext *ctx) override;
 		antlrcpp::Any visitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx) override;
 		antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *ctx) override;
-		antlrcpp::Any visitNamespace_stmt(IDLParser::Namespace_stmtContext *ctx) override;
 		antlrcpp::Any visitInterface_stmt(IDLParser::Interface_stmtContext *ctx) override;
+		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *ctx) override;
+
+		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
 	};
 }

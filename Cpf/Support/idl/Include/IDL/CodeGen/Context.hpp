@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "IDL/CodeGen/CodeWriter.hpp"
-#include "Patterns/Factory.hpp"
 
 namespace IDL
 {
