@@ -1,4 +1,4 @@
-pub const OK                               : u32 = 0x72D622E4;      // Sub-system: "Core" Code: "OK"
+pub const OK                               : u32 = 0x7b48e63f;      // Sub-system: "Core" Code: "OK"
 pub const IN_USE                           : u32 = 0x72D65159;      // Sub-system: "Core" Code: "InUse"
 pub const ERROR                            : u32 = 0xF2D60ECC;      // Sub-system: "Core" Code: "Error"
 pub const UNKNOWN_INTERFACE                : u32 = 0xF2D623E7;      // Sub-system: "Core" Code: "UnknownInterface"

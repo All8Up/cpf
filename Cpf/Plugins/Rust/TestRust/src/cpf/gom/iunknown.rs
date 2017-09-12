@@ -30,10 +30,27 @@ pub trait Unknown
 
 impl Unknown for iUnknown
 {
-	fn add_ref(&mut self) -> i32 { unsafe { ((*self.vtable).add_ref)(self) } }
-	fn release(&mut self) -> i32 { unsafe { ((*self.vtable).release)(self) } }
+	fn add_ref(&mut self) -> i32
+    {
+        unsafe
+        {
+            ((*self.vtable).add_ref)(self)
+        }
+    }
+	fn release(&mut self) -> i32
+    {
+        unsafe
+        {
+            ((*self.vtable).release)(self)
+        }
+    }
 	fn query_interface(&mut self, iid: u64, out_iface: *mut *mut c_void) -> u32
-    { unsafe { ((*self.vtable).query_interface)(self, iid, out_iface) } }
+    {
+        unsafe
+        {
+            ((*self.vtable).query_interface)(self, iid, out_iface)
+        }
+    }
 }
 
 unsafe impl AsPtr<iUnknown> for iUnknown {}

@@ -58,10 +58,10 @@ class iUnknown(Interface):
 
 def make_result(err, ss, v):
 	result = 0
-	result = result | (err << 31) | (ss << 15) | v
+	result = result | (err << 31) | (ss << 16) | v
 	return result
 
-OK = make_result(0, cpf.crc16('Core'), cpf.crc15('OK'))
+OK = make_result(0, cpf.crc15('Core'), cpf.crc16('OK'))
 
 def success(result):
 	return (result & 0x80000000) == 0
