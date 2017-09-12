@@ -184,3 +184,9 @@ target_include_directories (Test_IDL
 		UnitTest
 )
 set_property (TARGET Test_IDL PROPERTY FOLDER UnitTests/IDL)
+
+if (WIN32 AND CMAKE_BUILD_TYPE MATCHES "Release")
+	add_custom_command (TARGET IDL POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:IDL> ${CPF_OS_BIN_DIR}
+	)
+endif ()

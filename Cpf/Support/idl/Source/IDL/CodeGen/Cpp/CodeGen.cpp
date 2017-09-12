@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include "Hash/Crc.hpp"
 #include "GOM/Result.hpp"
+#include "IO/Path.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
@@ -42,6 +43,7 @@ void CppGenerator::OnStart()
 
 void CppGenerator::OnModule(const SymbolPath& path)
 {
+	mpWriter->OutputLine("");
 	mModule = path;
 	for (const auto& part : path.GetPath())
 	{
@@ -77,9 +79,8 @@ void CppGenerator::OnFailureType(const String& name, const String& subSystem, co
 
 void CppGenerator::OnImportStmt(const String& item, const SymbolPath& from)
 {
-	(void)item;  (void)from;
-	mpWriter->OutputLine("#include \"GOM/Result.hpp\"");
-	mpWriter->OutputLine("");
+	auto path = CPF::IO::Path::Combine(from.ToString("/"), item+".hpp");
+	mpWriter->OutputLine("#include \"%s\"", path.c_str());
 }
 
 void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)

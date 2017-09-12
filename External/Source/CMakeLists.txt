@@ -116,7 +116,9 @@ set_property (TARGET gtest PROPERTY FOLDER External/gtest-1.8.0)
 set_property (TARGET gtest_main PROPERTY FOLDER External/gtest-1.8.0)
 
 # benchmark
-set (BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
-add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/benchmark-1.2.0")
-set_property (TARGET benchmark PROPERTY FOLDER External/benchmark-1.2.0)
-target_compile_options (benchmark PRIVATE /wd4722)
+if (CPF_ENABLE_BENCHMARKS)
+	set (BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/benchmark-1.2.0")
+	set_property (TARGET benchmark PROPERTY FOLDER External/benchmark-1.2.0)
+	target_compile_options (benchmark PRIVATE /wd4722)
+endif ()

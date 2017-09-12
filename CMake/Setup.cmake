@@ -13,6 +13,7 @@ include (CMake/Utilities/AddLibrary.cmake)
 include (CMake/Utilities/TypedLibrary.cmake)
 include (CMake/Utilities/CheckValue.cmake)
 include (CMake/Utilities/PreferredInclude.cmake)
+include (CMake/Utilities/GenGOM.cmake)
 include (CMake/UnitTesting/UnitTesting.cmake)
 
 include (CMake/Doxygen/BuildDocs.cmake)
@@ -37,6 +38,7 @@ include (CMake/Options/VTune.cmake)
 
 # ###############################################
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
+
 enable_testing ()
 set (CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/../CpfSdk" CACHE PATH "Sdk installation location." FORCE)
 
@@ -44,10 +46,11 @@ set (CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/../CpfSdk" CACHE PATH "Sd
 include (CMake/Settings/Settings.cmake)
 
 # ###############################################
-# Setup extra tools.
-include (CMake/Tools/FindFlexBison.cmake)
-
-# ###############################################
 # Check for needed headers and libraries.
 include (CMake/Checks/All.cmake)
 include (CMake/Checks/${CMAKE_SYSTEM_NAME}.cmake)
+
+
+# ###############################################
+option (CPF_ENABLE_UNITTESTS "Enable unit testing projects." ON)
+option (CPF_ENABLE_BENCHMARKS "Enable benchmark projects." OFF)

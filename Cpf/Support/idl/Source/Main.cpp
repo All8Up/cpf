@@ -9,8 +9,10 @@
 #   include <Windows.h>
 #endif
 #include "IO/IO.hpp"
-#include "IO/Stream.hpp"
+#include "IO/Path.hpp"
 #include "IO/File.hpp"
+#include "IO/Stream.hpp"
+#include "IO/Directory.hpp"
 #include "IO/TextWriter.hpp"
 #include <gflags/gflags.h>
 
@@ -45,6 +47,8 @@ int main(int argc, char** argv)
 		printf("Error: no target language specified.\n");
 		return -1;
 	}
+
+	CPF::IO::Directory::Create(CPF::IO::Path::GetDirectory(FLAGS_output));
 
 	//////////////////////////////////////////////////////////////////////////
 	// Parse the IDL file.
