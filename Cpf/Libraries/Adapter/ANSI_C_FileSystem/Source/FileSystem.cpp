@@ -6,11 +6,11 @@
 #include "Std/String.hpp"
 #include "Std/IO.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 using namespace IO;
 
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{

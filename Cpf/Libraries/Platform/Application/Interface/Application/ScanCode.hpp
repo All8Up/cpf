@@ -2,7 +2,7 @@
 #pragma once
 #include "Configuration.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	/** @brief Keyboard scan codes. */
 	enum class ScanCode : int32_t

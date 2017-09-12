@@ -5,7 +5,7 @@
 #include "Std/Memory.hpp"
 
 
-using namespace Cpf;
+using namespace CPF;
 using namespace IO;
 
 CPF_EXPORT_IO void Directory::SetWorkingDirectory(const String& dir)

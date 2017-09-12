@@ -3,7 +3,7 @@
 #include "RefCount.hpp"
 #include "EntityService/Types.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

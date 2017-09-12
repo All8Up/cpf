@@ -3,7 +3,7 @@
 #include "Graphics/SampleDesc.hpp"
 #include "Graphics/ResourceState.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

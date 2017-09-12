@@ -8,7 +8,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename K, typename V>
 	using Map = CPF_STL_NAMESPACE::map<K, V>;

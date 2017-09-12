@@ -4,7 +4,7 @@
 #include "Events/Event.hpp"
 #include "IO/Stream.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

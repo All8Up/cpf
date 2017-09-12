@@ -2,7 +2,7 @@
 #pragma once
 #include <cmath>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

@@ -9,7 +9,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	// Just alias in std::vector for the moment.
 	template<typename T>

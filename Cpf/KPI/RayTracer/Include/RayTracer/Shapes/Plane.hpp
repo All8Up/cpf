@@ -14,6 +14,6 @@ namespace RayTracer
 		Vector3 CPF_VECTORCALL Normal(Vector3Param hp) const override;
 
 	private:
-		Cpf::Math::Plane<Vector3> mPlane;
+		CPF::Math::Plane<Vector3> mPlane;
 	};
 }

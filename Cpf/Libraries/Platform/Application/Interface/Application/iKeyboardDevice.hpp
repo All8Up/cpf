@@ -2,7 +2,7 @@
 #pragma once
 #include "Application/iInputDevice.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	enum class KeyModifier : int32_t;
 

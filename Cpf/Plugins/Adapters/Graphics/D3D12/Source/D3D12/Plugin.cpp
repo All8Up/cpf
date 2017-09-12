@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Plugin.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

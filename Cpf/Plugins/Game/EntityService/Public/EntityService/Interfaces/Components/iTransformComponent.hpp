@@ -4,7 +4,7 @@
 #include "Math/Transform.hpp"
 #include "Math/Matrix44v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

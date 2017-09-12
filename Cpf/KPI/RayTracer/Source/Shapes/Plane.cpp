@@ -23,7 +23,7 @@ bool Plane::Parse( Scene& s, JSONValue* v )
 bool CPF_VECTORCALL Plane::Intersect(const Ray3& ray, float& t) const
 {
 	float distance;
-	if (Cpf::Math::Intersect(ray, mPlane, distance))
+	if (CPF::Math::Intersect(ray, mPlane, distance))
 	{
 		if (distance < t)
 		{

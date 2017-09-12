@@ -2,7 +2,7 @@
 #include "EntityStage.hpp"
 #include "MultiCore/Partitioning.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////

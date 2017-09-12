@@ -4,7 +4,7 @@
 #include "SIMD/Detail/LaneIndex.hpp"
 #include "SIMD/Detail/Swizzles.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{
@@ -66,7 +66,7 @@ namespace Cpf
 #include "SIMD/Types.hpp"
 #include "SIMD/Detail/FPU/F32x4.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

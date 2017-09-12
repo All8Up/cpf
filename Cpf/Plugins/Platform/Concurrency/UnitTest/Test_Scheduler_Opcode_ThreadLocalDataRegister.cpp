@@ -6,7 +6,7 @@
 #if 0
 TEST(Concurrency, Set_ThreadLocalDataRegister)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Concurrency;
 	ScopedInitializer<Platform::TimeInitializer> timeInit;
 

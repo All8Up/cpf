@@ -10,7 +10,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	/** @brief CPF uses WChar_t as 16bit to avoid compiler differences. */
 	using WChar_t = char16_t;

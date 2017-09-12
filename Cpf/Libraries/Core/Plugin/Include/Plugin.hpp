@@ -4,8 +4,8 @@
 
 // Name and type of the plugin Install function.
 const char kPluginAPIInstall[] = "Install";
-using PluginAPIInstall = Cpf::GOM::Result(CPF_STDCALL *)(Cpf::Plugin::iRegistry*);
+using PluginAPIInstall = CPF::GOM::Result(CPF_STDCALL *)(CPF::Plugin::iRegistry*);
 
 // Name and type of the plugin Remove function.
 const char kPluginAPIRemove[] = "Remove";
-using PluginAPIRemove = Cpf::GOM::Result(CPF_STDCALL *)(Cpf::Plugin::iRegistry*);
+using PluginAPIRemove = CPF::GOM::Result(CPF_STDCALL *)(CPF::Plugin::iRegistry*);

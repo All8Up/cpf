@@ -9,7 +9,7 @@
 #pragma warning(disable:4201)
 #endif
 
-namespace Cpf
+namespace CPF
 {
 	/**
 	 * @brief The handle value is simply a wrapper around int64_t

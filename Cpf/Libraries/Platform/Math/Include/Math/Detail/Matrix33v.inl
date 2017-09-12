@@ -2,7 +2,7 @@
 #pragma once
 #include "Math/Quaternion.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

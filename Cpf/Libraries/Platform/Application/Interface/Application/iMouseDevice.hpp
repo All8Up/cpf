@@ -2,7 +2,7 @@
 #pragma once
 #include "Application/iInputDevice.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	enum class MouseButton : int32_t;
 

@@ -6,7 +6,7 @@
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/System.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 namespace
 {

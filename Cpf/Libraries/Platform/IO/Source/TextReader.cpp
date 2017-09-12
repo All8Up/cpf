@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "IO/TextReader.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace IO;
 
 

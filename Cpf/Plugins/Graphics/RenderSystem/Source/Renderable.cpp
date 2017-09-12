@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Renderable.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 Renderable::Renderable(GOM::iUnknown*)
 {}

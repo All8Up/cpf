@@ -8,7 +8,7 @@
 TEST(Threading, Thread_Run)
 {
 	volatile bool testRan = false;
-	Cpf::Threading::Thread testThread([&]() {
+	CPF::Threading::Thread testThread([&]() {
 		testRan = true;
 	});
 	testThread.Join();
@@ -25,10 +25,10 @@ TEST(Threading, Thread_Sleep)
 	const int64_t aproxDurationMs = 2000;
 	const int64_t tollerance = 200;
 
-	Cpf::Time::Value startTime = Cpf::Time::Value::Now();
-	Cpf::Threading::Thread::Sleep(Cpf::Time::Ms(aproxDurationMs));
-	Cpf::Time::Value endTime = Cpf::Time::Value::Now();
-	int64_t deltaMs = int64_t(Cpf::Time::Ms(endTime-startTime))-aproxDurationMs;
+	CPF::Time::Value startTime = CPF::Time::Value::Now();
+	CPF::Threading::Thread::Sleep(CPF::Time::Ms(aproxDurationMs));
+	CPF::Time::Value endTime = CPF::Time::Value::Now();
+	int64_t deltaMs = int64_t(CPF::Time::Ms(endTime-startTime))-aproxDurationMs;
 
 	EXPECT_LT(std::abs(deltaMs), tollerance);
 }
@@ -36,12 +36,12 @@ TEST(Threading, Thread_Sleep)
 
 TEST(Threading, Thread_Group)
 {
-	using namespace Cpf::Threading;
+	using namespace CPF::Threading;
 
 	Thread::Group testGroup(10);
 	int testValue = 0;
 	testGroup(std::move(std::bind([](int* test) {
-		Cpf::Atomic::Inc(*test);}, &testValue)));
+		CPF::Atomic::Inc(*test);}, &testValue)));
 	testGroup.Join();
 	EXPECT_EQ(10, testValue);
 }

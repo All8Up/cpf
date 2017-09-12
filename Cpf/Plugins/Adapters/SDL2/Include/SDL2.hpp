@@ -2,7 +2,7 @@
 #pragma once
 #include "Plugin/Context.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SDL2
 	{

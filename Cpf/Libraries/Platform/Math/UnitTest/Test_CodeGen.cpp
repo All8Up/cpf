@@ -8,7 +8,7 @@
 // Test code gen.
 TEST(SIMD, IntersectRayBox)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Math;
 	using namespace SIMD;
 

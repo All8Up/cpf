@@ -2,7 +2,7 @@
 #pragma once
 #include "Events/Events.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Events
 	{

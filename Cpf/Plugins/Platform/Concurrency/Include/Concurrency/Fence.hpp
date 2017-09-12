@@ -4,7 +4,7 @@
 #include "Concurrency/iFence.hpp"
 #include "Threading/Semaphore.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

@@ -21,7 +21,7 @@
 #endif
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

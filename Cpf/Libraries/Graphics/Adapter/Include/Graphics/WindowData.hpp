@@ -3,7 +3,7 @@
 #include "Configuration.hpp"
 #include <windows.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

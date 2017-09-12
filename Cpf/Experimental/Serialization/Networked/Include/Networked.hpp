@@ -11,7 +11,7 @@
 #include "Resources/iLocator.hpp"
 #include "iPython.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	class Networked : public tRefCounted<iApplicationMain>
 	{

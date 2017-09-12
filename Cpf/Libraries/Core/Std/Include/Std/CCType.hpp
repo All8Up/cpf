@@ -3,7 +3,7 @@
 #include "Std/Std.hpp"
 #include <cctype>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Std
 	{

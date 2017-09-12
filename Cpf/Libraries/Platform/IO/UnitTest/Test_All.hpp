@@ -10,16 +10,16 @@
 class IOTestFixture : public testing::Test
 {
 public:
-	Cpf::Vector<Cpf::String> mTestPaths;
-	Cpf::Vector<Cpf::String> mNormPaths;
-	Cpf::Vector<Cpf::WString> mWTestPaths;
-	Cpf::Vector<Cpf::WString> mWNormPaths;
+	CPF::Vector<CPF::String> mTestPaths;
+	CPF::Vector<CPF::String> mNormPaths;
+	CPF::Vector<CPF::WString> mWTestPaths;
+	CPF::Vector<CPF::WString> mWNormPaths;
 
 	virtual void SetUp() override
 	{
-		Cpf::IOInitializer::Install();
+		CPF::IOInitializer::Install();
 
-		Cpf::String paths[] =
+		CPF::String paths[] =
 		{
 			"test/path/",						// A standard non-rooted path.
 			"c:\\test\\path\\",					// Window's style rooted path.
@@ -47,23 +47,23 @@ public:
 		};
 		for (const auto& path : mNormPaths)
 		{
-			Cpf::WString wpath;
-			Cpf::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
+			CPF::WString wpath;
+			CPF::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
 			mWNormPaths.push_back(wpath);
 		}
 
 		for (const auto& path : paths)
 		{
 			mTestPaths.push_back(path);
-			Cpf::WString wpath;
-			Cpf::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
+			CPF::WString wpath;
+			CPF::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
 			mWTestPaths.push_back(wpath);
 		}
 	}
 
 	virtual void TearDown() override
 	{
-		Cpf::IOInitializer::Remove();
+		CPF::IOInitializer::Remove();
 	}
 
 	struct TestRawBinary
@@ -91,7 +91,7 @@ public:
 
 TEST(IO, Result)
 {
-	using namespace Cpf::IO;
+	using namespace CPF::IO;
 	using TestResult = Result<int64_t, std::string>;
 
 	TestResult t0(TestResult::Error("Test"));

@@ -6,7 +6,7 @@
 #include "Resources/iMonitor.hpp"
 #include "Resources/ID.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 
 GOM::Result CPF_STDCALL Locator::QueryInterface(uint64_t id, void** outIface)

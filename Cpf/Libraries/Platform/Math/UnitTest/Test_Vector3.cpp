@@ -6,7 +6,7 @@
 #include "SIMD/Detail/FPU/I32x3.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector3f = Cpf::Math::Vector3v<Cpf::SIMD::FPU::F32x3_3>;
+using Vector3f = CPF::Math::Vector3v<CPF::SIMD::FPU::F32x3_3>;
 
 template <typename T>
 class TypedTest_Vector3_fpu : public::testing::Test
@@ -16,7 +16,7 @@ public:
 
 typedef ::testing::Types <
 	Vector3f,
-	Cpf::Math::Vector3v<Cpf::SIMD::FPU::I32x3_3>
+	CPF::Math::Vector3v<CPF::SIMD::FPU::I32x3_3>
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector3_fpu, F32x4_1_Types);
@@ -424,7 +424,7 @@ TEST(Vector3f, Round_Truncate_Reference)
 {
 	using Vector3f = Vector3f;
 	Vector3f t0 = { 5.25f, 12.85f, 19.22f };
-	Vector3f t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+	Vector3f t1 = Round(t0, CPF::SIMD::Rounding::eTruncate);
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
 }

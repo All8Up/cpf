@@ -2,7 +2,7 @@
 #pragma once
 #include "Math/Vector3v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	struct Instance
 	{

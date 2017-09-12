@@ -3,7 +3,7 @@
 #include "String.hpp"
 #include "Hash/Crc.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{
@@ -56,8 +56,8 @@ namespace Cpf
 // Utility macro to create an ID at compile time.
 #ifdef CPF_DEBUG
 #	define RESOURCE_ID(d, f)				\
-		Cpf::Resources::ID { d##_crc32, f##_crc32, d, f }
+		CPF::Resources::ID { d##_crc32, f##_crc32, d, f }
 #else
 #	define RESOURCE_ID(d, f)				\
-		Cpf::Resources::ID { d##_crc32, f##_crc32 }
+		CPF::Resources::ID { d##_crc32, f##_crc32 }
 #endif

@@ -40,28 +40,6 @@ set (VisitorSources
 	Source/Visitor/Enum.cpp
 	Source/Visitor/DataMember.cpp
 )
-set (IDLTreeIncludes
-	Include/IDLTree/Const.hpp
-	Include/IDLTree/Enum.hpp
-	Include/IDLTree/Import.hpp
-	Include/IDLTree/Interface.hpp
-	Include/IDLTree/Namespace.hpp
-	Include/IDLTree/Struct.hpp
-	Include/IDLTree/Symbol.hpp
-	Include/IDLTree/SymbolTable.hpp
-	Include/IDLTree/Types.hpp
-)
-set (IDLTreeSources
-	Source/IDLTree/Const.cpp
-	Source/IDLTree/Enum.cpp
-	Source/IDLTree/Import.cpp
-	Source/IDLTree/Interface.cpp
-	Source/IDLTree/Namespace.cpp
-	Source/IDLTree/Struct.cpp
-	Source/IDLTree/Symbol.cpp
-	Source/IDLTree/SymbolTable.cpp
-	Source/IDLTree/Types.cpp
-)
 set (GeneratorsIncludes
 	Include/Generators/Generator.hpp
 	Include/Generators/CodeWriter.hpp
@@ -69,24 +47,6 @@ set (GeneratorsIncludes
 set (GeneratorsSources
 	Source/Generators/Generator.cpp
 	Source/Generators/CodeWriter.cpp
-)
-set (GeneratorsCppIncludes
-	Include/Generators/Cpp/Cpp.hpp
-)
-set (GeneratorsCppSources
-	Source/Generators/Cpp/Cpp.cpp
-)
-set (GeneratorsPython3Includes
-	Include/Generators/Python3/Python3.hpp
-)
-set (GeneratorsPython3Sources
-	Source/Generators/Python3/Python3.cpp
-)
-set (GeneratorsRustIncludes
-	Include/Generators/Rust/Rust.hpp
-)
-set (GeneratorsRustSources
-	Source/Generators/Rust/Rust.cpp
 )
 
 set (Includes
@@ -120,6 +80,12 @@ set (IDLCodeGenCppIncludes
 set (IDLCodeGenCppSources
 	Source/IDL/CodeGen/Cpp/CodeGen.cpp
 )
+set (IDLCodeGenRustIncludes
+	Include/IDL/CodeGen/Rust/CodeGen.hpp
+)
+set (IDLCodeGenRustSources
+	Source/IDL/CodeGen/Rust/CodeGen.cpp
+)
 
 set (IDLParseTreeIncludes
 	Include/IDL/ParseTree/Visitor.hpp
@@ -137,6 +103,8 @@ add_executable (IDL
 	${IDLCodeGenSources}
 	${IDLCodeGenCppIncludes}
 	${IDLCodeGenCppSources}
+	${IDLCodeGenRustIncludes}
+	${IDLCodeGenRustSources}
 	${IDLParseTreeIncludes}
 	${IDLParseTreeSources}
 
@@ -144,20 +112,6 @@ add_executable (IDL
 	${ParserFiles}
 	${ListenerFiles}
 	${VisitorFiles}
-#[[
-	${VisitorIncludes}
-	${VisitorSources}
-	${IDLTreeIncludes}
-	${IDLTreeSources}
-	${GeneratorsIncludes}
-	${GeneratorsSources}
-	${GeneratorsCppIncludes}
-	${GeneratorsCppSources}
-	${GeneratorsPython3Includes}
-	${GeneratorsPython3Sources}
-	${GeneratorsRustIncludes}
-	${GeneratorsRustSources}
-#]]
 )
 set_property (TARGET IDL PROPERTY FOLDER Tools)
 
@@ -169,6 +123,8 @@ source_group (Includes\\IDL\\CodeGen FILES ${IDLCodeGenIncludes})
 source_group (Sources\\IDL\\CodeGen FILES ${IDLCodeGenSources})
 source_group (Includes\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppIncludes})
 source_group (Sources\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppSources})
+source_group (Includes\\IDL\\CodeGen\\Rust FILES ${IDLCodeGenRustIncludes})
+source_group (Sources\\IDL\\CodeGen\\Rust FILES ${IDLCodeGenRustSources})
 source_group (Includes\\IDL\\ParseTree FILES ${IDLParseTreeIncludes})
 source_group (Sources\\IDL\\ParseTree FILES ${IDLParseTreeSources})
 
@@ -176,21 +132,6 @@ source_group (Grammar\\Lexer FILES ${LexerFiles})
 source_group (Grammar\\Parser FILES ${ParserFiles})
 source_group (Grammar\\Listener FILES ${ListenerFiles})
 source_group (Grammar\\Visitor FILES ${VisitorFiles})
-
-#[[
-source_group (Includes\\Visitor FILES ${VisitorIncludes})
-source_group (Sources\\Visitor FILES ${VisitorSources})
-source_group (Includes\\IDLTree FILES ${IDLTreeIncludes})
-source_group (Sources\\IDLTree FILES ${IDLTreeSources})
-source_group (Includes\\Generators FILES ${GeneratorsIncludes})
-source_group (Sources\\Generators FILES ${GeneratorsSources})
-source_group (Includes\\Generators\\Cpp FILES ${GeneratorsCppIncludes})
-source_group (Sources\\Generators\\Cpp FILES ${GeneratorsCppSources})
-source_group (Includes\\Generators\\Python3 FILES ${GeneratorsPython3Includes})
-source_group (Sources\\Generators\\Python3 FILES ${GeneratorsPython3Sources})
-source_group (Includes\\Generators\\Rust FILES ${GeneratorsRustIncludes})
-source_group (Sources\\Generators\\Rust FILES ${GeneratorsRustSources})
-#]]
 
 target_include_directories (IDL
 	PUBLIC

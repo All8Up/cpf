@@ -2,13 +2,13 @@
 #pragma once
 #include "Graphics/iBlob.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{
 		namespace D3D12
 		{
-			class Blob : public tRefCounted<Cpf::Graphics::iBlob>
+			class Blob : public tRefCounted<Graphics::iBlob>
 			{
 			public:
 				Blob(size_t size, const void* data);
@@ -22,7 +22,7 @@ namespace Cpf
 			private:
 				~Blob();
 
-				Cpf::Vector<uint8_t> mData;
+				Vector<uint8_t> mData;
 			};
 		}
 	}

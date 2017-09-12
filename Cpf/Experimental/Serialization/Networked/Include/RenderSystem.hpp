@@ -10,7 +10,7 @@
 #include "MultiCore/System/iTimer.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources {
 		struct iLocator;

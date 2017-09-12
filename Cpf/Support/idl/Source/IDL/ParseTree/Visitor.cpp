@@ -4,11 +4,11 @@
 using namespace IDL;
 
 //////////////////////////////////////////////////////////////////////////
-Cpf::String TrimStringLit(const Cpf::String& lit)
+CPF::String TrimStringLit(const CPF::String& lit)
 {
 	if (lit.empty())
-		return Cpf::String();
-	return Cpf::String(lit.begin() + 1, lit.end() - 1);
+		return CPF::String();
+	return CPF::String(lit.begin() + 1, lit.end() - 1);
 }
 
 SymbolPath GetPath(IDLParser::Qualified_identContext* ctx)
@@ -18,7 +18,7 @@ SymbolPath GetPath(IDLParser::Qualified_identContext* ctx)
 
 	for (const auto& p : ctx->qualified_part())
 	{
-		path.Push(Cpf::String(p->IDENT()->toString().c_str()));
+		path.Push(CPF::String(p->IDENT()->toString().c_str()));
 	}
 	return path;
 }
@@ -50,7 +50,7 @@ antlrcpp::Any Visitor::visitModule_stmt(IDLParser::Module_stmtContext *ctx)
 
 	for (const auto& p : ctx->qualified_ident()->qualified_part())
 	{
-		path.Push(Cpf::String(p->IDENT()->toString().c_str()));
+		path.Push(CPF::String(p->IDENT()->toString().c_str()));
 	}
 	Emit<ModuleStmt>(path);
 

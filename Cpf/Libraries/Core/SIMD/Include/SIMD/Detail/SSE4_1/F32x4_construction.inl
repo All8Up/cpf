@@ -2,7 +2,7 @@
 #pragma once
 #include "Utilities.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

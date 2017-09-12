@@ -3,7 +3,7 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iThreadPool.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

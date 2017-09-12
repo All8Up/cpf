@@ -5,7 +5,7 @@
 #include "EntityService/Helpers/ComponentBase.hpp"
 #include "MultiCore/iSystem.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

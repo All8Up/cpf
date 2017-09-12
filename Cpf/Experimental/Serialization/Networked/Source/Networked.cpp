@@ -17,7 +17,7 @@
 #include "Threading/Thread.hpp"
 #include "PluginHost/Registry.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Threading;
 using namespace MultiCore;
 
@@ -344,4 +344,4 @@ void Networked::_Resize(int32_t width, int32_t height)
 
 
 //////////////////////////////////////////////////////////////////////////
-CPF_CREATE_APPMAIN(Cpf::Networked);
+CPF_CREATE_APPMAIN(CPF::Networked);

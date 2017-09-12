@@ -7,7 +7,7 @@
 #include "Vector.hpp"
 #include "UnorderedMap.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace PluginHost;
 
 class Registry : public Plugin::iRegistry
@@ -136,7 +136,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 				{
 					if ((*install)(this) == GOM::kOK)
 					{
-						mLibraryMap.insert(LibraryMap::value_type{ String(name), Move(library) });
+						mLibraryMap.insert(LibraryMap::value_type{ CPF::String(name), Move(library) });
 						return GOM::kOK;
 					}
 				}

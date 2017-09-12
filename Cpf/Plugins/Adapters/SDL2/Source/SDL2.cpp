@@ -9,9 +9,9 @@
 #include "Clipboard.hpp"
 #include "SDL2/CIDs.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
-namespace Cpf
+namespace CPF
 {
 	namespace SDL2
 	{

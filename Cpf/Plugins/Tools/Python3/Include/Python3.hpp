@@ -2,7 +2,7 @@
 #pragma once
 #include "iPython.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Tools
 	{

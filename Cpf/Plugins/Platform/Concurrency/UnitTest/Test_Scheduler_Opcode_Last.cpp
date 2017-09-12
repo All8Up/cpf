@@ -8,7 +8,7 @@
 
 TEST_F(ConcurrencyTest, Last_Opcode)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Concurrency;
 
 	for (auto i = 0; i < 100; ++i)

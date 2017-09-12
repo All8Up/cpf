@@ -10,7 +10,7 @@
 #include "Graphics/TopologyType.hpp"
 #include "IntrusivePtr.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

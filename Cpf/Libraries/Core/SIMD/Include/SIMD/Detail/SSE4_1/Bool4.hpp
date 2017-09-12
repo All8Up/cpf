@@ -3,7 +3,7 @@
 #include "SIMD/Rounding.hpp"
 #include "Utilities.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

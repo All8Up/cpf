@@ -2,7 +2,7 @@
 #pragma once
 #include "Math/Vector3v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{
@@ -53,7 +53,7 @@ namespace Cpf
 #include "Math/Detail/Matrix33v.inl"
 #include "SIMD/Types.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

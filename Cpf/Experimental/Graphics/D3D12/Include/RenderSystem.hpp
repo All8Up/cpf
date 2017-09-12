@@ -5,7 +5,7 @@
 #include "Hash/HashString.hpp"
 #include "Graphics/iCommandBuffer.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency {
 		class ThreadContext;

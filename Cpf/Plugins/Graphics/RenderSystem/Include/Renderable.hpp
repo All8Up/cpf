@@ -2,7 +2,7 @@
 #pragma once
 #include "iRenderable.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	class Renderable : public tRefCounted<iRenderable>
 	{

@@ -4,7 +4,7 @@
 #include "Resources/ID.hpp"
 #include "Resources/iResource.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

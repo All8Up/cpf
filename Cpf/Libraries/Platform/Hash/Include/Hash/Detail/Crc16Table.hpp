@@ -2,7 +2,7 @@
 #pragma once
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Hash
 	{

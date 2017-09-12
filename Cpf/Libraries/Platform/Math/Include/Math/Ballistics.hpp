@@ -4,7 +4,7 @@
 #include "Math/Trigonometric.hpp"
 #include "Math/Power.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

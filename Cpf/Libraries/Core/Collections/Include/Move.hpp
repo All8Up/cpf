@@ -9,7 +9,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T>
 	typename CPF_STL_NAMESPACE::remove_reference<T>::type&& Move(T&& v)

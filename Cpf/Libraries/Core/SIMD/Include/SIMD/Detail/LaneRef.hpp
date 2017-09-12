@@ -2,7 +2,7 @@
 #pragma once
 #include "Accessor.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

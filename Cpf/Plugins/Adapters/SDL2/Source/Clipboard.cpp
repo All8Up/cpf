@@ -2,7 +2,7 @@
 #include "Clipboard.hpp"
 #include "SDL.h"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace SDL2;
 
 Clipboard::Clipboard(GOM::iUnknown*)

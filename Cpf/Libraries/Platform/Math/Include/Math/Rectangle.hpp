@@ -2,7 +2,7 @@
 #pragma once
 #include "Math/Vector2v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{
@@ -36,7 +36,7 @@ namespace Cpf
 #include "Math/Detail/Rectangle.inl"
 #include "SIMD/Types.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

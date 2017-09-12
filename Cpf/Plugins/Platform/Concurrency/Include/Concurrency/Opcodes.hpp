@@ -3,7 +3,7 @@
 #include "Concurrency/Scheduler.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

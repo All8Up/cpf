@@ -4,7 +4,7 @@
 #include "DescriptorManager.hpp"
 #include "Move.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{
@@ -12,7 +12,7 @@ namespace Cpf
 	}
 }
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

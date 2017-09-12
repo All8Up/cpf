@@ -7,7 +7,7 @@
 #include "IO/File.hpp"
 #include "Hash/Crc.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace IO;
 
 using namespace Resources;

@@ -3,7 +3,7 @@
 #include "Concurrency/Opcodes.hpp"
 #include "Concurrency/WorkBuffer.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Concurrency;
 
 /**

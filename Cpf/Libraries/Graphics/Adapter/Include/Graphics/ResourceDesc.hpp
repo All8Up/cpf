@@ -3,7 +3,7 @@
 #include "Configuration.hpp"
 #include "EnumFlagType.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <cstdarg>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Std
 	{

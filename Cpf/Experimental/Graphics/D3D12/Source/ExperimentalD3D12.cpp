@@ -32,7 +32,7 @@
 
 #include "SDL2/CIDs.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Math;
 using namespace Graphics;
 using namespace Threading;
@@ -351,4 +351,4 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	return GOM::kOK;
 }
 
-CPF_CREATE_APPMAIN(Cpf::ExperimentalD3D12);
+CPF_CREATE_APPMAIN(CPF::ExperimentalD3D12);

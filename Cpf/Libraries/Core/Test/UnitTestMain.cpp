@@ -10,7 +10,7 @@
 @endcond
 */
 
-using namespace Cpf;
+using namespace CPF;
 
 int CPF_CDECL main( int argc, char** argv )
 {

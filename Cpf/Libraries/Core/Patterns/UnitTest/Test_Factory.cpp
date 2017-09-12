@@ -2,7 +2,7 @@
 #include <gmock/gmock.h>
 #include "Patterns/Factory.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Patterns;
 
 struct TestType

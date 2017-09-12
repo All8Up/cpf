@@ -3,7 +3,7 @@
 #include "Math/Vector3v.hpp"
 #include "Math/Vector4v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{
@@ -71,7 +71,7 @@ namespace Cpf
 #include "Math/Detail/Matrix44v.inl"
 #include "SIMD/Types.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

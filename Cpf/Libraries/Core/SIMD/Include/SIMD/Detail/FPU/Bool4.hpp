@@ -2,7 +2,7 @@
 #pragma once
 #include "FPU.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

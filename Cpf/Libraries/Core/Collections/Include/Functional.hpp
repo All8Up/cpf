@@ -4,7 +4,7 @@
 #include <functional>
 // No EASTL support as it misses too many features at this time.
 
-namespace Cpf
+namespace CPF
 {
 	template<typename Func>
 	using Function = std::function<Func>;

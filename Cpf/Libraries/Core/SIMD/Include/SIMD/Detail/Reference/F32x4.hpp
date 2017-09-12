@@ -6,7 +6,7 @@
 #include "SIMD/Detail/Reference/Bool4.hpp"
 #include <cmath>
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

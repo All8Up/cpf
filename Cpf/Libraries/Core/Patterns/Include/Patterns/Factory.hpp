@@ -5,7 +5,7 @@
 #include "Functional.hpp"
 #include "UnorderedMap.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Patterns
 	{

@@ -2,7 +2,7 @@
 #pragma once
 #include "Application/iMouseDevice.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SDL2
 	{

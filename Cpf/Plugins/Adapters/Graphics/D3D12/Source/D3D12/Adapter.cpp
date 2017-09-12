@@ -6,7 +6,7 @@
 #include <d3d12.h>
 #include "Logging/Logging.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////

@@ -27,7 +27,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	struct MemoryInitializer
 	{
@@ -41,7 +41,7 @@ namespace Cpf
 }
 
 
-namespace Cpf
+namespace CPF
 {
 	/** @brief The generic global allocator. */
 	class CPF_EXPORT_MEMORY Allocator

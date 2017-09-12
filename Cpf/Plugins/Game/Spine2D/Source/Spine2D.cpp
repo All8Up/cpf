@@ -1,6 +1,6 @@
 #include "Plugin/iRegistry.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 extern "C"
 GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)

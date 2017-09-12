@@ -3,7 +3,7 @@
 #include "MultiCore/iStage.hpp"
 #include "Plugin/iClassInstance.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,7 +18,7 @@ GOM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem(GOM::iUnknown*)
+NetworkSystem::NetworkSystem(iUnknown*)
 {
 }
 

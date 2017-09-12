@@ -7,7 +7,7 @@
 #	include <bitset>
 #endif
 
-namespace Cpf
+namespace CPF
 {
 #ifdef CPF_USE_EASTL
 	template <typename TYPE, typename WORDTYPE=uint32_t>

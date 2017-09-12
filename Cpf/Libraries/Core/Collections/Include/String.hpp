@@ -9,7 +9,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename CHAR_TYPE>
 	using BasicString = CPF_STL_NAMESPACE::basic_string<CHAR_TYPE>;

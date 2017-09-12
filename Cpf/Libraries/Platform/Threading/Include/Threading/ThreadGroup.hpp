@@ -2,7 +2,7 @@
 #pragma once
 #include "Threading/Thread.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Threading
 	{
@@ -38,8 +38,8 @@ namespace Cpf
 			Group(const Group&) = delete;
 			const Group& operator =(const Group&) = delete;
 
-			void _Start(size_t index, Function<void(void)>);
-			void _Start(Function<void(void)>);
+			void _Start(size_t index, Function<void()>);
+			void _Start(Function<void()>);
 
 			size_t mCount;
 			Thread* mpThreads;
@@ -49,14 +49,14 @@ namespace Cpf
 		template<typename tFunction>
 		void Thread::Group::operator ()(tFunction&& func)
 		{
-			_Start(Cpf::Move(func));
+			_Start(Move(func));
 		};
 
 
 		template<typename tFunction>
 		void Thread::Group::operator ()(size_t index, tFunction&& func)
 		{
-			_Start(index, Cpf::Move(func));
+			_Start(index, Move(func));
 		};
 
 		inline Thread::Group::Group()
@@ -142,16 +142,16 @@ namespace Cpf
 		inline void Thread::Group::_Start(size_t index, Function<void(void)> func)
 		{
 			CPF_ASSERT(mpThreads != nullptr && mCount > index);
-			mpThreads[index](Cpf::Move(func));
+			mpThreads[index](Move(func));
 		}
 
 
-		inline void Thread::Group::_Start(Function<void(void)> start)
+		inline void Thread::Group::_Start(Function<void()> start)
 		{
 			for (auto i = 0; i < mCount; ++i)
 			{
-				Function<void(void)>  startCopy = start;
-				mpThreads[i](Cpf::Move(startCopy));
+				Function<void()>  startCopy = start;
+				mpThreads[i](Move(startCopy));
 			}
 		}
 	}

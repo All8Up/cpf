@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Concurrency/ThreadTimes.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Concurrency;
 
 GOM::Result CPF_STDCALL ThreadTimes::QueryInterface(uint64_t id, void** outIface)

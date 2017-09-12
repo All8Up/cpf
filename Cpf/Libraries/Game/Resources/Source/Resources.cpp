@@ -5,7 +5,7 @@
 #include "Resources/Caches/Default.hpp"
 #include "Logging/Logging.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 
 namespace

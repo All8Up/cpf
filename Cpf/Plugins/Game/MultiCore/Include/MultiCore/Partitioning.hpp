@@ -2,7 +2,7 @@
 #pragma once
 #include "Concurrency/WorkContext.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

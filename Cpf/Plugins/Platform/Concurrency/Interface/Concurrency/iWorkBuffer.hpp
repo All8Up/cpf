@@ -2,7 +2,7 @@
 #pragma once
 #include "Concurrency/iScheduler.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

@@ -4,7 +4,7 @@
 #include "Application/iWindow.hpp"
 #include "Events/Emitter.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SDL2
 	{

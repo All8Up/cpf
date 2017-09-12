@@ -1,8 +1,10 @@
 # ###############################################
 set (INCLUDE_FILES
 	Include/GOM.hpp
+	Include/GOM/Types.hpp
 	Include/GOM/iUnknown.hpp
 	Include/GOM/Result.hpp
+	Include/GOM/ResultCodes.hpp
 )
 
 add_library (GOM INTERFACE)

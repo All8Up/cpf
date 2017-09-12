@@ -2,7 +2,7 @@
 #include "IO/IO.hpp"
 #include "IO/FileSystem.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace IO;
 
 //////////////////////////////////////////////////////////////////////////
@@ -12,7 +12,7 @@ namespace
 	iFileSystem* s_pFileSystem = nullptr;
 }
 
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{

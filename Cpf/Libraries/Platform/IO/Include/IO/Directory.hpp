@@ -6,7 +6,7 @@
 #include "Functional.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{

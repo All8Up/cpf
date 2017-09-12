@@ -5,7 +5,7 @@
 #include <initializer_list>
 #include "Vector.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

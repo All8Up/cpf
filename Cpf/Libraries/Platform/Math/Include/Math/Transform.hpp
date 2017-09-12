@@ -4,7 +4,7 @@
 #include "Math/Matrix44v.hpp"
 #include "Math/Quaternion.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

@@ -2,7 +2,7 @@
 #pragma once
 #include "Concurrency/iFence.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

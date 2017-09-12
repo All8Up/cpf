@@ -4,7 +4,7 @@
 
 TEST(SSE4_1_Utilities, Shuffle_F32x4)
 {
-	using namespace Cpf::SIMD;
+	using namespace CPF::SIMD;
 	using TYPE = F32x4::StorageType;
 	F32x4 t0(1, 2, 3, 4);
 	F32x4 t1(5, 6, 7, 8);
@@ -27,7 +27,7 @@ TEST(SSE4_1_Utilities, Shuffle_F32x4)
 
 TEST(SSE4_1_Utilities, Swizzle_F32x4)
 {
-	using namespace Cpf::SIMD;
+	using namespace CPF::SIMD;
 	using TYPE = F32x4::StorageType;
 	F32x4 t0(1, 2, 3, 4);
 

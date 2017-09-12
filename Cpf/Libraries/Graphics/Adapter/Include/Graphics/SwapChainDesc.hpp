@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/SampleDesc.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

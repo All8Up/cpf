@@ -5,7 +5,7 @@
 #include "Graphics/WindingOrder.hpp"
 #include "Graphics/ConservativeRasterization.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

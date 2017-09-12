@@ -6,7 +6,7 @@
 #include "Math/Constants.hpp"
 #include <gmock/gmock.h>
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Math;
 
 //////////////////////////////////////////////////////////////////////////
@@ -17,8 +17,8 @@ public:
 };
 
 typedef ::testing::Types <
-	Cpf::SIMD::Reference::F32x4_3,
-	Cpf::SIMD::SSE4_1::F32x4_3
+	CPF::SIMD::Reference::F32x4_3,
+	CPF::SIMD::SSE4_1::F32x4_3
 > Data32_3_Types;
 
 TYPED_TEST_CASE(TypedTest_Matrix33, Data32_3_Types);

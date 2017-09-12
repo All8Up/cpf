@@ -9,7 +9,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T>
 	using Queue = CPF_STL_NAMESPACE::queue<T>;

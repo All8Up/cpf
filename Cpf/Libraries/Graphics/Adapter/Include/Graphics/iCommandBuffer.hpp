@@ -4,7 +4,7 @@
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

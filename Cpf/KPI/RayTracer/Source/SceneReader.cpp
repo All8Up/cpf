@@ -45,7 +45,7 @@ SceneReader::SceneReader(Scene& scene, const NodeFactory& factory)
 	, mFactory(factory)
 {}
 
-bool SceneReader::Load(Cpf::IO::Stream* source)
+bool SceneReader::Load(CPF::IO::Stream* source)
 {
 	auto json = ReadText(source);
 	jsoncons::json jsonDoc(jsoncons::json::parse(json.data()));

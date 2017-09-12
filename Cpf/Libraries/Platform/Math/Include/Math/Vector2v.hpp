@@ -5,7 +5,7 @@
 #include "SIMD/Detail/LaneIndex.hpp"
 #include "SIMD/Detail/Swizzles.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{
@@ -23,7 +23,7 @@ namespace Cpf
 			explicit Vector2v(TYPE value);
 			Vector2v(LaneType v0, LaneType v1);
 			template <int I0, int I1>
-			explicit Vector2v(Cpf::SIMD::LaneRef_2<TYPE, I0, I1>& ref);
+			explicit Vector2v(SIMD::LaneRef_2<TYPE, I0, I1>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::LaneIndex<TYPE> CPF_VECTORCALL operator [](int idx);
@@ -49,7 +49,7 @@ namespace Cpf
 #include "Math/Detail/Vector2v.inl"
 #include "SIMD/Types.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

@@ -4,7 +4,7 @@
 
 TEST(IO, TextReader)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace IO;
 
 	String line0("This is a test file.");

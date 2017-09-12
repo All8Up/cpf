@@ -10,7 +10,7 @@
 #include "Plugin/iClassInstance.hpp"
 #include "MultiCore/iStage.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

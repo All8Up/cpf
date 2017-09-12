@@ -6,7 +6,7 @@
 #include "Adapter/D3D12/Instance.hpp"
 #include "Logging/Logging.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////

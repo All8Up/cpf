@@ -6,7 +6,7 @@
 TEST(MultiCore, DependencySolver_Basic)
 {
 #if 0
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace MultiCore;
 
 	DependencySolver solver;

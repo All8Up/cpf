@@ -10,7 +10,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template <typename InputIterator, typename OutputIterator, typename UnaryOperation>
 	OutputIterator Transform(InputIterator first, InputIterator last, OutputIterator result, UnaryOperation unaryOperation)

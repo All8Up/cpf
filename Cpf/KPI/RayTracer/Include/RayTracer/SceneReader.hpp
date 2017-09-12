@@ -5,7 +5,7 @@
 #include <jsoncons/json.hpp>
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{
@@ -27,11 +27,11 @@ namespace RayTracer
 	class SceneReader
 	{
 	public:
-		using NodeFactory = Cpf::Patterns::Factory<Cpf::String, Node>;
+		using NodeFactory = CPF::Patterns::Factory<CPF::String, Node>;
 
 		SceneReader(Scene&, const NodeFactory&);
 
-		bool Load(Cpf::IO::Stream* source);
+		bool Load(CPF::IO::Stream* source);
 
 	private:
 		Scene& mScene;

@@ -13,7 +13,7 @@
 #include "Concurrency/WorkContext.hpp"
 #include "Math/Vector4v.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Math;
 using namespace Graphics;
 

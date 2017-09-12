@@ -10,18 +10,18 @@ namespace IDL
 	class SymbolPath
 	{
 	public:
-		using Path = Cpf::Vector<Cpf::String>;
+		using Path = CPF::Vector<CPF::String>;
 
 		SymbolPath() {}
-		SymbolPath(const Cpf::String& path) : mPath{ path } {}
+		SymbolPath(const CPF::String& path) : mPath{ path } {}
 		~SymbolPath() {}
 
 		bool Empty() const { return mPath.empty(); }
-		void Push(const Cpf::String& part) { mPath.push_back(part); }
+		void Push(const CPF::String& part) { mPath.push_back(part); }
 		const Path& GetPath() const { return mPath; }
-		Cpf::String ToString(const Cpf::String& separator) const
+		CPF::String ToString(const CPF::String& separator) const
 		{
-			Cpf::String result;
+			CPF::String result;
 			if (Empty())
 				return result;
 			result = mPath[0];
@@ -39,10 +39,10 @@ namespace IDL
 
 	class Visitor
 		: public IDLParserBaseVisitor
-		, public Cpf::Events::Emitter
+		, public CPF::Events::Emitter
 	{
 	public:
-		using String = Cpf::String;
+		using String = CPF::String;
 		enum class Type : int32_t
 		{
 			Ident,
@@ -67,7 +67,7 @@ namespace IDL
 			bool mConst;
 			Type mType;
 			String mIdent;
-			Cpf::Vector<Pointer> mPointer;
+			CPF::Vector<Pointer> mPointer;
 		};
 		struct ParamDecl
 		{
@@ -78,23 +78,23 @@ namespace IDL
 		{
 			String mName;
 			TypeDecl mReturnType;
-			Cpf::Vector<ParamDecl> mParams;
+			CPF::Vector<ParamDecl> mParams;
 		};
 		struct InterfaceDecl
 		{
 			String mName;
 			SymbolPath mSuper;
 
-			using Functions = Cpf::Vector<FunctionDecl>;
+			using Functions = CPF::Vector<FunctionDecl>;
 			Functions mFunctions;
 		};
 
-		typedef Cpf::Events::Event<0, Cpf::Function<void()>> Start;
-		typedef Cpf::Events::Event<1, Cpf::Function<void (const SymbolPath&)>> ModuleStmt;
-		typedef Cpf::Events::Event<2, Cpf::Function<void(const String&, const String&, const String&)>> SuccessType;
-		typedef Cpf::Events::Event<3, Cpf::Function<void(const String&, const String&, const String&)>> FailureType;
-		typedef Cpf::Events::Event<4, Cpf::Function<void(const String&, const SymbolPath&)>> ImportStmt;
-		typedef Cpf::Events::Event<5, Cpf::Function<void(const InterfaceDecl&)>> InterfaceDeclStmt;
+		typedef CPF::Events::Event<0, CPF::Function<void()>> Start;
+		typedef CPF::Events::Event<1, CPF::Function<void (const SymbolPath&)>> ModuleStmt;
+		typedef CPF::Events::Event<2, CPF::Function<void(const String&, const String&, const String&)>> SuccessType;
+		typedef CPF::Events::Event<3, CPF::Function<void(const String&, const String&, const String&)>> FailureType;
+		typedef CPF::Events::Event<4, CPF::Function<void(const String&, const SymbolPath&)>> ImportStmt;
+		typedef CPF::Events::Event<5, CPF::Function<void(const InterfaceDecl&)>> InterfaceDeclStmt;
 
 		Visitor();
 

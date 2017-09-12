@@ -10,7 +10,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	// Just alias in std::unordered_set for the moment.
 	template<typename T, typename Hash = CPF_STL_NAMESPACE::hash<T>>

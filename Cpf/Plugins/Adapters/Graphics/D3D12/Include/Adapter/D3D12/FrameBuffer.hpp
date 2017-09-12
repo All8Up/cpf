@@ -4,7 +4,7 @@
 #include "Graphics/iImageView.hpp"
 #include "Vector.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

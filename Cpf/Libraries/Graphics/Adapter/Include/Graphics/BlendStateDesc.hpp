@@ -7,7 +7,7 @@
 #include <initializer_list>
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

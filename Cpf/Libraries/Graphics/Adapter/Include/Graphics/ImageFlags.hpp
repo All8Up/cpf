@@ -2,7 +2,7 @@
 #pragma once
 #include "EnumFlagType.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

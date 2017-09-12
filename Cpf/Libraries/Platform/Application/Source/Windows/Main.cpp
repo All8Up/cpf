@@ -7,25 +7,25 @@
 #include "PluginHost/Registry.hpp"
 
 
-extern Cpf::iApplicationMain::AppMainCreate gs_AppMainCreate;
+extern CPF::iApplicationMain::AppMainCreate gs_AppMainCreate;
 
 namespace
 {
-	Cpf::GOM::Result RunApplication(Cpf::iApplicationMain* appMain)
+	CPF::GOM::Result RunApplication(CPF::iApplicationMain* appMain)
 	{
 		if (appMain)
 		{
-			Cpf::Plugin::iRegistry* registry = nullptr;
-			Cpf::GOM::Result result;
-			if (Cpf::GOM::Succeeded(result = Cpf::PluginHost::CreateRegistry(&registry)))
+			CPF::Plugin::iRegistry* registry = nullptr;
+			CPF::GOM::Result result;
+			if (CPF::GOM::Succeeded(result = CPF::PluginHost::CreateRegistry(&registry)))
 			{
-				Cpf::GOM::ClassID appId;
-				if (Cpf::GOM::Succeeded(appMain->Initialize(registry, &appId)))
+				CPF::GOM::ClassID appId;
+				if (CPF::GOM::Succeeded(appMain->Initialize(registry, &appId)))
 				{
-					Cpf::IntrusivePtr<Cpf::iApplication> app;
-					if (Cpf::GOM::Succeeded(result = registry->Create(nullptr, appId.GetID(), Cpf::iApplication::kIID.GetID(), app.AsVoidPP())))
+					CPF::IntrusivePtr<CPF::iApplication> app;
+					if (CPF::GOM::Succeeded(result = registry->Create(nullptr, appId.GetID(), CPF::iApplication::kIID.GetID(), app.AsVoidPP())))
 					{
-						if (Cpf::GOM::Succeeded(app->Initialize(registry, appMain)))
+						if (CPF::GOM::Succeeded(app->Initialize(registry, appMain)))
 							result = app->Run();
 					}
 				}
@@ -34,7 +34,7 @@ namespace
 			appMain->Release();
 			return result;
 		}
-		return Cpf::GOM::kOutOfMemory;
+		return CPF::GOM::kOutOfMemory;
 	}
 }
 
@@ -46,9 +46,9 @@ int main(int argc, char** argv)
 	if (app)
 	{
 		auto result = RunApplication(app);
-		return Cpf::GOM::Succeeded(result) ? 0 : -int(result&0x7FFF);
+		return CPF::GOM::Succeeded(result) ? 0 : -int(result&0x7FFF);
 	}
-	return -int(Cpf::GOM::kOutOfMemory & 0x7FFF);
+	return -int(CPF::GOM::kOutOfMemory & 0x7FFF);
 }
 
 
@@ -60,8 +60,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 	if (app)
 	{
 		auto result = RunApplication(app);
-		return Cpf::GOM::Succeeded(result) ? 0 : -int(result & 0x7FFF);
+		return CPF::GOM::Succeeded(result) ? 0 : -int(result & 0x7FFF);
 	}
-	return -int(Cpf::GOM::kOutOfMemory & 0x7FFF);
+	return -int(CPF::GOM::kOutOfMemory & 0x7FFF);
 }
 #endif

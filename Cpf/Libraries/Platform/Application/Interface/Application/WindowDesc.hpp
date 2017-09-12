@@ -4,7 +4,7 @@
 #include "Math/Vector2v.hpp"
 #include "String.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	struct iWindow;
 	struct iWindowedApplication;

@@ -4,7 +4,7 @@
 #include "Application/iWindow.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	struct WindowDesc;
 

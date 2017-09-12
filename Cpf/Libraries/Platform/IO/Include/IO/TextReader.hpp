@@ -1,7 +1,7 @@
 #pragma once
 #include "IO/Stream.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{

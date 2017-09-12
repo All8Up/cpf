@@ -2,7 +2,7 @@
 #pragma once
 #include "GOM/iUnknown.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Plugin
 	{
@@ -71,4 +71,4 @@ namespace Cpf
 	}
 }
 
-#define CPF_CLASSINSTANCE_ACCESS(name) friend struct Cpf::Plugin::tClassInstance<name>;
+#define CPF_CLASSINSTANCE_ACCESS(name) friend struct CPF::Plugin::tClassInstance<name>;

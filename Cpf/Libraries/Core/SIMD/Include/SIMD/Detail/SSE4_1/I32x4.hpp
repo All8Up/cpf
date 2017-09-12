@@ -4,7 +4,7 @@
 #include "Utilities.hpp"
 #include <immintrin.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

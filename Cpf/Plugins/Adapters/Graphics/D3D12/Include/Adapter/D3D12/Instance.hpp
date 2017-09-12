@@ -10,7 +10,7 @@
 #	define CPF_USE_D3D12_DEBUG_LAYER
 #endif
 
-namespace Cpf
+namespace CPF
 {
 	class iWindow;
 
@@ -27,12 +27,12 @@ namespace Cpf
 		namespace D3D12
 		{
 			//////////////////////////////////////////////////////////////////////////
-			static constexpr Cpf::GOM::ClassID kD3D12InstanceCID = Cpf::GOM::ClassID("Adapter::D3D12::iInstance"_crc64);
+			static constexpr GOM::ClassID kD3D12InstanceCID = GOM::ClassID("Adapter::D3D12::iInstance"_crc64);
 
 			//////////////////////////////////////////////////////////////////////////
 			struct Instance : tRefCounted<Graphics::iInstance>
 			{
-				Instance(GOM::iUnknown*);
+				Instance(iUnknown*);
 				virtual ~Instance();
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

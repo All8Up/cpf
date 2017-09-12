@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/SubPassDesc.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

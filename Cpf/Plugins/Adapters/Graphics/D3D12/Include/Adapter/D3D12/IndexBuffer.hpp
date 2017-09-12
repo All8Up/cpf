@@ -5,7 +5,7 @@
 #include "IntrusivePtr.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

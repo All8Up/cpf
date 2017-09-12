@@ -5,7 +5,7 @@
 #include "Graphics/LoadOp.hpp"
 #include "Graphics/StoreOp.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

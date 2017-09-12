@@ -2,7 +2,7 @@
 #pragma once
 #include <functional>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Std
 	{

@@ -2,7 +2,7 @@
 #pragma once
 #include "Events/Id.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Events
 	{
@@ -225,9 +225,9 @@ namespace Cpf
 namespace std
 {
 	template<>
-	struct hash < Cpf::Events::HandleBase >
+	struct hash < CPF::Events::HandleBase >
 	{
-		size_t operator ()(const Cpf::Events::HandleBase& eh) const
+		size_t operator ()(const CPF::Events::HandleBase& eh) const
 		{
 			hash<void*> ptrHash;
 			hash<int64_t> intHash;
@@ -244,11 +244,11 @@ namespace std
 
 
 	template<>
-	struct hash < Cpf::Events::Handle >
+	struct hash < CPF::Events::Handle >
 	{
-		size_t operator ()(const Cpf::Events::Handle& eh) const
+		size_t operator ()(const CPF::Events::Handle& eh) const
 		{
-			hash<Cpf::Events::HandleBase> baseHasher;
+			hash<CPF::Events::HandleBase> baseHasher;
 			return baseHasher(eh);
 		}
 	};

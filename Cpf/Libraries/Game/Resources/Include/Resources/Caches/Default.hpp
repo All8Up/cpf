@@ -4,7 +4,7 @@
 #include "Resources/iCache.hpp"
 #include "UnorderedMap.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

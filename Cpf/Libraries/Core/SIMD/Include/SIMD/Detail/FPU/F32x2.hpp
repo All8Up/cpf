@@ -7,7 +7,7 @@
 #include "SIMD/Detail/Ref32x4_3.hpp"
 #include "SIMD/Detail/Ref32x4_4.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

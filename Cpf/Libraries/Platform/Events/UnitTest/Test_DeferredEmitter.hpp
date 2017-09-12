@@ -6,9 +6,9 @@
 
 namespace TestDeferred
 {
-	struct Test : public Cpf::Events::DeferredEmitter
+	struct Test : CPF::Events::DeferredEmitter
 	{
-		typedef Cpf::Events::Event< 0, Cpf::Function< void(void) > > Test0;
+		typedef CPF::Events::Event< 0, CPF::Function< void() > > Test0;
 	};
 }
 
@@ -18,7 +18,7 @@ TEST(Events, DeferredSingleVoidPost)
 	TestDeferred::Test test;
 	int32_t test0 = 0;
 
-	Cpf::Events::Handle event0(test.On<TestDeferred::Test::Test0>([&]() {
+	CPF::Events::Handle event0(test.On<TestDeferred::Test::Test0>([&]() {
 		++test0;
 	}));
 	test.Post<TestDeferred::Test::Test0>();
@@ -35,7 +35,7 @@ TEST(Events, DeferredSingleVoidEmit)
 	int32_t test0 = 0;
 	int32_t test1 = 0;
 
-	Cpf::Events::Handle event0(test.On<TestDeferred::Test::Test0>([&]() {
+	CPF::Events::Handle event0(test.On<TestDeferred::Test::Test0>([&]() {
 		++test0;
 	}));
 	test.Emit<TestDeferred::Test::Test0>([&]() {++test1;});

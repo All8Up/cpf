@@ -6,7 +6,7 @@
 #include <gmock/gmock.h>
 
 //////////////////////////////////////////////////////////////////////////
-using namespace Cpf;
+using namespace CPF;
 using namespace SIMD;
 using namespace Math;
 

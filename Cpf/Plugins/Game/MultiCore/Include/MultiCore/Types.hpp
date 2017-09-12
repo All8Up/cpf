@@ -7,7 +7,7 @@
 #include "Hash/HashString.hpp"
 #include "Concurrency/iScheduler.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

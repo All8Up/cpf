@@ -3,7 +3,7 @@
 #include "Graphics/AttachmentDesc.hpp"
 #include "Graphics/PipelineBindPoint.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

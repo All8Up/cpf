@@ -5,7 +5,7 @@
 #ifdef CPF_HAVE_SPDLOG
 #include <spdlog/spdlog.h>
 
-namespace Cpf
+namespace CPF
 {
 	/** @brief Logging level names. */
 	namespace LogLevel
@@ -77,8 +77,8 @@ namespace Cpf
 #define CPF_LOG_LEVEL_ACCESSOR(l)	CPF_LOG_LEVEL_ACCESSOR_(l)
 
 // Use the logs.
-#define CPF_INIT_LOG(name) {Cpf::output_debug(#name);}
-#define CPF_DROP_LOG(name) {Cpf::drop_debug(#name);}
+#define CPF_INIT_LOG(name) {CPF::output_debug(#name);}
+#define CPF_DROP_LOG(name) {CPF::drop_debug(#name);}
 #define CPF_LOG(name, level) spdlog::get(#name)->CPF_LOG_LEVEL_ACCESSOR(level)()
 #define CPF_LOG_LEVELS(l) spdlog::set_level(spdlog::level::CPF_LOG_LEVEL_ACCESSOR(l))
 #define CPF_LOG_LEVEL(name, l) {spdlog::get(#name)->set_level(spdlog::level::CPF_LOG_LEVEL_ACCESSOR(l));}

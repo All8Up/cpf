@@ -3,7 +3,7 @@
 #include "String.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	template<typename TYPE>
 	inline typename TYPE::const_iterator FindAnyOf(

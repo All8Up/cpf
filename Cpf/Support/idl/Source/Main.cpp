@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 {
 	(void)argc; (void)argv;
 	gflags::ParseCommandLineFlags(&argc, &argv, true);
-	Cpf::IOInitializer::Install();
+	CPF::IOInitializer::Install();
 
 	if (FLAGS_input.empty())
 	{
@@ -35,7 +35,12 @@ int main(int argc, char** argv)
 		printf("Error: no output file given.\n");
 		return -1;
 	}
-	if (!FLAGS_cpp && !FLAGS_rust)
+	IDL::CodeGen::Language language;
+	if (FLAGS_cpp)
+		language = IDL::CodeGen::Language::Cpp;
+	else if (FLAGS_rust)
+		language = IDL::CodeGen::Language::Rust;
+	else
 	{
 		printf("Error: no target language specified.\n");
 		return -1;
@@ -52,11 +57,11 @@ int main(int argc, char** argv)
 	//////////////////////////////////////////////////////////////////////////
 	// Transform the parse tree to the IDL syntax tree.
 	IDL::Visitor visitor;
-	Cpf::IO::StreamPtr outStream(Cpf::IO::File::Create(FLAGS_output, Cpf::IO::StreamAccess::eWrite));
-	Cpf::IO::TextWriter textWriter(outStream);
+	CPF::IO::StreamPtr outStream(CPF::IO::File::Create(FLAGS_output, CPF::IO::StreamAccess::eWrite));
+	CPF::IO::TextWriter textWriter(outStream);
 	IDL::CodeGen::CodeWriter writer(textWriter);
 	{
-		auto generator = Create(IDL::CodeGen::Language::Cpp);
+		auto generator = Create(language);
 		generator->Begin(visitor, writer);
 		visitor.visit(parseTree);
 		generator->End();
@@ -67,6 +72,6 @@ int main(int argc, char** argv)
 	OutputDebugString(s.data());
 	*/
 
-	Cpf::IOInitializer::Remove();
+	CPF::IOInitializer::Remove();
 	return 0;
 }

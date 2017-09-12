@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore/Types.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace MultiCore;

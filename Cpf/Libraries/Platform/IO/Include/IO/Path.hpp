@@ -8,7 +8,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{
@@ -58,7 +58,7 @@ namespace Cpf
 					}
 				}
 
-				Cpf::Replace(
+				CPF::Replace(
 					result.begin(),
 					result.end(),
 					PathConstants<typename STRING_TYPE::value_type>::kReversedSeparator,
@@ -204,7 +204,7 @@ namespace Cpf
 			STRING_TYPE _ToOS(const STRING_TYPE& path)
 			{
 				STRING_TYPE result = path;
-				Cpf::Replace(
+				CPF::Replace(
 					result.begin(),
 					result.end(),
 					PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator,

@@ -27,7 +27,7 @@ bool Sphere::Parse( Scene& s, JSONValue* v )
 bool CPF_VECTORCALL Sphere::Intersect(const Ray3& ray, float& t) const
 {
 	float result = 0.0f;
-	if (Cpf::Math::Intersect(ray, mSphere, result))
+	if (CPF::Math::Intersect(ray, mSphere, result))
 	{
 		if (result < t)
 		{

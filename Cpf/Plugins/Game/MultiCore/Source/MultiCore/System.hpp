@@ -5,7 +5,7 @@
 #include "RefCounted.hpp"
 #include "MultiCore/iSystem.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

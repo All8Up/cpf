@@ -21,7 +21,7 @@
 #include "Std/Memory.hpp"
 #include "Resources/ID.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Math;
 using namespace Graphics;
 

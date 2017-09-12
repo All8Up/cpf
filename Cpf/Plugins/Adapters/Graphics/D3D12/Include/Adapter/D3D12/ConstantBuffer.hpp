@@ -7,7 +7,7 @@
 #include "CommandBuffer.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

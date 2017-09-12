@@ -12,7 +12,7 @@
 #include "Graphics/BindingType.hpp"
 #include <dxgi1_2.h>
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 using namespace Graphics;
 

@@ -3,7 +3,7 @@
 #include "Hash/HashID.hpp"
 #include "MultiCore/iStage.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

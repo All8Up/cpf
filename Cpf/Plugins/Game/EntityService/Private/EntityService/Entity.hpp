@@ -9,7 +9,7 @@
 #include "EntityService/Interfaces/iEntity.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

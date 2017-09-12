@@ -17,7 +17,7 @@
 #include "Graphics/iRenderPass.hpp"
 
 //
-namespace Cpf
+namespace CPF
 {
 	class ExperimentalD3D12 : public tRefCounted<iApplicationMain>
 	{

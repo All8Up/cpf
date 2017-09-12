@@ -3,12 +3,12 @@
 #include "RefCount.hpp"
 #include "Platform/SharedLibrary.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Plugin
 	{
 		/** @brief A general purpose shared library maintainer. */
-		class CPF_EXPORT Library : public tRefCounted<>
+		class CPF_EXPORT Library : public CPF::tRefCounted<>
 		{
 		public:
 			/** @brief Default constructor. */

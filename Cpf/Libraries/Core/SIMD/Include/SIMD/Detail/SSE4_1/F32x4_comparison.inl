@@ -2,7 +2,7 @@
 #pragma once
 #include "SIMD/Detail/SSE4_1/Bool4.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

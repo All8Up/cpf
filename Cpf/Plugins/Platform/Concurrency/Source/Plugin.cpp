@@ -8,7 +8,7 @@
 #include "Plugin/iClassInstance.hpp"
 #include "Logging/Logging.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 extern "C" void CPF_EXPORT InstallScheduler(Plugin::iRegistry* registry)
 {

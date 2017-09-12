@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/iResource.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

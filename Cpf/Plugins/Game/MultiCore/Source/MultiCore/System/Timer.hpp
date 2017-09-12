@@ -5,7 +5,7 @@
 #include "MultiCore/System/iTimer.hpp"
 #include "Plugin/iClassInstance.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

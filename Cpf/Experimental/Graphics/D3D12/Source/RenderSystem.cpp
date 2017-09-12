@@ -3,7 +3,7 @@
 #include "ExperimentalD3D12.hpp"
 #include "MultiCore/iStage.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Concurrency;
 using namespace MultiCore;
 

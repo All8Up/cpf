@@ -8,7 +8,7 @@
 #include "Move.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Threading
 	{

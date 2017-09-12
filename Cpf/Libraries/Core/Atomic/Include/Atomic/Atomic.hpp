@@ -4,7 +4,7 @@
 #include "Platform/Atomic/MemoryOrder.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Atomic
 	{

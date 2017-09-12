@@ -3,7 +3,7 @@
 #include "Hash/Crc.hpp"
 #include "String.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Hash
 	{
@@ -107,9 +107,9 @@ namespace Cpf
 namespace CPF_STL_NAMESPACE
 {
 	template <typename IDTYPE, typename TAG>
-	struct hash<Cpf::Hash::HashID<IDTYPE, TAG>>
+	struct hash<CPF::Hash::HashID<IDTYPE, TAG>>
 	{
-		size_t operator ()(const Cpf::Hash::HashID<IDTYPE, TAG>& id) const
+		size_t operator ()(const CPF::Hash::HashID<IDTYPE, TAG>& id) const
 		{
 			return size_t(id.GetID());
 		}

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "RenderSystem.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 RenderSystem::RenderSystem(GOM::iUnknown*)
 {

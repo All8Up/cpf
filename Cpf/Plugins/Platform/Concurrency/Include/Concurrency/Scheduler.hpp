@@ -11,7 +11,7 @@
 #include "Concurrency/ThreadTimeInfo.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

@@ -5,7 +5,7 @@
 #include "MultiCore/Container.hpp"
 #include "Plugin/iClassInstance.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

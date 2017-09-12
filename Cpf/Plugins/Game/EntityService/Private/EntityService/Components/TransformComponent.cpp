@@ -2,7 +2,7 @@
 #include "TransformComponent.hpp"
 #include "../Entity.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace EntityService;
 
 GOM::Result TransformComponent::Install(Plugin::iRegistry* regy)

@@ -5,8 +5,8 @@
 #include "Math/Vector4v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector4fv_SSE4_1 = Cpf::Math::Vector4v<Cpf::SIMD::SSE4_1::F32x4_4>;
-using Vector4fv_Reference = Cpf::Math::Vector4v<Cpf::SIMD::Reference::F32x4_4>;
+using Vector4fv_SSE4_1 = CPF::Math::Vector4v<CPF::SIMD::SSE4_1::F32x4_4>;
+using Vector4fv_Reference = CPF::Math::Vector4v<CPF::SIMD::Reference::F32x4_4>;
 
 template <typename T>
 class TypedTest_Vector4 : public::testing::Test
@@ -17,8 +17,8 @@ public:
 typedef ::testing::Types <
 	Vector4fv_Reference,
 	Vector4fv_SSE4_1,
-	Cpf::Math::Vector4v<Cpf::SIMD::Reference::I32x4_4>,
-	Cpf::Math::Vector4v<Cpf::SIMD::SSE4_1::I32x4_4>
+	CPF::Math::Vector4v<CPF::SIMD::Reference::I32x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::SSE4_1::I32x4_4>
 > x32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector4, x32x4_1_Types);
@@ -455,7 +455,7 @@ TYPED_TEST(TypedTest_Vector4fv, Round_Truncate)
 	using Element = typename Type::LaneType;
 
 	Type t0 = { 5.25f, 12.85f, 19.22f, 21.34f };
-	Type t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+	Type t1 = Round(t0, CPF::SIMD::Rounding::eTruncate);
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f, 21.0f }, 0.01f));
 }

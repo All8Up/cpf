@@ -15,7 +15,7 @@ Application::Application( const std::string& scene )
 :	mSceneFilename( scene )
 ,	mLog( "Log.txt" )
 {
-	Cpf::IOInitializer::Install();
+	CPF::IOInitializer::Install();
 	InstallNodeTypes();
 }
 
@@ -23,7 +23,7 @@ Application::Application( const std::string& scene )
 Application::~Application()
 {
 	mLog.close();
-	Cpf::IOInitializer::Remove();
+	CPF::IOInitializer::Remove();
 }
 
 
@@ -83,8 +83,8 @@ bool Application::OpenScene()
 {
 	//////////////////////////////////////////////////////////////////////////
 	{
-		Cpf::IntrusivePtr<Cpf::IO::Stream> stream(
-			Cpf::IO::File::Create(mSceneFilename, Cpf::IO::StreamAccess::eRead));
+		CPF::IntrusivePtr<CPF::IO::Stream> stream(
+			CPF::IO::File::Create(mSceneFilename, CPF::IO::StreamAccess::eRead));
 		SceneReader reader(mContext.Scene(), mNodeTypes);
 		if (reader.Load(stream))
 		{

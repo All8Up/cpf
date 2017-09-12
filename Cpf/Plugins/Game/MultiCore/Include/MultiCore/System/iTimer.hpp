@@ -5,7 +5,7 @@
 #include "Time/Value.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

@@ -3,7 +3,7 @@
 #include "Resources/iMonitor.hpp"
 #include "Resources/Resources.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

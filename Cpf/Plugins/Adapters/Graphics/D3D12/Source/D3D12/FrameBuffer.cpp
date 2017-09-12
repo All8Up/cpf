@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/FrameBuffer.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 using namespace D3D12;
 

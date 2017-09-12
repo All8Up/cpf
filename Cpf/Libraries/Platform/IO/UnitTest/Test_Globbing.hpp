@@ -6,7 +6,7 @@
 
 TEST(Globbing, Match)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace IO;
 
 	const String simple("test.test");

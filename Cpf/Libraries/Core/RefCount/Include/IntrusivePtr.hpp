@@ -5,7 +5,7 @@
 #include <RefCounted.hpp>
 
 
-namespace Cpf
+namespace CPF
 {
 	/**
 	 * @brief An intrusive reference pointer.

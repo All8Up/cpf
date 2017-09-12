@@ -7,7 +7,7 @@
 #include "Logging/Logging.hpp"
 #include "SDL2/CIDs.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace SDL2;
 
 WindowedApp::WindowedApp(GOM::iUnknown*)

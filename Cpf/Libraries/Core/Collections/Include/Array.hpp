@@ -9,7 +9,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T, size_t SIZE>
 	using Array = CPF_STL_NAMESPACE::array<T, SIZE>;

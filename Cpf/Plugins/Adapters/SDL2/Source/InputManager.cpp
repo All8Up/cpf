@@ -5,7 +5,7 @@
 #include "SDL2/CIDs.hpp"
 #include "SDL2.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace SDL2;
 
 InputManager::InputManager(GOM::iUnknown*)

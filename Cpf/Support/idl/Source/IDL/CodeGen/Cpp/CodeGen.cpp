@@ -7,22 +7,22 @@
 
 using namespace IDL;
 using namespace CodeGen;
-using namespace Cpf::Placeholders;
+using namespace CPF::Placeholders;
 
 //////////////////////////////////////////////////////////////////////////
-void Cpp::Generator::Begin(Visitor& visitor, CodeWriter& writer)
+void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 {
 	mpWriter = &writer;
 
-	visitor.On<Visitor::Start>(Cpf::Bind(&Generator::OnStart, this));
-	visitor.On<Visitor::ModuleStmt>(Cpf::Bind(&Generator::OnModule, this, _1));
-	visitor.On<Visitor::SuccessType>(Cpf::Bind(&Generator::OnSuccessType, this, _1, _2, _3));
-	visitor.On<Visitor::FailureType>(Cpf::Bind(&Generator::OnFailureType, this, _1, _2, _3));
-	visitor.On<Visitor::ImportStmt>(Cpf::Bind(&Generator::OnImportStmt, this, _1, _2));
-	visitor.On<Visitor::InterfaceDeclStmt>(Cpf::Bind(&Generator::OnInterfaceDeclStmt, this, _1));
+	visitor.On<Visitor::Start>(CPF::Bind(&CppGenerator::OnStart, this));
+	visitor.On<Visitor::ModuleStmt>(CPF::Bind(&CppGenerator::OnModule, this, _1));
+	visitor.On<Visitor::SuccessType>(CPF::Bind(&CppGenerator::OnSuccessType, this, _1, _2, _3));
+	visitor.On<Visitor::FailureType>(CPF::Bind(&CppGenerator::OnFailureType, this, _1, _2, _3));
+	visitor.On<Visitor::ImportStmt>(CPF::Bind(&CppGenerator::OnImportStmt, this, _1, _2));
+	visitor.On<Visitor::InterfaceDeclStmt>(CPF::Bind(&CppGenerator::OnInterfaceDeclStmt, this, _1));
 }
 
-void Cpp::Generator::End()
+void CppGenerator::End()
 {
 	for (const auto& part : mModule.GetPath())
 	{
@@ -34,13 +34,13 @@ void Cpp::Generator::End()
 
 //
 
-void Cpp::Generator::OnStart()
+void CppGenerator::OnStart()
 {
 	mpWriter->OutputLine("//////////////////////////////////////////////////////////////////////////");
 	mpWriter->OutputLine("#pragma once");
 }
 
-void Cpp::Generator::OnModule(const SymbolPath& path)
+void CppGenerator::OnModule(const SymbolPath& path)
 {
 	mModule = path;
 	for (const auto& part : path.GetPath())
@@ -51,38 +51,38 @@ void Cpp::Generator::OnModule(const SymbolPath& path)
 	}
 }
 
-void Cpp::Generator::OnSuccessType(const String& name, const String& subSystem, const String& desc)
+void CppGenerator::OnSuccessType(const String& name, const String& subSystem, const String& desc)
 {
 	mpWriter->OutputLine("static constexpr uint32_t k%s = 0x%" PRIx32 "; // %s - %s",
 		name.c_str(),
-		Cpf::GOM::CreateResult(
+		CPF::GOM::CreateResult(
 			0,
-			Cpf::Hash::Crc15(subSystem.c_str(), subSystem.length()),
-			Cpf::Hash::Crc16(desc.c_str(), desc.length())),
+			CPF::Hash::Crc15(subSystem.c_str(), subSystem.length()),
+			CPF::Hash::Crc16(desc.c_str(), desc.length())),
 		subSystem.c_str(),
 		desc.c_str());
 }
 
-void Cpp::Generator::OnFailureType(const String& name, const String& subSystem, const String& desc)
+void CppGenerator::OnFailureType(const String& name, const String& subSystem, const String& desc)
 {
 	mpWriter->OutputLine("static constexpr uint32_t k%s = 0x%" PRIx32 "; // %s - %s",
 		name.c_str(),
-		Cpf::GOM::CreateResult(
+		CPF::GOM::CreateResult(
 			1,
-			Cpf::Hash::Crc15(subSystem.c_str(), subSystem.length()),
-			Cpf::Hash::Crc16(desc.c_str(), desc.length())),
+			CPF::Hash::Crc15(subSystem.c_str(), subSystem.length()),
+			CPF::Hash::Crc16(desc.c_str(), desc.length())),
 		subSystem.c_str(),
 		desc.c_str());
 }
 
-void Cpp::Generator::OnImportStmt(const String& item, const SymbolPath& from)
+void CppGenerator::OnImportStmt(const String& item, const SymbolPath& from)
 {
 	(void)item;  (void)from;
 	mpWriter->OutputLine("#include \"GOM/Result.hpp\"");
 	mpWriter->OutputLine("");
 }
 
-void Cpp::Generator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
+void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 {
 	mpWriter->OutputLine("");
 	if (decl.mSuper.Empty())
@@ -91,6 +91,11 @@ void Cpp::Generator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		mpWriter->OutputLine("struct %s : %s", decl.mName.c_str(), decl.mSuper.ToString("::").c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
+
+	//
+	mpWriter->OutputLine("static constexpr GOM::InterfaceID kIID = GOM::InterfaceID(\"%s\"_crc64);",
+		(mModule.ToString("::") + "::" + decl.mName).c_str());
+	mpWriter->OutputLine("");
 
 	for (const auto& func : decl.mFunctions)
 	{
@@ -121,7 +126,7 @@ void Cpp::Generator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->OutputLine("};");
 }
 
-Cpf::String Cpp::Generator::TypeToString(const Visitor::TypeDecl& decl)
+CPF::String CppGenerator::TypeToString(const Visitor::TypeDecl& decl)
 {
 	String result;
 	if (decl.mConst)

@@ -6,7 +6,7 @@
 #include "DescriptorManager.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

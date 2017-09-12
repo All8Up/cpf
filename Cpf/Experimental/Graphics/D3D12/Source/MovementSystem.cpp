@@ -12,7 +12,7 @@
 #include "EntityService/Interfaces/Components/iTransformComponent.hpp"
 #include "Threading/ScopedLock.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Math;
 using namespace EntityService;
 using namespace MultiCore;

@@ -4,7 +4,7 @@
 #include "Pair.hpp"
 #include "Vector.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	struct iInputManager;
 	struct iMouseDevice;

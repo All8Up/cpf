@@ -2,7 +2,7 @@
 #pragma once
 #include "MultiCore/iSystem.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	static constexpr GOM::ClassID kRenderSystemCID = GOM::ClassID("Cpf::RenderSystemCID"_crc64);
 

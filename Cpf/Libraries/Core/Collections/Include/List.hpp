@@ -8,7 +8,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T>
 	using List = CPF_STL_NAMESPACE::list<T>;

@@ -9,7 +9,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T, typename C = CPF_STL_NAMESPACE::less<T>>
 	using Set = CPF_STL_NAMESPACE::set<T, C>;

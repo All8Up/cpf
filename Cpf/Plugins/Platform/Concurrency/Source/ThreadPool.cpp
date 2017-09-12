@@ -2,7 +2,7 @@
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Concurrency;
 
 ThreadPool::ThreadPool(iUnknown*)

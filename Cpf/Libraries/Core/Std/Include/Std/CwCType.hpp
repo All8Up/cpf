@@ -3,7 +3,7 @@
 #include "Std/Std.hpp"
 #include <wchar.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Std
 	{

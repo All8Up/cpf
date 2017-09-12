@@ -13,14 +13,14 @@ namespace ConcurrencyTestData
 	struct CPF_ALIGN(16) TestData
 	{
 		int32_t HitCount;
-		Cpf::Threading::Semaphore Complete;
+		CPF::Threading::Semaphore Complete;
 	};
 }
 
 
 TEST_F(ConcurrencyTest, ActiveChange)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Concurrency;
 	using namespace ConcurrencyTestData;
 
@@ -71,7 +71,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 
 			pScheduler->Execute(pWorkBuffer);
 			testData->Complete.Acquire();
-			EXPECT_EQ(loopCount*threads, Cpf::Atomic::Load(testData->HitCount));
+			EXPECT_EQ(loopCount*threads, CPF::Atomic::Load(testData->HitCount));
 		}
 		for (auto threads = pScheduler->GetMaxThreads(); threads > 0; --threads)
 		{
@@ -137,7 +137,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 
 			pScheduler->Execute(pWorkBuffer);
 			testData->Complete.Acquire();
-			EXPECT_EQ(loopCount*threadCount, Cpf::Atomic::Load(testData->HitCount));
+			EXPECT_EQ(loopCount*threadCount, CPF::Atomic::Load(testData->HitCount));
 		}
 
 		pScheduler->Shutdown();

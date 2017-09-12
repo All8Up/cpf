@@ -13,7 +13,7 @@
 #include "Graphics/ClearValue.hpp"
 #include "Graphics/FrameBufferDesc.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 #define WINDOW_TITLE "Hello Triangle: " CPF_STRINGIZE(GFX_ADAPTER)
 

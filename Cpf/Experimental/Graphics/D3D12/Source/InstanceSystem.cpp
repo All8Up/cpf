@@ -4,7 +4,7 @@
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 InstanceSystem::InstanceSystem(GOM::iUnknown*)
 {}

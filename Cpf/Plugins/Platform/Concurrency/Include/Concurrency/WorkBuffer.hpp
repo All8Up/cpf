@@ -6,7 +6,7 @@
 
 #define CPF_SCHEDULER_DISASSEMBLER 1
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

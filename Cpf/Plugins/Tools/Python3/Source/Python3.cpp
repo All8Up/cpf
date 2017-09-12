@@ -4,7 +4,7 @@
 #include "Plugin/iRegistry.hpp"
 #include <Python.h>
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Tools;
 
 Python3* s_Python3 = nullptr;

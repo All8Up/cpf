@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/iRenderPass.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

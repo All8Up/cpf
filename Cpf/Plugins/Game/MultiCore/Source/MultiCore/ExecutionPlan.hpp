@@ -4,7 +4,7 @@
 #include "Plugin/iClassInstance.hpp"
 #include "UnorderedMap.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

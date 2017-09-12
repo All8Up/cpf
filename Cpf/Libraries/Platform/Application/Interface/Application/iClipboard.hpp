@@ -2,7 +2,7 @@
 #pragma once
 #include "GOM/iUnknown.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	struct iClipboard : GOM::iUnknown
 	{

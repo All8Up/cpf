@@ -18,7 +18,7 @@
 #include "Application/OSWindowData.hpp"
 #include "Logging/Logging.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Graphics;
 
 bool ExperimentalD3D12::_SelectAdapter(Graphics::iInstance* instance, iAdapter** outAdapter)

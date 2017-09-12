@@ -224,7 +224,7 @@ void Scene::Initialize( TraceContext& ctx )
 	mScreenY			=	Cross( viewVector, mScreenX );
 
 	float aspect		=	width / height;
-	float halfFov		= Cpf::Math::kDegToRad * (ctx.Scene().Camera().FOV() / 2.0f);
+	float halfFov		= CPF::Math::kDegToRad * (ctx.Scene().Camera().FOV() / 2.0f);
 
 	float	mag			=	viewDist * std::tan( halfFov ) / width;
 	mScreenX			*=	mag;

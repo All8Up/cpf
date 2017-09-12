@@ -4,7 +4,7 @@
 #include "Time/Value.hpp"
 #include "Functional.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Threading
 	{

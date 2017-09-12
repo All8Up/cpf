@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/Ratio.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

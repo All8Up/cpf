@@ -23,14 +23,14 @@ public:
 	{
 	}
 
-	Cpf::Time::Ns oneNs;
-	Cpf::Time::Us oneUs;
-	Cpf::Time::Ms oneMs;
-	Cpf::Time::Seconds oneSecond;
-	Cpf::Time::Minutes oneMinute;
-	Cpf::Time::Hours oneHour;
-	Cpf::Time::Days oneDay;
-	Cpf::Time::Years oneYear;
+	CPF::Time::Ns oneNs;
+	CPF::Time::Us oneUs;
+	CPF::Time::Ms oneMs;
+	CPF::Time::Seconds oneSecond;
+	CPF::Time::Minutes oneMinute;
+	CPF::Time::Hours oneHour;
+	CPF::Time::Days oneDay;
+	CPF::Time::Years oneYear;
 };
 
 

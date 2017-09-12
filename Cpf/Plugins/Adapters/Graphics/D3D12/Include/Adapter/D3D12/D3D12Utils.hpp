@@ -15,7 +15,7 @@
 #define SAFE_RELEASE(a) {if (a) a->Release();}
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

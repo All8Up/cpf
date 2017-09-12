@@ -10,7 +10,7 @@
 #include "Resources/Volumes/FileSystem.hpp"
 #include "Resources/ResourceConfig.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 
 extern "C" void CPF_EXPORT InstallResources(Plugin::iRegistry* registry)

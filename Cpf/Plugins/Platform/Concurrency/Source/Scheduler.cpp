@@ -15,7 +15,7 @@
 #include "Concurrency/Fence.hpp"
 #include "Concurrency/ThreadTimes.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Concurrency;
 
 
@@ -387,7 +387,7 @@ bool Scheduler::_FetchWork()
 		mExternalQueue.erase(mExternalQueue.begin(), mExternalQueue.begin() + pullCount);
 
 		// Update the tail with new instructions.
-		Cpf::Fence::Release();
+		CPF::Fence::Release();
 		mInstructionRing.Commit(pullCount);
 		return true;
 	}

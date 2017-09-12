@@ -4,7 +4,7 @@
 #include "Plugin/Context.hpp"
 #include "Plugin/iClassInstance.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 namespace
 {

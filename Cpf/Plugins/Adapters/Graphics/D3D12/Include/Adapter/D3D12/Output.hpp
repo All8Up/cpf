@@ -4,7 +4,7 @@
 #include "IntrusivePtr.hpp"
 #include <dxgi1_4.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

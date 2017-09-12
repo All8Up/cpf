@@ -3,7 +3,7 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Plugin/iRegistry.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	static constexpr GOM::ClassID kThreadPoolCID = GOM::ClassID("Cpf::iThreadPool"_crc64);
 

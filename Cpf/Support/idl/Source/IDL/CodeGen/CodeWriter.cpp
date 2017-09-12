@@ -7,7 +7,7 @@
 using namespace IDL;
 using namespace CodeGen;
 
-CodeWriter::CodeWriter(Cpf::IO::TextWriter& writer, bool useTabs, int indentSpaces)
+CodeWriter::CodeWriter(CPF::IO::TextWriter& writer, bool useTabs, int indentSpaces)
 	: mWriter(writer)
 	, mIndent(0)
 	, mUseTabs(useTabs)
@@ -26,12 +26,12 @@ void CodeWriter::Output(const char* const format, ...)
 	char buffer[2048];
 	vsprintf(buffer, format, args);
 	va_end(args);
-	mWriter.Write(buffer, Cpf::Std::StrLen(buffer));
+	mWriter.Write(buffer, CPF::Std::StrLen(buffer));
 }
 
 void CodeWriter::OutputLine(const char* const format, ...)
 {
-	Cpf::String indention = GetIndentString();
+	CPF::String indention = GetIndentString();
 	mWriter.Write(indention.c_str(), indention.length());
 	{
 		va_list args;
@@ -39,7 +39,7 @@ void CodeWriter::OutputLine(const char* const format, ...)
 		char buffer[2048];
 		vsprintf(buffer, format, args);
 		va_end(args);
-		mWriter.Write(buffer, Cpf::Std::StrLen(buffer));
+		mWriter.Write(buffer, CPF::Std::StrLen(buffer));
 	}
 	mWriter.Write("\n", 1);
 }

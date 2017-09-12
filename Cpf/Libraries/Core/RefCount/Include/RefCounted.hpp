@@ -5,7 +5,7 @@
 #include "RefCount.hpp"
 #include "Hash/HashID.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	//////////////////////////////////////////////////////////////////////////
 	struct CPF_NOVTABLE iRefCounted

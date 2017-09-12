@@ -2,7 +2,7 @@
 #pragma once
 #include "EntityService/Interfaces/iComponent.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	static constexpr GOM::ClassID kRenderableCID = GOM::ClassID("Cpf::iRenderable"_crc64);
 

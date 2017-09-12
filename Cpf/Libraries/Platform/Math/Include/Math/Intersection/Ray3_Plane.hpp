@@ -5,7 +5,7 @@
 #include "Math/Geometry/Ray3.hpp"
 #include "Math/Geometry/Plane.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

@@ -9,7 +9,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T>
 	using ForwardList = CPF_STL_NAMESPACE::forward_list<T>;

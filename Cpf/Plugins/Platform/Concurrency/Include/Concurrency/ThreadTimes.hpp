@@ -5,7 +5,7 @@
 #include "Concurrency/ThreadTimeInfo.hpp"
 #include "Threading/Semaphore.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

@@ -3,7 +3,7 @@
 #include "GOM/iUnknown.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

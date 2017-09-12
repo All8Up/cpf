@@ -4,7 +4,7 @@
 #include "EntityService/Interfaces/iManager.hpp"
 #include "Move.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////

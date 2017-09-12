@@ -4,7 +4,7 @@
 #include "D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

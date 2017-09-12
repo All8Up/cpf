@@ -25,7 +25,7 @@
 #include "Graphics/FrameBufferDesc.hpp"
 #include "Graphics/RenderPassBeginDesc.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace MultiCore;
 using namespace Graphics;
 

@@ -3,7 +3,7 @@
 #include "GOM/iUnknown.hpp"
 #include "Events/Event.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	enum class KeyCode : int32_t;
 	enum class ScanCode : int32_t;

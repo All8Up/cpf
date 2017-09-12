@@ -4,7 +4,7 @@
 #include "Hash/Crc.hpp"
 #include "Functional.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Hash
 	{
@@ -145,17 +145,17 @@ namespace Cpf
 }
 
 
-constexpr Cpf::Hash::HashString<Cpf::Hash::BaseHashString_Tag> operator "" _hashString(const char* val, size_t idx)
+constexpr CPF::Hash::HashString<CPF::Hash::BaseHashString_Tag> operator "" _hashString(const char* val, size_t idx)
 {
-	return Cpf::Hash::HashString<Cpf::Hash::BaseHashString_Tag>(val, idx);
+	return CPF::Hash::HashString<CPF::Hash::BaseHashString_Tag>(val, idx);
 }
 
 namespace CPF_STL_NAMESPACE
 {
 	template <typename TAG>
-	struct hash<Cpf::Hash::HashString<TAG>>
+	struct hash<CPF::Hash::HashString<TAG>>
 	{
-		size_t operator ()(const Cpf::Hash::HashString<TAG>& id) const
+		size_t operator ()(const CPF::Hash::HashString<TAG>& id) const
 		{
 			return id.GetID();
 		}

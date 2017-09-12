@@ -2,7 +2,7 @@
 #pragma once
 #include "Time/Ratio.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Time
 	{

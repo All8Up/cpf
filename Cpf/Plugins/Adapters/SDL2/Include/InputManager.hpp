@@ -2,7 +2,7 @@
 #pragma once
 #include "Application/iInputManager.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	struct iMouseDevice;
 	struct iKeyboardDevice;

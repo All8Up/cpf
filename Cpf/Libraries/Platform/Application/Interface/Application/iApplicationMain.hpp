@@ -3,7 +3,7 @@
 #include "GOM/iUnknown.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	namespace Plugin
 	{
@@ -24,5 +24,5 @@ namespace Cpf
 }
 
 #define CPF_CREATE_APPMAIN(appName)												\
-namespace { Cpf::iApplicationMain* CreateAppMain() { return new appName; } }	\
-Cpf::iApplicationMain::AppMainCreate gs_AppMainCreate = CreateAppMain;
+namespace { CPF::iApplicationMain* CreateAppMain() { return new appName; } }	\
+CPF::iApplicationMain::AppMainCreate gs_AppMainCreate = CreateAppMain;

@@ -2,7 +2,7 @@
 #pragma once
 #include "Math/Vector2v.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

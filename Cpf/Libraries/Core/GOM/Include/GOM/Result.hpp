@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
-#include "Hash/HashID.hpp"
+#include "Hash/Crc.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace GOM
 	{
@@ -37,24 +37,6 @@ namespace Cpf
 		constexpr uint16_t GetError(Result result) { return uint16_t((result & 0x80000000) >> 31); }
 		constexpr uint16_t GetSubSystem(Result result) { return uint16_t((result & 0x7FFF0000) >> 16); }
 		constexpr uint16_t GetCode(Result result) { return uint16_t(result & 0x0000ffff); }
-
-		// Standard result codes.
-		static constexpr Result kOK = CreateResult(0, "Core"_crc15, "OK"_crc16);
-		static constexpr Result kError = CreateResult(1, "Core"_crc15, "Error"_crc16);
-		static constexpr Result kUnknownInterface = CreateResult(1, "Core"_crc15, "UnknownInterface"_crc16);
-		static constexpr Result kInvalidParameter = CreateResult(1, "Core"_crc15, "InvalidParameter"_crc16);
-		static constexpr Result kOutOfMemory = CreateResult(1, "Core"_crc15, "OutOfMemory"_crc16);
-		static constexpr Result kUnknownClass = CreateResult(1, "Core"_crc15, "UnknownClass"_crc16);
-		static constexpr Result kNotImplemented = CreateResult(1, "Core"_crc15, "NotImplemented"_crc16);
-		static constexpr Result kInvalid = CreateResult(1, "Core"_crc15, "Invalid"_crc16);
-		static constexpr Result kNotEnoughSpace = CreateResult(1, "Core"_crc15, "NotEnoughSpace"_crc16);
-		static constexpr Result kInUse = CreateResult(0, "Core"_crc15, "InUse"_crc16);
-		static constexpr Result kNotInitialized = CreateResult(1, "Core"_crc15, "NotInitialized"_crc16);
-		static constexpr Result kInitializationFailure = CreateResult(1, "Core"_crc15, "InitializationFailure"_crc16);
-		static constexpr Result kOutOfRange = CreateResult(1, "Core"_crc15, "OutOfRange"_crc16);
-		static constexpr Result kDuplicateCID = CreateResult(1, "Core"_crc15, "DuplicateCID"_crc16);
-		static constexpr Result kRegistryError = CreateResult(1, "Core"_crc15, "RegistryError"_crc16);
-		static constexpr Result kNotRunning = CreateResult(1, "Core"_crc15, "NotRunning"_crc16);
 	}
 }
 

@@ -5,7 +5,7 @@
 
 TEST(Math, Bits_SplitByOne_Limits)
 {
-	using namespace Cpf::Math;
+	using namespace CPF::Math;
 	uint32_t maxBit32 = uint32_t(1) << 15;
 	uint32_t maxBit64 = uint32_t(1) << 31;
 
@@ -28,7 +28,7 @@ TEST(Math, Bits_SplitByOne_Limits)
 
 TEST(Math, Bits_SplitByTwo_Limits)
 {
-	using namespace Cpf::Math;
+	using namespace CPF::Math;
 	uint32_t maxBit32 = uint32_t(1) << 9;
 	uint32_t maxBit64 = uint32_t(1) << 20;
 

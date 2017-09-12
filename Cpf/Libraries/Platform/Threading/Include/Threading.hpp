@@ -3,7 +3,7 @@
 #include "Configuration.hpp"
 #include <thread>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Threading
 	{

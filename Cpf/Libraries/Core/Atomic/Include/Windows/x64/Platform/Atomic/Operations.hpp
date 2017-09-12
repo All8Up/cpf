@@ -4,7 +4,7 @@
 #include <atomic>
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Atomic
 	{

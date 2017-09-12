@@ -5,7 +5,7 @@
 #include "EntityService/Stages/EntityStage.hpp"
 #include "MultiCore/System/iTimer.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 namespace
 {

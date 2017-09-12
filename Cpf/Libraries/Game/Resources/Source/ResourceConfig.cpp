@@ -8,7 +8,7 @@
 #include "Resources/Locator.hpp"
 #include "Plugin/iRegistry.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 using namespace IO;
 

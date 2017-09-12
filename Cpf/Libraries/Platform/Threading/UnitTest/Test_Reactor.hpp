@@ -16,7 +16,7 @@ public:
 	virtual void TearDown() override
 	{}
 
-	using FunctionVector = Cpf::Vector<Cpf::Function<void(void)>>;
+	using FunctionVector = CPF::Vector<CPF::Function<void(void)>>;
 	void DoWorker(int count, FunctionVector& funcs)
 	{
 		mpData = new bool[count];
@@ -25,7 +25,7 @@ public:
 
 		mGroup.Initialize(count);
 		for (int i = 0; i < count; ++i)
-			mGroup(i, Cpf::Move(funcs[i]));
+			mGroup(i, CPF::Move(funcs[i]));
 		mGroup.Join();
 
 		for (int i = 0; i < count; ++i)
@@ -34,9 +34,9 @@ public:
 		delete mpData;
 	}
 
-	Cpf::Threading::Reactor mReactor;
-	Cpf::Threading::Reactor::WorkQueue mQueue;
-	Cpf::Threading::Thread::Group mGroup;
+	CPF::Threading::Reactor mReactor;
+	CPF::Threading::Reactor::WorkQueue mQueue;
+	CPF::Threading::Thread::Group mGroup;
 	bool* mpData;
 };
 

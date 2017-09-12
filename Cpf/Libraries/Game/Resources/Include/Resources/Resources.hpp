@@ -5,7 +5,7 @@
 #include "rapidjson/document.h"
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

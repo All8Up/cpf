@@ -2,7 +2,7 @@
 #pragma once
 #include "Plugin.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	static constexpr GOM::ClassID kTestPluginCID = GOM::ClassID("TestPlugin"_crc64);
 

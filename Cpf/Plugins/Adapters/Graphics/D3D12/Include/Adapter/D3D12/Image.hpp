@@ -5,7 +5,7 @@
 #include "Graphics/ImageDesc.hpp"
 #include "DescriptorManager.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

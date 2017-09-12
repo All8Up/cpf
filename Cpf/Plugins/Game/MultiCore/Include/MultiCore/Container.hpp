@@ -7,7 +7,7 @@
 #include "Concurrency/Concurrency.hpp"
 #include "Move.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

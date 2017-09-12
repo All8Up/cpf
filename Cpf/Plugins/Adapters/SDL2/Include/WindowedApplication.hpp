@@ -5,7 +5,7 @@
 #include "Pair.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace SDL2
 	{

@@ -7,7 +7,7 @@
 #include <algorithm>
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{
@@ -70,7 +70,7 @@ namespace Cpf
 				const size_t mSize;
 				const size_t mSizeMask;
 				HeadIndex* mpThreadHead;
-				Cpf::Vector<TYPE> mBuffer;
+				Vector<TYPE> mBuffer;
 			};
 
 
@@ -277,7 +277,7 @@ namespace Cpf
 			{
 				if (Reserve(threadCount, 1))
 				{
-					mBuffer[(Tail()) & mSizeMask] = Cpf::Move(data);
+					mBuffer[(Tail()) & mSizeMask] = CPF::Move(data);
 					Commit(1);
 					return true;
 				}

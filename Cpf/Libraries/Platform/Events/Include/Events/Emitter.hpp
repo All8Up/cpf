@@ -5,7 +5,7 @@
 #include "Events/Event.hpp"
 #include "Vector.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Events
 	{
@@ -105,7 +105,7 @@ namespace Cpf
 #include "Events/Handle.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Events
 	{

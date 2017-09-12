@@ -3,7 +3,7 @@
 #include "GOM/iUnknown.hpp"
 #include "Events/Emitter.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	struct iInputDevice;
 

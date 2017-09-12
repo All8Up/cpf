@@ -3,7 +3,7 @@
 #include "Resources/Locator.hpp"
 #include "Resources/ID.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 using namespace Monitors;
 

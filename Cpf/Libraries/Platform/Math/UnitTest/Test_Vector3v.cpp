@@ -5,8 +5,8 @@
 #include "Math/Vector3v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector3fv_SSE4_1 = Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::F32x4_3>;
-using Vector3fv_Reference = Cpf::Math::Vector3v<Cpf::SIMD::Reference::F32x4_3>;
+using Vector3fv_SSE4_1 = CPF::Math::Vector3v<CPF::SIMD::SSE4_1::F32x4_3>;
+using Vector3fv_Reference = CPF::Math::Vector3v<CPF::SIMD::Reference::F32x4_3>;
 
 template <typename T>
 class TypedTest_Vector3 : public::testing::Test
@@ -17,8 +17,8 @@ public:
 typedef ::testing::Types <
 	Vector3fv_Reference,
 	Vector3fv_SSE4_1,
-	Cpf::Math::Vector3v<Cpf::SIMD::Reference::I32x4_3>,
-	Cpf::Math::Vector3v<Cpf::SIMD::SSE4_1::I32x4_3>
+	CPF::Math::Vector3v<CPF::SIMD::Reference::I32x4_3>,
+	CPF::Math::Vector3v<CPF::SIMD::SSE4_1::I32x4_3>
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector3, F32x4_1_Types);
@@ -510,7 +510,7 @@ TEST(Vector3fv, Round_Truncate_Reference)
 {
 	using Vector3fv = Vector3fv_Reference;
 	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
-	Vector3fv t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+	Vector3fv t1 = Round(t0, CPF::SIMD::Rounding::eTruncate);
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
 }
@@ -519,7 +519,7 @@ TEST(Vector3fv, Round_Truncate_SSE4_1)
 {
 	using Vector3fv = Vector3fv_SSE4_1;
 	Vector3fv t0 = { 5.25f, 12.85f, 19.22f };
-	Vector3fv t1 = Round(t0, Cpf::SIMD::Rounding::eTruncate);
+	Vector3fv t1 = Round(t0, CPF::SIMD::Rounding::eTruncate);
 
 	EXPECT_TRUE(Near(t1, { 5.0f, 12.0f, 19.0f }, 0.01f));
 }

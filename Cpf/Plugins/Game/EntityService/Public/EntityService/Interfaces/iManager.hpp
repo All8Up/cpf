@@ -2,7 +2,7 @@
 #pragma once
 #include "EntityService/Types.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

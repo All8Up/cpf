@@ -6,7 +6,7 @@
 #include "Set.hpp"
 #include "Map.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

@@ -4,7 +4,7 @@
 #include "Graphics/ComparisonFunc.hpp"
 #include "Graphics/StencilOp.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

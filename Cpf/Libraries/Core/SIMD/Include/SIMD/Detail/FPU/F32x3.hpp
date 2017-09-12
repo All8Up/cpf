@@ -5,7 +5,7 @@
 #include "SIMD/Detail/LaneRef.hpp"
 #include "SIMD/Detail/LaneIndex.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

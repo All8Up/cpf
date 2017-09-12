@@ -5,7 +5,7 @@
 #include "Functional.hpp"
 #include <thread>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Threading
 	{
@@ -114,7 +114,7 @@ namespace Cpf
 		template<typename tFunction, typename... tArgs>
 		Thread::Thread(tFunction&& func, tArgs&&... args)
 		{
-			_Start(Cpf::Move(std::bind(func, args...)));
+			_Start(CPF::Move(std::bind(func, args...)));
 		}
 
 
@@ -153,7 +153,7 @@ namespace Cpf
 		template<typename tFunction, typename... tArgs>
 		void Thread::operator ()(tFunction&& func, tArgs&&... args)
 		{
-			_Start(Cpf::Move(std::bind(func, args...)));
+			_Start(CPF::Move(std::bind(func, args...)));
 		}
 	}
 }

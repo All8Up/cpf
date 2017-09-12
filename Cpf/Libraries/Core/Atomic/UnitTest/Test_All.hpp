@@ -13,7 +13,7 @@ TYPED_TEST_CASE_P(AtomicTest);
 
 TYPED_TEST_P(AtomicTest, Load)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = 0;
 	EXPECT_EQ(0, Atomic::Load(testValue));
 	testValue = std::numeric_limits<TypeParam>::max();
@@ -23,7 +23,7 @@ TYPED_TEST_P(AtomicTest, Load)
 
 TYPED_TEST_P(AtomicTest, Store)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = 0;
 	Atomic::Store(testValue, std::numeric_limits<TypeParam>::max());
 	EXPECT_EQ(std::numeric_limits<TypeParam>::max(), testValue);
@@ -32,7 +32,7 @@ TYPED_TEST_P(AtomicTest, Store)
 
 TYPED_TEST_P(AtomicTest, Inc)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = 0;
 	EXPECT_EQ(1, Atomic::Inc(testValue));
 	EXPECT_EQ(1, testValue);
@@ -41,7 +41,7 @@ TYPED_TEST_P(AtomicTest, Inc)
 
 TYPED_TEST_P(AtomicTest, Dec)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = std::numeric_limits<TypeParam>::max();
 	EXPECT_EQ(std::numeric_limits<TypeParam>::max() - 1, Atomic::Dec(testValue));
 	EXPECT_EQ(std::numeric_limits<TypeParam>::max() - 1, testValue);
@@ -50,7 +50,7 @@ TYPED_TEST_P(AtomicTest, Dec)
 
 TYPED_TEST_P(AtomicTest, Add)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = 0;
 	EXPECT_EQ(5, Atomic::Add(testValue, 5));
 	EXPECT_EQ(5, testValue);
@@ -59,7 +59,7 @@ TYPED_TEST_P(AtomicTest, Add)
 
 TYPED_TEST_P(AtomicTest, Sub)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = std::numeric_limits<TypeParam>::max();
 	EXPECT_EQ(std::numeric_limits<TypeParam>::max() - 5, Atomic::Sub(testValue, 5));
 	EXPECT_EQ(std::numeric_limits<TypeParam>::max() - 5, testValue);
@@ -68,7 +68,7 @@ TYPED_TEST_P(AtomicTest, Sub)
 
 TYPED_TEST_P(AtomicTest, Exchange)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = 0;
 	EXPECT_EQ(0, Atomic::Exchange(testValue, std::numeric_limits<TypeParam>::max()));
 	EXPECT_EQ(std::numeric_limits<TypeParam>::max(), testValue);
@@ -77,7 +77,7 @@ TYPED_TEST_P(AtomicTest, Exchange)
 
 TYPED_TEST_P(AtomicTest, CompareExchange)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	TypeParam testValue = 0;
 	EXPECT_TRUE(Atomic::CompareExchange(testValue, std::numeric_limits<TypeParam>::max(), 0));
 	EXPECT_FALSE(Atomic::CompareExchange(testValue, std::numeric_limits<TypeParam>::max(), 0));

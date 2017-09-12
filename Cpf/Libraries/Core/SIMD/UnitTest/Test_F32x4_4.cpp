@@ -10,8 +10,8 @@ public:
 };
 
 typedef ::testing::Types <
-	Cpf::SIMD::Reference::F32x4_4,
-	Cpf::SIMD::SSE4_1::F32x4_4
+	CPF::SIMD::Reference::F32x4_4,
+	CPF::SIMD::SSE4_1::F32x4_4
 > F32x4_4_Types;
 
 TYPED_TEST_CASE(TypedTest_F32x4_4, F32x4_4_Types);

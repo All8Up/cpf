@@ -3,7 +3,7 @@
 #include "IO/File.hpp"
 #include "IO/Path.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace IO;
 
 

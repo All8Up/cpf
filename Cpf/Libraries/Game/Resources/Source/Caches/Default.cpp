@@ -3,7 +3,7 @@
 #include "Resources/Resource.hpp"
 #include "Logging/Logging.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 using namespace Caches;
 

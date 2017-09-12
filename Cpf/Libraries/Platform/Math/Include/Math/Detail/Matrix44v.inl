@@ -3,7 +3,7 @@
 #include "Math/Quaternion.hpp"
 #include "Math/Constants.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math
 	{

@@ -3,7 +3,7 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Graphics/SamplerDesc.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 using namespace D3D12;
 

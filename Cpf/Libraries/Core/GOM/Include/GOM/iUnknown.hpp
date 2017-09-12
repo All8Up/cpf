@@ -1,22 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "RefCounted.hpp"
-#include "GOM/Result.hpp"
+#include "GOM/Types.hpp"
+#include "GOM/ResultCodes.hpp"
+#include "IntrusivePtr.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace GOM
 	{
-		struct class_tag;
-		using ClassID = Hash::HashID<uint64_t, class_tag>;
-		struct interface_tag;
-		using InterfaceID = Hash::HashID<uint64_t, interface_tag>;
-		struct instance_tag;
-		using InstanceID = Hash::HashID<uint64_t, instance_tag>;
-
-		static_assert(sizeof(ClassID) == sizeof(uint64_t), "Size is incorrect.");
-		static_assert(sizeof(InterfaceID) == sizeof(uint64_t), "Size is incorrect.");
-
 		//////////////////////////////////////////////////////////////////////////
 		struct iUnknown
 		{

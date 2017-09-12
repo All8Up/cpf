@@ -11,7 +11,7 @@
 #include <d3d12.h>
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

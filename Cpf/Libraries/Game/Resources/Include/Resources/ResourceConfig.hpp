@@ -8,7 +8,7 @@
 #include "Resources/iVolume.hpp"
 #include <rapidjson/document.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Plugin
 	{
@@ -16,7 +16,7 @@ namespace Cpf
 	}
 }
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

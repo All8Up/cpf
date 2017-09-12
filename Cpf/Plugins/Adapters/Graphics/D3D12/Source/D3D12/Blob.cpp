@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Blob.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Adapter;
 using namespace D3D12;
 
@@ -39,7 +39,7 @@ GOM::Result Blob::Initialize(const void* data, int64_t size)
 {
 	if (data)
 	{
-		Cpf::Vector<uint8_t> empty;
+		CPF::Vector<uint8_t> empty;
 		mData.swap(empty);
 		mData.resize(size);
 		for (int i = 0; i < size; ++i)

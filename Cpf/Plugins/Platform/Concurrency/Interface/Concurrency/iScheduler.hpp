@@ -2,7 +2,7 @@
 #pragma once
 #include "GOM/iUnknown.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{
@@ -53,6 +53,6 @@ namespace Cpf
 			};
 			return &Caller::Call;
 		}
-#define SCHEDULED_CALL(t, f) Cpf::Concurrency::ThreadedCall<t, __COUNTER__>(f)
+#define SCHEDULED_CALL(t, f) CPF::Concurrency::ThreadedCall<t, __COUNTER__>(f)
 	}
 }

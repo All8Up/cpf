@@ -5,7 +5,7 @@
 #include "Atomic/Atomic.hpp"
 #include "Std/Std.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 void ExperimentalD3D12::_UpdatePipelineDisplay()
 {

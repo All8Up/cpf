@@ -8,7 +8,7 @@
 
 TEST_F(ConcurrencyTest, LastFenced_Opcode)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Concurrency;
 
 	for (auto i = 0; i < 100; ++i)
@@ -38,7 +38,7 @@ TEST_F(ConcurrencyTest, LastFenced_Opcode)
 			pWorkBuffer->LastOneBarrier([](const WorkContext*, void* context) {
 				// All threads should have executed the counter by the time we get here
 				// and none should have gotten to the next instruction.
-				EXPECT_EQ(4, Cpf::Atomic::Load(*reinterpret_cast<int*>(context)));
+				EXPECT_EQ(4, CPF::Atomic::Load(*reinterpret_cast<int*>(context)));
 			},
 			&hitCount);
 

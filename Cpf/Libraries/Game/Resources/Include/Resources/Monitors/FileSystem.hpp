@@ -2,7 +2,7 @@
 #pragma once
 #include "Resources/iMonitor.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

@@ -10,7 +10,7 @@
 #include "UnorderedSet.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Resources
 	{

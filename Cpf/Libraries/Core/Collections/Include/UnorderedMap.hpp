@@ -8,7 +8,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 #ifdef CPF_USE_EASTL
 	template<typename K, typename V>

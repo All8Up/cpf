@@ -7,7 +7,7 @@
 #if 0
 TEST(Concurrency, Set_SharedAddressRegister)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Concurrency;
 	ScopedInitializer<Platform::TimeInitializer> timeInit;
 

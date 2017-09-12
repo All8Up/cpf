@@ -4,7 +4,7 @@
 #include "SIMD/Detail/Reference/Bool4.hpp"
 #include "SIMD/Detail/SSE4_1/Bool4.hpp"
 
-using namespace Cpf::SIMD;
+using namespace CPF::SIMD;
 
 //////////////////////////////////////////////////////////////////////////
 template <typename T>

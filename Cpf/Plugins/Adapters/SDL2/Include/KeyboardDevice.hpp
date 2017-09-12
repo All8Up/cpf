@@ -2,7 +2,7 @@
 #pragma once
 #include "Application/iKeyboardDevice.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SDL2
 	{

@@ -2,7 +2,7 @@
 #pragma once
 #include <Pdh.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Threading
 	{

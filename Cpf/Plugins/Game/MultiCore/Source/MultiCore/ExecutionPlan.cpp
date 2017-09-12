@@ -6,7 +6,7 @@
 #include "Concurrency/iWorkBuffer.hpp"
 #include "PlanBuilder.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace MultiCore;
 
 

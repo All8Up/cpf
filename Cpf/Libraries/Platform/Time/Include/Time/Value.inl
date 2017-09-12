@@ -4,7 +4,7 @@
 #include "Time/Ratio.hpp"
 #include "Time/Counter.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Time
 	{

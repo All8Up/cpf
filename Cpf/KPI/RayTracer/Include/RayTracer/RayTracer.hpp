@@ -12,11 +12,11 @@
 
 namespace RayTracer
 {
-	using Vector3 = Cpf::Math::Vector3fv;
-	using Vector4 = Cpf::Math::Vector4fv;
-	using Matrix44 = Cpf::Math::Matrix44fv;
+	using Vector3 = CPF::Math::Vector3fv;
+	using Vector4 = CPF::Math::Vector4fv;
+	using Matrix44 = CPF::Math::Matrix44fv;
 
-	using Ray3 = Cpf::Math::Ray3<Vector3>;
+	using Ray3 = CPF::Math::Ray3<Vector3>;
 }
 
 

@@ -3,7 +3,7 @@
 #include "GOM/iUnknown.hpp"
 #include "Graphics/SubPassDesc.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

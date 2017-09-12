@@ -3,7 +3,7 @@
 #include "Application/MouseButton.hpp"
 #include "SDL.h"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace SDL2;
 
 

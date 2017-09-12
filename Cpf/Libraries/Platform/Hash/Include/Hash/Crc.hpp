@@ -7,7 +7,7 @@
 #include "Hash/Detail/Crc64Table.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Hash
 	{
@@ -162,7 +162,7 @@ namespace Cpf
  */
 constexpr uint16_t operator "" _crc15(const char* val, size_t idx)
 {
-	return Cpf::Hash::ComputeCrc15(val, idx, uint16_t(0));
+	return CPF::Hash::ComputeCrc15(val, idx, uint16_t(0));
 }
 
 
@@ -171,7 +171,7 @@ constexpr uint16_t operator "" _crc15(const char* val, size_t idx)
  */
 constexpr uint16_t operator "" _crc16(const char* val, size_t idx)
 {
-	return Cpf::Hash::ComputeCrc16(val, idx, uint16_t(-1));
+	return CPF::Hash::ComputeCrc16(val, idx, uint16_t(-1));
 }
 
 
@@ -180,7 +180,7 @@ constexpr uint16_t operator "" _crc16(const char* val, size_t idx)
  */
 constexpr uint32_t operator "" _crc32(const char* val, size_t idx)
 {
-	return Cpf::Hash::ComputeCrc32(val, idx, uint32_t(-1));
+	return CPF::Hash::ComputeCrc32(val, idx, uint32_t(-1));
 }
 
 
@@ -189,5 +189,5 @@ constexpr uint32_t operator "" _crc32(const char* val, size_t idx)
 */
 constexpr uint64_t operator "" _crc64(const char* val, size_t idx)
 {
-	return Cpf::Hash::ComputeCrc64(val, idx, uint64_t(-1));
+	return CPF::Hash::ComputeCrc64(val, idx, uint64_t(-1));
 }

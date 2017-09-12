@@ -3,7 +3,7 @@
 #include "asio.hpp"
 #include "MultiCore/iSystem.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	static constexpr GOM::ClassID kNetworkSystemCID = GOM::ClassID("NetworkSystemCID"_crc64);
 

@@ -4,7 +4,7 @@
 #include "Concurrency/iLoadBalancer.hpp"
 #include "Platform/Threading/CPU.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

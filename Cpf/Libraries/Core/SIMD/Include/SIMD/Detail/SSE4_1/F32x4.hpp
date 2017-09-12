@@ -5,7 +5,7 @@
 #include <emmintrin.h>
 #include <smmintrin.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

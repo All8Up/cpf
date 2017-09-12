@@ -5,7 +5,7 @@
 #include "Math/Vector4v.hpp"
 #include "Math/Constants.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	// Forward references.
 	struct iWindow;

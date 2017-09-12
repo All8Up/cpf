@@ -8,7 +8,7 @@
 #include "UnorderedSet.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Math {
 		class Color4f;

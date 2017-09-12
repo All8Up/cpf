@@ -5,7 +5,7 @@
 #include <dxgi1_4.h>
 #include "Plugin/iClassInstance.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Adapter
 	{

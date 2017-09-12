@@ -8,7 +8,7 @@
 #include "Hash/HashString.hpp"
 #include "InstanceSystem.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	class ExperimentalD3D12;
 	class MoverSystem;

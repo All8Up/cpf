@@ -3,7 +3,7 @@
 #include "Graphics/iRenderPass.hpp"
 #include "Vector.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

@@ -3,7 +3,7 @@
 #include "SIMD/Detail/FPU/FPU.hpp"
 #include "SIMD/Detail/FPU/Bool4.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

@@ -3,7 +3,7 @@
 #include "Logging/Logging.hpp"
 #include "Test.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Testing;
 
 //////////////////////////////////////////////////////////////////////////

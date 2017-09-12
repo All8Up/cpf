@@ -6,7 +6,7 @@
 #include "Detail/SSE4_1/F32x4.hpp"
 #include "Detail/SSE4_1/I32x4.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

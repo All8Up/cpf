@@ -1,6 +1,6 @@
 #include "IO/Globbing.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace IO;
 
 /**

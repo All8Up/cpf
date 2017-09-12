@@ -2,7 +2,7 @@
 #include "Resources/Resource.hpp"
 #include "Resources/iCache.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Resources;
 
 /**

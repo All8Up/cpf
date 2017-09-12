@@ -8,7 +8,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename T>
 	using Stack = CPF_STL_NAMESPACE::stack<T>;

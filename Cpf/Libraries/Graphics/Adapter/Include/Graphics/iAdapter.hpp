@@ -3,7 +3,7 @@
 #include "GOM/iUnknown.hpp"
 #include "Graphics/iOutput.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

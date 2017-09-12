@@ -3,7 +3,7 @@
 #include "Time/Value.hpp"
 #include "Concurrency/Concurrency.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

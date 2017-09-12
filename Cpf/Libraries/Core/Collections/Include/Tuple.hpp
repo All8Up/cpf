@@ -8,7 +8,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename... T>
 	using Tuple = CPF_STL_NAMESPACE::tuple<T...>;

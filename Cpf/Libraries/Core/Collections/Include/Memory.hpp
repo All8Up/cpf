@@ -9,7 +9,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename TYPE>
 	using UniquePtr = CPF_STL_NAMESPACE::unique_ptr<TYPE>;

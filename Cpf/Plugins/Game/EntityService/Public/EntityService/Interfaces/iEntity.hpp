@@ -2,7 +2,7 @@
 #pragma once
 #include "EntityService/Interfaces/iManager.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace EntityService
 	{

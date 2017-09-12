@@ -2,7 +2,7 @@
 #pragma once
 #include <Windows.h>
 
-namespace Cpf
+namespace CPF
 {
 	namespace Platform
 	{

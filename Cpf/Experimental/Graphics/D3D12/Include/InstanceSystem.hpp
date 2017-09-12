@@ -7,7 +7,7 @@
 #include "Hash/HashString.hpp"
 #include "Plugin/iClassInstance.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	class ExperimentalD3D12;
 

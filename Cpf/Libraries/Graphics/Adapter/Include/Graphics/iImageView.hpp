@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/iImage.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace Graphics
 	{

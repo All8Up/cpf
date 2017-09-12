@@ -5,7 +5,7 @@
 #include "VTune/VTune.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace Concurrency
 	{

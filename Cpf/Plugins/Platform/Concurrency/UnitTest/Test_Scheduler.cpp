@@ -10,7 +10,7 @@
 
 TEST_F(ConcurrencyTest, Basics)
 {
-	using namespace Cpf;
+	using namespace CPF;
 	using namespace Concurrency;
 
 	for (auto iterations = 0; iterations < 20; ++iterations)

@@ -8,7 +8,7 @@
 #endif
 
 //////////////////////////////////////////////////////////////////////////
-namespace Cpf
+namespace CPF
 {
 	template<typename LHS, typename RHS>
 	using Pair = CPF_STL_NAMESPACE::pair<LHS, RHS>;

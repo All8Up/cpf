@@ -2,7 +2,7 @@
 #pragma once
 #include "SIMD/Rounding.hpp"
 
-namespace Cpf
+namespace CPF
 {
 	namespace SIMD
 	{

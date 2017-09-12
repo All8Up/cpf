@@ -3,7 +3,7 @@
  */
 #include "IO/Stream.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 
 String CPF_EXPORT_IO IO::ReadText(Stream* stream)
 {

@@ -5,7 +5,7 @@
 #include "Plugin/iRegistry.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace MultiCore
 	{

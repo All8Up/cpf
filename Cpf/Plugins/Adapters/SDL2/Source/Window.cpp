@@ -6,7 +6,7 @@
 #include "SDL_syswm.h"
 #include "Application/OSWindowData.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace SDL2;
 
 //////////////////////////////////////////////////////////////////////////

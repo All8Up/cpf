@@ -3,7 +3,7 @@
 #include "IO/IO.hpp"
 
 
-namespace Cpf
+namespace CPF
 {
 	namespace IO
 	{

@@ -4,7 +4,7 @@
 #include "Graphics/ResourceState.hpp"
 #include "Std/Memory.hpp"
 
-using namespace Cpf;
+using namespace CPF;
 using namespace Std;
 using namespace Adapter;
 using namespace D3D12;
