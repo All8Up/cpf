@@ -1,0 +1,7 @@
+import iUnknown from GOM;
+module CPF::Plugin;
+
+interface iClassInstance : GOM::iUnknown
+{
+	result CreateInstance (iRegistry* registry, iUnknown* outer, [out] iUnknown** outInstance);
+}

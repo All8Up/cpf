@@ -1,4 +1,16 @@
 # ###############################################
+CPF_GEN_GOM(CppPluginFiles cpp
+	hpp
+	${CPF_GENERATED}/CPP/Plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iClassInstance.idl
+)
+CPF_GEN_GOM(RustPluginFiles rust
+	rs
+	${CPF_GENERATED}/Rust/Plugin
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iClassInstance.idl
+)
+
+# ###############################################
 set (INCLUDE_FILES
 	Include/Plugin.hpp
 )
@@ -12,8 +24,22 @@ set (INCLUDE_PLATFORM_FILES
 	Include/${CPF_TARGET_OS}/Platform/SharedLibrary.hpp
 )
 
+add_custom_target (Plugin_IDE
+	SOURCES
+		${INCLUDE_FILES}
+		${INCLUDE_PLUGIN_FILES}
+		${INCLUDE_PLATFORM_FILES}
+		${CppPluginFiles}
+		${RustPluginFiles}
+)
+set_property (TARGET Plugin_IDE PROPERTY FOLDER Libraries/Interface/Core)
+
+source_group (Interface FILES ${INCLUDE_FILES})
+source_group (Interface\\Plugin FILES ${INCLUDE_PLUGIN_FILES})
+source_group (Interface\\Platform FILES ${INCLUDE_PLATFORM_FILES})
+
 add_library (Plugin INTERFACE)
-target_link_libraries (Plugin INTERFACE Configuration GOM) # rttr_core)
+target_link_libraries (Plugin INTERFACE Configuration GOM)
 
 target_include_directories (Plugin INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -21,27 +47,6 @@ target_include_directories (Plugin INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CPF_TARGET_OS}>
 	$<INSTALL_INTERFACE:Include/${CPF_TARGET_OS}>
 )
-
-add_custom_target (Plugin_IDE SOURCES ${INCLUDE_FILES} ${INCLUDE_PLUGIN_FILES} ${INCLUDE_PLATFORM_FILES})
-set_property (TARGET Plugin_IDE PROPERTY FOLDER Libraries/Interface/Core)
-
-source_group (Interface FILES ${INCLUDE_FILES})
-source_group (Interface\\Plugin FILES ${INCLUDE_PLUGIN_FILES})
-source_group (Interface\\Platform FILES ${INCLUDE_PLATFORM_FILES})
-
-#[[
-install( DIRECTORY Include/Core
-	DESTINATION Include/Core
-	PATTERN *
-)
-install (TARGETS Plugin
-	EXPORT PluginConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
-install (EXPORT PluginConfig DESTINATION CMake)
-]]#
 
 # ###############################################
 add_library (TestPlugin SHARED
