@@ -35,8 +35,9 @@ add_custom_target (Plugin_IDE
 set_property (TARGET Plugin_IDE PROPERTY FOLDER Libraries/Interface/Core)
 
 source_group (Interface FILES ${INCLUDE_FILES})
-source_group (Interface\\Plugin FILES ${INCLUDE_PLUGIN_FILES})
+source_group (Interface\\Plugin FILES ${INCLUDE_PLUGIN_FILES} ${CppPluginFiles})
 source_group (Interface\\Platform FILES ${INCLUDE_PLATFORM_FILES})
+source_group (Rust FILES ${RustPluginFiles})
 
 add_library (Plugin INTERFACE)
 target_link_libraries (Plugin INTERFACE Configuration GOM)
