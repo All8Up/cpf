@@ -40,6 +40,7 @@ source_group (Interface\\Platform FILES ${INCLUDE_PLATFORM_FILES})
 source_group (Rust FILES ${RustPluginFiles})
 
 add_library (Plugin INTERFACE)
+add_dependencies (Plugin Plugin_IDE)
 target_link_libraries (Plugin INTERFACE Configuration GOM)
 
 target_include_directories (Plugin INTERFACE
