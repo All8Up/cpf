@@ -9,8 +9,6 @@ CPF_GEN_GOM(RustGOMFiles rust
 	${CPF_GENERATED}/Rust/GOM
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/ResultCodes.idl
 )
-message ("RS: ${RustGOMFiles}")
-
 
 # ###############################################
 set (INCLUDE_FILES
@@ -24,7 +22,14 @@ set (RUST_FILES
 	${RustGOMFiles}
 )
 
+add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES} ${RUST_FILES})
+source_group (Interface FILES ${INCLUDE_FILES})
+source_group (Rust FILES ${RUST_FILES})
+set_property (TARGET GOM_IDE PROPERTY FOLDER Libraries/Interface/Core)
+
 add_library (GOM INTERFACE)
+# Make sure files are generated before anyone uses GOM.
+add_dependencies (GOM GOM_IDE)
 target_link_libraries (GOM INTERFACE Configuration RefCount)
 
 target_include_directories (GOM INTERFACE
@@ -32,12 +37,6 @@ target_include_directories (GOM INTERFACE
 	$<INSTALL_INTERFACE:Include>
 	$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
-
-add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES} ${RUST_FILES})
-source_group (Interface FILES ${INCLUDE_FILES})
-source_group (Rust FILES ${RUST_FILES})
-set_property (TARGET GOM_IDE PROPERTY FOLDER Libraries/Interface/Core)
-
 
 # ###############################################
 install( DIRECTORY Include/Core
