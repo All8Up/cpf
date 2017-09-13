@@ -1,9 +1,15 @@
 # ###############################################
-CPF_GEN_GOM(GOMFiles
+CPF_GEN_GOM(CppGOMFiles cpp
 	hpp
 	${CPF_GENERATED}/CPP/GOM
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/ResultCodes.idl
 )
+CPF_GEN_GOM(RustGOMFiles rust
+	rs
+	${CPF_GENERATED}/Rust/GOM
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/ResultCodes.idl
+)
+message ("RS: ${RustGOMFiles}")
 
 
 # ###############################################
@@ -12,7 +18,10 @@ set (INCLUDE_FILES
 	Include/GOM/Types.hpp
 	Include/GOM/iUnknown.hpp
 	Include/GOM/Result.hpp
-	${GOMFiles}
+	${CppGOMFiles}
+)
+set (RUST_FILES
+	${RustGOMFiles}
 )
 
 add_library (GOM INTERFACE)
@@ -23,11 +32,11 @@ target_include_directories (GOM INTERFACE
 	$<INSTALL_INTERFACE:Include>
 	$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
-source_group (Interface FILES ${INCLUDE_FILES})
 
-add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES})
-set_property (TARGET GOM_IDE PROPERTY FOLDER Libraries/Interface/Core)
+add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES} ${RUST_FILES})
 source_group (Interface FILES ${INCLUDE_FILES})
+source_group (Rust FILES ${RUST_FILES})
+set_property (TARGET GOM_IDE PROPERTY FOLDER Libraries/Interface/Core)
 
 
 # ###############################################

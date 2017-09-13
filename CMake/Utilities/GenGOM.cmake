@@ -1,11 +1,11 @@
-function(CPF_GEN_GOM outList ext outDir)
+function(CPF_GEN_GOM outList target ext outDir)
 	set (genFiles "")
 	foreach (file ${ARGN})
 		get_filename_component(fileName ${file} NAME_WE)
 		set (targetFile "${outDir}/${fileName}.${ext}")
 
 		add_custom_command (OUTPUT ${targetFile}
-			COMMAND ${CPF_OS_BIN_DIR}/IDL --cpp
+			COMMAND ${CPF_OS_BIN_DIR}/IDL --${target}
 				--input="${file}"
 				--output="${targetFile}"
 		)
