@@ -29,8 +29,8 @@ add_custom_target (Plugin_IDE
 		${INCLUDE_FILES}
 		${INCLUDE_PLUGIN_FILES}
 		${INCLUDE_PLATFORM_FILES}
-		${CppPluginFiles}
-		${RustPluginFiles}
+#		${CppPluginFiles}
+#		${RustPluginFiles}
 )
 set_property (TARGET Plugin_IDE PROPERTY FOLDER Libraries/Interface/Core)
 
