@@ -39,8 +39,10 @@ Device::~Device()
 	CPF_LOG(D3D12, Info) << "Destroyed device: " << intptr_t(this) << " - " << intptr_t(mpDevice.Ptr()) << " - " << intptr_t(mpQueue.Ptr());
 }
 
-GOM::Result Device::Initialize(Graphics::iAdapter* adapter)
+GOM::Result Device::Initialize(Plugin::iRegistry* regy, Graphics::iAdapter* adapter)
 {
+	mpRegistry.Assign(regy);
+
 #ifdef CPF_DEBUG
 	ID3D12Debug* debugController = nullptr;
 	if (FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
@@ -270,14 +272,14 @@ GOM::Result CPF_STDCALL Device::CreateSampler(const Graphics::SamplerDesc* desc,
 
 GOM::Result CPF_STDCALL Device::CreateRenderPass(const Graphics::RenderPassDesc* desc, Graphics::iRenderPass** renderPass)
 {
-	if (gContext.GetRegistry() == nullptr)
+	if (mpRegistry == nullptr)
 		return GOM::kNotInitialized;
 	if (desc == nullptr)
 		return GOM::kInvalidParameter;
 	if (renderPass == nullptr)
 		return GOM::kInvalidParameter;
 
-	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kRenderPassCID.GetID(), Graphics::iRenderPass::kIID.GetID(), reinterpret_cast<void**>(renderPass))))
+	if (GOM::Succeeded(mpRegistry->Create(nullptr, kRenderPassCID.GetID(), Graphics::iRenderPass::kIID.GetID(), reinterpret_cast<void**>(renderPass))))
 	{
 		if (GOM::Succeeded(static_cast<RenderPass*>(*renderPass)->Initialize(desc)))
 			return GOM::kOK;
@@ -291,14 +293,14 @@ GOM::Result CPF_STDCALL Device::CreateRenderPass(const Graphics::RenderPassDesc*
 
 GOM::Result CPF_STDCALL Device::CreateFrameBuffer(const Graphics::FrameBufferDesc* desc, Graphics::iFrameBuffer** frameBuffer)
 {
-	if (gContext.GetRegistry() == nullptr)
+	if (mpRegistry == nullptr)
 		return GOM::kNotInitialized;
 	if (desc == nullptr)
 		return GOM::kInvalidParameter;
 	if (frameBuffer == nullptr)
 		return GOM::kInvalidParameter;
 
-	if (GOM::Succeeded(gContext.GetRegistry()->Create(nullptr, kFrameBufferCID.GetID(), Graphics::iFrameBuffer::kIID.GetID(), reinterpret_cast<void**>(frameBuffer))))
+	if (GOM::Succeeded(mpRegistry->Create(nullptr, kFrameBufferCID.GetID(), Graphics::iFrameBuffer::kIID.GetID(), reinterpret_cast<void**>(frameBuffer))))
 	{
 		if (GOM::Succeeded(static_cast<FrameBuffer*>(*frameBuffer)->Initialize(desc)))
 			return GOM::kOK;

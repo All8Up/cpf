@@ -40,10 +40,10 @@ LSHIFT                      : '<<';
 RSHIFT                      : '>>';
 
 // Type modifiers.
-CONST                       : 'const';
+// NOTE: Const/Void does not follow naming convention due to windows stupidity.
+Const                       : 'const';
 
 // Types.
-// NOTE: Void does not follow naming convention due to windows stupidity.
 Void                        : 'void';
 RESULT                      : 'result';
 SUCCESS                     : 'success';

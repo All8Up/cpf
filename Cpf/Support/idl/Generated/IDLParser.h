@@ -16,7 +16,7 @@ public:
     IN = 7, OUT = 8, COLON = 9, SEMICOLON = 10, STAR = 11, SLASH = 12, DOT = 13, 
     COMMA = 14, EQUALS = 15, QUOTE = 16, LBRACE = 17, RBRACE = 18, LPAREN = 19, 
     RPAREN = 20, LBRACKET = 21, RBRACKET = 22, LT = 23, GT = 24, PLUS = 25, 
-    MINUS = 26, LSHIFT = 27, RSHIFT = 28, CONST = 29, Void = 30, RESULT = 31, 
+    MINUS = 26, LSHIFT = 27, RSHIFT = 28, Const = 29, Void = 30, RESULT = 31, 
     SUCCESS = 32, FAILURE = 33, CLASS_ID = 34, STRING = 35, U8 = 36, S8 = 37, 
     U16 = 38, S16 = 39, U32 = 40, S32 = 41, U64 = 42, S64 = 43, F32 = 44, 
     F64 = 45, IDENT = 46, DECIMAL_LIT = 47, HEX_LIT = 48, BIN_LIT = 49, 
@@ -28,20 +28,20 @@ public:
     RuleMain = 0, RuleGlobal_statements = 1, RuleGlobal_statement = 2, RuleEmpty_stmt = 3, 
     RuleModule_stmt = 4, RuleError_code_stmt = 5, RuleSuccess_stmt = 6, 
     RuleFailure_stmt = 7, RuleImport_from_stmt = 8, RuleImport_stmt = 9, 
-    RuleStruct_stmt = 10, RuleStruct_decl = 11, RuleStruct_name = 12, RuleStruct_fwd = 13, 
-    RuleStruct_block = 14, RuleStruct_item = 15, RuleInterface_stmt = 16, 
-    RuleInterface_fwd = 17, RuleInterface_decl = 18, RuleInterface_super = 19, 
-    RuleInterface_block = 20, RuleInterface_item = 21, RuleFunction_decl = 22, 
-    RuleFunction_param_list = 23, RuleFunction_param = 24, RuleParam_dir_qualifier = 25, 
-    RuleConst_def = 26, RuleConst_integral_def = 27, RuleConst_float_def = 28, 
-    RuleConst_string_def = 29, RuleConst_class_id_def = 30, RuleEnum_fwd = 31, 
-    RuleEnum_def = 32, RuleEnum_type = 33, RuleEnum_elements = 34, RuleEnum_item = 35, 
-    RuleEnum_expr = 36, RuleExpr_add_sub = 37, RuleExpr_mul_div = 38, RuleExpr_shift = 39, 
-    RuleExpr_value = 40, RuleAny_literal = 41, RuleNumeric_lit = 42, RuleInteger_lit = 43, 
-    RuleFloat_lit = 44, RuleString_lit = 45, RuleQualified_ident = 46, RuleQualified_part = 47, 
-    RuleQualified_separator = 48, RuleAll_or_ident = 49, RuleMember_decl = 50, 
-    RuleType_decl = 51, RuleType_modifier = 52, RulePointer_type = 53, RuleAny_type = 54, 
-    RuleUtility_type = 55, RuleIntegral_type = 56, RuleFloat_type = 57
+    RuleStruct_stmt = 10, RuleStruct_decl = 11, RuleStruct_fwd = 12, RuleStruct_block = 13, 
+    RuleStruct_item = 14, RuleInterface_stmt = 15, RuleInterface_fwd = 16, 
+    RuleInterface_decl = 17, RuleInterface_super = 18, RuleInterface_block = 19, 
+    RuleInterface_item = 20, RuleFunction_decl = 21, RuleFunction_param_list = 22, 
+    RuleFunction_param = 23, RuleParam_dir_qualifier = 24, RuleConst_def = 25, 
+    RuleConst_integral_def = 26, RuleConst_float_def = 27, RuleConst_string_def = 28, 
+    RuleConst_class_id_def = 29, RuleEnum_fwd = 30, RuleEnum_def = 31, RuleEnum_type = 32, 
+    RuleEnum_elements = 33, RuleEnum_item = 34, RuleEnum_expr = 35, RuleExpr_add_sub = 36, 
+    RuleExpr_mul_div = 37, RuleExpr_shift = 38, RuleExpr_value = 39, RuleAny_literal = 40, 
+    RuleNumeric_lit = 41, RuleInteger_lit = 42, RuleFloat_lit = 43, RuleString_lit = 44, 
+    RuleQualified_ident = 45, RuleQualified_part = 46, RuleQualified_separator = 47, 
+    RuleAll_or_ident = 48, RuleMember_decl = 49, RuleType_decl = 50, RuleType_modifier = 51, 
+    RulePointer_type = 52, RuleAny_type = 53, RuleUtility_type = 54, RuleIntegral_type = 55, 
+    RuleFloat_type = 56
   };
 
   IDLParser(antlr4::TokenStream *input);
@@ -66,7 +66,6 @@ public:
   class Import_stmtContext;
   class Struct_stmtContext;
   class Struct_declContext;
-  class Struct_nameContext;
   class Struct_fwdContext;
   class Struct_blockContext;
   class Struct_itemContext;
@@ -316,7 +315,7 @@ public:
     Struct_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *STRUCT();
-    Struct_nameContext *struct_name();
+    antlr4::tree::TerminalNode *IDENT();
     Struct_blockContext *struct_block();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -328,27 +327,12 @@ public:
 
   Struct_declContext* struct_decl();
 
-  class  Struct_nameContext : public antlr4::ParserRuleContext {
-  public:
-    Struct_nameContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *IDENT();
-
-    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
-    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  Struct_nameContext* struct_name();
-
   class  Struct_fwdContext : public antlr4::ParserRuleContext {
   public:
     Struct_fwdContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *STRUCT();
-    antlr4::tree::TerminalNode *IDENT();
+    Qualified_identContext *qualified_ident();
     antlr4::tree::TerminalNode *SEMICOLON();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -416,7 +400,7 @@ public:
     Interface_fwdContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *INTERFACE();
-    antlr4::tree::TerminalNode *IDENT();
+    Qualified_identContext *qualified_ident();
     antlr4::tree::TerminalNode *SEMICOLON();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -507,6 +491,7 @@ public:
     antlr4::tree::TerminalNode *RPAREN();
     antlr4::tree::TerminalNode *SEMICOLON();
     Function_param_listContext *function_param_list();
+    antlr4::tree::TerminalNode *Const();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -593,7 +578,7 @@ public:
   public:
     Const_integral_defContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *Const();
     Integral_typeContext *integral_type();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *EQUALS();
@@ -613,7 +598,7 @@ public:
   public:
     Const_float_defContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *Const();
     Float_typeContext *float_type();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *EQUALS();
@@ -633,7 +618,7 @@ public:
   public:
     Const_string_defContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *Const();
     antlr4::tree::TerminalNode *STRING();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *EQUALS();
@@ -653,7 +638,7 @@ public:
   public:
     Const_class_id_defContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *Const();
     antlr4::tree::TerminalNode *CLASS_ID();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *LPAREN();
@@ -1030,7 +1015,7 @@ public:
   public:
     Type_modifierContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CONST();
+    antlr4::tree::TerminalNode *Const();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1047,8 +1032,8 @@ public:
     virtual size_t getRuleIndex() const override;
     std::vector<antlr4::tree::TerminalNode *> STAR();
     antlr4::tree::TerminalNode* STAR(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> CONST();
-    antlr4::tree::TerminalNode* CONST(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> Const();
+    antlr4::tree::TerminalNode* Const(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1066,7 +1051,7 @@ public:
     Integral_typeContext *integral_type();
     Float_typeContext *float_type();
     Utility_typeContext *utility_type();
-    antlr4::tree::TerminalNode *IDENT();
+    Qualified_identContext *qualified_ident();
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;

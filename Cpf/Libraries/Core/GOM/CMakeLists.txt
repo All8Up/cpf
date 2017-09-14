@@ -1,13 +1,18 @@
 # ###############################################
+set (IDL_FILES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/ResultCodes.idl
+)
+
+# ###############################################
 CPF_GEN_GOM(CppGOMFiles cpp
 	hpp
 	${CPF_GENERATED}/CPP/GOM
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/ResultCodes.idl
+	${IDL_FILES}
 )
 CPF_GEN_GOM(RustGOMFiles rust
 	rs
 	${CPF_GENERATED}/Rust/GOM
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/ResultCodes.idl
+	${IDL_FILES}
 )
 
 # ###############################################
@@ -22,9 +27,10 @@ set (RUST_FILES
 	${RustGOMFiles}
 )
 
-add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES} ${RUST_FILES})
+add_custom_target (GOM_IDE SOURCES ${INCLUDE_FILES} ${RUST_FILES} ${IDL_FILES})
 source_group (Interface FILES ${INCLUDE_FILES})
 source_group (Rust FILES ${RUST_FILES})
+source_group (IDL FILES ${IDL_FILES})
 set_property (TARGET GOM_IDE PROPERTY FOLDER Libraries/Interface/Core)
 
 add_library (GOM INTERFACE)

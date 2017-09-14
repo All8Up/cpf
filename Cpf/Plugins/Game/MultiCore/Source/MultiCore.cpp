@@ -5,6 +5,7 @@
 #include "MultiCore/System/Timer.hpp"
 #include "MultiCore/Stage.hpp"
 #include "MultiCore/System.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 using namespace CPF;
 

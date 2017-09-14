@@ -33,16 +33,6 @@ antlrcpp::Any Visitor::visitMain(IDLParser::MainContext *ctx)
 	return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitGlobal_statements(IDLParser::Global_statementsContext *ctx)
-{
-	return visitChildren(ctx);
-}
-
-antlrcpp::Any Visitor::visitGlobal_statement(IDLParser::Global_statementContext *ctx)
-{
-	return visitChildren(ctx);
-}
-
 antlrcpp::Any Visitor::visitModule_stmt(IDLParser::Module_stmtContext *ctx)
 {
 	const auto ident = ctx->qualified_ident()->IDENT()->toString();
@@ -54,11 +44,6 @@ antlrcpp::Any Visitor::visitModule_stmt(IDLParser::Module_stmtContext *ctx)
 	}
 	Emit<ModuleStmt>(path);
 
-	return visitChildren(ctx);
-}
-
-antlrcpp::Any Visitor::visitError_code_stmt(IDLParser::Error_code_stmtContext *ctx)
-{
 	return visitChildren(ctx);
 }
 
@@ -97,11 +82,6 @@ antlrcpp::Any Visitor::visitImport_stmt(IDLParser::Import_stmtContext *ctx)
 	return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitInterface_stmt(IDLParser::Interface_stmtContext *ctx)
-{
-	return visitChildren(ctx);
-}
-
 antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx)
 {
 	InterfaceDecl decl;
@@ -128,6 +108,7 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 			FunctionDecl funcDecl;
 			funcDecl.mName = func->IDENT()->toString();
 			funcDecl.mReturnType = ParseTypeDecl(func->type_decl());
+			funcDecl.mConst = (func->Const() != nullptr ? true : false);
 			if (func->function_param_list())
 			{
 				for (auto param : func->function_param_list()->function_param())
@@ -144,6 +125,47 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 	}
 
 	Emit<InterfaceDeclStmt>(decl);
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
+{
+	Emit<InterfaceFwdStmt>(GetPath(ctx->qualified_ident()).ToString("::"));
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *ctx)
+{
+	Emit<StructFwdStmt>(GetPath(ctx->qualified_ident()).ToString("::"));
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
+{
+	StructDecl structDecl;
+	structDecl.mName = ctx->IDENT()->toString();
+	auto members = ctx->struct_block()->struct_item();
+	for (const auto& item : members)
+	{
+		if (item->const_def())
+		{
+
+		}
+		else if (item->enum_def())
+		{
+
+		}
+		else if (item->member_decl())
+		{
+			auto decl = item->member_decl();
+			DataMemberDecl data;
+			data.mName = decl->IDENT()->toString();
+			data.mType = ParseTypeDecl(decl->type_decl());
+			structDecl.mDataMembers.push_back(data);
+		}
+	}
+
+	Emit<StructDeclStmt>(structDecl);
 	return visitChildren(ctx);
 }
 
@@ -177,10 +199,10 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 		if (utilType->Void()) result.mType = Type::Void;
 		else if (utilType->RESULT()) result.mType = Type::Result;
 	}
-	else if (anyType->IDENT())
+	else if (anyType->qualified_ident())
 	{
 		result.mType = Type::Ident;
-		result.mIdent = anyType->IDENT()->toString();
+		result.mIdent = GetPath(anyType->qualified_ident());
 	}
 	else
 	{

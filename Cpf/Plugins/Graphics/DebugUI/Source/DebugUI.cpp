@@ -46,33 +46,21 @@
 #include "Application/iKeyboardDevice.hpp"
 #include "Application/iInputManager.hpp"
 #include "Application/iClipboard.hpp"
+#include "Plugin/iRegistry.hpp"
 
 #include "Std/Memory.hpp"
-#include "Plugin/Context.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 using namespace CPF;
 using namespace Graphics;
 
 //////////////////////////////////////////////////////////////////////////
-namespace
-{
-	Plugin::Context g_Context;
-}
-
-
 extern "C"
 GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		if (g_Context.AddRef() == 1)
-		{
-			CPF_ASSERT(g_Context.GetRegistry() == nullptr);
-			g_Context.SetRegistry(registry);
-			registry->Install(kDebugUICID.GetID(), new Plugin::tClassInstance<DebugUI>());
-		}
-		CPF_ASSERT(g_Context.GetRegistry() == registry);
+		registry->Install(kDebugUICID.GetID(), new Plugin::tClassInstance<DebugUI>());
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
@@ -83,11 +71,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		if (g_Context.Release() == 0)
-		{
-			registry->Remove(kDebugUICID.GetID());
-			g_Context.SetRegistry(nullptr);
-		}
+		registry->Remove(kDebugUICID.GetID());
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;

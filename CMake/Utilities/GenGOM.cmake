@@ -5,6 +5,7 @@ function(CPF_GEN_GOM outList target ext outDir)
 		set (targetFile "${outDir}/${fileName}.${ext}")
 
 		add_custom_command (OUTPUT ${targetFile}
+			DEPENDS ${file}
 			COMMAND ${CPF_OS_BIN_DIR}/IDL --${target}
 				--input="${file}"
 				--output="${targetFile}"

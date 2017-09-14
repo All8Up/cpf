@@ -1,7 +1,24 @@
 # ###############################################
+set (IDL_FILES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iAdapter.idl
+)
+
+# ###############################################
+CPF_GEN_GOM(CppGenFiles cpp
+	hpp
+	${CPF_GENERATED}/CPP/Graphics
+	${IDL_FILES}
+)
+CPF_GEN_GOM(RustGenFiles rust
+	rs
+	${CPF_GENERATED}/Rust/Graphics
+	${IDL_FILES}
+)
+
+# ###############################################
 set (INCLUDE_GRAPHICS_FILES_INTERFACES
+	${CppGenFiles}
 	Include/Graphics/iDevice.hpp
-	Include/Graphics/iAdapter.hpp
 	Include/Graphics/iInstance.hpp
 	Include/Graphics/iCommandBuffer.hpp
 	Include/Graphics/iCommandPool.hpp
@@ -110,12 +127,14 @@ add_custom_target (GraphicsDriver_IDE
 		${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
 		${INCLUDE_GRAPHICS_FILES_STRUCTURES}
 		${INCLUDE_GRAPHICS_FILES_FLAGS}
+		${IDL_FILES}
 )
 set_property (TARGET GraphicsDriver_IDE PROPERTY FOLDER Libraries/Interface/Graphics)
 source_group (Interface FILES ${INCLUDE_FILES})
 source_group (Interface\\Platform FILES ${PLATFORM_INCLUDE_FILES})
 
 # ###############################################
+source_group (IDL FILES ${IDL_FILES})
 source_group (Headers FILES Include/Graphics.hpp)
 source_group (Headers\\Graphics FILES ${INCLUDE_GRAPHICS_FILES})
 source_group (Headers\\Graphics\\Interfaces FILES ${INCLUDE_GRAPHICS_FILES_INTERFACES})

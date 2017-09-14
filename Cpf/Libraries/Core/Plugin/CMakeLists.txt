@@ -1,13 +1,19 @@
 # ###############################################
+set (IDL_FILES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iClassInstance.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iRegistry.idl
+)
+
+# ###############################################
 CPF_GEN_GOM(CppPluginFiles cpp
 	hpp
 	${CPF_GENERATED}/CPP/Plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iClassInstance.idl
+	${IDL_FILES}
 )
 CPF_GEN_GOM(RustPluginFiles rust
 	rs
 	${CPF_GENERATED}/Rust/Plugin
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iClassInstance.idl
+	${IDL_FILES}
 )
 
 # ###############################################
@@ -16,9 +22,7 @@ set (INCLUDE_FILES
 )
 set (INCLUDE_PLUGIN_FILES
 	Include/Plugin/Library.hpp
-	Include/Plugin/iRegistry.hpp
-	Include/Plugin/iClassInstance.hpp
-	Include/Plugin/Context.hpp
+	Include/Plugin/tClassInstance.hpp
 )
 set (INCLUDE_PLATFORM_FILES
 	Include/${CPF_TARGET_OS}/Platform/SharedLibrary.hpp
@@ -29,14 +33,16 @@ add_custom_target (Plugin_IDE
 		${INCLUDE_FILES}
 		${INCLUDE_PLUGIN_FILES}
 		${INCLUDE_PLATFORM_FILES}
-#		${CppPluginFiles}
-#		${RustPluginFiles}
+		${IDL_FILES}
+		${CppPluginFiles}
+		${RustPluginFiles}
 )
 set_property (TARGET Plugin_IDE PROPERTY FOLDER Libraries/Interface/Core)
 
 source_group (Interface FILES ${INCLUDE_FILES})
 source_group (Interface\\Plugin FILES ${INCLUDE_PLUGIN_FILES} ${CppPluginFiles})
 source_group (Interface\\Platform FILES ${INCLUDE_PLATFORM_FILES})
+source_group (IDL FILES ${IDL_FILES})
 source_group (Rust FILES ${RustPluginFiles})
 
 add_library (Plugin INTERFACE)

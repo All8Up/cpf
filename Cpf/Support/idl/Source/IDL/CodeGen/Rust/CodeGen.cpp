@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include "Hash/Crc.hpp"
 #include "GOM/Result.hpp"
+#include "Algorithm.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
@@ -81,15 +82,15 @@ void RustGenerator::OnStart()
 	mpWriter->OutputLine("#![allow(non_camel_case_types)");
 	mpWriter->OutputLine("#![allow(dead_code)]");
 
-	mpWriter->OutputLine("");
+	mpWriter->LineFeed();
 
 	mpWriter->OutputLine("#[macro_use]");
 	mpWriter->OutputLine("mod cpf;");
 	mpWriter->OutputLine("use cpf::*;");
 	mpWriter->OutputLine("extern crate libc;");
-	mpWriter->OutputLine("use libc::{c_void};");
+	mpWriter->OutputLine("use libc::*;");
 
-	mpWriter->OutputLine("");
+	mpWriter->LineFeed();
 }
 
 void RustGenerator::OnModule(const SymbolPath& path)
@@ -130,48 +131,61 @@ void RustGenerator::OnImportStmt(const String& item, const SymbolPath& from)
 
 void RustGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 {
-	mpWriter->OutputLine("");
-	if (decl.mSuper.Empty())
-		mpWriter->OutputLine("struct %s", decl.mName.c_str());
-	else
-		mpWriter->OutputLine("struct %s : %s", decl.mName.c_str(), decl.mSuper.ToString("::").c_str());
+	mpWriter->LineFeed();
+	mpWriter->OutputLine("#[repr(C)]");
+	mpWriter->OutputLine("#[derive(Debug)]");
+	mpWriter->OutputLine("pub struct %s", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
+	mpWriter->OutputLine("pub vtable: *const %s", (decl.mName + "VTable").c_str());
+	mpWriter->Unindent();
+	mpWriter->OutputLine("}");
+	mpWriter->LineFeed();
 
+	mpWriter->OutputLine("#[repr(C)]");
+	mpWriter->OutputLine("#[derive(Debug)]");
+	mpWriter->OutputLine("pub struct %s", (decl.mName + "VTable").c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+	mpWriter->Output("%spub base: gom::iUnknownVTable", mpWriter->GetIndentString().c_str());
 	for (const auto& func : decl.mFunctions)
 	{
-		mpWriter->Output("%svirtual %s CPF_STDCALL %s (",
+		mpWriter->Output(",");
+		mpWriter->LineFeed();
+		mpWriter->Output("%spub %s: extern \"stdcall\" fn(*mut %s",
 			mpWriter->GetIndentString().c_str(),
-			TypeToString(func.mReturnType).c_str(),
-			func.mName.c_str());
-
-		// Parameters.
+			func.mName.c_str(),
+			decl.mName.c_str());
 		if (!func.mParams.empty())
 		{
-			mpWriter->Output("%s", TypeToString(func.mParams[0].mType).c_str());
-			if (!func.mParams[0].mName.empty())
-				mpWriter->Output(" %s", func.mParams[0].mName.c_str());
-
-			for (auto it = func.mParams.begin() + 1; it != func.mParams.end(); ++it)
+			mpWriter->Indent();
+			for (const auto& param : func.mParams)
 			{
-				mpWriter->Output(", %s", TypeToString(it->mType).c_str());
-				if (!it->mName.empty())
-					mpWriter->Output(" %s", it->mName.c_str());
+				mpWriter->Output(",\n%s %s: %s",
+					mpWriter->GetIndentString().c_str(),
+					param.mName.c_str(),
+					TypeToString(param.mType).c_str());
 			}
+			mpWriter->Unindent();
 		}
-
-		mpWriter->Output(") = 0;\n");
+		mpWriter->Output(")");
+		if (func.mReturnType.mType != Visitor::Type::Void)
+		{
+			mpWriter->Output(" -> %s", TypeToString(func.mReturnType).c_str());
+		}
 	}
-
 	mpWriter->Unindent();
-	mpWriter->OutputLine("};");
+	mpWriter->OutputLine("}");
 }
 
 CPF::String RustGenerator::TypeToString(const Visitor::TypeDecl& decl)
 {
 	String result;
-	if (decl.mConst)
-		result += "const ";
+	for (const auto& ptr : decl.mPointer)
+	{
+		(void)ptr;
+		result += "*mut ";
+	}
 	switch (decl.mType)
 	{
 	case Visitor::Type::U8: result += "u8"; break;
@@ -188,12 +202,18 @@ CPF::String RustGenerator::TypeToString(const Visitor::TypeDecl& decl)
 
 	case Visitor::Type::Void: result += "void"; break;
 	case Visitor::Type::Result: result += "u32"; break;
-	case Visitor::Type::Ident: result += decl.mIdent; break;
-	}
-	for (const auto& ptr : decl.mPointer)
+	case Visitor::Type::Ident:
 	{
-		(void)ptr;
-		result += "*";
+		for (auto it = decl.mIdent.begin(); it != decl.mIdent.end(); ++it)
+		{
+			bool last = (it + 1) == decl.mIdent.end();
+			String p = *it;
+			if (!last)
+				CPF::Transform(p.begin(), p.end(), p.begin(), [](char c) { return (char)::tolower(c); });
+			result += p + (last ? "" : "::");
+		}
+	}
+	break;
 	}
 	return result;
 }

@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "TransformComponent.hpp"
 #include "../Entity.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 using namespace CPF;
 using namespace EntityService;

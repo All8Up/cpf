@@ -50,9 +50,6 @@ public:
   virtual void enterStruct_decl(IDLParser::Struct_declContext *ctx) = 0;
   virtual void exitStruct_decl(IDLParser::Struct_declContext *ctx) = 0;
 
-  virtual void enterStruct_name(IDLParser::Struct_nameContext *ctx) = 0;
-  virtual void exitStruct_name(IDLParser::Struct_nameContext *ctx) = 0;
-
   virtual void enterStruct_fwd(IDLParser::Struct_fwdContext *ctx) = 0;
   virtual void exitStruct_fwd(IDLParser::Struct_fwdContext *ctx) = 0;
 

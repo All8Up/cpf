@@ -5,7 +5,7 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "Hash/HashString.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 namespace CPF
 {

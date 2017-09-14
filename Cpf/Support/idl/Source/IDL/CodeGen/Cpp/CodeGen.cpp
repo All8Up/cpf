@@ -5,6 +5,7 @@
 #include "Hash/Crc.hpp"
 #include "GOM/Result.hpp"
 #include "IO/Path.hpp"
+#include "GOM/Types.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
@@ -21,6 +22,9 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::FailureType>(CPF::Bind(&CppGenerator::OnFailureType, this, _1, _2, _3));
 	visitor.On<Visitor::ImportStmt>(CPF::Bind(&CppGenerator::OnImportStmt, this, _1, _2));
 	visitor.On<Visitor::InterfaceDeclStmt>(CPF::Bind(&CppGenerator::OnInterfaceDeclStmt, this, _1));
+	visitor.On<Visitor::InterfaceFwdStmt>(CPF::Bind(&CppGenerator::OnInterfaceFwdStmt, this, _1));
+	visitor.On<Visitor::StructFwdStmt>(CPF::Bind(&CppGenerator::OnStructFwdStmt, this, _1));
+	visitor.On<Visitor::StructDeclStmt>(CPF::Bind(&CppGenerator::OnStructStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -85,7 +89,7 @@ void CppGenerator::OnImportStmt(const String& item, const SymbolPath& from)
 
 void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 {
-	mpWriter->OutputLine("");
+	mpWriter->LineFeed();
 	if (decl.mSuper.Empty())
 		mpWriter->OutputLine("struct %s", decl.mName.c_str());
 	else
@@ -94,8 +98,10 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->Indent();
 
 	//
-	mpWriter->OutputLine("static constexpr GOM::InterfaceID kIID = GOM::InterfaceID(\"%s\"_crc64);",
-		(mModule.ToString("::") + "::" + decl.mName).c_str());
+	CPF::String hashName = (mModule.ToString("::") + "::" + decl.mName).c_str();
+	CPF::GOM::InterfaceID iid = CPF::GOM::InterfaceID(CPF::Hash::Crc64(hashName.c_str(), hashName.length()));
+	mpWriter->OutputLine("static constexpr GOM::InterfaceID kIID = GOM::InterfaceID(0x%" PRIx64 " /* %s */);",
+		iid.GetID(), hashName.c_str());
 	mpWriter->OutputLine("");
 
 	for (const auto& func : decl.mFunctions)
@@ -120,9 +126,41 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			}
 		}
 
-		mpWriter->Output(") = 0;\n");
+		if (func.mConst)
+			mpWriter->Output(") const = 0;");
+		else
+			mpWriter->Output(") = 0;");
+		mpWriter->LineFeed();
 	}
 
+	mpWriter->Unindent();
+	mpWriter->OutputLine("};");
+}
+
+void CppGenerator::OnInterfaceFwdStmt(const String& name)
+{
+	mpWriter->LineFeed();
+	mpWriter->OutputLine("struct %s;", name.c_str());
+}
+
+void CppGenerator::OnStructFwdStmt(const String& name)
+{
+	mpWriter->LineFeed();
+	mpWriter->OutputLine("struct %s;", name.c_str());
+}
+
+void CppGenerator::OnStructStmt(const Visitor::StructDecl& decl)
+{
+	mpWriter->LineFeed();
+	mpWriter->OutputLine("struct %s", decl.mName.c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+	for (const auto& member : decl.mDataMembers)
+	{
+		mpWriter->OutputLine("%s %s;",
+			TypeToString(member.mType).c_str(),
+			member.mName.c_str());
+	}
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
 }
@@ -147,8 +185,8 @@ CPF::String CppGenerator::TypeToString(const Visitor::TypeDecl& decl)
 	case Visitor::Type::F64: result += "double"; break;
 
 	case Visitor::Type::Void: result += "void"; break;
-	case Visitor::Type::Result: result += "Result"; break;
-	case Visitor::Type::Ident: result += decl.mIdent; break;
+	case Visitor::Type::Result: result += "GOM::Result"; break;
+	case Visitor::Type::Ident: result += decl.mIdent.ToString("::"); break;
 	}
 	for (const auto& ptr : decl.mPointer)
 	{

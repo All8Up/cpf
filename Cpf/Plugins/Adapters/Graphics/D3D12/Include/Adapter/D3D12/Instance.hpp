@@ -37,6 +37,7 @@ namespace CPF
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
+				GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry*) override;
 				GOM::Result CPF_STDCALL EnumerateAdapters(int& count, Graphics::iAdapter** adapters) override;
 				GOM::Result CPF_STDCALL CreateDevice(Graphics::iAdapter* adapter, Graphics::iDevice**) override;
 
@@ -44,6 +45,7 @@ namespace CPF
 				IDXGIFactory2* GetFactory() const { return mpDXGIFactory2; }
 
 			private:
+				IntrusivePtr<Plugin::iRegistry> mpRegistry;
 				IntrusivePtr<IDXGIFactory2> mpDXGIFactory2;
 
 #ifdef CPF_USE_D3D12_DEBUG_LAYER

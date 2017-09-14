@@ -5,6 +5,11 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	struct iInputDevice;
 
 	struct iInputManager : GOM::iUnknown
@@ -16,6 +21,7 @@ namespace CPF
 
 		using EnumCallback = bool(*)(void*, iInputDevice*);
 
+		virtual GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy) = 0;
 		virtual Events::Emitter* CPF_STDCALL GetEmiter() = 0;
 		virtual GOM::Result CPF_STDCALL EnumerateDevices(EnumCallback, void*) = 0;
 		virtual GOM::Result CPF_STDCALL GetDevice(uint64_t, uint64_t, void**) = 0;

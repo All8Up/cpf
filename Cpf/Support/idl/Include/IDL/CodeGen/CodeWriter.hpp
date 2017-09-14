@@ -15,6 +15,7 @@ namespace IDL
 
 			void Output(const char* const format, ...);
 			void OutputLine(const char* const format, ...);
+			void LineFeed();
 
 			int Indent();
 			int Unindent();

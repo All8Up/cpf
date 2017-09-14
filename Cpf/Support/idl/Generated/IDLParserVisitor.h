@@ -43,8 +43,6 @@ public:
 
     virtual antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *context) = 0;
 
-    virtual antlrcpp::Any visitStruct_name(IDLParser::Struct_nameContext *context) = 0;
-
     virtual antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *context) = 0;
 
     virtual antlrcpp::Any visitStruct_block(IDLParser::Struct_blockContext *context) = 0;

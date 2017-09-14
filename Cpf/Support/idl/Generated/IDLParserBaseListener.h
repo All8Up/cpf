@@ -52,9 +52,6 @@ public:
   virtual void enterStruct_decl(IDLParser::Struct_declContext * /*ctx*/) override { }
   virtual void exitStruct_decl(IDLParser::Struct_declContext * /*ctx*/) override { }
 
-  virtual void enterStruct_name(IDLParser::Struct_nameContext * /*ctx*/) override { }
-  virtual void exitStruct_name(IDLParser::Struct_nameContext * /*ctx*/) override { }
-
   virtual void enterStruct_fwd(IDLParser::Struct_fwdContext * /*ctx*/) override { }
   virtual void exitStruct_fwd(IDLParser::Struct_fwdContext * /*ctx*/) override { }
 

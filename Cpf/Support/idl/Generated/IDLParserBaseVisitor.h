@@ -63,10 +63,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStruct_name(IDLParser::Struct_nameContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *ctx) override {
     return visitChildren(ctx);
   }

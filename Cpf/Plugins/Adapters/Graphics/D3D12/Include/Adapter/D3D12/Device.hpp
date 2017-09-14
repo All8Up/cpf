@@ -5,7 +5,7 @@
 #include "Graphics/Driver.hpp"
 #include "Graphics/iBlob.hpp"
 #include <d3d12.h>
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 
 namespace CPF
@@ -41,7 +41,7 @@ namespace CPF
 			{
 			public:
 				// Internal.
-				GOM::Result Initialize(Graphics::iAdapter* adapter);
+				GOM::Result Initialize(Plugin::iRegistry*, Graphics::iAdapter* adapter);
 
 				// Overrides from iBase.
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
@@ -101,6 +101,7 @@ namespace CPF
 				// TODO: Should probably be it's own class?
 				IntrusivePtr<ID3D12CommandQueue> mpQueue;
 
+				IntrusivePtr<Plugin::iRegistry> mpRegistry;
 				DescriptorManager mShaderResourceDescriptors;
 				DescriptorManager mSamplerDescriptors;
 				DescriptorManager mRenderTargetDescriptors;

@@ -44,6 +44,11 @@ void CodeWriter::OutputLine(const char* const format, ...)
 	mWriter.Write("\n", 1);
 }
 
+void CodeWriter::LineFeed()
+{
+	mWriter.Write("\n", 1);
+}
+
 int CodeWriter::Indent()
 {
 	return ++mIndent;

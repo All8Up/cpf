@@ -247,7 +247,10 @@ namespace CPF
 				if (HasFilename(path))
 				{
 					auto lastSep = result.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
-					result.erase(result.begin() + lastSep + 1, result.end());
+					if (lastSep != STRING_TYPE::npos)
+						result.erase(result.begin() + lastSep + 1, result.end());
+					else
+						result.clear();
 				}
 				return result;
 			}

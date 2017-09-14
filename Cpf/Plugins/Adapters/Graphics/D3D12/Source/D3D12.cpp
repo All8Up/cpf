@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12.hpp"
 #include "Graphics/Driver.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 #include "Adapter/D3D12/Plugin.hpp"
 #include "Adapter/D3D12/Instance.hpp"
 #include "Logging/Logging.hpp"
@@ -19,29 +19,19 @@ static Plugin::IID_CID sImplementations[] =
 
 int D3D12Initializer::Install(Plugin::iRegistry* regy)
 {
-	if (D3D12::gContext.AddRef() == 1)
-	{
-		CPF_ASSERT(regy != nullptr);
-		D3D12::gContext.SetRegistry(regy);
-		CPF_INIT_LOG(D3D12);
+	CPF_INIT_LOG(D3D12);
 
-		regy->Install(D3D12::kD3D12InstanceCID.GetID(), new Plugin::tClassInstance<D3D12::Instance>());
-		regy->ClassInstall(sizeof(sImplementations) / sizeof(Plugin::IID_CID), sImplementations);
-	}
-	return D3D12::gContext.GetRefCount();
+	regy->Install(D3D12::kD3D12InstanceCID.GetID(), new Plugin::tClassInstance<D3D12::Instance>());
+	regy->ClassInstall(sizeof(sImplementations) / sizeof(Plugin::IID_CID), sImplementations);
+	return 1;
 }
 
-int D3D12Initializer::Remove()
+int D3D12Initializer::Remove(Plugin::iRegistry* regy)
 {
-	if (D3D12::gContext.Release() == 0)
-	{
-		D3D12::gContext.GetRegistry()->ClassRemove(sizeof(sImplementations) / sizeof(Plugin::IID_CID), sImplementations);
-		D3D12::gContext.GetRegistry()->Remove(D3D12::kD3D12InstanceCID.GetID());
-		CPF_DROP_LOG(D3D12);
-
-		D3D12::gContext.SetRegistry(nullptr);
-	}
-	return D3D12::gContext.GetRefCount();
+	regy->ClassRemove(sizeof(sImplementations) / sizeof(Plugin::IID_CID), sImplementations);
+	regy->Remove(D3D12::kD3D12InstanceCID.GetID());
+	CPF_DROP_LOG(D3D12);
+	return 0;
 }
 
 
@@ -61,7 +51,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		D3D12Initializer::Remove();
+		D3D12Initializer::Remove(registry);
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;

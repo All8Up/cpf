@@ -86,9 +86,9 @@ bool CPF_STDCALL D3D12::Adapter::IsRemote() const
 	return (mDesc.Flags & DXGI_ADAPTER_FLAG_REMOTE) != 0;
 }
 
-GOM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphics::iOutput** outputs) const
+GOM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t* count, Graphics::iOutput** outputs) const
 {
-	if (outputs && count != 0)
+	if (outputs && count && *count != 0)
 	{
 		UINT index = 0;
 		for (IDXGIOutput* output = nullptr; SUCCEEDED(mpAdapter->EnumOutputs(index, &output)); ++index)
@@ -106,11 +106,15 @@ GOM::Result CPF_STDCALL D3D12::Adapter::EnumerateOutputs(int32_t& count, Graphic
 	}
 	else
 	{
-		count = 0;
-		UINT index = 0;
-		for (IDXGIOutput* output = nullptr; SUCCEEDED(mpAdapter->EnumOutputs(index, &output)); ++index)
-			output->Release();
-		count = int32_t(index);
-		return GOM::kOK;
+		if (count)
+		{
+			*count = 0;
+			UINT index = 0;
+			for (IDXGIOutput* output = nullptr; SUCCEEDED(mpAdapter->EnumOutputs(index, &output)); ++index)
+				output->Release();
+			*count = int32_t(index);
+			return GOM::kOK;
+		}
 	}
+	return GOM::kInvalidParameter;
 }

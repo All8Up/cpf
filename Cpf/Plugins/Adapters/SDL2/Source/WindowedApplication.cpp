@@ -64,8 +64,8 @@ GOM::Result CPF_STDCALL WindowedApp::Initialize(Plugin::iRegistry* regy, iApplic
 		mpApplicationMain = appMain;
 
 		regy->Create(nullptr, kInputManagerCID.GetID(), iInputManager::kIID.GetID(), mpInputManager.AsVoidPP());
-
-		return GOM::kOK;
+		if (GOM::Succeeded(mpInputManager->Initialize(regy)))
+			return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
 }

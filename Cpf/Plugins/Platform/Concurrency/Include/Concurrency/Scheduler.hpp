@@ -7,7 +7,7 @@
 #include "Threading/Semaphore.hpp"
 #include "Threading/ConditionVariable.hpp"
 #include "Concurrency/iScheduler.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 #include "Concurrency/ThreadTimeInfo.hpp"
 
 

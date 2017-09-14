@@ -1,5 +1,5 @@
 #include "Plugin/iRegistry.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 #include "Logging/Logging.hpp"
 #include "Python3.hpp"
 

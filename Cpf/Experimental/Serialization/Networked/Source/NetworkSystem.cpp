@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "NetworkSystem.hpp"
 #include "MultiCore/iStage.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 using namespace CPF;
 using namespace MultiCore;

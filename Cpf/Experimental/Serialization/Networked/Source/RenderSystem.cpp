@@ -15,7 +15,7 @@
 #include "Application/iApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 #include "Graphics/SubResource.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/WindowData.hpp"

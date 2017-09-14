@@ -1,15 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #include "RenderSystem.hpp"
 #include "Renderable.hpp"
-#include "Plugin/Context.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 using namespace CPF;
-
-namespace
-{
-	Plugin::Context g_Context;
-}
 
 
 extern "C"
@@ -17,14 +11,8 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		if (g_Context.AddRef() == 1)
-		{
-			CPF_ASSERT(g_Context.GetRegistry() == nullptr);
-			g_Context.SetRegistry(registry);
-			registry->Install(kRenderableCID.GetID(), new Plugin::tClassInstance<Renderable>());
-			registry->Install(kRenderSystemCID.GetID(), new Plugin::tClassInstance<RenderSystem>());
-		}
-		CPF_ASSERT(g_Context.GetRegistry() == registry);
+		registry->Install(kRenderableCID.GetID(), new Plugin::tClassInstance<Renderable>());
+		registry->Install(kRenderSystemCID.GetID(), new Plugin::tClassInstance<RenderSystem>());
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
@@ -35,12 +23,8 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		if (g_Context.Release() == 0)
-		{
-			registry->Remove(kRenderSystemCID.GetID());
-			registry->Remove(kRenderableCID.GetID());
-			g_Context.SetRegistry(nullptr);
-		}
+		registry->Remove(kRenderSystemCID.GetID());
+		registry->Remove(kRenderableCID.GetID());
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;

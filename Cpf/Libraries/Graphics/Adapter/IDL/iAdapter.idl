@@ -1,0 +1,16 @@
+import iUnknown from GOM;
+module CPF::Graphics;
+
+interface iOutput;
+
+interface iAdapter : GOM::iUnknown
+{
+	const char* GetDescription() const;
+	size_t GetVideoMemory() const;
+	size_t GetSystemMemory() const;
+	size_t GetSharedMemory() const;
+	bool IsSoftware() const;
+	bool IsRemote() const;
+
+	result EnumerateOutputs(s32* count, iOutput** outIFace) const;
+}

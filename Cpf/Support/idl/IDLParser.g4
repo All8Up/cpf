@@ -39,9 +39,8 @@ import_stmt             : IMPORT string_lit SEMICOLON;
 // Structures
 struct_stmt             : struct_decl
                         | struct_fwd;
-struct_decl             : STRUCT struct_name struct_block;
-struct_name             : IDENT;
-struct_fwd              : STRUCT IDENT SEMICOLON;
+struct_decl             : STRUCT IDENT struct_block;
+struct_fwd              : STRUCT qualified_ident SEMICOLON;
 
 struct_block            : LBRACE struct_item* RBRACE;
 // Statements allowed at struct scope.
@@ -53,7 +52,7 @@ struct_item             : member_decl
 interface_stmt          : interface_decl
                         | interface_fwd;
 
-interface_fwd           : INTERFACE IDENT SEMICOLON;
+interface_fwd           : INTERFACE qualified_ident SEMICOLON;
 interface_decl          : INTERFACE IDENT interface_super? interface_block;
 interface_super         : COLON qualified_ident;
 
@@ -64,7 +63,7 @@ interface_item          : function_decl
                         | enum_def;
 
 // Function declarations.
-function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN SEMICOLON;
+function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN Const? SEMICOLON;
 
 function_param_list     : function_param (COMMA function_param)*;
 
@@ -80,10 +79,10 @@ const_def               : const_integral_def
                         | const_string_def
                         | const_class_id_def;
 
-const_integral_def      : CONST integral_type IDENT EQUALS integer_lit SEMICOLON;
-const_float_def         : CONST float_type IDENT EQUALS float_lit SEMICOLON;
-const_string_def        : CONST STRING IDENT EQUALS string_lit SEMICOLON;
-const_class_id_def      : CONST CLASS_ID IDENT LPAREN string_lit RPAREN SEMICOLON;
+const_integral_def      : Const integral_type IDENT EQUALS integer_lit SEMICOLON;
+const_float_def         : Const float_type IDENT EQUALS float_lit SEMICOLON;
+const_string_def        : Const STRING IDENT EQUALS string_lit SEMICOLON;
+const_class_id_def      : Const CLASS_ID IDENT LPAREN string_lit RPAREN SEMICOLON;
 
 // Enumerations.
 enum_fwd                : ENUM IDENT enum_type? SEMICOLON;
@@ -134,15 +133,15 @@ member_decl             : type_decl IDENT SEMICOLON;
 // Type declarations.
 type_decl               : type_modifier? any_type pointer_type?;
 
-type_modifier           : CONST;
+type_modifier           : Const;
 
-pointer_type            : (CONST? STAR)+;
+pointer_type            : (Const? STAR)+;
 
 // Any valid type.
 any_type                : integral_type
                         | float_type
                         | utility_type
-                        | IDENT;
+                        | qualified_ident;
 
 utility_type            : Void
                         | RESULT;

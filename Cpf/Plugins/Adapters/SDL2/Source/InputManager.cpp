@@ -4,14 +4,13 @@
 #include "Application/iKeyboardDevice.hpp"
 #include "SDL2/CIDs.hpp"
 #include "SDL2.hpp"
+#include "Plugin/iRegistry.hpp"
 
 using namespace CPF;
 using namespace SDL2;
 
 InputManager::InputManager(GOM::iUnknown*)
 {
-	g_Context.GetRegistry()->Create(nullptr, kMouseDeviceCID.GetID(), iMouseDevice::kIID.GetID(), mpMouse.AsVoidPP());
-	g_Context.GetRegistry()->Create(nullptr, kKeyboardDeviceCID.GetID(), iKeyboardDevice::kIID.GetID(), mpKeyboard.AsVoidPP());
 }
 
 InputManager::~InputManager()
@@ -36,6 +35,16 @@ GOM::Result CPF_STDCALL InputManager::QueryInterface(uint64_t iid, void** outIfa
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;
+}
+
+GOM::Result CPF_STDCALL InputManager::Initialize(Plugin::iRegistry* regy)
+{
+	if (GOM::Succeeded(regy->Create(nullptr, kMouseDeviceCID.GetID(), iMouseDevice::kIID.GetID(), mpMouse.AsVoidPP())) &&
+		GOM::Succeeded(regy->Create(nullptr, kKeyboardDeviceCID.GetID(), iKeyboardDevice::kIID.GetID(), mpKeyboard.AsVoidPP())))
+	{
+		return GOM::kOK;
+	}
+	return GOM::kError;
 }
 
 Events::Emitter* CPF_STDCALL InputManager::GetEmiter()

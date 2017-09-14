@@ -30,7 +30,7 @@ namespace CPF
 		struct D3D12Initializer
 		{
 			static int Install(Plugin::iRegistry* regy);
-			static int Remove();
+			static int Remove(Plugin::iRegistry* regy);
 
 		private:
 			D3D12Initializer() = delete;

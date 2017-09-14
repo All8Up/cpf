@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
+#include "Graphics/iOutput.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/OutputDesc.hpp"
 #include "Graphics/ImageDesc.hpp"
@@ -65,11 +66,11 @@ bool ExperimentalD3D12::_EnumerateOutputs(iAdapter* adapter)
 	//////////////////////////////////////////////////////////////////////////
 	// Enumerate the outputs attached to the adapter.
 	int32_t outputCount = 0;
-	adapter->EnumerateOutputs(outputCount, nullptr);
+	adapter->EnumerateOutputs(&outputCount, nullptr);
 
 	Vector<IntrusivePtr<iOutput>> outputs;
 	outputs.resize(outputCount);
-	adapter->EnumerateOutputs(outputCount, outputs[0].AsTypePP());
+	adapter->EnumerateOutputs(&outputCount, outputs[0].AsTypePP());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Log the output desktop information, if any.

@@ -11,6 +11,20 @@ use libc::{c_void};
 extern crate log;
 extern crate env_logger;
 
+#[repr(C)]
+#[derive(Debug)]
+pub struct iClassInstance
+{
+    pub vtable: *const iClassInstanceVTable
+}
+
+#[repr(C)]
+pub struct iClassInstanceVTable
+{
+    pub base: gom::iUnknownVTable,    
+    pub CreateInstance: extern "stdcall" fn(*mut iClassInstance, registry : *mut plugin::iRegistry, outer : *mut gom::iUnknown, outInstance : *mut *mut gom::iUnknown) -> u32    
+}
+
 gom_interface!(
 	impl TestRustPlugin: iTestRustPlugin: "Cpf::Rust::iTestRustPlugin",
 	iTestRustPluginVTable,

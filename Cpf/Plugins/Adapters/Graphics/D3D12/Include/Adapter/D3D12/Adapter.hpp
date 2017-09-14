@@ -3,7 +3,7 @@
 #include "Graphics/iAdapter.hpp"
 #include "IntrusivePtr.hpp"
 #include <dxgi1_4.h>
-#include "Plugin/iClassInstance.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 namespace CPF
 {
@@ -30,7 +30,7 @@ namespace CPF
 				bool CPF_STDCALL IsSoftware() const override;
 				bool CPF_STDCALL IsRemote() const override;
 
-				GOM::Result CPF_STDCALL EnumerateOutputs(int32_t& count, Graphics::iOutput**) const override;
+				GOM::Result CPF_STDCALL EnumerateOutputs(int32_t* count, Graphics::iOutput**) const override;
 
 				IDXGIAdapter2* GetD3DAdapter() const { return mpAdapter; }
 

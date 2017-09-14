@@ -4,6 +4,7 @@
 #include "EntityService/Manager.hpp"
 #include "EntityService/Stages/EntityStage.hpp"
 #include "MultiCore/System/iTimer.hpp"
+#include "Plugin/tClassInstance.hpp"
 
 using namespace CPF;
 
