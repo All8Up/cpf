@@ -24,7 +24,7 @@ namespace CPF
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 
 				bool GetDesc(Graphics::OutputDesc*) const override;
-				bool EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode, int32_t& count, Graphics::ModeDesc*) override;
+				bool EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode, int32_t* count, Graphics::ModeDesc*) override;
 				bool FindClosestMatch(const Graphics::ModeDesc* matchMode, Graphics::ModeDesc* closest, Graphics::iDevice* compatibleCheck) override;
 				bool WaitForVBlank() override;
 

@@ -21,7 +21,7 @@ namespace CPF
 	{
 		enum class ModeScaling : int32_t;
 		enum class ScanlineOrder : int32_t;
-		class ResourceBindingDesc;
+		struct ResourceBindingDesc;
 	}
 	namespace Adapter
 	{

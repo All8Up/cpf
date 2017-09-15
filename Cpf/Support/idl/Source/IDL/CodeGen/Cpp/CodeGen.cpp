@@ -25,6 +25,8 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::InterfaceFwdStmt>(CPF::Bind(&CppGenerator::OnInterfaceFwdStmt, this, _1));
 	visitor.On<Visitor::StructFwdStmt>(CPF::Bind(&CppGenerator::OnStructFwdStmt, this, _1));
 	visitor.On<Visitor::StructDeclStmt>(CPF::Bind(&CppGenerator::OnStructStmt, this, _1));
+	visitor.On<Visitor::EnumForwardStmt>(CPF::Bind(&CppGenerator::OnEnumForwardStmt, this, _1, _2));
+	visitor.On<Visitor::EnumDeclStmt>(CPF::Bind(&CppGenerator::OnEnumDeclStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -165,6 +167,57 @@ void CppGenerator::OnStructStmt(const Visitor::StructDecl& decl)
 	mpWriter->OutputLine("};");
 }
 
+void CppGenerator::OnEnumForwardStmt(const String& name, const Visitor::TypeDecl& typeDecl)
+{
+	if (typeDecl.mType == Visitor::Type::Void)
+		mpWriter->OutputLine("enum class %s;", name.c_str());
+	else
+		mpWriter->OutputLine("enum class %s : %s;", name.c_str(), TypeToString(typeDecl).c_str());
+}
+
+void CppGenerator::OnEnumDeclStmt(const Visitor::EnumDecl& decl)
+{
+	if (decl.mType == Visitor::Type::Void)
+		mpWriter->OutputLine("enum class %s;", decl.mName.c_str());
+	else
+		mpWriter->OutputLine("enum class %s : %s", decl.mName.c_str(), TypeToString(decl.mType).c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+
+	for (const auto& item : decl.mEntries)
+	{
+		if (item.mValue != 0x7fffffffffffffff)
+			mpWriter->OutputLine("%s = %d,", item.mName.c_str(), int32_t(item.mValue));
+		else
+			mpWriter->OutputLine("%s,", item.mName.c_str());
+	}
+
+	mpWriter->Unindent();
+	mpWriter->OutputLine("};");
+}
+
+CPF::String CppGenerator::TypeToString(const Visitor::Type type)
+{
+	switch (type)
+	{
+	case Visitor::Type::U8: return "uint8_t";
+	case Visitor::Type::S8: return "int8_t";
+	case Visitor::Type::U16: return "uint16_t";
+	case Visitor::Type::S16: return "int16_t";
+	case Visitor::Type::U32: return "uint32_t";
+	case Visitor::Type::S32: return "int32_t";
+	case Visitor::Type::U64: return "uint64_t";
+	case Visitor::Type::S64: return "int64_t";
+
+	case Visitor::Type::F32: return "float";
+	case Visitor::Type::F64: return "double";
+
+	case Visitor::Type::Void: return "void";
+	case Visitor::Type::Result: return "GOM::Result";
+	}
+	return "";
+}
+
 CPF::String CppGenerator::TypeToString(const Visitor::TypeDecl& decl)
 {
 	String result;
@@ -172,21 +225,12 @@ CPF::String CppGenerator::TypeToString(const Visitor::TypeDecl& decl)
 		result += "const ";
 	switch (decl.mType)
 	{
-	case Visitor::Type::U8: result += "uint8_t"; break;
-	case Visitor::Type::S8: result += "int8_t"; break;
-	case Visitor::Type::U16: result += "uint16_t"; break;
-	case Visitor::Type::S16: result += "int16_t"; break;
-	case Visitor::Type::U32: result += "uint32_t"; break;
-	case Visitor::Type::S32: result += "int32_t"; break;
-	case Visitor::Type::U64: result += "uint64_t"; break;
-	case Visitor::Type::S64: result += "int64_t"; break;
-
-	case Visitor::Type::F32: result += "float"; break;
-	case Visitor::Type::F64: result += "double"; break;
-
-	case Visitor::Type::Void: result += "void"; break;
-	case Visitor::Type::Result: result += "GOM::Result"; break;
-	case Visitor::Type::Ident: result += decl.mIdent.ToString("::"); break;
+	case Visitor::Type::Ident:
+		result += decl.mIdent.ToString("::");
+		break;
+	default:
+		result += TypeToString(decl.mType);
+		break;
 	}
 	for (const auto& ptr : decl.mPointer)
 	{

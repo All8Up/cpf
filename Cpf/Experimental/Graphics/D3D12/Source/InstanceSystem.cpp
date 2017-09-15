@@ -12,13 +12,13 @@ InstanceSystem::InstanceSystem(GOM::iUnknown*)
 void InstanceSystem::_Begin(const Concurrency::WorkContext*, void* context)
 {
 	InstanceSystem* system = static_cast<InstanceSystem*>(context);
-	system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances));
+	system->mpApp->GetCurrentInstanceBuffer()->Map(reinterpret_cast<void**>(&system->mpInstances), nullptr);
 }
 
 void InstanceSystem::_End(const Concurrency::WorkContext*, void* context)
 {
 	InstanceSystem* system = static_cast<InstanceSystem*>(context);
-	system->mpApp->GetCurrentInstanceBuffer()->Unmap();
+	system->mpApp->GetCurrentInstanceBuffer()->Unmap(nullptr);
 }
 
 

@@ -1,0 +1,6 @@
+import iUnknown from GOM;
+module CPF::Graphics;
+
+interface iFrameBuffer : GOM::iUnknown
+{
+}

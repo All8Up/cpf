@@ -8,6 +8,7 @@
 #include "Graphics/DepthStencilClearFlag.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Graphics/iImageView.hpp"
+#include "Graphics/Format.hpp"
 #include "Graphics/RenderPassBeginDesc.hpp"
 #include "Application/iWindow.hpp"
 #include "Concurrency/WorkContext.hpp"

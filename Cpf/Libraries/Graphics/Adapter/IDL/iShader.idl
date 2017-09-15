@@ -1,0 +1,10 @@
+import iUnknown from GOM;
+module CPF::Graphics;
+
+struct iDevice;
+struct iBlob;
+
+interface iShader : GOM::iUnknown
+{
+	bool LoadFrom(iDevice* device, iBlob* blob);
+}

@@ -80,13 +80,16 @@ GOM::Result CPF_STDCALL Instance::QueryInterface(uint64_t id, void** outIface)
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapters)
+GOM::Result Instance::EnumerateAdapters(int* count, Graphics::iAdapter** adapters)
 {
+	if (count == nullptr)
+		return GOM::kInvalidParameter;
+
 	if (mpDXGIFactory2)
 	{
 		if (adapters)
 		{
-			for (int i = 0; i < count; ++i)
+			for (int i = 0; i < *count; ++i)
 			{
 				IntrusivePtr<IDXGIAdapter1> adapter;
 				if (SUCCEEDED(mpDXGIFactory2->EnumAdapters1(i, adapter.AsTypePP())))
@@ -120,7 +123,7 @@ GOM::Result Instance::EnumerateAdapters(int& count, Graphics::iAdapter** adapter
 			IntrusivePtr<IDXGIAdapter1> adapter;
 			if (!SUCCEEDED(mpDXGIFactory2->EnumAdapters1(i, adapter.AsTypePP())))
 			{
-				count = i;
+				*count = i;
 				break;
 			}
 		}

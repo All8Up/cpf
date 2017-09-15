@@ -104,6 +104,19 @@ namespace IDL
 			using DataMembers = CPF::Vector<DataMemberDecl>;
 			DataMembers mDataMembers;
 		};
+		struct EnumEntry
+		{
+			String mName;
+			int64_t mValue;
+		};
+		struct EnumDecl
+		{
+			String mName;
+			Type mType;
+
+			using Entries = CPF::Vector<EnumEntry>;
+			Entries mEntries;
+		};
 
 		typedef CPF::Events::Event<0, CPF::Function<void()>> Start;
 		typedef CPF::Events::Event<1, CPF::Function<void (const SymbolPath&)>> ModuleStmt;
@@ -114,6 +127,8 @@ namespace IDL
 		typedef CPF::Events::Event<6, CPF::Function<void(const String&)>> InterfaceFwdStmt;
 		typedef CPF::Events::Event<7, CPF::Function<void(const String&)>> StructFwdStmt;
 		typedef CPF::Events::Event<8, CPF::Function<void(const StructDecl&)>> StructDeclStmt;
+		typedef CPF::Events::Event<9, CPF::Function<void(const String&, const TypeDecl&)>> EnumForwardStmt;
+		typedef CPF::Events::Event<10, CPF::Function<void(const EnumDecl&)>> EnumDeclStmt;
 
 		Visitor();
 
@@ -128,7 +143,11 @@ namespace IDL
 		antlrcpp::Any visitInterface_fwd(IDLParser::Interface_fwdContext *ctx) override;
 		antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *ctx) override;
 		antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *ctx) override;
+		antlrcpp::Any visitEnum_fwd(IDLParser::Enum_fwdContext *ctx) override;
+		antlrcpp::Any visitEnum_def(IDLParser::Enum_defContext *ctx) override;
 
+		static TypeDecl ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
+		static int64_t ParseEnumExpr(IDLParser::Enum_exprContext* expr);
 	};
 }

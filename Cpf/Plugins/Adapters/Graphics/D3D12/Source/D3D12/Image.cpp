@@ -143,9 +143,14 @@ void Image::Unmap(const Graphics::Range* range)
 	mpResource->Unmap(0, prange);
 }
 
-const Graphics::ImageDesc& Image::GetDesc() const
+GOM::Result Image::GetDesc(Graphics::ImageDesc* desc) const
 {
-	return mDesc;
+	if (desc)
+	{
+		*desc = mDesc;
+		return GOM::kOK;
+	}
+	return GOM::kInvalidParameter;
 }
 
 ID3D12Resource* Image::GetResource()

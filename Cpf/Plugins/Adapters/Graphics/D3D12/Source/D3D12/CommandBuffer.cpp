@@ -36,7 +36,7 @@ CommandBuffer::CommandBuffer(GOM::iUnknown*)
 	, mpAllocator(nullptr)
 	, mCurrent(-1)
 	, mSubPass(0)
-	, mType(Graphics::CommandBufferType::kPrimary)
+	, mType(Graphics::CommandBufferType::ePrimary)
 	, mRenderPass{0}
 	, mColorViewCount(0)
 	, mpDepthBufferView(nullptr)
@@ -436,7 +436,7 @@ GOM::Result CommandBuffer::_AddCommandList()
 	return GOM::kError;
 }
 
-GOM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const* buffers)
+GOM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer** buffers)
 {
 	if (buffers)
 	{

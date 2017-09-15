@@ -169,6 +169,55 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 	return visitChildren(ctx);
 }
 
+antlrcpp::Any Visitor::visitEnum_fwd(IDLParser::Enum_fwdContext *ctx)
+{
+	Emit<EnumForwardStmt>(ctx->IDENT()->toString(), ParseIntegralType(ctx->enum_type()->integral_type()));
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *ctx)
+{
+	EnumDecl enumDecl;
+	enumDecl.mName = ctx->IDENT()->toString();
+	enumDecl.mType = Visitor::Type::Void;
+	if (ctx->enum_type() && ctx->enum_type()->integral_type())
+		enumDecl.mType = ParseIntegralType(ctx->enum_type()->integral_type()).mType;
+
+	auto items = ctx->enum_elements()->enum_item();
+	for (const auto& item : items)
+	{
+		EnumEntry entry;
+		entry.mName = item->IDENT()->toString();
+		entry.mValue = 0x7fffffffffffffff;
+		if (item->EQUALS())
+		{
+			entry.mValue = ParseEnumExpr(item->enum_expr());
+		}
+		enumDecl.mEntries.push_back(entry);
+	}
+
+	Emit<EnumDeclStmt>(enumDecl);
+	return visitChildren(ctx);
+}
+
+Visitor::TypeDecl Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integralType)
+{
+	TypeDecl result;
+	result.mConst = false;
+
+	if (integralType->U8()) result.mType = Type::U8;
+	else if (integralType->S8()) result.mType = Type::S8;
+	else if (integralType->U16()) result.mType = Type::U16;
+	else if (integralType->S16()) result.mType = Type::S16;
+	else if (integralType->U32()) result.mType = Type::U32;
+	else if (integralType->S32()) result.mType = Type::S32;
+	else if (integralType->U64()) result.mType = Type::U64;
+	else if (integralType->S64()) result.mType = Type::S64;
+
+	return result;
+}
+
+
 Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 {
 	TypeDecl result;
@@ -177,15 +226,7 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 	auto anyType = typeDecl->any_type();
 	if (anyType->integral_type())
 	{
-		auto intType = anyType->integral_type();
-		if (intType->U8()) result.mType = Type::U8;
-		else if (intType->S8()) result.mType = Type::S8;
-		else if (intType->U16()) result.mType = Type::U16;
-		else if (intType->S16()) result.mType = Type::S16;
-		else if (intType->U32()) result.mType = Type::U32;
-		else if (intType->S32()) result.mType = Type::S32;
-		else if (intType->U64()) result.mType = Type::U64;
-		else if (intType->S64()) result.mType = Type::S64;
+		result.mType = ParseIntegralType(anyType->integral_type()).mType;
 	}
 	else if (anyType->float_type())
 	{
@@ -219,4 +260,45 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 	}
 
 	return result;
+}
+
+int64_t Visitor::ParseEnumExpr(IDLParser::Enum_exprContext* expr)
+{
+	auto addSubExpr = expr->expr_add_sub();
+	if (addSubExpr->expr_mul_div())
+	{
+		auto mulDivExpr = addSubExpr->expr_mul_div();
+		if (mulDivExpr)
+		{
+			auto shiftExpr = mulDivExpr->expr_shift();
+			if (shiftExpr)
+			{
+				auto valueExpr = shiftExpr->expr_value();
+				if (valueExpr)
+				{
+					auto litExpr = valueExpr->integer_lit();
+					if (litExpr)
+					{
+						if (litExpr->BIN_LIT())
+						{
+							
+						}
+						else if (litExpr->DECIMAL_LIT())
+						{
+							return atoi(litExpr->DECIMAL_LIT()->toString().c_str());
+						}
+						else if (litExpr->HEX_LIT())
+						{
+							
+						}
+						else if (litExpr->OCT_LIT())
+						{
+							
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
 }

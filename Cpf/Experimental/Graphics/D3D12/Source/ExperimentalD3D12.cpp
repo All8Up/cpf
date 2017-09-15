@@ -251,7 +251,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 				for (int i = 0; i < mBackBufferCount; ++i)
 				{
 					mpDevice->CreateCommandPool(mpPreCommandPool[i].AsTypePP());
-					mpDevice->CreateCommandBuffer(mpPreCommandPool[i], CommandBufferType::kPrimary, mpPreCommandBuffer[i].AsTypePP());
+					mpDevice->CreateCommandBuffer(mpPreCommandPool[i], CommandBufferType::ePrimary, mpPreCommandBuffer[i].AsTypePP());
 				}
 
 				if (!_CreateResources())

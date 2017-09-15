@@ -1,0 +1,17 @@
+import iUnknown from GOM;
+module CPF::Graphics;
+
+struct iDevice;
+struct OutputDesc;
+struct ModeDesc;
+
+enum EnumMode : s32;
+enum Format : s32;
+
+interface iOutput : GOM::iUnknown
+{
+	bool GetDesc(OutputDesc* desc) const;
+	bool EnumerateModes(Format format, EnumMode enumMode, s32* count, ModeDesc* desc);
+	bool FindClosestMatch(const ModeDesc* matchMode, ModeDesc* closest, iDevice* compatibleCheck);
+	bool WaitForVBlank();
+}

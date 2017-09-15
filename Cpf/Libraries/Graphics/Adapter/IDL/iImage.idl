@@ -1,0 +1,10 @@
+import iResource from Graphics;
+module CPF::Graphics;
+
+struct Range;
+struct ImageDesc;
+
+interface iImage : iResource
+{
+	result GetDesc(ImageDesc* desc) const;
+}

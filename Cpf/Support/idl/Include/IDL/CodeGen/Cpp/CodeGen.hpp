@@ -24,7 +24,10 @@ namespace IDL
 			void OnInterfaceFwdStmt(const String&);
 			void OnStructFwdStmt(const String&);
 			void OnStructStmt(const Visitor::StructDecl&);
+			void OnEnumForwardStmt(const String&, const Visitor::TypeDecl&);
+			void OnEnumDeclStmt(const Visitor::EnumDecl&);
 
+			static String TypeToString(const Visitor::Type type);
 			static String TypeToString(const Visitor::TypeDecl& decl);
 
 			CodeWriter* mpWriter;

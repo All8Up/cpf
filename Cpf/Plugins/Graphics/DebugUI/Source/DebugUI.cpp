@@ -270,7 +270,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 
 		// Copy the image to the staging buffer.
 		void* buffer;
-		staging->Map(&buffer);
+		staging->Map(&buffer, nullptr);
 		Std::MemCpy(buffer, pixels, sizeof(uint32_t) * width * height);
 		staging->Unmap(nullptr);
 
@@ -278,7 +278,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		IntrusivePtr<iCommandPool> tempPool;
 		mpDevice->CreateCommandPool(tempPool.AsTypePP());
 		IntrusivePtr<iCommandBuffer> tempCommands;
-		mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::kPrimary, tempCommands.AsTypePP());
+		mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::ePrimary, tempCommands.AsTypePP());
 		IntrusivePtr<iFence> tempFence;
 		mpDevice->CreateFence(0, tempFence.AsTypePP());
 
@@ -408,11 +408,11 @@ void DebugUI::EndFrame(iCommandBuffer* commands)
 	{
 		Range vertRange{ 0, 0 };
 		ImDrawVert* vertices = nullptr;
-		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(reinterpret_cast<void**>(&vertices)));
+		reinterpret_cast<ImDrawVert*>(mpVertexBuffer->Map(reinterpret_cast<void**>(&vertices), nullptr));
 
 		Range indexRange{ 0, 0 };
 		ImDrawIdx* indices = nullptr;
-		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(reinterpret_cast<void**>(&indices)));
+		reinterpret_cast<ImDrawIdx*>(mpIndexBuffer->Map(reinterpret_cast<void**>(&indices), nullptr));
 
 		for (int n = 0; n < drawData->CmdListsCount; ++n)
 		{

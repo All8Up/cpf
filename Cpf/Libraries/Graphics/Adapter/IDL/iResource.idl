@@ -1,0 +1,10 @@
+import iUnknown from GOM;
+module CPF::Graphics;
+
+struct Range;
+
+interface iResource : GOM::iUnknown
+{
+	bool Map(void** buffer, const Range* range);
+	void Unmap(const Range* range);
+}

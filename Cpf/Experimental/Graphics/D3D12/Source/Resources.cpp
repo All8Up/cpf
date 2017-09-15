@@ -170,7 +170,7 @@ bool ExperimentalD3D12::_CreateResources()
 	IntrusivePtr<iCommandPool> tempPool;
 	mpDevice->CreateCommandPool(tempPool.AsTypePP());
 	IntrusivePtr<iCommandBuffer> tempCommands;
-	mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::kPrimary, tempCommands.AsTypePP());
+	mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::ePrimary, tempCommands.AsTypePP());
 
 	// Create a vertex buffer.
 	ResourceDesc vbDescPrimary(ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(vbData), 1);
@@ -183,7 +183,7 @@ bool ExperimentalD3D12::_CreateResources()
 		void* buffer;
 		uploadVb->Map(&buffer, nullptr);
 		Std::MemCpy(buffer, vbData, sizeof(vbData));
-		uploadVb->Unmap();
+		uploadVb->Unmap(nullptr);
 
 		tempCommands->Reset(tempPool);
 		tempCommands->Begin(nullptr);

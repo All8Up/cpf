@@ -28,7 +28,7 @@ namespace CPF
 				bool Map(void**, const Graphics::Range* = nullptr) override;
 				void Unmap(const Graphics::Range* range) override;
 
-				const Graphics::ImageDesc& GetDesc() const override;
+				GOM::Result GetDesc(Graphics::ImageDesc* desc) const override;
 
 				ID3D12Resource* GetResource();
 				const D3D12_SHADER_RESOURCE_VIEW_DESC* GetResourceViewDesc() const { return &mResourceView; }

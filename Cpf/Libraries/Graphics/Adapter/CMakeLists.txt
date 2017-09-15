@@ -1,6 +1,26 @@
 # ###############################################
 set (IDL_FILES
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iAdapter.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iBlob.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iCommandPool.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iCommandBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iConstantBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iDevice.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iFence.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iFrameBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iImage.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iImageView.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iIndexBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iInstance.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iOutput.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iPipeline.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iRenderPass.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iResource.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iResourceBinding.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iSampler.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iShader.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iSwapChain.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iVertexBuffer.idl
 )
 
 # ###############################################
@@ -18,26 +38,6 @@ CPF_GEN_GOM(RustGenFiles rust
 # ###############################################
 set (INCLUDE_GRAPHICS_FILES_INTERFACES
 	${CppGenFiles}
-	Include/Graphics/iDevice.hpp
-	Include/Graphics/iInstance.hpp
-	Include/Graphics/iCommandBuffer.hpp
-	Include/Graphics/iCommandPool.hpp
-	Include/Graphics/iImage.hpp
-	Include/Graphics/iImageView.hpp
-	Include/Graphics/iSampler.hpp
-	Include/Graphics/iSwapChain.hpp
-	Include/Graphics/iOutput.hpp
-	Include/Graphics/iFence.hpp
-	Include/Graphics/iRenderPass.hpp
-	Include/Graphics/iShader.hpp
-	Include/Graphics/iPipeline.hpp
-	Include/Graphics/iResourceBinding.hpp
-	Include/Graphics/iResource.hpp
-	Include/Graphics/iIndexBuffer.hpp
-	Include/Graphics/iVertexBuffer.hpp
-	Include/Graphics/iConstantBuffer.hpp
-	Include/Graphics/iFrameBuffer.hpp
-	Include/Graphics/iBlob.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/BlendStateDesc.hpp
@@ -132,6 +132,9 @@ add_custom_target (GraphicsDriver_IDE
 set_property (TARGET GraphicsDriver_IDE PROPERTY FOLDER Libraries/Interface/Graphics)
 source_group (Interface FILES ${INCLUDE_FILES})
 source_group (Interface\\Platform FILES ${PLATFORM_INCLUDE_FILES})
+
+add_dependencies (GraphicsDriver GraphicsDriver_IDE)
+
 
 # ###############################################
 source_group (IDL FILES ${IDL_FILES})

@@ -68,16 +68,18 @@ bool Output::GetDesc(OutputDesc* desc) const
 	return false;
 }
 
-bool Output::EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode, int32_t& count, Graphics::ModeDesc* descs)
+bool Output::EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode, int32_t* count, Graphics::ModeDesc* descs)
 {
-	if (count != 0 && descs != nullptr)
+	if (count == nullptr)
+		return GOM::kInvalidParameter;
+	if (*count != 0 && descs != nullptr)
 	{
 		Vector<DXGI_MODE_DESC1> modeDescs;
-		modeDescs.resize(count);
-		UINT modeCount = UINT(count);
+		modeDescs.resize(*count);
+		UINT modeCount = UINT(*count);
 		if (SUCCEEDED(mpOutput->GetDisplayModeList1(Convert(format), ConvertEnumMode(enumMode), &modeCount, modeDescs.data())))
 		{
-			for (int i = 0; i < count; ++i)
+			for (int i = 0; i < *count; ++i)
 			{
 				descs[i].mWidth = modeDescs[i].Width;
 				descs[i].mHeight = modeDescs[i].Height;
@@ -96,7 +98,7 @@ bool Output::EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode
 		UINT modeCount = 0;
 		if (SUCCEEDED(mpOutput->GetDisplayModeList1(Convert(format), ConvertEnumMode(enumMode), &modeCount, nullptr)))
 		{
-			count = modeCount;
+			*count = modeCount;
 			return true;
 		}
 	}

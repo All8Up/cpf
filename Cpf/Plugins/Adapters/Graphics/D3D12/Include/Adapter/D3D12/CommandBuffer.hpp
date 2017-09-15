@@ -5,6 +5,7 @@
 #include "Graphics/RenderPassBeginDesc.hpp"
 #include <d3d12.h>
 #include "Math/Rectangle.hpp"
+#include "Math/Vector4v.hpp"
 #include "UnorderedSet.hpp"
 
 
@@ -79,7 +80,7 @@ namespace CPF
 				GOM::Result CPF_STDCALL NextSubPass() override;
 				GOM::Result CPF_STDCALL EndRenderPass() override;
 
-				GOM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const*) override;
+				GOM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer**) override;
 
 				//////////////////////////////////////////////////////////////////////////
 				// D3D12 specific implementation details.

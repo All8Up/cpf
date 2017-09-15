@@ -1,0 +1,12 @@
+import iRegistry from Plugin;
+module CPF::Graphics;
+
+struct iDevice;
+struct iAdapter;
+
+interface iInstance : GOM::iUnknown
+{
+	result Initialize(Plugin::iRegistry* registry);
+	result EnumerateAdapters(int* count, iAdapter** adapters);
+	result CreateDevice(iAdapter* adapter, iDevice** device);
+}

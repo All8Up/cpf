@@ -1,0 +1,72 @@
+import iUnknown from GOM;
+module CPF::Graphics;
+
+struct RenderPassBeginDesc;
+struct iInstance;
+struct iCommandPool;
+struct iConstantBuffer;
+struct iResource;
+struct iIndexBuffer;
+struct iVertexBuffer;
+struct iFence;
+struct iImage;
+struct iImageView;
+struct iSwapChain;
+struct iShader;
+struct iSampler;
+struct iCommandBuffer;
+struct iResourceBinding;
+struct iPipeline;
+struct iRenderPass;
+struct iFrameBuffer;
+struct iBlob;
+struct WindowData;
+struct SamplerDesc;
+struct ClearValue;
+struct ResourceDesc;
+struct ImageDesc;
+struct DepthStencilViewDesc;
+struct SwapChainDesc;
+struct PipelineStateDesc;
+struct RenderPassDesc;
+struct FrameBufferDesc;
+struct ResourceBindingDesc;
+
+enum Format : s32;
+enum HeapType : s32;
+enum ShaderType : s32;
+enum CommandBufferType : s32;
+
+interface iDevice : GOM::iUnknown
+{
+	result Initialize();
+	result Shutdown();
+
+	result CreateSwapChain(iInstance* inst, const WindowData* wd, s32 w, s32 h, const SwapChainDesc* scd, iSwapChain** sc);
+	result CreateCommandPool(iCommandPool** ocp);
+	result CreateCommandBuffer(iCommandPool* cp, CommandBufferType type, iCommandBuffer** ocb);
+	result CreateFence(s64 initValue, iFence** of);
+	result CreateImage2D(HeapType heap, const ImageDesc* desc, const Graphics::ClearValue* clearValue, iImage** oi);
+	result CreateShader(iBlob* blob, iShader** os);
+	result CreateResourceBinding(const ResourceBindingDesc* rbd, iResourceBinding** orb);
+	result CreatePipeline(const PipelineStateDesc* desc, iResourceBinding* rb, iPipeline** op);
+	result CreateResource(const ResourceDesc* desc, iResource** or);
+	result CreateSampler(const SamplerDesc* desc, iSampler** os);
+	result CreateRenderPass(const RenderPassDesc* desc, iRenderPass** orp);
+	result CreateFrameBuffer(const FrameBufferDesc* desc, iFrameBuffer** frameBuffer);
+
+	result CreateIndexBuffer(const ResourceDesc* desc, Format format, iIndexBuffer** indexBuffer);
+	result CreateVertexBuffer(const ResourceDesc* desc, int32_t stride, iVertexBuffer** indexBuffer);
+	result CreateConstantBuffer(const ResourceDesc* desc, const void* initData, iConstantBuffer** ocb);
+
+	result CreateBlob(int64_t size, const void* data, iBlob** ob);
+
+	result CreateDepthStencilView(iImage* img, const DepthStencilViewDesc* dsvd, iImageView** oiv);
+
+	result Signal(iFence* fence, int64_t value);
+
+	void Submit(int32_t count, iCommandBuffer** ocb);
+
+	// TODO: Probably temp.
+	result CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, iBlob** outBlob);
+}

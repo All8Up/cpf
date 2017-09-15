@@ -2,6 +2,7 @@
 #pragma once
 #include "Graphics/iRenderPass.hpp"
 #include "Vector.hpp"
+#include "Graphics/SubPassDesc.hpp"
 
 namespace CPF
 {

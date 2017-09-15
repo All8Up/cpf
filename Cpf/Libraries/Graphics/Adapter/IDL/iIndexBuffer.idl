@@ -1,0 +1,6 @@
+import iResource from Graphics;
+module CPF::Graphics;
+
+interface iIndexBuffer : iResource
+{
+}

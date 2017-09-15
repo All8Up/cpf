@@ -27,10 +27,10 @@ bool ExperimentalD3D12::_SelectAdapter(Graphics::iInstance* instance, iAdapter**
 	//////////////////////////////////////////////////////////////////////////
 	// Enumerate the graphics adapters attached to the system.
 	int adapterCount = 0;
-	instance->EnumerateAdapters(adapterCount, nullptr);
+	instance->EnumerateAdapters(&adapterCount, nullptr);
 	Vector<IntrusivePtr<iAdapter>> adapters;
 	adapters.resize(adapterCount);
-	instance->EnumerateAdapters(adapterCount, adapters[0].AsTypePP());
+	instance->EnumerateAdapters(&adapterCount, adapters[0].AsTypePP());
 
 	//////////////////////////////////////////////////////////////////////////
 	// Log adapter information.
@@ -93,10 +93,10 @@ bool ExperimentalD3D12::_EnumerateOutputs(iAdapter* adapter)
 			//////////////////////////////////////////////////////////////////////////
 			// Enumerate modes for this output.
 			int32_t modeCount = 0;
-			output->EnumerateModes(Format::eRGBA8un, EnumMode::eNone, modeCount, nullptr);
+			output->EnumerateModes(Format::eRGBA8un, EnumMode::eNone, &modeCount, nullptr);
 			Vector<ModeDesc> modeDescs;
 			modeDescs.resize(modeCount);
-			output->EnumerateModes(Format::eRGBA8un, EnumMode::eNone, modeCount, modeDescs.data());
+			output->EnumerateModes(Format::eRGBA8un, EnumMode::eNone, &modeCount, modeDescs.data());
 
 			CPF_LOG(Experimental, Info) << "----------------------------------------";
 			for (int i = 0; i < modeCount; ++i)

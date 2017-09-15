@@ -52,7 +52,7 @@ namespace CPF
 			const TextureBinding& GetTextureBinding() const;
 
 		private:
-			friend class ResourceBindingDesc;
+			friend struct ResourceBindingDesc;
 			BindingType mType;
 			union
 			{
@@ -71,7 +71,7 @@ namespace CPF
 		BindingParameter ParamTexture(int32_t index);
 
 		//////////////////////////////////////////////////////////////////////////
-		class ResourceBindingDesc
+		struct ResourceBindingDesc
 		{
 		public:
 			ResourceBindingDesc(const Vector<BindingParameter>& params);

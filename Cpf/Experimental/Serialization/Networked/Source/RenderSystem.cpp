@@ -161,10 +161,10 @@ bool RenderSystem::_SelectAdapter()
 {
 	// Enumerate the graphics adapters attached to the system.
 	int adapterCount = 0;
-	mpInstance->EnumerateAdapters(adapterCount, nullptr);
+	mpInstance->EnumerateAdapters(&adapterCount, nullptr);
 	Vector<IntrusivePtr<iAdapter>> adapters;
 	adapters.resize(adapterCount);
-	mpInstance->EnumerateAdapters(adapterCount, adapters[0].AsTypePP());
+	mpInstance->EnumerateAdapters(&adapterCount, adapters[0].AsTypePP());
 
 	int bestAdapter = -1;
 	for (int i = 0; i < adapterCount; ++i)
@@ -348,9 +348,9 @@ bool RenderSystem::_CreateRenderData(iInputManager* im, iWindow* window, Resourc
 	for (int i = 0; i < kBufferCount; ++i)
 	{
 		mpDevice->CreateCommandPool(mpPrimaryPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpPrimaryPool[i], CommandBufferType::kPrimary, mpPrimaryBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpPrimaryPool[i], CommandBufferType::ePrimary, mpPrimaryBuffer[i].AsTypePP());
 		mpDevice->CreateCommandPool(mpDebugUIPool[i].AsTypePP());
-		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], CommandBufferType::kSecondary, mpDebugUIBuffer[i].AsTypePP());
+		mpDevice->CreateCommandBuffer(mpDebugUIPool[i], CommandBufferType::eSecondary, mpDebugUIBuffer[i].AsTypePP());
 	}
 	mpRegistry->Create(nullptr, kDebugUICID.GetID(), iDebugUI::kIID.GetID(), mpDebugUI.AsVoidPP());
 	mpDebugUI->Initialize(mpDevice, im, window, locator);

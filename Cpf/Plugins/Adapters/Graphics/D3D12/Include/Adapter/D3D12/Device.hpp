@@ -24,7 +24,7 @@ namespace CPF
 
 		struct SwapChainDesc;
 		struct PipelineStateDesc;
-		class ResourceBindingDesc;
+		struct ResourceBindingDesc;
 		struct RenderPassDesc;
 		struct FrameBufferDesc;
 	}
