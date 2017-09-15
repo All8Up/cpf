@@ -223,7 +223,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 
 			IntrusivePtr<iInstance> gfxInstance;
 			GetRegistry()->Create(nullptr, selectedAPI.GetID(), Graphics::iInstance::kIID.GetID(), gfxInstance.AsVoidPP());
-			if (gfxInstance)
+			if (gfxInstance && GOM::Succeeded(gfxInstance->Initialize(GetRegistry())))
 			{
 				IntrusivePtr<iAdapter> adapter;
 				if (!_SelectAdapter(gfxInstance, adapter.AsTypePP()))
