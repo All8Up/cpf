@@ -145,25 +145,58 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 	UnionOrStructDecl structDecl;
 	structDecl.mUnion = false;
 	structDecl.mName = ctx->IDENT()->toString();
-	auto members = ctx->struct_block()->struct_item();
-	for (const auto& item : members)
 	{
-		if (item->const_def())
+		auto members = ctx->struct_block()->struct_item();
+		for (const auto& item : members)
 		{
+			if (item->const_def())
+			{
 
-		}
-		else if (item->enum_def())
-		{
+			}
+			else if (item->enum_def())
+			{
 
+			}
+			else if (item->member_decl())
+			{
+				auto decl = item->member_decl();
+				DataMemberDecl data;
+				data.mName = decl->IDENT()->toString();
+				data.mType = ParseTypeDecl(decl->type_decl());
+				data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+				structDecl.mDataMembers[int(OsType::eNone)].push_back(data);
+			}
 		}
-		else if (item->member_decl())
+	}
+	auto os_members = ctx->struct_block()->os_specific();
+	for (const auto& item : os_members)
+	{
+		int index = int(OsType::eNone);
+		if (item->os_tag()->Windows())
+			index = int(OsType::eWindows);
+		else if (item->os_tag()->Darwin())
+			index = int(OsType::eDarwin);
+
+		auto members = item->struct_item();
+		for (const auto& it : members)
 		{
-			auto decl = item->member_decl();
-			DataMemberDecl data;
-			data.mName = decl->IDENT()->toString();
-			data.mType = ParseTypeDecl(decl->type_decl());
-			data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
-			structDecl.mDataMembers.push_back(data);
+			if (it->const_def())
+			{
+
+			}
+			else if (it->enum_def())
+			{
+
+			}
+			else if (it->member_decl())
+			{
+				auto decl = it->member_decl();
+				DataMemberDecl data;
+				data.mName = decl->IDENT()->toString();
+				data.mType = ParseTypeDecl(decl->type_decl());
+				data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+				structDecl.mDataMembers[index].push_back(data);
+			}
 		}
 	}
 
@@ -200,7 +233,7 @@ antlrcpp::Any Visitor::visitUnion_decl(IDLParser::Union_declContext *ctx)
 			data.mName = decl->IDENT()->toString();
 			data.mType = ParseTypeDecl(decl->type_decl());
 			data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
-			structDecl.mDataMembers.push_back(data);
+			structDecl.mDataMembers[int(OsType::eNone)].push_back(data);
 		}
 	}
 

@@ -45,6 +45,17 @@ void CodeWriter::OutputLine(const char* const format, ...)
 	mWriter.Write("\n", 1);
 }
 
+void CodeWriter::OutputLineNoIndent(const char* const format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	char buffer[2048];
+	vsprintf(buffer, format, args);
+	va_end(args);
+	mWriter.Write(buffer, CPF::Std::StrLen(buffer));
+	mWriter.Write("\n", 1);
+}
+
 void CodeWriter::LineFeed(int32_t newSection, int32_t noLFSections, int32_t addLFSections)
 {
 	if ((mLastSectionID & noLFSections) == 0)

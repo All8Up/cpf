@@ -55,6 +55,10 @@ public:
 
     virtual antlrcpp::Any visitStruct_item(IDLParser::Struct_itemContext *context) = 0;
 
+    virtual antlrcpp::Any visitOs_specific(IDLParser::Os_specificContext *context) = 0;
+
+    virtual antlrcpp::Any visitOs_tag(IDLParser::Os_tagContext *context) = 0;
+
     virtual antlrcpp::Any visitInterface_stmt(IDLParser::Interface_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitInterface_fwd(IDLParser::Interface_fwdContext *context) = 0;

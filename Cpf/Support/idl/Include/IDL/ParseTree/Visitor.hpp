@@ -4,6 +4,7 @@
 #include "IDL/CodeGen/Context.hpp"
 #include "Events/Emitter.hpp"
 #include "Vector.hpp"
+#include "Map.hpp"
 
 namespace IDL
 {
@@ -99,12 +100,19 @@ namespace IDL
 			TypeDecl mType;
 			int32_t mArrayDimensions;
 		};
+		enum class OsType : int32_t
+		{
+			eNone = 0,
+			eDarwin,
+			eWindows,
+			eCount
+		};
 		struct UnionOrStructDecl
 		{
 			bool mUnion;
 			String mName;
-			using DataMembers = CPF::Vector<DataMemberDecl>;
-			DataMembers mDataMembers;
+			using MemberVector = CPF::Vector<DataMemberDecl>;
+			MemberVector mDataMembers[int(OsType::eCount)];
 		};
 		struct EnumEntry
 		{

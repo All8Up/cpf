@@ -50,12 +50,16 @@ union_decl              : UNION IDENT struct_block;
 union_fwd               : UNION qualified_ident SEMICOLON;
 
 // Union/Struct data block.
-struct_block            : LBRACE struct_item* RBRACE;
+struct_block            : LBRACE (struct_item* | os_specific*) RBRACE;
 
 // Statements allowed at struct scope.
 struct_item             : member_decl
                         | const_def
                         | enum_def;
+
+os_specific             : os_tag LBRACE struct_item* RBRACE;
+os_tag                  : Windows
+                        | Darwin;
 
 // Interfaces
 interface_stmt          : interface_decl

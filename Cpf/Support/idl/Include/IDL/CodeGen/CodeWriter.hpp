@@ -17,6 +17,7 @@ namespace IDL
 
 			void Output(const char* const format, ...);
 			void OutputLine(const char* const format, ...);
+			void OutputLineNoIndent(const char* const format, ...);
 
 			static constexpr int32_t kAnySection = 0xffffffff;
 			static constexpr int32_t kNoSection = 0;

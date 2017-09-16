@@ -87,6 +87,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitOs_specific(IDLParser::Os_specificContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitOs_tag(IDLParser::Os_tagContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitInterface_stmt(IDLParser::Interface_stmtContext *ctx) override {
     return visitChildren(ctx);
   }

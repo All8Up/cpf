@@ -174,12 +174,36 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 		mpWriter->OutputLine("struct %s", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
-	for (const auto& member : decl.mDataMembers)
+	for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eNone)])
 	{
 		mpWriter->OutputLine("%s %s%s;",
 			TypeToString(member.mType).c_str(),
 			member.mName.c_str(),
 			member.mArrayDimensions>0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+	}
+	if (!decl.mDataMembers[int(Visitor::OsType::eWindows)].empty())
+	{
+		mpWriter->OutputLineNoIndent("#if CPF_TARGET_WINDOWS");
+		for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eWindows)])
+		{
+			mpWriter->OutputLine("%s %s%s;",
+				TypeToString(member.mType).c_str(),
+				member.mName.c_str(),
+				member.mArrayDimensions > 0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+		}
+		mpWriter->OutputLineNoIndent("#endif");
+	}
+	if (!decl.mDataMembers[int(Visitor::OsType::eDarwin)].empty())
+	{
+		mpWriter->OutputLineNoIndent("#if CPF_TARGET_DARWIN");
+		for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eDarwin)])
+		{
+			mpWriter->OutputLine("%s %s%s;",
+				TypeToString(member.mType).c_str(),
+				member.mName.c_str(),
+				member.mArrayDimensions > 0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+		}
+		mpWriter->OutputLineNoIndent("#endif");
 	}
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");

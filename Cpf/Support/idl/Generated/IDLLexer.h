@@ -12,16 +12,16 @@
 class  IDLLexer : public antlr4::Lexer {
 public:
   enum {
-    IMPORT = 1, STRUCT = 2, UNION = 3, INTERFACE = 4, ENUM = 5, MODULE = 6, 
-    FROM = 7, IN = 8, OUT = 9, COLON = 10, SEMICOLON = 11, STAR = 12, SLASH = 13, 
-    DOT = 14, COMMA = 15, EQUALS = 16, QUOTE = 17, LBRACE = 18, RBRACE = 19, 
-    LPAREN = 20, RPAREN = 21, LBRACKET = 22, RBRACKET = 23, LT = 24, GT = 25, 
-    PLUS = 26, MINUS = 27, LSHIFT = 28, RSHIFT = 29, Const = 30, Void = 31, 
-    RESULT = 32, SUCCESS = 33, FAILURE = 34, CLASS_ID = 35, STRING = 36, 
-    U8 = 37, S8 = 38, U16 = 39, S16 = 40, U32 = 41, S32 = 42, U64 = 43, 
-    S64 = 44, F32 = 45, F64 = 46, IDENT = 47, DECIMAL_LIT = 48, HEX_LIT = 49, 
-    BIN_LIT = 50, OCT_LIT = 51, STRING_LIT = 52, FLOAT_LIT = 53, WHITE_SPACE = 54, 
-    BLOCK_COMMENT = 55, LINE_COMMENT = 56
+    Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, UNION = 5, INTERFACE = 6, 
+    ENUM = 7, MODULE = 8, FROM = 9, IN = 10, OUT = 11, COLON = 12, SEMICOLON = 13, 
+    STAR = 14, SLASH = 15, DOT = 16, COMMA = 17, EQUALS = 18, QUOTE = 19, 
+    LBRACE = 20, RBRACE = 21, LPAREN = 22, RPAREN = 23, LBRACKET = 24, RBRACKET = 25, 
+    LT = 26, GT = 27, PLUS = 28, MINUS = 29, LSHIFT = 30, RSHIFT = 31, Const = 32, 
+    Void = 33, RESULT = 34, SUCCESS = 35, FAILURE = 36, CLASS_ID = 37, STRING = 38, 
+    U8 = 39, S8 = 40, U16 = 41, S16 = 42, U32 = 43, S32 = 44, U64 = 45, 
+    S64 = 46, F32 = 47, F64 = 48, IDENT = 49, DECIMAL_LIT = 50, HEX_LIT = 51, 
+    BIN_LIT = 52, OCT_LIT = 53, STRING_LIT = 54, FLOAT_LIT = 55, WHITE_SPACE = 56, 
+    BLOCK_COMMENT = 57, LINE_COMMENT = 58
   };
 
   IDLLexer(antlr4::CharStream *input);

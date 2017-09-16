@@ -42,6 +42,7 @@ set (IDL_STRUCTURES
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Ratio.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/ResourceData.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Viewport.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/WindowData.idl
 )
 CPF_GEN_GOM(CPP_GRAPHICS_STRUCTURES cpp
 	hpp
@@ -79,7 +80,6 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}
-	Include/Graphics/WindowData.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_FLAGS
 	Include/Graphics/BlendFunc.hpp

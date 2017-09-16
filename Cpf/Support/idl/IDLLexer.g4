@@ -8,6 +8,10 @@ fragment BIN_DIGIT          : [0-1];
 fragment OCT_DIGIT          : [0-7];
 fragment WS                 : [ \r\n\t];
 
+// Platform tags.
+Windows                     : 'WINDOWS';
+Darwin                      : 'DARWIN';
+
 IMPORT                      : 'import';
 STRUCT                      : 'struct';
 UNION                       : 'union';
