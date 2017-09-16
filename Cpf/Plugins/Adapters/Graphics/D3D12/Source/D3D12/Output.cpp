@@ -83,7 +83,7 @@ bool Output::EnumerateModes(Graphics::Format format, Graphics::EnumMode enumMode
 			{
 				descs[i].mWidth = modeDescs[i].Width;
 				descs[i].mHeight = modeDescs[i].Height;
-				descs[i].mRefreshRate = Ratio(modeDescs[i].RefreshRate.Numerator, modeDescs[i].RefreshRate.Denominator);
+				descs[i].mRefreshRate = Ratio{ int32_t(modeDescs[i].RefreshRate.Numerator), int32_t(modeDescs[i].RefreshRate.Denominator) };
 				descs[i].mFormat = Convert(modeDescs[i].Format);
 				descs[i].mScanLineOrder = Convert(modeDescs[i].ScanlineOrdering);
 				descs[i].mModeScaling = Convert(modeDescs[i].Scaling);

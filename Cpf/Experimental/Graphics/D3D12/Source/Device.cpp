@@ -101,7 +101,7 @@ bool ExperimentalD3D12::_EnumerateOutputs(iAdapter* adapter)
 			CPF_LOG(Experimental, Info) << "----------------------------------------";
 			for (int i = 0; i < modeCount; ++i)
 			{
-				CPF_LOG(Experimental, Info) << modeDescs[i].mWidth << "x" << modeDescs[i].mHeight << "@" << float(modeDescs[i].mRefreshRate);
+				CPF_LOG(Experimental, Info) << modeDescs[i].mWidth << "x" << modeDescs[i].mHeight << "@" << float(modeDescs[i].mRefreshRate.mNumerator) / float(modeDescs[i].mRefreshRate.mDenominator);
 			}
 			CPF_LOG(Experimental, Info) << "----------------------------------------";
 		}
