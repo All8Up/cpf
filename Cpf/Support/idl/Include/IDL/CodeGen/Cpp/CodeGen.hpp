@@ -12,6 +12,17 @@ namespace IDL
 			void Begin(Visitor&, CodeWriter&) override;
 			void End() override;
 
+			enum Sections : int32_t
+			{
+				eHeader = 1<<0,
+				eImports = 1<<1,
+				eNamespace = 1<<2,
+				eInterfaces = 1<<3,
+				eConstants = 1<<4,
+				eStructures = 1<<5,
+				eForwards = 1<<6
+			};
+
 		private:
 			using String = CPF::String;
 

@@ -43,13 +43,14 @@ void CppGenerator::End()
 
 void CppGenerator::OnStart()
 {
+	mpWriter->SetSection(eHeader);
 	mpWriter->OutputLine("//////////////////////////////////////////////////////////////////////////");
 	mpWriter->OutputLine("#pragma once");
 }
 
 void CppGenerator::OnModule(const SymbolPath& path)
 {
-	mpWriter->OutputLine("");
+	mpWriter->LineFeed(eNamespace, eNamespace, CodeWriter::kAnySection);
 	mModule = path;
 	for (const auto& part : path.GetPath())
 	{
@@ -61,6 +62,7 @@ void CppGenerator::OnModule(const SymbolPath& path)
 
 void CppGenerator::OnSuccessType(const String& name, const String& subSystem, const String& desc)
 {
+	mpWriter->LineFeed(eConstants, eNamespace | eConstants, CodeWriter::kAnySection);
 	mpWriter->OutputLine("static constexpr uint32_t k%s = 0x%" PRIx32 "; // %s - %s",
 		name.c_str(),
 		CPF::GOM::CreateResult(
@@ -73,6 +75,7 @@ void CppGenerator::OnSuccessType(const String& name, const String& subSystem, co
 
 void CppGenerator::OnFailureType(const String& name, const String& subSystem, const String& desc)
 {
+	mpWriter->LineFeed(eConstants, eNamespace | eConstants, CodeWriter::kAnySection);
 	mpWriter->OutputLine("static constexpr uint32_t k%s = 0x%" PRIx32 "; // %s - %s",
 		name.c_str(),
 		CPF::GOM::CreateResult(
@@ -85,13 +88,14 @@ void CppGenerator::OnFailureType(const String& name, const String& subSystem, co
 
 void CppGenerator::OnImportStmt(const String& item, const SymbolPath& from)
 {
+	mpWriter->LineFeed(eImports, eImports | eHeader, CodeWriter::kAnySection);
 	auto path = CPF::IO::Path::Combine(from.ToString("/"), item+".hpp");
 	mpWriter->OutputLine("#include \"%s\"", path.c_str());
 }
 
 void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 {
-	mpWriter->LineFeed();
+	mpWriter->LineFeed(eInterfaces, eNamespace, CodeWriter::kAnySection);
 	if (decl.mSuper.Empty())
 		mpWriter->OutputLine("struct %s", decl.mName.c_str());
 	else
@@ -104,7 +108,9 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	CPF::GOM::InterfaceID iid = CPF::GOM::InterfaceID(CPF::Hash::Crc64(hashName.c_str(), hashName.length()));
 	mpWriter->OutputLine("static constexpr GOM::InterfaceID kIID = GOM::InterfaceID(0x%" PRIx64 " /* %s */);",
 		iid.GetID(), hashName.c_str());
-	mpWriter->OutputLine("");
+
+	if (!decl.mFunctions.empty())
+		mpWriter->OutputLine("");
 
 	for (const auto& func : decl.mFunctions)
 	{
@@ -132,7 +138,7 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			mpWriter->Output(") const = 0;");
 		else
 			mpWriter->Output(") = 0;");
-		mpWriter->LineFeed();
+		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 	}
 
 	mpWriter->Unindent();
@@ -141,19 +147,19 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 
 void CppGenerator::OnInterfaceFwdStmt(const String& name)
 {
-	mpWriter->LineFeed();
+	mpWriter->LineFeed(eForwards, eNamespace | eForwards, CodeWriter::kAnySection);
 	mpWriter->OutputLine("struct %s;", name.c_str());
 }
 
 void CppGenerator::OnStructFwdStmt(const String& name)
 {
-	mpWriter->LineFeed();
+	mpWriter->LineFeed(eForwards, eNamespace | eForwards, CodeWriter::kAnySection);
 	mpWriter->OutputLine("struct %s;", name.c_str());
 }
 
 void CppGenerator::OnStructStmt(const Visitor::StructDecl& decl)
 {
-	mpWriter->LineFeed();
+	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
 	mpWriter->OutputLine("struct %s", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
@@ -169,6 +175,7 @@ void CppGenerator::OnStructStmt(const Visitor::StructDecl& decl)
 
 void CppGenerator::OnEnumForwardStmt(const String& name, const Visitor::TypeDecl& typeDecl)
 {
+	mpWriter->LineFeed(eForwards, eNamespace | eForwards, CodeWriter::kAnySection);
 	if (typeDecl.mType == Visitor::Type::Void)
 		mpWriter->OutputLine("enum class %s;", name.c_str());
 	else
@@ -177,6 +184,7 @@ void CppGenerator::OnEnumForwardStmt(const String& name, const Visitor::TypeDecl
 
 void CppGenerator::OnEnumDeclStmt(const Visitor::EnumDecl& decl)
 {
+	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
 	if (decl.mType == Visitor::Type::Void)
 		mpWriter->OutputLine("enum class %s;", decl.mName.c_str());
 	else

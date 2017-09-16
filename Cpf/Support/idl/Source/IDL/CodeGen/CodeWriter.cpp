@@ -12,6 +12,7 @@ CodeWriter::CodeWriter(CPF::IO::TextWriter& writer, bool useTabs, int indentSpac
 	, mIndent(0)
 	, mUseTabs(useTabs)
 	, mIndentSpaces(indentSpaces)
+	, mLastSectionID(-1)
 {
 	if (mUseTabs)
 		mIndentString = std::string(256, '\n');
@@ -44,9 +45,17 @@ void CodeWriter::OutputLine(const char* const format, ...)
 	mWriter.Write("\n", 1);
 }
 
-void CodeWriter::LineFeed()
+void CodeWriter::LineFeed(int32_t newSection, int32_t noLFSections, int32_t addLFSections)
 {
-	mWriter.Write("\n", 1);
+	if ((mLastSectionID & noLFSections) == 0)
+	{
+		if ((mLastSectionID & addLFSections) != 0)
+		{
+			mWriter.Write("\n", 1);
+		}
+	}
+	if (newSection != kNoSection)
+		mLastSectionID = newSection;
 }
 
 int CodeWriter::Indent()
