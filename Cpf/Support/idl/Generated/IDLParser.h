@@ -40,8 +40,8 @@ public:
     RuleNumeric_lit = 41, RuleInteger_lit = 42, RuleFloat_lit = 43, RuleString_lit = 44, 
     RuleQualified_ident = 45, RuleQualified_part = 46, RuleQualified_separator = 47, 
     RuleAll_or_ident = 48, RuleMember_decl = 49, RuleType_decl = 50, RuleType_modifier = 51, 
-    RulePointer_type = 52, RuleAny_type = 53, RuleUtility_type = 54, RuleIntegral_type = 55, 
-    RuleFloat_type = 56
+    RulePointer_type = 52, RulePointer_decl = 53, RuleAny_type = 54, RuleUtility_type = 55, 
+    RuleIntegral_type = 56, RuleFloat_type = 57
   };
 
   IDLParser(antlr4::TokenStream *input);
@@ -107,6 +107,7 @@ public:
   class Type_declContext;
   class Type_modifierContext;
   class Pointer_typeContext;
+  class Pointer_declContext;
   class Any_typeContext;
   class Utility_typeContext;
   class Integral_typeContext;
@@ -1030,10 +1031,8 @@ public:
   public:
     Pointer_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<antlr4::tree::TerminalNode *> STAR();
-    antlr4::tree::TerminalNode* STAR(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> Const();
-    antlr4::tree::TerminalNode* Const(size_t i);
+    std::vector<Pointer_declContext *> pointer_decl();
+    Pointer_declContext* pointer_decl(size_t i);
 
     virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
     virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
@@ -1043,6 +1042,22 @@ public:
   };
 
   Pointer_typeContext* pointer_type();
+
+  class  Pointer_declContext : public antlr4::ParserRuleContext {
+  public:
+    Pointer_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *STAR();
+    antlr4::tree::TerminalNode *Const();
+
+    virtual void enterRule(antlr4::tree::ParseTreeListener *listener) override;
+    virtual void exitRule(antlr4::tree::ParseTreeListener *listener) override;
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Pointer_declContext* pointer_decl();
 
   class  Any_typeContext : public antlr4::ParserRuleContext {
   public:

@@ -175,6 +175,9 @@ public:
   virtual void enterPointer_type(IDLParser::Pointer_typeContext * /*ctx*/) override { }
   virtual void exitPointer_type(IDLParser::Pointer_typeContext * /*ctx*/) override { }
 
+  virtual void enterPointer_decl(IDLParser::Pointer_declContext * /*ctx*/) override { }
+  virtual void exitPointer_decl(IDLParser::Pointer_declContext * /*ctx*/) override { }
+
   virtual void enterAny_type(IDLParser::Any_typeContext * /*ctx*/) override { }
   virtual void exitAny_type(IDLParser::Any_typeContext * /*ctx*/) override { }
 

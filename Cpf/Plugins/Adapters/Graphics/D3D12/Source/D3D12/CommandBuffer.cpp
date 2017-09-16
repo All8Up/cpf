@@ -436,7 +436,7 @@ GOM::Result CommandBuffer::_AddCommandList()
 	return GOM::kError;
 }
 
-GOM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer** buffers)
+GOM::Result CPF_STDCALL CommandBuffer::Insert(int32_t count, iCommandBuffer* const * buffers)
 {
 	if (buffers)
 	{

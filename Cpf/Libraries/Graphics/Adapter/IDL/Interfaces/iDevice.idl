@@ -65,7 +65,7 @@ interface iDevice : GOM::iUnknown
 
 	result Signal(iFence* fence, int64_t value);
 
-	void Submit(int32_t count, iCommandBuffer** ocb);
+	void Submit(int32_t count, iCommandBuffer* const* ocb);
 
 	// TODO: Probably temp.
 	result CompileToByteCode(const char* entryPoint, ShaderType type, size_t size, const char* source, iBlob** outBlob);

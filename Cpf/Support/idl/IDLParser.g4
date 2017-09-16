@@ -135,7 +135,8 @@ type_decl               : type_modifier? any_type pointer_type?;
 
 type_modifier           : Const;
 
-pointer_type            : (Const? STAR)+;
+pointer_type            : pointer_decl+;
+pointer_decl             : Const? STAR;
 
 // Any valid type.
 any_type                : integral_type

@@ -252,10 +252,14 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 
 	if (typeDecl->pointer_type())
 	{
-		for (const auto& ptr : typeDecl->pointer_type()->STAR())
+		for (const auto& ptr : typeDecl->pointer_type()->pointer_decl())
 		{
-			(void)ptr;
-			result.mPointer.push_back(Pointer());
+			Pointer pointer;
+			if (ptr->Const())
+				pointer.mConst = true;
+			else
+				pointer.mConst = false;
+			result.mPointer.push_back(pointer);
 		}
 	}
 

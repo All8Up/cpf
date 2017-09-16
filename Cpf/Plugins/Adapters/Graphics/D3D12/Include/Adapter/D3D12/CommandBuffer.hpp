@@ -80,7 +80,7 @@ namespace CPF
 				GOM::Result CPF_STDCALL NextSubPass() override;
 				GOM::Result CPF_STDCALL EndRenderPass() override;
 
-				GOM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer**) override;
+				GOM::Result CPF_STDCALL Insert(int32_t count, iCommandBuffer* const *) override;
 
 				//////////////////////////////////////////////////////////////////////////
 				// D3D12 specific implementation details.

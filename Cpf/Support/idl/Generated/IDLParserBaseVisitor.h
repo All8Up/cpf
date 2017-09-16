@@ -227,6 +227,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitPointer_decl(IDLParser::Pointer_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitAny_type(IDLParser::Any_typeContext *ctx) override {
     return visitChildren(ctx);
   }

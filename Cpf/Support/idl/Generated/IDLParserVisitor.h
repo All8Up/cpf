@@ -125,6 +125,8 @@ public:
 
     virtual antlrcpp::Any visitPointer_type(IDLParser::Pointer_typeContext *context) = 0;
 
+    virtual antlrcpp::Any visitPointer_decl(IDLParser::Pointer_declContext *context) = 0;
+
     virtual antlrcpp::Any visitAny_type(IDLParser::Any_typeContext *context) = 0;
 
     virtual antlrcpp::Any visitUtility_type(IDLParser::Utility_typeContext *context) = 0;

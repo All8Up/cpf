@@ -74,7 +74,7 @@ namespace CPF
 				GOM::Result CPF_STDCALL CreateDepthStencilView(Graphics::iImage*, const Graphics::DepthStencilViewDesc*, Graphics::iImageView**) override;
 
 				GOM::Result CPF_STDCALL Signal(Graphics::iFence*, int64_t value) override;
-				void CPF_STDCALL Submit(int32_t count, Graphics::iCommandBuffer**) override;
+				void CPF_STDCALL Submit(int32_t count, Graphics::iCommandBuffer* const *) override;
 
 				//////////////////////////////////////////////////////////////////////////
 				// Internal

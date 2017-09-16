@@ -1,44 +1,56 @@
 # ###############################################
-set (IDL_FILES
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iAdapter.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iBlob.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iCommandPool.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iCommandBuffer.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iConstantBuffer.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iDevice.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iFence.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iFrameBuffer.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iImage.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iImageView.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iIndexBuffer.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iInstance.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iOutput.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iPipeline.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iRenderPass.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iResource.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iResourceBinding.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iSampler.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iShader.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iSwapChain.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/iVertexBuffer.idl
+set (IDL_INTERFACES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iAdapter.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iBlob.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iCommandPool.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iCommandBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iConstantBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iDevice.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFence.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFrameBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iImage.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iImageView.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iIndexBuffer.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iInstance.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iOutput.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iPipeline.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iRenderPass.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iResource.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iResourceBinding.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iSampler.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iShader.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iSwapChain.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iVertexBuffer.idl
 )
 
 # ###############################################
-CPF_GEN_GOM(CppGenFiles cpp
+CPF_GEN_GOM(CPP_GRAPHICS_INTERFACES cpp
 	hpp
 	${CPF_GENERATED}/CPP/Graphics
-	${IDL_FILES}
+	${IDL_INTERFACES}
 )
-CPF_GEN_GOM(RustGenFiles rust
+CPF_GEN_GOM(RUST_GRAPHICS_INTERFACES rust
 	rs
 	${CPF_GENERATED}/Rust/Graphics
-	${IDL_FILES}
+	${IDL_INTERFACES}
 )
 
 # ###############################################
-set (INCLUDE_GRAPHICS_FILES_INTERFACES
-	${CppGenFiles}
+set (IDL_STRUCTURES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Range.idl
 )
+CPF_GEN_GOM(CPP_GRAPHICS_STRUCTURES cpp
+	hpp
+	${CPF_GENERATED}/CPP/Graphics
+	${IDL_STRUCTURES}
+)
+CPF_GEN_GOM(RUST_GRAPHICS_STRUCTURES rust
+	rs
+	${CPF_GENERATED}/Rust/Graphics
+	${IDL_STRUCTURES}
+)
+
+# ###############################################
 set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/BlendStateDesc.hpp
 	Include/Graphics/DepthStencilDesc.hpp
@@ -62,9 +74,9 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/DepthStencilViewDesc.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
+	${CPP_GRAPHICS_STRUCTURES}
 	Include/Graphics/ResourceData.hpp
 	Include/Graphics/Ratio.hpp
-	Include/Graphics/Range.hpp
 	Include/Graphics/Viewport.hpp
 	Include/Graphics/ClearValue.hpp
 	Include/Graphics/WindowData.hpp
@@ -123,11 +135,12 @@ target_link_libraries (GraphicsDriver INTERFACE Plugin Math)
 # ###############################################
 add_custom_target (GraphicsDriver_IDE
 	SOURCES
-		${INCLUDE_GRAPHICS_FILES_INTERFACES}
+		${CPP_GRAPHICS_INTERFACES}
 		${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
 		${INCLUDE_GRAPHICS_FILES_STRUCTURES}
 		${INCLUDE_GRAPHICS_FILES_FLAGS}
-		${IDL_FILES}
+		${IDL_INTERFACES}
+		${IDL_STRUCTURES}
 )
 set_property (TARGET GraphicsDriver_IDE PROPERTY FOLDER Libraries/Interface/Graphics)
 source_group (Interface FILES ${INCLUDE_FILES})
@@ -137,10 +150,11 @@ add_dependencies (GraphicsDriver GraphicsDriver_IDE)
 
 
 # ###############################################
-source_group (IDL FILES ${IDL_FILES})
+source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
+source_group (IDL\\Structures FILES ${IDL_STRUCTURES})
 source_group (Headers FILES Include/Graphics.hpp)
 source_group (Headers\\Graphics FILES ${INCLUDE_GRAPHICS_FILES})
-source_group (Headers\\Graphics\\Interfaces FILES ${INCLUDE_GRAPHICS_FILES_INTERFACES})
+source_group (Headers\\Graphics\\Interfaces FILES ${CPP_GRAPHICS_INTERFACES})
 source_group (Headers\\Graphics\\Descriptors FILES ${INCLUDE_GRAPHICS_FILES_DESCRIPTORS})
 source_group (Headers\\Graphics\\Structures FILES ${INCLUDE_GRAPHICS_FILES_STRUCTURES})
 source_group (Headers\\Graphics\\Flags FILES ${INCLUDE_GRAPHICS_FILES_FLAGS})

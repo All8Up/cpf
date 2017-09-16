@@ -242,8 +242,10 @@ CPF::String CppGenerator::TypeToString(const Visitor::TypeDecl& decl)
 	}
 	for (const auto& ptr : decl.mPointer)
 	{
-		(void)ptr;
-		result += "*";
+		if (ptr.mConst)
+			result += " const *";
+		else
+			result += "*";
 	}
 	return result;
 }

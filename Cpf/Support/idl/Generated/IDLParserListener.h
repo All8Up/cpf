@@ -173,6 +173,9 @@ public:
   virtual void enterPointer_type(IDLParser::Pointer_typeContext *ctx) = 0;
   virtual void exitPointer_type(IDLParser::Pointer_typeContext *ctx) = 0;
 
+  virtual void enterPointer_decl(IDLParser::Pointer_declContext *ctx) = 0;
+  virtual void exitPointer_decl(IDLParser::Pointer_declContext *ctx) = 0;
+
   virtual void enterAny_type(IDLParser::Any_typeContext *ctx) = 0;
   virtual void exitAny_type(IDLParser::Any_typeContext *ctx) = 0;
 

@@ -427,7 +427,7 @@ GOM::Result CPF_STDCALL Device::Signal(Graphics::iFence* fence, int64_t value)
 	return GOM::kError;
 }
 
-void CPF_STDCALL Device::Submit(int32_t count, Graphics::iCommandBuffer** buffers)
+void CPF_STDCALL Device::Submit(int32_t count, Graphics::iCommandBuffer* const * buffers)
 {
 	for (int i = 0; i < count; ++i)
 		static_cast<CommandBuffer*>(buffers[i])->Submit(mpQueue);
