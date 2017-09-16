@@ -308,8 +308,8 @@ bool RenderSystem::_CreateDepthBuffer(int32_t w, int32_t h)
 	};
 	ClearValue clearValue;
 	clearValue.mFormat = Format::eD32f;
-	clearValue.mDepthStencil.mDepth = 1.0f;
-	clearValue.mDepthStencil.mStencil = 0;
+	clearValue.mValue.mDepthStencil.mDepth = 1.0f;
+	clearValue.mValue.mDepthStencil.mStencil = 0;
 	mpDevice->CreateImage2D(HeapType::eDefault, &depthBufferDesc, &clearValue, mpDepthBuffer.AsTypePP());
 	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 
@@ -380,14 +380,14 @@ void RenderSystem::_BeginFrame(const Concurrency::WorkContext*, void* context)
 
 	ClearValue clearValues[2];
 	clearValues[0].mFormat = Format::eRGBA8un;
-	clearValues[0].mColor[0] = 0.0f;
-	clearValues[0].mColor[1] = 0.0f;
-	clearValues[0].mColor[2] = 0.0f;
-	clearValues[0].mColor[3] = 1.0f;
+	clearValues[0].mValue.mColor[0] = 0.0f;
+	clearValues[0].mValue.mColor[1] = 0.0f;
+	clearValues[0].mValue.mColor[2] = 0.0f;
+	clearValues[0].mValue.mColor[3] = 1.0f;
 
 	clearValues[1].mFormat = Format::eD32f;
-	clearValues[1].mDepthStencil.mDepth = 1.0f;
-	clearValues[1].mDepthStencil.mStencil = 0;
+	clearValues[1].mValue.mDepthStencil.mDepth = 1.0f;
+	clearValues[1].mValue.mDepthStencil.mStencil = 0;
 	passBegin.mpClearValues = clearValues;
 
 	self.mpPrimaryBuffer[self.mBufferIndex]->BeginRenderPass(&passBegin);

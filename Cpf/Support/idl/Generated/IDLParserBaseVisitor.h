@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -64,6 +64,18 @@ public:
   }
 
   virtual antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitUnion_stmt(IDLParser::Union_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitUnion_decl(IDLParser::Union_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitUnion_fwd(IDLParser::Union_fwdContext *ctx) override {
     return visitChildren(ctx);
   }
 

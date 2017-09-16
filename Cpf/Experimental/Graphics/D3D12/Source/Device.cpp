@@ -219,8 +219,8 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 	};
 	ClearValue clearValue;
 	clearValue.mFormat = Format::eD32f;
-	clearValue.mDepthStencil.mDepth = 1.0f;
-	clearValue.mDepthStencil.mStencil = 0;
+	clearValue.mValue.mDepthStencil.mDepth = 1.0f;
+	clearValue.mValue.mDepthStencil.mStencil = 0;
 	mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, &clearValue, mpDepthBuffer.AsTypePP());
 	mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 

@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -44,6 +44,12 @@ public:
     virtual antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *context) = 0;
 
     virtual antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *context) = 0;
+
+    virtual antlrcpp::Any visitUnion_stmt(IDLParser::Union_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitUnion_decl(IDLParser::Union_declContext *context) = 0;
+
+    virtual antlrcpp::Any visitUnion_fwd(IDLParser::Union_fwdContext *context) = 0;
 
     virtual antlrcpp::Any visitStruct_block(IDLParser::Struct_blockContext *context) = 0;
 

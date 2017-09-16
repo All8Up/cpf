@@ -70,8 +70,8 @@ void ExperimentalD3D12::_Resize(int32_t x, int32_t y)
 		};
 		Graphics::ClearValue clearValue;
 		clearValue.mFormat = Graphics::Format::eD32f;
-		clearValue.mDepthStencil.mDepth = 1.0f;
-		clearValue.mDepthStencil.mStencil = 0;
+		clearValue.mValue.mDepthStencil.mDepth = 1.0f;
+		clearValue.mValue.mDepthStencil.mStencil = 0;
 		mpDevice->CreateImage2D(Graphics::HeapType::eDefault, &depthBufferDesc, &clearValue, mpDepthBuffer.AsTypePP());
 		mpDevice->CreateDepthStencilView(mpDepthBuffer, nullptr, mpDepthBufferView.AsTypePP());
 

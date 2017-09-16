@@ -8,6 +8,7 @@ main                    : global_statements? EOF;
 global_statements       : global_statement+;
 global_statement        : import_stmt
                         | struct_stmt
+                        | union_stmt
                         | interface_stmt
                         | const_def
                         | enum_def
@@ -42,7 +43,15 @@ struct_stmt             : struct_decl
 struct_decl             : STRUCT IDENT struct_block;
 struct_fwd              : STRUCT qualified_ident SEMICOLON;
 
+// Unions
+union_stmt              : union_decl
+                        | union_fwd;
+union_decl              : UNION IDENT struct_block;
+union_fwd               : UNION qualified_ident SEMICOLON;
+
+// Union/Struct data block.
 struct_block            : LBRACE struct_item* RBRACE;
+
 // Statements allowed at struct scope.
 struct_item             : member_decl
                         | const_def
@@ -128,7 +137,7 @@ all_or_ident            : IDENT
                         | STAR;
 
 // Data member declaration.
-member_decl             : type_decl IDENT SEMICOLON;
+member_decl             : type_decl IDENT (LBRACKET integer_lit RBRACKET)?  SEMICOLON;
 
 // Type declarations.
 type_decl               : type_modifier? any_type pointer_type?;

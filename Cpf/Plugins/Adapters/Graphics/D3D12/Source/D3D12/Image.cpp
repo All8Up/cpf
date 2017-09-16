@@ -51,15 +51,15 @@ Image::Image(Device* device, Graphics::HeapType heap, const Graphics::ClearValue
 			clearValue.Format = Convert(cv->mFormat);
 			if ((mDesc.mFlags & Graphics::ImageFlags::eAllowDepthStencil) == Graphics::ImageFlags::eNone)
 			{
-				clearValue.Color[0] = cv->mColor[0];
-				clearValue.Color[1] = cv->mColor[1];
-				clearValue.Color[2] = cv->mColor[2];
-				clearValue.Color[3] = cv->mColor[3];
+				clearValue.Color[0] = cv->mValue.mColor[0];
+				clearValue.Color[1] = cv->mValue.mColor[1];
+				clearValue.Color[2] = cv->mValue.mColor[2];
+				clearValue.Color[3] = cv->mValue.mColor[3];
 			}
 			else
 			{
-				clearValue.DepthStencil.Depth = cv->mDepthStencil.mDepth;
-				clearValue.DepthStencil.Stencil = cv->mDepthStencil.mStencil;
+				clearValue.DepthStencil.Depth = cv->mValue.mDepthStencil.mDepth;
+				clearValue.DepthStencil.Stencil = cv->mValue.mDepthStencil.mStencil;
 			}
 		}
 		device->GetD3DDevice()->CreateCommittedResource(

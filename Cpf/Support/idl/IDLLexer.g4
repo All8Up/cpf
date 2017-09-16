@@ -10,6 +10,7 @@ fragment WS                 : [ \r\n\t];
 
 IMPORT                      : 'import';
 STRUCT                      : 'struct';
+UNION                       : 'union';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';
 MODULE                      : 'module';

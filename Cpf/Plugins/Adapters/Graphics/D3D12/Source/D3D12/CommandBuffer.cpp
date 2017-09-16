@@ -516,10 +516,10 @@ GOM::Result CommandBuffer::_StartSubPass()
 				if (attachments[color.mIndex].mLoadOp == Graphics::LoadOp::eClear)
 				{
 					Math::Vector4fv c(
-						mRenderPass.mpClearValues[color.mIndex].mColor[0],
-						mRenderPass.mpClearValues[color.mIndex].mColor[1],
-						mRenderPass.mpClearValues[color.mIndex].mColor[2],
-						mRenderPass.mpClearValues[color.mIndex].mColor[3]);
+						mRenderPass.mpClearValues[color.mIndex].mValue.mColor[0],
+						mRenderPass.mpClearValues[color.mIndex].mValue.mColor[1],
+						mRenderPass.mpClearValues[color.mIndex].mValue.mColor[2],
+						mRenderPass.mpClearValues[color.mIndex].mValue.mColor[3]);
 
 					ClearRenderTargetView(target.mpImageView, c, 0, nullptr);
 				}
@@ -541,8 +541,8 @@ GOM::Result CommandBuffer::_StartSubPass()
 					ClearDepthStencilView(
 						target.mpImageView,
 						Graphics::DepthStencilClearFlag::eDepth,
-						mRenderPass.mpClearValues[subPass.mDepthStencilAttachment.mIndex].mDepthStencil.mDepth,
-						mRenderPass.mpClearValues[subPass.mDepthStencilAttachment.mIndex].mDepthStencil.mStencil,
+						mRenderPass.mpClearValues[subPass.mDepthStencilAttachment.mIndex].mValue.mDepthStencil.mDepth,
+						mRenderPass.mpClearValues[subPass.mDepthStencilAttachment.mIndex].mValue.mDepthStencil.mStencil,
 						0,
 						nullptr);
 				}

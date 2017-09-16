@@ -14,14 +14,16 @@ namespace CPF
 			uint8_t mStencil;
 		};
 
+		union ClearValueData
+		{
+			float mColor[4];
+			DepthStencilValue mDepthStencil;
+		};
+
 		struct ClearValue
 		{
 			Format mFormat;
-			union
-			{
-				float mColor[4];
-				DepthStencilValue mDepthStencil;
-			};
+			ClearValueData mValue;
 		};
 	}
 }

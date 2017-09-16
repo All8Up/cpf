@@ -36,13 +36,13 @@ void ExperimentalD3D12::_BeginFrame(const Concurrency::WorkContext*)
 
 	ClearValue clearValue[2];
 	clearValue[0].mFormat = Format::eRGBA8un;
-	clearValue[0].mColor[0] = 0.0f;
-	clearValue[0].mColor[1] = 0.0f;
-	clearValue[0].mColor[2] = 0.0f;
-	clearValue[0].mColor[3] = 1.0f;
+	clearValue[0].mValue.mColor[0] = 0.0f;
+	clearValue[0].mValue.mColor[1] = 0.0f;
+	clearValue[0].mValue.mColor[2] = 0.0f;
+	clearValue[0].mValue.mColor[3] = 1.0f;
 	clearValue[1].mFormat = Format::eD32f;
-	clearValue[1].mDepthStencil.mDepth = 1.0f;
-	clearValue[1].mDepthStencil.mStencil = 0;
+	clearValue[1].mValue.mDepthStencil.mDepth = 1.0f;
+	clearValue[1].mValue.mDepthStencil.mStencil = 0;
 
 	beginDesc.mClearValueCount = 2;
 	beginDesc.mpClearValues = clearValue;
