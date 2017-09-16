@@ -37,6 +37,7 @@ CPF_GEN_GOM(RUST_GRAPHICS_INTERFACES rust
 
 # ###############################################
 set (IDL_STRUCTURES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/ClearValue.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Range.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Ratio.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/ResourceData.idl
@@ -78,7 +79,6 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}
-	Include/Graphics/ClearValue.hpp
 	Include/Graphics/WindowData.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_FLAGS

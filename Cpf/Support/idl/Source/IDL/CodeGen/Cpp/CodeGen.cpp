@@ -27,6 +27,8 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::StructDeclStmt>(CPF::Bind(&CppGenerator::OnStructStmt, this, _1));
 	visitor.On<Visitor::EnumForwardStmt>(CPF::Bind(&CppGenerator::OnEnumForwardStmt, this, _1, _2));
 	visitor.On<Visitor::EnumDeclStmt>(CPF::Bind(&CppGenerator::OnEnumDeclStmt, this, _1));
+	visitor.On<Visitor::UnionFwdStmt>(CPF::Bind(&CppGenerator::OnUnionFwdStmt, this, _1));
+	visitor.On<Visitor::UnionDeclStmt>(CPF::Bind(&CppGenerator::OnStructStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -157,17 +159,27 @@ void CppGenerator::OnStructFwdStmt(const String& name)
 	mpWriter->OutputLine("struct %s;", name.c_str());
 }
 
-void CppGenerator::OnStructStmt(const Visitor::StructDecl& decl)
+void CppGenerator::OnUnionFwdStmt(const String& name)
+{
+	mpWriter->LineFeed(eForwards, eNamespace | eForwards, CodeWriter::kAnySection);
+	mpWriter->OutputLine("union %s;", name.c_str());
+}
+
+void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 {
 	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
-	mpWriter->OutputLine("struct %s", decl.mName.c_str());
+	if (decl.mUnion)
+		mpWriter->OutputLine("union %s", decl.mName.c_str());
+	else
+		mpWriter->OutputLine("struct %s", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
 	for (const auto& member : decl.mDataMembers)
 	{
-		mpWriter->OutputLine("%s %s;",
+		mpWriter->OutputLine("%s %s%s;",
 			TypeToString(member.mType).c_str(),
-			member.mName.c_str());
+			member.mName.c_str(),
+			member.mArrayDimensions>0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
 	}
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");

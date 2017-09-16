@@ -142,7 +142,8 @@ antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *ctx)
 
 antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 {
-	StructDecl structDecl;
+	UnionOrStructDecl structDecl;
+	structDecl.mUnion = false;
 	structDecl.mName = ctx->IDENT()->toString();
 	auto members = ctx->struct_block()->struct_item();
 	for (const auto& item : members)
@@ -161,11 +162,49 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 			DataMemberDecl data;
 			data.mName = decl->IDENT()->toString();
 			data.mType = ParseTypeDecl(decl->type_decl());
+			data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
 			structDecl.mDataMembers.push_back(data);
 		}
 	}
 
 	Emit<StructDeclStmt>(structDecl);
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitUnion_fwd(IDLParser::Union_fwdContext *ctx)
+{
+	Emit<UnionFwdStmt>(GetPath(ctx->qualified_ident()).ToString("::"));
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitUnion_decl(IDLParser::Union_declContext *ctx)
+{
+	UnionOrStructDecl structDecl;
+	structDecl.mUnion = true;
+	structDecl.mName = ctx->IDENT()->toString();
+	auto members = ctx->struct_block()->struct_item();
+	for (const auto& item : members)
+	{
+		if (item->const_def())
+		{
+
+		}
+		else if (item->enum_def())
+		{
+
+		}
+		else if (item->member_decl())
+		{
+			auto decl = item->member_decl();
+			DataMemberDecl data;
+			data.mName = decl->IDENT()->toString();
+			data.mType = ParseTypeDecl(decl->type_decl());
+			data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+			structDecl.mDataMembers.push_back(data);
+		}
+	}
+
+	Emit<UnionDeclStmt>(structDecl);
 	return visitChildren(ctx);
 }
 
@@ -281,28 +320,34 @@ int64_t Visitor::ParseEnumExpr(IDLParser::Enum_exprContext* expr)
 				if (valueExpr)
 				{
 					auto litExpr = valueExpr->integer_lit();
-					if (litExpr)
-					{
-						if (litExpr->BIN_LIT())
-						{
-							
-						}
-						else if (litExpr->DECIMAL_LIT())
-						{
-							return atoi(litExpr->DECIMAL_LIT()->toString().c_str());
-						}
-						else if (litExpr->HEX_LIT())
-						{
-							
-						}
-						else if (litExpr->OCT_LIT())
-						{
-							
-						}
-					}
+					return ParseIntegerLit(litExpr);
 				}
 			}
 		}
 	}
 	return 0;
+}
+
+int64_t Visitor::ParseIntegerLit(IDLParser::Integer_litContext* lit)
+{
+	if (lit)
+	{
+		if (lit->BIN_LIT())
+		{
+
+		}
+		else if (lit->DECIMAL_LIT())
+		{
+			return atoi(lit->DECIMAL_LIT()->toString().c_str());
+		}
+		else if (lit->HEX_LIT())
+		{
+
+		}
+		else if (lit->OCT_LIT())
+		{
+
+		}
+	}
+	return 0x7fffffff;
 }
