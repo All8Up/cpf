@@ -1,0 +1,28 @@
+import Format from Graphics;
+import LoadOp from Graphics;
+import StoreOp from Graphics;
+import SampleDesc from Graphics;
+
+module CPF::Graphics;
+enum ResourceState : s32;
+
+struct AttachmentDesc
+{
+	s32 mFlags; // TODO:
+	Format mFormat;
+	SampleDesc mSamples;
+	LoadOp mLoadOp;
+	StoreOp mStoreOp;
+	LoadOp mStencilLoadOp;
+	StoreOp mStencilStoreOp;
+	ResourceState mStartState;
+	ResourceState mFinalState;
+}
+
+const s32 InvalidAttachment = -1;
+
+struct AttachmentRef
+{
+	s32 mIndex;
+	ResourceState mState;
+}

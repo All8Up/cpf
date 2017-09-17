@@ -127,6 +127,12 @@ namespace IDL
 			using Entries = CPF::Vector<EnumEntry>;
 			Entries mEntries;
 		};
+		struct ConstIntegral
+		{
+			String mName;
+			Type mType;
+			int64_t mValue;
+		};
 
 		typedef CPF::Events::Event<0, CPF::Function<void()>> Start;
 		typedef CPF::Events::Event<1, CPF::Function<void (const SymbolPath&)>> ModuleStmt;
@@ -137,10 +143,11 @@ namespace IDL
 		typedef CPF::Events::Event<6, CPF::Function<void(const String&)>> InterfaceFwdStmt;
 		typedef CPF::Events::Event<7, CPF::Function<void(const String&)>> StructFwdStmt;
 		typedef CPF::Events::Event<8, CPF::Function<void(const UnionOrStructDecl&)>> StructDeclStmt;
-		typedef CPF::Events::Event<9, CPF::Function<void(const String&, const TypeDecl&)>> EnumForwardStmt;
+		typedef CPF::Events::Event<9, CPF::Function<void(const String&, Type)>> EnumForwardStmt;
 		typedef CPF::Events::Event<10, CPF::Function<void(const EnumDecl&)>> EnumDeclStmt;
 		typedef CPF::Events::Event<11, CPF::Function<void(const String&)>> UnionFwdStmt;
 		typedef CPF::Events::Event<12, CPF::Function<void(const UnionOrStructDecl&)>> UnionDeclStmt;
+		typedef CPF::Events::Event<13, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
 
 		Visitor();
 
@@ -159,8 +166,9 @@ namespace IDL
 		antlrcpp::Any visitUnion_decl(IDLParser::Union_declContext *ctx) override;
 		antlrcpp::Any visitEnum_fwd(IDLParser::Enum_fwdContext *ctx) override;
 		antlrcpp::Any visitEnum_def(IDLParser::Enum_defContext *ctx) override;
+		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
 
-		static TypeDecl ParseIntegralType(IDLParser::Integral_typeContext* integralType);
+		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
 		static int64_t ParseEnumExpr(IDLParser::Enum_exprContext* expr);
 		static int64_t ParseIntegerLit(IDLParser::Integer_litContext* lit);

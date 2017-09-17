@@ -56,7 +56,47 @@ CPF_GEN_GOM(RUST_GRAPHICS_STRUCTURES rust
 )
 
 # ###############################################
+set (IDL_DESCRIPTORS
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/AttachmentDesc.idl
+)
+CPF_GEN_GOM(CPP_GRAPHICS_DESCRIPTORS cpp
+	hpp
+	${CPF_GENERATED}/CPP/Graphics
+	${IDL_DESCRIPTORS}
+)
+CPF_GEN_GOM(RUST_GRAPHICS_DESCRIPTORS rust
+	rs
+	${CPF_GENERATED}/Rust/Graphics
+	${IDL_DESCRIPTORS}
+)
+
+# ###############################################
+set (IDL_FLAGS
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/BindingType.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/BlendFunc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/BlendOp.idl
+)
+CPF_GEN_GOM(CPP_GRAPHICS_FLAGS cpp
+	hpp
+	${CPF_GENERATED}/CPP/Graphics
+	${IDL_FLAGS}
+)
+CPF_GEN_GOM(RUST_GRAPHICS_FLAGS rust
+	rs
+	${CPF_GENERATED}/Rust/Graphics
+	${IDL_FLAGS}
+)
+
+# ###############################################
+set (RUST_FILES ${RUST_GRAPHICS_INTERFACES} ${RUST_GRAPHICS_STRUCTURES} ${RUST_GRAPHICS_DESCRIPTORS} ${RUST_GRAPHICS_FLAGS})
+source_group (Rust\\Interfaces FILES ${RUST_GRAPHICS_INTERFACES})
+source_group (Rust\\Structures FILES ${RUST_GRAPHICS_STRUCTURES})
+source_group (Rust\\Descriptors FILES ${RUST_GRAPHICS_DESCRIPTORS})
+source_group (Rust\\Flags FILES ${RUST_GRAPHICS_FLAGS})
+
+# ###############################################
 set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
+	${CPP_GRAPHICS_DESCRIPTORS}
 	Include/Graphics/BlendStateDesc.hpp
 	Include/Graphics/DepthStencilDesc.hpp
 	Include/Graphics/InputLayoutDesc.hpp
@@ -69,7 +109,6 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/ModeDesc.hpp
 	Include/Graphics/SamplerDesc.hpp
 	Include/Graphics/SwapChainDesc.hpp
-	Include/Graphics/AttachmentDesc.hpp
 	Include/Graphics/SubPassDesc.hpp
 	Include/Graphics/RenderPassDesc.hpp
 	Include/Graphics/FrameBufferDesc.hpp
@@ -82,8 +121,7 @@ set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}
 )
 set (INCLUDE_GRAPHICS_FILES_FLAGS
-	Include/Graphics/BlendFunc.hpp
-	Include/Graphics/BlendOp.hpp
+	${CPP_GRAPHICS_FLAGS}
 	Include/Graphics/ComparisonFunc.hpp
 	Include/Graphics/ConservativeRasterization.hpp
 	Include/Graphics/CullMode.hpp
@@ -113,7 +151,6 @@ set (INCLUDE_GRAPHICS_FILES_FLAGS
 	Include/Graphics/FilterMode.hpp
 	Include/Graphics/ShaderType.hpp
 	Include/Graphics/SwapEffect.hpp
-	Include/Graphics/BindingType.hpp
 	Include/Graphics/ParamVisibility.hpp
 	Include/Graphics/ParamFlags.hpp
 	Include/Graphics/ResourceUsage.hpp
@@ -141,6 +178,9 @@ add_custom_target (GraphicsDriver_IDE
 		${INCLUDE_GRAPHICS_FILES_FLAGS}
 		${IDL_INTERFACES}
 		${IDL_STRUCTURES}
+		${IDL_DESCRIPTORS}
+		${IDL_FLAGS}
+		${RUST_FILES}
 )
 set_property (TARGET GraphicsDriver_IDE PROPERTY FOLDER Libraries/Interface/Graphics)
 source_group (Interface FILES ${INCLUDE_FILES})
@@ -152,6 +192,8 @@ add_dependencies (GraphicsDriver GraphicsDriver_IDE)
 # ###############################################
 source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
 source_group (IDL\\Structures FILES ${IDL_STRUCTURES})
+source_group (IDL\\Descriptors FILES ${IDL_DESCRIPTORS})
+source_group (IDL\\Flags FILES ${IDL_FLAGS})
 source_group (Headers FILES Include/Graphics.hpp)
 source_group (Headers\\Graphics FILES ${INCLUDE_GRAPHICS_FILES})
 source_group (Headers\\Graphics\\Interfaces FILES ${CPP_GRAPHICS_INTERFACES})

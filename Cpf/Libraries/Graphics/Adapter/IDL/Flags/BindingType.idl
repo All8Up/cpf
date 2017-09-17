@@ -1,0 +1,12 @@
+module CPF::Graphics;
+
+enum BindingType : s32
+{
+	eConstants,
+	eConstantBuffer,
+	eResourceBuffer,
+	eUnorderedBuffer,
+	eRange,
+	eSampler,
+	eTexture
+}

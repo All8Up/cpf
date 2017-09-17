@@ -36,8 +36,9 @@ namespace IDL
 			void OnStructFwdStmt(const String&);
 			void OnUnionFwdStmt(const String&);
 			void OnStructStmt(const Visitor::UnionOrStructDecl&);
-			void OnEnumForwardStmt(const String&, const Visitor::TypeDecl&);
+			void OnEnumForwardStmt(const String&, Visitor::Type);
 			void OnEnumDeclStmt(const Visitor::EnumDecl&);
+			void OnConstIntegral(const Visitor::ConstIntegral&);
 
 			static String TypeToString(const Visitor::Type type);
 			static String TypeToString(const Visitor::TypeDecl& decl);

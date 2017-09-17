@@ -29,6 +29,7 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::EnumDeclStmt>(CPF::Bind(&CppGenerator::OnEnumDeclStmt, this, _1));
 	visitor.On<Visitor::UnionFwdStmt>(CPF::Bind(&CppGenerator::OnUnionFwdStmt, this, _1));
 	visitor.On<Visitor::UnionDeclStmt>(CPF::Bind(&CppGenerator::OnStructStmt, this, _1));
+	visitor.On<Visitor::ConstIntegralStmt>(CPF::Bind(&CppGenerator::OnConstIntegral, this, _1));
 }
 
 void CppGenerator::End()
@@ -209,13 +210,13 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 	mpWriter->OutputLine("};");
 }
 
-void CppGenerator::OnEnumForwardStmt(const String& name, const Visitor::TypeDecl& typeDecl)
+void CppGenerator::OnEnumForwardStmt(const String& name, Visitor::Type type)
 {
 	mpWriter->LineFeed(eForwards, eNamespace | eForwards, CodeWriter::kAnySection);
-	if (typeDecl.mType == Visitor::Type::Void)
+	if (type == Visitor::Type::Void)
 		mpWriter->OutputLine("enum class %s;", name.c_str());
 	else
-		mpWriter->OutputLine("enum class %s : %s;", name.c_str(), TypeToString(typeDecl).c_str());
+		mpWriter->OutputLine("enum class %s : %s;", name.c_str(), TypeToString(type).c_str());
 }
 
 void CppGenerator::OnEnumDeclStmt(const Visitor::EnumDecl& decl)
@@ -239,6 +240,16 @@ void CppGenerator::OnEnumDeclStmt(const Visitor::EnumDecl& decl)
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
 }
+
+void CppGenerator::OnConstIntegral(const Visitor::ConstIntegral& constIntegral)
+{
+	mpWriter->LineFeed(eConstants, eNamespace | eConstants, CodeWriter::kAnySection);
+	mpWriter->OutputLine("static constexpr %s k%s = %d;",
+		TypeToString(constIntegral.mType).c_str(),
+		constIntegral.mName.c_str(),
+		constIntegral.mValue);
+}
+
 
 CPF::String CppGenerator::TypeToString(const Visitor::Type type)
 {

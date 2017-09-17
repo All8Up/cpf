@@ -253,7 +253,7 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *ctx)
 	enumDecl.mName = ctx->IDENT()->toString();
 	enumDecl.mType = Visitor::Type::Void;
 	if (ctx->enum_type() && ctx->enum_type()->integral_type())
-		enumDecl.mType = ParseIntegralType(ctx->enum_type()->integral_type()).mType;
+		enumDecl.mType = ParseIntegralType(ctx->enum_type()->integral_type());
 
 	auto items = ctx->enum_elements()->enum_item();
 	for (const auto& item : items)
@@ -272,19 +272,29 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *ctx)
 	return visitChildren(ctx);
 }
 
-Visitor::TypeDecl Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integralType)
+antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defContext *ctx)
 {
-	TypeDecl result;
-	result.mConst = false;
+	ConstIntegral value;
+	value.mName = ctx->IDENT()->toString();
+	value.mType = ParseIntegralType(ctx->integral_type());
+	value.mValue = ParseIntegerLit(ctx->integer_lit());
+	Emit<ConstIntegralStmt>(value);
+	return visitChildren(ctx);
+}
 
-	if (integralType->U8()) result.mType = Type::U8;
-	else if (integralType->S8()) result.mType = Type::S8;
-	else if (integralType->U16()) result.mType = Type::U16;
-	else if (integralType->S16()) result.mType = Type::S16;
-	else if (integralType->U32()) result.mType = Type::U32;
-	else if (integralType->S32()) result.mType = Type::S32;
-	else if (integralType->U64()) result.mType = Type::U64;
-	else if (integralType->S64()) result.mType = Type::S64;
+Visitor::Type Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integralType)
+{
+	Type result;
+
+	if (integralType->U8()) result = Type::U8;
+	else if (integralType->S8()) result = Type::S8;
+	else if (integralType->U16()) result = Type::U16;
+	else if (integralType->S16()) result = Type::S16;
+	else if (integralType->U32()) result = Type::U32;
+	else if (integralType->S32()) result = Type::S32;
+	else if (integralType->U64()) result = Type::U64;
+	else if (integralType->S64()) result = Type::S64;
+	else { result = Type::Void; CPF_ASSERT_ALWAYS }
 
 	return result;
 }
@@ -298,7 +308,7 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 	auto anyType = typeDecl->any_type();
 	if (anyType->integral_type())
 	{
-		result.mType = ParseIntegralType(anyType->integral_type()).mType;
+		result.mType = ParseIntegralType(anyType->integral_type());
 	}
 	else if (anyType->float_type())
 	{
