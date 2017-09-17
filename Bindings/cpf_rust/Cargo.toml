@@ -1,0 +1,13 @@
+[workspace]
+members = [
+#	"../../Cpf/Libraries/Core/GOM"
+]
+
+[package]
+name = "cpf_rust"
+version = "0.1.0"
+authors = ["Kelly Brock <All8Up@gmail.com>"]
+
+build = "build.rs"
+
+[dependencies]
