@@ -3,7 +3,7 @@
 #include "Application/iApplicationMain.hpp"
 #include "Application/iWindowedApplication.hpp"
 #include "Application/iWindow.hpp"
-#include "Graphics/Driver.hpp"
+#include "Graphics.hpp"
 #include "Concurrency/iScheduler.hpp"
 #include "Resources/iLocator.hpp"
 #include "EntityService/Interfaces/iManager.hpp"

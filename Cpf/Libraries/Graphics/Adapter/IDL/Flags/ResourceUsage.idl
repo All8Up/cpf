@@ -1,0 +1,12 @@
+import EnumFlagType;
+
+module CPF::Graphics;
+
+flags ResourceUsage : s32
+{
+	eNone = 0,
+	eRenderTarget = 0x01,
+	eDepthStencil = 0x02,
+	eUnorderedAccess = 0x04,
+	eSimultaneous = 0x20
+};

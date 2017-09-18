@@ -20,7 +20,8 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::ModuleStmt>(CPF::Bind(&CppGenerator::OnModule, this, _1));
 	visitor.On<Visitor::SuccessType>(CPF::Bind(&CppGenerator::OnSuccessType, this, _1, _2, _3));
 	visitor.On<Visitor::FailureType>(CPF::Bind(&CppGenerator::OnFailureType, this, _1, _2, _3));
-	visitor.On<Visitor::ImportStmt>(CPF::Bind(&CppGenerator::OnImportStmt, this, _1, _2));
+	visitor.On<Visitor::ImportStmt>(CPF::Bind(&CppGenerator::OnImportStmt, this, _1));
+	visitor.On<Visitor::ImportFromStmt>(CPF::Bind(&CppGenerator::OnImportFromStmt, this, _1, _2));
 	visitor.On<Visitor::InterfaceDeclStmt>(CPF::Bind(&CppGenerator::OnInterfaceDeclStmt, this, _1));
 	visitor.On<Visitor::InterfaceFwdStmt>(CPF::Bind(&CppGenerator::OnInterfaceFwdStmt, this, _1));
 	visitor.On<Visitor::StructFwdStmt>(CPF::Bind(&CppGenerator::OnStructFwdStmt, this, _1));
@@ -30,6 +31,8 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::UnionFwdStmt>(CPF::Bind(&CppGenerator::OnUnionFwdStmt, this, _1));
 	visitor.On<Visitor::UnionDeclStmt>(CPF::Bind(&CppGenerator::OnStructStmt, this, _1));
 	visitor.On<Visitor::ConstIntegralStmt>(CPF::Bind(&CppGenerator::OnConstIntegral, this, _1));
+	visitor.On<Visitor::FlagsForwardStmt>(CPF::Bind(&CppGenerator::OnFlagsForwardStmt, this, _1, _2));
+	visitor.On<Visitor::FlagsDeclStmt>(CPF::Bind(&CppGenerator::OnFlagsDeclStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -89,7 +92,14 @@ void CppGenerator::OnFailureType(const String& name, const String& subSystem, co
 		desc.c_str());
 }
 
-void CppGenerator::OnImportStmt(const String& item, const SymbolPath& from)
+void CppGenerator::OnImportStmt(const String& name)
+{
+	mpWriter->LineFeed(eImports, eImports | eHeader, CodeWriter::kAnySection);
+	auto path = name + ".hpp";
+	mpWriter->OutputLine("#include \"%s\"", path.c_str());
+}
+
+void CppGenerator::OnImportFromStmt(const String& item, const SymbolPath& from)
 {
 	mpWriter->LineFeed(eImports, eImports | eHeader, CodeWriter::kAnySection);
 	auto path = CPF::IO::Path::Combine(from.ToString("/"), item+".hpp");
@@ -231,14 +241,46 @@ void CppGenerator::OnEnumDeclStmt(const Visitor::EnumDecl& decl)
 
 	for (const auto& item : decl.mEntries)
 	{
-		if (item.mValue != 0x7fffffffffffffff)
-			mpWriter->OutputLine("%s = %d,", item.mName.c_str(), int32_t(item.mValue));
+		if (!item.mValue.empty())
+			mpWriter->OutputLine("%s = %s,", item.mName.c_str(), item.mValue.c_str());
 		else
 			mpWriter->OutputLine("%s,", item.mName.c_str());
 	}
 
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
+}
+
+void CppGenerator::OnFlagsForwardStmt(const String& name, Visitor::Type type)
+{
+	mpWriter->LineFeed(eForwards, eNamespace | eForwards, CodeWriter::kAnySection);
+	if (type == Visitor::Type::Void)
+		mpWriter->OutputLine("enum class %s;", name.c_str());
+	else
+		mpWriter->OutputLine("enum class %s : %s;", name.c_str(), TypeToString(type).c_str());
+}
+
+void CppGenerator::OnFlagsDeclStmt(const Visitor::EnumDecl& decl)
+{
+	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
+	if (decl.mType == Visitor::Type::Void)
+		mpWriter->OutputLine("enum class %s;", decl.mName.c_str());
+	else
+		mpWriter->OutputLine("enum class %s : %s", decl.mName.c_str(), TypeToString(decl.mType).c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+
+	for (const auto& item : decl.mEntries)
+	{
+		if (!item.mValue.empty())
+			mpWriter->OutputLine("%s = %s,", item.mName.c_str(), item.mValue.c_str());
+		else
+			mpWriter->OutputLine("%s,", item.mName.c_str());
+	}
+
+	mpWriter->Unindent();
+	mpWriter->OutputLine("};");
+	mpWriter->OutputLine("CPF_ENUM_FLAG_TYPE(%s);", decl.mName.c_str());
 }
 
 void CppGenerator::OnConstIntegral(const Visitor::ConstIntegral& constIntegral)

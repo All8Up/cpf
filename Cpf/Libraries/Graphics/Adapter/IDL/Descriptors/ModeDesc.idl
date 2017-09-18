@@ -1,0 +1,18 @@
+import Ratio from Graphics;
+
+module CPF::Graphics;
+
+enum Format : s32;
+enum ScanlineOrder : s32;
+enum ModeScaling : s32;
+
+struct ModeDesc
+{
+	s32 mWidth;
+	s32 mHeight;
+	Ratio mRefreshRate;
+	Format mFormat;
+	ScanlineOrder mScanLineOrder;
+	ModeScaling mModeScaling;
+	bool mStereo;
+};

@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+enum FillMode : s32
+{
+	eWireframe = 2,
+	eSolid = 3
+}

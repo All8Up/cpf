@@ -1,0 +1,21 @@
+module CPF::Graphics;
+
+struct iImage;
+struct iImageView;
+struct iRenderPass;
+
+struct ImageAndView
+{
+	iImage* mpImage;
+	iImageView* mpImageView;
+};
+
+struct FrameBufferDesc
+{
+	iRenderPass* mpRenderPass;
+	s32 mAttachmentCount;
+	ImageAndView* mpAttachments;	// TODO: Vulkan expects image views, not images.  D3D12 seems to need images though.
+	s32 mWidth;
+	s32 mHeight;
+	s32 mLayers; // TODO: Something in Vulkan I'm ignoring at the moment.
+};

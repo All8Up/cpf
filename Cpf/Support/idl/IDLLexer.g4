@@ -17,6 +17,7 @@ STRUCT                      : 'struct';
 UNION                       : 'union';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';
+FLAGS                       : 'flags';
 MODULE                      : 'module';
 FROM                        : 'from';
 
@@ -43,6 +44,7 @@ PLUS                        : '+';
 MINUS                       : '-';
 LSHIFT                      : '<<';
 RSHIFT                      : '>>';
+PIPE                        : '|';
 
 // Type modifiers.
 // NOTE: Const/Void does not follow naming convention due to windows stupidity.

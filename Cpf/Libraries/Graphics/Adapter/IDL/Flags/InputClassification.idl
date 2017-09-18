@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+enum InputClassification : s32
+{
+	ePerVertex = 0,
+	ePerInstance
+}

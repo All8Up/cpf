@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "RenderSystem.hpp"
-#include "Graphics/Driver.hpp"
+#include "Graphics.hpp"
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/SwapChainDesc.hpp"
 #include "Graphics/SwapEffect.hpp"
@@ -17,6 +17,7 @@
 #include "Application/OSWindowData.hpp"
 #include "Plugin/tClassInstance.hpp"
 #include "Graphics/SubResource.hpp"
+#include "Graphics/PipelineBindPoint.hpp"
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/WindowData.hpp"
 #include "Graphics/AttachmentDesc.hpp"

@@ -1,0 +1,21 @@
+module CPF::Graphics;
+
+enum LogicOp : s32
+{
+	eClear = 0,
+	eSet,
+	eCopy,
+	eCopyInverted,
+	eNoop,
+	eInvert,
+	eAnd,
+	eNand,
+	eOr,
+	eNor,
+	eXor,
+	eEquiv,
+	eAndReverse,
+	eAndInverted,
+	eOrReverse,
+	eOrInverted
+}

@@ -1,0 +1,10 @@
+import EnumFlagType;
+
+module CPF::Graphics;
+
+flags ImageFlags : s32
+{
+	eNone = 0,
+	eAllowRenderTarget = 1 << 0,
+	eAllowDepthStencil = 1 << 1
+};

@@ -16,6 +16,9 @@
 #include "Graphics/RenderPassDesc.hpp"
 #include "Graphics/HeapType.hpp"
 #include "Graphics/ClearValue.hpp"
+#include "Graphics/AttachmentDesc.hpp"
+#include "Graphics/SubPassDesc.hpp"
+#include "Graphics/PipelineBindPoint.hpp"
 #include "Application/OSWindowData.hpp"
 #include "Logging/Logging.hpp"
 

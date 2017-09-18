@@ -93,6 +93,10 @@ public:
 
     virtual antlrcpp::Any visitEnum_def(IDLParser::Enum_defContext *context) = 0;
 
+    virtual antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *context) = 0;
+
+    virtual antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *context) = 0;
+
     virtual antlrcpp::Any visitEnum_type(IDLParser::Enum_typeContext *context) = 0;
 
     virtual antlrcpp::Any visitEnum_elements(IDLParser::Enum_elementsContext *context) = 0;
@@ -106,6 +110,8 @@ public:
     virtual antlrcpp::Any visitExpr_mul_div(IDLParser::Expr_mul_divContext *context) = 0;
 
     virtual antlrcpp::Any visitExpr_shift(IDLParser::Expr_shiftContext *context) = 0;
+
+    virtual antlrcpp::Any visitExpr_logical(IDLParser::Expr_logicalContext *context) = 0;
 
     virtual antlrcpp::Any visitExpr_value(IDLParser::Expr_valueContext *context) = 0;
 

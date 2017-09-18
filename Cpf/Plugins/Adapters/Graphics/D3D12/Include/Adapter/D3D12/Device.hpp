@@ -2,7 +2,7 @@
 #pragma once
 #include "IntrusivePtr.hpp"
 #include "Adapter/D3D12/DescriptorManager.hpp"
-#include "Graphics/Driver.hpp"
+#include "Graphics.hpp"
 #include "Graphics/iBlob.hpp"
 #include <d3d12.h>
 #include "Plugin/tClassInstance.hpp"

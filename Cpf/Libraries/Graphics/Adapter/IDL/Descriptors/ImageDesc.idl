@@ -1,0 +1,19 @@
+import SampleDesc from Graphics;
+import ResourceState from Graphics;
+
+module CPF::Graphics;
+
+enum Format : s32;
+enum ImageFlags : s32;
+
+struct ImageDesc
+{
+	s32 mWidth;
+	s32 mHeight;
+	s32 mDepth;
+	s32 mMipLevels;
+	Format mFormat;
+	SampleDesc mSamples;
+	ResourceState mState;
+	ImageFlags mFlags;
+};

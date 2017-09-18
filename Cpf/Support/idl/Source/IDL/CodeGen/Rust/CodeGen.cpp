@@ -59,7 +59,7 @@ void RustGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::ModuleStmt>(CPF::Bind(&RustGenerator::OnModule, this, _1));
 	visitor.On<Visitor::SuccessType>(CPF::Bind(&RustGenerator::OnSuccessType, this, _1, _2, _3));
 	visitor.On<Visitor::FailureType>(CPF::Bind(&RustGenerator::OnFailureType, this, _1, _2, _3));
-	visitor.On<Visitor::ImportStmt>(CPF::Bind(&RustGenerator::OnImportStmt, this, _1, _2));
+	visitor.On<Visitor::ImportFromStmt>(CPF::Bind(&RustGenerator::OnImportStmt, this, _1, _2));
 	visitor.On<Visitor::InterfaceDeclStmt>(CPF::Bind(&RustGenerator::OnInterfaceDeclStmt, this, _1));
 }
 

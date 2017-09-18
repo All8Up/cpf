@@ -12,11 +12,14 @@ global_statement        : import_stmt
                         | interface_stmt
                         | const_def
                         | enum_def
+                        | flags_fwd
+                        | flags_def
                         | enum_fwd
 
                         | module_stmt
                         | error_code_stmt
                         | empty_stmt
+                        | import_stmt
                         | import_from_stmt;
 
 // Allow semi-colons even if not needed.
@@ -35,7 +38,7 @@ failure_stmt            : FAILURE IDENT LPAREN STRING_LIT COMMA STRING_LIT RPARE
 import_from_stmt        : IMPORT all_or_ident FROM qualified_ident SEMICOLON;
 
 // Import.
-import_stmt             : IMPORT string_lit SEMICOLON;
+import_stmt             : IMPORT IDENT SEMICOLON;
 
 // Structures
 struct_stmt             : struct_decl
@@ -100,6 +103,8 @@ const_class_id_def      : Const CLASS_ID IDENT LPAREN string_lit RPAREN SEMICOLO
 // Enumerations.
 enum_fwd                : ENUM IDENT enum_type? SEMICOLON;
 enum_def                : ENUM IDENT enum_type? LBRACE enum_elements RBRACE;
+flags_fwd               : FLAGS IDENT enum_type? SEMICOLON;
+flags_def               : FLAGS IDENT enum_type? LBRACE enum_elements RBRACE;
 enum_type               : COLON integral_type;
 enum_elements           : enum_item (COMMA enum_item)*;
 enum_item               : IDENT
@@ -113,10 +118,13 @@ expr_add_sub            : expr_add_sub PLUS expr_mul_div
 expr_mul_div            : expr_mul_div STAR expr_shift
                         | expr_mul_div SLASH expr_shift
                         | expr_shift;
-expr_shift              : expr_shift LSHIFT expr_value
-                        | expr_shift RSHIFT expr_value
+expr_shift              : expr_shift LSHIFT expr_logical
+                        | expr_shift RSHIFT expr_logical
+                        | expr_logical;
+expr_logical            : expr_logical PIPE expr_value
                         | expr_value;
 expr_value              : integer_lit
+                        | qualified_ident
                         | LPAREN enum_expr RPAREN;
 
 // Literals.

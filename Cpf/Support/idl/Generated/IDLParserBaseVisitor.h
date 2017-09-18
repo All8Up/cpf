@@ -163,6 +163,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitEnum_type(IDLParser::Enum_typeContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -188,6 +196,10 @@ public:
   }
 
   virtual antlrcpp::Any visitExpr_shift(IDLParser::Expr_shiftContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExpr_logical(IDLParser::Expr_logicalContext *ctx) override {
     return visitChildren(ctx);
   }
 

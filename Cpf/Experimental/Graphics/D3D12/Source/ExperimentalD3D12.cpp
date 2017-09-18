@@ -10,7 +10,7 @@
 #include "Threading.hpp"
 #include "Threading/Thread.hpp"
 
-#include "Graphics/Driver.hpp"
+#include "Graphics.hpp"
 #include "iDebugUI.hpp"
 
 #include "Concurrency/iScheduler.hpp"

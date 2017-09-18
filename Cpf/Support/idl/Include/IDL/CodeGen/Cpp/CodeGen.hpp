@@ -30,7 +30,8 @@ namespace IDL
 			void OnModule(const SymbolPath& path);
 			void OnSuccessType(const String&, const String&, const String&);
 			void OnFailureType(const String&, const String&, const String&);
-			void OnImportStmt(const String&, const SymbolPath&);
+			void OnImportStmt(const String&);
+			void OnImportFromStmt(const String&, const SymbolPath&);
 			void OnInterfaceDeclStmt(const Visitor::InterfaceDecl&);
 			void OnInterfaceFwdStmt(const String&);
 			void OnStructFwdStmt(const String&);
@@ -38,6 +39,8 @@ namespace IDL
 			void OnStructStmt(const Visitor::UnionOrStructDecl&);
 			void OnEnumForwardStmt(const String&, Visitor::Type);
 			void OnEnumDeclStmt(const Visitor::EnumDecl&);
+			void OnFlagsForwardStmt(const String&, Visitor::Type);
+			void OnFlagsDeclStmt(const Visitor::EnumDecl&);
 			void OnConstIntegral(const Visitor::ConstIntegral&);
 
 			static String TypeToString(const Visitor::Type type);

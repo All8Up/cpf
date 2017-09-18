@@ -13,7 +13,7 @@
 #include "IO/File.hpp"
 #include "IO/Directory.hpp"
 #include "SDL2/CIDs.hpp"
-#include "Graphics/Driver.hpp"
+#include "Graphics.hpp"
 #include "Threading/Thread.hpp"
 #include "PluginHost/Registry.hpp"
 

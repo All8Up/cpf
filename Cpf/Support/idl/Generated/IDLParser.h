@@ -13,15 +13,16 @@ class  IDLParser : public antlr4::Parser {
 public:
   enum {
     Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, UNION = 5, INTERFACE = 6, 
-    ENUM = 7, MODULE = 8, FROM = 9, IN = 10, OUT = 11, COLON = 12, SEMICOLON = 13, 
-    STAR = 14, SLASH = 15, DOT = 16, COMMA = 17, EQUALS = 18, QUOTE = 19, 
-    LBRACE = 20, RBRACE = 21, LPAREN = 22, RPAREN = 23, LBRACKET = 24, RBRACKET = 25, 
-    LT = 26, GT = 27, PLUS = 28, MINUS = 29, LSHIFT = 30, RSHIFT = 31, Const = 32, 
-    Void = 33, RESULT = 34, SUCCESS = 35, FAILURE = 36, CLASS_ID = 37, STRING = 38, 
-    U8 = 39, S8 = 40, U16 = 41, S16 = 42, U32 = 43, S32 = 44, U64 = 45, 
-    S64 = 46, F32 = 47, F64 = 48, IDENT = 49, DECIMAL_LIT = 50, HEX_LIT = 51, 
-    BIN_LIT = 52, OCT_LIT = 53, STRING_LIT = 54, FLOAT_LIT = 55, WHITE_SPACE = 56, 
-    BLOCK_COMMENT = 57, LINE_COMMENT = 58
+    ENUM = 7, FLAGS = 8, MODULE = 9, FROM = 10, IN = 11, OUT = 12, COLON = 13, 
+    SEMICOLON = 14, STAR = 15, SLASH = 16, DOT = 17, COMMA = 18, EQUALS = 19, 
+    QUOTE = 20, LBRACE = 21, RBRACE = 22, LPAREN = 23, RPAREN = 24, LBRACKET = 25, 
+    RBRACKET = 26, LT = 27, GT = 28, PLUS = 29, MINUS = 30, LSHIFT = 31, 
+    RSHIFT = 32, PIPE = 33, Const = 34, Void = 35, RESULT = 36, SUCCESS = 37, 
+    FAILURE = 38, CLASS_ID = 39, STRING = 40, U8 = 41, S8 = 42, U16 = 43, 
+    S16 = 44, U32 = 45, S32 = 46, U64 = 47, S64 = 48, F32 = 49, F64 = 50, 
+    IDENT = 51, DECIMAL_LIT = 52, HEX_LIT = 53, BIN_LIT = 54, OCT_LIT = 55, 
+    STRING_LIT = 56, FLOAT_LIT = 57, WHITE_SPACE = 58, BLOCK_COMMENT = 59, 
+    LINE_COMMENT = 60
   };
 
   enum {
@@ -35,14 +36,15 @@ public:
     RuleInterface_item = 25, RuleFunction_decl = 26, RuleFunction_param_list = 27, 
     RuleFunction_param = 28, RuleParam_dir_qualifier = 29, RuleConst_def = 30, 
     RuleConst_integral_def = 31, RuleConst_float_def = 32, RuleConst_string_def = 33, 
-    RuleConst_class_id_def = 34, RuleEnum_fwd = 35, RuleEnum_def = 36, RuleEnum_type = 37, 
-    RuleEnum_elements = 38, RuleEnum_item = 39, RuleEnum_expr = 40, RuleExpr_add_sub = 41, 
-    RuleExpr_mul_div = 42, RuleExpr_shift = 43, RuleExpr_value = 44, RuleAny_literal = 45, 
-    RuleNumeric_lit = 46, RuleInteger_lit = 47, RuleFloat_lit = 48, RuleString_lit = 49, 
-    RuleQualified_ident = 50, RuleQualified_part = 51, RuleQualified_separator = 52, 
-    RuleAll_or_ident = 53, RuleMember_decl = 54, RuleType_decl = 55, RuleType_modifier = 56, 
-    RulePointer_type = 57, RulePointer_decl = 58, RuleAny_type = 59, RuleUtility_type = 60, 
-    RuleIntegral_type = 61, RuleFloat_type = 62
+    RuleConst_class_id_def = 34, RuleEnum_fwd = 35, RuleEnum_def = 36, RuleFlags_fwd = 37, 
+    RuleFlags_def = 38, RuleEnum_type = 39, RuleEnum_elements = 40, RuleEnum_item = 41, 
+    RuleEnum_expr = 42, RuleExpr_add_sub = 43, RuleExpr_mul_div = 44, RuleExpr_shift = 45, 
+    RuleExpr_logical = 46, RuleExpr_value = 47, RuleAny_literal = 48, RuleNumeric_lit = 49, 
+    RuleInteger_lit = 50, RuleFloat_lit = 51, RuleString_lit = 52, RuleQualified_ident = 53, 
+    RuleQualified_part = 54, RuleQualified_separator = 55, RuleAll_or_ident = 56, 
+    RuleMember_decl = 57, RuleType_decl = 58, RuleType_modifier = 59, RulePointer_type = 60, 
+    RulePointer_decl = 61, RuleAny_type = 62, RuleUtility_type = 63, RuleIntegral_type = 64, 
+    RuleFloat_type = 65
   };
 
   IDLParser(antlr4::TokenStream *input);
@@ -92,6 +94,8 @@ public:
   class Const_class_id_defContext;
   class Enum_fwdContext;
   class Enum_defContext;
+  class Flags_fwdContext;
+  class Flags_defContext;
   class Enum_typeContext;
   class Enum_elementsContext;
   class Enum_itemContext;
@@ -99,6 +103,7 @@ public:
   class Expr_add_subContext;
   class Expr_mul_divContext;
   class Expr_shiftContext;
+  class Expr_logicalContext;
   class Expr_valueContext;
   class Any_literalContext;
   class Numeric_litContext;
@@ -155,6 +160,8 @@ public:
     Interface_stmtContext *interface_stmt();
     Const_defContext *const_def();
     Enum_defContext *enum_def();
+    Flags_fwdContext *flags_fwd();
+    Flags_defContext *flags_def();
     Enum_fwdContext *enum_fwd();
     Module_stmtContext *module_stmt();
     Error_code_stmtContext *error_code_stmt();
@@ -263,7 +270,7 @@ public:
     Import_stmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *IMPORT();
-    String_litContext *string_lit();
+    antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *SEMICOLON();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -677,6 +684,38 @@ public:
 
   Enum_defContext* enum_def();
 
+  class  Flags_fwdContext : public antlr4::ParserRuleContext {
+  public:
+    Flags_fwdContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *FLAGS();
+    antlr4::tree::TerminalNode *IDENT();
+    antlr4::tree::TerminalNode *SEMICOLON();
+    Enum_typeContext *enum_type();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Flags_fwdContext* flags_fwd();
+
+  class  Flags_defContext : public antlr4::ParserRuleContext {
+  public:
+    Flags_defContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *FLAGS();
+    antlr4::tree::TerminalNode *IDENT();
+    antlr4::tree::TerminalNode *LBRACE();
+    Enum_elementsContext *enum_elements();
+    antlr4::tree::TerminalNode *RBRACE();
+    Enum_typeContext *enum_type();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Flags_defContext* flags_def();
+
   class  Enum_typeContext : public antlr4::ParserRuleContext {
   public:
     Enum_typeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
@@ -765,7 +804,7 @@ public:
   public:
     Expr_shiftContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    Expr_valueContext *expr_value();
+    Expr_logicalContext *expr_logical();
     Expr_shiftContext *expr_shift();
     antlr4::tree::TerminalNode *LSHIFT();
     antlr4::tree::TerminalNode *RSHIFT();
@@ -776,11 +815,26 @@ public:
 
   Expr_shiftContext* expr_shift();
   Expr_shiftContext* expr_shift(int precedence);
+  class  Expr_logicalContext : public antlr4::ParserRuleContext {
+  public:
+    Expr_logicalContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    Expr_valueContext *expr_value();
+    Expr_logicalContext *expr_logical();
+    antlr4::tree::TerminalNode *PIPE();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Expr_logicalContext* expr_logical();
+  Expr_logicalContext* expr_logical(int precedence);
   class  Expr_valueContext : public antlr4::ParserRuleContext {
   public:
     Expr_valueContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     Integer_litContext *integer_lit();
+    Qualified_identContext *qualified_ident();
     antlr4::tree::TerminalNode *LPAREN();
     Enum_exprContext *enum_expr();
     antlr4::tree::TerminalNode *RPAREN();
@@ -1044,6 +1098,7 @@ public:
   bool expr_add_subSempred(Expr_add_subContext *_localctx, size_t predicateIndex);
   bool expr_mul_divSempred(Expr_mul_divContext *_localctx, size_t predicateIndex);
   bool expr_shiftSempred(Expr_shiftContext *_localctx, size_t predicateIndex);
+  bool expr_logicalSempred(Expr_logicalContext *_localctx, size_t predicateIndex);
 
 private:
   static std::vector<antlr4::dfa::DFA> _decisionToDFA;

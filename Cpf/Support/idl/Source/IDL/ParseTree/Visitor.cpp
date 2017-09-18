@@ -11,7 +11,7 @@ CPF::String TrimStringLit(const CPF::String& lit)
 	return CPF::String(lit.begin() + 1, lit.end() - 1);
 }
 
-SymbolPath GetPath(IDLParser::Qualified_identContext* ctx)
+SymbolPath ParseQualifiedIdent(IDLParser::Qualified_identContext* ctx)
 {
 	const auto ident = ctx->IDENT()->toString();
 	SymbolPath path(ident);
@@ -66,6 +66,13 @@ antlrcpp::Any Visitor::visitFailure_stmt(IDLParser::Failure_stmtContext *ctx)
 	return visitChildren(ctx);
 }
 
+antlrcpp::Any Visitor::visitImport_stmt(IDLParser::Import_stmtContext *ctx)
+{
+	String name = ctx->IDENT()->toString();
+	Emit<ImportStmt>(name);
+	return visitChildren(ctx);
+}
+
 antlrcpp::Any Visitor::visitImport_from_stmt(IDLParser::Import_from_stmtContext *ctx)
 {
 	String source;
@@ -73,12 +80,7 @@ antlrcpp::Any Visitor::visitImport_from_stmt(IDLParser::Import_from_stmtContext 
 		source = ctx->all_or_ident()->IDENT()->toString();
 	else
 		source = "*";
-	Emit<ImportStmt>(source, GetPath(ctx->qualified_ident()));
-	return visitChildren(ctx);
-}
-
-antlrcpp::Any Visitor::visitImport_stmt(IDLParser::Import_stmtContext *ctx)
-{
+	Emit<ImportFromStmt>(source, ParseQualifiedIdent(ctx->qualified_ident()));
 	return visitChildren(ctx);
 }
 
@@ -89,7 +91,7 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 	if (ctx->interface_super())
 	{
 		// Have a parent.
-		decl.mSuper = GetPath(ctx->interface_super()->qualified_ident());
+		decl.mSuper = ParseQualifiedIdent(ctx->interface_super()->qualified_ident());
 	}
 
 	for (const auto& item : ctx->interface_block()->interface_item())
@@ -130,13 +132,13 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 
 antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
 {
-	Emit<InterfaceFwdStmt>(GetPath(ctx->qualified_ident()).ToString("::"));
+	Emit<InterfaceFwdStmt>(ParseQualifiedIdent(ctx->qualified_ident()).ToString("::"));
 	return visitChildren(ctx);
 }
 
 antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *ctx)
 {
-	Emit<StructFwdStmt>(GetPath(ctx->qualified_ident()).ToString("::"));
+	Emit<StructFwdStmt>(ParseQualifiedIdent(ctx->qualified_ident()).ToString("::"));
 	return visitChildren(ctx);
 }
 
@@ -206,7 +208,7 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 
 antlrcpp::Any Visitor::visitUnion_fwd(IDLParser::Union_fwdContext *ctx)
 {
-	Emit<UnionFwdStmt>(GetPath(ctx->qualified_ident()).ToString("::"));
+	Emit<UnionFwdStmt>(ParseQualifiedIdent(ctx->qualified_ident()).ToString("::"));
 	return visitChildren(ctx);
 }
 
@@ -260,7 +262,6 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *ctx)
 	{
 		EnumEntry entry;
 		entry.mName = item->IDENT()->toString();
-		entry.mValue = 0x7fffffffffffffff;
 		if (item->EQUALS())
 		{
 			entry.mValue = ParseEnumExpr(item->enum_expr());
@@ -269,6 +270,36 @@ antlrcpp::Any Visitor::visitEnum_def(IDLParser::Enum_defContext *ctx)
 	}
 
 	Emit<EnumDeclStmt>(enumDecl);
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitFlags_fwd(IDLParser::Flags_fwdContext *ctx)
+{
+	Emit<FlagsForwardStmt>(ctx->IDENT()->toString(), ParseIntegralType(ctx->enum_type()->integral_type()));
+	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitFlags_def(IDLParser::Flags_defContext *ctx)
+{
+	EnumDecl enumDecl;
+	enumDecl.mName = ctx->IDENT()->toString();
+	enumDecl.mType = Visitor::Type::Void;
+	if (ctx->enum_type() && ctx->enum_type()->integral_type())
+		enumDecl.mType = ParseIntegralType(ctx->enum_type()->integral_type());
+
+	auto items = ctx->enum_elements()->enum_item();
+	for (const auto& item : items)
+	{
+		EnumEntry entry;
+		entry.mName = item->IDENT()->toString();
+		if (item->EQUALS())
+		{
+			entry.mValue = ParseEnumExpr(item->enum_expr());
+		}
+		enumDecl.mEntries.push_back(entry);
+	}
+
+	Emit<FlagsDeclStmt>(enumDecl);
 	return visitChildren(ctx);
 }
 
@@ -325,7 +356,7 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 	else if (anyType->qualified_ident())
 	{
 		result.mType = Type::Ident;
-		result.mIdent = GetPath(anyType->qualified_ident());
+		result.mIdent = ParseQualifiedIdent(anyType->qualified_ident());
 	}
 	else
 	{
@@ -348,26 +379,115 @@ Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 	return result;
 }
 
-int64_t Visitor::ParseEnumExpr(IDLParser::Enum_exprContext* expr)
+CPF::String Visitor::ParseExprValue(IDLParser::Expr_valueContext* expr)
+{
+	if (expr->qualified_ident())
+	{
+		return ParseQualifiedIdent(expr->qualified_ident()).ToString("::");
+	}
+	else if (expr->integer_lit())
+	{
+		auto litExpr = expr->integer_lit();
+		return std::to_string(ParseIntegerLit(litExpr));
+	}
+	else if (expr->enum_expr())
+	{
+		return ParseExprAddSub(expr->enum_expr()->expr_add_sub());
+	}
+
+	// Shouldn't be able to get here.
+	CPF_ASSERT_ALWAYS;
+	return "";
+}
+
+CPF::String Visitor::ParseExprLogical(IDLParser::Expr_logicalContext* expr)
+{
+	if (expr->PIPE())
+	{
+		auto lhs = ParseExprLogical(expr->expr_logical());
+		auto rhs = ParseExprValue(expr->expr_value());
+		return std::to_string(atoi(lhs.c_str()) | atoi(rhs.c_str()));
+	}
+	else if (expr->expr_value())
+		return ParseExprValue(expr->expr_value());
+
+	// Shouldn't be able to get here.
+	CPF_ASSERT_ALWAYS;
+	return "";
+}
+
+CPF::String Visitor::ParseExprShift(IDLParser::Expr_shiftContext* expr)
+{
+	if (expr->LSHIFT())
+	{
+		auto lhs = ParseExprShift(expr->expr_shift());
+		auto rhs = ParseExprLogical(expr->expr_logical());
+		return std::to_string(atoi(lhs.c_str()) << atoi(rhs.c_str()));
+	}
+	else if (expr->RSHIFT())
+	{
+		auto lhs = ParseExprShift(expr->expr_shift());
+		auto rhs = ParseExprLogical(expr->expr_logical());
+		return std::to_string(atoi(lhs.c_str()) >> atoi(rhs.c_str()));
+	}
+	else if (expr->expr_logical())
+		return ParseExprLogical(expr->expr_logical());
+
+	// Shouldn't be able to get here.
+	CPF_ASSERT_ALWAYS;
+	return "";
+}
+
+CPF::String Visitor::ParseExprMulDiv(IDLParser::Expr_mul_divContext* expr)
+{
+	if (expr->STAR())
+	{
+		auto lhs = ParseExprMulDiv(expr->expr_mul_div());
+		auto rhs = ParseExprShift(expr->expr_shift());
+		return std::to_string(atoi(lhs.c_str()) * atoi(rhs.c_str()));
+	}
+	else if (expr->SLASH())
+	{
+		auto lhs = ParseExprMulDiv(expr->expr_mul_div());
+		auto rhs = ParseExprShift(expr->expr_shift());
+		return std::to_string(atoi(lhs.c_str()) / atoi(rhs.c_str()));
+	}
+	else if (expr->expr_shift())
+		return ParseExprShift(expr->expr_shift());
+
+	// Shouldn't be able to get here.
+	CPF_ASSERT_ALWAYS;
+	return "";
+}
+
+CPF::String Visitor::ParseExprAddSub(IDLParser::Expr_add_subContext* expr)
+{
+	if (expr->PLUS())
+	{
+		auto lhs = ParseExprAddSub(expr->expr_add_sub());
+		auto rhs = ParseExprMulDiv(expr->expr_mul_div());
+		return std::to_string(atoi(lhs.c_str()) + atoi(rhs.c_str()));
+	}
+	else if (expr->MINUS())
+	{
+		auto lhs = ParseExprAddSub(expr->expr_add_sub());
+		auto rhs = ParseExprMulDiv(expr->expr_mul_div());
+		return std::to_string(atoi(lhs.c_str()) - atoi(rhs.c_str()));
+	}
+	else if (expr->expr_mul_div())
+		return ParseExprMulDiv(expr->expr_mul_div());
+
+	// Shouldn't be able to get here.
+	CPF_ASSERT_ALWAYS;
+	return "";
+}
+
+
+CPF::String Visitor::ParseEnumExpr(IDLParser::Enum_exprContext* expr)
 {
 	auto addSubExpr = expr->expr_add_sub();
 	if (addSubExpr->expr_mul_div())
-	{
-		auto mulDivExpr = addSubExpr->expr_mul_div();
-		if (mulDivExpr)
-		{
-			auto shiftExpr = mulDivExpr->expr_shift();
-			if (shiftExpr)
-			{
-				auto valueExpr = shiftExpr->expr_value();
-				if (valueExpr)
-				{
-					auto litExpr = valueExpr->integer_lit();
-					return ParseIntegerLit(litExpr);
-				}
-			}
-		}
-	}
+		return ParseExprAddSub(addSubExpr);
 	return 0;
 }
 
@@ -385,7 +505,9 @@ int64_t Visitor::ParseIntegerLit(IDLParser::Integer_litContext* lit)
 		}
 		else if (lit->HEX_LIT())
 		{
-
+			int32_t hexLit;
+			::sscanf(lit->HEX_LIT()->toString().c_str(), "%x", &hexLit);
+			return hexLit;
 		}
 		else if (lit->OCT_LIT())
 		{

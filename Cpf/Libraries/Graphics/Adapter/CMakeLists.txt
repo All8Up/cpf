@@ -58,6 +58,18 @@ CPF_GEN_GOM(RUST_GRAPHICS_STRUCTURES rust
 # ###############################################
 set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/AttachmentDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DependencyDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DepthStencilViewDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/FrameBufferDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageViewDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ModeDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/OutputDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassBeginDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SamplerDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SubPassDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SwapChainDesc.idl
 )
 CPF_GEN_GOM(CPP_GRAPHICS_DESCRIPTORS cpp
 	hpp
@@ -75,6 +87,39 @@ set (IDL_FLAGS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/BindingType.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/BlendFunc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/BlendOp.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ComparisonFunc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ConservativeRasterization.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/CullMode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/DepthStencilClearFlag.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/DepthWriteMask.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/EnumMode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/FillMode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/FilterMode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/HeapType.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ImageFlags.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/IndexStripCut.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/InputClassification.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/LoadOp.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/LogicOp.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ModeRotation.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ModeScaling.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ParamFlags.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ParamVisibility.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/PipelineBindPoint.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/PrimitiveTopology.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ResourceState.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ResourceType.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ResourceUsage.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanlineOrder.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ShaderType.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StencilOp.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StoreOp.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/SubResource.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/SwapEffect.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/TopologyType.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/WindingOrder.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/WrapMode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/WriteMask.idl
 )
 CPF_GEN_GOM(CPP_GRAPHICS_FLAGS cpp
 	hpp
@@ -105,58 +150,13 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/SampleDesc.hpp
 	Include/Graphics/ResourceBindingDesc.hpp
 	Include/Graphics/ResourceDesc.hpp
-	Include/Graphics/OutputDesc.hpp
-	Include/Graphics/ModeDesc.hpp
-	Include/Graphics/SamplerDesc.hpp
-	Include/Graphics/SwapChainDesc.hpp
-	Include/Graphics/SubPassDesc.hpp
-	Include/Graphics/RenderPassDesc.hpp
-	Include/Graphics/FrameBufferDesc.hpp
-	Include/Graphics/RenderPassBeginDesc.hpp
-	Include/Graphics/ImageDesc.hpp
-	Include/Graphics/ImageViewDesc.hpp
-	Include/Graphics/DepthStencilViewDesc.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}
 )
 set (INCLUDE_GRAPHICS_FILES_FLAGS
 	${CPP_GRAPHICS_FLAGS}
-	Include/Graphics/ComparisonFunc.hpp
-	Include/Graphics/ConservativeRasterization.hpp
-	Include/Graphics/CullMode.hpp
-	Include/Graphics/DepthWriteMask.hpp
-	Include/Graphics/Driver.hpp
-	Include/Graphics/FillMode.hpp
 	Include/Graphics/Format.hpp
-	Include/Graphics/IndexStripCut.hpp
-	Include/Graphics/LogicOp.hpp
-	Include/Graphics/TopologyType.hpp
-	Include/Graphics/StencilOp.hpp
-	Include/Graphics/WindingOrder.hpp
-	Include/Graphics/LoadOp.hpp
-	Include/Graphics/StoreOp.hpp
-	Include/Graphics/PipelineBindPoint.hpp
-	Include/Graphics/DepthStencilClearFlag.hpp
-	Include/Graphics/ResourceState.hpp
-	Include/Graphics/SubResource.hpp
-	Include/Graphics/WriteMask.hpp
-	Include/Graphics/ImageFlags.hpp
-	Include/Graphics/InputClassification.hpp
-	Include/Graphics/ScanlineOrder.hpp
-	Include/Graphics/ModeScaling.hpp
-	Include/Graphics/ModeRotation.hpp
-	Include/Graphics/EnumMode.hpp
-	Include/Graphics/WrapMode.hpp
-	Include/Graphics/FilterMode.hpp
-	Include/Graphics/ShaderType.hpp
-	Include/Graphics/SwapEffect.hpp
-	Include/Graphics/ParamVisibility.hpp
-	Include/Graphics/ParamFlags.hpp
-	Include/Graphics/ResourceUsage.hpp
-	Include/Graphics/ResourceType.hpp
-	Include/Graphics/HeapType.hpp
-	Include/Graphics/PrimitiveTopology.hpp
 )
 
 # ###############################################
@@ -172,6 +172,7 @@ target_link_libraries (GraphicsDriver INTERFACE Plugin Math)
 # ###############################################
 add_custom_target (GraphicsDriver_IDE
 	SOURCES
+		Include/Graphics.hpp
 		${CPP_GRAPHICS_INTERFACES}
 		${INCLUDE_GRAPHICS_FILES_DESCRIPTORS}
 		${INCLUDE_GRAPHICS_FILES_STRUCTURES}

@@ -1,0 +1,17 @@
+module CPF::Graphics;
+
+enum FilterMode : s32;
+enum WrapMode : s32;
+
+struct SamplerDesc
+{
+	FilterMode mMinFilter;
+	FilterMode mMagFilter;
+	FilterMode mMipFilter;
+	WrapMode mUWrap;
+	WrapMode mVWrap;
+	WrapMode mWWrap;
+	f32 mLodMin;
+	f32 mLodMax;
+	f32 mLodBias;
+};

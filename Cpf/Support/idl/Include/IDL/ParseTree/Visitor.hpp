@@ -117,7 +117,7 @@ namespace IDL
 		struct EnumEntry
 		{
 			String mName;
-			int64_t mValue;
+			String mValue;
 		};
 		struct EnumDecl
 		{
@@ -138,16 +138,19 @@ namespace IDL
 		typedef CPF::Events::Event<1, CPF::Function<void (const SymbolPath&)>> ModuleStmt;
 		typedef CPF::Events::Event<2, CPF::Function<void(const String&, const String&, const String&)>> SuccessType;
 		typedef CPF::Events::Event<3, CPF::Function<void(const String&, const String&, const String&)>> FailureType;
-		typedef CPF::Events::Event<4, CPF::Function<void(const String&, const SymbolPath&)>> ImportStmt;
-		typedef CPF::Events::Event<5, CPF::Function<void(const InterfaceDecl&)>> InterfaceDeclStmt;
-		typedef CPF::Events::Event<6, CPF::Function<void(const String&)>> InterfaceFwdStmt;
-		typedef CPF::Events::Event<7, CPF::Function<void(const String&)>> StructFwdStmt;
-		typedef CPF::Events::Event<8, CPF::Function<void(const UnionOrStructDecl&)>> StructDeclStmt;
-		typedef CPF::Events::Event<9, CPF::Function<void(const String&, Type)>> EnumForwardStmt;
-		typedef CPF::Events::Event<10, CPF::Function<void(const EnumDecl&)>> EnumDeclStmt;
-		typedef CPF::Events::Event<11, CPF::Function<void(const String&)>> UnionFwdStmt;
-		typedef CPF::Events::Event<12, CPF::Function<void(const UnionOrStructDecl&)>> UnionDeclStmt;
-		typedef CPF::Events::Event<13, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
+		typedef CPF::Events::Event<4, CPF::Function<void(const String&)>> ImportStmt;
+		typedef CPF::Events::Event<5, CPF::Function<void(const String&, const SymbolPath&)>> ImportFromStmt;
+		typedef CPF::Events::Event<6, CPF::Function<void(const InterfaceDecl&)>> InterfaceDeclStmt;
+		typedef CPF::Events::Event<7, CPF::Function<void(const String&)>> InterfaceFwdStmt;
+		typedef CPF::Events::Event<8, CPF::Function<void(const String&)>> StructFwdStmt;
+		typedef CPF::Events::Event<9, CPF::Function<void(const UnionOrStructDecl&)>> StructDeclStmt;
+		typedef CPF::Events::Event<10, CPF::Function<void(const String&, Type)>> EnumForwardStmt;
+		typedef CPF::Events::Event<11, CPF::Function<void(const EnumDecl&)>> EnumDeclStmt;
+		typedef CPF::Events::Event<12, CPF::Function<void(const String&)>> UnionFwdStmt;
+		typedef CPF::Events::Event<13, CPF::Function<void(const UnionOrStructDecl&)>> UnionDeclStmt;
+		typedef CPF::Events::Event<14, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
+		typedef CPF::Events::Event<15, CPF::Function<void(const String&, Type)>> FlagsForwardStmt;
+		typedef CPF::Events::Event<16, CPF::Function<void(const EnumDecl&)>> FlagsDeclStmt;
 
 		Visitor();
 
@@ -166,11 +169,19 @@ namespace IDL
 		antlrcpp::Any visitUnion_decl(IDLParser::Union_declContext *ctx) override;
 		antlrcpp::Any visitEnum_fwd(IDLParser::Enum_fwdContext *ctx) override;
 		antlrcpp::Any visitEnum_def(IDLParser::Enum_defContext *ctx) override;
+		antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *ctx) override;
+		antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *ctx) override;
 		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
 
 		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
-		static int64_t ParseEnumExpr(IDLParser::Enum_exprContext* expr);
+		static String ParseEnumExpr(IDLParser::Enum_exprContext* expr);
 		static int64_t ParseIntegerLit(IDLParser::Integer_litContext* lit);
+
+		static CPF::String ParseExprValue(IDLParser::Expr_valueContext* expr);
+		static CPF::String ParseExprLogical(IDLParser::Expr_logicalContext* expr);
+		static CPF::String ParseExprShift(IDLParser::Expr_shiftContext* expr);
+		static CPF::String ParseExprMulDiv(IDLParser::Expr_mul_divContext* expr);
+		static CPF::String ParseExprAddSub(IDLParser::Expr_add_subContext* expr);
 	};
 }

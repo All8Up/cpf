@@ -1,0 +1,18 @@
+module CPF::Graphics;
+
+struct AttachmentRef;
+
+enum PipelineBindPoint : s32;
+
+struct SubPassDesc
+{
+	PipelineBindPoint mBindPoint;
+	s32 mInputCount;
+	AttachmentRef* mpInputAttachments;
+	s32 mAttachmentCount;
+	AttachmentRef* mpColorAttachments;
+	AttachmentRef* mpResolveAttachments;
+	AttachmentRef* mpDepthStencilAttachment;
+	s32 mPreserveCount;
+	AttachmentRef* mpPreserveAttachments;
+};

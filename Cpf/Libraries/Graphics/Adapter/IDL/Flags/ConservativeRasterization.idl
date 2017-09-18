@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+enum ConservativeRasterization : s32
+{
+	eOff = 0,
+	eOn = 1
+};
