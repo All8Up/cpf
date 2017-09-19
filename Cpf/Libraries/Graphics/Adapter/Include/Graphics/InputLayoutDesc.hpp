@@ -2,6 +2,7 @@
 #pragma once
 #include "Graphics/Format.hpp"
 #include "Graphics/InputClassification.hpp"
+#include "Graphics/ElementDesc.hpp"
 #include "UnorderedMap.hpp"
 #include "String.hpp"
 #include <initializer_list>
@@ -10,18 +11,6 @@ namespace CPF
 {
 	namespace Graphics
 	{
-		/* @brief: Element description. */
-		struct ElementDesc
-		{
-			const char* mpSemantic;
-			int32_t mIndex;
-			Format mFormat;
-			int32_t mSlot;
-			int32_t mOffset;
-			InputClassification mClass;
-			int32_t mInstanceStepping;
-		};
-
 		class cElementDesc : public ElementDesc
 		{
 		public:

@@ -60,6 +60,7 @@ set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/AttachmentDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DependencyDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DepthStencilViewDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ElementDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/FrameBufferDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageViewDesc.idl
