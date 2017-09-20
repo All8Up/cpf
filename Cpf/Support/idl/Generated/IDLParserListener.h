@@ -53,11 +53,26 @@ public:
   virtual void enterStruct_fwd(IDLParser::Struct_fwdContext *ctx) = 0;
   virtual void exitStruct_fwd(IDLParser::Struct_fwdContext *ctx) = 0;
 
+  virtual void enterUnion_stmt(IDLParser::Union_stmtContext *ctx) = 0;
+  virtual void exitUnion_stmt(IDLParser::Union_stmtContext *ctx) = 0;
+
+  virtual void enterUnion_decl(IDLParser::Union_declContext *ctx) = 0;
+  virtual void exitUnion_decl(IDLParser::Union_declContext *ctx) = 0;
+
+  virtual void enterUnion_fwd(IDLParser::Union_fwdContext *ctx) = 0;
+  virtual void exitUnion_fwd(IDLParser::Union_fwdContext *ctx) = 0;
+
   virtual void enterStruct_block(IDLParser::Struct_blockContext *ctx) = 0;
   virtual void exitStruct_block(IDLParser::Struct_blockContext *ctx) = 0;
 
   virtual void enterStruct_item(IDLParser::Struct_itemContext *ctx) = 0;
   virtual void exitStruct_item(IDLParser::Struct_itemContext *ctx) = 0;
+
+  virtual void enterOs_specific(IDLParser::Os_specificContext *ctx) = 0;
+  virtual void exitOs_specific(IDLParser::Os_specificContext *ctx) = 0;
+
+  virtual void enterOs_tag(IDLParser::Os_tagContext *ctx) = 0;
+  virtual void exitOs_tag(IDLParser::Os_tagContext *ctx) = 0;
 
   virtual void enterInterface_stmt(IDLParser::Interface_stmtContext *ctx) = 0;
   virtual void exitInterface_stmt(IDLParser::Interface_stmtContext *ctx) = 0;
@@ -110,6 +125,12 @@ public:
   virtual void enterEnum_def(IDLParser::Enum_defContext *ctx) = 0;
   virtual void exitEnum_def(IDLParser::Enum_defContext *ctx) = 0;
 
+  virtual void enterFlags_fwd(IDLParser::Flags_fwdContext *ctx) = 0;
+  virtual void exitFlags_fwd(IDLParser::Flags_fwdContext *ctx) = 0;
+
+  virtual void enterFlags_def(IDLParser::Flags_defContext *ctx) = 0;
+  virtual void exitFlags_def(IDLParser::Flags_defContext *ctx) = 0;
+
   virtual void enterEnum_type(IDLParser::Enum_typeContext *ctx) = 0;
   virtual void exitEnum_type(IDLParser::Enum_typeContext *ctx) = 0;
 
@@ -130,6 +151,9 @@ public:
 
   virtual void enterExpr_shift(IDLParser::Expr_shiftContext *ctx) = 0;
   virtual void exitExpr_shift(IDLParser::Expr_shiftContext *ctx) = 0;
+
+  virtual void enterExpr_logical(IDLParser::Expr_logicalContext *ctx) = 0;
+  virtual void exitExpr_logical(IDLParser::Expr_logicalContext *ctx) = 0;
 
   virtual void enterExpr_value(IDLParser::Expr_valueContext *ctx) = 0;
   virtual void exitExpr_value(IDLParser::Expr_valueContext *ctx) = 0;
@@ -163,6 +187,12 @@ public:
 
   virtual void enterMember_decl(IDLParser::Member_declContext *ctx) = 0;
   virtual void exitMember_decl(IDLParser::Member_declContext *ctx) = 0;
+
+  virtual void enterMember_init(IDLParser::Member_initContext *ctx) = 0;
+  virtual void exitMember_init(IDLParser::Member_initContext *ctx) = 0;
+
+  virtual void enterMember_init_value(IDLParser::Member_init_valueContext *ctx) = 0;
+  virtual void exitMember_init_value(IDLParser::Member_init_valueContext *ctx) = 0;
 
   virtual void enterType_decl(IDLParser::Type_declContext *ctx) = 0;
   virtual void exitType_decl(IDLParser::Type_declContext *ctx) = 0;

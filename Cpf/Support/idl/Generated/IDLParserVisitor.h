@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -44,14 +44,6 @@ public:
     virtual antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *context) = 0;
 
     virtual antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *context) = 0;
-
-    virtual antlrcpp::Any visitDefaults_stmt(IDLParser::Defaults_stmtContext *context) = 0;
-
-    virtual antlrcpp::Any visitDefaults_item(IDLParser::Defaults_itemContext *context) = 0;
-
-    virtual antlrcpp::Any visitDefaults_array(IDLParser::Defaults_arrayContext *context) = 0;
-
-    virtual antlrcpp::Any visitDefaults_value(IDLParser::Defaults_valueContext *context) = 0;
 
     virtual antlrcpp::Any visitUnion_stmt(IDLParser::Union_stmtContext *context) = 0;
 

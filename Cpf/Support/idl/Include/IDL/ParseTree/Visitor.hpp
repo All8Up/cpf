@@ -94,11 +94,28 @@ namespace IDL
 			using Functions = CPF::Vector<FunctionDecl>;
 			Functions mFunctions;
 		};
+		struct MemberInitValue
+		{
+			enum Type
+			{
+				Identifier,
+				Integer,
+				Float,
+				Default,
+				Str
+			};
+			Type mType;
+			String mIdent;
+			int64_t mInt;
+			float mFloat;
+			String mString;
+		};
 		struct DataMemberDecl
 		{
 			String mName;
 			TypeDecl mType;
 			int32_t mArrayDimensions;
+			CPF::Vector<MemberInitValue> mInitializers;
 		};
 		enum class OsType : int32_t
 		{
@@ -133,22 +150,6 @@ namespace IDL
 			Type mType;
 			int64_t mValue;
 		};
-		struct DefaultValue
-		{
-			bool mDefaultsCall;
-			CPF::String mID;
-		};
-		struct Default
-		{
-			String mName;
-			CPF::Vector<DefaultValue> mValues;
-		};
-		using DefaultVector = CPF::Vector<Default>;
-		struct Defaults
-		{
-			String mName;
-			DefaultVector mDefaults;
-		};
 
 		typedef CPF::Events::Event<0, CPF::Function<void()>> Start;
 		typedef CPF::Events::Event<1, CPF::Function<void (const SymbolPath&)>> ModuleStmt;
@@ -167,7 +168,6 @@ namespace IDL
 		typedef CPF::Events::Event<14, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
 		typedef CPF::Events::Event<15, CPF::Function<void(const String&, Type)>> FlagsForwardStmt;
 		typedef CPF::Events::Event<16, CPF::Function<void(const EnumDecl&)>> FlagsDeclStmt;
-		typedef CPF::Events::Event<17, CPF::Function<void(const Defaults&)>> DefaultsDeclStmt;
 
 		Visitor();
 
@@ -189,12 +189,12 @@ namespace IDL
 		antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *ctx) override;
 		antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *ctx) override;
 		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
-		antlrcpp::Any visitDefaults_stmt(IDLParser::Defaults_stmtContext* ctx) override;
 
 		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
 		static String ParseEnumExpr(IDLParser::Enum_exprContext* expr);
 		static int64_t ParseIntegerLit(IDLParser::Integer_litContext* lit);
+		static MemberInitValue ParseInitValue(IDLParser::Member_init_valueContext* ctx);
 
 		static CPF::String ParseExprValue(IDLParser::Expr_valueContext* expr);
 		static CPF::String ParseExprLogical(IDLParser::Expr_logicalContext* expr);

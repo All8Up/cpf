@@ -8,7 +8,6 @@ main                    : global_statements? EOF;
 global_statements       : global_statement+;
 global_statement        : import_stmt
                         | struct_stmt
-                        | defaults_stmt
                         | union_stmt
                         | interface_stmt
                         | const_def
@@ -46,14 +45,6 @@ struct_stmt             : struct_decl
                         | struct_fwd;
 struct_decl             : STRUCT IDENT struct_block;
 struct_fwd              : STRUCT qualified_ident SEMICOLON;
-
-// Defaults
-defaults_stmt           : DEFAULTS IDENT LBRACE defaults_item* RBRACE;
-defaults_item           : IDENT COLON defaults_value SEMICOLON
-                        | IDENT COLON LBRACE defaults_array RBRACE SEMICOLON;
-defaults_array          : (defaults_value COMMA?)*;
-defaults_value          : qualified_ident
-                        | DEFAULTS qualified_ident;
 
 // Unions
 union_stmt              : union_decl
@@ -161,10 +152,11 @@ all_or_ident            : IDENT
 member_decl             : type_decl IDENT (LBRACKET integer_lit RBRACKET)? member_init? SEMICOLON;
 member_init             : EQUALS member_init_value
                         | EQUALS LBRACE (member_init_value COMMA?)* RBRACE;
-member_init_value       : qualified_ident
+member_init_value       : DEFAULT qualified_ident
                         | integer_lit
                         | float_lit
-                        | string_lit;
+                        | string_lit
+                        | qualified_ident;
 
 // Type declarations.
 type_decl               : type_modifier? any_type pointer_type?;

@@ -14,7 +14,7 @@ Darwin                      : 'DARWIN';
 
 IMPORT                      : 'import';
 STRUCT                      : 'struct';
-DEFAULTS                    : 'defaults';
+DEFAULT                     : 'default';
 UNION                       : 'union';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';

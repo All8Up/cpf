@@ -33,7 +33,6 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::ConstIntegralStmt>(CPF::Bind(&CppGenerator::OnConstIntegral, this, _1));
 	visitor.On<Visitor::FlagsForwardStmt>(CPF::Bind(&CppGenerator::OnFlagsForwardStmt, this, _1, _2));
 	visitor.On<Visitor::FlagsDeclStmt>(CPF::Bind(&CppGenerator::OnFlagsDeclStmt, this, _1));
-	visitor.On<Visitor::DefaultsDeclStmt>(CPF::Bind(&CppGenerator::OnDefaultsDeclStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -179,6 +178,7 @@ void CppGenerator::OnUnionFwdStmt(const String& name)
 
 void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 {
+	bool hasInitializers = false;
 	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
 	if (decl.mUnion)
 		mpWriter->OutputLine("union %s", decl.mName.c_str());
@@ -192,6 +192,8 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 			TypeToString(member.mType).c_str(),
 			member.mName.c_str(),
 			member.mArrayDimensions>0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+		if (!member.mInitializers.empty())
+			hasInitializers = true;
 	}
 	if (!decl.mDataMembers[int(Visitor::OsType::eWindows)].empty())
 	{
@@ -202,6 +204,8 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 				TypeToString(member.mType).c_str(),
 				member.mName.c_str(),
 				member.mArrayDimensions > 0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+			if (!member.mInitializers.empty())
+				hasInitializers = true;
 		}
 		mpWriter->OutputLineNoIndent("#endif");
 	}
@@ -214,11 +218,86 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 				TypeToString(member.mType).c_str(),
 				member.mName.c_str(),
 				member.mArrayDimensions > 0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+			if (!member.mInitializers.empty())
+				hasInitializers = true;
 		}
 		mpWriter->OutputLineNoIndent("#endif");
 	}
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
+
+	// TODO: Does not handle items with os specifics correctly. (As in not at all!)
+	if (hasInitializers)
+	{
+		mpWriter->LineFeed(eStructures, 0, -1);
+		mpWriter->OutputLine("template <> %s Defaults() {", decl.mName.c_str());
+		mpWriter->Indent();
+		mpWriter->OutputLine("return %s{", decl.mName.c_str());
+		mpWriter->Indent();
+
+		for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eNone)])
+		{
+			bool isLastMember = &member == &decl.mDataMembers[int(Visitor::OsType::eNone)].back();
+			const auto& initializers = member.mInitializers;
+			if (initializers.size() == 1)
+			{
+				switch (initializers[0].mType)
+				{
+				case Visitor::MemberInitValue::Integer:
+					mpWriter->OutputLine("%d%s", int(initializers[0].mInt), isLastMember ? "" : ",");
+					break;
+				case Visitor::MemberInitValue::Identifier:
+					mpWriter->OutputLine("%s%s", initializers[0].mIdent.c_str(), isLastMember ? "" : ",");
+					break;
+				case Visitor::MemberInitValue::Float:
+					mpWriter->OutputLine("%f%s", initializers[0].mFloat, isLastMember ? "" : ",");
+					break;
+				case Visitor::MemberInitValue::Default:
+					mpWriter->OutputLine("Defaults<%s>()%s", initializers[0].mIdent.c_str(), isLastMember ? "" : ",");
+					break;
+				case Visitor::MemberInitValue::Str:
+					mpWriter->OutputLine("%s%s", initializers[0].mString.c_str(), isLastMember ? "" : ",");
+					break;
+				}
+			}
+			else
+			{
+				mpWriter->OutputLine("{", decl.mName.c_str());
+				mpWriter->Indent();
+
+				for (const auto& initValue : initializers)
+				{
+					bool lastValue = &initValue == &initializers.back();
+					switch (initValue.mType)
+					{
+					case Visitor::MemberInitValue::Integer:
+						mpWriter->OutputLine("%d%s", int(initValue.mInt), lastValue ? "" : ",");
+						break;
+					case Visitor::MemberInitValue::Identifier:
+						mpWriter->OutputLine("%s%s", initValue.mIdent.c_str(), lastValue ? "" : ",");
+						break;
+					case Visitor::MemberInitValue::Float:
+						mpWriter->OutputLine("%f%s", initValue.mFloat, lastValue ? "" : ",");
+						break;
+					case Visitor::MemberInitValue::Default:
+						mpWriter->OutputLine("Defaults<%s>()%s", initValue.mIdent.c_str(), lastValue ? "" : ",");
+						break;
+					case Visitor::MemberInitValue::Str:
+						mpWriter->OutputLine("%s%s", initValue.mString.c_str(), lastValue ? "" : ",");
+						break;
+					}
+				}
+
+				mpWriter->Unindent();
+				mpWriter->OutputLine("}%s", isLastMember ? "" : ",");
+			}
+		}
+
+		mpWriter->Unindent();
+		mpWriter->OutputLine("};");
+		mpWriter->Unindent();
+		mpWriter->OutputLine("}");
+	}
 }
 
 void CppGenerator::OnEnumForwardStmt(const String& name, Visitor::Type type)
@@ -292,46 +371,6 @@ void CppGenerator::OnConstIntegral(const Visitor::ConstIntegral& constIntegral)
 		constIntegral.mName.c_str(),
 		constIntegral.mValue);
 }
-
-void CppGenerator::OnDefaultsDeclStmt(const Visitor::Defaults& defaults)
-{
-	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
-	mpWriter->OutputLine("template <> %s Defaults() {", defaults.mName.c_str());
-	mpWriter->Indent();
-	mpWriter->OutputLine("return %s{", defaults.mName.c_str());
-	mpWriter->Indent();
-	for (auto it = defaults.mDefaults.begin(); it != defaults.mDefaults.end(); ++it)
-	{
-		bool lastItem = it == defaults.mDefaults.end() - 1;
-		if (it->mValues.size() == 1)
-		{
-			if (it->mValues[0].mDefaultsCall)
-				mpWriter->OutputLine("Defaults<%s>()%s", it->mValues[0].mID.c_str(), lastItem ? "" : ",");
-			else
-				mpWriter->OutputLine("%s%s", it->mValues[0].mID.c_str(), lastItem ? "" : ",");
-		}
-		else
-		{
-			mpWriter->OutputLine("{");
-			mpWriter->Indent();
-			for (auto ait = it->mValues.begin(); ait != it->mValues.end(); ++ait)
-			{
-				bool lastAItem = ait == it->mValues.end() - 1;
-				if (ait->mDefaultsCall)
-					mpWriter->OutputLine("Defaults<%s>()%s", ait->mID.c_str(), lastAItem ? "" : ",");
-				else
-					mpWriter->OutputLine("%s%s", ait->mID.c_str(), lastAItem ? "" : ",");
-			}
-			mpWriter->Unindent();
-			mpWriter->OutputLine("}%s", lastItem ? "" : ",");
-		}
-	}
-	mpWriter->Unindent();
-	mpWriter->OutputLine("};");
-	mpWriter->Unindent();
-	mpWriter->OutputLine("};");
-}
-
 
 CPF::String CppGenerator::TypeToString(const Visitor::Type type)
 {

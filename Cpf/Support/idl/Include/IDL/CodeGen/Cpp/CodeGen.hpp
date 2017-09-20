@@ -42,7 +42,6 @@ namespace IDL
 			void OnFlagsForwardStmt(const String&, Visitor::Type);
 			void OnFlagsDeclStmt(const Visitor::EnumDecl&);
 			void OnConstIntegral(const Visitor::ConstIntegral&);
-			void OnDefaultsDeclStmt(const Visitor::Defaults&);
 
 			static String TypeToString(const Visitor::Type type);
 			static String TypeToString(const Visitor::TypeDecl& decl);

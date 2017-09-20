@@ -7,28 +7,14 @@ module CPF::Graphics;
 
 struct RenderTargetBlendStateDesc
 {
-	bool mBlending;
-	bool mLogicOps;
-	BlendFunc mSrcBlend;
-	BlendFunc mDstBlend;
-	BlendOp mBlendOp;
-	BlendFunc mSrcBlendAlpha;
-	BlendFunc mDstBlendAlpha;
-	BlendOp mBlendOpAlpha;
-	LogicOp mLogicOp;
-	WriteMask mWriteMask;
-}
-
-defaults RenderTargetBlendStateDesc
-{
-	mBlending: false;
-	mLogicOps: false;
-	mSrcBlend: BlendFunc::eSrcColor;
-	mDstBlend: BlendFunc::eDstColor;
-	mBlendOp: BlendOp::eAdd;
-	mSrcBlendAlpha: BlendFunc::eSrcAlpha;
-	mDstBlendAlpha: BlendFunc::eDstAlpha;
-	mBlendOpAlpha: BlendOp::eAdd;
-	mLogicOp: LogicOp::eCopy;
-	mWriteMask: WriteMask::eAll;
+	bool mBlending = false;
+	bool mLogicOps = false;
+	BlendFunc mSrcBlend = BlendFunc::eSrcColor;
+	BlendFunc mDstBlend = BlendFunc::eDstColor;
+	BlendOp mBlendOp = BlendOp::eAdd;
+	BlendFunc mSrcBlendAlpha = BlendFunc::eSrcAlpha;
+	BlendFunc mDstBlendAlpha = BlendFunc::eDstAlpha;
+	BlendOp mBlendOpAlpha = BlendOp::eAdd;
+	LogicOp mLogicOp = LogicOp::eCopy;
+	WriteMask mWriteMask = WriteMask::eAll;
 }

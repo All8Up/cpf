@@ -142,6 +142,34 @@ antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *ctx)
 	return visitChildren(ctx);
 }
 
+Visitor::MemberInitValue Visitor::ParseInitValue(IDLParser::Member_init_valueContext* ctx)
+{
+	Visitor::MemberInitValue value;
+	if (ctx->qualified_ident())
+	{
+		value.mType = ctx->DEFAULT() ?
+			MemberInitValue::Default :
+			MemberInitValue::Identifier;
+		value.mIdent = ParseQualifiedIdent(ctx->qualified_ident()).ToString("::");
+	}
+	else if (ctx->integer_lit())
+	{
+		value.mType = MemberInitValue::Integer;
+		value.mInt = ParseIntegerLit(ctx->integer_lit());
+	}
+	else if (ctx->float_lit())
+	{
+		value.mType = MemberInitValue::Float;
+		sscanf(ctx->float_lit()->toString().c_str(), "%f", &value.mFloat);
+	}
+	else if (ctx->string_lit())
+	{
+		value.mType = MemberInitValue::Str;
+		value.mString = ctx->string_lit()->STRING_LIT()->toString();
+	}
+	return value;
+}
+
 antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 {
 	UnionOrStructDecl structDecl;
@@ -166,6 +194,15 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 				data.mName = decl->IDENT()->toString();
 				data.mType = ParseTypeDecl(decl->type_decl());
 				data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+
+				if (decl->member_init() != nullptr)
+				{
+					for (auto& initCtx : decl->member_init()->member_init_value())
+					{
+						data.mInitializers.push_back(ParseInitValue(initCtx));
+					}
+				}
+
 				structDecl.mDataMembers[int(OsType::eNone)].push_back(data);
 			}
 		}
@@ -313,39 +350,6 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 	return visitChildren(ctx);
 }
 
-Visitor::DefaultValue ParseDefaultValue(IDLParser::Defaults_valueContext* ctx)
-{
-	Visitor::DefaultValue result;
-	if (ctx->DEFAULTS() != nullptr)
-		result.mDefaultsCall = true;
-	else
-		result.mDefaultsCall = false;
-	result.mID = ParseQualifiedIdent(ctx->qualified_ident()).ToString("::");
-	return result;
-}
-
-antlrcpp::Any Visitor::visitDefaults_stmt(IDLParser::Defaults_stmtContext* ctx)
-{
-	Defaults defaults;
-	defaults.mName = ctx->IDENT()->toString();
-	for (const auto& item : ctx->defaults_item())
-	{
-		Default defItem;
-		defItem.mName = item->IDENT()->toString();
-		if (item->defaults_array())
-		{
-			auto array = item->defaults_array()->defaults_value();
-			for (const auto it : array)
-				defItem.mValues.push_back(ParseDefaultValue(it));
-		}
-		else
-			defItem.mValues.push_back(ParseDefaultValue(item->defaults_value()));
-		defaults.mDefaults.push_back(defItem);
-	}
-	Emit<DefaultsDeclStmt>(defaults);
-	return visitChildren(ctx);
-}
-
 Visitor::Type Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integralType)
 {
 	Type result;
@@ -362,7 +366,6 @@ Visitor::Type Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integr
 
 	return result;
 }
-
 
 Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)
 {

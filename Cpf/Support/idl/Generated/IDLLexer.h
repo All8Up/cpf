@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLLexer.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf/Cpf/Support/idl\IDLLexer.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -12,7 +12,7 @@
 class  IDLLexer : public antlr4::Lexer {
 public:
   enum {
-    Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULTS = 5, UNION = 6, 
+    Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULT = 5, UNION = 6, 
     INTERFACE = 7, ENUM = 8, FLAGS = 9, MODULE = 10, FROM = 11, IN = 12, 
     OUT = 13, COLON = 14, SEMICOLON = 15, STAR = 16, SLASH = 17, DOT = 18, 
     COMMA = 19, EQUALS = 20, QUOTE = 21, LBRACE = 22, RBRACE = 23, LPAREN = 24, 

@@ -55,11 +55,26 @@ public:
   virtual void enterStruct_fwd(IDLParser::Struct_fwdContext * /*ctx*/) override { }
   virtual void exitStruct_fwd(IDLParser::Struct_fwdContext * /*ctx*/) override { }
 
+  virtual void enterUnion_stmt(IDLParser::Union_stmtContext * /*ctx*/) override { }
+  virtual void exitUnion_stmt(IDLParser::Union_stmtContext * /*ctx*/) override { }
+
+  virtual void enterUnion_decl(IDLParser::Union_declContext * /*ctx*/) override { }
+  virtual void exitUnion_decl(IDLParser::Union_declContext * /*ctx*/) override { }
+
+  virtual void enterUnion_fwd(IDLParser::Union_fwdContext * /*ctx*/) override { }
+  virtual void exitUnion_fwd(IDLParser::Union_fwdContext * /*ctx*/) override { }
+
   virtual void enterStruct_block(IDLParser::Struct_blockContext * /*ctx*/) override { }
   virtual void exitStruct_block(IDLParser::Struct_blockContext * /*ctx*/) override { }
 
   virtual void enterStruct_item(IDLParser::Struct_itemContext * /*ctx*/) override { }
   virtual void exitStruct_item(IDLParser::Struct_itemContext * /*ctx*/) override { }
+
+  virtual void enterOs_specific(IDLParser::Os_specificContext * /*ctx*/) override { }
+  virtual void exitOs_specific(IDLParser::Os_specificContext * /*ctx*/) override { }
+
+  virtual void enterOs_tag(IDLParser::Os_tagContext * /*ctx*/) override { }
+  virtual void exitOs_tag(IDLParser::Os_tagContext * /*ctx*/) override { }
 
   virtual void enterInterface_stmt(IDLParser::Interface_stmtContext * /*ctx*/) override { }
   virtual void exitInterface_stmt(IDLParser::Interface_stmtContext * /*ctx*/) override { }
@@ -112,6 +127,12 @@ public:
   virtual void enterEnum_def(IDLParser::Enum_defContext * /*ctx*/) override { }
   virtual void exitEnum_def(IDLParser::Enum_defContext * /*ctx*/) override { }
 
+  virtual void enterFlags_fwd(IDLParser::Flags_fwdContext * /*ctx*/) override { }
+  virtual void exitFlags_fwd(IDLParser::Flags_fwdContext * /*ctx*/) override { }
+
+  virtual void enterFlags_def(IDLParser::Flags_defContext * /*ctx*/) override { }
+  virtual void exitFlags_def(IDLParser::Flags_defContext * /*ctx*/) override { }
+
   virtual void enterEnum_type(IDLParser::Enum_typeContext * /*ctx*/) override { }
   virtual void exitEnum_type(IDLParser::Enum_typeContext * /*ctx*/) override { }
 
@@ -132,6 +153,9 @@ public:
 
   virtual void enterExpr_shift(IDLParser::Expr_shiftContext * /*ctx*/) override { }
   virtual void exitExpr_shift(IDLParser::Expr_shiftContext * /*ctx*/) override { }
+
+  virtual void enterExpr_logical(IDLParser::Expr_logicalContext * /*ctx*/) override { }
+  virtual void exitExpr_logical(IDLParser::Expr_logicalContext * /*ctx*/) override { }
 
   virtual void enterExpr_value(IDLParser::Expr_valueContext * /*ctx*/) override { }
   virtual void exitExpr_value(IDLParser::Expr_valueContext * /*ctx*/) override { }
@@ -165,6 +189,12 @@ public:
 
   virtual void enterMember_decl(IDLParser::Member_declContext * /*ctx*/) override { }
   virtual void exitMember_decl(IDLParser::Member_declContext * /*ctx*/) override { }
+
+  virtual void enterMember_init(IDLParser::Member_initContext * /*ctx*/) override { }
+  virtual void exitMember_init(IDLParser::Member_initContext * /*ctx*/) override { }
+
+  virtual void enterMember_init_value(IDLParser::Member_init_valueContext * /*ctx*/) override { }
+  virtual void exitMember_init_value(IDLParser::Member_init_valueContext * /*ctx*/) override { }
 
   virtual void enterType_decl(IDLParser::Type_declContext * /*ctx*/) override { }
   virtual void exitType_decl(IDLParser::Type_declContext * /*ctx*/) override { }
