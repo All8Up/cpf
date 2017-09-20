@@ -13,10 +13,10 @@ VertexBuffer::VertexBuffer(Device* device, const Graphics::ResourceDesc* desc, i
 	: mDesc(*desc)
 {
 	CPF_ASSERT(desc);
-	CPF_ASSERT(desc->GetWidth()*desc->GetHeight() > 0);
+	CPF_ASSERT(desc->mWidth*desc->mHeight > 0);
 	{
 		CD3DX12_HEAP_PROPERTIES heapProps;
-		switch (desc->GetHeapType())
+		switch (desc->mHeapType)
 		{
 		case Graphics::HeapType::eCustom:
 			heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_CUSTOM);
@@ -37,7 +37,7 @@ VertexBuffer::VertexBuffer(Device* device, const Graphics::ResourceDesc* desc, i
 		{
 			D3D12_RESOURCE_DIMENSION_BUFFER, // Dimension
 			0, // Alignment
-			UINT64(desc->GetWidth() * desc->GetHeight()), // Width
+			UINT64(desc->mWidth * desc->mHeight), // Width
 			1, // Height
 			1, // DepthOrArraySize
 			1, // MipLevels
@@ -50,7 +50,7 @@ VertexBuffer::VertexBuffer(Device* device, const Graphics::ResourceDesc* desc, i
 			&heapProps,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,
-			Convert(desc->GetResourceState()),
+			Convert(desc->mState),
 			nullptr,
 			IID_PPV_ARGS(mpResource.AsTypePP())
 		);
@@ -58,7 +58,7 @@ VertexBuffer::VertexBuffer(Device* device, const Graphics::ResourceDesc* desc, i
 
 	// Create the view.
 	mView.BufferLocation = mpResource->GetGPUVirtualAddress();
-	mView.SizeInBytes = UINT(desc->GetWidth() * desc->GetHeight());
+	mView.SizeInBytes = UINT(desc->mWidth * desc->mHeight);
 	mView.StrideInBytes = UINT(stride);
 
 	CPF_LOG(D3D12, Info) << "Created resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());

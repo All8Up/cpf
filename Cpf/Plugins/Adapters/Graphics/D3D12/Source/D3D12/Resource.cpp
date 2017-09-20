@@ -12,7 +12,7 @@ using namespace D3D12;
 Resource::Resource(Device* device, const Graphics::ResourceDesc* desc)
 {
 	CD3DX12_HEAP_PROPERTIES heapProps;
-	switch(desc->GetHeapType())
+	switch(desc->mHeapType)
 	{
 	case Graphics::HeapType::eDefault:
 		heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
@@ -29,9 +29,9 @@ Resource::Resource(Device* device, const Graphics::ResourceDesc* desc)
 	}
 	D3D12_RESOURCE_DESC resourceDesc
 	{
-		D3D12_RESOURCE_DIMENSION(desc->GetType()), // Dimension
+		D3D12_RESOURCE_DIMENSION(desc->mType), // Dimension
 		0, // Alignment
-		UINT64(desc->GetWidth()), // Width
+		UINT64(desc->mWidth), // Width
 		1, // Height
 		1, // DepthOrArraySize
 		1, // MipLevels
@@ -44,7 +44,7 @@ Resource::Resource(Device* device, const Graphics::ResourceDesc* desc)
 		&heapProps,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
-		D3D12_RESOURCE_STATES(desc->GetResourceState()),
+		D3D12_RESOURCE_STATES(desc->mState),
 		nullptr,
 		IID_PPV_ARGS(mpResource.AsTypePP())
 		);

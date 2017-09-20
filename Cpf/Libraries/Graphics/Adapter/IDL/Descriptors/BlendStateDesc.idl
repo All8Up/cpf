@@ -1,0 +1,27 @@
+import Graphics;
+import RenderTargetBlendStateDesc from Graphics;
+
+module CPF::Graphics;
+
+struct BlendStateDesc
+{
+	bool mAlphaToCoverage;
+	bool mIndependentBlend;
+	RenderTargetBlendStateDesc mRenderTarget[8];
+}
+
+defaults BlendStateDesc
+{
+	mAlphaToCoverage: false;
+	mIndependentBlend: false;
+	mRenderTarget: {
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc,
+		defaults RenderTargetBlendStateDesc
+	};
+}

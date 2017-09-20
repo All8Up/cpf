@@ -33,6 +33,7 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::ConstIntegralStmt>(CPF::Bind(&CppGenerator::OnConstIntegral, this, _1));
 	visitor.On<Visitor::FlagsForwardStmt>(CPF::Bind(&CppGenerator::OnFlagsForwardStmt, this, _1, _2));
 	visitor.On<Visitor::FlagsDeclStmt>(CPF::Bind(&CppGenerator::OnFlagsDeclStmt, this, _1));
+	visitor.On<Visitor::DefaultsDeclStmt>(CPF::Bind(&CppGenerator::OnDefaultsDeclStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -290,6 +291,45 @@ void CppGenerator::OnConstIntegral(const Visitor::ConstIntegral& constIntegral)
 		TypeToString(constIntegral.mType).c_str(),
 		constIntegral.mName.c_str(),
 		constIntegral.mValue);
+}
+
+void CppGenerator::OnDefaultsDeclStmt(const Visitor::Defaults& defaults)
+{
+	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
+	mpWriter->OutputLine("template <> %s Defaults() {", defaults.mName.c_str());
+	mpWriter->Indent();
+	mpWriter->OutputLine("return %s{", defaults.mName.c_str());
+	mpWriter->Indent();
+	for (auto it = defaults.mDefaults.begin(); it != defaults.mDefaults.end(); ++it)
+	{
+		bool lastItem = it == defaults.mDefaults.end() - 1;
+		if (it->mValues.size() == 1)
+		{
+			if (it->mValues[0].mDefaultsCall)
+				mpWriter->OutputLine("Defaults<%s>()%s", it->mValues[0].mID.c_str(), lastItem ? "" : ",");
+			else
+				mpWriter->OutputLine("%s%s", it->mValues[0].mID.c_str(), lastItem ? "" : ",");
+		}
+		else
+		{
+			mpWriter->OutputLine("{");
+			mpWriter->Indent();
+			for (auto ait = it->mValues.begin(); ait != it->mValues.end(); ++ait)
+			{
+				bool lastAItem = ait == it->mValues.end() - 1;
+				if (ait->mDefaultsCall)
+					mpWriter->OutputLine("Defaults<%s>()%s", ait->mID.c_str(), lastAItem ? "" : ",");
+				else
+					mpWriter->OutputLine("%s%s", ait->mID.c_str(), lastAItem ? "" : ",");
+			}
+			mpWriter->Unindent();
+			mpWriter->OutputLine("}%s", lastItem ? "" : ",");
+		}
+	}
+	mpWriter->Unindent();
+	mpWriter->OutputLine("};");
+	mpWriter->Unindent();
+	mpWriter->OutputLine("};");
 }
 
 

@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+struct SampleDesc
+{
+	s32 mCount;
+	s32 mQuality;
+};

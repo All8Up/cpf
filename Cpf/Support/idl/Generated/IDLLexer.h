@@ -12,17 +12,17 @@
 class  IDLLexer : public antlr4::Lexer {
 public:
   enum {
-    Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, UNION = 5, INTERFACE = 6, 
-    ENUM = 7, FLAGS = 8, MODULE = 9, FROM = 10, IN = 11, OUT = 12, COLON = 13, 
-    SEMICOLON = 14, STAR = 15, SLASH = 16, DOT = 17, COMMA = 18, EQUALS = 19, 
-    QUOTE = 20, LBRACE = 21, RBRACE = 22, LPAREN = 23, RPAREN = 24, LBRACKET = 25, 
-    RBRACKET = 26, LT = 27, GT = 28, PLUS = 29, MINUS = 30, LSHIFT = 31, 
-    RSHIFT = 32, PIPE = 33, Const = 34, Void = 35, RESULT = 36, SUCCESS = 37, 
-    FAILURE = 38, CLASS_ID = 39, STRING = 40, U8 = 41, S8 = 42, U16 = 43, 
-    S16 = 44, U32 = 45, S32 = 46, U64 = 47, S64 = 48, F32 = 49, F64 = 50, 
-    IDENT = 51, DECIMAL_LIT = 52, HEX_LIT = 53, BIN_LIT = 54, OCT_LIT = 55, 
-    STRING_LIT = 56, FLOAT_LIT = 57, WHITE_SPACE = 58, BLOCK_COMMENT = 59, 
-    LINE_COMMENT = 60
+    Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULTS = 5, UNION = 6, 
+    INTERFACE = 7, ENUM = 8, FLAGS = 9, MODULE = 10, FROM = 11, IN = 12, 
+    OUT = 13, COLON = 14, SEMICOLON = 15, STAR = 16, SLASH = 17, DOT = 18, 
+    COMMA = 19, EQUALS = 20, QUOTE = 21, LBRACE = 22, RBRACE = 23, LPAREN = 24, 
+    RPAREN = 25, LBRACKET = 26, RBRACKET = 27, LT = 28, GT = 29, PLUS = 30, 
+    MINUS = 31, LSHIFT = 32, RSHIFT = 33, PIPE = 34, Const = 35, Void = 36, 
+    RESULT = 37, SUCCESS = 38, FAILURE = 39, CLASS_ID = 40, STRING = 41, 
+    U8 = 42, S8 = 43, U16 = 44, S16 = 45, U32 = 46, S32 = 47, U64 = 48, 
+    S64 = 49, F32 = 50, F64 = 51, IDENT = 52, DECIMAL_LIT = 53, HEX_LIT = 54, 
+    BIN_LIT = 55, OCT_LIT = 56, STRING_LIT = 57, FLOAT_LIT = 58, WHITE_SPACE = 59, 
+    BLOCK_COMMENT = 60, LINE_COMMENT = 61
   };
 
   IDLLexer(antlr4::CharStream *input);

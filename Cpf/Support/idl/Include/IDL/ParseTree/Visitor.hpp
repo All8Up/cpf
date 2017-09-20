@@ -133,6 +133,22 @@ namespace IDL
 			Type mType;
 			int64_t mValue;
 		};
+		struct DefaultValue
+		{
+			bool mDefaultsCall;
+			CPF::String mID;
+		};
+		struct Default
+		{
+			String mName;
+			CPF::Vector<DefaultValue> mValues;
+		};
+		using DefaultVector = CPF::Vector<Default>;
+		struct Defaults
+		{
+			String mName;
+			DefaultVector mDefaults;
+		};
 
 		typedef CPF::Events::Event<0, CPF::Function<void()>> Start;
 		typedef CPF::Events::Event<1, CPF::Function<void (const SymbolPath&)>> ModuleStmt;
@@ -151,6 +167,7 @@ namespace IDL
 		typedef CPF::Events::Event<14, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
 		typedef CPF::Events::Event<15, CPF::Function<void(const String&, Type)>> FlagsForwardStmt;
 		typedef CPF::Events::Event<16, CPF::Function<void(const EnumDecl&)>> FlagsDeclStmt;
+		typedef CPF::Events::Event<17, CPF::Function<void(const Defaults&)>> DefaultsDeclStmt;
 
 		Visitor();
 
@@ -172,6 +189,7 @@ namespace IDL
 		antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *ctx) override;
 		antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *ctx) override;
 		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
+		antlrcpp::Any visitDefaults_stmt(IDLParser::Defaults_stmtContext* ctx) override;
 
 		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);

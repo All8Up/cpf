@@ -67,6 +67,22 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitDefaults_stmt(IDLParser::Defaults_stmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDefaults_item(IDLParser::Defaults_itemContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDefaults_array(IDLParser::Defaults_arrayContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDefaults_value(IDLParser::Defaults_valueContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitUnion_stmt(IDLParser::Union_stmtContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -244,6 +260,14 @@ public:
   }
 
   virtual antlrcpp::Any visitMember_decl(IDLParser::Member_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMember_init(IDLParser::Member_initContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMember_init_value(IDLParser::Member_init_valueContext *ctx) override {
     return visitChildren(ctx);
   }
 

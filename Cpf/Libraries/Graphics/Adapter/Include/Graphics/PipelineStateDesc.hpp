@@ -39,7 +39,7 @@ namespace CPF
 
 			bool GetAlphaToCoverage() const { return mBlendState.mAlphaToCoverage; }
 			bool GetIndependentBlend() const { return mBlendState.mIndependentBlend; }
-			const BlendState& GetBlendState() const { return mBlendState; }
+			const BlendStateDesc& GetBlendState() const { return mBlendState; }
 			uint32_t GetSampleMask() const { return mSampleMask; }
 
 			const RasterizerStateDesc& GetRasterizationState() const { return mRasterizerState; }
@@ -59,7 +59,7 @@ namespace CPF
 			IntrusivePtr<iShader> mpDomain;
 			IntrusivePtr<iShader> mpHull;
 			IntrusivePtr<iShader> mpGeometry;
-			BlendState mBlendState;
+			BlendStateDesc mBlendState;
 			uint32_t mSampleMask;
 			RasterizerStateDesc mRasterizerState;
 			DepthStencilStateDesc mDepthStencil;
@@ -112,12 +112,14 @@ namespace CPF
 		};
 
 		inline PipelineStateDesc::PipelineStateDesc()
-			: mSampleMask(uint32_t(-1))
+			: mBlendState(Defaults<BlendStateDesc>())
+			, mSampleMask(uint32_t(-1))
+			, mRasterizerState(Defaults<RasterizerStateDesc>())
 			, mIndexStripCut(IndexStripCut::eNone)
 			, mTopology(TopologyType::eTriangle)
 			, mRenderTargetCount(0)
 			, mDepthStencilFormat(Format::eNone)
-			, mSampleState(1, 0)
+			, mSampleState{ 1, 0 }
 		{
 			for (int i = 0; i < kMaxRenderTargets; ++i)
 				mRenderTargetFormats[i] = Format::eNone;

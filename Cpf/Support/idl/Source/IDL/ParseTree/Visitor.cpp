@@ -313,6 +313,39 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 	return visitChildren(ctx);
 }
 
+Visitor::DefaultValue ParseDefaultValue(IDLParser::Defaults_valueContext* ctx)
+{
+	Visitor::DefaultValue result;
+	if (ctx->DEFAULTS() != nullptr)
+		result.mDefaultsCall = true;
+	else
+		result.mDefaultsCall = false;
+	result.mID = ParseQualifiedIdent(ctx->qualified_ident()).ToString("::");
+	return result;
+}
+
+antlrcpp::Any Visitor::visitDefaults_stmt(IDLParser::Defaults_stmtContext* ctx)
+{
+	Defaults defaults;
+	defaults.mName = ctx->IDENT()->toString();
+	for (const auto& item : ctx->defaults_item())
+	{
+		Default defItem;
+		defItem.mName = item->IDENT()->toString();
+		if (item->defaults_array())
+		{
+			auto array = item->defaults_array()->defaults_value();
+			for (const auto it : array)
+				defItem.mValues.push_back(ParseDefaultValue(it));
+		}
+		else
+			defItem.mValues.push_back(ParseDefaultValue(item->defaults_value()));
+		defaults.mDefaults.push_back(defItem);
+	}
+	Emit<DefaultsDeclStmt>(defaults);
+	return visitChildren(ctx);
+}
+
 Visitor::Type Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integralType)
 {
 	Type result;

@@ -1,0 +1,17 @@
+import DepthWriteMask from Graphics;
+import ComparisonFunc from Graphics;
+import StencilOp from Graphics;
+
+module CPF::Graphics;
+
+struct DepthStencilStateDesc
+{
+	bool mDepthTest					= false;
+	DepthWriteMask mDepthWriteMask	= DepthWriteMask::eAll;
+	ComparisonFunc mComparisonFunc	= ComparisonFunc::eLess;
+	bool mStencilEnable				= false;
+	u8 mStencilReadMask				= 0xFF;
+	u8 mStencilWriteMask			= 0xFF;
+	StencilOp mFrontFace			= StencilOp::eInc;
+	StencilOp mBackFace				= StencilOp::eDec;
+};

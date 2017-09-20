@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/Format.hpp"
+#include "Graphics/FormatSize.hpp"
 #include "Graphics/InputClassification.hpp"
 #include "Graphics/ElementDesc.hpp"
 #include "UnorderedMap.hpp"

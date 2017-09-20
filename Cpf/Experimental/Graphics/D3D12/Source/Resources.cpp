@@ -1,11 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "IO/Stream.hpp"
+#include "Graphics.hpp"
 #include "Graphics/WindingOrder.hpp"
 #include "Graphics/CullMode.hpp"
 #include "Graphics/RasterizerStateDesc.hpp"
 #include "Graphics/TopologyType.hpp"
-#include "Graphics/DepthStencilDesc.hpp"
+#include "Graphics/DepthStencilBuilder.hpp"
 #include "Graphics/InputLayoutDesc.hpp"
 #include "Graphics/PipelineStateDesc.hpp"
 #include "Graphics/ShaderType.hpp"
@@ -16,6 +17,7 @@
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/ResourceData.hpp"
 #include "Graphics/HeapType.hpp"
+#include "Graphics/BlendStateBuilder.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Std/Memory.hpp"
@@ -54,16 +56,16 @@ bool ExperimentalD3D12::_CreateResources()
 		.PixelShader(mpPixelShader)
 		.Topology(TopologyType::eTriangle)
 
-		.Rasterizer(RasterizerStateDesc::Build()
+		.Rasterizer(Build<RasterizerStateDesc>()
 			.CullMode(CullMode::eBack)
 			.WindingOrder(WindingOrder::eClockwise)
 			.DepthClipping(false)
 		)
-		.DepthStencil(DepthStencilStateDesc::Build()
+		.DepthStencil(Build<DepthStencilStateDesc>()
 			.DepthTest(true)
 			.DepthWriteMask(DepthWriteMask::eAll)
 		)
-		.TargetBlend(0, RenderTargetBlendStateDesc::Build()
+		.TargetBlend(0, Build<RenderTargetBlendStateDesc>()
 			.Blending(false)
 			.Src(BlendFunc::eSrcAlpha)
 			.Dst(BlendFunc::eOne)
@@ -173,11 +175,11 @@ bool ExperimentalD3D12::_CreateResources()
 	mpDevice->CreateCommandBuffer(tempPool, CommandBufferType::ePrimary, tempCommands.AsTypePP());
 
 	// Create a vertex buffer.
-	ResourceDesc vbDescPrimary(ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(vbData), 1);
+	ResourceDesc vbDescPrimary{ ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(vbData), 1 };
 	mpDevice->CreateVertexBuffer(&vbDescPrimary, sizeof(PosColor), mpVertexBuffer.AsTypePP());
 	// Upload the vertex data.
 	{
-		ResourceDesc vbInit(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(vbData), 1);
+		ResourceDesc vbInit{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(vbData), 1 };
 		IntrusivePtr<iVertexBuffer> uploadVb;
 		mpDevice->CreateVertexBuffer(&vbInit, sizeof(PosColor), uploadVb.AsTypePP());
 		void* buffer;
@@ -203,17 +205,17 @@ bool ExperimentalD3D12::_CreateResources()
 		fence->WaitFor(1);
 	}
 
-	ResourceDesc vbDescInstance(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Instance) * kInstanceCount, 1);
+	ResourceDesc vbDescInstance{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Instance) * kInstanceCount, 1 };
 	for (int i = 0; i < mBackBufferCount; ++i)
 		mpDevice->CreateVertexBuffer(&vbDescInstance, sizeof(Instance), mpInstanceBuffer[i].AsTypePP());
 
 	// Create an index buffer.
-	ResourceDesc ibDesc(ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(ibData));
+	ResourceDesc ibDesc{ ResourceType::eBuffer, HeapType::eDefault, ResourceState::eCopyDest, sizeof(ibData), 0 };
 	mpDevice->CreateIndexBuffer(&ibDesc, Format::eR32u, mpIndexBuffer.AsTypePP());
 
 	// Upload the index data.
 	{
-		ResourceDesc ibInit(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(ibData));
+		ResourceDesc ibInit{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(ibData), 0 };
 		IntrusivePtr<iIndexBuffer> uploadIb;
 		mpDevice->CreateIndexBuffer(&ibInit, Format::eR32u, uploadIb.AsTypePP());
 		void* buffer;
@@ -257,7 +259,7 @@ bool ExperimentalD3D12::_CreateResources()
 		)),
 		1.0f, 1000.0f
 	};
-	ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(CameraProj));
+	ResourceDesc cbDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(CameraProj), 0 };
 	mpDevice->CreateConstantBuffer(&cbDesc, &initCameraData, mpViewProj.AsTypePP());
 
 	return false;

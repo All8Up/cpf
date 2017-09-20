@@ -4,6 +4,7 @@
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iSampler.hpp"
 #include "Graphics/ImageDesc.hpp"
+#include "Graphics/DepthStencilBuilder.hpp"
 #include "Graphics/PipelineStateDesc.hpp"
 #include "Graphics/ResourceBindingDesc.hpp"
 #include "Graphics/Viewport.hpp"
@@ -29,6 +30,8 @@
 #include "Graphics/iIndexBuffer.hpp"
 #include "Graphics/iShader.hpp"
 #include "Graphics/iPipeline.hpp"
+#include "Graphics/BlendStateBuilder.hpp"
+
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
 #include "imgui/imgui.h"
@@ -136,7 +139,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		return false;
 
 	// Create the projection matrix constant buffer.
-	ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv));
+	ResourceDesc cbDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv), 0 };
 	mpDevice->CreateConstantBuffer(&cbDesc, nullptr, mpProjectionMatrix.AsTypePP());
 
 	// Create the atlas sampler.
@@ -161,12 +164,12 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 			.PixelShader(mpPixelShader)
 			.Topology(TopologyType::eTriangle)
 
-			.Rasterizer(RasterizerStateDesc::Build()
+			.Rasterizer(Build<RasterizerStateDesc>()
 				.CullMode(CullMode::eNone)
 				.WindingOrder(WindingOrder::eClockwise)
 				.DepthClipping(false)
 			)
-			.DepthStencil(DepthStencilStateDesc::Build()
+			.DepthStencil(Build<DepthStencilStateDesc>()
 				.DepthTest(false)
 				.DepthWriteMask(DepthWriteMask::eZero)
 			)
@@ -176,7 +179,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 			cElementDesc("TEXCOORD", Format::eRG32f),
 			cElementDesc("COLOR", Format::eRGBA8un)
 		})
-			.TargetBlend(0, RenderTargetBlendStateDesc::Build()
+			.TargetBlend(0, Build<RenderTargetBlendStateDesc>()
 				.Blending(true)
 				.Op(BlendOp::eAdd)
 				.OpAlpha(BlendOp::eAdd)
@@ -251,7 +254,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		atlasDesc.mHeight = height;
 		atlasDesc.mDepth = 1;
 		atlasDesc.mMipLevels = 1;
-		atlasDesc.mSamples = SampleDesc(1, 0);
+		atlasDesc.mSamples = SampleDesc{ 1, 0 };
 		atlasDesc.mState = ResourceState::eCopyDest;
 		atlasDesc.mFlags = ImageFlags::eNone;
 
@@ -259,12 +262,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		mpDevice->CreateImage2D(HeapType::eDefault, &atlasDesc, nullptr, mpUIAtlas.AsTypePP());
 
 		// Create the staging buffer.
-		ResourceDesc stagingDesc(
-			ResourceType::eBuffer,
-			HeapType::eUpload,
-			ResourceState::eGenericRead,
-			int32_t(dataSize)
-		);
+		ResourceDesc stagingDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, int32_t(dataSize), 0 };
 		IntrusivePtr<iResource> staging;
 		mpDevice->CreateResource(&stagingDesc, staging.AsTypePP());
 
@@ -307,10 +305,10 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	window->GetEmitter()->On<iWindow::OnKeyUp>(Bind(&DebugUI::_OnKeyUp, this, Placeholders::_1));
 
 	// Create large buffers.
-	ResourceDesc vbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kVertexBufferSize, 1);
+	ResourceDesc vbDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kVertexBufferSize, 1 };
 	mpDevice->CreateVertexBuffer(&vbDesc, sizeof(ImDrawVert), mpVertexBuffer.AsTypePP());
 
-	ResourceDesc ibDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kIndexBufferSize);
+	ResourceDesc ibDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kIndexBufferSize, 0 };
 	mpDevice->CreateIndexBuffer(&ibDesc, Format::eR32u, mpIndexBuffer.AsTypePP());
 
 	return true;

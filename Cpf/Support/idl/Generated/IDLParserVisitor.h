@@ -45,6 +45,14 @@ public:
 
     virtual antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *context) = 0;
 
+    virtual antlrcpp::Any visitDefaults_stmt(IDLParser::Defaults_stmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitDefaults_item(IDLParser::Defaults_itemContext *context) = 0;
+
+    virtual antlrcpp::Any visitDefaults_array(IDLParser::Defaults_arrayContext *context) = 0;
+
+    virtual antlrcpp::Any visitDefaults_value(IDLParser::Defaults_valueContext *context) = 0;
+
     virtual antlrcpp::Any visitUnion_stmt(IDLParser::Union_stmtContext *context) = 0;
 
     virtual antlrcpp::Any visitUnion_decl(IDLParser::Union_declContext *context) = 0;
@@ -134,6 +142,10 @@ public:
     virtual antlrcpp::Any visitAll_or_ident(IDLParser::All_or_identContext *context) = 0;
 
     virtual antlrcpp::Any visitMember_decl(IDLParser::Member_declContext *context) = 0;
+
+    virtual antlrcpp::Any visitMember_init(IDLParser::Member_initContext *context) = 0;
+
+    virtual antlrcpp::Any visitMember_init_value(IDLParser::Member_init_valueContext *context) = 0;
 
     virtual antlrcpp::Any visitType_decl(IDLParser::Type_declContext *context) = 0;
 

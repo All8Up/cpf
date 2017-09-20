@@ -44,17 +44,17 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 		const auto& rasterization = state->GetRasterizationState();
 		stateDesc.RasterizerState =
 		{
-			D3D12_FILL_MODE(rasterization.GetFillMode()),
-			D3D12_CULL_MODE(rasterization.GetCullMode()),
-			rasterization.GetWindingOrder() == Graphics::WindingOrder::eCounterClockwise ? TRUE : FALSE,
-			rasterization.GetDepthBias(),
-			rasterization.GetDepthBiasClamp(),
-			rasterization.GetSlopedScaledDepthBias(),
-			rasterization.GetDepthClipping() ? TRUE : FALSE,
-			rasterization.GetMultisampling() ? TRUE : FALSE,
-			rasterization.GetAALines() ? TRUE : FALSE,
-			UINT(rasterization.GetForcedSampleCount()),
-			D3D12_CONSERVATIVE_RASTERIZATION_MODE(rasterization.GetConservativeRasterization())
+			D3D12_FILL_MODE(rasterization.mFillMode),
+			D3D12_CULL_MODE(rasterization.mCullMode),
+			rasterization.mWindingOrder == Graphics::WindingOrder::eCounterClockwise ? TRUE : FALSE,
+			rasterization.mDepthBias,
+			rasterization.mDepthBiasClamp,
+			rasterization.mSlopeScaledDepthBias,
+			rasterization.mDepthClipping ? TRUE : FALSE,
+			rasterization.mMultisampling ? TRUE : FALSE,
+			rasterization.mAALines ? TRUE : FALSE,
+			UINT(rasterization.mForcedSampleCount),
+			D3D12_CONSERVATIVE_RASTERIZATION_MODE(rasterization.mConservativeRasterization)
 		};
 	}
 
@@ -62,12 +62,12 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 		const auto& depthStencil = state->GetDepthStencilState();
 		stateDesc.DepthStencilState =
 		{
-			depthStencil.GetDepthTest() ? TRUE : FALSE,
-			D3D12_DEPTH_WRITE_MASK(depthStencil.GetDepthWriteMask()),
-			D3D12_COMPARISON_FUNC(depthStencil.GetComparison()),
-			depthStencil.GetStenciling() ? TRUE : FALSE,
-			depthStencil.GetStencilReadMask(),
-			depthStencil.GetStencilWriteMask(),
+			depthStencil.mDepthTest ? TRUE : FALSE,
+			D3D12_DEPTH_WRITE_MASK(depthStencil.mDepthWriteMask),
+			D3D12_COMPARISON_FUNC(depthStencil.mComparisonFunc),
+			depthStencil.mStencilEnable ? TRUE : FALSE,
+			depthStencil.mStencilReadMask,
+			depthStencil.mStencilWriteMask,
 			// TODO: The stencil data is wrong in the pipeline states.
 			{
 				D3D12_STENCIL_OP_INCR,
@@ -121,6 +121,9 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 	//////////////////////////////////////////////////////////////////////////
 	if (FAILED(device->GetD3DDevice()->CreateGraphicsPipelineState(&stateDesc, IID_PPV_ARGS(mpPipelineState.AsTypePP()))))
 	{
+		delete[] inputDescs;
+		CPF_LOG(D3D12, Info) << "Create pipeline failure!";
+		return;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
