@@ -1,7 +1,8 @@
+import Graphics;
 module CPF::Graphics;
 
 struct SampleDesc
 {
-	s32 mCount;
-	s32 mQuality;
+	s32 mCount = 1;
+	s32 mQuality = 0;
 };

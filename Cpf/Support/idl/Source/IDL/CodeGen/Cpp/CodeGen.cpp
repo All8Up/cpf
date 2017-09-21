@@ -230,7 +230,7 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 	if (hasInitializers)
 	{
 		mpWriter->LineFeed(eStructures, 0, -1);
-		mpWriter->OutputLine("template <> %s Defaults() {", decl.mName.c_str());
+		mpWriter->OutputLine("template <> inline %s Defaults() {", decl.mName.c_str());
 		mpWriter->Indent();
 		mpWriter->OutputLine("return %s{", decl.mName.c_str());
 		mpWriter->Indent();
