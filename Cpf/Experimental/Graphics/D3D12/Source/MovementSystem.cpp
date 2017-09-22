@@ -19,7 +19,7 @@ using namespace MultiCore;
 
 GOM::Result MoverSystem::MoverComponent::Install(Plugin::iRegistry* regy)
 {
-	return regy->Install(kMoverComponentCID.GetID(), new Plugin::tClassInstance<MoverSystem::MoverComponent>());
+	return regy->Install(kMoverComponentCID.GetID(), new Plugin::tClassInstance<MoverComponent>());
 }
 
 GOM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
@@ -29,7 +29,7 @@ GOM::Result MoverSystem::MoverComponent::Remove(Plugin::iRegistry* regy)
 
 GOM::Result MoverSystem::MoverComponent::QueryInterface(uint64_t id, void** outPtr)
 {
-	if (id == iMoverComponent::kIID.GetID())
+	if (id == kIID.GetID())
 	{
 		iMoverComponent* mover = static_cast<iMoverComponent*>(this);
 		mover->AddRef();
@@ -43,7 +43,7 @@ GOM::Result MoverSystem::MoverComponent::QueryInterface(uint64_t id, void** outP
 
 
 
-MoverSystem::MoverSystem(GOM::iUnknown*)
+MoverSystem::MoverSystem(iUnknown*)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -56,10 +56,10 @@ InstanceSystem* MoverSystem::GetInstanceSystem() const
 	return mpInstances;
 }
 
-GOM::Result MoverSystem::Configure(MultiCore::iExecutionPlan* pipeline)
+GOM::Result MoverSystem::Configure(iExecutionPlan* pipeline)
 {
-	if (GOM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<MultiCore::iSystem*>(mpTime))) &&
-		GOM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<MultiCore::iSystem*>(mpInstances))))
+	if (GOM::Succeeded(pipeline->GetSystem(mClockID, &reinterpret_cast<iSystem*>(mpTime))) &&
+		GOM::Succeeded(pipeline->GetSystem(mInstanceID, &reinterpret_cast<iSystem*>(mpInstances))))
 		return GOM::kOK;
 	return GOM::kInvalid;
 }
@@ -83,7 +83,7 @@ void MoverSystem::EnableMovement(bool flag)
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(GOM::iUnknown*)
+MoverSystem::MoverComponent::MoverComponent(iUnknown*)
 	: mpMover(nullptr)
 {}
 
@@ -106,7 +106,7 @@ void MoverSystem::MoverComponent::Deactivate()
 void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
-	MultiCore::iTimer* timer = mover->mpTime;
+	iTimer* timer = mover->mpTime;
 
 	int i = int(object->GetID());
 	int count = ExperimentalD3D12::kInstancesPerDimension;
@@ -148,13 +148,13 @@ GOM::Result CPF_STDCALL MoverSystem::QueryInterface(uint64_t id, void** outIface
 	{
 		switch (id)
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 		case iSystem::kIID.GetID():
 			*outIface = static_cast<iSystem*>(this);
 			break;
-		case MoverSystem::kIID.GetID():
+		case kIID.GetID():
 			*outIface = static_cast<MoverSystem*>(this);
 			break;
 		default:
@@ -234,7 +234,7 @@ void CPF_STDCALL MoverSystem::AddDependency(BlockDependency dep)
 	mpStages->AddDependency(dep);
 }
 
-GOM::Result CPF_STDCALL MoverSystem::GetDependencies(MultiCore::iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
+GOM::Result CPF_STDCALL MoverSystem::GetDependencies(iExecutionPlan* owner, int32_t* count, BlockDependency* deps)
 {
 	return mpStages->GetDependencies(owner, count, deps);
 }

@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/BlendStateDesc.hpp"
 #include "Graphics/RasterizerStateDesc.hpp"
-#include "Graphics/DepthStencilDesc.hpp"
+#include "Graphics/DepthStencilStateDesc.hpp"
 #include "Graphics/InputLayoutDesc.hpp"
 #include "Graphics/SampleDesc.hpp"
 #include "Graphics/iResourceBinding.hpp"

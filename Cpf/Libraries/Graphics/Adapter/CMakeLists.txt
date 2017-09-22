@@ -151,7 +151,6 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	${CPP_GRAPHICS_DESCRIPTORS}
 	Include/Graphics/BlendStateBuilder.hpp
 	Include/Graphics/DepthStencilBuilder.hpp
-	Include/Graphics/DepthStencilDesc.hpp
 	Include/Graphics/InputLayoutDesc.hpp
 	Include/Graphics/PipelineStateDesc.hpp
 	Include/Graphics/RasterizerStateDesc.hpp

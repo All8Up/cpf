@@ -1,3 +1,4 @@
+import Graphics;
 import DepthWriteMask from Graphics;
 import ComparisonFunc from Graphics;
 import StencilOp from Graphics;
