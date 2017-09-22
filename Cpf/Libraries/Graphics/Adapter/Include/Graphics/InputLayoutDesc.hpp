@@ -2,7 +2,7 @@
 #pragma once
 #include "Graphics/FormatSize.hpp"
 #include "Graphics/InputClassification.hpp"
-#include "Graphics/ElementDesc.hpp"
+#include "Graphics/InputElementDesc.hpp"
 #include "UnorderedMap.hpp"
 #include "String.hpp"
 #include <initializer_list>
@@ -11,7 +11,7 @@ namespace CPF
 {
 	namespace Graphics
 	{
-		class cElementDesc : public ElementDesc
+		class cElementDesc : public InputElementDesc
 		{
 		public:
 			cElementDesc();
@@ -20,7 +20,7 @@ namespace CPF
 			const char* GetSemantic() const;
 			int32_t GetIndex() const;
 			Format GetFormat() const;
-			ElementDesc& Slot(int32_t slot) { mSlot = slot; return *this; }
+			InputElementDesc& Slot(int32_t slot) { mSlot = slot; return *this; }
 			int32_t GetSlot() const;
 			int32_t GetOffset() const;
 			InputClassification GetClassification() const;
@@ -33,7 +33,7 @@ namespace CPF
 		struct InputLayoutDesc
 		{
 			int32_t mCount;
-			ElementDesc* mpElements;
+			InputElementDesc* mpElements;
 		};
 
 		class cInputLayoutDesc : public InputLayoutDesc
@@ -41,13 +41,10 @@ namespace CPF
 		public:
 			cInputLayoutDesc();
 			cInputLayoutDesc(const cInputLayoutDesc& rhs) noexcept;
-			cInputLayoutDesc(std::initializer_list<ElementDesc>);
+			cInputLayoutDesc(std::initializer_list<InputElementDesc>);
 			~cInputLayoutDesc();
 
 			cInputLayoutDesc& operator =(const cInputLayoutDesc& rhs);
-
-			size_t GetCount() const;
-			const ElementDesc* GetElementDescs() const;
 		};
 
 
@@ -55,7 +52,7 @@ namespace CPF
 
 		inline
 		cElementDesc::cElementDesc()
-			: ElementDesc
+			: InputElementDesc
 		{
 			nullptr,
 			-1,
@@ -70,7 +67,7 @@ namespace CPF
 
 		inline
 		cElementDesc::cElementDesc(const char* semantic, Format format, InputClassification classification, int32_t stepping)
-			: ElementDesc
+			: InputElementDesc
 		{
 			semantic,
 			-1,
@@ -133,14 +130,14 @@ namespace CPF
 
 		inline
 		cInputLayoutDesc::cInputLayoutDesc(const cInputLayoutDesc& rhs) noexcept
-			: InputLayoutDesc{ rhs.mCount, new ElementDesc[rhs.mCount] }
+			: InputLayoutDesc{ rhs.mCount, new InputElementDesc[rhs.mCount] }
 		{
 			for (int i = 0; i < mCount; ++i)
 				mpElements[i] = rhs.mpElements[i];
 		}
 
 		inline
-		cInputLayoutDesc::cInputLayoutDesc(std::initializer_list<ElementDesc> elements)
+		cInputLayoutDesc::cInputLayoutDesc(std::initializer_list<InputElementDesc> elements)
 			: InputLayoutDesc{ int32_t(elements.size()), nullptr }
 		{
 			// TODO: Likely need to make copies of the semantic names.
@@ -151,7 +148,7 @@ namespace CPF
 			int32_t lastSlot = 0;
 			int32_t offset = 0;
 
-			mpElements = new ElementDesc[mCount];
+			mpElements = new InputElementDesc[mCount];
 			if (mpElements)
 			{
 				int current = 0;
@@ -215,22 +212,10 @@ namespace CPF
 			if (mpElements)
 				delete[] mpElements;
 			mCount = rhs.mCount;
-			mpElements = new ElementDesc[mCount];
+			mpElements = new InputElementDesc[mCount];
 			for (int i = 0; i < mCount; ++i)
 				mpElements[i] = rhs.mpElements[i];
 			return *this;
-		}
-
-		inline
-		size_t cInputLayoutDesc::GetCount() const
-		{
-			return mCount;
-		}
-
-		inline
-		const ElementDesc* cInputLayoutDesc::GetElementDescs() const
-		{
-			return mpElements;
 		}
 	}
 }

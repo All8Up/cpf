@@ -1,29 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/FillMode.hpp"
-#include "Graphics/CullMode.hpp"
-#include "Graphics/WindingOrder.hpp"
-#include "Graphics/ConservativeRasterization.hpp"
+#include "Graphics/RasterizerStateDesc.hpp"
 
 namespace CPF
 {
 	namespace Graphics
 	{
-		struct RasterizerStateDesc
-		{
-			FillMode mFillMode;
-			CullMode mCullMode;
-			WindingOrder mWindingOrder;
-			int32_t mDepthBias;
-			float mDepthBiasClamp;
-			float mSlopeScaledDepthBias;
-			bool mDepthClipping;
-			bool mMultisampling;
-			bool mAALines;
-			int32_t mForcedSampleCount;
-			ConservativeRasterization mConservativeRasterization;
-		};
-
 		struct RasterizerStateDescBuilder
 		{
 			RasterizerStateDescBuilder();
@@ -51,25 +33,6 @@ namespace CPF
 		{
 			using Builder = RasterizerStateDescBuilder;
 		};
-
-		template <>
-		RasterizerStateDesc Defaults()
-		{
-			return RasterizerStateDesc{
-				FillMode::eSolid,
-				CullMode::eBack,
-				WindingOrder::eClockwise,
-				0,
-				0.0f,
-				0.0f,
-				true,
-				false,
-				false,
-				0,
-				ConservativeRasterization::eOff
-			};
-		}
-
 
 		//////////////////////////////////////////////////////////////////////////
 		inline RasterizerStateDescBuilder::RasterizerStateDescBuilder()

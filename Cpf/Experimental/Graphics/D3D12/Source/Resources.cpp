@@ -4,11 +4,11 @@
 #include "Graphics.hpp"
 #include "Graphics/WindingOrder.hpp"
 #include "Graphics/CullMode.hpp"
-#include "Graphics/RasterizerStateDesc.hpp"
+#include "Graphics/RasterizerStateBuilder.hpp"
 #include "Graphics/TopologyType.hpp"
 #include "Graphics/DepthStencilBuilder.hpp"
 #include "Graphics/InputLayoutDesc.hpp"
-#include "Graphics/PipelineStateDesc.hpp"
+#include "Graphics/PipelineStateBuilder.hpp"
 #include "Graphics/ShaderType.hpp"
 #include "Graphics/ParamVisibility.hpp"
 #include "Graphics/iImage.hpp"
@@ -51,7 +51,7 @@ bool ExperimentalD3D12::_CreateResources()
 
 	//////////////////////////////////////////////////////////////////////////
 	// Create pipeline.
-	PipelineStateDesc pipelineDesc = PipelineStateDesc::Build()
+	PipelineStateDesc pipelineDesc = Build<PipelineStateDesc>()
 		.VertexShader(mpVertexShader)
 		.PixelShader(mpPixelShader)
 		.Topology(TopologyType::eTriangle)

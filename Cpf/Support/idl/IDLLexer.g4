@@ -93,8 +93,8 @@ fragment ESC_CHAR           : '\\' [0\\tnr"']
                             ;
 
 // Floating point literal.
-FLOAT_LIT                   : DIGIT_SEQ? '.' DIGIT_SEQ DECIMAL_EXP?
-                            | DIGIT_SEQ '.' DECIMAL_EXP?;
+FLOAT_LIT                   : DIGIT_SEQ? '.' DIGIT_SEQ DECIMAL_EXP? [fF]?
+                            | DIGIT_SEQ '.' DECIMAL_EXP? [fF]?;
 fragment DIGIT_SEQ          : DIGIT+;
 fragment DECIMAL_EXP        : FLOAT_EXP SIGN? DECIMAL_LIT;
 fragment FLOAT_EXP          : [eE];

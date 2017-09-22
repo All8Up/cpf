@@ -49,7 +49,7 @@ namespace CPF
 		void Abandon();
 
 		// Internal access.
-		TARGET* Ptr() { return mpTarget; }
+		TARGET* Ptr() const { return mpTarget; }
 
 		// 
 		void** AsVoidPP() { return reinterpret_cast<void**>(&mpTarget); }

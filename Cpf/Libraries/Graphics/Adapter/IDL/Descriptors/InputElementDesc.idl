@@ -1,9 +1,9 @@
+import Format from Graphics;
+import InputClassification from Graphics;
+
 module CPF::Graphics;
 
-enum Format : s32;
-enum InputClassification : s32;
-
-struct ElementDesc
+struct InputElementDesc
 {
 	const char* mpSemantic;
 	s32 mIndex;

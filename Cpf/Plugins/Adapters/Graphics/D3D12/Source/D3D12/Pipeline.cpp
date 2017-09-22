@@ -15,17 +15,17 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC stateDesc;
 	stateDesc.pRootSignature = nullptr;
-	stateDesc.VS = state->GetVertexShader() ? static_cast<Shader*>(state->GetVertexShader())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.PS = state->GetPixelShader() ? static_cast<Shader*>(state->GetPixelShader())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.DS = state->GetDomainShader() ? static_cast<Shader*>(state->GetDomainShader())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.HS = state->GetHullShader() ? static_cast<Shader*>(state->GetHullShader())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.GS = state->GetGeometryShader() ? static_cast<Shader*>(state->GetGeometryShader())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.VS = state->mpVertex ? static_cast<Shader*>(state->mpVertex.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.PS = state->mpPixel ? static_cast<Shader*>(state->mpPixel.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.DS = state->mpDomain ? static_cast<Shader*>(state->mpDomain.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.HS = state->mpHull ? static_cast<Shader*>(state->mpHull.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.GS = state->mpGeometry ? static_cast<Shader*>(state->mpGeometry.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
 
 	stateDesc.StreamOutput = {nullptr, 0, nullptr, 0, 0};
-	stateDesc.BlendState = { state->GetAlphaToCoverage(), state->GetIndependentBlend(), {0} };
+	stateDesc.BlendState = { state->mBlendState.mAlphaToCoverage, state->mBlendState.mIndependentBlend, {0} };
 	for (int i = 0; i < 8; ++i)
 	{
-		const auto& target = state->GetBlendState().mRenderTarget[i];
+		const auto& target = state->mBlendState.mRenderTarget[i];
 		stateDesc.BlendState.RenderTarget[i].BlendEnable = target.mBlending ? TRUE : FALSE;
 		stateDesc.BlendState.RenderTarget[i].LogicOpEnable = target.mLogicOps ? TRUE : FALSE;
 		stateDesc.BlendState.RenderTarget[i].SrcBlend = D3D12_BLEND(target.mSrcBlend);
@@ -38,10 +38,10 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 		stateDesc.BlendState.RenderTarget[i].RenderTargetWriteMask = UINT8(target.mWriteMask);
 	}
 
-	stateDesc.SampleMask = state->GetSampleMask();
+	stateDesc.SampleMask = state->mSampleMask;
 
 	{
-		const auto& rasterization = state->GetRasterizationState();
+		const auto& rasterization = state->mRasterizerState;
 		stateDesc.RasterizerState =
 		{
 			D3D12_FILL_MODE(rasterization.mFillMode),
@@ -59,7 +59,7 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 	}
 
 	{
-		const auto& depthStencil = state->GetDepthStencilState();
+		const auto& depthStencil = state->mDepthStencil;
 		stateDesc.DepthStencilState =
 		{
 			depthStencil.mDepthTest ? TRUE : FALSE,
@@ -84,11 +84,11 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 		};
 	}
 
-	const auto& inputLayout = state->GetInputLayoutState();
-	D3D12_INPUT_ELEMENT_DESC* inputDescs = new D3D12_INPUT_ELEMENT_DESC[inputLayout.GetCount()];
-	for (int i = 0; i < inputLayout.GetCount(); ++i)
+	const auto& inputLayout = state->mInputLayout;
+	D3D12_INPUT_ELEMENT_DESC* inputDescs = new D3D12_INPUT_ELEMENT_DESC[inputLayout.mCount];
+	for (int i = 0; i < inputLayout.mCount; ++i)
 	{
-		const auto desc = inputLayout.GetElementDescs()[i];
+		const auto desc = inputLayout.mpElements[i];
 		auto& out = inputDescs[i];
 		out.SemanticName = desc.mpSemantic;
 		out.SemanticIndex = desc.mIndex;
@@ -101,16 +101,16 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 	stateDesc.InputLayout = D3D12_INPUT_LAYOUT_DESC
 	{
 		inputDescs,
-		UINT(inputLayout.GetCount())
+		UINT(inputLayout.mCount)
 	};
 
-	stateDesc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE(state->GetIndexStripCut());
-	stateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE(state->GetTopology());
-	stateDesc.NumRenderTargets = state->GetRenderTargetCount();
+	stateDesc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE(state->mIndexStripCut);
+	stateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE(state->mTopology);
+	stateDesc.NumRenderTargets = state->mRenderTargetCount;
 	for (int i = 0; i < 8; ++i)
-		stateDesc.RTVFormats[i] = Convert(state->GetRenderTargetFormat(i));
-	stateDesc.DSVFormat = Convert(state->GetDepthStencilFormat());
-	stateDesc.SampleDesc = { UINT(state->GetSampleState().mCount), UINT(state->GetSampleState().mQuality) };
+		stateDesc.RTVFormats[i] = Convert(state->mRenderTargetFormats[i]);
+	stateDesc.DSVFormat = Convert(state->mDepthStencilFormat);
+	stateDesc.SampleDesc = { UINT(state->mSampleState.mCount), UINT(state->mSampleState.mQuality) };
 	stateDesc.NodeMask = 1;
 	stateDesc.CachedPSO = {nullptr, 0};
 	stateDesc.Flags = D3D12_PIPELINE_STATE_FLAGS(0);

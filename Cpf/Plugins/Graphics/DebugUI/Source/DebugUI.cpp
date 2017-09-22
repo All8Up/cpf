@@ -5,7 +5,8 @@
 #include "Graphics/iSampler.hpp"
 #include "Graphics/ImageDesc.hpp"
 #include "Graphics/DepthStencilBuilder.hpp"
-#include "Graphics/PipelineStateDesc.hpp"
+#include "Graphics/RasterizerStateBuilder.hpp"
+#include "Graphics/PipelineStateBuilder.hpp"
 #include "Graphics/ResourceBindingDesc.hpp"
 #include "Graphics/Viewport.hpp"
 #include "Graphics/ImageFlags.hpp"
@@ -159,7 +160,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 
 	// Create the pipeline.
 	{
-		PipelineStateDesc pipelineDesc = PipelineStateDesc::Build()
+		PipelineStateDesc pipelineDesc = Build<PipelineStateDesc>()
 			.VertexShader(mpVertexShader)
 			.PixelShader(mpPixelShader)
 			.Topology(TopologyType::eTriangle)
