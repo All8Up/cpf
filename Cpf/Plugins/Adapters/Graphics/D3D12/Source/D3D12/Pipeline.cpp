@@ -2,8 +2,9 @@
 #include "Adapter/D3D12/Pipeline.hpp"
 #include "Adapter/D3D12/Shader.hpp"
 #include "Adapter/D3D12/Device.hpp"
-#include "Graphics/PipelineStateDesc.hpp"
 #include "Adapter/D3D12/ResourceBinding.hpp"
+#include "Graphics/PipelineStateDesc.hpp"
+#include "Graphics/InputElementDesc.hpp"
 #include "Logging/Logging.hpp"
 
 using namespace CPF;

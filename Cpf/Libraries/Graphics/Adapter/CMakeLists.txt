@@ -37,6 +37,7 @@ CPF_GEN_GOM(RUST_GRAPHICS_INTERFACES rust
 
 # ###############################################
 set (IDL_STRUCTURES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/AttachmentRef.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/ClearValue.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Range.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Ratio.idl
@@ -67,6 +68,7 @@ set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageViewDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/InputElementDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/InputLayoutDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ModeDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/OutputDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RasterizerStateDesc.idl
@@ -152,9 +154,9 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	${CPP_GRAPHICS_DESCRIPTORS}
 	Include/Graphics/BlendStateBuilder.hpp
 	Include/Graphics/DepthStencilBuilder.hpp
+	Include/Graphics/InputLayoutBuilder.hpp
 	Include/Graphics/PipelineStateBuilder.hpp
 	Include/Graphics/RasterizerStateBuilder.hpp
-	Include/Graphics/InputLayoutDesc.hpp
 	Include/Graphics/PipelineStateDesc.hpp
 	Include/Graphics/ResourceBindingDesc.hpp
 )

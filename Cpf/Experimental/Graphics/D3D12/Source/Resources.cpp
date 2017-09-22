@@ -18,6 +18,7 @@
 #include "Graphics/ResourceData.hpp"
 #include "Graphics/HeapType.hpp"
 #include "Graphics/BlendStateBuilder.hpp"
+#include "Graphics/InputLayoutBuilder.hpp"
 #include "Math/Vector4v.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Std/Memory.hpp"
@@ -74,16 +75,15 @@ bool ExperimentalD3D12::_CreateResources()
 			.DstAlpha(BlendFunc::eZero)
 			.OpAlpha(BlendOp::eAdd)
 		)
-		.InputLayout(
-		{
-			cElementDesc("POSITION", Format::eRGB32f),
-			cElementDesc("COLOR", Format::eRGBA32f),
-			cElementDesc("TRANSLATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			cElementDesc("SCALE", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			cElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			cElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1),
-			cElementDesc("ORIENTATION", Format::eRGB32f, InputClassification::ePerInstance, 1).Slot(1)
-		})
+		.InputLayout(Build<InputLayoutDesc>()
+			.Element("POSITION", 0, Format::eRGB32f, 0, 0, InputClassification::ePerVertex, 0)
+			.Element("COLOR", 0, Format::eRGBA32f, 0, 12, InputClassification::ePerVertex, 0)
+			.Element("TRANSLATION", 0, Format::eRGB32f, 1, 0, InputClassification::ePerInstance, 1)
+			.Element("SCALE", 0, Format::eRGB32f, 1, 12, InputClassification::ePerInstance, 1)
+			.Element("ORIENTATION", 0, Format::eRGB32f, 1, 24, InputClassification::ePerInstance, 1)
+			.Element("ORIENTATION", 1, Format::eRGB32f, 1, 36, InputClassification::ePerInstance, 1)
+			.Element("ORIENTATION", 2, Format::eRGB32f, 1, 48, InputClassification::ePerInstance, 1)
+		)
 		.RenderTargets({ Format::eRGBA8un })
 		.DepthStencilFormat(Format::eD32f)
 		;

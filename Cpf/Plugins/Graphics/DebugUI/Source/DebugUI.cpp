@@ -32,6 +32,7 @@
 #include "Graphics/iShader.hpp"
 #include "Graphics/iPipeline.hpp"
 #include "Graphics/BlendStateBuilder.hpp"
+#include "Graphics/InputLayoutBuilder.hpp"
 
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
@@ -174,12 +175,11 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 				.DepthTest(false)
 				.DepthWriteMask(DepthWriteMask::eZero)
 			)
-			.InputLayout(
-		{
-			cElementDesc("POSITION", Format::eRG32f),
-			cElementDesc("TEXCOORD", Format::eRG32f),
-			cElementDesc("COLOR", Format::eRGBA8un)
-		})
+			.InputLayout(Build<InputLayoutDesc>()
+				.Element("POSITION", 0, Format::eRG32f, 0, 0, InputClassification::ePerVertex, 0)
+				.Element("TEXCOORD", 0, Format::eRG32f, 0, 8, InputClassification::ePerVertex, 0)
+				.Element("COLOR", 0, Format::eRGBA8un, 0, 16, InputClassification::ePerVertex, 0)
+			)
 			.TargetBlend(0, Build<RenderTargetBlendStateDesc>()
 				.Blending(true)
 				.Op(BlendOp::eAdd)

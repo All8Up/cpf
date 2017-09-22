@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics/PipelineStateDesc.hpp"
+#include "Graphics/InputElementDesc.hpp"
 
 namespace CPF
 {
@@ -30,7 +31,7 @@ namespace CPF
 
 			PipelineStateBuilder& Rasterizer(RasterizerStateDesc state);
 			PipelineStateBuilder& DepthStencil(DepthStencilStateDesc state);
-			PipelineStateBuilder& InputLayout(std::initializer_list<InputElementDesc> initList);
+			PipelineStateBuilder& InputLayout(const CPF::Vector<InputElementDesc>& initList);
 
 			PipelineStateBuilder& RenderTargets(std::initializer_list<Format> formats);
 
@@ -160,9 +161,15 @@ namespace CPF
 			return *this;
 		}
 
-		inline PipelineStateBuilder& PipelineStateBuilder::InputLayout(std::initializer_list<InputElementDesc> initList)
+		inline PipelineStateBuilder& PipelineStateBuilder::InputLayout(const CPF::Vector<InputElementDesc>& layout)
 		{
-			mState.mInputLayout = cInputLayoutDesc(initList);
+			mState.mInputLayout.mCount = int32_t(layout.size());
+			mState.mInputLayout.mpElements = new InputElementDesc[layout.size()];
+			int i = 0;
+			for (auto& element : layout)
+			{
+				mState.mInputLayout.mpElements[i++] = element;
+			}
 			return *this;
 		}
 

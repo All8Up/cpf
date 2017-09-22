@@ -8,6 +8,7 @@
 #include "Graphics/iResourceBinding.hpp"
 #include "Graphics/IndexStripCut.hpp"
 #include "Graphics/TopologyType.hpp"
+#include "Graphics/Format.hpp"
 #include "IntrusivePtr.hpp"
 
 namespace CPF

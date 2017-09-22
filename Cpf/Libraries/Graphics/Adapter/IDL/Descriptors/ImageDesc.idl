@@ -1,10 +1,9 @@
+import Format from Graphics;
+import ImageFlags from Graphics;
 import SampleDesc from Graphics;
 import ResourceState from Graphics;
 
 module CPF::Graphics;
-
-enum Format : s32;
-enum ImageFlags : s32;
 
 struct ImageDesc
 {

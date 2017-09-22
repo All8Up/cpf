@@ -1,9 +1,9 @@
 module CPF::Graphics;
 
-struct ElementDesc;
+struct InputElementDesc;
 
 struct InputLayoutDesc
 {
 	s32 mCount;
-	ElementDesc* mpElements;
+	InputElementDesc* mpElements;
 }

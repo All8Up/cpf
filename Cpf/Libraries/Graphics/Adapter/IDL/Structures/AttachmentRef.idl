@@ -1,0 +1,11 @@
+import ResourceState from Graphics;
+
+module CPF::Graphics;
+
+const s32 InvalidAttachment = -1;
+
+struct AttachmentRef
+{
+	s32 mIndex;
+	ResourceState mState;
+}
