@@ -193,7 +193,17 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 				DataMemberDecl data;
 				data.mName = decl->IDENT()->toString();
 				data.mType = ParseTypeDecl(decl->type_decl());
-				data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+				data.mArrayDimensions.mType = MemberInitValue::None;
+				if (decl->integer_lit())
+				{
+					data.mArrayDimensions.mType = MemberInitValue::Integer;
+					data.mArrayDimensions.mInt = int32_t(ParseIntegerLit(decl->integer_lit()));
+				}
+				else if (decl->qualified_ident())
+				{
+					data.mArrayDimensions.mType = MemberInitValue::Identifier;
+					data.mArrayDimensions.mIdent = ParseQualifiedIdent(decl->qualified_ident()).ToString("::");
+				}
 
 				if (decl->member_init() != nullptr)
 				{
@@ -233,7 +243,17 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 				DataMemberDecl data;
 				data.mName = decl->IDENT()->toString();
 				data.mType = ParseTypeDecl(decl->type_decl());
-				data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+				data.mArrayDimensions.mType = MemberInitValue::None;
+				if (decl->integer_lit())
+				{
+					data.mArrayDimensions.mType = MemberInitValue::Integer;
+					data.mArrayDimensions.mInt = int32_t(ParseIntegerLit(decl->integer_lit()));
+				}
+				else if (decl->qualified_ident())
+				{
+					data.mArrayDimensions.mType = MemberInitValue::Identifier;
+					data.mArrayDimensions.mIdent = ParseQualifiedIdent(decl->qualified_ident()).ToString("::");
+				}
 				structDecl.mDataMembers[index].push_back(data);
 			}
 		}
@@ -271,7 +291,17 @@ antlrcpp::Any Visitor::visitUnion_decl(IDLParser::Union_declContext *ctx)
 			DataMemberDecl data;
 			data.mName = decl->IDENT()->toString();
 			data.mType = ParseTypeDecl(decl->type_decl());
-			data.mArrayDimensions = (decl->integer_lit() != nullptr) ? int32_t(ParseIntegerLit(decl->integer_lit())) : 0;
+			data.mArrayDimensions.mType = MemberInitValue::None;
+			if (decl->integer_lit())
+			{
+				data.mArrayDimensions.mType = MemberInitValue::Integer;
+				data.mArrayDimensions.mInt = int32_t(ParseIntegerLit(decl->integer_lit()));
+			}
+			else if (decl->qualified_ident())
+			{
+				data.mArrayDimensions.mType = MemberInitValue::Identifier;
+				data.mArrayDimensions.mIdent = ParseQualifiedIdent(decl->qualified_ident()).ToString("::");
+			}
 			structDecl.mDataMembers[int(OsType::eNone)].push_back(data);
 		}
 	}

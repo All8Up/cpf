@@ -3,11 +3,13 @@ import RenderTargetBlendStateDesc from Graphics;
 
 module CPF::Graphics;
 
+const s32 MaxRenderTargets = 8;
+
 struct BlendStateDesc
 {
 	bool mAlphaToCoverage = false;
 	bool mIndependentBlend = false;
-	RenderTargetBlendStateDesc mRenderTarget[8] = {
+	RenderTargetBlendStateDesc mRenderTarget[MaxRenderTargets] = {
 		default RenderTargetBlendStateDesc,
 		default RenderTargetBlendStateDesc,
 		default RenderTargetBlendStateDesc,

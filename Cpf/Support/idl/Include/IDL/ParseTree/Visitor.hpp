@@ -98,6 +98,7 @@ namespace IDL
 		{
 			enum Type
 			{
+				None,
 				Identifier,
 				Integer,
 				Float,
@@ -114,7 +115,7 @@ namespace IDL
 		{
 			String mName;
 			TypeDecl mType;
-			int32_t mArrayDimensions;
+			MemberInitValue mArrayDimensions;
 			CPF::Vector<MemberInitValue> mInitializers;
 		};
 		enum class OsType : int32_t

@@ -21,8 +21,6 @@ namespace CPF
 
 		struct PipelineStateDesc
 		{
-			static constexpr int kMaxRenderTargets = 8;
-
 			PipelineStateDesc();
 			PipelineStateDesc(const PipelineStateDesc& rhs);
 

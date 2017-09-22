@@ -40,7 +40,7 @@ namespace CPF
 
 		Plugin::iRegistry* GetRegistry() { return mpRegistry; }
 
-		static const int32_t kInstancesPerDimension = 50;
+		static const int32_t kInstancesPerDimension = 100;
 		static const int32_t kInstanceCount = kInstancesPerDimension*kInstancesPerDimension*kInstancesPerDimension;
 
 		Graphics::iVertexBuffer* GetCurrentInstanceBuffer() const { return mpInstanceBuffer[mCurrentBackbuffer]; }

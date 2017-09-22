@@ -168,7 +168,7 @@ namespace CPF
 
 		inline PipelineStateBuilder& PipelineStateBuilder::RenderTargets(std::initializer_list<Format> formats)
 		{
-			CPF_ASSERT(formats.size() <= PipelineStateDesc::kMaxRenderTargets);
+			CPF_ASSERT(formats.size() <= kMaxRenderTargets);
 			mState.mRenderTargetCount = int32_t(formats.size());
 			int i = 0;
 			for (auto it : formats)

@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -974,9 +974,10 @@ public:
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *SEMICOLON();
     antlr4::tree::TerminalNode *LBRACKET();
-    Integer_litContext *integer_lit();
     antlr4::tree::TerminalNode *RBRACKET();
     Member_initContext *member_init();
+    Integer_litContext *integer_lit();
+    Qualified_identContext *qualified_ident();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    

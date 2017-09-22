@@ -149,7 +149,7 @@ all_or_ident            : IDENT
                         | STAR;
 
 // Data member declaration.
-member_decl             : type_decl IDENT (LBRACKET integer_lit RBRACKET)? member_init? SEMICOLON;
+member_decl             : type_decl IDENT (LBRACKET (integer_lit | qualified_ident) RBRACKET)? member_init? SEMICOLON;
 member_init             : EQUALS member_init_value
                         | EQUALS LBRACE (member_init_value COMMA?)* RBRACE;
 member_init_value       : DEFAULT qualified_ident

@@ -188,10 +188,21 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 	mpWriter->Indent();
 	for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eNone)])
 	{
+		CPF::String arrayDims = "";
+		switch (member.mArrayDimensions.mType)
+		{
+		case Visitor::MemberInitValue::Integer:
+			arrayDims = String("[") + std::to_string(member.mArrayDimensions.mInt) + String("]");
+			break;
+		case Visitor::MemberInitValue::Identifier:
+			arrayDims = String("[k") + member.mArrayDimensions.mIdent + String("]");
+			break;
+		}
+
 		mpWriter->OutputLine("%s %s%s;",
 			TypeToString(member.mType).c_str(),
 			member.mName.c_str(),
-			member.mArrayDimensions>0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+			arrayDims.c_str());
 		if (!member.mInitializers.empty())
 			hasInitializers = true;
 	}
@@ -200,10 +211,20 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 		mpWriter->OutputLineNoIndent("#if CPF_TARGET_WINDOWS");
 		for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eWindows)])
 		{
+			CPF::String arrayDims = "";
+			switch (member.mArrayDimensions.mType)
+			{
+			case Visitor::MemberInitValue::Integer:
+				arrayDims = String("[") + std::to_string(member.mArrayDimensions.mInt) + String("]");
+				break;
+			case Visitor::MemberInitValue::Identifier:
+				arrayDims = String("[k") + member.mArrayDimensions.mIdent + String("]");
+				break;
+			}
 			mpWriter->OutputLine("%s %s%s;",
 				TypeToString(member.mType).c_str(),
 				member.mName.c_str(),
-				member.mArrayDimensions > 0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+				arrayDims.c_str());
 			if (!member.mInitializers.empty())
 				hasInitializers = true;
 		}
@@ -214,10 +235,20 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 		mpWriter->OutputLineNoIndent("#if CPF_TARGET_DARWIN");
 		for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eDarwin)])
 		{
+			CPF::String arrayDims = "";
+			switch (member.mArrayDimensions.mType)
+			{
+			case Visitor::MemberInitValue::Integer:
+				arrayDims = String("[") + std::to_string(member.mArrayDimensions.mInt) + String("]");
+				break;
+			case Visitor::MemberInitValue::Identifier:
+				arrayDims = String("[k") + member.mArrayDimensions.mIdent + String("]");
+				break;
+			}
 			mpWriter->OutputLine("%s %s%s;",
 				TypeToString(member.mType).c_str(),
 				member.mName.c_str(),
-				member.mArrayDimensions > 0 ? (String("[") + std::to_string(member.mArrayDimensions) + String("]")).c_str() : "");
+				arrayDims.c_str());
 			if (!member.mInitializers.empty())
 				hasInitializers = true;
 		}
