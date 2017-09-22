@@ -37,7 +37,7 @@ namespace CPF
 			uint32_t mSampleMask;
 			RasterizerStateDesc mRasterizerState;
 			DepthStencilStateDesc mDepthStencil;
-			cInputLayoutDesc mInputLayout;
+			InputLayoutDesc mInputLayout;
 			IndexStripCut mIndexStripCut;
 			TopologyType mTopology;
 			int32_t mRenderTargetCount;
