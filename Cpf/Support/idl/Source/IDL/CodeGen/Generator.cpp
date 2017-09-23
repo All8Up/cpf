@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "IDL/CodeGen/Generator.hpp"
-#include "IDL/CodeGen/Cpp/CodeGen.hpp"
-#include "IDL/CodeGen/Rust/CodeGen.hpp"
+#include "IDL/CodeGen/CppGenerator.hpp"
+#include "IDL/CodeGen/RustGenerator.hpp"
 
 using namespace IDL;
 using namespace CodeGen;

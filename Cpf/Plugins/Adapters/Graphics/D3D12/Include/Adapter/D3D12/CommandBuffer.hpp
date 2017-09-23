@@ -7,6 +7,7 @@
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"
 #include "UnorderedSet.hpp"
+#include "Vector.hpp"
 
 
 namespace CPF
