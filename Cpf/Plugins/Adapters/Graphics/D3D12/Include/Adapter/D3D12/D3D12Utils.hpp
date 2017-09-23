@@ -35,7 +35,6 @@ namespace CPF
 			D3D12_RESOURCE_STATES Convert(Graphics::ResourceState resourceState);
 			UINT Convert(Graphics::SubResource sr);
 			UINT ConvertEnumMode(Graphics::EnumMode mode);
-			bool Convert(const Graphics::ResourceBindingDesc&, ID3DBlob** result);
 		}
 	}
 }

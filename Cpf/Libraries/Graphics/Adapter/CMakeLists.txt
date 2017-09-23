@@ -71,11 +71,13 @@ set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/InputLayoutDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ModeDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/OutputDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ParamBindingDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/PipelineStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RasterizerStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassBeginDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderTargetBlendStateDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ResourceBindingDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ResourceDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SamplerDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SubPassDesc.idl
@@ -158,7 +160,6 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/InputLayoutBuilder.hpp
 	Include/Graphics/PipelineStateBuilder.hpp
 	Include/Graphics/RasterizerStateBuilder.hpp
-	Include/Graphics/ResourceBindingDesc.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}

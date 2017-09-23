@@ -89,10 +89,16 @@ bool ExperimentalD3D12::_CreateResources()
 		;
 
 	//////////////////////////////////////////////////////////////////////////
-	ResourceBindingDesc bindingState({
-		ParamConstantBuffer(0, ParamVisibility::eVertex)
-	});
-	mpDevice->CreateResourceBinding(&bindingState, mpResourceBinding.AsTypePP());
+	ParamBindingDesc resourceParams[] =
+	{
+		{BindingType::eConstantBuffer, 0, 0, ParamFlags::eStatic, ParamVisibility::eVertex}
+	};
+	ResourceBindingDesc bindings =
+	{
+		1,
+		resourceParams
+	};
+	mpDevice->CreateResourceBinding(&bindings, mpResourceBinding.AsTypePP());
 	mpDevice->CreatePipeline(&pipelineDesc, mpResourceBinding, mpPipeline.AsTypePP());
 
 	//////////////////////////////////////////////////////////////////////////

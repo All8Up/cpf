@@ -321,6 +321,7 @@ UINT D3D12::ConvertEnumMode(Graphics::EnumMode mode)
 	return result;
 }
 
+#if 0
 bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 {
 	// Eventually switch to the versioned signatures, for the moment go for compatibility.
@@ -453,3 +454,4 @@ bool D3D12::Convert(const ResourceBindingDesc& desc, ID3DBlob** result)
 	return false;
 #endif
 }
+#endif

@@ -1,0 +1,8 @@
+import ParamBindingDesc from Graphics;
+module CPF::Graphics;
+
+struct ResourceBindingDesc
+{
+	s32 mCount;
+	ParamBindingDesc* mpBindings;
+};

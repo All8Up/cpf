@@ -9,6 +9,7 @@ namespace CPF
 	namespace Graphics
 	{
 		struct ResourceBindingDesc;
+		struct ResourceBindingDescX;
 	}
 
 	namespace Adapter

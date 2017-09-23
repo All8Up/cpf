@@ -194,12 +194,18 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 			;
 
 		// Create the binding.
-		ResourceBindingDesc bindingState({
-			ParamConstantBuffer(0, ParamVisibility::eVertex),
-			ParamSampler(0),
-			ParamTexture(0)
-		});
-		mpDevice->CreateResourceBinding(&bindingState, mpResourceBinding.AsTypePP());
+		ParamBindingDesc paramBindings[] =
+		{
+			{ BindingType::eConstantBuffer, 0, 0, ParamFlags::eStatic, ParamVisibility::eVertex },
+			{ BindingType::eSampler, 0, 0, ParamFlags::eStatic, ParamVisibility::eVisibilityAll },
+			{ BindingType::eTexture, 0, 0, ParamFlags::eStatic, ParamVisibility::eVisibilityAll }
+		};
+		ResourceBindingDesc bindings =
+		{
+			3,
+			paramBindings
+		};
+		mpDevice->CreateResourceBinding(&bindings, mpResourceBinding.AsTypePP());
 
 		// Create the actual pipeline object.
 		mpDevice->CreatePipeline(&pipelineDesc, mpResourceBinding, mpPipeline.AsTypePP());
