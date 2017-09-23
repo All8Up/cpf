@@ -67,24 +67,15 @@ set (IDLCodeGenIncludes
 	Include/IDL/CodeGen/CodeWriter.hpp
 	Include/IDL/CodeGen/Context.hpp
 	Include/IDL/CodeGen/Generator.hpp
+	Include/IDL/CodeGen/CppGenerator.hpp
+	Include/IDL/CodeGen/RustGenerator.hpp
 )
 set (IDLCodeGenSources
 	Source/IDL/CodeGen/CodeWriter.cpp
 	Source/IDL/CodeGen/Context.cpp
 	Source/IDL/CodeGen/Generator.cpp
-)
-
-set (IDLCodeGenCppIncludes
-	Include/IDL/CodeGen/Cpp/CodeGen.hpp
-)
-set (IDLCodeGenCppSources
-	Source/IDL/CodeGen/Cpp/CodeGen.cpp
-)
-set (IDLCodeGenRustIncludes
-	Include/IDL/CodeGen/Rust/CodeGen.hpp
-)
-set (IDLCodeGenRustSources
-	Source/IDL/CodeGen/Rust/CodeGen.cpp
+	Source/IDL/CodeGen/CppGenerator.cpp
+	Source/IDL/CodeGen/RustGenerator.cpp
 )
 
 set (IDLParseTreeIncludes
@@ -101,10 +92,6 @@ add_executable (IDL
 	${IDLSources}
 	${IDLCodeGenIncludes}
 	${IDLCodeGenSources}
-	${IDLCodeGenCppIncludes}
-	${IDLCodeGenCppSources}
-	${IDLCodeGenRustIncludes}
-	${IDLCodeGenRustSources}
 	${IDLParseTreeIncludes}
 	${IDLParseTreeSources}
 
@@ -121,10 +108,6 @@ source_group (Includes\\IDL FILES ${IDLIncludes})
 source_group (Sources\\IDL FILES ${IDLSources})
 source_group (Includes\\IDL\\CodeGen FILES ${IDLCodeGenIncludes})
 source_group (Sources\\IDL\\CodeGen FILES ${IDLCodeGenSources})
-source_group (Includes\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppIncludes})
-source_group (Sources\\IDL\\CodeGen\\Cpp FILES ${IDLCodeGenCppSources})
-source_group (Includes\\IDL\\CodeGen\\Rust FILES ${IDLCodeGenRustIncludes})
-source_group (Sources\\IDL\\CodeGen\\Rust FILES ${IDLCodeGenRustSources})
 source_group (Includes\\IDL\\ParseTree FILES ${IDLParseTreeIncludes})
 source_group (Sources\\IDL\\ParseTree FILES ${IDLParseTreeSources})
 

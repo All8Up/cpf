@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "IDL/CodeGen/Rust/CodeGen.hpp"
+#include "IDL/CodeGen/RustGenerator.hpp"
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <inttypes.h>
 #include "Hash/Crc.hpp"
@@ -61,6 +61,7 @@ void RustGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::FailureType>(CPF::Bind(&RustGenerator::OnFailureType, this, _1, _2, _3));
 	visitor.On<Visitor::ImportFromStmt>(CPF::Bind(&RustGenerator::OnImportStmt, this, _1, _2));
 	visitor.On<Visitor::InterfaceDeclStmt>(CPF::Bind(&RustGenerator::OnInterfaceDeclStmt, this, _1));
+	visitor.On<Visitor::EnumDeclStmt>(CPF::Bind(&RustGenerator::OnEnumDeclStmt, this, _1));
 }
 
 void RustGenerator::End()
@@ -176,6 +177,51 @@ void RustGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	}
 	mpWriter->Unindent();
 	mpWriter->OutputLine("}");
+}
+
+void RustGenerator::OnEnumDeclStmt(const Visitor::EnumDecl& decl)
+{
+	mpWriter->LineFeed(eStructures, eNamespace, CodeWriter::kAnySection);
+	if (decl.mType == Visitor::Type::Void)
+		mpWriter->OutputLine("enum class %s;", decl.mName.c_str());
+	else
+		mpWriter->OutputLine("enum class %s : %s", decl.mName.c_str(), TypeToString(decl.mType).c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+
+	for (const auto& item : decl.mEntries)
+	{
+		if (!item.mValue.empty())
+			mpWriter->OutputLine("%s = %s,", item.mName.c_str(), item.mValue.c_str());
+		else
+			mpWriter->OutputLine("%s,", item.mName.c_str());
+	}
+
+	mpWriter->Unindent();
+	mpWriter->OutputLine("};");
+}
+
+CPF::String RustGenerator::TypeToString(const Visitor::Type& decl)
+{
+	String result;
+	switch (decl)
+	{
+	case Visitor::Type::U8: result += "u8"; break;
+	case Visitor::Type::S8: result += "s8"; break;
+	case Visitor::Type::U16: result += "u16"; break;
+	case Visitor::Type::S16: result += "s16"; break;
+	case Visitor::Type::U32: result += "u32"; break;
+	case Visitor::Type::S32: result += "s32"; break;
+	case Visitor::Type::U64: result += "u64"; break;
+	case Visitor::Type::S64: result += "s64"; break;
+
+	case Visitor::Type::F32: result += "float"; break;
+	case Visitor::Type::F64: result += "double"; break;
+
+	case Visitor::Type::Void: result += "void"; break;
+	case Visitor::Type::Result: result += "u32"; break;
+	}
+	return result;
 }
 
 CPF::String RustGenerator::TypeToString(const Visitor::TypeDecl& decl)

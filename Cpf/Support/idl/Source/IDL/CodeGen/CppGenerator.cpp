@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "IDL/CodeGen/Cpp/CodeGen.hpp"
+#include "IDL/CodeGen/CppGenerator.hpp"
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <inttypes.h>
 #include "Hash/Crc.hpp"
