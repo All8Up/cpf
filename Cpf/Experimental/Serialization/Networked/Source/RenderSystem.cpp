@@ -50,18 +50,21 @@ bool RenderSystem::Initialize(Plugin::iRegistry* registry, GOM::ClassID rid, iIn
 {
 	if (GOM::Succeeded(registry->Create(nullptr, rid.GetID(), Graphics::iInstance::kIID.GetID(), mpInstance.AsVoidPP())))
 	{
-		if (_SelectAdapter() &&
-			GOM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
-			_CreateRenderPass() &&
-			_CreateSwapChain(window) &&
-			_CreateRenderData(im, window, locator)
-			)
+		if (GOM::Succeeded(mpInstance->Initialize(registry)))
 		{
-			int32_t w, h;
-			window->GetClientAreaSize(&w, &h);
-			mpDebugUI->SetWindowSize(w, h);
-			_CreateStages();
-			return true;
+			if (_SelectAdapter() &&
+				GOM::Succeeded(mpInstance->CreateDevice(mpAdapter, mpDevice.AsTypePP())) &&
+				_CreateRenderPass() &&
+				_CreateSwapChain(window) &&
+				_CreateRenderData(im, window, locator)
+				)
+			{
+				int32_t w, h;
+				window->GetClientAreaSize(&w, &h);
+				mpDebugUI->SetWindowSize(w, h);
+				_CreateStages();
+				return true;
+			}
 		}
 	}
 	return false;
@@ -198,7 +201,6 @@ bool RenderSystem::_CreateRenderPass()
 		attachments[0].mStoreOp = StoreOp::eStore;
 		attachments[0].mStencilLoadOp = LoadOp::eDontCare;
 		attachments[0].mStencilStoreOp = StoreOp::eDontCare;
-		// TODO: Figure out what makes the most sense.
 		attachments[0].mStartState = ResourceState::eCommon;
 		attachments[0].mFinalState = ResourceState::ePresent;
 
@@ -210,7 +212,6 @@ bool RenderSystem::_CreateRenderPass()
 		attachments[1].mStoreOp = StoreOp::eStore;
 		attachments[1].mStencilLoadOp = LoadOp::eLoad;
 		attachments[1].mStencilStoreOp = StoreOp::eStore;
-		// TODO: Figure out what makes the most sense.
 		attachments[1].mStartState = ResourceState::eCommon;
 		attachments[1].mFinalState = ResourceState::eCommon;
 	}
@@ -403,9 +404,6 @@ void RenderSystem::_DebugUI(const Concurrency::WorkContext*, void* context)
 	self.mpDebugUIBuffer[self.mBufferIndex]->Reset(self.mpDebugUIPool[self.mBufferIndex]);
 	self.mpDebugUIBuffer[self.mBufferIndex]->Begin(self.mpPrimaryBuffer[self.mBufferIndex]);
 
-//	iImageView* imageViews[] = { self.mpSwapChain->GetImageView(self.mSwapIndex) };
-//	self.mpDebugUIBuffer[self.mBufferIndex]->SetRenderTargets(1, imageViews, nullptr);
-
 	self.mpDebugUI->BeginFrame(self.mpDebugUIBuffer[self.mBufferIndex], deltaTime);
 	self.mpDebugUI->Execute();
 	self.mpDebugUI->EndFrame(self.mpDebugUIBuffer[self.mBufferIndex]);
@@ -439,7 +437,7 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext*, void* context)
 	auto fenceToWaitFor = Atomic::Inc(self.mFenceTarget);
 	self.mpDevice->Signal(self.mpFence, fenceToWaitFor);
 
-	// Need to wait for the above to complete before we attempt to present the swap chain.
+	// If too far ahead, wait here till a back buffer is available to swap to.
 	auto lastFence = self.mFenceTarget;
 	if (lastFence - self.mpFence->GetValue() >= kBufferCount)
 		self.mpFence->WaitFor(lastFence - (kBufferCount - 1));

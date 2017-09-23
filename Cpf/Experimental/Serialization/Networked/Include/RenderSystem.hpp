@@ -79,7 +79,7 @@ namespace CPF
 		static void _DebugUI(const Concurrency::WorkContext*, void* context);
 		static void _EndFrame(const Concurrency::WorkContext*, void* context);
 
-		static constexpr int kBufferCount = 2;
+		static constexpr int kBufferCount = 5;
 
 		Desc mDesc;
 		MultiCore::iTimer* mpTimer;

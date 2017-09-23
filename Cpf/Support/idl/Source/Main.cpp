@@ -14,6 +14,7 @@
 #include "IO/Stream.hpp"
 #include "IO/Directory.hpp"
 #include "IO/TextWriter.hpp"
+#include "Logging/Logging.hpp"
 #include <gflags/gflags.h>
 
 DEFINE_string(input, "", "Input file to process.");
@@ -23,8 +24,8 @@ DEFINE_bool(rust, false, "Output rust targets.");
 
 int main(int argc, char** argv)
 {
-	(void)argc; (void)argv;
 	gflags::ParseCommandLineFlags(&argc, &argv, true);
+	CPF_LOG_LEVELS(Warn);
 	CPF::IOInitializer::Install();
 
 	if (FLAGS_input.empty())

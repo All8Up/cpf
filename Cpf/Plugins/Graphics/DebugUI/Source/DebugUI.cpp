@@ -344,11 +344,12 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 	io.DeltaTime = deltaTime;
 
-	Math::Matrix44fv projection = Math::Matrix44fv(
-	{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
-	{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
-	{ 0.0f,						0.0f,						 0.5f,	0.0f },
-	{ -1.0f,						1.0f,						 0.5f,	1.0f }
+	Math::Matrix44fv projection = Math::Matrix44fv
+	(
+		{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
+		{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
+		{ 0.0f,						0.0f,						 0.5f,	0.0f },
+		{ -1.0f,					1.0f,						 0.5f,	1.0f }
 	);
 	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
 

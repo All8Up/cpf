@@ -54,3 +54,4 @@ include (CMake/Checks/${CMAKE_SYSTEM_NAME}.cmake)
 # ###############################################
 option (CPF_ENABLE_UNITTESTS "Enable unit testing projects." ON)
 option (CPF_ENABLE_BENCHMARKS "Enable benchmark projects." OFF)
+option (CPF_FINAL_BUILD "Build as a final release build." OFF)

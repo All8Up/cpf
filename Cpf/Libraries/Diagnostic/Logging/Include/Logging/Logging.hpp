@@ -35,7 +35,7 @@ namespace CPF
 		virtual void _sink_it(const spdlog::details::log_msg& msg) override
 		{
 #if CPF_TARGET_WINDOWS
-			OutputDebugString(msg.formatted.str().c_str());
+			OutputDebugStringA(msg.formatted.str().c_str());
 #endif
 		}
 		virtual void flush() override

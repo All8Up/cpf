@@ -106,9 +106,15 @@ else()
 	set (targetPath test/)
 endif()
 file (MAKE_DIRECTORY ${targetPath}/plugins)
+# Copy to the normal location for running in the debugger.
 add_custom_command (
 	TARGET TestPlugin POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestPlugin> ${targetPath}/plugins/TestPlugin.cfp
+)
+# Copy to the general purpose location for external tool testing.
+add_custom_command (
+	TARGET TestPlugin POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestPlugin> ${CPF_COMMON_PLUGINS}/TestPlugin.cfp
 )
 
 MakeUnitTest (LIBRARY Plugin GROUP Core

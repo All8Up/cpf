@@ -91,6 +91,16 @@ namespace CPF
 		inline bool Library::Load(const char* const name)
 		{
 			mHandle = Platform::Library::Load(name);
+#ifndef CPF_FINAL_BUILD
+			if (mHandle == Platform::Library::kInvalid)
+			{
+				// May be a unit test or running from inside the bin folder, try again with appropriate prepend.
+				char tempBuffer[1024];
+				strcpy(tempBuffer, "./../resources/");
+				strcat(tempBuffer, name);
+				mHandle = Platform::Library::Load(tempBuffer);
+			}
+#endif
 			return mHandle != Platform::Library::kInvalid;
 		}
 

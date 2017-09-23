@@ -39,7 +39,7 @@ using namespace Threading;
 using namespace Concurrency;
 
 //////////////////////////////////////////////////////////////////////////
-#define WINDOW_TITLE "Hello Triangle: D3D12"
+#define WINDOW_TITLE "Stress Test: D3D12"
 
 
 void ExperimentalD3D12::ReconfigurePipeline()

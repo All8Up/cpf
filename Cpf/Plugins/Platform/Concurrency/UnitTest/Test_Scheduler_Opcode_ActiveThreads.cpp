@@ -52,7 +52,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 				pWorkBuffer->FirstOne(
 					[](const WorkContext*, void* context)
 				{
-					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x7000);
+					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x70000000);
 					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
 					auto accumulator = 0;
 					for (auto i = 0; i < innerLoopCount; ++i)
@@ -83,7 +83,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 				pWorkBuffer->FirstOne(
 					[](const WorkContext*, void* context)
 				{
-					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x7000);
+					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x70000000);
 					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
 					auto accumulator = 0;
 					for (auto i = 0; i < innerLoopCount; ++i)
@@ -118,7 +118,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 				pWorkBuffer->FirstOne(
 					[](const WorkContext*, void* context)
 				{
-					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x7000);
+					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x70000000);
 					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
 					auto accumulator = 0;
 					for (auto i = 0; i < innerLoopCount; ++i)

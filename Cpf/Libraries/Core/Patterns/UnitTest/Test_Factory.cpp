@@ -14,7 +14,7 @@ TEST(Patterns, Factory)
 {
 	using FactoryType = Factory<int64_t, TestType>;
 	FactoryType testFactory;
-	FactoryType::Entry installType{ []() {return new TestType; }, [](TestType&) {return false; } };
+	FactoryType::Entry installType{ []() {return new TestType; }, [](TestType&) {return true; } };
 	EXPECT_TRUE(testFactory.Install(1, installType));
 	EXPECT_TRUE(testFactory.Exists(1) == true);
 
