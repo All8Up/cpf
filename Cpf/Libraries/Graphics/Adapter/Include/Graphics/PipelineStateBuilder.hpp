@@ -49,6 +49,7 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		inline PipelineStateBuilder::PipelineStateBuilder()
+			: mState(Defaults<PipelineStateDesc>())
 		{
 
 		}
@@ -60,43 +61,37 @@ namespace CPF
 
 		inline PipelineStateBuilder& PipelineStateBuilder::ResourceBinding(iResourceBinding* binding)
 		{
-			mState.mpResourceBinding.Adopt(binding);
-			mState.mpResourceBinding.AddRef();
+			mState.mpResourceBinding = binding;
 			return *this;
 		}
 
 		inline PipelineStateBuilder& PipelineStateBuilder::VertexShader(iShader* shader)
 		{
-			mState.mpVertex.Adopt(shader);
-			mState.mpVertex.AddRef();
+			mState.mpVertex = shader;
 			return *this;
 		}
 
 		inline PipelineStateBuilder& PipelineStateBuilder::PixelShader(iShader* shader)
 		{
-			mState.mpPixel.Adopt(shader);
-			mState.mpPixel.AddRef();
+			mState.mpPixel = shader;
 			return *this;
 		}
 
 		inline PipelineStateBuilder& PipelineStateBuilder::DomainShader(iShader* shader)
 		{
-			mState.mpDomain.Adopt(shader);
-			mState.mpDomain.AddRef();
+			mState.mpDomain = shader;
 			return *this;
 		}
 
 		inline PipelineStateBuilder& PipelineStateBuilder::HullShader(iShader* shader)
 		{
-			mState.mpHull.Adopt(shader);
-			mState.mpHull.AddRef();
+			mState.mpHull = shader;
 			return *this;
 		}
 
 		inline PipelineStateBuilder& PipelineStateBuilder::GeometryShader(iShader* shader)
 		{
-			mState.mpGeometry.Adopt(shader);
-			mState.mpGeometry.AddRef();
+			mState.mpGeometry = shader;
 			return *this;
 		}
 

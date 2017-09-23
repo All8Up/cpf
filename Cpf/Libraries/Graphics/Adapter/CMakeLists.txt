@@ -71,6 +71,7 @@ set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/InputLayoutDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ModeDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/OutputDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/PipelineStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RasterizerStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassBeginDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassDesc.idl
@@ -157,7 +158,6 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/InputLayoutBuilder.hpp
 	Include/Graphics/PipelineStateBuilder.hpp
 	Include/Graphics/RasterizerStateBuilder.hpp
-	Include/Graphics/PipelineStateDesc.hpp
 	Include/Graphics/ResourceBindingDesc.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES

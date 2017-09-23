@@ -153,10 +153,12 @@ member_decl             : type_decl IDENT (LBRACKET (integer_lit | qualified_ide
 member_init             : EQUALS member_init_value
                         | EQUALS LBRACE (member_init_value COMMA?)* RBRACE;
 member_init_value       : DEFAULT qualified_ident
-                        | integer_lit
-                        | float_lit
+                        | integer_lit init_as_type?
+                        | float_lit init_as_type?
                         | string_lit
-                        | qualified_ident;
+                        | qualified_ident init_as_type?;
+init_as_type            : AS integral_type
+                        | AS float_type;
 
 // Type declarations.
 type_decl               : type_modifier? any_type pointer_type?;

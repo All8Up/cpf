@@ -21,6 +21,7 @@ ENUM                        : 'enum';
 FLAGS                       : 'flags';
 MODULE                      : 'module';
 FROM                        : 'from';
+AS                          : 'as';
 
 IN                          : 'in';
 OUT                         : 'out';

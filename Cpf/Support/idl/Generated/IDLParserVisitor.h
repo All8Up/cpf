@@ -139,6 +139,8 @@ public:
 
     virtual antlrcpp::Any visitMember_init_value(IDLParser::Member_init_valueContext *context) = 0;
 
+    virtual antlrcpp::Any visitInit_as_type(IDLParser::Init_as_typeContext *context) = 0;
+
     virtual antlrcpp::Any visitType_decl(IDLParser::Type_declContext *context) = 0;
 
     virtual antlrcpp::Any visitType_modifier(IDLParser::Type_modifierContext *context) = 0;

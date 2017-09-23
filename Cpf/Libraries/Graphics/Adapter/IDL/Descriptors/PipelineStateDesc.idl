@@ -1,0 +1,40 @@
+import BlendStateDesc from Graphics;
+import RasterizerStateDesc from Graphics;
+import DepthStencilStateDesc from Graphics;
+import InputLayoutDesc from Graphics;
+import IndexStripCut from Graphics;
+import TopologyType from Graphics;
+import Format from Graphics;
+import SampleDesc from Graphics;
+
+module CPF::Graphics;
+
+interface iResourceBinding;
+interface iShader;
+
+struct PipelineStateDesc
+{
+	iResourceBinding* mpResourceBinding = nullptr;
+	iShader* mpVertex = nullptr;
+	iShader* mpPixel = nullptr;
+	iShader* mpDomain = nullptr;
+	iShader* mpHull = nullptr;
+	iShader* mpGeometry = nullptr;
+	BlendStateDesc mBlendState = default BlendStateDesc;
+	u32 mSampleMask = -1 as u32;
+	RasterizerStateDesc mRasterizerState = default RasterizerStateDesc;
+	DepthStencilStateDesc mDepthStencil = default DepthStencilStateDesc;
+	InputLayoutDesc mInputLayout = default InputLayoutDesc;
+	IndexStripCut mIndexStripCut = IndexStripCut::eNone;
+	TopologyType mTopology = TopologyType::eTriangle;
+	s32 mRenderTargetCount = 0;
+	Format mRenderTargetFormats[MaxRenderTargets] = {Format::eNone, Format::eNone, Format::eNone, Format::eNone, Format::eNone, Format::eNone, Format::eNone, Format::eNone };
+	Format mDepthStencilFormat = Format::eNone;
+	SampleDesc mSampleState = default SampleDesc;
+
+	// Items not in the pipeline at this time.
+	// StreamOutput
+	// node mask
+	// cache pipeline state
+	// flags
+};

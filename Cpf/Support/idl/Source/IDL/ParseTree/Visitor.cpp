@@ -145,6 +145,7 @@ antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *ctx)
 Visitor::MemberInitValue Visitor::ParseInitValue(IDLParser::Member_init_valueContext* ctx)
 {
 	Visitor::MemberInitValue value;
+	value.mAsType = Visitor::Type::None;
 	if (ctx->qualified_ident())
 	{
 		value.mType = ctx->DEFAULT() ?
@@ -166,6 +167,18 @@ Visitor::MemberInitValue Visitor::ParseInitValue(IDLParser::Member_init_valueCon
 	{
 		value.mType = MemberInitValue::Str;
 		value.mString = ctx->string_lit()->STRING_LIT()->toString();
+	}
+	if (ctx->init_as_type())
+	{
+		auto as_type = ctx->init_as_type();
+		if (as_type->integral_type())
+		{
+			value.mAsType = ParseIntegralType(as_type->integral_type());
+		}
+		else if (as_type->float_type())
+		{
+			CPF_ASSERT_ALWAYS; // TODO.
+		}
 	}
 	return value;
 }

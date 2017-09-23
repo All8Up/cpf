@@ -50,6 +50,7 @@ namespace IDL
 		using String = CPF::String;
 		enum class Type : int32_t
 		{
+			None,
 			Ident,
 
 			U8, S8,
@@ -110,6 +111,7 @@ namespace IDL
 			int64_t mInt;
 			float mFloat;
 			String mString;
+			Visitor::Type mAsType;
 		};
 		struct DataMemberDecl
 		{

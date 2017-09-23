@@ -16,11 +16,11 @@ Pipeline::Pipeline(Device* device, const Graphics::PipelineStateDesc* state, con
 {
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC stateDesc;
 	stateDesc.pRootSignature = nullptr;
-	stateDesc.VS = state->mpVertex ? static_cast<Shader*>(state->mpVertex.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.PS = state->mpPixel ? static_cast<Shader*>(state->mpPixel.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.DS = state->mpDomain ? static_cast<Shader*>(state->mpDomain.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.HS = state->mpHull ? static_cast<Shader*>(state->mpHull.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
-	stateDesc.GS = state->mpGeometry ? static_cast<Shader*>(state->mpGeometry.Ptr())->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.VS = state->mpVertex ? static_cast<Shader*>(state->mpVertex)->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.PS = state->mpPixel ? static_cast<Shader*>(state->mpPixel)->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.DS = state->mpDomain ? static_cast<Shader*>(state->mpDomain)->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.HS = state->mpHull ? static_cast<Shader*>(state->mpHull)->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
+	stateDesc.GS = state->mpGeometry ? static_cast<Shader*>(state->mpGeometry)->GetByteCode() : D3D12_SHADER_BYTECODE{ nullptr, 0 };
 
 	stateDesc.StreamOutput = {nullptr, 0, nullptr, 0, 0};
 	stateDesc.BlendState = { state->mBlendState.mAlphaToCoverage, state->mBlendState.mIndependentBlend, {0} };

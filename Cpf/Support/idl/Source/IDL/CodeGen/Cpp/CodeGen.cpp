@@ -275,7 +275,13 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 				switch (initializers[0].mType)
 				{
 				case Visitor::MemberInitValue::Integer:
-					mpWriter->OutputLine("%d%s", int(initializers[0].mInt), isLastMember ? "" : ",");
+					if (initializers[0].mAsType != Visitor::Type::None)
+					{
+						auto type = TypeToString(initializers[0].mAsType);
+						mpWriter->OutputLine("%s(%d)%s", type.c_str(), int(initializers[0].mInt), isLastMember ? "" : ",");
+					}
+					else
+						mpWriter->OutputLine("%d%s", int(initializers[0].mInt), isLastMember ? "" : ",");
 					break;
 				case Visitor::MemberInitValue::Identifier:
 					mpWriter->OutputLine("%s%s", initializers[0].mIdent.c_str(), isLastMember ? "" : ",");
@@ -302,7 +308,13 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 					switch (initValue.mType)
 					{
 					case Visitor::MemberInitValue::Integer:
-						mpWriter->OutputLine("%d%s", int(initValue.mInt), lastValue ? "" : ",");
+						if (initValue.mAsType != Visitor::Type::None)
+						{
+							auto type = TypeToString(initValue.mAsType);
+							mpWriter->OutputLine("%s(%d)%s", type.c_str(), int(initValue.mInt), isLastMember ? "" : ",");
+						}
+						else
+							mpWriter->OutputLine("%d%s", int(initValue.mInt), lastValue ? "" : ",");
 						break;
 					case Visitor::MemberInitValue::Identifier:
 						mpWriter->OutputLine("%s%s", initValue.mIdent.c_str(), lastValue ? "" : ",");

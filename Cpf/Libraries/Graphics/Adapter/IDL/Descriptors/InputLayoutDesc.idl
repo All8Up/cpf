@@ -4,6 +4,6 @@ struct InputElementDesc;
 
 struct InputLayoutDesc
 {
-	s32 mCount;
-	InputElementDesc* mpElements;
+	s32 mCount = 0;
+	InputElementDesc* mpElements = nullptr;
 }
