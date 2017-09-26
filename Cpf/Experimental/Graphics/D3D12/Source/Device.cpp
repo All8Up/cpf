@@ -197,7 +197,8 @@ bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 		SwapEffect::eFlipDiscard,
 		{ 1, 0 },
 		mBackBufferCount,
-		true
+		true,
+		false
 	};
 	WindowData winData;
 	OSWindowData osData;

@@ -91,6 +91,7 @@ void ExperimentalD3D12::_Draw(const Concurrency::WorkContext* tc)
 	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpCommandBuffer[mCurrentBackbuffer];
 }
 
+//#define DISABLE_RENDERING
 void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 {
 	// Insert the drawing buffers.
@@ -102,6 +103,7 @@ void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 	// End the command buffer prior to submission.
 	mpPreCommandBuffer[mCurrentBackbuffer]->End();
 
+#ifndef DISABLE_RENDERING
 	// Submit the command buffers.
 	iCommandBuffer* buffers[1] = {mpPreCommandBuffer[mCurrentBackbuffer]};
 	mpDevice->Submit(1, buffers);
@@ -116,4 +118,5 @@ void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 	// TODO: This sure seems like a race condition but it is how all the examples seem to work.
 	if (mpFence->GetValue() < fenceToWaitFor)
 		mpFence->WaitFor(fenceToWaitFor);
+#endif
 }

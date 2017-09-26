@@ -113,7 +113,7 @@ GOM::Result CPF_STDCALL SwapChain::QueryInterface(uint64_t id, void** outIface)
 
 void SwapChain::Present()
 {
-	mpSwapChain->Present(0, 0 /* DXGI_PRESENT_ALLOW_TEARING */);
+	mpSwapChain->Present(mDesc.mVSync ? 1 : 0, DXGI_PRESENT_ALLOW_TEARING);
 }
 
 void SwapChain::Resize(int32_t x, int32_t y)

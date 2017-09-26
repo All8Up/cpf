@@ -266,7 +266,8 @@ bool RenderSystem::_CreateSwapChain(iWindow* window)
 		SwapEffect::eFlipDiscard,
 		{ 1, 0 },
 		kBufferCount,
-		true
+		true,
+		false
 	};
 	OSWindowData osData;
 	window->GetOSData(&osData);

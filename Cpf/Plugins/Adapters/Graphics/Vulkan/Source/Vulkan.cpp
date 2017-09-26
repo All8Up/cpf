@@ -1,30 +1,36 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Adapter/Vulkan.hpp"
-#include "Adapter/Vulkan/Instance.hpp"
+#include "Vulkan.hpp"
+#include "Graphics.hpp"
+#include "Plugin/tClassInstance.hpp"
+#include "Logging/Logging.hpp"
 
-using namespace Cpf;
-using namespace Adapters;
+using namespace CPF;
 
-namespace
+//////////////////////////////////////////////////////////////////////////
+static Plugin::IID_CID sImplementations[] =
 {
-	int s_RefCount = 0;
+	{0}
+//	{ Graphics::iInstance::kIID.GetID(), Vulkan::kVulkanInstanceCID.GetID() }
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+extern "C"
+GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		return GOM::kOK;
+	}
+	return GOM::kInvalidParameter;
 }
 
-CPF_EXPORT_ADAPTERS_VULKAN int VulkanInitializer::Install()
+extern "C"
+GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 {
-	if (++s_RefCount == 1)
+	if (registry)
 	{
-//		Graphics::Install(2, &Vulkan::Instance::Create);
-//		Graphics::Install(GetRtti<Graphics::Adapter::iSwapChain>(), &D3D12::SwapChain::Create);
+		return GOM::kOK;
 	}
-	return s_RefCount;
-}
-
-CPF_EXPORT_ADAPTERS_VULKAN int VulkanInitializer::Remove()
-{
-	if ((--s_RefCount) == 0)
-	{
-//		Graphics::Remove(2);
-	}
-	return s_RefCount;
+	return GOM::kInvalidParameter;
 }
