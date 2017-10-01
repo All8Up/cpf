@@ -1,19 +1,3 @@
-# Spdlog
-if (NOT EXTERN_INLINE_SPDLOG)
-else ()
-#[[
-	if (IS_DIRECTORY "${SPDLOG_SRC_DIR}")
-		set (CPF_HAVE_SPDLOG 1 PARENT_SCOPE)
-		set (CPF_SPDLOG_LIBRARY spdlog PARENT_SCOPE)
-		add_library (spdlog INTERFACE)
-		target_include_directories (spdlog
-			INTERFACE
-				$<BUILD_INTERFACE:${SPDLOG_SRC_DIR}/include/>
-		)
-	endif ()
-#]]
-endif ()
-
 # Sdl2
 if (NOT EXTERN_INLINE_SDL2)
 else ()
