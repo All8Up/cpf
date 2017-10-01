@@ -29,6 +29,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 // Available 3rd party libraries.
+#cmakedefine CPF_HAVE_GLOG
 #cmakedefine CPF_HAVE_SPDLOG
 #cmakedefine CPF_HAVE_CEREAL
 #cmakedefine CPF_HAVE_ASIO

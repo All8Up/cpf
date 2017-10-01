@@ -137,6 +137,7 @@ target_link_libraries (IDL
 	Events
 	gflags_static
 )
+target_compile_options (IDL PRIVATE /wd4100)
 
 if (WIN32)
     target_compile_options (IDL

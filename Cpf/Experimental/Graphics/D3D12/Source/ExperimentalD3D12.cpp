@@ -75,7 +75,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 
 	// Initialize logging.
 	CPF_INIT_LOG(Experimental);
-	CPF_LOG_LEVEL(Experimental, Trace);
+	CPF_LOG_LEVEL(Experimental, Info);
 
 	// Initialize the io library.
 	ScopedInitializer<IOInitializer> ioInit;

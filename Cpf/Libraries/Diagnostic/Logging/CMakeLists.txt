@@ -10,7 +10,13 @@ target_include_directories (Logging
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 )
 
-target_link_libraries( Logging INTERFACE Configuration spdlog )
+if (CPF_HAVE_SPDLOG)
+	target_link_libraries (Logging INTERFACE Configuration spdlog)
+elseif (CPF_HAVE_GLOG)
+	target_link_libraries (Logging INTERFACE Configuration gflags_static glog)
+else ()
+	target_link_libraries (Logging INTERFACE Configuration)
+endif ()
 
 add_custom_target (Logging_IDE SOURCES ${INCLUDE_FILES} )
 set_property (TARGET Logging_IDE PROPERTY FOLDER Libraries/Interface/Diagnostics)

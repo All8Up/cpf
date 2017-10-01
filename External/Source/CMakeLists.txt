@@ -1,6 +1,7 @@
 # Spdlog
 if (NOT EXTERN_INLINE_SPDLOG)
 else ()
+#[[
 	if (IS_DIRECTORY "${SPDLOG_SRC_DIR}")
 		set (CPF_HAVE_SPDLOG 1 PARENT_SCOPE)
 		set (CPF_SPDLOG_LIBRARY spdlog PARENT_SCOPE)
@@ -10,6 +11,7 @@ else ()
 				$<BUILD_INTERFACE:${SPDLOG_SRC_DIR}/include/>
 		)
 	endif ()
+#]]
 endif ()
 
 # Sdl2
@@ -30,7 +32,7 @@ else ()
 #		set_property (TARGET SDL2-static PROPERTY FOLDER External/SDL2)
 		set_property (TARGET uninstall PROPERTY FOLDER External/SDL2)
 		target_include_directories (SDL2 PUBLIC ${SDL2_SRC_DIR}/include)
-		target_compile_options (SDL2 PRIVATE /wd4267 /wd4018 /wd4311)
+		target_compile_options (SDL2 PRIVATE /wd4267 /wd4018 /wd4311 /wd4996 /wd4312)
 	endif ()
 endif ()
 
@@ -103,6 +105,8 @@ set_property (TARGET gflags_static PROPERTY FOLDER External/gflags-2.2.1)
 target_compile_options (gflags_static PRIVATE /wd4127 /wd4100 /wd4459)
 
 # glog
+set (DISABLE_RTTI ON CACHE BOOL "" FORCE)
+set (CPF_HAVE_GLOG 1 PARENT_SCOPE)
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Source/glog-0.3.5")
 set_property (TARGET glog PROPERTY FOLDER External/glog-0.3.5)
 target_compile_options (glog PRIVATE /wd4722 /wd4267 /wd4100 /wd4505)

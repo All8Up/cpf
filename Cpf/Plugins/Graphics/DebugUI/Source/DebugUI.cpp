@@ -95,7 +95,7 @@ DebugUI::DebugUI(iUnknown*)
 	, mMouseWheel(0.0f)
 {
 	CPF_INIT_LOG(DebugUI);
-	CPF_LOG_LEVEL(DebugUI, Trace);
+	CPF_LOG_LEVEL(DebugUI, Info);
 }
 
 DebugUI::~DebugUI()

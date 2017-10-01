@@ -25,6 +25,7 @@ DEFINE_bool(rust, false, "Output rust targets.");
 int main(int argc, char** argv)
 {
 	gflags::ParseCommandLineFlags(&argc, &argv, true);
+	CPF_INIT_LOGGING(argc, argv[0]);
 	CPF_LOG_LEVELS(Warn);
 	CPF::IOInitializer::Install();
 

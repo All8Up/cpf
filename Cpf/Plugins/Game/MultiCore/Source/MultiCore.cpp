@@ -24,7 +24,7 @@ int MultiCoreInitializer::Install(Plugin::iRegistry* registry)
 	{
 		spRegistry = registry;
 		CPF_INIT_LOG(MultiCore);
-		CPF_LOG(MultiCore, Trace) << "Initialized multicore library.";
+		CPF_LOG(MultiCore, Info) << "Initialized multicore library.";
 		spRegistry->Install(MultiCore::kExecutionPlanCID.GetID(), new Plugin::tClassInstance<MultiCore::ExecutionPlan>());
 		spRegistry->Install(MultiCore::kTimerCID.GetID(), new Plugin::tClassInstance<MultiCore::Timer>());
 		spRegistry->Install(MultiCore::kSingleUpdateStageCID.GetID(), new Plugin::tClassInstance<MultiCore::SingleUpdateStage>());
@@ -42,7 +42,7 @@ int MultiCoreInitializer::Remove()
 		spRegistry->Remove(MultiCore::kSingleUpdateStageCID.GetID());
 		spRegistry->Remove(MultiCore::kTimerCID.GetID());
 		spRegistry->Remove(MultiCore::kExecutionPlanCID.GetID());
-		CPF_LOG(MultiCore, Trace) << "Shutdown multicore library.";
+		CPF_LOG(MultiCore, Info) << "Shutdown multicore library.";
 		CPF_DROP_LOG(MultiCore);
 		spRegistry = nullptr;
 	}

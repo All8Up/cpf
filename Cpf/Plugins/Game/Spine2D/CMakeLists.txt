@@ -96,6 +96,7 @@ target_link_libraries (Spine2D
 	PUBLIC
 		Configuration Plugin
 )
+target_compile_options (Spine2D PRIVATE /wd4100 /wd4244 /wd4456 /wd4232 /wd4267 /wd4701)
 set_property (TARGET Spine2D PROPERTY FOLDER Plugins/Game)
 
 

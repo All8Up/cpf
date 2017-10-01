@@ -41,6 +41,7 @@ target_link_libraries (DebugUI
 	PUBLIC
 		Configuration Std Plugin Math GraphicsDriver Logging i_Application s_IO i_Resources
 )
+target_compile_options (DebugUI PRIVATE /wd4244)
 set_property (TARGET DebugUI PROPERTY FOLDER Plugins/Graphics)
 source_group (Sources\\Graphics\\imgui FILES ${SOURCE_IMGUI_FILES})
 

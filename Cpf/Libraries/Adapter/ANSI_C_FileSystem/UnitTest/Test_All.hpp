@@ -4,5 +4,5 @@
 
 TEST(ANSI_C_FileSystem, Init)
 {
-	CPF_LOG_LEVELS(Trace);
+	CPF_LOG_LEVELS(Info);
 }

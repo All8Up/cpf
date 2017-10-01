@@ -193,7 +193,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 
 			char buffer[1024];
 			::sprintf(buffer, "Mouse button: Button(%d) X(%d) Y(%d)", event.button.button, event.button.x, event.button.y);
-			CPF_LOG(Application, Trace) << buffer;
+			CPF_LOG(Application, Info) << buffer;
 		}
 		break;
 
@@ -217,7 +217,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 
 			char buffer[1024];
 			::sprintf(buffer, "Mouse up: Button(%d) X(%d) Y(%d)", event.button.button, event.button.x, event.button.y);
-			CPF_LOG(Application, Trace) << buffer;
+			CPF_LOG(Application, Info) << buffer;
 		}
 		break;
 
@@ -259,7 +259,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnShow>();
-					CPF_LOG(Application, Trace) << "Window shown.";
+					CPF_LOG(Application, Info) << "Window shown.";
 				}
 				break;
 
@@ -267,7 +267,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnHide>();
-					CPF_LOG(Application, Trace) << "Window hidden.";
+					CPF_LOG(Application, Info) << "Window hidden.";
 				}
 				break;
 
@@ -275,7 +275,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnExposed>();
-					CPF_LOG(Application, Trace) << "Window exposed.";
+					CPF_LOG(Application, Info) << "Window exposed.";
 				}
 				break;
 
@@ -283,7 +283,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnMoved>(event.window.data1, event.window.data2);
-					CPF_LOG(Application, Trace) << "Window moved.";
+					CPF_LOG(Application, Info) << "Window moved.";
 				}
 				break;
 
@@ -298,7 +298,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnResize>(event.window.data1, event.window.data2);
-					CPF_LOG(Application, Trace) << "Window size changed.";
+					CPF_LOG(Application, Info) << "Window size changed.";
 				}
 				break;
 
@@ -306,7 +306,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnMinimized>();
-					CPF_LOG(Application, Trace) << "Window minimized.";
+					CPF_LOG(Application, Info) << "Window minimized.";
 				}
 				break;
 
@@ -314,7 +314,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnMinimized>();
-					CPF_LOG(Application, Trace) << "Window minimized.";
+					CPF_LOG(Application, Info) << "Window minimized.";
 				}
 				break;
 
@@ -322,7 +322,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnRestored>();
-					CPF_LOG(Application, Trace) << "Window restored.";
+					CPF_LOG(Application, Info) << "Window restored.";
 				}
 				break;
 
@@ -330,7 +330,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnMouseEnter>();
-					CPF_LOG(Application, Trace) << "Mouse entered.";
+					CPF_LOG(Application, Info) << "Mouse entered.";
 				}
 				break;
 
@@ -338,7 +338,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnMouseLeave>();
-					CPF_LOG(Application, Trace) << "Mouse left.";
+					CPF_LOG(Application, Info) << "Mouse left.";
 				}
 				break;
 
@@ -346,7 +346,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnFocusGained>();
-					CPF_LOG(Application, Trace) << "Focus gained.";
+					CPF_LOG(Application, Info) << "Focus gained.";
 				}
 				break;
 
@@ -354,7 +354,7 @@ void WindowedApp::_HandleEvent(SDL_Event& event)
 				{
 					iWindow* window = reinterpret_cast<iWindow*>(SDL_GetWindowData(SDL_GetWindowFromID(event.window.windowID), "iWindow"));
 					window->GetEmitter()->Emit<iWindow::OnFocusLost>();
-					CPF_LOG(Application, Trace) << "Focus lost.";
+					CPF_LOG(Application, Info) << "Focus lost.";
 				}
 				break;
 			}
