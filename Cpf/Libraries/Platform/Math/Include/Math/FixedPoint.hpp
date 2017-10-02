@@ -39,7 +39,7 @@ namespace CPF
 
 			FixedPoint(ValueType whole, ValueType fraction);
 			explicit FixedPoint(ValueType value);
-			explicit FixedPoint(float value);
+			explicit FixedPoint(FloatType value);
 
 			explicit operator ValueType () const;
 			explicit operator FloatType () const;
@@ -65,12 +65,12 @@ namespace CPF
 			: mData(value)
 		{}
 		template <int TYPESIZE, int FRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(float value)
+		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(FloatType value)
 		{
-			float v = std::abs(value);
+			FloatType v = value > FloatType(0) ? value : -value;
 			mData = (ValueType(v) << kShift) |
 				ValueType((v - ValueType(v)) * kOneFrac);
-			mData = std::signbit(value) ? -mData : mData;
+			mData = value < FloatType(0) ? -mData : mData;
 		}
 
 		template <int TYPESIZE, int FRACBITS>
