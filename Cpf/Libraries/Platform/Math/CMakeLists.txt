@@ -5,6 +5,7 @@ set (MATH_INCLUDE_FILES
 	Include/Math/BitManipulation.hpp
 	Include/Math/Constants.hpp
 	Include/Math/Exponential.hpp
+	Include/Math/FixedPoint.hpp
 	Include/Math/Hyperbolic.hpp
 	Include/Math/Interpolation.hpp
 	Include/Math/Matrix22v.hpp
@@ -98,6 +99,7 @@ MakeUnitTest (LIBRARY Math GROUP Platform
 		UnitTest/Test_All.hpp
 		UnitTest/Test_BitManipulation.cpp
 		UnitTest/Test_CodeGen.cpp
+		UnitTest/Test_FixedPoint.cpp
 		UnitTest/Test_Matrix22v.cpp
 		UnitTest/Test_Matrix33v.cpp
 		UnitTest/Test_Matrix44v.cpp
