@@ -46,7 +46,7 @@ namespace
 	const char* kRustPlugin = "plugins/TestRust.cfp";
 }
 
-struct iTestRust : public GOM::iUnknown
+struct iTestRust : GOM::iUnknown
 {
 	virtual uint32_t CPF_STDCALL Test(uint32_t value) = 0;
 };
