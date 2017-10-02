@@ -63,4 +63,4 @@ target_include_directories (RayTracer
 
 # ##########################################
 # Group the applications.
-set_property (TARGET RayTracer PROPERTY FOLDER Experimental)
+set_property (TARGET RayTracer PROPERTY FOLDER KPI)

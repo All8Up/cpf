@@ -31,8 +31,23 @@ else ()
 	message ("No CPF library sources found.")
 endif ()
 
+# ###############################################
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Experimental")
 	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Experimental" )
 else ()
 	message ("No experimental sources found.")
+endif ()
+
+# ###############################################
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/KPI")
+	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/KPI" )
+else ()
+	message ("No KPI sources found.")
+endif ()
+
+# ###############################################
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Tools")
+	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Tools" )
+else ()
+	message ("No tool sources found.")
 endif ()

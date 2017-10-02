@@ -153,24 +153,3 @@ if (WIN32)
             _UNICODE
     )
 endif ()
-
-add_executable (Test_IDL
-	UnitTest/Test_All.hpp
-	../../Libraries/Core/Test/UnitTestMain.cpp
-)
-add_test (IDL Test_IDL COMMAND Test_IDL)
-target_link_libraries (Test_IDL gtest gmock Std antlr4_static)
-target_include_directories (Test_IDL
-	PUBLIC
-		Include
-		Generated
-		${CMAKE_CURRENT_SOURCE_DIR}/Antlr4/Cpp/runtime/src
-		UnitTest
-)
-set_property (TARGET Test_IDL PROPERTY FOLDER UnitTests/IDL)
-
-if (WIN32 AND CMAKE_BUILD_TYPE MATCHES "Release")
-	add_custom_command (TARGET IDL POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:IDL> ${CPF_OS_BIN_DIR}
-	)
-endif ()
