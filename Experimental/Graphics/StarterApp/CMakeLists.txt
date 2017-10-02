@@ -11,16 +11,16 @@ set (SOURCE_FILES
 	Source/RenderSystem.cpp
 )
 
-add_executable (Networked WIN32
+add_executable (StarterApp WIN32
 	${HEADER_FILES}
 	${SOURCE_FILES}
 	${DataFiles}
 )
 
-target_include_directories (Networked
+target_include_directories (StarterApp
 	PUBLIC Include
 )
-target_link_libraries (Networked
+target_link_libraries (StarterApp
 	Logging
 	s_ANSI_C_FileSystem
 	MultiCore
@@ -32,7 +32,7 @@ target_link_libraries (Networked
 	i_Python3
 	asio
 )
-set_property (TARGET Networked PROPERTY FOLDER Experimental/Serialization/Networked)
+set_property (TARGET StarterApp PROPERTY FOLDER Experimental/Graphics)
 
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_integration/__init__.py COPYONLY)
 configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_integration/__init__.py COPYONLY)

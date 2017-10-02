@@ -45,7 +45,7 @@ SwapChain::SwapChain(
 		sd.BufferUsage = 0; // Defaults to DXGI_USAGE_RENDER_TARGET_OUTPUT during creation.
 		sd.BufferCount = mDesc.mBackBufferCount;
 		sd.SwapEffect = Convert(mDesc.mSwapEffect);
-		sd.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+		sd.Flags = desc->mVSync ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 		IDXGISwapChain1* tempSwapChain;
 		hr = dxgiFactory->CreateSwapChainForHwnd(d3d12CommandQueue, windowData->mHWnd, &sd, nullptr, nullptr, &tempSwapChain);
