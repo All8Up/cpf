@@ -22,7 +22,7 @@
 #include "Graphics/ResourceState.hpp"
 #include "Graphics/SubResource.hpp"
 #include "Graphics/FrameBufferDesc.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Adapter/D3D12/Sampler.hpp"
 
 using namespace CPF;

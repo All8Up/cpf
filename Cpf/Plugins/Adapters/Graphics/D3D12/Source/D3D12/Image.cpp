@@ -4,7 +4,7 @@
 #include "Graphics/ImageFlags.hpp"
 #include "Graphics/HeapType.hpp"
 #include "Graphics/ClearValue.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Caches/Default.hpp"
 #include "Resources/Resource.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Resources;

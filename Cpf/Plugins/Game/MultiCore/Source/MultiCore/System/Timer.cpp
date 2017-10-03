@@ -2,7 +2,7 @@
 #include "MultiCore/System/iTimer.hpp"
 #include "Timer.hpp"
 #include "MultiCore/iExecutionPlan.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace MultiCore;

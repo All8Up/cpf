@@ -6,7 +6,7 @@
 #include "Adapter/D3D12/Image.hpp"
 #include "Adapter/D3D12/ImageView.hpp"
 #include "Graphics/WindowData.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Move.hpp"
 
 #ifdef CPF_DEBUG

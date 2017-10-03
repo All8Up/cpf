@@ -5,6 +5,7 @@
 #include "StringUtils.hpp"
 #include <vector>
 #include "PluginHost/Registry.hpp"
+#include "CPF/Logging.hpp"
 
 
 extern CPF::iApplicationMain::AppMainCreate gs_AppMainCreate;
@@ -56,6 +57,7 @@ int main(int argc, char** argv)
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 {
 	(void)hInstance; (void)hPrevInstance;
+	CPF_INIT_LOGGING(0, "");
 	auto app = gs_AppMainCreate();
 	if (app)
 	{

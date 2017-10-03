@@ -47,6 +47,11 @@ namespace CPF
 
 			FixedPoint<TYPESIZE, FRACBITS>& operator = (FixedPoint<TYPESIZE, FRACBITS> value);
 
+			FixedPoint<TYPESIZE, FRACBITS>& operator += (FixedPoint<TYPESIZE, FRACBITS> value);
+			FixedPoint<TYPESIZE, FRACBITS>& operator -= (FixedPoint<TYPESIZE, FRACBITS> value);
+			FixedPoint<TYPESIZE, FRACBITS>& operator *= (FixedPoint<TYPESIZE, FRACBITS> value);
+			FixedPoint<TYPESIZE, FRACBITS>& operator /= (FixedPoint<TYPESIZE, FRACBITS> value);
+
 		private:
 			ValueType mData;
 		};
@@ -99,6 +104,34 @@ namespace CPF
 			return *this;
 		}
 
+		template <int TYPESIZE, int FRACBITS>
+		FixedPoint<TYPESIZE, FRACBITS>& FixedPoint<TYPESIZE, FRACBITS>::operator += (FixedPoint<TYPESIZE, FRACBITS> value)
+		{
+			*this = *this + value;
+			return *this;
+		}
+
+		template <int TYPESIZE, int FRACBITS>
+		FixedPoint<TYPESIZE, FRACBITS>& FixedPoint<TYPESIZE, FRACBITS>::operator -= (FixedPoint<TYPESIZE, FRACBITS> value)
+		{
+			*this = *this - value;
+			return *this;
+		}
+
+		template <int TYPESIZE, int FRACBITS>
+		FixedPoint<TYPESIZE, FRACBITS>& FixedPoint<TYPESIZE, FRACBITS>::operator *= (FixedPoint<TYPESIZE, FRACBITS> value)
+		{
+			*this = *this * value;
+			return *this;
+		}
+
+		template <int TYPESIZE, int FRACBITS>
+		FixedPoint<TYPESIZE, FRACBITS>& FixedPoint<TYPESIZE, FRACBITS>::operator /= (FixedPoint<TYPESIZE, FRACBITS> value)
+		{
+			*this = *this / value;
+			return *this;
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		template <typename FPTYPE>
 		FPTYPE operator - (const FPTYPE value)
@@ -141,42 +174,42 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename FPTYPE>
-		FPTYPE operator == (const FPTYPE lhs, const FPTYPE rhs)
+		bool operator == (const FPTYPE lhs, const FPTYPE rhs)
 		{
 			using ValueType = typename FPTYPE::ValueType;
 			return ValueType(lhs) == ValueType(rhs);
 		}
 
 		template <typename FPTYPE>
-		FPTYPE operator != (const FPTYPE lhs, const FPTYPE rhs)
+		bool operator != (const FPTYPE lhs, const FPTYPE rhs)
 		{
 			using ValueType = typename FPTYPE::ValueType;
 			return ValueType(lhs) != ValueType(rhs);
 		}
 
 		template <typename FPTYPE>
-		FPTYPE operator > (const FPTYPE lhs, const FPTYPE rhs)
+		bool operator > (const FPTYPE lhs, const FPTYPE rhs)
 		{
 			using ValueType = typename FPTYPE::ValueType;
 			return ValueType(lhs) > ValueType(rhs);
 		}
 
 		template <typename FPTYPE>
-		FPTYPE operator >= (const FPTYPE lhs, const FPTYPE rhs)
+		bool operator >= (const FPTYPE lhs, const FPTYPE rhs)
 		{
 			using ValueType = typename FPTYPE::ValueType;
 			return ValueType(lhs) >= ValueType(rhs);
 		}
 
 		template <typename FPTYPE>
-		FPTYPE operator < (const FPTYPE lhs, const FPTYPE rhs)
+		bool operator < (const FPTYPE lhs, const FPTYPE rhs)
 		{
 			using ValueType = typename FPTYPE::ValueType;
 			return ValueType(lhs) < ValueType(rhs);
 		}
 
 		template <typename FPTYPE>
-		FPTYPE operator <= (const FPTYPE lhs, const FPTYPE rhs)
+		bool operator <= (const FPTYPE lhs, const FPTYPE rhs)
 		{
 			using ValueType = typename FPTYPE::ValueType;
 			return ValueType(lhs) <= ValueType(rhs);

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/FileSystem.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "IO/Path.hpp"
 #include "IO/Stream.hpp"
 #include "Std/String.hpp"

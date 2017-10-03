@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Manager.hpp"
 #include "Entity.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace EntityService;

@@ -4,7 +4,7 @@
 #include "Application/iApplicationMain.hpp"
 #include "Application/iInputManager.hpp"
 #include "Plugin/iRegistry.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "SDL2/CIDs.hpp"
 
 using namespace CPF;

@@ -42,7 +42,7 @@
 #include "Resources/iLocator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 #include "Application/ScanCode.hpp"
 #include "Application/KeyModifier.hpp"

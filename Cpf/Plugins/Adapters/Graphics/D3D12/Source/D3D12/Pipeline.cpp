@@ -5,7 +5,7 @@
 #include "Adapter/D3D12/ResourceBinding.hpp"
 #include "Graphics/PipelineStateDesc.hpp"
 #include "Graphics/InputElementDesc.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;

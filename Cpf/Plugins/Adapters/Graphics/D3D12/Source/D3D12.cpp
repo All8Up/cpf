@@ -4,7 +4,7 @@
 #include "Plugin/tClassInstance.hpp"
 #include "Adapter/D3D12/Plugin.hpp"
 #include "Adapter/D3D12/Instance.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;

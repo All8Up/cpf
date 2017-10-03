@@ -21,7 +21,7 @@
 #include "Adapter/D3D12/FrameBuffer.hpp"
 #include "Adapter/D3D12/Plugin.hpp"
 
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "String.hpp"
 
 using namespace CPF;

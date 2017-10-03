@@ -4,7 +4,7 @@
 #include "Adapter/D3D12/Output.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;

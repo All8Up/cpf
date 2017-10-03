@@ -13,7 +13,7 @@
 
 #include "IntrusivePtr.hpp"
 #include "Adapter/D3D12/Plugin.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;

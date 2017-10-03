@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MultiCore.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "MultiCore/ExecutionPlan.hpp"
 #include "MultiCore/System/Timer.hpp"
 #include "MultiCore/Stage.hpp"

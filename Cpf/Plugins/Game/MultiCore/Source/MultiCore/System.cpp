@@ -4,7 +4,7 @@
 #include "MultiCore/iExecutionPlan.hpp"
 #include "System.hpp"
 #include "UnorderedMap.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace MultiCore;

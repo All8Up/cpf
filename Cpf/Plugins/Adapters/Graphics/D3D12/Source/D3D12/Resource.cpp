@@ -3,7 +3,7 @@
 #include "Adapter/D3D12/Device.hpp"
 #include "Graphics/ResourceDesc.hpp"
 #include "Graphics/HeapType.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;

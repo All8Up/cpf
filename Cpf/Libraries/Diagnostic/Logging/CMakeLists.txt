@@ -1,6 +1,6 @@
 #
 set (INCLUDE_FILES
-	Include/Logging/Logging.hpp
+	Include/CPF/Logging.hpp
 )
 
 add_library (Logging INTERFACE)
@@ -20,12 +20,12 @@ endif ()
 
 add_custom_target (Logging_IDE SOURCES ${INCLUDE_FILES} )
 set_property (TARGET Logging_IDE PROPERTY FOLDER Libraries/Interface/Diagnostics)
-source_group (Include FILES ${INCLUDE_FILES})
+source_group (Headers FILES ${INCLUDE_FILES})
 
 
 # Installation setup.
-install (DIRECTORY Include/Logging
-	DESTINATION Include/Logging
+install (DIRECTORY Include/CPF
+	DESTINATION Include/CPF
 	PATTERN *
 )
 
