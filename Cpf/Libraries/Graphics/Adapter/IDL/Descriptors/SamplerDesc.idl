@@ -1,7 +1,7 @@
-module CPF::Graphics;
+import FilterMode from Graphics;
+import WrapMode from Graphics;
 
-enum FilterMode : s32;
-enum WrapMode : s32;
+module CPF::Graphics;
 
 struct SamplerDesc
 {

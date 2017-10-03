@@ -42,7 +42,6 @@ set (IDL_STRUCTURES
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Range.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Ratio.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/ResourceData.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/SampleDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Viewport.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/WindowData.idl
 )
@@ -79,6 +78,7 @@ set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderTargetBlendStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ResourceBindingDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ResourceDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/SampleDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SamplerDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SubPassDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SwapChainDesc.idl
@@ -160,6 +160,7 @@ set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	Include/Graphics/InputLayoutBuilder.hpp
 	Include/Graphics/PipelineStateBuilder.hpp
 	Include/Graphics/RasterizerStateBuilder.hpp
+	Include/Graphics/Utilities.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}

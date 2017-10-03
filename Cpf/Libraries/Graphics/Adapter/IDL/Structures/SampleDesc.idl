@@ -1,4 +1,4 @@
-import Graphics;
+import Utilities from Graphics;
 module CPF::Graphics;
 
 struct SampleDesc

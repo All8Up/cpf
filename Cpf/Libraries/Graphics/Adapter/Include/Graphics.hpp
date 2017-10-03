@@ -1,43 +1,43 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
-
-namespace CPF
-{
-	namespace Graphics
-	{
-		template <typename TYPE>
-		TYPE Defaults();
-
-		template <typename TYPE>
-		struct BuilderType;
-
-		template <typename TYPE>
-		typename BuilderType<TYPE>::Builder Build()
-		{
-			return typename BuilderType<TYPE>::Builder();
-		}
-	}
-}
+#include "Graphics/Utilities.hpp"
 
 //////////////////////////////////////////////////////////////////////////
+#include "Graphics/Format.hpp"
+
 #include "Graphics/Range.hpp"
-#include "Graphics/iBlob.hpp"
 
-#include "Graphics/iInstance.hpp"
-#include "Graphics/iAdapter.hpp"
-#include "Graphics/iDevice.hpp"
-#include "Graphics/iSwapChain.hpp"
-#include "Graphics/iCommandPool.hpp"
-#include "Graphics/iCommandBuffer.hpp"
-#include "Graphics/iFence.hpp"
-#include "Graphics/iShader.hpp"
-#include "Graphics/iPipeline.hpp"
-#include "Graphics/iResourceBinding.hpp"
-#include "Graphics/iResource.hpp"
-#include "Graphics/iIndexBuffer.hpp"
-#include "Graphics/iVertexBuffer.hpp"
-#include "Graphics/iConstantBuffer.hpp"
-
+#include "Graphics/HeapType.hpp"
+#include "Graphics/ImageDesc.hpp"
+#include "Graphics/SwapEffect.hpp"
+#include "Graphics/ImageFlags.hpp"
+#include "Graphics/WindowData.hpp"
+#include "Graphics/SubPassDesc.hpp"
+#include "Graphics/SubResource.hpp"
 #include "Graphics/ResourceDesc.hpp"
+#include "Graphics/SwapChainDesc.hpp"
+#include "Graphics/ResourceState.hpp"
+#include "Graphics/AttachmentDesc.hpp"
+#include "Graphics/RenderPassDesc.hpp"
+#include "Graphics/FrameBufferDesc.hpp"
+#include "Graphics/PipelineBindPoint.hpp"
+#include "Graphics/RenderPassBeginDesc.hpp"
 #include "Graphics/ResourceBindingDesc.hpp"
+
+#include "Graphics/iBlob.hpp"
+#include "Graphics/iFence.hpp"
+#include "Graphics/iImage.hpp"
+#include "Graphics/iShader.hpp"
+#include "Graphics/iDevice.hpp"
+#include "Graphics/iAdapter.hpp"
+#include "Graphics/iResource.hpp"
+#include "Graphics/iPipeline.hpp"
+#include "Graphics/iInstance.hpp"
+#include "Graphics/iImageView.hpp"
+#include "Graphics/iSwapChain.hpp"
+#include "Graphics/iIndexBuffer.hpp"
+#include "Graphics/iCommandPool.hpp"
+#include "Graphics/iVertexBuffer.hpp"
+#include "Graphics/iCommandBuffer.hpp"
+#include "Graphics/iConstantBuffer.hpp"
+#include "Graphics/iResourceBinding.hpp"
