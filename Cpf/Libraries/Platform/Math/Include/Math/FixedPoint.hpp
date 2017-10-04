@@ -39,11 +39,16 @@ namespace CPF
 
 			FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs);
 			FixedPoint(ValueType whole, ValueType fraction);
+			template<int RSIZE, int RFRACBITS>
+			FixedPoint(FixedPoint<RSIZE, RFRACBITS> value);
 			explicit FixedPoint(ValueType value);
 			explicit FixedPoint(FloatType value);
 
 			explicit operator ValueType () const;
 			explicit operator FloatType () const;
+
+			ValueType GetWhole() const;
+			ValueType GetFraction() const;
 
 			FixedPoint<TYPESIZE, FRACBITS>& operator = (FixedPoint<TYPESIZE, FRACBITS> value);
 
@@ -73,6 +78,14 @@ namespace CPF
 		}
 
 		template <int TYPESIZE, int FRACBITS>
+		template <int RSIZE, int RFRACBITS>
+		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(FixedPoint<RSIZE, RFRACBITS> value)
+		{
+			// TODO: this is a cheesy lazy way of doing this.
+			*this = FixedPoint<TYPESIZE, FRACBITS>(FloatType(typename FixedPoint<RSIZE, RFRACBITS>::FloatType(value)));
+		}
+
+		template <int TYPESIZE, int FRACBITS>
 		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(ValueType value)
 			: mData(value)
 		{}
@@ -95,6 +108,18 @@ namespace CPF
 		FixedPoint<TYPESIZE, FRACBITS>::operator FloatType () const
 		{
 			return FloatType(mData) / FloatType(kOneFrac);
+		}
+
+		template <int TYPESIZE, int FRACBITS>
+		typename FixedPoint<TYPESIZE, FRACBITS>::ValueType FixedPoint<TYPESIZE, FRACBITS>::GetWhole() const
+		{
+			return mData >> kShift;
+		}
+
+		template <int TYPESIZE, int FRACBITS>
+		typename FixedPoint<TYPESIZE, FRACBITS>::ValueType FixedPoint<TYPESIZE, FRACBITS>::GetFraction() const
+		{
+			return mData & ~((1 << FRACBITS) - 1);
 		}
 
 		template <int TYPESIZE, int FRACBITS>
