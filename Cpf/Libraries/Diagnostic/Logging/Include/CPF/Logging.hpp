@@ -89,11 +89,13 @@ namespace CPF
 #define CPF_LOG_LEVEL_ACCESSOR_(l) CPF_LOG_ACCESSOR_##l
 #define CPF_LOG_LEVEL_ACCESSOR(l) CPF_LOG_LEVEL_ACCESSOR_(l)
 #define CPF_LOG_GLOG(l) LOG(l)
+#define CPF_LOG_IF_GLOG(l, cond) LOG_IF(l, cond)
 
 #define CPF_INIT_LOGGING(ARGC, ARGV) {FLAGS_alsologtostderr = 1; google::InitGoogleLogging(ARGV);}
 #define CPF_INIT_LOG(name) {}
 #define CPF_DROP_LOG(name) {}
 #define CPF_LOG(name, level) CPF_LOG_GLOG( CPF_LOG_LEVEL_ACCESSOR(level) ) << "[" << #name << "] "
+#define CPF_LOG_IF(name, level, cond) CPF_LOG_IF_GLOG( CPF_LOG_LEVEL_ACCESSOR(level), cond ) << "[" << #name << "] "
 #define CPF_LOG_LEVELS(l) {}
 #define CPF_LOG_LEVEL(name, l) {}
 #define CPF_TRACE_LOG(name) {}

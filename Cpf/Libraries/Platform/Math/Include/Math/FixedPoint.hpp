@@ -37,10 +37,11 @@ namespace CPF
 			static constexpr ValueType kOneFrac = 1 << FRACBITS;
 			static constexpr ValueType kMaxFrac = (1 << FRACBITS) - 1;
 
+			FixedPoint();
 			FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs);
 			FixedPoint(ValueType whole, ValueType fraction);
 			template<int RSIZE, int RFRACBITS>
-			FixedPoint(FixedPoint<RSIZE, RFRACBITS> value);
+			explicit FixedPoint(FixedPoint<RSIZE, RFRACBITS> value);
 			explicit FixedPoint(ValueType value);
 			explicit FixedPoint(FloatType value);
 
@@ -63,6 +64,12 @@ namespace CPF
 
 
 		//////////////////////////////////////////////////////////////////////////
+		template <int TYPESIZE, int FRACBITS>
+		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint()
+			: mData(0)
+		{
+		}
+
 		template <int TYPESIZE, int FRACBITS>
 		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs)
 			: mData(rhs.mData)
