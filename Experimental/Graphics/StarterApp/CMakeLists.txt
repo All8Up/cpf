@@ -28,7 +28,7 @@ target_link_libraries (StarterApp
 	GraphicsDriver
 	s_Application
 	i_DebugUI
-	i_Adapter_SDL2
+	AdapterSDL2
 	i_Python3
 	asio
 )

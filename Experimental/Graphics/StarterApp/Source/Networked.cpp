@@ -1,5 +1,5 @@
 #include "Networked.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "MultiCore.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iExecutionPlan.hpp"

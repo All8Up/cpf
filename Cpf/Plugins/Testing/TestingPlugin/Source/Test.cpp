@@ -1,6 +1,6 @@
 #include "Plugin/iRegistry.hpp"
 #include "Plugin/tClassInstance.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Test.hpp"
 
 using namespace CPF;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 TEST(ANSI_C_FileSystem, Init)
 {
