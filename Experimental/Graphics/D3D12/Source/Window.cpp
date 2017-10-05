@@ -4,7 +4,7 @@
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
 #include "Graphics/ImageFlags.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Math/Constants.hpp"
 #include "Graphics/ImageDesc.hpp"
 #include "Graphics/ResourceState.hpp"

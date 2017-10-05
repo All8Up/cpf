@@ -34,7 +34,7 @@ if (WIN32)
 		s_ANSI_C_FileSystem
 		i_Resources
 		s_Application
-		i_Adapter_SDL2
+		AdapterSDL2
 		GraphicsDriver
 		i_EntityService
 		i_DebugUI

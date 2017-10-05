@@ -14,7 +14,7 @@
 #include "IO/Stream.hpp"
 #include "IO/Directory.hpp"
 #include "IO/TextWriter.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include <gflags/gflags.h>
 
 DEFINE_string(input, "", "Input file to process.");

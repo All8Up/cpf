@@ -20,7 +20,7 @@
 #include "Graphics/SubPassDesc.hpp"
 #include "Graphics/PipelineBindPoint.hpp"
 #include "Application/OSWindowData.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Graphics;

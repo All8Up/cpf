@@ -2,7 +2,7 @@
 #include "ExperimentalD3D12.hpp"
 
 #include "Application/iWindowedApplication.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 #include "Atomic/Atomic.hpp"
 #include "IntrusivePtr.hpp"
