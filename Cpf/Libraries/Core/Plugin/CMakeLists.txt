@@ -57,21 +57,21 @@ target_include_directories (Plugin INTERFACE
 )
 
 # ###############################################
-add_library (TestPlugin SHARED
-	UnitTest/TestPlugin/iTestPlugin.hpp
-	UnitTest/TestPlugin/TestPlugin.cpp
-)
-target_link_libraries (TestPlugin PUBLIC Plugin)
-set_property (TARGET TestPlugin PROPERTY FOLDER UnitTests/Core/Plugins)
+if (CPF_ENABLE_UNITTESTS)
+	add_library (TestPlugin SHARED
+		UnitTest/TestPlugin/iTestPlugin.hpp
+		UnitTest/TestPlugin/TestPlugin.cpp
+	)
+	target_link_libraries (TestPlugin PUBLIC Plugin)
+	set_property (TARGET TestPlugin PROPERTY FOLDER UnitTests/Core/Plugins)
 
-message ("${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}")
-message ("${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-set_target_properties (TestPlugin
-	PROPERTIES
-		ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../Plugins"
-		LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../Plugins"
-		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../Plugins"
-)
+	set_target_properties (TestPlugin
+		PROPERTIES
+			ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/../Plugins"
+			LIBRARY_OUTPUT_DIRECTORY "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/../Plugins"
+			RUNTIME_OUTPUT_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../Plugins"
+	)
+endif ()
 
 # ###############################################
 set (PLUGINHOST_INCLUDE_FILES
@@ -100,16 +100,24 @@ install (EXPORT PluginHostConfig DESTINATION CMake)
 ]]#
 
 # ###############################################
-if(MSVC)
-	set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Libraries/Core/Plugin)
-else()
-	set (targetPath test/)
-endif()
-file (MAKE_DIRECTORY ${targetPath}/plugins)
-add_custom_command (
-	TARGET TestPlugin POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestPlugin> ${targetPath}/plugins/TestPlugin.cfp
-)
+if (CPF_ENABLE_UNITTESTS)
+	if(MSVC)
+		set (targetPath ${CMAKE_BINARY_DIR}/Cpf/Libraries/Core/Plugin)
+	else()
+		set (targetPath test/)
+	endif()
+	file (MAKE_DIRECTORY ${targetPath}/plugins)
+	# Copy to the normal location for running in the debugger.
+	add_custom_command (
+		TARGET TestPlugin POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestPlugin> ${targetPath}/plugins/TestPlugin.cfp
+	)
+	# Copy to the general purpose location for external tool testing.
+	add_custom_command (
+		TARGET TestPlugin POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestPlugin> ${CPF_COMMON_PLUGINS}/TestPlugin.cfp
+	)
+endif ()
 
 MakeUnitTest (LIBRARY Plugin GROUP Core
 	TEST_FILES

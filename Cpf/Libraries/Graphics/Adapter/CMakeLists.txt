@@ -37,6 +37,7 @@ CPF_GEN_GOM(RUST_GRAPHICS_INTERFACES rust
 
 # ###############################################
 set (IDL_STRUCTURES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/AttachmentRef.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/ClearValue.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Range.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/Ratio.idl
@@ -58,16 +59,26 @@ CPF_GEN_GOM(RUST_GRAPHICS_STRUCTURES rust
 # ###############################################
 set (IDL_DESCRIPTORS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/AttachmentDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/BlendStateDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DepthStencilStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DependencyDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/DepthStencilViewDesc.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ElementDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/FrameBufferDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ImageViewDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/InputElementDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/InputLayoutDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ModeDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/OutputDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ParamBindingDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/PipelineStateDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RasterizerStateDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassBeginDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderPassDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/RenderTargetBlendStateDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ResourceBindingDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/ResourceDesc.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/SampleDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SamplerDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SubPassDesc.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/SwapChainDesc.idl
@@ -96,6 +107,7 @@ set (IDL_FLAGS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/EnumMode.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/FillMode.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/FilterMode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Format.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/HeapType.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ImageFlags.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/IndexStripCut.idl
@@ -143,21 +155,19 @@ source_group (Rust\\Flags FILES ${RUST_GRAPHICS_FLAGS})
 # ###############################################
 set (INCLUDE_GRAPHICS_FILES_DESCRIPTORS
 	${CPP_GRAPHICS_DESCRIPTORS}
-	Include/Graphics/BlendStateDesc.hpp
-	Include/Graphics/DepthStencilDesc.hpp
-	Include/Graphics/InputLayoutDesc.hpp
-	Include/Graphics/PipelineStateDesc.hpp
-	Include/Graphics/RasterizerStateDesc.hpp
-	Include/Graphics/SampleDesc.hpp
-	Include/Graphics/ResourceBindingDesc.hpp
-	Include/Graphics/ResourceDesc.hpp
+	Include/Graphics/BlendStateBuilder.hpp
+	Include/Graphics/DepthStencilBuilder.hpp
+	Include/Graphics/InputLayoutBuilder.hpp
+	Include/Graphics/PipelineStateBuilder.hpp
+	Include/Graphics/RasterizerStateBuilder.hpp
+	Include/Graphics/Utilities.hpp
 )
 set (INCLUDE_GRAPHICS_FILES_STRUCTURES
 	${CPP_GRAPHICS_STRUCTURES}
 )
 set (INCLUDE_GRAPHICS_FILES_FLAGS
 	${CPP_GRAPHICS_FLAGS}
-	Include/Graphics/Format.hpp
+	Include/Graphics/FormatSize.hpp
 )
 
 # ###############################################

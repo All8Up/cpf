@@ -1,9 +1,8 @@
+import Format from Graphics;
+import SwapEffect from Graphics;
 import SampleDesc from Graphics;
 
 module CPF::Graphics;
-
-enum Format : s32;
-enum SwapEffect : s32;
 
 struct SwapChainDesc
 {
@@ -12,4 +11,5 @@ struct SwapChainDesc
 	SampleDesc mMultiSample;
 	s32 mBackBufferCount;
 	bool mAllowFullscreen;
+	bool mVSync;
 };

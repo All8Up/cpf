@@ -1,0 +1,15 @@
+import Format from Graphics;
+import InputClassification from Graphics;
+
+module CPF::Graphics;
+
+struct InputElementDesc
+{
+	const char* mpSemantic;
+	s32 mIndex;
+	Format mFormat;
+	s32 mSlot;
+	s32 mOffset;
+	InputClassification mClass;
+	s32 mInstanceStepping;
+}

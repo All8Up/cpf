@@ -2,7 +2,7 @@
 #include "Resources/ResourceConfig.hpp"
 #include "IO/File.hpp"
 #include "rapidjson/document.h"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "IO/Directory.hpp"
 #include "jsoncons/json.hpp"
 #include "Resources/Locator.hpp"

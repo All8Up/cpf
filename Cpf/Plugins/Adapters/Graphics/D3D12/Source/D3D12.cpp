@@ -4,7 +4,7 @@
 #include "Plugin/tClassInstance.hpp"
 #include "Adapter/D3D12/Plugin.hpp"
 #include "Adapter/D3D12/Instance.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;
@@ -37,7 +37,7 @@ int D3D12Initializer::Remove(Plugin::iRegistry* regy)
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
-GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT CPF_STDCALL Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -47,7 +47,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT CPF_STDCALL Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{

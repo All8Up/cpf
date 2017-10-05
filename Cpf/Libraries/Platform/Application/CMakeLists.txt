@@ -46,7 +46,7 @@ source_group (Interface FILES ${INTERFACE_FILES})
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( s_Application i_Application s_Memory s_Collections Math Events s_PluginHost )
+target_link_libraries( s_Application i_Application s_Memory s_Collections Math Events s_PluginHost Logging )
 
 target_include_directories( s_Application PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

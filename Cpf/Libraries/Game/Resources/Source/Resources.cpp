@@ -3,7 +3,7 @@
 #include "Resources/ResourceConfig.hpp"
 #include "Resources/Volumes/FileSystem.hpp"
 #include "Resources/Caches/Default.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Resources;

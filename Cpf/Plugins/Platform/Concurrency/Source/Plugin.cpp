@@ -6,7 +6,7 @@
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
 #include "Plugin/iClassInstance.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 
@@ -37,7 +37,7 @@ extern "C" void CPF_EXPORT RemoveScheduler(Plugin::iRegistry* registry)
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
-GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT CPF_STDCALL Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -48,7 +48,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT CPF_STDCALL Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{

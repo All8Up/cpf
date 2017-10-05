@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Caches/Default.hpp"
 #include "Resources/Resource.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Resources;
@@ -47,13 +47,13 @@ Default::Default(iUnknown*)
 	, mShuttingDown(false)
 {
 	CPF_INIT_LOG(Default_Cache);
-	CPF_LOG_LEVEL(Default_Cache, Trace);
-	CPF_LOG(Default_Cache, Trace) << "Creating default cache.";
+	CPF_LOG_LEVEL(Default_Cache, Info);
+	CPF_LOG(Default_Cache, Info) << "Creating default cache.";
 }
 
 Default::~Default()
 {
-	CPF_LOG(Default_Cache, Trace) << "Destroying default cache.";
+	CPF_LOG(Default_Cache, Info) << "Destroying default cache.";
 	mShuttingDown = true;
 	while (!mResources.empty())
 	{

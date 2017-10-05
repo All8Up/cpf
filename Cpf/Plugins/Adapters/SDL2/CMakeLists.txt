@@ -25,22 +25,22 @@ set (SOURCE_FILES
 	Source/Clipboard.cpp
 )
 
-add_library (Adapter_SDL2 SHARED
+add_library (AdapterSDL2 SHARED
 	${INTERFACE_FILES}
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
 )
-target_compile_definitions (Adapter_SDL2
-	PRIVATE CPF_BUILD_ADAPTER_SDL2
+target_compile_definitions (AdapterSDL2
+	PRIVATE CPF_BUILD_AdapterSDL2
 )
-target_link_libraries (Adapter_SDL2
+target_link_libraries (AdapterSDL2
 	Configuration
 	Logging
 	i_Application
 	Math
 	SDL2
 )
-target_include_directories (Adapter_SDL2
+target_include_directories (AdapterSDL2
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
@@ -52,11 +52,11 @@ source_group (Interfaces FILES ${INTERFACE_FILES})
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})
 
-set_property (TARGET Adapter_SDL2 PROPERTY FOLDER Plugins/Adapters)
+set_property (TARGET AdapterSDL2 PROPERTY FOLDER Plugins/Adapters)
 
 # ###############################################
-add_library (i_Adapter_SDL2 INTERFACE)
-target_include_directories (i_Adapter_SDL2
+add_library (i_AdapterSDL2 INTERFACE)
+target_include_directories (i_AdapterSDL2
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
 		$<INSTALL_INTERFACE:Interface>
@@ -65,6 +65,6 @@ target_include_directories (i_Adapter_SDL2
 # ###############################################
 # Copy as a plugin.
 add_custom_command (
-	TARGET Adapter_SDL2 POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Adapter_SDL2> ${CPF_COMMON_PLUGINS}/Adapter_SDL2.cfp
+	TARGET AdapterSDL2 POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:AdapterSDL2> ${CPF_COMMON_PLUGINS}/AdapterSDL2.cfp
 )

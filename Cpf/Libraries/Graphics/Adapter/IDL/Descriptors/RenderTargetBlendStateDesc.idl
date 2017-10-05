@@ -1,0 +1,20 @@
+import BlendFunc from Graphics;
+import BlendOp from Graphics;
+import LogicOp from Graphics;
+import WriteMask from Graphics;
+
+module CPF::Graphics;
+
+struct RenderTargetBlendStateDesc
+{
+	bool mBlending = false;
+	bool mLogicOps = false;
+	BlendFunc mSrcBlend = BlendFunc::eSrcColor;
+	BlendFunc mDstBlend = BlendFunc::eDstColor;
+	BlendOp mBlendOp = BlendOp::eAdd;
+	BlendFunc mSrcBlendAlpha = BlendFunc::eSrcAlpha;
+	BlendFunc mDstBlendAlpha = BlendFunc::eDstAlpha;
+	BlendOp mBlendOpAlpha = BlendOp::eAdd;
+	LogicOp mLogicOp = LogicOp::eCopy;
+	WriteMask mWriteMask = WriteMask::eAll;
+}

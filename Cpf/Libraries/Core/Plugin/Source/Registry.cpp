@@ -131,7 +131,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 			Plugin::Library library;
 			if (library.Load(name))
 			{
-				auto install = library.GetAddress<int32_t(*)(iRegistry*)>(kPluginAPIInstall);
+				auto install = library.GetAddress<PluginAPIInstall>(kPluginAPIInstall);
 				if (install)
 				{
 					if ((*install)(this) == GOM::kOK)
@@ -153,7 +153,7 @@ GOM::Result CPF_STDCALL Registry::Unload(const char* name)
 		auto exists = mLibraryMap.find(name);
 		if (exists == mLibraryMap.end())
 			return Plugin::kNotLoaded;
-		auto unload = (exists->second).GetAddress<GOM::Result(*)(iRegistry*)>(kPluginAPIRemove);
+		auto unload = (exists->second).GetAddress<PluginAPIRemove>(kPluginAPIRemove);
 		if (unload)
 		{
 			auto result = (*unload)(this);

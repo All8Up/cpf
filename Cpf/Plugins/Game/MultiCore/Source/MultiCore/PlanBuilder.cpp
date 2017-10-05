@@ -3,7 +3,7 @@
 #include "MultiCore/iExecutionPlan.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 
 using namespace CPF;

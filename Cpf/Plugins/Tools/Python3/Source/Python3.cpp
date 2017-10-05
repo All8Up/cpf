@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Python3.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Plugin/iRegistry.hpp"
 #include <Python.h>
 

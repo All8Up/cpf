@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Resources/Volumes/FileSystem.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Resources/ID.hpp"
 #include "IO/Directory.hpp"
 #include "IO/Path.hpp"
@@ -104,7 +104,7 @@ bool FileSystem::Mount(const char* const mp)
 				}
 				else
 				{
-					CPF_LOG(Resources, Trace) << "File scan: adding - " << dir << entry.mName;
+					CPF_LOG(Resources, Info) << "File scan: adding - " << dir << entry.mName;
 
 					// TODO: Add logging if anything contains upper case.
 					String file = entry.mName;

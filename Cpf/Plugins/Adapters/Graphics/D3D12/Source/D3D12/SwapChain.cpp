@@ -6,7 +6,7 @@
 #include "Adapter/D3D12/Image.hpp"
 #include "Adapter/D3D12/ImageView.hpp"
 #include "Graphics/WindowData.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "Move.hpp"
 
 #ifdef CPF_DEBUG
@@ -45,7 +45,7 @@ SwapChain::SwapChain(
 		sd.BufferUsage = 0; // Defaults to DXGI_USAGE_RENDER_TARGET_OUTPUT during creation.
 		sd.BufferCount = mDesc.mBackBufferCount;
 		sd.SwapEffect = Convert(mDesc.mSwapEffect);
-		sd.Flags = 0; // DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+		sd.Flags = desc->mVSync ? 0 : DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
 
 		IDXGISwapChain1* tempSwapChain;
 		hr = dxgiFactory->CreateSwapChainForHwnd(d3d12CommandQueue, windowData->mHWnd, &sd, nullptr, nullptr, &tempSwapChain);
@@ -113,7 +113,7 @@ GOM::Result CPF_STDCALL SwapChain::QueryInterface(uint64_t id, void** outIface)
 
 void SwapChain::Present()
 {
-	mpSwapChain->Present(0, 0 /* DXGI_PRESENT_ALLOW_TEARING */);
+	mpSwapChain->Present(mDesc.mVSync ? 1 : 0, DXGI_PRESENT_ALLOW_TEARING);
 }
 
 void SwapChain::Resize(int32_t x, int32_t y)

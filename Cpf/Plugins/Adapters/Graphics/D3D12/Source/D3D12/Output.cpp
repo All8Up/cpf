@@ -4,7 +4,7 @@
 #include "Graphics/OutputDesc.hpp"
 #include "Graphics/ModeDesc.hpp"
 #include "Vector.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Graphics;

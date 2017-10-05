@@ -2,7 +2,7 @@
 #include <SDL_syswm.h>
 #include "Window.hpp"
 #include "Application/WindowDesc.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 #include "SDL_syswm.h"
 #include "Application/OSWindowData.hpp"
 

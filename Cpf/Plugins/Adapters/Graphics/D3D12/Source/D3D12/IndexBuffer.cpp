@@ -2,18 +2,18 @@
 #include "Adapter/D3D12/IndexBuffer.hpp"
 #include "Adapter/D3D12/Device.hpp"
 #include "Graphics/HeapType.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;
 using namespace D3D12;
 
 IndexBuffer::IndexBuffer(Device* device, const Graphics::ResourceDesc* desc, Graphics::Format format)
-	: mSize(desc->GetWidth())
+	: mSize(desc->mWidth)
 {
 	{
 		CD3DX12_HEAP_PROPERTIES heapProps;
-		switch (desc->GetHeapType())
+		switch (desc->mHeapType)
 		{
 		case Graphics::HeapType::eCustom:
 			heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_CUSTOM);
@@ -35,7 +35,7 @@ IndexBuffer::IndexBuffer(Device* device, const Graphics::ResourceDesc* desc, Gra
 		{
 			D3D12_RESOURCE_DIMENSION_BUFFER, // Dimension
 			0, // Alignment
-			UINT64(desc->GetWidth()), // Width
+			UINT64(desc->mWidth), // Width
 			1, // Height
 			1, // DepthOrArraySize
 			1, // MipLevels
@@ -48,7 +48,7 @@ IndexBuffer::IndexBuffer(Device* device, const Graphics::ResourceDesc* desc, Gra
 			&heapProps,
 			D3D12_HEAP_FLAG_NONE,
 			&resourceDesc,
-			Convert(desc->GetResourceState()),
+			Convert(desc->mState),
 			nullptr,
 			IID_PPV_ARGS(mpResource.AsTypePP())
 		);
@@ -57,7 +57,7 @@ IndexBuffer::IndexBuffer(Device* device, const Graphics::ResourceDesc* desc, Gra
 	// Create the view.
 	mView.BufferLocation = mpResource->GetGPUVirtualAddress();
 	mView.Format = Convert(format);
-	mView.SizeInBytes = UINT(desc->GetWidth());
+	mView.SizeInBytes = UINT(desc->mWidth);
 
 	CPF_LOG(D3D12, Info) << "Created resource: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr());
 }

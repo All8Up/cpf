@@ -2,7 +2,7 @@
 #include "Concurrency/LoadBalancer.hpp"
 #include "Concurrency/ThreadTimes.hpp"
 #include "Plugin/iRegistry.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Concurrency;

@@ -30,3 +30,33 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Cpf")
 else ()
 	message ("No CPF library sources found.")
 endif ()
+
+# ###############################################
+set (CPF_BUILD_EXPERIMENTAL ON CACHE BOOL "Build experimental work.")
+if (CPF_BUILD_EXPERIMENTAL)
+	if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Experimental")
+		add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Experimental" )
+	else ()
+		message ("No experimental sources found.")
+	endif ()
+endif ()
+
+# ###############################################
+set (CPF_BUILD_KPI ON CACHE BOOL "Build KPI's.")
+if (CPF_BUILD_KPI)
+	if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/KPI")
+		add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/KPI" )
+	else ()
+		message ("No KPI sources found.")
+	endif ()
+endif ()
+
+# ###############################################
+set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
+if (CPF_BUILD_TOOLS)
+	if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Tools")
+		add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Tools" )
+	else ()
+		message ("No tool sources found.")
+	endif ()
+endif ()

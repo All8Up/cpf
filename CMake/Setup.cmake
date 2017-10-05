@@ -3,37 +3,32 @@ include (CMakeParseArguments)
 include (CMakeDependentOption)
 
 #
-include (CMake/Detection.cmake)
-include (CMake/Version.cmake)
-include (CMake/Naming.cmake)
-include (CMake/InstallLocations.cmake)
-include (CMake/InstallInformation.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Detection.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Version.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Naming.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/InstallLocations.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/InstallInformation.cmake)
 
-include (CMake/Utilities/AddLibrary.cmake)
-include (CMake/Utilities/TypedLibrary.cmake)
-include (CMake/Utilities/CheckValue.cmake)
-include (CMake/Utilities/PreferredInclude.cmake)
-include (CMake/Utilities/GenGOM.cmake)
-include (CMake/UnitTesting/UnitTesting.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Utilities/AddLibrary.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Utilities/TypedLibrary.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Utilities/CheckValue.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Utilities/PreferredInclude.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Utilities/GenGOM.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/UnitTesting/UnitTesting.cmake)
 
-include (CMake/Doxygen/BuildDocs.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Doxygen/BuildDocs.cmake)
 
 # ###############################################
 find_package (Threads)
 
 # ###############################################
-# Setup for Qt
-set (CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};C:/Qt/5.8/msvc2015_64;D:/Qt/5.8/msvc2015_64")
-set (CMAKE_AUTOMOC ON)
-
-# ###############################################
 # Detect utilities and software.
-include (CMake/Modules/FindVTune.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Modules/FindVTune.cmake)
 
 
 # ###############################################
 # Setup options.
-include (CMake/Options/VTune.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Options/VTune.cmake)
 
 
 # ###############################################
@@ -43,14 +38,15 @@ enable_testing ()
 set (CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}/../CpfSdk" CACHE PATH "Sdk installation location." FORCE)
 
 
-include (CMake/Settings/Settings.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Settings/Settings.cmake)
 
 # ###############################################
 # Check for needed headers and libraries.
-include (CMake/Checks/All.cmake)
-include (CMake/Checks/${CMAKE_SYSTEM_NAME}.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Checks/All.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Checks/${CMAKE_SYSTEM_NAME}.cmake)
 
 
 # ###############################################
 option (CPF_ENABLE_UNITTESTS "Enable unit testing projects." ON)
 option (CPF_ENABLE_BENCHMARKS "Enable benchmark projects." OFF)
+option (CPF_FINAL_BUILD "Build as a final release build." OFF)

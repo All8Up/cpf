@@ -4,7 +4,9 @@
 #include "Graphics/iDevice.hpp"
 #include "Graphics/iSampler.hpp"
 #include "Graphics/ImageDesc.hpp"
-#include "Graphics/PipelineStateDesc.hpp"
+#include "Graphics/DepthStencilBuilder.hpp"
+#include "Graphics/RasterizerStateBuilder.hpp"
+#include "Graphics/PipelineStateBuilder.hpp"
 #include "Graphics/ResourceBindingDesc.hpp"
 #include "Graphics/Viewport.hpp"
 #include "Graphics/ImageFlags.hpp"
@@ -29,6 +31,9 @@
 #include "Graphics/iIndexBuffer.hpp"
 #include "Graphics/iShader.hpp"
 #include "Graphics/iPipeline.hpp"
+#include "Graphics/BlendStateBuilder.hpp"
+#include "Graphics/InputLayoutBuilder.hpp"
+
 #include "Application/iWindow.hpp"
 #include "Application/OSWindowData.hpp"
 #include "imgui/imgui.h"
@@ -37,7 +42,7 @@
 #include "Resources/iLocator.hpp"
 #include "Math/Matrix44v.hpp"
 #include "Math/Constants.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 #include "Application/ScanCode.hpp"
 #include "Application/KeyModifier.hpp"
@@ -56,7 +61,7 @@ using namespace Graphics;
 
 //////////////////////////////////////////////////////////////////////////
 extern "C"
-GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT CPF_STDCALL Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -67,7 +72,7 @@ GOM::Result CPF_EXPORT Install(Plugin::iRegistry* registry)
 }
 
 extern "C"
-GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
+GOM::Result CPF_EXPORT CPF_STDCALL Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
@@ -90,7 +95,7 @@ DebugUI::DebugUI(iUnknown*)
 	, mMouseWheel(0.0f)
 {
 	CPF_INIT_LOG(DebugUI);
-	CPF_LOG_LEVEL(DebugUI, Trace);
+	CPF_LOG_LEVEL(DebugUI, Info);
 }
 
 DebugUI::~DebugUI()
@@ -136,7 +141,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		return false;
 
 	// Create the projection matrix constant buffer.
-	ResourceDesc cbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv));
+	ResourceDesc cbDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, sizeof(Math::Matrix44fv), 0 };
 	mpDevice->CreateConstantBuffer(&cbDesc, nullptr, mpProjectionMatrix.AsTypePP());
 
 	// Create the atlas sampler.
@@ -156,27 +161,26 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 
 	// Create the pipeline.
 	{
-		PipelineStateDesc pipelineDesc = PipelineStateDesc::Build()
+		PipelineStateDesc pipelineDesc = Build<PipelineStateDesc>()
 			.VertexShader(mpVertexShader)
 			.PixelShader(mpPixelShader)
 			.Topology(TopologyType::eTriangle)
 
-			.Rasterizer(RasterizerStateDesc::Build()
+			.Rasterizer(Build<RasterizerStateDesc>()
 				.CullMode(CullMode::eNone)
 				.WindingOrder(WindingOrder::eClockwise)
 				.DepthClipping(false)
 			)
-			.DepthStencil(DepthStencilStateDesc::Build()
+			.DepthStencil(Build<DepthStencilStateDesc>()
 				.DepthTest(false)
 				.DepthWriteMask(DepthWriteMask::eZero)
 			)
-			.InputLayout(
-		{
-			cElementDesc("POSITION", Format::eRG32f),
-			cElementDesc("TEXCOORD", Format::eRG32f),
-			cElementDesc("COLOR", Format::eRGBA8un)
-		})
-			.TargetBlend(0, RenderTargetBlendStateDesc::Build()
+			.InputLayout(Build<InputLayoutDesc>()
+				.Element("POSITION", 0, Format::eRG32f, 0, 0, InputClassification::ePerVertex, 0)
+				.Element("TEXCOORD", 0, Format::eRG32f, 0, 8, InputClassification::ePerVertex, 0)
+				.Element("COLOR", 0, Format::eRGBA8un, 0, 16, InputClassification::ePerVertex, 0)
+			)
+			.TargetBlend(0, Build<RenderTargetBlendStateDesc>()
 				.Blending(true)
 				.Op(BlendOp::eAdd)
 				.OpAlpha(BlendOp::eAdd)
@@ -190,12 +194,18 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 			;
 
 		// Create the binding.
-		ResourceBindingDesc bindingState({
-			ParamConstantBuffer(0, ParamVisibility::eVertex),
-			ParamSampler(0),
-			ParamTexture(0)
-		});
-		mpDevice->CreateResourceBinding(&bindingState, mpResourceBinding.AsTypePP());
+		ParamBindingDesc paramBindings[] =
+		{
+			{ BindingType::eConstantBuffer, 0, 0, ParamFlags::eStatic, ParamVisibility::eVertex },
+			{ BindingType::eSampler, 0, 0, ParamFlags::eStatic, ParamVisibility::eVisibilityAll },
+			{ BindingType::eTexture, 0, 0, ParamFlags::eStatic, ParamVisibility::eVisibilityAll }
+		};
+		ResourceBindingDesc bindings =
+		{
+			3,
+			paramBindings
+		};
+		mpDevice->CreateResourceBinding(&bindings, mpResourceBinding.AsTypePP());
 
 		// Create the actual pipeline object.
 		mpDevice->CreatePipeline(&pipelineDesc, mpResourceBinding, mpPipeline.AsTypePP());
@@ -251,7 +261,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		atlasDesc.mHeight = height;
 		atlasDesc.mDepth = 1;
 		atlasDesc.mMipLevels = 1;
-		atlasDesc.mSamples = SampleDesc(1, 0);
+		atlasDesc.mSamples = SampleDesc{ 1, 0 };
 		atlasDesc.mState = ResourceState::eCopyDest;
 		atlasDesc.mFlags = ImageFlags::eNone;
 
@@ -259,12 +269,7 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 		mpDevice->CreateImage2D(HeapType::eDefault, &atlasDesc, nullptr, mpUIAtlas.AsTypePP());
 
 		// Create the staging buffer.
-		ResourceDesc stagingDesc(
-			ResourceType::eBuffer,
-			HeapType::eUpload,
-			ResourceState::eGenericRead,
-			int32_t(dataSize)
-		);
+		ResourceDesc stagingDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, int32_t(dataSize), 0 };
 		IntrusivePtr<iResource> staging;
 		mpDevice->CreateResource(&stagingDesc, staging.AsTypePP());
 
@@ -307,10 +312,10 @@ bool DebugUI::Initialize(iDevice* device, iInputManager* im, iWindow* window, Re
 	window->GetEmitter()->On<iWindow::OnKeyUp>(Bind(&DebugUI::_OnKeyUp, this, Placeholders::_1));
 
 	// Create large buffers.
-	ResourceDesc vbDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kVertexBufferSize, 1);
+	ResourceDesc vbDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kVertexBufferSize, 1 };
 	mpDevice->CreateVertexBuffer(&vbDesc, sizeof(ImDrawVert), mpVertexBuffer.AsTypePP());
 
-	ResourceDesc ibDesc(ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kIndexBufferSize);
+	ResourceDesc ibDesc{ ResourceType::eBuffer, HeapType::eUpload, ResourceState::eGenericRead, kIndexBufferSize, 0 };
 	mpDevice->CreateIndexBuffer(&ibDesc, Format::eR32u, mpIndexBuffer.AsTypePP());
 
 	return true;
@@ -339,11 +344,12 @@ void DebugUI::BeginFrame(iCommandBuffer* commands, float deltaTime)
 	io.DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
 	io.DeltaTime = deltaTime;
 
-	Math::Matrix44fv projection = Math::Matrix44fv(
-	{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
-	{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
-	{ 0.0f,						0.0f,						 0.5f,	0.0f },
-	{ -1.0f,						1.0f,						 0.5f,	1.0f }
+	Math::Matrix44fv projection = Math::Matrix44fv
+	(
+		{ 2.0f / io.DisplaySize.x,	0.0f,						 0.0f,	0.0f },
+		{ 0.0f,						2.0f / -io.DisplaySize.y,	 0.0f,	0.0f },
+		{ 0.0f,						0.0f,						 0.5f,	0.0f },
+		{ -1.0f,					1.0f,						 0.5f,	1.0f }
 	);
 	mpProjectionMatrix->Update(0, sizeof(Math::Matrix44fv), &projection);
 

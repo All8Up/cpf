@@ -1,14 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/ConstantBuffer.hpp"
 #include "Adapter/D3D12/Device.hpp"
-#include "Logging/Logging.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace Adapter;
 using namespace D3D12;
 
 ConstantBuffer::ConstantBuffer(Device* device, const Graphics::ResourceDesc* desc, const void* initData)
-	: mSize(desc->GetWidth())
+	: mSize(desc->mWidth)
 	, mpBuffer(nullptr)
 {
 	CD3DX12_HEAP_PROPERTIES heapProps = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
@@ -17,7 +17,7 @@ ConstantBuffer::ConstantBuffer(Device* device, const Graphics::ResourceDesc* des
 	{
 		D3D12_RESOURCE_DIMENSION_BUFFER, // Dimension
 		0, // Alignment
-		UINT64((sizeof(desc->GetWidth()) + 255) & ~255), // Width
+		UINT64((sizeof(desc->mWidth) + 255) & ~255), // Width
 		1, // Height
 		1, // DepthOrArraySize
 		1, // MipLevels
@@ -38,7 +38,7 @@ ConstantBuffer::ConstantBuffer(Device* device, const Graphics::ResourceDesc* des
 	// Describe and create a constant buffer view.
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
 	cbvDesc.BufferLocation = mpResource->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = (sizeof(desc->GetWidth()) + 255) & ~255;	// CB size is required to be 256-byte aligned.
+	cbvDesc.SizeInBytes = (sizeof(desc->mWidth) + 255) & ~255;	// CB size is required to be 256-byte aligned.
 	mDescriptor = device->GetShaderResourceDescriptors().Alloc();
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = mDescriptor;
 	device->GetD3DDevice()->CreateConstantBufferView(&cbvDesc, handle);
@@ -48,7 +48,7 @@ ConstantBuffer::ConstantBuffer(Device* device, const Graphics::ResourceDesc* des
 	mpResource->Map(0, &readRange, reinterpret_cast<void**>(&mpBuffer));
 
 	if (initData)
-		memcpy(mpBuffer, initData, desc->GetWidth());
+		memcpy(mpBuffer, initData, desc->mWidth);
 
 	CPF_LOG(D3D12, Info) << "Created constant buffer: " << intptr_t(this) << " - " << intptr_t(mpResource.Ptr()) << " - " << intptr_t(mpBuffer);
 }
