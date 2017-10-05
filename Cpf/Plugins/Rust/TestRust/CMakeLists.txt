@@ -1,5 +1,3 @@
-option (CPF_ENABLE_RUST "Enable Rust integration." ON)
-
 if (CPF_ENABLE_RUST)
 	ExternalProject_Add (TestRust
 		DOWNLOAD_COMMAND ""
