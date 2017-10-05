@@ -1,3 +1,5 @@
+image:
+- Visual Studio 2017
 version: 0.1.{build}
 skip_tags: true
 shallow_clone: true
@@ -19,4 +21,4 @@ before_build:
   - cd c:\cpf
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio 14 2015 Win64" -DEXTERN_INLINE_GMOCK=ON -DEXTERN_INLINE_RAPIDJSON=ON -DEXTERN_INLINE_SDL2=ON -DEXTERN_INLINE_SPDLOG=ON ./..
+  - cmake -G "Visual Studio 15 2017 Win64" -DEXTERN_INLINE_GMOCK=ON -DEXTERN_INLINE_RAPIDJSON=ON -DEXTERN_INLINE_SDL2=ON -DEXTERN_INLINE_SPDLOG=ON ./..
