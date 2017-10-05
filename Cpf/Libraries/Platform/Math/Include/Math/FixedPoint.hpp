@@ -37,13 +37,13 @@ namespace CPF
 			static constexpr ValueType kOneFrac = 1 << FRACBITS;
 			static constexpr ValueType kMaxFrac = (1 << FRACBITS) - 1;
 
-			FixedPoint();
-			FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs);
-			FixedPoint(ValueType whole, ValueType fraction);
+			constexpr FixedPoint();
+			constexpr FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs);
+			constexpr FixedPoint(ValueType whole, ValueType fraction);
 			template<int RSIZE, int RFRACBITS>
-			explicit FixedPoint(FixedPoint<RSIZE, RFRACBITS> value);
-			explicit FixedPoint(ValueType value);
-			explicit FixedPoint(FloatType value);
+			explicit constexpr FixedPoint(FixedPoint<RSIZE, RFRACBITS> value);
+			explicit constexpr FixedPoint(ValueType value);
+			explicit constexpr FixedPoint(FloatType value);
 
 			explicit operator ValueType () const;
 			explicit operator FloatType () const;
@@ -65,19 +65,19 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <int TYPESIZE, int FRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint()
+		constexpr FixedPoint<TYPESIZE, FRACBITS>::FixedPoint()
 			: mData(0)
 		{
 		}
 
 		template <int TYPESIZE, int FRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs)
+		constexpr FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(const FixedPoint<TYPESIZE, FRACBITS>& rhs)
 			: mData(rhs.mData)
 		{
 		}
 
 		template <int TYPESIZE, int FRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(ValueType whole, ValueType fraction)
+		constexpr FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(ValueType whole, ValueType fraction)
 			: mData((whole << kShift) | (fraction))
 		{
 			CPF_ASSERT((whole & ~kMaxWhole) == 0);
@@ -86,18 +86,18 @@ namespace CPF
 
 		template <int TYPESIZE, int FRACBITS>
 		template <int RSIZE, int RFRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(FixedPoint<RSIZE, RFRACBITS> value)
+		constexpr FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(FixedPoint<RSIZE, RFRACBITS> value)
 		{
 			// TODO: this is a cheesy lazy way of doing this.
 			*this = FixedPoint<TYPESIZE, FRACBITS>(FloatType(typename FixedPoint<RSIZE, RFRACBITS>::FloatType(value)));
 		}
 
 		template <int TYPESIZE, int FRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(ValueType value)
+		constexpr FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(ValueType value)
 			: mData(value)
 		{}
 		template <int TYPESIZE, int FRACBITS>
-		FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(FloatType value)
+		constexpr FixedPoint<TYPESIZE, FRACBITS>::FixedPoint(FloatType value)
 		{
 			FloatType v = value > FloatType(0) ? value : -value;
 			mData = (ValueType(v) << kShift) |
