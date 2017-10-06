@@ -86,7 +86,6 @@ namespace CPF
 			bool _StartMaster();
 			void _EndMaster();
 			bool _FetchWork();
-			void _ClearRegisters();
 
 			// Spin lock variable for the thread fetching instructions.
 			int32_t mControlLock;
@@ -122,19 +121,6 @@ namespace CPF
 
 			// Utility.
 			Threading::Semaphore mWait;
-
-			// Register access, used only via the ThreadContext.
-			int32_t& _TLD(int tid, int index);
-			void*& _TLA(int tid, int index);
-			int32_t& _SD(int index);
-			void*& _SA(int index);
-
-			// Control registers.
-			int32_t mThreadLocalDataRegister[kMaxThreads][kRegisterCount];
-			void* mThreadLocalAddressRegister[kMaxThreads][kRegisterCount];
-
-			int32_t mSharedDataRegister[kRegisterCount];
-			void* mSharedAddressRegister[kRegisterCount];
 
 			ThreadTimeInfo mTimeInfo;
 			CPF_DLL_SAFE_END;
