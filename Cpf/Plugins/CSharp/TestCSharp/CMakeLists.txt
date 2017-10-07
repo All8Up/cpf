@@ -12,8 +12,8 @@ set_property(TARGET TestCSharp PROPERTY VS_DOTNET_REFERENCES
     "System.Core"
     "System.Data"
     "System.Runtime.InteropServices"
-    "CSharpBindings_d"
 )
+target_link_libraries (TestCSharp CSharpBindings)
 set_property (TARGET TestCSharp PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7")
 set_property (TARGET TestCSharp PROPERTY FOLDER Plugins/CSharp)
 
