@@ -5,6 +5,7 @@ add_library (TestCSharp SHARED
 # figure out what properties to use to force managed assembly builds.
 #	Test.cpp
 )
+target_link_libraries (TestCSharp i_CSharpBinding)
 set_property(TARGET TestCSharp PROPERTY VS_DOTNET_REFERENCES
     "Microsoft.CSharp"
 	"mscorlib"
@@ -16,12 +17,19 @@ set_property(TARGET TestCSharp PROPERTY VS_DOTNET_REFERENCES
 set_property (TARGET TestCSharp PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7")
 set_property (TARGET TestCSharp PROPERTY FOLDER Plugins/CSharp)
 
+add_library (i_TestCSharp INTERFACE)
+target_include_directories (i_TestCSharp
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
+)
+
 # ###############################################
 # Copy as a plugin.
 # NOTE: This will be in the plugin directory. Support will be added
 # to update the dll search paths so this will load appropriately.
 add_custom_command (TARGET TestCSharp POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestCSharp> ${CPF_COMMON_PLUGINS}/TestCSharp.cfp
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestCSharp> ${CPF_COMMON_PLUGINS}/TestCSharp.dll
 )
 
 #[[

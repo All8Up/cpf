@@ -1,3 +1,15 @@
+set (INTERFACE_FILES
+	Interface/IPlugin.hpp
+)
+
+add_library (i_CSharpBinding INTERFACE)
+target_include_directories (i_CSharpBinding
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
+)
+
+# ###############################################
 set (INCLUDE_FILES
 	Include/CSharpBindings.hpp
 )
@@ -8,8 +20,14 @@ set (SOURCE_FILES
 add_library (CSharpBindings SHARED
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
+	${INTERFACE_FILES}
 )
-target_link_libraries (CSharpBindings Plugin)
+target_link_libraries (CSharpBindings i_CSharpBinding Plugin)
+target_include_directories (CSharpBindings
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
+)
 set_property (TARGET CSharpBindings PROPERTY FOLDER Plugins/CSharp)
 
 # ###############################################
@@ -25,7 +43,7 @@ MakeUnitTest (LIBRARY CSharpBindings GROUP CSharp
 		UnitTest/Test_All.hpp
 		../../../Libraries/Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		s_IO s_PluginHost
+		s_IO s_PluginHost i_TestCSharp
 )
 
 
