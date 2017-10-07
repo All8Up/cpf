@@ -15,6 +15,7 @@ set (INCLUDE_FILES
 )
 set (SOURCE_FILES
 	Source/CSharpBindings.cpp
+	Source/Assembly.cpp
 )
 
 add_library (CSharpBindings SHARED
