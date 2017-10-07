@@ -2,7 +2,7 @@
 #include "IDL/CodeGen/Generator.hpp"
 #include "IDL/CodeGen/CppGenerator.hpp"
 #include "IDL/CodeGen/RustGenerator.hpp"
-#include "IDL/CodeGen/CSharp/CodeGen.hpp"
+#include "IDL/CodeGen/CSharpGenerator.hpp"
 
 using namespace IDL;
 using namespace CodeGen;

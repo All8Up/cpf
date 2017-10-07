@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "IDL/CodeGen/CSharp/CodeGen.hpp"
+#include "IDL/CodeGen/CSharpGenerator.hpp"
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <inttypes.h>
 #include "Hash/Crc.hpp"
