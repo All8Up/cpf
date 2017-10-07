@@ -22,12 +22,6 @@ namespace CPF
 				static void AllBarrier(Scheduler &vm, const WorkContext* context, int64_t index);
 				static void Barrier(Scheduler &vm, const WorkContext* context, int64_t index);
 
-				static void TLD(Scheduler&, const WorkContext*, int64_t);
-				static void TLA(Scheduler&, const WorkContext*, int64_t);
-				static void SD(Scheduler&, const WorkContext*, int64_t);
-				static void SA(Scheduler&, const WorkContext*, int64_t);
-
-
 				static void ActiveThreads(Scheduler &vm, const WorkContext* context, int64_t index);
 				static void HeadMinimize(Scheduler &vm, const WorkContext* context, int64_t index);
 			};

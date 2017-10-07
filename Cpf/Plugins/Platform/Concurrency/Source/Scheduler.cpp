@@ -37,7 +37,6 @@ Scheduler::Scheduler(iUnknown*)
 	, mPredicateRing(kQueueSize)
 	, mQueueSize(kQueueSize)
 {
-	_ClearRegisters();
 }
 
 
@@ -70,20 +69,6 @@ GOM::Result CPF_STDCALL Scheduler::QueryInterface(uint64_t id, void** outIface)
 	return GOM::kInvalidParameter;
 }
 
-
-void Scheduler::_ClearRegisters()
-{
-	for (auto i = 0; i < kRegisterCount; ++i)
-	{
-		for (auto j = 0; j < kMaxThreads; ++j)
-		{
-			mThreadLocalDataRegister[j][i] = 0;
-			mThreadLocalAddressRegister[j][i] = nullptr;
-		}
-		mSharedDataRegister[i] = 0;
-		mSharedAddressRegister[i] = nullptr;
-	}
-}
 
 GOM::Result CPF_STDCALL Scheduler::Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context)
 {
@@ -392,34 +377,4 @@ bool Scheduler::_FetchWork()
 		return true;
 	}
 	return false;
-}
-
-
-int32_t& Scheduler::_TLD(int tid, int index)
-{
-	CPF_ASSERT(tid >= 0 && tid < mThreadCount);
-	CPF_ASSERT(index >= 0 && index < kRegisterCount);
-	return mThreadLocalDataRegister[tid][index];
-}
-
-
-void*& Scheduler::_TLA(int tid, int index)
-{
-	CPF_ASSERT(tid >= 0 && tid < mThreadCount);
-	CPF_ASSERT(index >= 0 && index < kRegisterCount);
-	return mThreadLocalAddressRegister[tid][index];
-}
-
-
-int32_t& Scheduler::_SD(int index)
-{
-	CPF_ASSERT(index >= 0 && index < kRegisterCount);
-	return mSharedDataRegister[index];
-}
-
-
-void*& Scheduler::_SA(int index)
-{
-	CPF_ASSERT(index >= 0 && index < kRegisterCount);
-	return mSharedAddressRegister[index];
 }
