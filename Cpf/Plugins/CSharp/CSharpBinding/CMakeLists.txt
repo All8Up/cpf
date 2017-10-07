@@ -15,6 +15,7 @@ set (INCLUDE_FILES
 )
 set (SOURCE_FILES
 	Source/CSharpBindings.cpp
+	Source/Assembly.cpp
 )
 
 add_library (CSharpBindings SHARED
@@ -23,6 +24,7 @@ add_library (CSharpBindings SHARED
 	${INTERFACE_FILES}
 )
 target_link_libraries (CSharpBindings i_CSharpBinding Plugin)
+set_property (TARGET CSharpBindings PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7")
 target_include_directories (CSharpBindings
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
