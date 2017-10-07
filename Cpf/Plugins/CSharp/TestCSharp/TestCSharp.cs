@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 public class iUnknown
@@ -30,43 +33,133 @@ public class TestPlugin : iUnknown
 	{
 
 	}
-}
 
-public class Main
-{
-	private static iClassInstance classInstance;
-	
-	public static UInt32 Install(IntPtr registryPtr)
+	public int Test()
 	{
-		//var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
-		//var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
-
-		//classInstance = new iClassInstance();
-		//var iClassInstanceVTable = new iClassInstanceVTable();
-		//iClassInstanceVTable.CreateInstance = (iRegistry r, iUnknown outer, iUnknown instance) =>
-		//{
-		//	instance = new TestPlugin(outer);
-
-		//	return 0x7b48e63f;
-		//};
-
-		////Marshal.StructureToPtr(iClassInstanceVTable, classInstance.vTable, true);
-		//var classVTableHandle = GCHandle.Alloc(iClassInstanceVTable);
-		//classInstance.vTable = GCHandle.ToIntPtr(classVTableHandle);
-
-		//var classHandle = GCHandle.Alloc(classInstance);
-
-		//return iRegistryVTable.Install(registryPtr, TestPlugin.ID, classInstance);
 		return 0;
 	}
-	
-	public static UInt32 Remove(IntPtr registryPtr)
+}
+
+struct PinnedObject
+{
+	public GCHandle GcHandle { get; set; }
+	public Object Obj { get; set; }
+
+	public PinnedObject(GCHandle gcHandle, object obj)
+	{
+		GcHandle = gcHandle;
+		Obj = obj;
+	}
+}
+
+public interface IPlugin
+{
+	UInt32 Install(IntPtr registryPtr);
+	UInt32 Uninstall(IntPtr registryPtr);
+};
+
+public class Plugin : IPlugin
+{
+	private iClassInstance classInstance;
+	private iClassInstanceVTable iClassInstanceVTable;
+	private GCHandle classVTableHandle;
+
+	private List<PinnedObject> pinned = new List<PinnedObject>();
+
+	public uint Install(IntPtr registryPtr)
 	{
 		var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
 		var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
-		
+
+		classInstance = new iClassInstance();
+		iClassInstanceVTable = new iClassInstanceVTable();
+		iClassInstanceVTable.CreateInstance = CreateInstanceFunc;//  Marshal.GetFunctionPointerForDelegate(createInstanceFunc);
+
+		//PinIt(classInstance);
+		//PinIt(iClassInstanceVTable);
+		//PinIt(createInstanceFunc);
+
+		pinned.Add(new PinnedObject(GCHandle.Alloc(classInstance), classInstance));
+		pinned.Add(new PinnedObject(GCHandle.Alloc(iClassInstanceVTable), iClassInstanceVTable));
+		//pinned.Add(new PinnedObject(GCHandle.Alloc(createInstanceFunc), createInstanceFunc));
+
+		//classVTableHandle = GCHandle.Alloc(iClassInstanceVTable);
+		classInstance.vTable = iClassInstanceVTable; //GCHandle.ToIntPtr(classVTableHandle);
+
+		//var classMemory = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(iClassInstance)));
+		//Marshal.StructureToPtr(classInstance, classMemory, false);
+
+		return iRegistryVTable.Install(registryPtr, TestPlugin.ID, MarshalStruct(classInstance));
+	}
+
+	private uint CreateInstanceFunc(iRegistry registry1, iUnknown outer, IntPtr outInstance)
+	{
+		var inst = new TestPlugin(outer);
+		Marshal.StructureToPtr(inst, outInstance, false);
+		PinIt(inst);
+
+		return 0x7b48e63f;
+	}
+
+	public uint Uninstall(IntPtr registryPtr)
+	{
+		var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
+		var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
+
 		return iRegistryVTable.Remove(registryPtr, TestPlugin.ID);
 	}
+
+	private void PinIt(object obj)
+	{
+		pinned.Add(new PinnedObject { Obj = obj, GcHandle = GCHandle.Alloc(obj) });
+	}
+
+	private static MarshalVTable MarshalStruct(object ob)
+	{
+		var marshalVTable = new MarshalVTable();
+		var type = ob.GetType();
+
+		var fieldInfo = type.GetFields(BindingFlags.Public | BindingFlags.Instance).First();
+		var fieldValue = fieldInfo.GetValue(ob);
+
+		marshalVTable.vTable = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
+		Marshal.StructureToPtr(fieldValue, marshalVTable.vTable, false);
+
+		return marshalVTable;
+
+
+
+		//foreach(var fieldInfo in fields)
+		//{
+		//	if(fieldInfo.DeclaringType != typeof(object))
+		//	{
+		//		var fieldValue = fieldInfo.GetValue(ob);
+		//		var ptr = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
+		//		Marshal.StructureToPtr(fieldValue, ptr, false);
+
+		//		//if(fieldInfo.FieldType.IsClass)
+		//		//{
+		//		//	MarshalStruct(fieldInfo.GetValue(ob));
+		//		//}
+		//		//else
+		//		//{
+		//		//	var del = (Delegate) fieldInfo.GetValue(ob);
+		//		//	var functionPointerForDelegate = Marshal.GetFunctionPointerForDelegate(del);
+		//		//	delegates.Add(functionPointerForDelegate);
+		//		//}
+		//	}
+		//}
+
+		//var structureSize = Marshal.SizeOf<Delegate>() * delegates.Count;
+		//var allocHGlobal = Marshal.AllocHGlobal(structureSize);
+
+	}
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public class MarshalVTable
+{
+	public IntPtr vTable;
 }
 
 [StructLayout(LayoutKind.Sequential)]
@@ -109,7 +202,7 @@ public class iRegistryVTable : iUnknownVTable
 
 
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstallFunc(IntPtr self, UInt64 cid, iClassInstance clsInst);
+	public delegate UInt32 InstallFunc(IntPtr self, UInt64 cid, MarshalVTable clsInst);
 
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	public InstallFunc Install;
@@ -204,7 +297,7 @@ public struct IID_CID
 public class iClassInstanceVTable : iUnknownVTable
 {
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 CreateInstanceFunc(iRegistry registry, iUnknown outer, iUnknown outInstance);
+	public delegate UInt32 CreateInstanceFunc(iRegistry registry, iUnknown outer, IntPtr outInstance);
 
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	public CreateInstanceFunc CreateInstance;
@@ -212,5 +305,5 @@ public class iClassInstanceVTable : iUnknownVTable
 [StructLayout(LayoutKind.Sequential)]
 public class iClassInstance
 {
-	public IntPtr vTable;
+	public iClassInstanceVTable vTable;
 }
