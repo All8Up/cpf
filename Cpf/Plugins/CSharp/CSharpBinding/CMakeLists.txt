@@ -27,3 +27,10 @@ MakeUnitTest (LIBRARY CSharpBindings GROUP CSharp
 	LINK_LIBRARIES
 		s_IO s_PluginHost
 )
+
+
+# ###############################################
+set_target_properties (CSharpBindings PROPERTIES COMPILE_FLAGS "/clr")
+string (REPLACE "/RTC1" "" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+string (REPLACE "/EHsc" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+string (REPLACE "/GR-" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
