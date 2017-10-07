@@ -21,7 +21,7 @@ set_property (TARGET TestCSharp PROPERTY FOLDER Plugins/CSharp)
 # NOTE: This will be in the plugin directory. Support will be added
 # to update the dll search paths so this will load appropriately.
 add_custom_command (TARGET TestCSharp POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestCSharp> ${CPF_COMMON_PLUGINS}/TestCSharp.cfp
+	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestCSharp> ${CPF_COMMON_PLUGINS}/TestCSharp.dll
 )
 
 #[[
