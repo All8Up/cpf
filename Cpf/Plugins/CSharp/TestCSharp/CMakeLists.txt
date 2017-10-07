@@ -5,7 +5,6 @@ add_library (TestCSharp SHARED
 # figure out what properties to use to force managed assembly builds.
 #	Test.cpp
 )
-target_link_libraries (TestCSharp i_CSharpBinding)
 set_property(TARGET TestCSharp PROPERTY VS_DOTNET_REFERENCES
     "Microsoft.CSharp"
 	"mscorlib"
@@ -13,6 +12,7 @@ set_property(TARGET TestCSharp PROPERTY VS_DOTNET_REFERENCES
     "System.Core"
     "System.Data"
     "System.Runtime.InteropServices"
+    "CSharpBindings_d"
 )
 set_property (TARGET TestCSharp PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7")
 set_property (TARGET TestCSharp PROPERTY FOLDER Plugins/CSharp)
