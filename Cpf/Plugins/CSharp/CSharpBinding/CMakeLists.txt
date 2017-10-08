@@ -56,7 +56,7 @@ target_compile_options(CSharpBindings PRIVATE /fp:precise)
 set_property(TARGET CSharpBindings PROPERTY VS_GLOBAL_ROOTNAMESPACE CSharpBindings)
 set_property(TARGET CSharpBindings PROPERTY VS_GLOBAL_KEYWORD "ManagedCProj")
 set_property(TARGET CSharpBindings PROPERTY VS_GLOBAL_CLRSupport "true")
-set_property(TARGET CSharpBindings PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
+set_property(TARGET CSharpBindings PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.7")
 
 set_property(TARGET CSharpBindings PROPERTY VS_DOTNET_REFERENCES
 	"mscorlib"
