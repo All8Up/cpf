@@ -24,6 +24,7 @@ add_library (CSharpBindings SHARED
 	${INTERFACE_FILES}
 )
 target_link_libraries (CSharpBindings i_CSharpBindings Plugin)
+target_compile_definitions (CSharpBindings PUBLIC _WINDLL _UNICODE UNICODE)
 target_include_directories (CSharpBindings
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
@@ -50,11 +51,13 @@ MakeUnitTest (LIBRARY CSharpBindings GROUP CSharp
 
 # ###############################################
 target_compile_options(CSharpBindings PRIVATE /clr)
+target_compile_options(CSharpBindings PRIVATE /Fa$(IntDir))
 target_compile_options(CSharpBindings PRIVATE /fp:precise)
 set_property(TARGET CSharpBindings PROPERTY VS_GLOBAL_ROOTNAMESPACE CSharpBindings)
 set_property(TARGET CSharpBindings PROPERTY VS_GLOBAL_KEYWORD "ManagedCProj")
 set_property(TARGET CSharpBindings PROPERTY VS_GLOBAL_CLRSupport "true")
 set_property(TARGET CSharpBindings PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
+
 set_property(TARGET CSharpBindings PROPERTY VS_DOTNET_REFERENCES
 	"mscorlib"
 	"System"
