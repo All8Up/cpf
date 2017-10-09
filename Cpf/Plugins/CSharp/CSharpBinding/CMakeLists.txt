@@ -15,7 +15,7 @@ set (INCLUDE_FILES
 )
 set (SOURCE_FILES
 	Source/CSharpBindings.cpp
-	Source/Assembly.cpp
+	Source/AssemblyInfo.cpp
 )
 
 add_library (CSharpBindings SHARED
@@ -31,14 +31,6 @@ target_include_directories (CSharpBindings
 		$<INSTALL_INTERFACE:Interface>
 )
 set_property (TARGET CSharpBindings PROPERTY FOLDER Plugins/CSharp)
-
-# ###############################################
-# Copy as a plugin.
-add_custom_command (
-	TARGET CSharpBindings POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:CSharpBindings> ${CPF_COMMON_PLUGINS}/CSharpBindings.cfp
-)
-
 
 MakeUnitTest (LIBRARY CSharpBindings GROUP CSharp
 	TEST_FILES
