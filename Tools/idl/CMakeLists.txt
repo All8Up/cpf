@@ -69,6 +69,7 @@ set (IDLCodeGenIncludes
 	Include/IDL/CodeGen/Generator.hpp
 	Include/IDL/CodeGen/CppGenerator.hpp
 	Include/IDL/CodeGen/RustGenerator.hpp
+	Include/IDL/CodeGen/CSharpGenerator.hpp
 )
 set (IDLCodeGenSources
 	Source/IDL/CodeGen/CodeWriter.cpp
@@ -76,8 +77,8 @@ set (IDLCodeGenSources
 	Source/IDL/CodeGen/Generator.cpp
 	Source/IDL/CodeGen/CppGenerator.cpp
 	Source/IDL/CodeGen/RustGenerator.cpp
+	Source/IDL/CodeGen/CSharpGenerator.cpp
 )
-
 set (IDLParseTreeIncludes
 	Include/IDL/ParseTree/Visitor.hpp
 )

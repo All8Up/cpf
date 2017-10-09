@@ -6,6 +6,8 @@
 #include "Move.hpp"
 #include "Vector.hpp"
 #include "UnorderedMap.hpp"
+#include "IO/Directory.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 using namespace PluginHost;
@@ -141,7 +143,10 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 					}
 				}
 			}
+			CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory();
+			return GOM::kNotFound;
 		}
+		return GOM::kAlreadyLoaded;
 	}
 	return GOM::kInvalidParameter;
 }

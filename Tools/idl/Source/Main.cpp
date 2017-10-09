@@ -21,6 +21,7 @@ DEFINE_string(input, "", "Input file to process.");
 DEFINE_string(output, "", "Output file.");
 DEFINE_bool(cpp, false, "Output C++ targets.");
 DEFINE_bool(rust, false, "Output rust targets.");
+DEFINE_bool(csharp, false, "Output CSharp targets.");
 
 int main(int argc, char** argv)
 {
@@ -44,6 +45,8 @@ int main(int argc, char** argv)
 		language = IDL::CodeGen::Language::Cpp;
 	else if (FLAGS_rust)
 		language = IDL::CodeGen::Language::Rust;
+	else if (FLAGS_csharp)
+		language = IDL::CodeGen::Language::CSharp;
 	else
 	{
 		printf("Error: no target language specified.\n");
