@@ -24,7 +24,8 @@ namespace IDL
 		{
 			Cpp,
 			Rust,
-			Python3
+			Python3,
+			CSharp,
 		};
 		std::shared_ptr<Generator> Create(Language language);
 	}
