@@ -17,3 +17,5 @@ failure OutOfRange ("Core", "Out of range");
 failure DuplicateCID ("Core", "Duplicate CID");
 failure RegistryError ("Core", "Registry error");
 failure NotRunning ("Core", "Not running");
+failure NotFound ("Core", "Not found");
+failure AlreadyLoaded ("Core", "Already loaded");

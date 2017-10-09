@@ -46,8 +46,7 @@ TEST(Plugin, Register)
 	CPF::PluginHost::CreateRegistry(registry.AsTypePP());
 	EXPECT_TRUE(bool(registry));
 
-	EXPECT_TRUE(::SetDllDirectoryW(L"./plugins/")!=0);
-	EXPECT_TRUE(CPF::GOM::Succeeded(registry->Load("./plugins/CSharpBindings.cfp")));
+	EXPECT_TRUE(CPF::GOM::Succeeded(registry->Load("..\\..\\..\\..\\Debug\\bin\\CSharpBindings_d.dll")));
 	EXPECT_TRUE(CPF::GOM::Succeeded(registry->Exists(CPF::kTestPluginCID.GetID())));
 
 	registry.Release();
