@@ -37,7 +37,9 @@ bool LoadPlugin()
 		{
 			
 		}
-		if (ipluginType->IsAssignableFrom(type) && ipluginType != type)
+		auto isAssignable = ipluginType->IsAssignableFrom(type);
+		auto isPluginType = ipluginType != type;
+		if (isAssignable && isPluginType)
 		{
 			ManagedGlobals::pluginInstance = (IPlugin^)Activator::CreateInstance(type);
 			return true;

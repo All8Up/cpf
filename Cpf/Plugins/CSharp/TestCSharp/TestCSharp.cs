@@ -52,11 +52,13 @@ struct PinnedObject
 	}
 }
 
+/*
 public interface IPlugin
 {
 	UInt32 Install(IntPtr registryPtr);
 	UInt32 Uninstall(IntPtr registryPtr);
 };
+*/
 
 public class Plugin : IPlugin
 {
