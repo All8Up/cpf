@@ -8,14 +8,14 @@
 TEST(Plugin, LoadUnload)
 {
 	CPF::Plugin::Library testLib;
-	EXPECT_TRUE(testLib.Load("./plugins/CSharpBindings.cfp"));
+	EXPECT_TRUE(testLib.Load("..\\..\\..\\..\\Debug\\bin\\CSharpBindings_d.dll"));
 	EXPECT_TRUE(testLib.Unload());
 }
 
 TEST(Plugin, GetAddress)
 {
 	CPF::Plugin::Library testLib;
-	EXPECT_TRUE(testLib.Load("./plugins/CSharpBindings.cfp"));
+	EXPECT_TRUE(testLib.Load("..\\..\\..\\..\\Debug\\bin\\CSharpBindings_d.dll"));
 	void* addr = testLib.GetAddress(kPluginAPIInstall);
 	EXPECT_TRUE(addr != nullptr);
 	EXPECT_TRUE(testLib.Unload());
@@ -24,7 +24,7 @@ TEST(Plugin, GetAddress)
 TEST(Plugin, GetAddressTyped)
 {
 	CPF::Plugin::Library testLib;
-	EXPECT_TRUE(testLib.Load("./plugins/CSharpBindings.cfp"));
+	EXPECT_TRUE(testLib.Load("..\\..\\..\\..\\Debug\\bin\\CSharpBindings_d.dll"));
 	using RegType = int32_t(*)(CPF::Plugin::iRegistry* registry);
 	RegType addr = testLib.GetAddress<RegType>(kPluginAPIInstall);
 	EXPECT_TRUE(addr != nullptr);
@@ -59,7 +59,7 @@ TEST(Plugin, CreateAndCall)
 	CPF::PluginHost::CreateRegistry(registry.AsTypePP());
 	ASSERT_TRUE(bool(registry));
 
-	ASSERT_TRUE(CPF::GOM::Succeeded(registry->Load("./plugins/CSharpBindings.cfp")));
+	ASSERT_TRUE(CPF::GOM::Succeeded(registry->Load("..\\..\\..\\..\\Debug\\bin\\CSharpBindings_d.dll")));
 	ASSERT_TRUE(CPF::GOM::Succeeded(registry->Exists(CPF::kTestPluginCID.GetID())));
 
 	CPF::IntrusivePtr<CPF::iTestPlugin> testPlugin;
