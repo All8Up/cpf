@@ -31,12 +31,6 @@ bool LoadPlugin()
 	auto ipluginType = IPlugin::typeid;
 	for each(auto type in assembly->GetTypes())
 	{
-		//auto interfaces = ipluginType->GetInterfaces;
-
-		//if(interfaces->Count > 0)
-		{
-			
-		}
 		auto isAssignable = ipluginType->IsAssignableFrom(type);
 		auto isPluginType = ipluginType != type;
 		if (isAssignable && isPluginType)
