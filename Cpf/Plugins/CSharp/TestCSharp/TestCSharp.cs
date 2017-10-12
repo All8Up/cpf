@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using ComTest;
 
 internal static class ReferenceStorage
 {
@@ -71,7 +72,7 @@ public static class IDStore
 public class TestPlugin : iUnknown
 {
 	public TestPluginVTable TestPluginVTable = new TestPluginVTable();
-	
+
 	public TestPlugin(iUnknown outer)
 	{
 		VTable.QueryInterface = (self, id, face) =>
@@ -79,15 +80,15 @@ public class TestPlugin : iUnknown
 			switch (id)
 			{
 				case IDStore.iUnknown:
-				{
-					Marshal.WriteIntPtr(face, self);
-					break;
-				}
+					{
+						Marshal.WriteIntPtr(face, self);
+						break;
+					}
 				case IDStore.ITestPlugin:
-				{
-					Marshal.WriteIntPtr(face, self);
-					break;
-				}
+					{
+						Marshal.WriteIntPtr(face, self);
+						break;
+					}
 				default:
 					return 999;
 			}
@@ -103,34 +104,19 @@ public class Plugin : IPlugin
 {
 	public uint Install(IntPtr registryPtr)
 	{
-		var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
-		var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
-		var classInstance = new iClassInstance {ClassInstanceVTable = {CreateInstance = CreateInstanceFunc}};
+		var registry = new iRegistryWrapper(registryPtr);
+		var classInstanceWrapper = new iClassInstanceWrapper(new MyClassInstance());
 
-		var marshalledClassInstance = CustomMarshal(classInstance);
-		ReferenceStorage.Add(marshalledClassInstance);
-		return iRegistryVTable.Install(registryPtr, IDStore.KTestPlugin, marshalledClassInstance);
-	}
+		ReferenceStorage.Add(classInstanceWrapper);
 
-	private uint CreateInstanceFunc(IntPtr self, iRegistry registry1, iUnknown outer, out IntPtr outInstance)
-	{
-		var testPlugin = new TestPlugin(outer);
-
-		//outInstance = Marshal.AllocHGlobal(Marshal.SizeOf(testPlugin));
-		//Marshal.StructureToPtr(testPlugin, outInstance, false);
-
-		outInstance = CustomMarshal(testPlugin);
-		ReferenceStorage.Add(outInstance);
-
-		return 0x7b48e63f;
+		return registry.Install(IDStore.KTestPlugin, classInstanceWrapper.NativePointer);
 	}
 
 	public uint Uninstall(IntPtr registryPtr)
 	{
-		var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
-		var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
+		var registry = new iRegistryWrapper(registryPtr);
 
-		return iRegistryVTable.Remove(registryPtr, IDStore.ITestPlugin);
+		return registry.Remove(IDStore.ITestPlugin);
 	}
 
 	public static IntPtr CustomMarshal(object o)
@@ -153,11 +139,6 @@ public class Plugin : IPlugin
 
 				vTables.Add(fieldInfo);
 				vTableSize += Marshal.SizeOf(fieldInfo.FieldType);
-				//var fieldPtr = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
-				//Marshal.StructureToPtr(fieldInfo.GetValue(o), fieldPtr, false);
-
-				//marshalSize += Marshal.SizeOf(fieldPtr);
-				//fields.Add(new Tuple<FieldInfo, object>(fieldInfo, fieldPtr));
 			}
 			else
 			{
@@ -215,53 +196,12 @@ public class Plugin : IPlugin
 
 		return structPtr;
 	}
-
-	private static MarshalVTable MarshalStruct(object ob)
-	{
-		var marshalVTable = new MarshalVTable();
-		var type = ob.GetType();
-
-		var fieldInfo = type.GetFields(BindingFlags.Public | BindingFlags.Instance).First();
-		var fieldValue = fieldInfo.GetValue(ob);
-
-		marshalVTable.vTable = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
-		Marshal.StructureToPtr(fieldValue, marshalVTable.vTable, false);
-
-		return marshalVTable;
-
-
-
-		//foreach(var fieldInfo in fields)
-		//{
-		//	if(fieldInfo.DeclaringType != typeof(object))
-		//	{
-		//		var fieldValue = fieldInfo.GetValue(ob);
-		//		var ptr = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
-		//		Marshal.StructureToPtr(fieldValue, ptr, false);
-
-		//		//if(fieldInfo.FieldType.IsClass)
-		//		//{
-		//		//	MarshalStruct(fieldInfo.GetValue(ob));
-		//		//}
-		//		//else
-		//		//{
-		//		//	var del = (Delegate) fieldInfo.GetValue(ob);
-		//		//	var functionPointerForDelegate = Marshal.GetFunctionPointerForDelegate(del);
-		//		//	delegates.Add(functionPointerForDelegate);
-		//		//}
-		//	}
-		//}
-
-		//var structureSize = Marshal.SizeOf<Delegate>() * delegates.Count;
-		//var allocHGlobal = Marshal.AllocHGlobal(structureSize);
-
-	}
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public class MarshalVTable
+public class GenericObject
 {
-	public IntPtr vTable;
+	public IntPtr VTablePtr;
 }
 
 [VTable]
@@ -315,10 +255,10 @@ public class iUnknown
 			switch (id)
 			{
 				case IDStore.iUnknown:
-				{
-					Marshal.WriteIntPtr(face, self);
-					break;
-				}
+					{
+						Marshal.WriteIntPtr(face, self);
+						break;
+					}
 				default:
 					return 999;
 			}
@@ -329,126 +269,9 @@ public class iUnknown
 	}
 }
 
-[VTable]
-[StructLayout(LayoutKind.Sequential)]
-public class iRegistryVTable : iUnknownVTable
-{
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 LoadFunc(IntPtr self, char library);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public LoadFunc Load;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 UnloadFunc(IntPtr self, char library);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public UnloadFunc Unload;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstallFunc(IntPtr self, UInt64 cid, IntPtr clsInst);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public InstallFunc Install;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 RemoveFunc(IntPtr self, UInt64 cid);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public RemoveFunc Remove;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 GetClassInstanceFunc(IntPtr self, UInt64 cid, iClassInstance clsInst);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public GetClassInstanceFunc GetClassInstance;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 ExistsFunc(IntPtr self, UInt64 cid);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public ExistsFunc Exists;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 CreateFunc(IntPtr self, iUnknown outer, UInt64 cid, UInt64 iid, MarshalVTable outIface);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public CreateFunc Create;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 ClassInstallFunc(IntPtr self, Int32 count, IID_CID pairs);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public ClassInstallFunc ClassInstall;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 ClassRemoveFunc(IntPtr self, Int32 count, IID_CID pairs);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public ClassRemoveFunc ClassRemove;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 GetClassesFunc(IntPtr self, UInt64 id, ref Int32 count, ref UInt64 cid);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public GetClassesFunc GetClasses;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstanceInstallFunc(IntPtr self, UInt64 id, iUnknown instance);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public InstanceInstallFunc InstanceInstall;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstanceRemoveFunc(IntPtr self, UInt64 id);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public InstanceRemoveFunc InstanceRemove;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 GetInstanceFunc(IntPtr self, UInt64 id, iUnknown outIface);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public GetInstanceFunc GetInstance;
-}
-[StructLayout(LayoutKind.Sequential)]
-public class iRegistry
-{
-	public IntPtr vTable;
-}
-
 [StructLayout(LayoutKind.Sequential)]
 public struct IID_CID
 {
 	public UInt64 mIID { get; set; }
 	public UInt64 mCID { get; set; }
-}
-
-[VTable]
-[StructLayout(LayoutKind.Sequential)]
-public class iClassInstanceVTable
-{
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 CreateInstanceFunc(IntPtr self, iRegistry registry, iUnknown outer, out IntPtr outInstance);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public CreateInstanceFunc CreateInstance;
-	//public IntPtr CreateInstance;
-}
-[StructLayout(LayoutKind.Sequential)]
-public class iClassInstance : iUnknown
-{
-	public iClassInstanceVTable ClassInstanceVTable = new iClassInstanceVTable();
 }
