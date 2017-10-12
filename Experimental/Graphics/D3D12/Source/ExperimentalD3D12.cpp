@@ -31,12 +31,15 @@
 #include "MultiCore.hpp"
 
 #include "SDL2/CIDs.hpp"
+#include "VTune/VTune.hpp"
 
 using namespace CPF;
 using namespace Math;
 using namespace Graphics;
 using namespace Threading;
 using namespace Concurrency;
+
+VTUNE_DOMAIN(Frame, "Frame");
 
 //////////////////////////////////////////////////////////////////////////
 #define WINDOW_TITLE "Stress Test: D3D12"
@@ -58,7 +61,7 @@ GOM::Result CPF_STDCALL ExperimentalD3D12::Initialize(Plugin::iRegistry* registr
 	IO::Directory::SetWorkingDirectory(exePath);
 
 	GetRegistry()->Load("plugins/Resources.cfp");
-	GetRegistry()->Load("plugins/Adapter_SDL2.cfp");
+	GetRegistry()->Load("plugins/AdapterSDL2.cfp");
 	GetRegistry()->Load("plugins/AdapterD3D12.cfp");
 	GetRegistry()->Load("plugins/Concurrency.cfp");
 	return GOM::kOK;
@@ -71,6 +74,8 @@ void CPF_STDCALL ExperimentalD3D12::Shutdown()
 
 GOM::Result ExperimentalD3D12::Main(iApplication* application)
 {
+	VTUNE_THREAD_NAME("Main");
+
 	application->QueryInterface(iWindowedApplication::kIID.GetID(), reinterpret_cast<void**>(&mpApplication));
 
 	// Initialize logging.
@@ -298,11 +303,16 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 					//
 					_UpdatePipelineDisplay();
 
+					VTUNE_SYNC_CREATE("Main dispatch", this, VTune::SyncType::eMutex);
+
 					while (mpApplication->IsRunning())
 					{
 						//////////////////////////////////////////////////////////////////////////
 						// Wait for the last frame of processing.
+						VTUNE_BEGIN_FRAME(Frame);
+						VTUNE_SYNC_PREPARE(this);
 						concurrencyFence->Wait();
+						VTUNE_SYNC_ACQUIRED(this);
 
 						if (mThreadCountChanged)
 						{
@@ -335,6 +345,8 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 						//////////////////////////////////////////////////////////////////////////
 						// Notify that the frame of processing is complete.
 						mpScheduler->Submit(concurrencyFence);
+						VTUNE_SYNC_RELEASING(this);
+						VTUNE_END_FRAME(Frame);
 					}
 
 					// Guarantee last frame is complete before we tear everything down.

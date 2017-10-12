@@ -2,10 +2,13 @@
 #include "RenderSystem.hpp"
 #include "ExperimentalD3D12.hpp"
 #include "MultiCore/iStage.hpp"
+#include "VTune/VTune.hpp"
 
 using namespace CPF;
 using namespace Concurrency;
 using namespace MultiCore;
+
+VTUNE_DOMAIN(RenderSystemDomain, "RenderSystem");
 
 GOM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
@@ -17,7 +20,7 @@ GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kRenderSystemCID.GetID());
 }
 
-RenderSystem::RenderSystem(GOM::iUnknown*)
+RenderSystem::RenderSystem(iUnknown*)
 	: mpApp(nullptr)
 	, mCurrentBackBuffer(0)
 {
@@ -26,22 +29,22 @@ RenderSystem::RenderSystem(GOM::iUnknown*)
 RenderSystem::~RenderSystem()
 {}
 
-void RenderSystem::_BeginFrame(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_BeginFrame(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_BeginFrame(tc);
 }
-void RenderSystem::_Draw(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_Draw(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_Draw(tc);
 }
-void RenderSystem::_DebugUI(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_DebugUI(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_DebugUI(tc);
 }
-void RenderSystem::_EndFrame(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_EndFrame(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_EndFrame(tc);

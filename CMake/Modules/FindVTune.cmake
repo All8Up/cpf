@@ -5,6 +5,8 @@
 # VTune_LIBRARIES
 
 set(dirs
+  "$ENV{VTUNE_AMPLIFIER_2018_DIR}/"
+  "C:/Program Files (x86)/IntelSWTools/VTune Amplifier 2018/"
   "$ENV{VTUNE_AMPLIFIER_XE_2016_DIR}/"
   "C:/Program Files (x86)/Intel/VTune Amplifier XE 2016/"
   "$ENV{VTUNE_AMPLIFIER_XE_2013_DIR}/"

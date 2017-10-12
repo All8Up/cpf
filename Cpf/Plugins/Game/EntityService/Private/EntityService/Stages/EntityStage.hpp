@@ -4,6 +4,7 @@
 #include "Tuple.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/Container.hpp"
+#include "MultiCore/Partitioning.hpp"
 #include "Plugin/iClassInstance.hpp"
 
 namespace CPF
@@ -42,8 +43,12 @@ namespace CPF
 				bool operator ()(const UpdateTuple_t& lhs, const UpdateTuple_t& rhs) const;
 			};
 			MultiCore::SortedVectorContainer<UpdateTuple_t, Compare> mWork;
+
+			struct Caller;
+			using Partition = MultiCore::Partitions<MultiCore::SortedVectorContainer<UpdateTuple_t, Compare>, Caller>;
 			struct Caller
 			{
+				Partition::Context mContext;
 				void Execute(const Concurrency::WorkContext*, const UpdateTuple_t& work);
 			};
 

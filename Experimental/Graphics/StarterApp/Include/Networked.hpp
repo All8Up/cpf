@@ -9,7 +9,7 @@
 #include "Concurrency/iLoadBalancer.hpp"
 #include "MultiCore/System/iTimer.hpp"
 #include "Resources/iLocator.hpp"
-#include "iPython.hpp"
+//#include "iPython.hpp"
 
 namespace CPF
 {
@@ -57,7 +57,7 @@ namespace CPF
 		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
 
-		IntrusivePtr<Tools::iPython3> mpPython3;
+//		IntrusivePtr<Tools::iPython3> mpPython3;
 
 		Time::Value mLastTime;
 
