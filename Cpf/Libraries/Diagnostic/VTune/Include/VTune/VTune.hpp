@@ -119,6 +119,9 @@ namespace VTune
 
 
 	//////////////////////////////////////////////////////////////////////////
+#	define VTUNE_DOMAIN(varName, name)
+#	define VTUNE_GET_DOMAIN(name)
+
 #	define VTUNE_SYNC_CREATE(name, addr, attr)
 #	define VTUNE_SYNC_DESTROY(addr)
 #	define VTUNE_SYNC_PREPARE(addr)
@@ -132,6 +135,8 @@ namespace VTune
 
 #	define VTUNE_BEGIN_FRAME(domain)
 #	define VTUNE_END_FRAME(domain)
+
+#	define VTUNE_THREAD_NAME(name)
 
 #endif
 }

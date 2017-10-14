@@ -9,7 +9,7 @@ namespace CPF
 		class Python3 : public tRefCounted<iPython3>
 		{
 		public:
-			Python3(iUnknown*);
+			Python3(Plugin::iRegistry*, iUnknown*);
 			virtual ~Python3();
 
 			// iBase overrides.
