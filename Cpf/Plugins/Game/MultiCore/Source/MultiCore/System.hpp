@@ -12,7 +12,7 @@ namespace CPF
 		class StageList : public iStageList
 		{
 		public:
-			StageList(iUnknown* outer) : mpOuter(outer), mRefCount(0) {}
+			StageList(Plugin::iRegistry*, iUnknown* outer) : mpOuter(outer), mRefCount(0) {}
 
 			int32_t CPF_STDCALL AddRef() override;
 			int32_t CPF_STDCALL Release() override;

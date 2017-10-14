@@ -67,7 +67,7 @@ namespace CPF
 
 		private:
 			// Construction/Destruction.
-			explicit Scheduler(iUnknown*);
+			explicit Scheduler(Plugin::iRegistry*, iUnknown*);
 			~Scheduler();
 
 			template <typename TYPE>

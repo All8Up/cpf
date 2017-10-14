@@ -10,7 +10,7 @@ using namespace CPF;
 using namespace SDL2;
 
 //////////////////////////////////////////////////////////////////////////
-Window::Window(GOM::iUnknown*)
+Window::Window(Plugin::iRegistry*, GOM::iUnknown*)
 	: mpWindow(nullptr)
 {
 }

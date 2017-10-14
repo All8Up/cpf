@@ -23,7 +23,7 @@ namespace CPF
 		class Configuration : public tRefCounted<iConfiguration>
 		{
 		public:
-			Configuration(iUnknown*);
+			Configuration(Plugin::iRegistry*, iUnknown*);
 			Configuration(Plugin::iRegistry* regy, const String& filename);
 			~Configuration();
 

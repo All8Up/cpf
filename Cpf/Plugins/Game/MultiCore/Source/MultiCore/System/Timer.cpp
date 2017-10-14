@@ -10,7 +10,7 @@ using namespace MultiCore;
 /**
  Default constructor.
  */
-Timer::Timer(iUnknown*)
+Timer::Timer(Plugin::iRegistry*, iUnknown*)
 	: mPaused(false)
 	, mpUpdate(nullptr)
 {

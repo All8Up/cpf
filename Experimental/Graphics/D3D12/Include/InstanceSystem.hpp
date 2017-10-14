@@ -31,7 +31,7 @@ namespace CPF
 			ExperimentalD3D12* mpApplication;
 		};
 
-		InstanceSystem(GOM::iUnknown*);
+		InstanceSystem(Plugin::iRegistry*, GOM::iUnknown*);
 
 		Instance* GetInstances() const { return mpInstances; }
 

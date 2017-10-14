@@ -3,7 +3,7 @@
 
 using namespace CPF;
 
-Renderable::Renderable(GOM::iUnknown*)
+Renderable::Renderable(Plugin::iRegistry*, GOM::iUnknown*)
 {}
 
 GOM::Result CPF_STDCALL Renderable::QueryInterface(uint64_t id, void** outIface)

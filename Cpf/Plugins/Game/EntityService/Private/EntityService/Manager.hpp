@@ -22,7 +22,7 @@ namespace CPF
 			using EntityIDValue = EntityIDMap::value_type;
 
 			//
-			Manager(iUnknown*);
+			Manager(Plugin::iRegistry*, iUnknown*);
 			virtual ~Manager();
 
 			//

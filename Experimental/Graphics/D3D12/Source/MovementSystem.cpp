@@ -43,7 +43,7 @@ GOM::Result MoverSystem::MoverComponent::QueryInterface(uint64_t id, void** outP
 
 
 
-MoverSystem::MoverSystem(iUnknown*)
+MoverSystem::MoverSystem(Plugin::iRegistry*, iUnknown*)
 	: mpApp(nullptr)
 	, mpInstances(nullptr)
 	, mpTime(nullptr)
@@ -83,7 +83,7 @@ void MoverSystem::EnableMovement(bool flag)
 
 
 //////////////////////////////////////////////////////////////////////////
-MoverSystem::MoverComponent::MoverComponent(iUnknown*)
+MoverSystem::MoverComponent::MoverComponent(Plugin::iRegistry*, iUnknown*)
 	: mpMover(nullptr)
 {}
 

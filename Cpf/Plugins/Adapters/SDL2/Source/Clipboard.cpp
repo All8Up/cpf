@@ -5,7 +5,7 @@
 using namespace CPF;
 using namespace SDL2;
 
-Clipboard::Clipboard(GOM::iUnknown*)
+Clipboard::Clipboard(Plugin::iRegistry*, GOM::iUnknown*)
 {}
 
 Clipboard::~Clipboard()

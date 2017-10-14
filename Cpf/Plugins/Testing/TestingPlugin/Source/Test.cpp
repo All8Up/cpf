@@ -37,7 +37,7 @@ GOM::Result CPF_EXPORT Remove(Plugin::iRegistry* registry)
 
 
 //////////////////////////////////////////////////////////////////////////
-Test::Test(iUnknown*)
+Test::Test(Plugin::iRegistry*, iUnknown*)
 	: mRefCount(1)
 {
 }

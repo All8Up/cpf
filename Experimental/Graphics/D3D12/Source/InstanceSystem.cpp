@@ -6,7 +6,7 @@
 
 using namespace CPF;
 
-InstanceSystem::InstanceSystem(GOM::iUnknown*)
+InstanceSystem::InstanceSystem(Plugin::iRegistry*, GOM::iUnknown*)
 {}
 
 void InstanceSystem::_Begin(const Concurrency::WorkContext*, void* context)

@@ -4,7 +4,6 @@
 #include "MultiCore/Types.hpp"
 #include "Plugin/iRegistry.hpp"
 
-
 namespace CPF
 {
 	namespace MultiCore
@@ -23,6 +22,18 @@ namespace CPF
 			virtual GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) = 0;
 			virtual void CPF_STDCALL AddDependency(BlockDependency dep) = 0;
 			virtual GOM::Result CPF_STDCALL GetDependencies(iExecutionPlan* owner, int32_t*, BlockDependency*) = 0;
+
+			/* New refined interface.
+			virtual GOM::Result CPF_STDCALL GetNamed(const char* name, StageID*) = 0;
+			virtual StageID CPF_STDCALL GetPrologue() = 0;
+			virtual StageID CPF_STDCALL GetBody() = 0;
+			virtual StageID CPF_STDCALL GetEpilogue() = 0;
+
+			virtual iStage* CPF_STDCALL GetStage(StageID) = 0;
+
+			virtual size_t CPF_STDCALL GetStages(size_t* count, iStage**) = 0;
+			virtual GOM::Result CPF_STDCALL GetDependencies(size_t* count, BlockDependency* array) = 0;
+			 */
 		};
 
 		struct iSystem : iStageList

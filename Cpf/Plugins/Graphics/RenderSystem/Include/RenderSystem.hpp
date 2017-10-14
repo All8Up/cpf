@@ -7,7 +7,7 @@ namespace CPF
 	class RenderSystem : public tRefCounted<iRenderSystem>
 	{
 	public:
-		RenderSystem(GOM::iUnknown*);
+		RenderSystem(Plugin::iRegistry*, GOM::iUnknown*);
 
 		// iBase.
 		GOM::Result QueryInterface(uint64_t id, void** outIface) override;

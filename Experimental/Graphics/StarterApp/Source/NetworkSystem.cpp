@@ -18,7 +18,7 @@ GOM::Result NetworkSystem::Remove(Plugin::iRegistry* regy)
 }
 
 //////////////////////////////////////////////////////////////////////////
-NetworkSystem::NetworkSystem(iUnknown*)
+NetworkSystem::NetworkSystem(Plugin::iRegistry*, iUnknown*)
 {
 }
 

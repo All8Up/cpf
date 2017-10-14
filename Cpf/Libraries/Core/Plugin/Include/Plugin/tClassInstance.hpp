@@ -34,11 +34,11 @@ namespace CPF
 				return mRefCount;
 			}
 
-			GOM::Result CPF_STDCALL CreateInstance(iRegistry*, iUnknown* outer, iUnknown** outIface) override
+			GOM::Result CPF_STDCALL CreateInstance(iRegistry* regy, iUnknown* outer, iUnknown** outIface) override
 			{
 				if (outIface)
 				{
-					*outIface = new TYPE(outer);
+					*outIface = new TYPE(regy, outer);
 					if (*outIface)
 					{
 						if (mExternalRef)

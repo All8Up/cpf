@@ -29,7 +29,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 
-Device::Device(GOM::iUnknown*)
+Device::Device(Plugin::iRegistry*, GOM::iUnknown*)
 {
 }
 
@@ -171,7 +171,7 @@ GOM::Result CPF_STDCALL Device::CreateCommandPool(Graphics::iCommandPool** pool)
 
 GOM::Result CPF_STDCALL Device::CreateCommandBuffer(Graphics::iCommandPool* pool, Graphics::CommandBufferType type, Graphics::iCommandBuffer** buffer)
 {
-	CommandBuffer* result = new CommandBuffer(nullptr);
+	CommandBuffer* result = new CommandBuffer(nullptr, nullptr);
 	if (result)
 	{
 		if (GOM::Succeeded(result->Initialize(this, type, pool)))

@@ -36,7 +36,7 @@ namespace CPF
 
 			private:
 				CPF_CLASSINSTANCE_ACCESS(Adapter);
-				Adapter(GOM::iUnknown*);
+				Adapter(Plugin::iRegistry*, GOM::iUnknown*);
 				virtual ~Adapter();
 
 				IntrusivePtr<IDXGIAdapter2> mpAdapter;

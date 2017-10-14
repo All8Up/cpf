@@ -38,7 +38,7 @@ namespace CPF
 		GOM::Result CPF_STDCALL AddStage(MultiCore::iStage*) override;
 		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
-		NetworkSystem(GOM::iUnknown*);
+		NetworkSystem(Plugin::iRegistry*, GOM::iUnknown*);
 
 	private:
 		static void _Update(const Concurrency::WorkContext*, void*);

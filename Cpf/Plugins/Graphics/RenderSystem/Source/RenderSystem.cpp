@@ -3,7 +3,7 @@
 
 using namespace CPF;
 
-RenderSystem::RenderSystem(GOM::iUnknown*)
+RenderSystem::RenderSystem(Plugin::iRegistry*, GOM::iUnknown*)
 {
 }
 

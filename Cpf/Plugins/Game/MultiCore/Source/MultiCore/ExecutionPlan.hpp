@@ -12,7 +12,7 @@ namespace CPF
 		class ExecutionPlan : public tRefCounted<iExecutionPlan>
 		{
 		public:
-			ExecutionPlan(iUnknown*);
+			ExecutionPlan(Plugin::iRegistry*, iUnknown*);
 			~ExecutionPlan();
 
 			GOM::Result QueryInterface(uint64_t id, void** iface) override;

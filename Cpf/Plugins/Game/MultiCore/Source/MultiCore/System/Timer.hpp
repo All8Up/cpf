@@ -13,7 +13,7 @@ namespace CPF
 		{
 		public:
 			// Construction/Destruction.
-			Timer(iUnknown*);
+			Timer(Plugin::iRegistry*, iUnknown*);
 			virtual ~Timer();
 
 			// iBase overrides.

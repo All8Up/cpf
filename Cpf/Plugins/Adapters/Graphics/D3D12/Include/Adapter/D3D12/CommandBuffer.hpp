@@ -43,7 +43,7 @@ namespace CPF
 			class CommandBuffer : public tRefCounted<Graphics::iCommandBuffer>
 			{
 			public:
-				CommandBuffer(GOM::iUnknown*);
+				CommandBuffer(Plugin::iRegistry*, GOM::iUnknown*);
 				virtual ~CommandBuffer();
 
 				//

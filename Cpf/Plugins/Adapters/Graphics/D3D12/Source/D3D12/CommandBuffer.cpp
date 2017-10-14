@@ -31,7 +31,7 @@ using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
 
-CommandBuffer::CommandBuffer(GOM::iUnknown*)
+CommandBuffer::CommandBuffer(Plugin::iRegistry*, GOM::iUnknown*)
 	: mpDevice(nullptr)
 	, mpAllocator(nullptr)
 	, mCurrent(-1)

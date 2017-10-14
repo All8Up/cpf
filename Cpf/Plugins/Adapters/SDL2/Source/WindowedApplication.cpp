@@ -10,10 +10,10 @@
 using namespace CPF;
 using namespace SDL2;
 
-WindowedApp::WindowedApp(GOM::iUnknown*)
+WindowedApp::WindowedApp(Plugin::iRegistry* regy, GOM::iUnknown*)
 	: mRunning(false)
 	, mpApplicationMain(nullptr)
-	, mpRegistry(nullptr)
+	, mpRegistry(regy)
 {
 	CPF_INIT_LOG(Application);
 	SDL_InitSubSystem(SDL_INIT_VIDEO);

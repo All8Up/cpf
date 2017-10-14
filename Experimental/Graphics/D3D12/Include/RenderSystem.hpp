@@ -23,14 +23,12 @@ namespace CPF
 		static constexpr MultiCore::SystemID kID = Hash::Create<MultiCore::SystemID_tag>("Render System"_hashString);
 
 		static constexpr MultiCore::StageID kBeginFrame = Hash::Create<MultiCore::StageID_tag>("Begin Frame"_hashString);
-		static constexpr MultiCore::BlockID kClearBuffers = Hash::Create<MultiCore::BlockID_tag>("Clear Buffers"_hashString);
 		static constexpr MultiCore::StageID kDrawInstances = Hash::Create<MultiCore::StageID_tag>("Draw Instances"_hashString);
-		static constexpr MultiCore::BlockID kDebugUI = Hash::Create<MultiCore::BlockID_tag>("Debug UI"_hashString);
-		static constexpr MultiCore::BlockID kPreparePresent = Hash::Create<MultiCore::BlockID_tag>("Prepare Present"_hashString);
-		static constexpr MultiCore::BlockID kEndFrame = Hash::Create<MultiCore::BlockID_tag>("End Frame"_hashString);
+		static constexpr MultiCore::StageID kDebugUI = Hash::Create<MultiCore::StageID_tag>("Debug UI"_hashString);
+		static constexpr MultiCore::StageID kEndFrame = Hash::Create<MultiCore::StageID_tag>("End Frame"_hashString);
 
 		// Construction/Destruction.
-		RenderSystem(GOM::iUnknown*);
+		RenderSystem(Plugin::iRegistry*, GOM::iUnknown*);
 		virtual ~RenderSystem();
 
 		// Registration.
@@ -85,6 +83,6 @@ namespace CPF
 		IntrusivePtr<Graphics::iCommandBuffer> mpPostCommandBuffer[kBufferCount];
 
 		MultiCore::SystemID mID;
-		IntrusivePtr<MultiCore::iStageList> mpStages;
+		IntrusivePtr<iStageList> mpStages;
 	};
 }

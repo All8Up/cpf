@@ -5,7 +5,7 @@ using namespace CPF;
 using namespace Vulkan;
 using namespace Graphics;
 
-Instance::Instance(iUnknown*)
+Instance::Instance(Plugin::iRegistry*, iUnknown*)
 	: mInstance(nullptr)
 {}
 

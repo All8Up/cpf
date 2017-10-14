@@ -10,7 +10,7 @@ using namespace CPF;
 using namespace Adapter;
 
 //////////////////////////////////////////////////////////////////////////
-D3D12::Adapter::Adapter(GOM::iUnknown*)
+D3D12::Adapter::Adapter(Plugin::iRegistry*, GOM::iUnknown*)
 	: mpAdapter(nullptr)
 {
 }

@@ -4,7 +4,7 @@
 using namespace CPF;
 using namespace Concurrency;
 
-Fence::Fence(iUnknown*)
+Fence::Fence(Plugin::iRegistry*, iUnknown*)
 	: mSemaphore(0)
 {
 }

@@ -2,8 +2,6 @@
 #pragma once
 #include "Application/iWindowedApplication.hpp"
 #include "SDL.h"
-#include "Pair.hpp"
-
 
 namespace CPF
 {
@@ -13,7 +11,7 @@ namespace CPF
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			WindowedApp(iUnknown*);
+			WindowedApp(Plugin::iRegistry*, iUnknown*);
 			~WindowedApp();
 
 			//

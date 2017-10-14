@@ -22,9 +22,6 @@ namespace CPF
 		struct iStage;
 		using StageVector = Vector<IntrusivePtr<iStage>>;
 
-		struct BlockID_tag {};
-		using BlockID = Hash::HashString<BlockID_tag>;
-
 		enum class BlockOpcode
 		{
 			eFirst,
@@ -32,19 +29,12 @@ namespace CPF
 			eLast
 		};
 
-		struct Block
-		{
-			BlockID mID;
-			BlockOpcode mType;
-		};
-		using Blocks = Vector<Block>;
-
 		// System, stage, block id.
 		struct SSBID
 		{
 			SystemID mSystem;
 			StageID mStage;
-			BlockID mBlock;
+			StageID mBlock;
 		};
 
 		inline bool operator <(const SSBID& lhs, const SSBID& rhs)

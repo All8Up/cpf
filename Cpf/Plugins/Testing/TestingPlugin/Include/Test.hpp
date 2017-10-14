@@ -1,7 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "iTest.hpp"
-#include "RefCounted.hpp"
+
+namespace CPF
+{
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+}
 
 namespace Testing
 {
@@ -13,7 +20,7 @@ namespace Testing
 	class Test : public iTest
 	{
 	public:
-		Test(iUnknown*);
+		Test(CPF::Plugin::iRegistry*, iUnknown*);
 		virtual ~Test();
 
 		int32_t CPF_STDCALL AddRef() override;

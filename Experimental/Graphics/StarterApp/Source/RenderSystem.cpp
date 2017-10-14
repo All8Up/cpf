@@ -111,7 +111,7 @@ iDebugUI* RenderSystem::GetDebugUI()
 }
 
 
-RenderSystem::RenderSystem(GOM::iUnknown*)
+RenderSystem::RenderSystem(Plugin::iRegistry*, GOM::iUnknown*)
 	: mpTimer(nullptr)
 	, mpRegistry(nullptr)
 	, mWidth(0)

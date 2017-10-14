@@ -9,7 +9,7 @@ using namespace Concurrency;
 /**
  * @brief Constructor.
  */
-WorkBuffer::WorkBuffer(iUnknown*)
+WorkBuffer::WorkBuffer(Plugin::iRegistry*, iUnknown*)
 {}
 
 /** @brief Destructor. */

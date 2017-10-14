@@ -6,12 +6,17 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace Concurrency
 	{
 		class Fence : public tRefCounted<iFence>
 		{
 		public:
-			Fence(iUnknown*);
+			Fence(Plugin::iRegistry*, iUnknown*);
 			virtual ~Fence() {}
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

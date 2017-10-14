@@ -11,7 +11,7 @@ using namespace MultiCore;
 
 
 //////////////////////////////////////////////////////////////////////////
-ExecutionPlan::ExecutionPlan(iUnknown*)
+ExecutionPlan::ExecutionPlan(Plugin::iRegistry*, iUnknown*)
 #ifdef CPF_DEBUG
 	: mChanged(false)
 #endif

@@ -15,7 +15,7 @@ namespace CPF
 		class ThreadPool : public tRefCounted<iThreadPool>
 		{
 		public:
-			ThreadPool(iUnknown*);
+			ThreadPool(Plugin::iRegistry*, iUnknown*);
 			~ThreadPool();
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

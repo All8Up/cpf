@@ -22,8 +22,13 @@ namespace CPF
 			explicit constexpr HashString(uint64_t ID, const char* string);
 			constexpr HashString(const HashString& rhs) noexcept;
 
+			template <typename RHS>
+			explicit constexpr HashString(const HashString<RHS> rhs) noexcept;
+
 			const HashString& operator = (const HashString& rhs);
 			const HashString& operator = (const HashString&& rhs);
+			template <typename RHS>
+			constexpr HashString& operator = (const HashString<RHS> rhs);
 
 			bool operator == (const HashString& rhs) const;
 			bool operator != (const HashString& rhs) const;
@@ -34,6 +39,11 @@ namespace CPF
 
 			constexpr const char* GetString() const;
 			constexpr uint64_t GetID() const;
+
+			constexpr HashString Create(HashString&& rhs)
+			{
+				return HashString(rhs.GetID(), rhs.GetString());
+			}
 
 		private:
 			const char* mpString;

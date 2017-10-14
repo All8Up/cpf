@@ -92,7 +92,7 @@ namespace CPF
 
 			private:
 				//////////////////////////////////////////////////////////////////////////
-				Device(GOM::iUnknown*);
+				Device(Plugin::iRegistry*, GOM::iUnknown*);
 				virtual ~Device();
 				CPF_CLASSINSTANCE_ACCESS(Device);
 

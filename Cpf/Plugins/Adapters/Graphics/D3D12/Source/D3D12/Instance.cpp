@@ -20,7 +20,7 @@ using namespace Adapter;
 using namespace D3D12;
 
 //////////////////////////////////////////////////////////////////////////
-Instance::Instance(GOM::iUnknown*)
+Instance::Instance(Plugin::iRegistry*, GOM::iUnknown*)
 {
 	UINT flags = 0;
 #ifdef CPF_USE_D3D12_DEBUG_LAYER

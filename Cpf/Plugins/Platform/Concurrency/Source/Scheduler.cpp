@@ -28,7 +28,7 @@ const int Scheduler::kMaxBackoff = 4096;
 
 
 /** @brief Default constructor. */
-Scheduler::Scheduler(iUnknown*)
+Scheduler::Scheduler(Plugin::iRegistry*, iUnknown*)
 	: mControlLock(0)
 	, mTargetCount(0)
 	, mActiveCount(0)

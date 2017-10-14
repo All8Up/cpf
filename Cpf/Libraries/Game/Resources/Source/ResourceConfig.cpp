@@ -207,7 +207,7 @@ Configuration::Configuration(Plugin::iRegistry* regy, const String& filename)
 	}
 }
 
-Configuration::Configuration(iUnknown*)
+Configuration::Configuration(Plugin::iRegistry*, iUnknown*)
 	: mpLocator(nullptr)
 {
 	CPF_INIT_LOG(ResourceConfig);

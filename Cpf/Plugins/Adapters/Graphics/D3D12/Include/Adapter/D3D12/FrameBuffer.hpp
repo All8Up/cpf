@@ -6,6 +6,11 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace Adapter
 	{
 		namespace D3D12
@@ -15,7 +20,7 @@ namespace CPF
 			class FrameBuffer : public tRefCounted<Graphics::iFrameBuffer>
 			{
 			public:
-				FrameBuffer(GOM::iUnknown*);
+				FrameBuffer(Plugin::iRegistry*, GOM::iUnknown*);
 				virtual ~FrameBuffer();
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

@@ -7,7 +7,7 @@ using namespace CPF;
 using namespace SDL2;
 
 
-KeyboardDevice::KeyboardDevice(GOM::iUnknown*)
+KeyboardDevice::KeyboardDevice(Plugin::iRegistry*, GOM::iUnknown*)
 {}
 
 KeyboardDevice::~KeyboardDevice()

@@ -14,7 +14,7 @@ namespace CPF
 		class EntityStage : public tRefCounted<iEntityStage>
 		{
 		public:
-			EntityStage(iUnknown*);
+			EntityStage(Plugin::iRegistry*, iUnknown*);
 
 			// iBase overrides.
 			GOM::Result QueryInterface(uint64_t, void**) override;
@@ -27,9 +27,9 @@ namespace CPF
 			void CPF_STDCALL SetEnabled(bool flag) override;
 			GOM::Result CPF_STDCALL GetInstructions(int32_t*, MultiCore::Instruction*) override;
 			GOM::Result CPF_STDCALL GetDependencies(int32_t*, MultiCore::BlockDependency*) override;
-			MultiCore::BlockID GetDefaultBlock() const override { return kExecute; }
-			MultiCore::BlockID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
-			MultiCore::BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
+			MultiCore::StageID GetDefaultBlock() const override { return kExecute; }
+			MultiCore::StageID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
+			MultiCore::StageID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
 
 			// iEntityStage overrides.
 			void AddUpdate(MultiCore::iSystem* s, iEntity* o, UpdateFunc f);

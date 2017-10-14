@@ -8,7 +8,7 @@ using namespace CPF;
 using namespace Concurrency;
 using namespace Threading;
 
-LoadBalancer::LoadBalancer(iUnknown*)
+LoadBalancer::LoadBalancer(Plugin::iRegistry*, iUnknown*)
 	: mLastUpdate(Time::Now())
 {
 }

@@ -17,7 +17,7 @@ namespace CPF
 			{
 			public:
 				// Construction/Destruction.
-				Default(iUnknown*);
+				Default(Plugin::iRegistry*, iUnknown*);
 				virtual ~Default();
 
 				static const char* const kCacheName;

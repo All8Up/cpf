@@ -6,7 +6,7 @@ using namespace CPF;
 using namespace Adapter;
 using namespace D3D12;
 
-FrameBuffer::FrameBuffer(GOM::iUnknown*)
+FrameBuffer::FrameBuffer(Plugin::iRegistry*, GOM::iUnknown*)
 	: mFrameBuffer{ 0 }
 {}
 

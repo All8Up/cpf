@@ -14,7 +14,7 @@ namespace CPF
 		class WorkBuffer : public tRefCounted<iWorkBuffer>
 		{
 			// Construction/Destruction.
-			WorkBuffer(iUnknown*);
+			WorkBuffer(Plugin::iRegistry*, iUnknown*);
 			~WorkBuffer();
 			template <typename TYPE>
 			friend struct Plugin::tClassInstance;

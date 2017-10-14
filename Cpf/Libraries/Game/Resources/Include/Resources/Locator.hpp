@@ -23,7 +23,7 @@ namespace CPF
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			Locator(iUnknown*);
+			Locator(Plugin::iRegistry*, iUnknown*);
 			virtual ~Locator();
 			
 			// iBase overrides.

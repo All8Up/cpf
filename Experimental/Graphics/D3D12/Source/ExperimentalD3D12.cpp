@@ -102,7 +102,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	//////////////////////////////////////////////////////////////////////////
 	// Install object components.
 	MoverSystem::MoverComponent::Install(GetRegistry());
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	GetRegistry()->Create(nullptr, MultiCore::kExecutionPlanCID.GetID(), MultiCore::iExecutionPlan::kIID.GetID(), mpMultiCore.AsVoidPP());
 
@@ -112,8 +112,70 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	MoverSystem::Install(GetRegistry());
 
 	//////////////////////////////////////////////////////////////////////////
-	// Create the primary game timer.
 	IntrusivePtr<MultiCore::iTimer> gameTime;
+	IntrusivePtr<RenderSystem> renderSystem;
+	IntrusivePtr<InstanceSystem> instanceSystem;
+
+
+#if 0
+	//////////////////////////////////////////////////////////////////////////
+	RenderSystem::Desc renderDesc;
+	renderDesc.mTimerID = SystemRef("Game Time");
+	renderDesc.mpApplication = this;
+
+	InstanceSystem::Desc instanceDesc;
+	instanceDesc.mRenderSystemID = SystemRef("Render System");
+	instanceDesc.mpApplication = this;
+
+	MoverSystem::Desc moverDesc;
+	moverDesc.mpApplication = this;
+	moverDesc.mTimerID = SystemRef("Game Time");
+	moverDesc.mInstanceID = SystemRef("Instance System");
+
+	SystemCreateDesc systems[] =
+	{
+		{gameTime.AsVoidPP(), MultiCore::kTimerCID, "Game Time", nullptr},
+		{renderSystem.AsVoidPP(), kRenderSystemCID, "Render System", &renderDesc},
+		{instanceSystem.AsVoidPP(), kInstanceSystemCID, "Instance System", &instanceDesc},
+		{mpMoverSystem.AsVoidPP(), kMoverSystemCID, "Mover", &moverDesc}
+	};
+
+	if (GOM::Success(mpMultiCore->CreateSystems(4, systems)))
+	{
+		MultiCore::Dependency systemDependencies[] =
+		{
+			{
+				// Rendering begins only after instances are prepared.
+				renderSystem->GetBody(), instanceSystem->GetStart(),
+				MultiCore::DependencyPolicy::eAfter
+			},
+			{
+				// Instance system finalizes only after rendering is complete.
+				instanceSystem->GetEnd(), renderSystem->GetEnd(),
+				MultiCore::DependencyPolicy::eAfter
+			},
+			{
+				// Instance system finalizes only after mover system fills in the instance data.
+				instanceSystem->GetEnd(), mpMoverSystem->GetEnd(),
+				MultiCore::DependencyPolicy::eAfter
+			},
+			{
+				// Mover system fills in instance data only after instance system has prepared the internal buffers.
+				mpMoverSystem->GetBody(), instanceSystem->GetBody(),
+				MultiCore::DependencyPolicy::eAfter
+			},
+			{
+				// Movement update can only happen after time has advanced.
+				mpMoverSystem->GetBody(), gameTime->GetEnd(),
+				MultiCore::DependencyPolicy::eBarrier
+			}
+		}
+		if (GOM::Success(mpMultiCore->Configure(5, systemDependencies)))
+		{}
+	}
+#endif
+
+	// Create the primary game timer.
 	GetRegistry()->Create(nullptr, MultiCore::kTimerCID.GetID(), MultiCore::iTimer::kIID.GetID(), gameTime.AsVoidPP());
 	gameTime->Initialize(GetRegistry(), "Game Time", nullptr);
 
@@ -123,7 +185,6 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	RenderSystem::Desc renderDesc;
 	renderDesc.mTimerID = gameTime->GetID();
 	renderDesc.mpApplication = this;
-	IntrusivePtr<RenderSystem> renderSystem;
 	GetRegistry()->Create(nullptr, kRenderSystemCID.GetID(), RenderSystem::kIID.GetID(), renderSystem.AsVoidPP());
 	renderSystem->Initialize(GetRegistry(), "Render System", &renderDesc);
 	mpMultiCore->Install(renderSystem);
@@ -132,7 +193,6 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	InstanceSystem::Desc instanceDesc;
 	instanceDesc.mRenderSystemID = renderSystem->GetID();
 	instanceDesc.mpApplication = this;
-	IntrusivePtr<InstanceSystem> instanceSystem;
 	GetRegistry()->Create(nullptr, kInstanceSystemCID.GetID(), InstanceSystem::kIID.GetID(), instanceSystem.AsVoidPP());
 	instanceSystem->Initialize(GetRegistry(), "Instance System", &instanceDesc);
 	mpMultiCore->Install(instanceSystem);
@@ -145,6 +205,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 	GetRegistry()->Create(nullptr, kMoverSystemCID.GetID(), MoverSystem::kIID.GetID(), mpMoverSystem.AsVoidPP());
 	mpMoverSystem->Initialize(GetRegistry(), "Mover", &moverDesc);
 	mpMultiCore->Install(mpMoverSystem);
+
 
 	//////////////////////////////////////////////////////////////////////////
 	// Add the required inter-system dependencies.

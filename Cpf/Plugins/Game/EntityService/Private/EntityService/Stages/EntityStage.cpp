@@ -6,7 +6,7 @@ using namespace CPF;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(iUnknown*)
+EntityStage::EntityStage(Plugin::iRegistry*, iUnknown*)
 	: mpSystem(nullptr)
 	, mEnabled(true)
 {
