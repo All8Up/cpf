@@ -38,6 +38,10 @@ GOM::Result CPF_STDCALL WorkBuffer::QueryInterface(uint64_t id, void** outIface)
 	return GOM::kInvalidParameter;
 }
 
+/**
+ * @brief Copies the given queue.
+ * @param [in,out]	queue If non-null, the queue.
+ */
 void CPF_STDCALL WorkBuffer::Copy(iWorkBuffer* queue)
 {
 	WorkBuffer* q = static_cast<WorkBuffer*>(queue);
@@ -55,12 +59,20 @@ void WorkBuffer::operator ()(Opcode o, WorkFunction p, void* c)
 	mQueue.push_back({ o, p, c });
 }
 
+/**
+ * @brief Reserves the given size.
+ * @param size The size.
+ * @return A CPF_STDCALL.
+ */
 GOM::Result CPF_STDCALL WorkBuffer::Reserve(int32_t size)
 {
 	mQueue.resize(size);
 	return GOM::kOK;
 }
 
+/**
+ * @brief Resets this object.
+ */
 void CPF_STDCALL WorkBuffer::Reset()
 {
 	mQueue.clear();
