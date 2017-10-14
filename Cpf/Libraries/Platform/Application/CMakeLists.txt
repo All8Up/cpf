@@ -1,4 +1,15 @@
 # ###############################################
+set (IDL_INTERFACES
+#	IDL/Interfaces/iApplication.idl
+)
+
+CPF_GEN_GOM (CPP_INTERFACES cpp
+	hpp
+	${CPF_GENERATED}/CPP/Application
+	${IDL_INTERFACES}
+)
+
+# ###############################################
 set (INTERFACE_FILES
 	Interface/Application/iWindow.hpp
 	Interface/Application/KeyCode.hpp
@@ -19,10 +30,14 @@ set (INTERFACE_FILES
 	Interface/Application/iClipboard.hpp
 )
 add_library (i_Application INTERFACE)
-target_link_libraries (i_Application INTERFACE Configuration Events Plugin)
-target_include_directories (i_Application INTERFACE
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
-	$<INSTALL_INTERFACE:Interface>
+target_link_libraries (
+	i_Application
+	INTERFACE Configuration Events Plugin
+)
+target_include_directories (i_Application
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
 )
 
 # ###############################################
@@ -33,30 +48,47 @@ set( SOURCE_FILES
 	Source/${CMAKE_SYSTEM_NAME}/Main.cpp
 )
 
-add_library( s_Application STATIC
+add_library (s_Application STATIC
 	${INTERFACE_FILES}
+	${IDL_INTERFACES}
+	${CPP_INTERFACES}
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
 )
-target_compile_definitions( s_Application
-	PUBLIC CPF_STATIC_APPLICATION CPF_STATIC_PLATFORM
-	PRIVATE CPF_BUILD_PLATFORM
+target_compile_definitions (s_Application
+	PUBLIC
+		CPF_STATIC_APPLICATION
+		CPF_STATIC_PLATFORM
+	PRIVATE
+		CPF_BUILD_PLATFORM
 )
+source_group (IDL FILES ${IDL_INTERFACES})
 source_group (Interface FILES ${INTERFACE_FILES})
-source_group( Headers FILES ${INCLUDE_FILES} )
-source_group( Sources FILES ${SOURCE_FILES} )
+source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Sources FILES ${SOURCE_FILES})
 
-target_link_libraries( s_Application i_Application s_Memory s_Collections Math Events s_PluginHost Logging )
-
-target_include_directories( s_Application PUBLIC
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-	$<INSTALL_INTERFACE:Include>
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
-	$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
-	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CPF_TARGET_OS}/${CPF_TARGET_CPU_DIR}>
+target_link_libraries (s_Application
+	i_Application
+	s_Memory
+	s_Collections
+	Math
+	Events
+	s_PluginHost
+	Logging
 )
 
-set_property( TARGET s_Application PROPERTY FOLDER Libraries/Static/Platform )
+target_include_directories (s_Application
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<INSTALL_INTERFACE:Include>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
+		$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CPF_TARGET_OS}/${CPF_TARGET_CPU_DIR}>
+)
+
+set_property (TARGET s_Application PROPERTY FOLDER Libraries/Static/Platform)
+
+add_dependencies (s_Application i_Application)
 
 #[[
 install( DIRECTORY Include/Application

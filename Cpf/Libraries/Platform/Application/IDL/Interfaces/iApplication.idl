@@ -1,0 +1,14 @@
+import iUnknown from GOM;
+module CPF;
+
+interface iApplication : GOM::iUnknown
+{
+//	using OnQuit = Events::Event<0, std::function<bool()>, Events::AnyNotEqual<bool, true, true, false> >;
+
+	result Initialize(Plugin::iRegistry*, iApplicationMain*);
+	result Run();
+	result Shutdown();
+
+	Plugin::iRegistry* GetRegistry();
+	Events::Emitter* GetEmitter();
+};

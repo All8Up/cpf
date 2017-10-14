@@ -29,7 +29,6 @@ namespace CPF
 		{
 		public:
 			//
-			static constexpr int kRegisterCount = 16;
 			static constexpr int kQueueSize = 4096;
 			using InitOrShutdownFunc_t = WorkFunction;
 			using OpcodeFunc_t = void(*)(Scheduler &vm, const WorkContext* context, int64_t index);
@@ -39,7 +38,6 @@ namespace CPF
 				WorkFunction mpFunction;
 				void* mpContext;
 			};
-
 
 			// iUnkown overrides.
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
