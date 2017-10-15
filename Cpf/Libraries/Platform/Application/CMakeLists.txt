@@ -1,12 +1,34 @@
 # ###############################################
 set (IDL_INTERFACES
-#	IDL/Interfaces/iApplication.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iApplication.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindow.idl
 )
 
 CPF_GEN_GOM (CPP_INTERFACES cpp
 	hpp
 	${CPF_GENERATED}/CPP/Application
 	${IDL_INTERFACES}
+)
+
+set (IDL_DESCRIPTORS
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Descriptors/WindowDesc.idl
+)
+CPF_GEN_GOM (CPP_DESCRIPTORS cpp
+	hpp
+	${CPF_GENERATED}/CPP/Application
+	${IDL_DESCRIPTORS}
+)
+
+set (IDL_FLAGS
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyCode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/MouseButton.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanCode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/WindowFlags.idl
+)
+CPF_GEN_GOM (CPP_FLAGS cpp
+	hpp
+	${CPF_GENERATED}/CPP/Application
+	${IDL_FLAGS}
 )
 
 # ###############################################
@@ -50,8 +72,12 @@ set( SOURCE_FILES
 
 add_library (s_Application STATIC
 	${INTERFACE_FILES}
-	${IDL_INTERFACES}
 	${CPP_INTERFACES}
+	${IDL_INTERFACES}
+	${CPP_DESCRIPTORS}
+	${IDL_DESCRIPTORS}
+	${CPP_FLAGS}
+	${IDL_FLAGS}
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
 )
@@ -62,7 +88,11 @@ target_compile_definitions (s_Application
 	PRIVATE
 		CPF_BUILD_PLATFORM
 )
-source_group (IDL FILES ${IDL_INTERFACES})
+
+source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
+source_group (IDL\\Descriptors FILES ${IDL_DESCRIPTORS})
+source_group (IDL\\Flags FILES ${IDL_FLAGS})
+
 source_group (Interface FILES ${INTERFACE_FILES})
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Sources FILES ${SOURCE_FILES})

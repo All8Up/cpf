@@ -1,0 +1,7 @@
+import iUnknown from GOM;
+import iRegistry from Plugin;
+module CPF;
+
+interface iWindow : GOM::iUnknown
+{
+}

@@ -4,6 +4,7 @@ function(CPF_GEN_GOM outList target ext outDir)
 		get_filename_component(fileName ${file} NAME_WE)
 		set (targetFile "${outDir}/${fileName}.${ext}")
 
+		set_source_files_properties (${file} PROPERTIES HEADER_FILE_ONLY TRUE)
 		add_custom_command (OUTPUT ${targetFile}
 			DEPENDS ${file}
 			COMMAND ${CPF_OS_BIN_DIR}/IDL --${target}
