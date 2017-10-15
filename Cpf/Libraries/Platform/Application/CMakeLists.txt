@@ -71,6 +71,7 @@ set( SOURCE_FILES
 )
 
 add_library (s_Application STATIC
+#[[
 	${INTERFACE_FILES}
 	${CPP_INTERFACES}
 	${IDL_INTERFACES}
@@ -78,6 +79,7 @@ add_library (s_Application STATIC
 	${IDL_DESCRIPTORS}
 	${CPP_FLAGS}
 	${IDL_FLAGS}
+#]]
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
 )

@@ -2,6 +2,8 @@ import iUnknown from GOM;
 import iRegistry from Plugin;
 module CPF;
 
+interface iApplicationMain;
+
 interface iApplication : GOM::iUnknown
 {
 //	[
