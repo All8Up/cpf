@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -15,14 +15,14 @@ public:
     Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULT = 5, UNION = 6, 
     INTERFACE = 7, ENUM = 8, FLAGS = 9, MODULE = 10, FROM = 11, AS = 12, 
     IN = 13, OUT = 14, COLON = 15, SEMICOLON = 16, STAR = 17, SLASH = 18, 
-    DOT = 19, COMMA = 20, EQUALS = 21, QUOTE = 22, LBRACE = 23, RBRACE = 24, 
-    LPAREN = 25, RPAREN = 26, LBRACKET = 27, RBRACKET = 28, LT = 29, GT = 30, 
-    PLUS = 31, MINUS = 32, LSHIFT = 33, RSHIFT = 34, PIPE = 35, Const = 36, 
-    Void = 37, RESULT = 38, SUCCESS = 39, FAILURE = 40, CLASS_ID = 41, STRING = 42, 
-    U8 = 43, S8 = 44, U16 = 45, S16 = 46, U32 = 47, S32 = 48, U64 = 49, 
-    S64 = 50, F32 = 51, F64 = 52, IDENT = 53, DECIMAL_LIT = 54, HEX_LIT = 55, 
-    BIN_LIT = 56, OCT_LIT = 57, STRING_LIT = 58, FLOAT_LIT = 59, WHITE_SPACE = 60, 
-    BLOCK_COMMENT = 61, LINE_COMMENT = 62
+    DOT = 19, COMMA = 20, EQUALS = 21, QUOTE = 22, SQUOTE = 23, LBRACE = 24, 
+    RBRACE = 25, LPAREN = 26, RPAREN = 27, LBRACKET = 28, RBRACKET = 29, 
+    LT = 30, GT = 31, PLUS = 32, MINUS = 33, LSHIFT = 34, RSHIFT = 35, PIPE = 36, 
+    Const = 37, Void = 38, RESULT = 39, SUCCESS = 40, FAILURE = 41, CLASS_ID = 42, 
+    STRING = 43, U8 = 44, S8 = 45, U16 = 46, S16 = 47, U32 = 48, S32 = 49, 
+    U64 = 50, S64 = 51, F32 = 52, F64 = 53, IDENT = 54, DECIMAL_LIT = 55, 
+    HEX_LIT = 56, BIN_LIT = 57, OCT_LIT = 58, STRING_LIT = 59, CHAR_LIT = 60, 
+    FLOAT_LIT = 61, WHITE_SPACE = 62, BLOCK_COMMENT = 63, LINE_COMMENT = 64
   };
 
   enum {
@@ -40,12 +40,12 @@ public:
     RuleFlags_def = 38, RuleEnum_type = 39, RuleEnum_elements = 40, RuleEnum_item = 41, 
     RuleEnum_expr = 42, RuleExpr_add_sub = 43, RuleExpr_mul_div = 44, RuleExpr_shift = 45, 
     RuleExpr_logical = 46, RuleExpr_value = 47, RuleAny_literal = 48, RuleNumeric_lit = 49, 
-    RuleInteger_lit = 50, RuleFloat_lit = 51, RuleString_lit = 52, RuleQualified_ident = 53, 
-    RuleQualified_part = 54, RuleQualified_separator = 55, RuleAll_or_ident = 56, 
-    RuleMember_decl = 57, RuleMember_init = 58, RuleMember_init_value = 59, 
-    RuleInit_as_type = 60, RuleType_decl = 61, RuleType_modifier = 62, RulePointer_type = 63, 
-    RulePointer_decl = 64, RuleAny_type = 65, RuleUtility_type = 66, RuleIntegral_type = 67, 
-    RuleFloat_type = 68
+    RuleInteger_lit = 50, RuleFloat_lit = 51, RuleString_lit = 52, RuleChar_lit = 53, 
+    RuleQualified_ident = 54, RuleQualified_part = 55, RuleQualified_separator = 56, 
+    RuleAll_or_ident = 57, RuleMember_decl = 58, RuleMember_init = 59, RuleMember_init_value = 60, 
+    RuleInit_as_type = 61, RuleType_decl = 62, RuleType_modifier = 63, RulePointer_type = 64, 
+    RulePointer_decl = 65, RuleAny_type = 66, RuleUtility_type = 67, RuleIntegral_type = 68, 
+    RuleFloat_type = 69
   };
 
   IDLParser(antlr4::TokenStream *input);
@@ -111,6 +111,7 @@ public:
   class Integer_litContext;
   class Float_litContext;
   class String_litContext;
+  class Char_litContext;
   class Qualified_identContext;
   class Qualified_partContext;
   class Qualified_separatorContext;
@@ -681,6 +682,7 @@ public:
     Enum_elementsContext *enum_elements();
     antlr4::tree::TerminalNode *RBRACE();
     Enum_typeContext *enum_type();
+    antlr4::tree::TerminalNode *COMMA();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -883,6 +885,7 @@ public:
     antlr4::tree::TerminalNode *HEX_LIT();
     antlr4::tree::TerminalNode *OCT_LIT();
     antlr4::tree::TerminalNode *BIN_LIT();
+    Char_litContext *char_lit();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -913,6 +916,18 @@ public:
   };
 
   String_litContext* string_lit();
+
+  class  Char_litContext : public antlr4::ParserRuleContext {
+  public:
+    Char_litContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *CHAR_LIT();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  Char_litContext* char_lit();
 
   class  Qualified_identContext : public antlr4::ParserRuleContext {
   public:

@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLLexer.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Tools/idl\IDLLexer.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -15,14 +15,14 @@ public:
     Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULT = 5, UNION = 6, 
     INTERFACE = 7, ENUM = 8, FLAGS = 9, MODULE = 10, FROM = 11, AS = 12, 
     IN = 13, OUT = 14, COLON = 15, SEMICOLON = 16, STAR = 17, SLASH = 18, 
-    DOT = 19, COMMA = 20, EQUALS = 21, QUOTE = 22, LBRACE = 23, RBRACE = 24, 
-    LPAREN = 25, RPAREN = 26, LBRACKET = 27, RBRACKET = 28, LT = 29, GT = 30, 
-    PLUS = 31, MINUS = 32, LSHIFT = 33, RSHIFT = 34, PIPE = 35, Const = 36, 
-    Void = 37, RESULT = 38, SUCCESS = 39, FAILURE = 40, CLASS_ID = 41, STRING = 42, 
-    U8 = 43, S8 = 44, U16 = 45, S16 = 46, U32 = 47, S32 = 48, U64 = 49, 
-    S64 = 50, F32 = 51, F64 = 52, IDENT = 53, DECIMAL_LIT = 54, HEX_LIT = 55, 
-    BIN_LIT = 56, OCT_LIT = 57, STRING_LIT = 58, FLOAT_LIT = 59, WHITE_SPACE = 60, 
-    BLOCK_COMMENT = 61, LINE_COMMENT = 62
+    DOT = 19, COMMA = 20, EQUALS = 21, QUOTE = 22, SQUOTE = 23, LBRACE = 24, 
+    RBRACE = 25, LPAREN = 26, RPAREN = 27, LBRACKET = 28, RBRACKET = 29, 
+    LT = 30, GT = 31, PLUS = 32, MINUS = 33, LSHIFT = 34, RSHIFT = 35, PIPE = 36, 
+    Const = 37, Void = 38, RESULT = 39, SUCCESS = 40, FAILURE = 41, CLASS_ID = 42, 
+    STRING = 43, U8 = 44, S8 = 45, U16 = 46, S16 = 47, U32 = 48, S32 = 49, 
+    U64 = 50, S64 = 51, F32 = 52, F64 = 53, IDENT = 54, DECIMAL_LIT = 55, 
+    HEX_LIT = 56, BIN_LIT = 57, OCT_LIT = 58, STRING_LIT = 59, CHAR_LIT = 60, 
+    FLOAT_LIT = 61, WHITE_SPACE = 62, BLOCK_COMMENT = 63, LINE_COMMENT = 64
   };
 
   IDLLexer(antlr4::CharStream *input);

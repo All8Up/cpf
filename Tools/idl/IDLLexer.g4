@@ -34,6 +34,7 @@ DOT                         : '.';
 COMMA                       : ',';
 EQUALS                      : '=';
 QUOTE                       : '"';
+SQUOTE                      : '\'';
 LBRACE                      : '{';
 RBRACE                      : '}';
 LPAREN                      : '(';
@@ -91,6 +92,15 @@ fragment ESC_CHAR           : '\\' [0\\tnr"']
                             | '\\x' HEX_DIGIT HEX_DIGIT
                             | '\\u' '{' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT '}'
                             | '\\u' '{' HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT '}'
+                            ;
+
+// Character literal.
+CHAR_LIT                    : SQUOTE SQUOTE_CHAR SQUOTE;
+fragment SQUOTE_CHAR        : SQUOTE_ITEM;
+fragment SQUOTE_ITEM        : ~["\n\r\\]
+                            | SQUOTE_ESCAPE;
+fragment SQUOTE_ESCAPE      : '\\' [\\tnrb"']
+                            | '\\0' OCT_DIGIT+
                             ;
 
 // Floating point literal.

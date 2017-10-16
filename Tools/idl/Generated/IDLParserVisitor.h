@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -124,6 +124,8 @@ public:
     virtual antlrcpp::Any visitFloat_lit(IDLParser::Float_litContext *context) = 0;
 
     virtual antlrcpp::Any visitString_lit(IDLParser::String_litContext *context) = 0;
+
+    virtual antlrcpp::Any visitChar_lit(IDLParser::Char_litContext *context) = 0;
 
     virtual antlrcpp::Any visitQualified_ident(IDLParser::Qualified_identContext *context) = 0;
 

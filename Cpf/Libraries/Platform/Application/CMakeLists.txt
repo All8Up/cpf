@@ -24,7 +24,7 @@ CPF_GEN_GOM (CPP_DESCRIPTORS cpp
 )
 
 set (IDL_FLAGS
-#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyCode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyCode.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyModifiers.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/MouseButton.idl
 #	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanCode.idl
@@ -45,7 +45,6 @@ set (INTERFACE_FILES
 	Interface/Application/iMouseDevice.hpp
 	Interface/Application/iKeyboardDevice.hpp
 	Interface/Application/iClipboard.hpp
-	Interface/Application/KeyCode.hpp
 	Interface/Application/OSWindowData.hpp
 	Interface/Application/ScanCode.hpp
 )
