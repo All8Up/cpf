@@ -120,7 +120,7 @@ target_include_directories (s_Application
 
 set_property (TARGET s_Application PROPERTY FOLDER Libraries/Static/Platform)
 
-add_dependencies (s_Application i_Application)
+add_dependencies (i_Application s_Application)
 
 #[[
 install( DIRECTORY Include/Application
