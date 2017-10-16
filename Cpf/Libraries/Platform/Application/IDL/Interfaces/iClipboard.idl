@@ -1,0 +1,12 @@
+import iUnknown from GOM;
+module CPF;
+
+interface iClipboard : GOM::iUnknown
+{
+//	static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("Cpf::iClipboard"_crc64);
+//	static constexpr GOM::InstanceID kDefault = GOM::InstanceID("Cpf::iClipboard::Default"_crc64);
+	const class_id kDefault("CPF::iClipboard::Default");
+
+	result GetClipboardText(s32* count, char* text);
+	result SetClipboardText(const char* text);
+};

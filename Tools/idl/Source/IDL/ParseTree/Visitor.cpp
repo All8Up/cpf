@@ -393,6 +393,11 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 	return visitChildren(ctx);
 }
 
+antlrcpp::Any Visitor::visitConst_class_id_def(IDLParser::Const_class_id_defContext *ctx)
+{
+	return visitChildren(ctx);
+}
+
 Visitor::Type Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integralType)
 {
 	Type result;

@@ -1,7 +1,8 @@
 # ###############################################
 set (IDL_INTERFACES
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iApplication.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindow.idl
+#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iApplication.idl
+#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindow.idl
+#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iClipboard.idl
 )
 
 CPF_GEN_GOM (CPP_INTERFACES cpp
@@ -20,9 +21,10 @@ CPF_GEN_GOM (CPP_DESCRIPTORS cpp
 )
 
 set (IDL_FLAGS
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyCode.idl
+#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyCode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyModifiers.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/MouseButton.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanCode.idl
+#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanCode.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/WindowFlags.idl
 )
 CPF_GEN_GOM (CPP_FLAGS cpp
@@ -34,13 +36,6 @@ CPF_GEN_GOM (CPP_FLAGS cpp
 # ###############################################
 set (INTERFACE_FILES
 	Interface/Application/iWindow.hpp
-	Interface/Application/KeyCode.hpp
-	Interface/Application/ScanCode.hpp
-	Interface/Application/KeyModifier.hpp
-	Interface/Application/MouseButton.hpp
-	Interface/Application/OSWindowData.hpp
-	Interface/Application/WindowDesc.hpp
-	Interface/Application/WindowFlags.hpp
 	Interface/Application/iApplication.hpp
 	Interface/Application/iApplicationMain.hpp
 	Interface/Application/iWindowedApplication.hpp
@@ -50,6 +45,9 @@ set (INTERFACE_FILES
 	Interface/Application/iKeyboardDevice.hpp
 	Interface/Application/iJoystickDevice.hpp
 	Interface/Application/iClipboard.hpp
+	Interface/Application/KeyCode.hpp
+	Interface/Application/OSWindowData.hpp
+	Interface/Application/ScanCode.hpp
 )
 add_library (i_Application INTERFACE)
 target_link_libraries (
@@ -71,17 +69,15 @@ set( SOURCE_FILES
 )
 
 add_library (s_Application STATIC
-#[[
+	${INCLUDE_FILES}
+	${SOURCE_FILES}
+	${CPP_DESCRIPTORS}
+	${IDL_DESCRIPTORS}
 	${INTERFACE_FILES}
 	${CPP_INTERFACES}
 	${IDL_INTERFACES}
-	${CPP_DESCRIPTORS}
-	${IDL_DESCRIPTORS}
 	${CPP_FLAGS}
 	${IDL_FLAGS}
-#]]
-	${INCLUDE_FILES}
-	${SOURCE_FILES}
 )
 target_compile_definitions (s_Application
 	PUBLIC

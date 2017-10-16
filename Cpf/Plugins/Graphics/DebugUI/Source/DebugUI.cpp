@@ -45,7 +45,7 @@
 #include "CPF/Logging.hpp"
 
 #include "Application/ScanCode.hpp"
-#include "Application/KeyModifier.hpp"
+#include "Application/KeyModifiers.hpp"
 #include "Application/MouseButton.hpp"
 #include "Application/iMouseDevice.hpp"
 #include "Application/iKeyboardDevice.hpp"

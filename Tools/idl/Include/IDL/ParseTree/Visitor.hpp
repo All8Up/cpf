@@ -192,6 +192,7 @@ namespace IDL
 		antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *ctx) override;
 		antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *ctx) override;
 		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
+		antlrcpp::Any visitConst_class_id_def(IDLParser::Const_class_id_defContext *ctx) override;
 
 		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
