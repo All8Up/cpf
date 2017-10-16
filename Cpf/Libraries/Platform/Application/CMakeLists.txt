@@ -58,6 +58,7 @@ target_include_directories (i_Application
 	INTERFACE
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
 		$<INSTALL_INTERFACE:Interface>
+		${CPF_GENERATED}/CPP
 )
 
 # ###############################################
@@ -99,7 +100,6 @@ source_group (Headers\\Flags FILES ${CPP_FLAGS})
 source_group (Sources FILES ${SOURCE_FILES})
 
 target_link_libraries (s_Application
-	i_Application
 	s_Memory
 	s_Collections
 	Math
@@ -110,6 +110,8 @@ target_link_libraries (s_Application
 
 target_include_directories (s_Application
 	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+		$<INSTALL_INTERFACE:Interface>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
