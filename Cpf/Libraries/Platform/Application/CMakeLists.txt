@@ -1,11 +1,13 @@
 # ###############################################
 set (IDL_INTERFACES
 #	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iApplication.idl
-#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindow.idl
-#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iClipboard.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindowedApplication.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iClipboard.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iInputDevice.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iJoystickDevice.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iKeyboardDevice.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iMouseDevice.idl
+#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindow.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindowedApplication.idl
 )
 
 CPF_GEN_GOM (CPP_INTERFACES cpp
@@ -27,7 +29,7 @@ set (IDL_FLAGS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyCode.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/KeyModifiers.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/MouseButton.idl
-#	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanCode.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/ScanCode.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/WindowFlags.idl
 )
 CPF_GEN_GOM (CPP_FLAGS cpp
@@ -36,17 +38,21 @@ CPF_GEN_GOM (CPP_FLAGS cpp
 	${IDL_FLAGS}
 )
 
+set (IDL_STRUCTURES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Structures/OSWindowData.idl
+)
+CPF_GEN_GOM (CPP_STRUCTURES cpp
+	hpp
+	${CPF_GENERATED}/CPP/Application
+	${IDL_STRUCTURES}
+)
+
 # ###############################################
 set (INTERFACE_FILES
 	Interface/Application/iWindow.hpp
 	Interface/Application/iApplication.hpp
 	Interface/Application/iApplicationMain.hpp
 	Interface/Application/iInputManager.hpp
-	Interface/Application/iMouseDevice.hpp
-	Interface/Application/iKeyboardDevice.hpp
-	Interface/Application/iClipboard.hpp
-	Interface/Application/OSWindowData.hpp
-	Interface/Application/ScanCode.hpp
 )
 add_library (i_Application INTERFACE)
 target_link_libraries (
@@ -73,9 +79,11 @@ add_library (s_Application STATIC
 	${SOURCE_FILES}
 	${CPP_DESCRIPTORS}
 	${IDL_DESCRIPTORS}
-	${INTERFACE_FILES}
+	${CPP_STRUCTURES}
+	${IDL_STRUCTURES}
 	${CPP_INTERFACES}
 	${IDL_INTERFACES}
+	${INTERFACE_FILES}
 	${CPP_FLAGS}
 	${IDL_FLAGS}
 )
@@ -90,12 +98,14 @@ target_compile_definitions (s_Application
 source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
 source_group (IDL\\Descriptors FILES ${IDL_DESCRIPTORS})
 source_group (IDL\\Flags FILES ${IDL_FLAGS})
+source_group (IDL\\Structures FILES ${IDL_STRUCTURES})
 
 source_group (Interface FILES ${INTERFACE_FILES})
 source_group (Headers FILES ${INCLUDE_FILES})
 source_group (Headers\\Descriptors FILES ${CPP_DESCRIPTORS})
 source_group (Headers\\Interfaces FILES ${CPP_INTERFACES})
 source_group (Headers\\Flags FILES ${CPP_FLAGS})
+source_group (Headers\\Structures FILES ${CPP_STRUCTURES})
 source_group (Sources FILES ${SOURCE_FILES})
 
 target_link_libraries (s_Application

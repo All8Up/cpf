@@ -117,16 +117,26 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->Indent();
 
 	//
+	mpWriter->SetSection(eConstants);
 	CPF::String hashName = (mModule.ToString("::") + "::" + decl.mName).c_str();
 	CPF::GOM::InterfaceID iid = CPF::GOM::InterfaceID(CPF::Hash::Crc64(hashName.c_str(), hashName.length()));
 	mpWriter->OutputLine("static constexpr GOM::InterfaceID kIID = GOM::InterfaceID(0x%" PRIx64 " /* %s */);",
 		iid.GetID(), hashName.c_str());
 
-	if (!decl.mFunctions.empty())
-		mpWriter->OutputLine("");
+	// TODO: Extend this to handle the full range of constant types.
+	for (const auto& constItem : decl.mClassIDs)
+	{
+		mpWriter->OutputLine("static constexpr GOM::InstanceID %s = GOM::InstanceID(0x%" PRIx64 " /* %s */);",
+			constItem.mName.c_str(),
+			CPF::Hash::Crc64(constItem.mValue.c_str(), constItem.mValue.length()),
+			constItem.mValue.c_str()
+		);
+	}
 
 	for (const auto& func : decl.mFunctions)
 	{
+		mpWriter->LineFeed(eInterfaces, eNamespace, CodeWriter::kAnySection);
+
 		mpWriter->Output("%svirtual %s CPF_STDCALL %s (",
 			mpWriter->GetIndentString().c_str(),
 			TypeToString(func.mReturnType).c_str(),
@@ -151,12 +161,23 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			mpWriter->Output(") const = 0;");
 		else
 			mpWriter->Output(") = 0;");
-		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 	}
 
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
 }
+#if 0
+void CppGenerator::OnClassIDStmt(const Visitor::ClassID& classID)
+{
+	mpWriter->LineFeed(eConstants, eNamespace, CodeWriter::kAnySection);
+	mpWriter->OutputLine("static constexpr GOM::InstanceID %s = GOM::InstanceID(0x%" PRIx64 " /* %s */);",
+		classID.mName.c_str(),
+		CPF::Hash::Crc64(classID.mValue.c_str(), classID.mValue.length()),
+		classID.mValue.c_str()
+	);
+}
+#endif
+
 
 void CppGenerator::OnInterfaceFwdStmt(const String& name)
 {

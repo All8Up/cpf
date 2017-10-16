@@ -121,7 +121,15 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 	{
 		if (item->const_def())
 		{
-
+			auto constDef = item->const_def();
+			if (constDef->const_class_id_def())
+			{
+				auto constIDDef = constDef->const_class_id_def();
+				ClassID classID;
+				classID.mName = constIDDef->IDENT()->toString();
+				classID.mValue = TrimStringLit(constIDDef->string_lit()->STRING_LIT()->toString());
+				decl.mClassIDs.push_back(classID);
+			}
 		}
 		else if (item->enum_def())
 		{
@@ -150,7 +158,7 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 	}
 
 	Emit<InterfaceDeclStmt>(decl);
-	return visitChildren(ctx);
+	return defaultResult();
 }
 
 antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
@@ -413,11 +421,6 @@ antlrcpp::Any Visitor::visitConst_integral_def(IDLParser::Const_integral_defCont
 	value.mType = ParseIntegralType(ctx->integral_type());
 	value.mValue = ParseIntegerLit(ctx->integer_lit());
 	Emit<ConstIntegralStmt>(value);
-	return visitChildren(ctx);
-}
-
-antlrcpp::Any Visitor::visitConst_class_id_def(IDLParser::Const_class_id_defContext *ctx)
-{
 	return visitChildren(ctx);
 }
 
