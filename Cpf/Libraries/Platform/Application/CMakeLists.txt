@@ -3,6 +3,9 @@ set (IDL_INTERFACES
 #	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iApplication.idl
 #	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindow.idl
 #	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iClipboard.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iWindowedApplication.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iInputDevice.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iJoystickDevice.idl
 )
 
 CPF_GEN_GOM (CPP_INTERFACES cpp
@@ -38,12 +41,9 @@ set (INTERFACE_FILES
 	Interface/Application/iWindow.hpp
 	Interface/Application/iApplication.hpp
 	Interface/Application/iApplicationMain.hpp
-	Interface/Application/iWindowedApplication.hpp
 	Interface/Application/iInputManager.hpp
-	Interface/Application/iInputDevice.hpp
 	Interface/Application/iMouseDevice.hpp
 	Interface/Application/iKeyboardDevice.hpp
-	Interface/Application/iJoystickDevice.hpp
 	Interface/Application/iClipboard.hpp
 	Interface/Application/KeyCode.hpp
 	Interface/Application/OSWindowData.hpp
@@ -93,6 +93,9 @@ source_group (IDL\\Flags FILES ${IDL_FLAGS})
 
 source_group (Interface FILES ${INTERFACE_FILES})
 source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Headers\\Descriptors FILES ${CPP_DESCRIPTORS})
+source_group (Headers\\Interfaces FILES ${CPP_INTERFACES})
+source_group (Headers\\Flags FILES ${CPP_FLAGS})
 source_group (Sources FILES ${SOURCE_FILES})
 
 target_link_libraries (s_Application

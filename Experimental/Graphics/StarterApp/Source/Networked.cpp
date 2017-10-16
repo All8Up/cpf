@@ -10,6 +10,7 @@
 #include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
+#include "Application/iWindow.hpp"
 #include "IO/File.hpp"
 #include "IO/Directory.hpp"
 #include "SDL2/CIDs.hpp"
