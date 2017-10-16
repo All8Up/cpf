@@ -115,6 +115,7 @@ target_include_directories (s_Application
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CMAKE_SYSTEM_NAME}>
 		$<INSTALL_INTERFACE:Include/${CMAKE_SYSTEM_NAME}>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/${CPF_TARGET_OS}/${CPF_TARGET_CPU_DIR}>
+		${CPF_GENERATED}/CPP
 )
 
 set_property (TARGET s_Application PROPERTY FOLDER Libraries/Static/Platform)
