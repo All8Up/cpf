@@ -12,7 +12,7 @@ namespace CPF
 			class Manual : public tRefCounted<iMonitor>
 			{
 			public:
-				Manual(iUnknown*);
+				Manual(Plugin::iRegistry*, iUnknown*);
 				virtual ~Manual();
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

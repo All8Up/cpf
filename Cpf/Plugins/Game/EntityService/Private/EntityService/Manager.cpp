@@ -10,7 +10,7 @@ using namespace EntityService;
 uint64_t Manager::mNextID = uint64_t(0);
 
 //////////////////////////////////////////////////////////////////////////
-Manager::Manager(iUnknown*)
+Manager::Manager(Plugin::iRegistry*, iUnknown*)
 	: mpPipeline(nullptr)
 {}
 

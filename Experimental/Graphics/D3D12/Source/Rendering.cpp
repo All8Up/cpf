@@ -1,26 +1,23 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
 #include "Atomic/Atomic.hpp"
-#include "Graphics/TopologyType.hpp"
 #include "Graphics/Viewport.hpp"
-#include "Graphics/ResourceState.hpp"
-#include "Graphics/SubResource.hpp"
-#include "Graphics/DepthStencilClearFlag.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
-#include "Graphics/iImageView.hpp"
 #include "Graphics/Format.hpp"
 #include "Graphics/RenderPassBeginDesc.hpp"
 #include "Application/iWindow.hpp"
 #include "Concurrency/WorkContext.hpp"
-#include "Math/Vector4v.hpp"
+#include "VTune/VTune.hpp"
 
 using namespace CPF;
 using namespace Math;
 using namespace Graphics;
 
+//#define DISABLE_RENDERING
 
 void ExperimentalD3D12::_BeginFrame(const Concurrency::WorkContext*)
 {
+#ifndef DISABLE_RENDERING
 	// Issue on the shared command buffers.
 	mpPreCommandPool[mCurrentBackbuffer]->Reset();
 	mpPreCommandBuffer[mCurrentBackbuffer]->Reset(mpPreCommandPool[mCurrentBackbuffer]);
@@ -50,10 +47,13 @@ void ExperimentalD3D12::_BeginFrame(const Concurrency::WorkContext*)
 
 	// Always the first to issue.
 	mpScheduledBuffers[0] = mpPreCommandBuffer[mCurrentBackbuffer];
+
+#endif
 }
 
 void ExperimentalD3D12::_Draw(const Concurrency::WorkContext* tc)
 {
+#ifndef DISABLE_RENDERING
 	ThreadData& threadData = *reinterpret_cast<ThreadData*>(tc->mpUserData);
 
 	// Start issuing commands.
@@ -89,11 +89,12 @@ void ExperimentalD3D12::_Draw(const Concurrency::WorkContext* tc)
 	// End the command buffer prior to submission.
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->End();
 	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpCommandBuffer[mCurrentBackbuffer];
+#endif
 }
 
-//#define DISABLE_RENDERING
 void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 {
+#ifndef DISABLE_RENDERING
 	// Insert the drawing buffers.
 	mpPreCommandBuffer[mCurrentBackbuffer]->Insert(mCurrentScheduledBuffer - 1, &mpScheduledBuffers[1]);
 
@@ -103,7 +104,6 @@ void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 	// End the command buffer prior to submission.
 	mpPreCommandBuffer[mCurrentBackbuffer]->End();
 
-#ifndef DISABLE_RENDERING
 	// Submit the command buffers.
 	iCommandBuffer* buffers[1] = {mpPreCommandBuffer[mCurrentBackbuffer]};
 	mpDevice->Submit(1, buffers);

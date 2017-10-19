@@ -5,7 +5,7 @@
 using namespace CPF;
 using namespace Concurrency;
 
-ThreadPool::ThreadPool(iUnknown*)
+ThreadPool::ThreadPool(Plugin::iRegistry*, iUnknown*)
 {
 }
 

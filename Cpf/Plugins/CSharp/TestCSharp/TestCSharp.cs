@@ -1,311 +1,277 @@
 using System;
+using System.CodeDom;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using ComTest;
 
-public class iUnknown
+internal static class ReferenceStorage
 {
-	private int refCount;
-
-	int AddRef()
+	private class PinnedObj
 	{
-		return ++refCount;
+		private object unknown;
+		private GCHandle handle;
+
+		public PinnedObj(object unknown)
+		{
+			this.unknown = unknown;
+			handle = GCHandle.Alloc(unknown);
+		}
+
+		public void Release()
+		{
+			handle.Free();
+			unknown = null;
+		}
 	}
 
-	int Release()
+	private static readonly Dictionary<object, PinnedObj> objectSet = new Dictionary<object, PinnedObj>();
+
+	public static void Add(object obj)
 	{
-		return --refCount;
+		objectSet.Add(obj, new PinnedObj(obj));
 	}
 
-	UInt32 QueryInterface(UInt64 id, out IntPtr @interface)
+	public static void Remove(object obj)
 	{
-		@interface = IntPtr.Zero;
-		return 0;
+		if (objectSet.TryGetValue(obj, out var pinned))
+		{
+			pinned.Release();
+			objectSet.Remove(obj);
+		}
 	}
 }
 
+[AttributeUsage(AttributeTargets.Class)]
+public class VTableAttribute : Attribute
+{
+
+}
+
+[VTable]
+[StructLayout(LayoutKind.Sequential)]
+public class TestPluginVTable
+{
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	public delegate UInt32 TestFunc(IntPtr self);
+
+	[MarshalAs(UnmanagedType.FunctionPtr)]
+	public TestFunc Test;
+}
+
+public static class IDStore
+{
+	public const UInt64 iUnknown = 123;
+	public const UInt64 ITestPlugin = 0x5b145b3470ae5b89;
+	public const UInt64 KTestPlugin = 0xcc551f9f2177bbb2;
+}
+
+[StructLayout(LayoutKind.Sequential)]
 public class TestPlugin : iUnknown
 {
-	public static UInt64 ID = 1234;
+	public TestPluginVTable TestPluginVTable = new TestPluginVTable();
 
 	public TestPlugin(iUnknown outer)
 	{
+		VTable.QueryInterface = (self, id, face) =>
+		{
+			switch (id)
+			{
+				case IDStore.iUnknown:
+					{
+						Marshal.WriteIntPtr(face, self);
+						break;
+					}
+				case IDStore.ITestPlugin:
+					{
+						Marshal.WriteIntPtr(face, self);
+						break;
+					}
+				default:
+					return 999;
+			}
 
-	}
-
-	public int Test()
-	{
-		return 0;
+			VTable.AddRef(self);
+			return 0x7b48e63f;
+		};
+		TestPluginVTable.Test = self => 0;
 	}
 }
-
-struct PinnedObject
-{
-	public GCHandle GcHandle { get; set; }
-	public Object Obj { get; set; }
-
-	public PinnedObject(GCHandle gcHandle, object obj)
-	{
-		GcHandle = gcHandle;
-		Obj = obj;
-	}
-}
-
-/*
-public interface IPlugin
-{
-	UInt32 Install(IntPtr registryPtr);
-	UInt32 Uninstall(IntPtr registryPtr);
-};
-*/
 
 public class Plugin : IPlugin
 {
-	private iClassInstance classInstance;
-	private iClassInstanceVTable iClassInstanceVTable;
-	private GCHandle classVTableHandle;
-
-	private List<PinnedObject> pinned = new List<PinnedObject>();
-
 	public uint Install(IntPtr registryPtr)
 	{
-		var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
-		var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
+		var registry = new iRegistryWrapper(registryPtr);
+		var classInstanceWrapper = new iClassInstanceWrapper(new MyClassInstance());
 
-		classInstance = new iClassInstance();
-		iClassInstanceVTable = new iClassInstanceVTable();
-		iClassInstanceVTable.CreateInstance = CreateInstanceFunc;//  Marshal.GetFunctionPointerForDelegate(createInstanceFunc);
+		ReferenceStorage.Add(classInstanceWrapper);
 
-		//PinIt(classInstance);
-		//PinIt(iClassInstanceVTable);
-		//PinIt(createInstanceFunc);
-
-		pinned.Add(new PinnedObject(GCHandle.Alloc(classInstance), classInstance));
-		pinned.Add(new PinnedObject(GCHandle.Alloc(iClassInstanceVTable), iClassInstanceVTable));
-		//pinned.Add(new PinnedObject(GCHandle.Alloc(createInstanceFunc), createInstanceFunc));
-
-		//classVTableHandle = GCHandle.Alloc(iClassInstanceVTable);
-		classInstance.vTable = iClassInstanceVTable; //GCHandle.ToIntPtr(classVTableHandle);
-
-		//var classMemory = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(iClassInstance)));
-		//Marshal.StructureToPtr(classInstance, classMemory, false);
-
-		return iRegistryVTable.Install(registryPtr, TestPlugin.ID, MarshalStruct(classInstance));
-	}
-
-	private uint CreateInstanceFunc(iRegistry registry1, iUnknown outer, IntPtr outInstance)
-	{
-		var inst = new TestPlugin(outer);
-		Marshal.StructureToPtr(inst, outInstance, false);
-		PinIt(inst);
-
-		return 0x7b48e63f;
+		return registry.Install(IDStore.KTestPlugin, classInstanceWrapper.NativePointer);
 	}
 
 	public uint Uninstall(IntPtr registryPtr)
 	{
-		var registry = Marshal.PtrToStructure<iRegistry>(registryPtr);
-		var iRegistryVTable = Marshal.PtrToStructure<iRegistryVTable>(registry.vTable);
+		var registry = new iRegistryWrapper(registryPtr);
 
-		return iRegistryVTable.Remove(registryPtr, TestPlugin.ID);
+		return registry.Remove(IDStore.ITestPlugin);
 	}
 
-	private void PinIt(object obj)
+	public static IntPtr CustomMarshal(object o)
 	{
-		pinned.Add(new PinnedObject { Obj = obj, GcHandle = GCHandle.Alloc(obj) });
-	}
+		var type = o.GetType();
+		var vTables = new List<FieldInfo>();
+		var vTablePtr = IntPtr.Zero;
+		var vTableSize = 0;
+		var fields = new List<Tuple<FieldInfo, object>>();
+		var marshalSize = 0;
 
-	private static MarshalVTable MarshalStruct(object ob)
-	{
-		var marshalVTable = new MarshalVTable();
-		var type = ob.GetType();
+		foreach (var fieldInfo in type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).OrderBy(f => Marshal.OffsetOf(type, f.Name).ToInt64()))
+		{
+			if (fieldInfo.FieldType.GetCustomAttributes(typeof(VTableAttribute), true).Length > 0)
+			{
+				if (vTables.Count == 0)
+				{
+					marshalSize += Marshal.SizeOf<IntPtr>();
+				}
 
-		var fieldInfo = type.GetFields(BindingFlags.Public | BindingFlags.Instance).First();
-		var fieldValue = fieldInfo.GetValue(ob);
+				vTables.Add(fieldInfo);
+				vTableSize += Marshal.SizeOf(fieldInfo.FieldType);
+			}
+			else
+			{
+				marshalSize += Marshal.SizeOf(fieldInfo.FieldType);
+				fields.Add(new Tuple<FieldInfo, object>(fieldInfo, fieldInfo.GetValue(o)));
+			}
+		}
 
-		marshalVTable.vTable = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
-		Marshal.StructureToPtr(fieldValue, marshalVTable.vTable, false);
+		if (vTables.Count > 0)
+		{
+			vTablePtr = Marshal.AllocHGlobal(vTableSize);
+			var writeLocation = vTablePtr;
 
-		return marshalVTable;
+			foreach (var fieldInfo in vTables)
+			{
+				Marshal.StructureToPtr(fieldInfo.GetValue(o), writeLocation, false);
+				writeLocation += Marshal.SizeOf(fieldInfo.FieldType);
+			}
+		}
 
+		var structPtr = Marshal.AllocHGlobal(marshalSize);
+		IntPtr writePtr = structPtr;
 
+		if (vTablePtr != IntPtr.Zero)
+		{
+			Marshal.WriteIntPtr(writePtr, vTablePtr);
+			writePtr += Marshal.SizeOf<IntPtr>();
+		}
 
-		//foreach(var fieldInfo in fields)
-		//{
-		//	if(fieldInfo.DeclaringType != typeof(object))
-		//	{
-		//		var fieldValue = fieldInfo.GetValue(ob);
-		//		var ptr = Marshal.AllocHGlobal(Marshal.SizeOf(fieldInfo.FieldType));
-		//		Marshal.StructureToPtr(fieldValue, ptr, false);
+		foreach (var field in fields)
+		{
+			var sizeOf = Marshal.SizeOf(field.Item1.FieldType);
+			switch (sizeOf)
+			{
+				case 1:
+					Marshal.WriteByte(writePtr, (Byte)field.Item2);
+					writePtr += sizeOf;
+					break;
+				case 2:
+					Marshal.WriteInt16(writePtr, (Int16)field.Item2);
+					writePtr += sizeOf;
+					break;
+				case 4:
+					Marshal.WriteInt32(writePtr, (Int32)field.Item2);
+					writePtr += sizeOf;
+					break;
+				case 8:
+					Marshal.WriteInt64(writePtr, (Int64)field.Item2);
+					writePtr += sizeOf;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
 
-		//		//if(fieldInfo.FieldType.IsClass)
-		//		//{
-		//		//	MarshalStruct(fieldInfo.GetValue(ob));
-		//		//}
-		//		//else
-		//		//{
-		//		//	var del = (Delegate) fieldInfo.GetValue(ob);
-		//		//	var functionPointerForDelegate = Marshal.GetFunctionPointerForDelegate(del);
-		//		//	delegates.Add(functionPointerForDelegate);
-		//		//}
-		//	}
-		//}
-
-		//var structureSize = Marshal.SizeOf<Delegate>() * delegates.Count;
-		//var allocHGlobal = Marshal.AllocHGlobal(structureSize);
-
+		return structPtr;
 	}
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public class MarshalVTable
+public class GenericObject
 {
-	public IntPtr vTable;
+	public IntPtr VTablePtr;
 }
 
+[VTable]
 [StructLayout(LayoutKind.Sequential)]
 public class iUnknownVTable
 {
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate Int32 AddRefFunc();
+	public delegate Int32 AddRefFunc(IntPtr self);
 
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	public AddRefFunc AddRef;
 
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate Int32 ReleaseFunc();
+	public delegate Int32 ReleaseFunc(IntPtr self);
 
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	public ReleaseFunc Release;
 
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate Int32 QueryInterfaceFunc(UInt64 id, IntPtr outIFace);
+	public delegate Int32 QueryInterfaceFunc(IntPtr self, UInt64 id, IntPtr outIFace);
 
 	[MarshalAs(UnmanagedType.FunctionPtr)]
 	public QueryInterfaceFunc QueryInterface;
 }
 
 [StructLayout(LayoutKind.Sequential)]
-public class iRegistryVTable : iUnknownVTable
+public class iUnknown
 {
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 LoadFunc(IntPtr self, char library);
+	public iUnknownVTable VTable = new iUnknownVTable();
+	private int refCount;
 
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public LoadFunc Load;
+	public iUnknown()
+	{
+		refCount = 1;
+		ReferenceStorage.Add(this);
 
+		VTable.AddRef = (self) => ++refCount;
+		VTable.Release = (self) =>
+		{
+			--refCount;
 
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 UnloadFunc(IntPtr self, char library);
+			if (refCount == 0)
+			{
+				ReferenceStorage.Remove(this);
+			}
 
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public UnloadFunc Unload;
+			return refCount;
+		};
+		VTable.QueryInterface = (self, id, face) =>
+		{
+			switch (id)
+			{
+				case IDStore.iUnknown:
+					{
+						Marshal.WriteIntPtr(face, self);
+						break;
+					}
+				default:
+					return 999;
+			}
 
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstallFunc(IntPtr self, UInt64 cid, MarshalVTable clsInst);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public InstallFunc Install;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 RemoveFunc(IntPtr self, UInt64 cid);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public RemoveFunc Remove;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 GetClassInstanceFunc(IntPtr self, UInt64 cid, iClassInstance clsInst);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public GetClassInstanceFunc GetClassInstance;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 ExistsFunc(IntPtr self, UInt64 cid);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public ExistsFunc Exists;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 CreateFunc(IntPtr self, iUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public CreateFunc Create;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 ClassInstallFunc(IntPtr self, Int32 count, IID_CID pairs);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public ClassInstallFunc ClassInstall;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 ClassRemoveFunc(IntPtr self, Int32 count, IID_CID pairs);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public ClassRemoveFunc ClassRemove;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 GetClassesFunc(IntPtr self, UInt64 id, ref Int32 count, ref UInt64 cid);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public GetClassesFunc GetClasses;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstanceInstallFunc(IntPtr self, UInt64 id, iUnknown instance);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public InstanceInstallFunc InstanceInstall;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 InstanceRemoveFunc(IntPtr self, UInt64 id);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public InstanceRemoveFunc InstanceRemove;
-
-
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 GetInstanceFunc(IntPtr self, UInt64 id, iUnknown outIface);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public GetInstanceFunc GetInstance;
-
-
+			VTable.AddRef(self);
+			return 0x7b48e63f;
+		};
+	}
 }
-[StructLayout(LayoutKind.Sequential)]
-public class iRegistry
-{
-	public IntPtr vTable;
-}
-
 
 [StructLayout(LayoutKind.Sequential)]
 public struct IID_CID
 {
 	public UInt64 mIID { get; set; }
 	public UInt64 mCID { get; set; }
-}
-
-[StructLayout(LayoutKind.Sequential)]
-public class iClassInstanceVTable : iUnknownVTable
-{
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate UInt32 CreateInstanceFunc(iRegistry registry, iUnknown outer, IntPtr outInstance);
-
-	[MarshalAs(UnmanagedType.FunctionPtr)]
-	public CreateInstanceFunc CreateInstance;
-}
-[StructLayout(LayoutKind.Sequential)]
-public class iClassInstance
-{
-	public iClassInstanceVTable vTable;
 }

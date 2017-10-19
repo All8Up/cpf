@@ -12,7 +12,7 @@ namespace CPF
 		class InputManager : public tRefCounted<iInputManager>
 		{
 		public:
-			InputManager(GOM::iUnknown*);
+			InputManager(Plugin::iRegistry*, GOM::iUnknown*);
 			virtual ~InputManager();
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override;

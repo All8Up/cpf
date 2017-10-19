@@ -3,6 +3,7 @@
 #include "Application/MouseButton.hpp"
 #include "Application/iApplicationMain.hpp"
 #include "Application/iInputManager.hpp"
+#include "Application/iWindow.hpp"
 #include "Plugin/iRegistry.hpp"
 #include "CPF/Logging.hpp"
 #include "SDL2/CIDs.hpp"
@@ -10,10 +11,10 @@
 using namespace CPF;
 using namespace SDL2;
 
-WindowedApp::WindowedApp(GOM::iUnknown*)
+WindowedApp::WindowedApp(Plugin::iRegistry* regy, GOM::iUnknown*)
 	: mRunning(false)
 	, mpApplicationMain(nullptr)
-	, mpRegistry(nullptr)
+	, mpRegistry(regy)
 {
 	CPF_INIT_LOG(Application);
 	SDL_InitSubSystem(SDL_INIT_VIDEO);

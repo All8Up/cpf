@@ -12,7 +12,7 @@ namespace CPF
 		{
 		public:
 			// Construction/Destruction.
-			Instance(iUnknown* outer);
+			Instance(Plugin::iRegistry*, iUnknown* outer);
 			virtual ~Instance();
 
 			// Overrides for iUnknown.

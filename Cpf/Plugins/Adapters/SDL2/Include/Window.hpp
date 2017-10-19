@@ -6,12 +6,17 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace SDL2
 	{
 		class Window : public tRefCounted<iWindow>
 		{
 		public:
-			Window(iUnknown*);
+			Window(Plugin::iRegistry*, iUnknown*);
 			virtual ~Window();
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

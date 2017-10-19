@@ -96,9 +96,10 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->Indent();
 	mpWriter->Output("%spub base: gom::iUnknownVTable", mpWriter->GetIndentString().c_str());*/
 
+	//////////////////////////// VTABLE ////////////////////////////
 	mpWriter->LineFeed();
 	mpWriter->OutputLine("[StructLayout(LayoutKind.Sequential)]");
-	mpWriter->OutputLine("public class %sVTable", decl.mName.c_str());
+	mpWriter->OutputLine("public class %sVTable : iUnknownVTable", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
 
@@ -122,25 +123,136 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			TypeToString(func.mReturnType).c_str(),
 			func.mName.c_str());*/
 
-		mpWriter->OutputLine(");");
+		mpWriter->Output(");");
+		mpWriter->OutputLine("");
 		mpWriter->OutputLine("");
 		mpWriter->OutputLine("[MarshalAs(UnmanagedType.FunctionPtr)]");
 		mpWriter->OutputLine("public %sFunc %s;", func.mName.c_str(), func.mName.c_str());
 
-
-		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 	}
 
 	mpWriter->Unindent();
 	mpWriter->OutputLine("}");
 
+	//////////////////////////// INTERFACE ////////////////////////////
+
 	mpWriter->LineFeed();
-	mpWriter->OutputLine("[StructLayout(LayoutKind.Sequential)]");
-	mpWriter->OutputLine("public class %s", decl.mName.c_str());
+	mpWriter->OutputLine("public interface %s", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
-	mpWriter->OutputLine("public IntPtr vTable;");
+
+	for (const auto& func : decl.mFunctions)
+	{
+		mpWriter->Output("%s%s %s(IntPtr self",
+			mpWriter->GetIndentString().c_str(),
+			TypeToString(func.mReturnType).c_str(),
+			func.mName.c_str());
+
+		for (const auto paramDecl : func.mParams)
+		{
+			mpWriter->Output(", %s %s", TypeToString(paramDecl.mType).c_str(), paramDecl.mName.c_str());
+		}
+
+		mpWriter->Output(");");
+		mpWriter->OutputLine("");
+	}
+
+	mpWriter->Unindent();
+	mpWriter->OutputLine("}");
+
+	//////////////////////////// WRAPPER CLASS ////////////////////////////
+
+	mpWriter->LineFeed();
+	mpWriter->OutputLine("public class %sWrapper", decl.mName.c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+
+	// Class variables
+	mpWriter->OutputLine("private IntPtr unmanagedInstance;");
+	mpWriter->OutputLine("private %s instance;", decl.mName.c_str());
+	mpWriter->OutputLine("private %sVTable vTable = new %sVTable();", decl.mName.c_str(), decl.mName.c_str());
+	mpWriter->OutputLine("private GenericObject genericObject = new GenericObject();");
+	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
+
+	mpWriter->OutputLine("public IntPtr NativePointer => unmanagedInstance;");
+	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
+
+	// C++ -> C# constructor
+	mpWriter->OutputLine("public %sWrapper(IntPtr unmanagedInst)", decl.mName.c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+	mpWriter->OutputLine("unmanagedInstance = unmanagedInst;");
+	mpWriter->OutputLine("Marshal.PtrToStructure(unmanagedInst, genericObject);");
+	mpWriter->OutputLine("Marshal.PtrToStructure(genericObject.VTablePtr, vTable);");
+	mpWriter->Unindent();
+	mpWriter->OutputLine("}");
+	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
+
+	// C# -> C++ constructor
+	mpWriter->OutputLine("public %sWrapper(%s inst)", decl.mName.c_str(), decl.mName.c_str());
+	mpWriter->OutputLine("{");
+	mpWriter->Indent();
+	mpWriter->OutputLine("instance = inst;");
+	mpWriter->OutputLine("var unknown = (IUnknown)inst;");
+	mpWriter->OutputLine("");
+	mpWriter->OutputLine("vTable.AddRef = unknown.AddRef;");
+	mpWriter->OutputLine("vTable.Release = unknown.Release;");
+	mpWriter->OutputLine("vTable.QueryInterface = unknown.QueryInterface;");
+
+	// Bind C# object to VTable
+	for (const auto& func : decl.mFunctions)
+	{
+		mpWriter->OutputLine("vTable.%s = inst.%s;", func.mName.c_str(), func.mName.c_str());
+	}
+
+	mpWriter->OutputLine("Marshal.StructureToPtr(vTable, genericObject.VTablePtr, false);");
+	mpWriter->OutputLine("Marshal.StructureToPtr(genericObject, unmanagedInstance, false);");
+
+	mpWriter->Unindent();
+	mpWriter->OutputLine("}");
+
+	// Wrapper functions for calling unmanaged from C#
+	for (const auto& func : decl.mFunctions)
+	{
+		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
+
+		// Function signature
+		mpWriter->Output("%spublic %s %s(",
+			mpWriter->GetIndentString().c_str(),
+			TypeToString(func.mReturnType).c_str(),
+			func.mName.c_str());
+
+		bool firstParam = true;
+
+		for (const auto paramDecl : func.mParams)
+		{
+			mpWriter->Output("%s%s %s", !firstParam ? ", " : "", TypeToString(paramDecl.mType).c_str(), paramDecl.mName.c_str());
+
+			firstParam = false;
+		}
+
+		mpWriter->Output(")");
+		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
+		// Function body
+		mpWriter->OutputLine("{");
+		mpWriter->Indent();
+		mpWriter->Output("%s %svTable.%s(unmanagedInstance",
+			mpWriter->GetIndentString().c_str(),
+			func.mReturnType.mType == Visitor::Type::Void ? "" : "return ",
+			func.mName.c_str());
+
+		for (const auto paramDecl : func.mParams)
+		{
+			mpWriter->Output(", %s", paramDecl.mName.c_str());
+		}
+
+		mpWriter->Output(");");
+		mpWriter->Unindent();
+		mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
+		mpWriter->OutputLine("}");
+	}
+
 	mpWriter->Unindent();
 	mpWriter->OutputLine("}");
 }

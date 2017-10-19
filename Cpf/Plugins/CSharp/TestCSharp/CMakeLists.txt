@@ -1,6 +1,11 @@
 add_library (TestCSharp SHARED
 	AssemblyInfo.cs
 	TestCSharp.cs
+	IRegistry.cs
+	IClassInstance.cs
+	MyClassInstance.cs
+	Unknown.cs
+	IUnknown.cs
 # Adding the following changes the compile type, need to
 # figure out what properties to use to force managed assembly builds.
 #	Test.cpp

@@ -1,5 +1,4 @@
 import EnumFlagType;
-
 module CPF::Graphics;
 
 flags DepthStencilClearFlag : s32

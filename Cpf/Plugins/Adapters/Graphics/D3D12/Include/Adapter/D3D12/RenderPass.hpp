@@ -9,6 +9,11 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace Graphics
 	{
 		struct RenderPassDesc;
@@ -23,7 +28,7 @@ namespace CPF
 			class RenderPass : public tRefCounted<Graphics::iRenderPass>
 			{
 			public:
-				RenderPass(GOM::iUnknown*) {}
+				RenderPass(Plugin::iRegistry*, GOM::iUnknown*) {}
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 

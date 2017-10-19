@@ -45,7 +45,7 @@
 #include "CPF/Logging.hpp"
 
 #include "Application/ScanCode.hpp"
-#include "Application/KeyModifier.hpp"
+#include "Application/KeyModifiers.hpp"
 #include "Application/MouseButton.hpp"
 #include "Application/iMouseDevice.hpp"
 #include "Application/iKeyboardDevice.hpp"
@@ -87,7 +87,7 @@ GOM::Result CPF_EXPORT CPF_STDCALL Remove(Plugin::iRegistry* registry)
 IntrusivePtr<iClipboard> sClipboard;
 char sClipboardText[1024];
 
-DebugUI::DebugUI(iUnknown*)
+DebugUI::DebugUI(Plugin::iRegistry*, iUnknown*)
 	: mpDevice(nullptr)
 	, mpLocator(nullptr)
 	, mWidth(0)

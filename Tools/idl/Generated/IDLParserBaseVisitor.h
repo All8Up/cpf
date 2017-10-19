@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Cpf/Support/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/Cpf/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -224,6 +224,10 @@ public:
   }
 
   virtual antlrcpp::Any visitString_lit(IDLParser::String_litContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitChar_lit(IDLParser::Char_litContext *ctx) override {
     return visitChildren(ctx);
   }
 

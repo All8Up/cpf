@@ -1,0 +1,15 @@
+import iInputDevice from Application;
+import KeyModifiers from Application;
+module CPF;
+
+interface iKeyboardDevice : iInputDevice
+{
+	const class_id kDefault("Cpf::iKeyboardDevice::Default");
+
+	/**
+	* @brief Gets the modifier keys currently set.
+	* @param [in,out] modifiers The output to the modifier value.
+	* @return The result code.
+	*/
+	result GetModifiers(KeyModifier* modifiers);
+};

@@ -17,7 +17,7 @@ namespace CPF
 			static GOM::Result Install(Plugin::iRegistry*);
 			static GOM::Result Remove(Plugin::iRegistry*);
 
-			TransformComponent(GOM::iUnknown*);
+			TransformComponent(Plugin::iRegistry*, GOM::iUnknown*);
 			~TransformComponent() override;
 
 			//

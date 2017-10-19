@@ -39,6 +39,7 @@ if (WIN32)
 		i_EntityService
 		i_DebugUI
 		i_Concurrency
+		VTune
 	)
 
 	set_property (TARGET ExperimentalD3D12 PROPERTY FOLDER Experimental/Graphics/Adapter)

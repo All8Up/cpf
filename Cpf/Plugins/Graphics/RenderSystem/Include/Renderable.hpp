@@ -7,7 +7,7 @@ namespace CPF
 	class Renderable : public tRefCounted<iRenderable>
 	{
 	public:
-		Renderable(GOM::iUnknown*);
+		Renderable(Plugin::iRegistry*, GOM::iUnknown*);
 
 		GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 

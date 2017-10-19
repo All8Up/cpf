@@ -102,7 +102,7 @@ const_class_id_def      : Const CLASS_ID IDENT LPAREN string_lit RPAREN SEMICOLO
 
 // Enumerations.
 enum_fwd                : ENUM IDENT enum_type? SEMICOLON;
-enum_def                : ENUM IDENT enum_type? LBRACE enum_elements RBRACE;
+enum_def                : ENUM IDENT enum_type? LBRACE enum_elements COMMA? RBRACE;
 flags_fwd               : FLAGS IDENT enum_type? SEMICOLON;
 flags_def               : FLAGS IDENT enum_type? LBRACE enum_elements RBRACE;
 enum_type               : COLON integral_type;
@@ -135,9 +135,11 @@ numeric_lit             : integer_lit
 integer_lit             : DECIMAL_LIT
                         | HEX_LIT
                         | OCT_LIT
-                        | BIN_LIT;
+                        | BIN_LIT
+                        | char_lit;
 float_lit               : FLOAT_LIT;
 string_lit              : STRING_LIT;
+char_lit                : CHAR_LIT;
 
 // Qualified identifiers.
 qualified_ident         : qualified_separator? IDENT qualified_part*;

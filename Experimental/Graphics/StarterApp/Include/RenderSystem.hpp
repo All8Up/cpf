@@ -60,7 +60,7 @@ namespace CPF
 		GOM::Result CPF_STDCALL RemoveStage(MultiCore::StageID) override;
 
 
-		RenderSystem(GOM::iUnknown*);
+		RenderSystem(Plugin::iRegistry*, GOM::iUnknown*);
 
 	private:
 		virtual ~RenderSystem();

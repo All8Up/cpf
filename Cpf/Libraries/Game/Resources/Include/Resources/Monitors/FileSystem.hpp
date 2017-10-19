@@ -4,6 +4,11 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace Resources
 	{
 		namespace Monitors
@@ -11,7 +16,7 @@ namespace CPF
 			class FileSystem : public tRefCounted<iMonitor>
 			{
 			public:
-				FileSystem(iUnknown*);
+				FileSystem(Plugin::iRegistry*, iUnknown*);
 				~FileSystem() override;
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

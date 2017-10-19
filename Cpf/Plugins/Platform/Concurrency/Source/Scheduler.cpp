@@ -28,7 +28,7 @@ const int Scheduler::kMaxBackoff = 4096;
 
 
 /** @brief Default constructor. */
-Scheduler::Scheduler(iUnknown*)
+Scheduler::Scheduler(Plugin::iRegistry*, iUnknown*)
 	: mControlLock(0)
 	, mTargetCount(0)
 	, mActiveCount(0)
@@ -39,14 +39,12 @@ Scheduler::Scheduler(iUnknown*)
 {
 }
 
-
 /** @brief Destructor. */
 Scheduler::~Scheduler()
 {
 	// Check that we were shut down.
 	CPF_ASSERT(Atomic::Load(mThreadCount) == 0);
 }
-
 
 GOM::Result CPF_STDCALL Scheduler::QueryInterface(uint64_t id, void** outIface)
 {
@@ -68,7 +66,6 @@ GOM::Result CPF_STDCALL Scheduler::QueryInterface(uint64_t id, void** outIface)
 	}
 	return GOM::kInvalidParameter;
 }
-
 
 GOM::Result CPF_STDCALL Scheduler::Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context)
 {
@@ -142,7 +139,6 @@ void Scheduler::SetActiveThreads(int count)
 	}
 }
 
-
 void* Scheduler::GetContext() const
 {
 	return mpOuterContext;
@@ -208,6 +204,11 @@ void Scheduler::Submit(iThreadTimes* times)
 	Submit(static_cast<iFence*>(times));
 }
 
+/**
+ * @brief Executes.
+ * @param [in,out] queue If non-null, the queue.
+ * @param clear True to clear.
+ */
 void CPF_STDCALL Scheduler::Execute(iWorkBuffer* queue, bool clear)
 {
 	Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
@@ -216,7 +217,6 @@ void CPF_STDCALL Scheduler::Execute(iWorkBuffer* queue, bool clear)
 	if (clear)
 		q->Reset();
 }
-
 
 /**
  * @brief The primary worker function for threads.  This is actually modeled as a spin lock so it can perform exponential backoff.
@@ -316,14 +316,12 @@ bool Scheduler::_StartMaster()
 	return Atomic::CompareExchange(mControlLock, 1, 0);
 }
 
-
 /** @brief Release access to the ring buffer tail pointer. */
 void Scheduler::_EndMaster()
 {
 	// Restore the lock to 0.
 	Atomic::Store(mControlLock, 0);
 }
-
 
 /**
  * @brief Attempts to move instructions off the external queue into the internal ring buffer.

@@ -9,7 +9,7 @@ using namespace Tools;
 
 Python3* s_Python3 = nullptr;
 
-Python3::Python3(iUnknown*)
+Python3::Python3(Plugin::iRegistry*, iUnknown*)
 	: mpCreateRegistry(nullptr)
 {
 	s_Python3 = this;

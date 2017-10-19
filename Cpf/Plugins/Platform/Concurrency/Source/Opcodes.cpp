@@ -6,11 +6,10 @@
 using namespace CPF;
 using namespace Concurrency;
 
-
 /**
 * @brief Wait for the opcode execution to complete.
 * @param [in,out] vm The virtual machine.
-* @param index		  Index into the predicate ring (wrapped).
+* @param index Index into the predicate ring (wrapped).
 */
 void Detail::Opcodes::Wait(Scheduler &vm, int64_t index)
 {
@@ -18,7 +17,6 @@ void Detail::Opcodes::Wait(Scheduler &vm, int64_t index)
 	for (; Atomic::Load(vm.mPredicateRing[index]) >= 0;)
 		backoff();
 }
-
 
 /**
 * @brief Opcode which makes the first thread to arrive consume the payload, other threads pass over this instruction.
@@ -38,7 +36,6 @@ void Detail::Opcodes::FirstOne(Scheduler &vm, const WorkContext* tc, int64_t ind
 		(*vm.mInstructionRing[index].mpFunction)(tc, context);
 	}
 }
-
 
 /**
 * @brief Opcode which makes the first thread to arrive consume the payload, other threads wail until the payload completes before moving along.
@@ -62,7 +59,6 @@ void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, const WorkContext* tc, int6
 		Wait(vm, index);
 }
 
-
 /**
 * @brief Opcode which makes the last thread to arrive consume the payload, other threads continue on to the next instruction.
 * @param [in,out] vm The scheduler we are running under.
@@ -80,7 +76,6 @@ void Detail::Opcodes::LastOne(Scheduler& vm, const WorkContext* tc, int64_t inde
 		(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 	}
 }
-
 
 /**
 * @brief Opcode which makes the last thread to arrive consume the payload, other threads wait till the payload completes before moving to the next instruction.
@@ -103,7 +98,6 @@ void Detail::Opcodes::LastOneBarrier(Scheduler& vm, const WorkContext* tc, int64
 		Wait(vm, index);
 }
 
-
 /**
 * @brief All threads execute the payload, no conditions involved.
 * @param [in,out] vm The scheduler we are running under.
@@ -116,7 +110,6 @@ void Detail::Opcodes::All(Scheduler& vm, const WorkContext* tc, int64_t index)
 	CPF_ASSERT(Atomic::Load(vm.mPredicateRing[index]) == Atomic::Load(vm.mActiveCount));
 	(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 }
-
 
 /**
 * @brief All threads execute the payload but they do not move to the next instruction until all have completed.
@@ -140,7 +133,6 @@ void Detail::Opcodes::AllBarrier(Scheduler& vm, const WorkContext* tc, int64_t i
 		Wait(vm, index);
 }
 
-
 /**
 * @brief Synchronize the threads.
 * @param [in,out] vm The scheduler we are running under.
@@ -160,7 +152,6 @@ void Detail::Opcodes::Barrier(Scheduler &vm, const WorkContext*, int64_t index)
 	else
 		Wait(vm, index);
 }
-
 
 /**
 * @brief Change the number of active threads in the system.
@@ -229,7 +220,6 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 		}
 	}
 }
-
 
 /**
 * @brief Opcode that resets all head indices to minimal values.

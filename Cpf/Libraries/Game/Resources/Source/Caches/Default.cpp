@@ -33,7 +33,7 @@ GOM::Result CPF_STDCALL Default::QueryInterface(uint64_t id, void** outIface)
 
 iCache* Default::Create(const CacheDesc* const)
 {
-	return new Default(nullptr);
+	return new Default(nullptr, nullptr);
 }
 
 CacheDesc* Default::CreateDescriptor(const rapidjson::Value&)
@@ -42,7 +42,7 @@ CacheDesc* Default::CreateDescriptor(const rapidjson::Value&)
 }
 
 ///
-Default::Default(iUnknown*)
+Default::Default(Plugin::iRegistry*, iUnknown*)
 	: tRefCounted<iCache>()
 	, mShuttingDown(false)
 {

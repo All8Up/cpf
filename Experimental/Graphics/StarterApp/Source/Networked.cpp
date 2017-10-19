@@ -10,6 +10,7 @@
 #include "Application/iWindowedApplication.hpp"
 #include "Application/WindowFlags.hpp"
 #include "Application/WindowDesc.hpp"
+#include "Application/iWindow.hpp"
 #include "IO/File.hpp"
 #include "IO/Directory.hpp"
 #include "SDL2/CIDs.hpp"
@@ -69,6 +70,7 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	GetRegistry()->Load(kAdapterD3D12Plugin);
 	GetRegistry()->Load(kMultiCorePlugin);
 	GetRegistry()->Load(kDebugUIPlugin);
+	/*
 	if (GOM::Succeeded(GetRegistry()->Load(kPythonPlugin)))
 	{
 		if (GOM::Succeeded(GetRegistry()->Create(nullptr, Tools::kPython3CID.GetID(), Tools::iPython3::kIID.GetID(), mpPython3.AsVoidPP())))
@@ -77,6 +79,7 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 			mpPython3->Initialize(basePath.c_str(), &PluginHost::CreateRegistry);
 		}
 	}
+	*/
 	if (GOM::Succeeded(GetRegistry()->Load(kRustPlugin)))
 	{
 		printf("Loaded rust plugin.");
@@ -97,8 +100,10 @@ void CPF_STDCALL Networked::Shutdown()
 {
 	// TODO: Need a solution to allow these pointers to be scoped such that
 	// they don't end up dangling when the plugins are unloaded.
+	/*
 	if (mpPython3) mpPython3->Shutdown();
 	mpPython3.Adopt(nullptr);
+	*/
 	mpRenderSystem.Adopt(nullptr);
 	mpNetworkSystem.Adopt(nullptr);
 	mpTimer.Adopt(nullptr);

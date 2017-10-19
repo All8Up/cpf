@@ -1,13 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Pair.hpp"
-#include "Vector.hpp"
-#include "String.hpp"
 #include "GOM/iUnknown.hpp"
 #include "MultiCore/Types.hpp"
 #include "MultiCore/iSystem.hpp"
-#include "Plugin/iRegistry.hpp"
-#include "Plugin/iClassInstance.hpp"
 #include "MultiCore/iStage.hpp"
 
 namespace CPF
@@ -21,7 +17,7 @@ namespace CPF
 		public:
 			static constexpr StageID kID = Hash::Create<StageID_tag>("Single Update Stage"_hashString);
 
-			SingleUpdateStage(iUnknown*);
+			SingleUpdateStage(Plugin::iRegistry*, iUnknown*);
 
 			// iStage overrides.
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
@@ -32,17 +28,17 @@ namespace CPF
 			void CPF_STDCALL SetEnabled(bool flag) override;
 			GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) override;
 			GOM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) override;
-			BlockID CPF_STDCALL GetDefaultBlock() const { return kExecute; };
-			BlockID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
-			BlockID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
+			StageID CPF_STDCALL GetDefaultBlock() const { return kExecute; };
+			StageID CPF_STDCALL GetBeginBlock() const override { return GetDefaultBlock(); }
+			StageID CPF_STDCALL GetEndBlock() const override { return GetDefaultBlock(); }
 
 			// iSingleUpdateStage overrides.
-			void SetUpdate(Function<void(const Concurrency::WorkContext*, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
+			void SetUpdate(Concurrency::WorkFunction func, void* context, BlockOpcode opcode = BlockOpcode::eFirst);
 
 		private:
 			static void _Update(const Concurrency::WorkContext* tc, void* context);
 
-			Function<void(const Concurrency::WorkContext*, void*)> mpUpdate;
+			Concurrency::WorkFunction mpUpdate;
 			void* mpContext;
 			BlockOpcode mOpcode;
 

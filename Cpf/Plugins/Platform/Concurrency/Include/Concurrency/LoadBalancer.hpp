@@ -14,7 +14,7 @@ namespace CPF
 		public:
 			static const int kUpdateRate = 1;
 
-			LoadBalancer(iUnknown*);
+			LoadBalancer(Plugin::iRegistry*, iUnknown*);
 			~LoadBalancer();
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

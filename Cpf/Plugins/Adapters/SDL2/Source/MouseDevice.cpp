@@ -7,7 +7,7 @@ using namespace CPF;
 using namespace SDL2;
 
 
-MouseDevice::MouseDevice(GOM::iUnknown*)
+MouseDevice::MouseDevice(Plugin::iRegistry*, GOM::iUnknown*)
 {}
 
 MouseDevice::~MouseDevice()

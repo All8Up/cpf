@@ -42,7 +42,7 @@ void Manual::TouchAll()
 		GetLocator()->TouchAll();
 }
 
-Manual::Manual(iUnknown*)
+Manual::Manual(Plugin::iRegistry*, iUnknown*)
 {}
 
 Manual::~Manual()

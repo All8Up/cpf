@@ -8,7 +8,7 @@ using namespace CPF;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-void SingleUpdateStage::SetUpdate(Function<void(const Concurrency::WorkContext*, void*)> func, void* context, BlockOpcode opcode)
+void SingleUpdateStage::SetUpdate(Concurrency::WorkFunction func, void* context, BlockOpcode opcode)
 {
 	mOpcode = opcode;
 	mpUpdate = func;
@@ -97,7 +97,7 @@ GOM::Result CPF_STDCALL SingleUpdateStage::GetDependencies(int32_t* count, Block
 	return GOM::kInvalidParameter;
 }
 
-SingleUpdateStage::SingleUpdateStage(iUnknown*)
+SingleUpdateStage::SingleUpdateStage(Plugin::iRegistry*, iUnknown*)
 	: mpUpdate(nullptr)
 	, mpContext(nullptr)
 	, mOpcode(BlockOpcode::eFirst)

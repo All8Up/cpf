@@ -131,5 +131,5 @@ add_executable (SchedulerPerformance
 )
 target_link_libraries (SchedulerPerformance Configuration Logging Math s_Application s_Concurrency)
 
-set_property (TARGET SchedulerPerformance PROPERTY FOLDER Performance/Concurrency)
-]]#
+set_property (TARGET SchedulerPerformance PROPERTY FOLDER KPI/Concurrency)
+#]]

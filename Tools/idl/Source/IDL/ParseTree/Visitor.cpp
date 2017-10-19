@@ -11,6 +11,29 @@ CPF::String TrimStringLit(const CPF::String& lit)
 	return CPF::String(lit.begin() + 1, lit.end() - 1);
 }
 
+CPF::String TrimCharLit(const CPF::String& lit, bool& isEscape)
+{
+	isEscape = false;
+	CPF::String result = TrimStringLit(lit);
+	if (result[0] == '\\')
+	{
+		isEscape = true;
+		return CPF::String(result.begin() + 1, result.end());
+	}
+	return result;
+}
+
+int64_t ParseOctal(const CPF::String& lit)
+{
+	int64_t result = 0;
+	for (const auto c : lit)
+	{
+		result *= 8;
+		result += int64_t(c - '0');
+	}
+	return result;
+}
+
 SymbolPath ParseQualifiedIdent(IDLParser::Qualified_identContext* ctx)
 {
 	const auto ident = ctx->IDENT()->toString();
@@ -98,7 +121,15 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 	{
 		if (item->const_def())
 		{
-
+			auto constDef = item->const_def();
+			if (constDef->const_class_id_def())
+			{
+				auto constIDDef = constDef->const_class_id_def();
+				ClassID classID;
+				classID.mName = constIDDef->IDENT()->toString();
+				classID.mValue = TrimStringLit(constIDDef->string_lit()->STRING_LIT()->toString());
+				decl.mClassIDs.push_back(classID);
+			}
 		}
 		else if (item->enum_def())
 		{
@@ -127,7 +158,7 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 	}
 
 	Emit<InterfaceDeclStmt>(decl);
-	return visitChildren(ctx);
+	return defaultResult();
 }
 
 antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
@@ -591,6 +622,31 @@ int64_t Visitor::ParseIntegerLit(IDLParser::Integer_litContext* lit)
 		else if (lit->OCT_LIT())
 		{
 
+		}
+		else if (lit->char_lit())
+		{
+			bool isEscape = false;
+			String charString = TrimCharLit(lit->char_lit()->CHAR_LIT()->toString(), isEscape);
+			if (isEscape)
+			{
+				switch (charString[0])
+				{
+				case 'a': return 0x07;
+				case 'b': return 0x08;
+				case 'f': return 0x0c;
+				case 'n': return 0x0a;
+				case 'r': return 0x0d;
+				case 't': return 0x09;
+				case 'v': return 0x0b;
+				case '\\': return 0x5c;
+				case '\'': return 0x27;
+				case '\"': return 0x22;
+				case '\?': return 0x3f;
+				// TODO: handle hex.
+				}
+				return ParseOctal(charString);
+			}
+			return int64_t(charString[0]);
 		}
 	}
 	return 0x7fffffff;

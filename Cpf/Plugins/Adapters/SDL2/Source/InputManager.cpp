@@ -9,7 +9,7 @@
 using namespace CPF;
 using namespace SDL2;
 
-InputManager::InputManager(GOM::iUnknown*)
+InputManager::InputManager(Plugin::iRegistry*, GOM::iUnknown*)
 {
 }
 

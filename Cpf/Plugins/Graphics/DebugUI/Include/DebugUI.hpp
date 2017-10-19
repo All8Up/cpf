@@ -13,12 +13,17 @@ namespace CPF
 	enum class MouseButton : int32_t;
 	enum class ScanCode : int32_t;
 
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace Graphics
 	{
 		class DebugUI : public GOM::tUnknown<iDebugUI>
 		{
 		public:
-			DebugUI(iUnknown* outer);
+			DebugUI(Plugin::iRegistry*, iUnknown* outer);
 			virtual ~DebugUI();
 
 			//

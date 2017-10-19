@@ -41,7 +41,7 @@ GOM::Result TransformComponent::QueryInterface(uint64_t id, void** outPtr)
 }
 
 /** @brief Default constructor. */
-TransformComponent::TransformComponent(GOM::iUnknown*)
+TransformComponent::TransformComponent(Plugin::iRegistry*, GOM::iUnknown*)
 	: mpParent(nullptr)
 {}
 

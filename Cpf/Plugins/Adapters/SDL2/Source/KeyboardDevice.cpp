@@ -1,13 +1,13 @@
 //////////////////////////////////////////////////////////////////////////
 #include "KeyboardDevice.hpp"
-#include "Application/KeyModifier.hpp"
+#include "Application/KeyModifiers.hpp"
 #include "SDL.h"
 
 using namespace CPF;
 using namespace SDL2;
 
 
-KeyboardDevice::KeyboardDevice(GOM::iUnknown*)
+KeyboardDevice::KeyboardDevice(Plugin::iRegistry*, GOM::iUnknown*)
 {}
 
 KeyboardDevice::~KeyboardDevice()

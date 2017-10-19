@@ -4,12 +4,17 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace SDL2
 	{
 		class KeyboardDevice : public tRefCounted<iKeyboardDevice>
 		{
 		public:
-			KeyboardDevice(GOM::iUnknown*);
+			KeyboardDevice(Plugin::iRegistry*, GOM::iUnknown*);
 			virtual ~KeyboardDevice();
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

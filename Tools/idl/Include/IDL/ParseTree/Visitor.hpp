@@ -87,6 +87,11 @@ namespace IDL
 			bool mConst;
 			CPF::Vector<ParamDecl> mParams;
 		};
+		struct ClassID
+		{
+			String mName;
+			String mValue;
+		};
 		struct InterfaceDecl
 		{
 			String mName;
@@ -94,6 +99,8 @@ namespace IDL
 
 			using Functions = CPF::Vector<FunctionDecl>;
 			Functions mFunctions;
+			using ClassIDs = CPF::Vector<ClassID>;
+			ClassIDs mClassIDs;
 		};
 		struct MemberInitValue
 		{

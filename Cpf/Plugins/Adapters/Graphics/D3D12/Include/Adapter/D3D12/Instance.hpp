@@ -32,7 +32,7 @@ namespace CPF
 			//////////////////////////////////////////////////////////////////////////
 			struct Instance : tRefCounted<Graphics::iInstance>
 			{
-				Instance(iUnknown*);
+				Instance(Plugin::iRegistry*, iUnknown*);
 				virtual ~Instance();
 
 				GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;

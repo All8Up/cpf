@@ -7,12 +7,17 @@
 
 namespace CPF
 {
+	namespace Plugin
+	{
+		struct iRegistry;
+	}
+
 	namespace Concurrency
 	{
 		class ThreadTimes : public tRefCounted<iThreadTimes>
 		{
 		public:
-			ThreadTimes(iUnknown*) {}
+			ThreadTimes(Plugin::iRegistry*, iUnknown*) {}
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
 

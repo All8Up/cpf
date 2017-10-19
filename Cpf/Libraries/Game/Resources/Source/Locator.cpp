@@ -199,7 +199,7 @@ void CPF_STDCALL Locator::TouchAll()
 	}
 }
 
-Locator::Locator(iUnknown*)
+Locator::Locator(Plugin::iRegistry*, iUnknown*)
 {}
 
 Locator::~Locator()

@@ -2,10 +2,13 @@
 #include "RenderSystem.hpp"
 #include "ExperimentalD3D12.hpp"
 #include "MultiCore/iStage.hpp"
+#include "VTune/VTune.hpp"
 
 using namespace CPF;
 using namespace Concurrency;
 using namespace MultiCore;
+
+VTUNE_DOMAIN(RenderSystemDomain, "RenderSystem");
 
 GOM::Result RenderSystem::Install(Plugin::iRegistry* regy)
 {
@@ -17,7 +20,7 @@ GOM::Result RenderSystem::Remove(Plugin::iRegistry* regy)
 	return regy->Remove(kRenderSystemCID.GetID());
 }
 
-RenderSystem::RenderSystem(GOM::iUnknown*)
+RenderSystem::RenderSystem(Plugin::iRegistry*, iUnknown*)
 	: mpApp(nullptr)
 	, mCurrentBackBuffer(0)
 {
@@ -26,22 +29,22 @@ RenderSystem::RenderSystem(GOM::iUnknown*)
 RenderSystem::~RenderSystem()
 {}
 
-void RenderSystem::_BeginFrame(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_BeginFrame(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_BeginFrame(tc);
 }
-void RenderSystem::_Draw(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_Draw(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_Draw(tc);
 }
-void RenderSystem::_DebugUI(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_DebugUI(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_DebugUI(tc);
 }
-void RenderSystem::_EndFrame(const Concurrency::WorkContext* tc, void* context)
+void RenderSystem::_EndFrame(const WorkContext* tc, void* context)
 {
 	RenderSystem* self = reinterpret_cast<RenderSystem*>(context);
 	self->mpApp->_EndFrame(tc);
@@ -87,30 +90,95 @@ GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 		auto result = rgy->Create(this, kStageListCID.GetID(), iStageList::kIID.GetID(), mpStages.AsVoidPP());
 		if (GOM::Succeeded(result))
 		{
+			IntrusivePtr<iSingleUpdateStage> beginFrame;
+			IntrusivePtr<iSingleUpdateStage> drawInstances;
+			IntrusivePtr<iSingleUpdateStage> debugUI;
+			IntrusivePtr<iSingleUpdateStage> endFrame;
+
+
+#if 0
+			struct InstructionBlockDesc
+			{
+				StageID mStageCID;
+				const char* mpName;
+				WorkFunction mpFunc;
+				BlockOpcode mOpcode;
+			};
+
+			InstructionBlockDesc stageDescs[] =
+			{
+				{
+					kSingleUpdateStageCID, "Begin Frame",
+					&RenderSystem::_BeginFrame, BlockOpcode::eFirst
+				},
+				{
+					drawInstances.AsVoidPP(),
+					kSingleUpdateStageCID.GetID(), kDrawInstances.GetString(),
+					&RenderSystem::_Draw, BlockOpcode::eLast
+				},
+				{
+					debugUI.AsVoidPP(),
+					kSingleUpdateStageCID.GetID(), kDebugUI.GetString(),
+					&RenderSystem::_DebugUI, BlockOpcode::eLast
+				},
+				{
+					endFrame.AsVoidPP(),
+					kSingleUpdateStageCID.GetID(), kEndFrame.GetString(),
+					&RenderSystem::_EndFrame, BlockOpcode::eLast
+				}
+			};
+#endif
+
+			/*
+			if (GOM::Succeeded(AddStages(4, stageDescs)))
+			{
+				BlockDependency dependencies[] =
+				{
+					{
+						{ GetID(), drawInstances->GetID(), iStage::kExecute },
+						{ GetID(), beginFrame->GetID(), iStage::kExecute },
+						DependencyPolicy::eAfter
+					},
+					{
+						{ GetID(), debugUI->GetID(), iStage::kExecute },
+						{ GetID(), drawInstances->GetID(), iStage::kExecute },
+						DependencyPolicy::eAfter
+					},
+					{
+						{ GetID(), endFrame->GetID(), iStage::kExecute },
+						{ GetID(), debugUI->GetID(), iStage::kExecute },
+						DependencyPolicy::eAfter
+					}
+				};
+
+//				if (GOM::Succeeded(SetDependencies(3, dependencies)))
+				{
+//					return GOM::kOK;
+				}
+			}
+			*/
+
 			// Build the stages and set the update function for each.
-			// NOTE: While there are 6 stages which must operate in order, there will only
-			// be two required barrier groups since the only thing required is that they
-			// run in order which is accomplished via series of eLast types.
-			IntrusivePtr<MultiCore::iSingleUpdateStage> beginFrame;
-			rgy->Create(nullptr, MultiCore::kSingleUpdateStageCID.GetID(), MultiCore::iSingleUpdateStage::kIID.GetID(), beginFrame.AsVoidPP());
+			// NOTE: There are 4 stages which each depends on the prior to be complete
+			// prior to execution..  Rather than insert barriers, this simply uses the
+			// thread vm instruction 'last' which guarantee's that everything has completed
+			// prior to entry.
+			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), beginFrame.AsVoidPP());
 			beginFrame->Initialize(this, kBeginFrame.GetString());
-			beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, MultiCore::BlockOpcode::eFirst);
+			beginFrame->SetUpdate(&RenderSystem::_BeginFrame, this, BlockOpcode::eFirst);
 
 			// Paired in a group ^
-			IntrusivePtr<MultiCore::iSingleUpdateStage> drawInstances;
 			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), drawInstances.AsVoidPP());
 			drawInstances->Initialize(this, kDrawInstances.GetString());
-			drawInstances->SetUpdate(&RenderSystem::_Draw, this, MultiCore::BlockOpcode::eLast);
+			drawInstances->SetUpdate(&RenderSystem::_Draw, this, BlockOpcode::eLast);
 
-			IntrusivePtr<MultiCore::iSingleUpdateStage> debugUI;
 			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), debugUI.AsVoidPP());
 			debugUI->Initialize(this, kDebugUI.GetString());
-			debugUI->SetUpdate(&RenderSystem::_DebugUI, this, MultiCore::BlockOpcode::eLast);
+			debugUI->SetUpdate(&RenderSystem::_DebugUI, this, BlockOpcode::eLast);
 
-			IntrusivePtr<MultiCore::iSingleUpdateStage> endFrame;
 			rgy->Create(nullptr, kSingleUpdateStageCID.GetID(), iSingleUpdateStage::kIID.GetID(), endFrame.AsVoidPP());
 			endFrame->Initialize(this, kEndFrame.GetString());
-			endFrame->SetUpdate(&RenderSystem::_EndFrame, this, MultiCore::BlockOpcode::eLast);
+			endFrame->SetUpdate(&RenderSystem::_EndFrame, this, BlockOpcode::eLast);
 
 			// Add the stages.
 			AddStage(beginFrame);
@@ -120,19 +188,19 @@ GOM::Result CPF_STDCALL RenderSystem::Initialize(Plugin::iRegistry* rgy, const c
 
 			// Add the default set of dependencies.
 			AddDependency({
-				{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
-				{ GetID(), beginFrame->GetID(), MultiCore::iStage::kExecute },
-				MultiCore::DependencyPolicy::eAfter
+				{ GetID(), drawInstances->GetID(), iStage::kExecute },
+				{ GetID(), beginFrame->GetID(), iStage::kExecute },
+				DependencyPolicy::eAfter
 			});
 			AddDependency({
-				{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
-				{ GetID(), drawInstances->GetID(), MultiCore::iStage::kExecute },
-				MultiCore::DependencyPolicy::eAfter
+				{ GetID(), debugUI->GetID(), iStage::kExecute },
+				{ GetID(), drawInstances->GetID(), iStage::kExecute },
+				DependencyPolicy::eAfter
 			});
 			AddDependency({
-				{ GetID(), endFrame->GetID(), MultiCore::iStage::kExecute },
-				{ GetID(), debugUI->GetID(), MultiCore::iStage::kExecute },
-				MultiCore::DependencyPolicy::eAfter
+				{ GetID(), endFrame->GetID(), iStage::kExecute },
+				{ GetID(), debugUI->GetID(), iStage::kExecute },
+				DependencyPolicy::eAfter
 			});
 
 			return GOM::kOK;

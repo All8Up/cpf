@@ -29,7 +29,7 @@ target_link_libraries (StarterApp
 	s_Application
 	i_DebugUI
 	AdapterSDL2
-	i_Python3
+#	i_Python3
 	asio
 )
 set_property (TARGET StarterApp PROPERTY FOLDER Experimental/Graphics)

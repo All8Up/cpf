@@ -1,0 +1,58 @@
+import iUnknown from GOM;
+import Event from Events;
+module CPF;
+
+enum KeyCode : s32;
+enum ScanCode : s32;
+enum MouseButton : s32;
+enum WindowFlags : s32;
+
+struct OSWindowData;
+struct WindowDesc;
+
+interface iEmitter : GOM::iUnknown
+{
+	void Enable();
+	bool Enabled();
+	void Disable();
+}
+
+interface iWindow : GOM::iUnknown
+{
+	event MouseMove = void(s32 x, s32 y);
+	event ButtonDown = void(MouseButton button, s32 x, s32 y);
+	event ButtonUp = void(MouseButton button, s32 x, s32 y);
+	event MouseWheel = void(s32 x, s32 y);
+	event KeyDown = void(ScanCode code);
+	event KeyUp = void(ScanCode code);
+	event Moved = void(s32 x, s32 y);
+	event Resize = void(s32 x, s32 y);
+	event Close = bool();
+	event MouseEnter = void();
+	event MouseLeave = void();
+	event Minimized = void();
+	event Maximized = void();
+	event Restored = void();
+	event FocusGained = void();
+	event FocusLost = void();
+	event Shown = void();
+	event Hidden = void();
+	event Exposed = void();
+
+//	static constexpr int32_t Centered(int monitor = 0) { return monitor | 0xFF100000; }
+
+	result Initialize(const WindowDesc* desc);
+	void SetTitle(const char* title);
+	void SetPosition(s32 x, s32 y);
+	void GetPosition(s32* x, s32* y);
+	void SetSize(s32 x, s32 y);
+	void GetSize(s32* x, s32* y);
+	void Minimize();
+	void Maximize();
+	void Restore();
+	result GetClientAreaSize(s32*, s32*);
+	Events::Emitter* GetEmitter();
+	result GetOSData(OSWindowData*);
+
+	property<get> Events::Emitter*;
+}

@@ -37,7 +37,7 @@ bool FileSystem::Touch(ID id)
 void FileSystem::TouchAll()
 {}
 
-FileSystem::FileSystem(iUnknown*)
+FileSystem::FileSystem(Plugin::iRegistry*, iUnknown*)
 {}
 
 FileSystem::~FileSystem()

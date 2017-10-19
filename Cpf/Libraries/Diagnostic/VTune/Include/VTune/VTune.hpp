@@ -29,7 +29,7 @@ namespace VTune
 
 	// Frame API.
 	using Id = __itt_id;
-	inline Id Make(void* addr, uint64_t extra) { return __itt_id_make(addr, extra); }
+	inline Id MakeID(void* addr, uint64_t extra) { return __itt_id_make(addr, extra); }
 	inline void IdCreate(Domain* domain, Id id) { __itt_id_create(domain, id); }
 	inline void IdDestroy(Domain* domain, Id id) { __itt_id_destroy(domain, id); }
 	inline void BeginFrame(Domain* domain, Id* id = nullptr) { __itt_frame_begin_v3(domain, id); }
@@ -57,6 +57,9 @@ namespace VTune
 
 
 	//////////////////////////////////////////////////////////////////////////
+#	define VTUNE_DOMAIN(varName, name) static VTune::Domain* varName = VTune::DomainCreate(name)
+#	define VTUNE_GET_DOMAIN(name) VTune::DomainCreate(name)
+
 #	define VTUNE_SYNC_CREATE(name, addr, attr) VTune::SyncCreate(addr, nullptr, #name, attr)
 #	define VTUNE_SYNC_DESTROY(addr) VTune::SyncDestroy(addr)
 #	define VTUNE_SYNC_PREPARE(addr) VTune::SyncPrepare(addr)
@@ -67,6 +70,11 @@ namespace VTune
 #	define VTUNE_EVENT_CREATE(name) VTune::Event name = VTune::EventCreate(#name, int(::strlen(#name)))
 #	define VTUNE_EVENT_START(ev) VTune::EventStart(ev)
 #	define VTUNE_EVENT_END(ev) VTune::EventEnd(ev)
+
+#	define VTUNE_BEGIN_FRAME(domain) VTune::BeginFrame(domain)
+#	define VTUNE_END_FRAME(domain) VTune::EndFrame(domain)
+
+#	define VTUNE_THREAD_NAME(name) VTune::SetThreadName(name);
 
 #else
 	// VTune is disabled.
@@ -111,6 +119,9 @@ namespace VTune
 
 
 	//////////////////////////////////////////////////////////////////////////
+#	define VTUNE_DOMAIN(varName, name)
+#	define VTUNE_GET_DOMAIN(name)
+
 #	define VTUNE_SYNC_CREATE(name, addr, attr)
 #	define VTUNE_SYNC_DESTROY(addr)
 #	define VTUNE_SYNC_PREPARE(addr)
@@ -121,6 +132,11 @@ namespace VTune
 #	define VTUNE_EVENT_CREATE(name)
 #	define VTUNE_EVENT_START(ev)
 #	define VTUNE_EVENT_END(ev)
+
+#	define VTUNE_BEGIN_FRAME(domain)
+#	define VTUNE_END_FRAME(domain)
+
+#	define VTUNE_THREAD_NAME(name)
 
 #endif
 }

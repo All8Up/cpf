@@ -1,0 +1,11 @@
+import iInputDevice from Application;
+import MouseButton from Application;
+module CPF;
+
+interface iMouseDevice : iInputDevice
+{
+	const class_id kDefault("Cpf::iMouseDevice::kDefault");
+
+	result GetButtonState(MouseButton* mouseButtons);
+	result GetPosition(s32* x, s32* y);
+};

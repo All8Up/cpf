@@ -1,8 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Pair.hpp"
-#include "Vector.hpp"
-#include "String.hpp"
 #include "GOM/iUnknown.hpp"
 #include "MultiCore/Types.hpp"
 #include "MultiCore/iSystem.hpp"
@@ -21,9 +19,9 @@ namespace CPF
 
 			// Standard blocks.
 			static constexpr StageID kStageID = Hash::Create<StageID_tag>("Stage Update"_hashString);
-			static constexpr BlockID kBegin = Hash::Create<BlockID_tag>("Begin"_hashString);
-			static constexpr BlockID kExecute = Hash::Create<BlockID_tag>("Execute"_hashString);
-			static constexpr BlockID kEnd = Hash::Create<BlockID_tag>("End"_hashString);
+			static constexpr StageID kBegin = Hash::Create<StageID_tag>("Begin"_hashString);
+			static constexpr StageID kExecute = Hash::Create<StageID_tag>("Execute"_hashString);
+			static constexpr StageID kEnd = Hash::Create<StageID_tag>("End"_hashString);
 
 			virtual GOM::Result CPF_STDCALL Initialize(iSystem*, const char* const name) = 0;
 			virtual iSystem* CPF_STDCALL GetSystem() const = 0;
@@ -32,9 +30,9 @@ namespace CPF
 			virtual void CPF_STDCALL SetEnabled(bool flag) = 0;
 			virtual GOM::Result CPF_STDCALL GetInstructions(int32_t*, Instruction*) = 0;
 			virtual GOM::Result CPF_STDCALL GetDependencies(int32_t*, BlockDependency*) = 0;
-			virtual BlockID CPF_STDCALL GetDefaultBlock() const = 0;
-			virtual BlockID CPF_STDCALL GetBeginBlock() const = 0;
-			virtual BlockID CPF_STDCALL GetEndBlock() const = 0;
+			virtual StageID CPF_STDCALL GetDefaultBlock() const = 0;
+			virtual StageID CPF_STDCALL GetBeginBlock() const = 0;
+			virtual StageID CPF_STDCALL GetEndBlock() const = 0;
 		};
 
 
@@ -45,7 +43,7 @@ namespace CPF
 		{
 			static constexpr GOM::InterfaceID kIID = GOM::InterfaceID("iSingleUpdateStage"_crc64);
 
-			virtual void CPF_STDCALL SetUpdate(Function<void(const Concurrency::WorkContext*, void*)> func, void* context, BlockOpcode opcode = BlockOpcode::eFirst) = 0;
+			virtual void CPF_STDCALL SetUpdate(Concurrency::WorkFunction func, void* context, BlockOpcode opcode = BlockOpcode::eFirst) = 0;
 		};
 	}
 }

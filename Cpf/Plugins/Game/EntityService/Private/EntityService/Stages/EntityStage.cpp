@@ -6,7 +6,7 @@ using namespace CPF;
 using namespace EntityService;
 
 //////////////////////////////////////////////////////////////////////////
-EntityStage::EntityStage(iUnknown*)
+EntityStage::EntityStage(Plugin::iRegistry*, iUnknown*)
 	: mpSystem(nullptr)
 	, mEnabled(true)
 {
@@ -126,13 +126,14 @@ void EntityStage::_Begin(const Concurrency::WorkContext* tc, void* context)
 {
 	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
+	Partition::Begin(self.mCaller.mContext);
 	self.mWork.Begin();
 }
 
 void EntityStage::_Update(const Concurrency::WorkContext* tc, void* context)
 {
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
-	MultiCore::EqualPartitions<MultiCore::SortedVectorContainer<UpdateTuple_t, Compare>, Caller>::Execute(self.mWork, tc, &self.mCaller);
+	Partition::Execute(self.mWork, tc, &self.mCaller.mContext, &self.mCaller);
 }
 
 void EntityStage::_End(const Concurrency::WorkContext* tc, void* context)
@@ -140,6 +141,7 @@ void EntityStage::_End(const Concurrency::WorkContext* tc, void* context)
 	(void)tc;
 	EntityStage& self = *reinterpret_cast<EntityStage*>(context);
 	self.mWork.End();
+	Partition::End(self.mCaller.mContext);
 }
 
 bool EntityStage::Compare::operator ()(const UpdateTuple_t& lhs, const UpdateTuple_t& rhs) const

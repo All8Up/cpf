@@ -1,0 +1,23 @@
+import iUnknown from GOM;
+import iRegistry from Plugin;
+module CPF;
+
+interface iApplicationMain;
+
+interface iApplication : GOM::iUnknown
+{
+//	[
+//		multiple,
+//		immediate,
+//		thread = main,
+//		integrator = any_not_equal(bool, true, true, false)
+//	]
+//	event OnQuit<bool ()>;
+
+	result Initialize(Plugin::iRegistry* registry, iApplicationMain* appMain);
+	result Run();
+	result Shutdown();
+
+	Plugin::iRegistry* GetRegistry();
+	Events::Emitter* GetEmitter();
+}
