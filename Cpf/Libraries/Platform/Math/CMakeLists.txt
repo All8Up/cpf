@@ -8,6 +8,7 @@ set (MATH_INCLUDE_FILES
 	Include/Math/FixedPoint.hpp
 	Include/Math/Hyperbolic.hpp
 	Include/Math/Interpolation.hpp
+	Include/Math/LargeVector.hpp
 	Include/Math/Matrix22v.hpp
 	Include/Math/Matrix33v.hpp
 	Include/Math/Matrix44v.hpp
@@ -44,6 +45,7 @@ set (MATH_INTERSECTION_INCLUDE_FILES
 	Include/Math/Intersection/Ray3_Plane.hpp
 )
 set (MATH_DETAIL_INCLUDE_FILES
+	Include/Math/Detail/LargeVector.inl
 	Include/Math/Detail/Matrix22v.inl
 	Include/Math/Detail/Matrix33v.inl
 	Include/Math/Detail/Matrix44v.inl
@@ -100,6 +102,7 @@ MakeUnitTest (LIBRARY Math GROUP Platform
 		UnitTest/Test_BitManipulation.cpp
 		UnitTest/Test_CodeGen.cpp
 		UnitTest/Test_FixedPoint.cpp
+		UnitTest/Test_LargeVector.cpp
 		UnitTest/Test_Matrix22v.cpp
 		UnitTest/Test_Matrix33v.cpp
 		UnitTest/Test_Matrix44v.cpp
