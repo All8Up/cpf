@@ -296,7 +296,7 @@ void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdown
 		// NOTE: This entire loop is setup to work like a spin lock such that
 		// when there is no work we don't burn the CPU's for no reason.
 		// This does mean that if the work is sporadic, there is likely going to
-		// be >1ms latency between receiving new instructions and executing them.
+		// be latency between receiving new instructions and executing them.
 		backoff();
 	}
 
