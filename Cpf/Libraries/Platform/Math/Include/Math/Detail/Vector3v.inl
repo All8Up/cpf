@@ -56,7 +56,7 @@ namespace CPF
 		template <typename TYPE>
 		template <typename RTYPE, int I0, int I1, int I2>
 		Vector3v<TYPE>::Vector3v(const SIMD::LaneRef_3<RTYPE, I0, I1, I2>& ref)
-			: mSIMD(ref.GetLane<I0>(), ref.GetLane<I1>(), ref.GetLane<I2>())
+			: mSIMD(LaneType(ref.GetLane<I0>()), LaneType(ref.GetLane<I1>()), LaneType(ref.GetLane<I2>()))
 		{
 		}
 
