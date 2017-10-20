@@ -164,7 +164,7 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	//////////////////////////// WRAPPER CLASS ////////////////////////////
 
 	mpWriter->LineFeed();
-	mpWriter->OutputLine("public class %sWrapper", decl.mName.c_str());
+	mpWriter->OutputLine("public class %sWrapper : IWrapper", decl.mName.c_str());
 	mpWriter->OutputLine("{");
 	mpWriter->Indent();
 
@@ -176,6 +176,7 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 
 	mpWriter->OutputLine("public IntPtr NativePointer => unmanagedInstance;");
+	mpWriter->OutputLine("public UInt64 CID => 0x%X;",  CPF::Hash::ComputeCrc64(decl.mName.c_str(), decl.mName.length(), uint64_t(-1)));
 	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 
 	// C++ -> C# constructor

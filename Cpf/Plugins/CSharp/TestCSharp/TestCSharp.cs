@@ -105,11 +105,9 @@ public class Plugin : IPlugin
 	public uint Install(IntPtr registryPtr)
 	{
 		var registry = new iRegistryWrapper(registryPtr);
-		var classInstanceWrapper = new iClassInstanceWrapper(new MyClassInstance());
+		var myClassInstance = new MyClassInstance();
 
-		ReferenceStorage.Add(classInstanceWrapper);
-
-		return registry.Install(IDStore.KTestPlugin, classInstanceWrapper.NativePointer);
+		return registry.Install(IDStore.KTestPlugin, myClassInstance.QueryInterface<iClassInstanceWrapper>());
 	}
 
 	public uint Uninstall(IntPtr registryPtr)

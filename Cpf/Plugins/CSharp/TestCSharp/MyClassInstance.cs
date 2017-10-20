@@ -4,9 +4,9 @@ namespace ComTest
 {
 	public class MyClassInstance : Unknown, iClassInstance
 	{
-		public override int QueryInterface(IntPtr self, ulong id, IntPtr outInterface)
+		public MyClassInstance()
 		{
-			return base.QueryInterface(self, id, outInterface);
+			AddWrapper(new iClassInstanceWrapper(this));
 		}
 
 		public uint CreateInstance(IntPtr self, IntPtr registry, iUnknown outer, out IntPtr outInstance)

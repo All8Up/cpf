@@ -17,13 +17,14 @@ namespace ComTest
 	{
 		uint CreateInstance(IntPtr self, IntPtr registry, iUnknown outer, out IntPtr outInstance);
 	}
-	public class iClassInstanceWrapper
+	public class iClassInstanceWrapper :  IWrapper
 	{
 		private IntPtr unmanagedInstance;
 		private iClassInstance instance;
 		private iClassInstanceVTable vTable = new iClassInstanceVTable();
 		private GenericObject genericObject = new GenericObject();
 
+		public ulong CID => 111;
 		public IntPtr NativePointer => unmanagedInstance;
 
 		public iClassInstanceWrapper(IntPtr unmanagedInst)
