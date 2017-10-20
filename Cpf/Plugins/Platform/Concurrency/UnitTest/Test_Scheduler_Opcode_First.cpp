@@ -4,7 +4,7 @@
 #include "Concurrency/iFence.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Threading/Thread.hpp"
-#include "Atomic/Atomic.hpp"
+#include <atomic>
 
 TEST_F(ConcurrencyTest, First_Opcode)
 {
@@ -24,10 +24,10 @@ TEST_F(ConcurrencyTest, First_Opcode)
 		EXPECT_TRUE(GOM::Succeeded(GetRegistry()->Create(nullptr, kWorkBufferCID.GetID(), iWorkBuffer::kIID.GetID(), pWorkBuffer.AsVoidPP())));
 
 		{
-			auto firstThreadArrived = 0;
+			std::atomic<int> firstThreadArrived = 0;
 			pWorkBuffer->FirstOne([](const WorkContext*, void* context) {
 				// Signal that we have arrived.
-				Atomic::Store(*reinterpret_cast<int*>(context), 1);
+				(*reinterpret_cast<std::atomic<int>*>(context)).store(1);
 
 				// Wait a sec, just to make sure the next instruction executes before we wake.
 				Threading::Thread::Sleep(Time::Seconds(0.1f));
@@ -35,7 +35,7 @@ TEST_F(ConcurrencyTest, First_Opcode)
 			&firstThreadArrived);
 			pWorkBuffer->FirstOne([](const WorkContext*, void* context) {
 				// Some thread should arrive that is not the above thread.
-				for (; Atomic::Load(*reinterpret_cast<int*>(context)) != 1;)
+				for (; (*reinterpret_cast<std::atomic<int>*>(context)).load() != 1;)
 					;
 			},
 			&firstThreadArrived);

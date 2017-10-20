@@ -4,7 +4,6 @@
 #include "Application/iWindowedApplication.hpp"
 #include "CPF/Logging.hpp"
 
-#include "Atomic/Atomic.hpp"
 #include "IntrusivePtr.hpp"
 #include "Resources/iConfiguration.hpp"
 #include "Threading.hpp"
@@ -391,10 +390,10 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 						for (; mReactor.RunOne();)
 							;
 
-						Atomic::Inc(mFrameIndex);
-						Atomic::Store(mSubmissionIndex, Atomic::Load(mFrameIndex) * 3);
-						Atomic::Store(mCurrentScheduledBuffer, 1);
-						Atomic::Store(mCurrentBackbuffer, mpSwapChain->GetCurrentIndex());
+						mFrameIndex.fetch_add(1);
+						mSubmissionIndex.store(mFrameIndex.load() * 3);
+						mCurrentScheduledBuffer.store(1);
+						mCurrentBackbuffer.store(mpSwapChain->GetCurrentIndex());
 						auto now = Time::Now() - mStartTime;
 						mDeltaTime = now - mCurrentTime;
 						mCurrentTime = now;

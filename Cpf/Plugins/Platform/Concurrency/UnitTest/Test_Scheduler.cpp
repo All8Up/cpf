@@ -5,7 +5,6 @@
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Concurrency/iFence.hpp"
 #include "Threading/Thread.hpp"
-#include "Atomic/Atomic.hpp"
 
 
 TEST_F(ConcurrencyTest, Basics)

@@ -4,8 +4,6 @@
 #include "Concurrency/WorkBuffer.hpp"
 #include "Concurrency/Opcodes.hpp"
 #include "Concurrency/WorkContext.hpp"
-#include "Atomic/Atomic.hpp"
-#include "Atomic/Fence.hpp"
 #include "Threading/ScopedLock.hpp"
 #include "VTune/VTune.hpp"
 #include <algorithm>
@@ -43,7 +41,7 @@ Scheduler::Scheduler(Plugin::iRegistry*, iUnknown*)
 Scheduler::~Scheduler()
 {
 	// Check that we were shut down.
-	CPF_ASSERT(Atomic::Load(mThreadCount) == 0);
+	CPF_ASSERT(mThreadCount.load() == 0);
 }
 
 GOM::Result CPF_STDCALL Scheduler::QueryInterface(uint64_t id, void** outIface)
@@ -133,7 +131,7 @@ void Scheduler::SetActiveThreads(int count)
 	mWait.Acquire();
 
 	// Issue the change.
-	if (count != Atomic::Load(mActiveCount)) {
+	if (count != mActiveCount.load()) {
 		intptr_t intCount = intptr_t(count);
 		_Emit(Detail::Opcodes::ActiveThreads, nullptr, reinterpret_cast<void *>(intCount));
 	}
@@ -313,14 +311,15 @@ bool Scheduler::_StartMaster()
 {
 	// Simply attempt to poke a 1 into the lock, we are
 	// control if that happens.
-	return Atomic::CompareExchange(mControlLock, 1, 0);
+	auto oldValue = mControlLock.load();
+	return mControlLock.compare_exchange_weak(oldValue, 1);
 }
 
 /** @brief Release access to the ring buffer tail pointer. */
 void Scheduler::_EndMaster()
 {
 	// Restore the lock to 0.
-	Atomic::Store(mControlLock, 0);
+	mControlLock.store(0);
 }
 
 /**
@@ -337,7 +336,7 @@ bool Scheduler::_FetchWork()
 	auto externalCount = mExternalQueue.size();
 	if (externalCount > 0)
 	{
-		auto pullCount = mInstructionRing.Reserve(Atomic::Load(mActiveCount), std::min(mQueueSize-1, externalCount));
+		auto pullCount = mInstructionRing.Reserve(mActiveCount.load(), std::min(mQueueSize-1, externalCount));
 		if (pullCount == 0)
 			return false;
 
@@ -357,20 +356,20 @@ bool Scheduler::_FetchWork()
 			mInstructionRing[start + i] = inst;
 
 			// Setup the predicate ring so threads can track entry/exit.
-			mPredicateRing[start + i] = Atomic::Load(mTargetCount);
+			mPredicateRing[start + i] = mTargetCount.load();
 
 			// If this is changing the thread count, apply the change so subsequent
 			// instructions will have a proper predicate setup.
 			if (inst.mpHandler== Detail::Opcodes::ActiveThreads) {
 				int target = int(reinterpret_cast<intptr_t>(inst.mpContext));
 				CPF_ASSERT(target>0 && target <= mThreadCount);
-				Atomic::Store(mTargetCount, target);
+				mTargetCount.store(target);
 			}
 		}
 		mExternalQueue.erase(mExternalQueue.begin(), mExternalQueue.begin() + pullCount);
 
 		// Update the tail with new instructions.
-		CPF::Fence::Release();
+		std::atomic_thread_fence(std::memory_order_release);
 		mInstructionRing.Commit(pullCount);
 		return true;
 	}

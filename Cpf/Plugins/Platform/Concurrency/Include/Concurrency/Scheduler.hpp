@@ -9,7 +9,7 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Plugin/tClassInstance.hpp"
 #include "Concurrency/ThreadTimeInfo.hpp"
-
+#include <atomic>
 
 namespace CPF
 {
@@ -86,7 +86,7 @@ namespace CPF
 			bool _FetchWork();
 
 			// Spin lock variable for the thread fetching instructions.
-			int32_t mControlLock;
+			std::atomic<int32_t> mControlLock;
 			int8_t pad0[64-sizeof(int32_t)];
 
 			// External work queue.
@@ -94,17 +94,17 @@ namespace CPF
 			Deque<Instruction> mExternalQueue;
 
 			// Active thread counts.
-			int32_t mTargetCount;
+			std::atomic<int32_t> mTargetCount;
 			int8_t pad1[64-sizeof(int32_t)];
-			int32_t mActiveCount;
-			int32_t mThreadCount;
+			std::atomic<int32_t> mActiveCount;
+			std::atomic<int32_t> mThreadCount;
 			Threading::Thread::Group mThreads;
 
 			// The internal instruction queue.
 			// This is split into two pieces to avoid false sharing
 			// between instructions and the predicate.
 			Collections::RingBuffer<Instruction> mInstructionRing;
-			Collections::RingBuffer<int64_t> mPredicateRing;
+			Collections::RingBuffer<std::atomic<int64_t>> mPredicateRing;
 
 			// Thread parking.
 			Threading::Semaphore mActive;

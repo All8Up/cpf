@@ -15,6 +15,7 @@
 #include "Graphics/iImageView.hpp"
 #include "Graphics/iFrameBuffer.hpp"
 #include "Graphics/iRenderPass.hpp"
+#include <atomic>
 
 //
 namespace CPF
@@ -95,13 +96,13 @@ namespace CPF
 		IntrusivePtr<Graphics::iFence> mpFence;
 		IntrusivePtr<Concurrency::iScheduler> mpScheduler;
 
-		int32_t mCurrentScheduledBuffer = 0;
+		std::atomic<int32_t> mCurrentScheduledBuffer = 0;
 		Graphics::iCommandBuffer* mpScheduledBuffers[Concurrency::kMaxThreads * 4];
 
-		int32_t mCurrentBackbuffer = 0;
-		uint64_t mFenceTarget = 1;
-		uint64_t mFrameIndex = 0;
-		uint64_t mSubmissionIndex = 0;
+		std::atomic<int32_t> mCurrentBackbuffer = 0;
+		std::atomic<uint64_t> mFenceTarget = 1;
+		std::atomic<uint64_t> mFrameIndex = 0;
+		std::atomic<uint64_t> mSubmissionIndex = 0;
 
 		Time::Value mStartTime;
 		Time::Value mCurrentTime;

@@ -4,9 +4,8 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Threading/Thread.hpp"
-#include "Atomic/Atomic.hpp"
-#include "Atomic/Fence.hpp"
 #include "Vector.hpp"
+#include <atomic>
 
 TEST_F(ConcurrencyTest, AllFenced_Opcode)
 {
@@ -38,10 +37,10 @@ TEST_F(ConcurrencyTest, AllFenced_Opcode)
 		for (int i = 0; i < testCount; ++i)
 		{
 			//////////////////////////////////////////////////////////////////////////
-			int hitCount = 0;
+			std::atomic<int> hitCount = 0;
 			struct TestData
 			{
-				int* mpCounter;
+				std::atomic<int>* mpCounter;
 				int mExpected;
 			};
 			Vector<TestData> testData;
@@ -54,14 +53,14 @@ TEST_F(ConcurrencyTest, AllFenced_Opcode)
 
 				pWorkBuffer->AllBarrier([](const WorkContext*, void* context)
 				{
-					Atomic::Inc(*reinterpret_cast<int*>(context));
+					(*reinterpret_cast<std::atomic<int>*>(context)).fetch_add(1);
 				},
 					&hitCount);
 
 				pWorkBuffer->FirstOneBarrier([](const WorkContext*, void* context)
 				{
 					auto testData = reinterpret_cast<TestData*>(context);
-					EXPECT_EQ(Atomic::Load(*testData->mpCounter), testData->mExpected);
+					EXPECT_EQ((*testData->mpCounter).load(), testData->mExpected);
 				},
 					&testData[j]);
 			}

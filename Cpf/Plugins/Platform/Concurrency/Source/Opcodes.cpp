@@ -14,7 +14,7 @@ using namespace Concurrency;
 void Detail::Opcodes::Wait(Scheduler &vm, int64_t index)
 {
 	Backoff<4096, 0> backoff;
-	for (; Atomic::Load(vm.mPredicateRing[index]) >= 0;)
+	for (; vm.mPredicateRing[index].load() >= 0;)
 		backoff();
 }
 
@@ -26,11 +26,11 @@ void Detail::Opcodes::Wait(Scheduler &vm, int64_t index)
 */
 void Detail::Opcodes::FirstOne(Scheduler &vm, const WorkContext* tc, int64_t index)
 {
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 	CPF_ASSERT(count >= 0 && count<1000);
 
 	// If this is the first thread into the instruction, execute.
-	if (count == Atomic::Load(vm.mActiveCount) - 1)
+	if (count == vm.mActiveCount.load() - 1)
 	{
 		auto context = vm.mInstructionRing[index].mpContext;
 		(*vm.mInstructionRing[index].mpFunction)(tc, context);
@@ -45,15 +45,15 @@ void Detail::Opcodes::FirstOne(Scheduler &vm, const WorkContext* tc, int64_t ind
 */
 void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
-	CPF_ASSERT(count >= -Atomic::Load(vm.mActiveCount) && count<1000);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
+	CPF_ASSERT(count >= -vm.mActiveCount.load() && count<1000);
 
 	// If this is the first thread into the instruction, execute.
-	if (count == Atomic::Load(vm.mActiveCount) - 1)
+	if (count == vm.mActiveCount.load() - 1)
 	{
 		auto context = vm.mInstructionRing[index].mpContext;
 		(*vm.mInstructionRing[index].mpFunction)(tc, context);
-		Atomic::Store(vm.mPredicateRing[index], -1);
+		vm.mPredicateRing[index].store(-1);
 	}
 	else
 		Wait(vm, index);
@@ -67,7 +67,7 @@ void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, const WorkContext* tc, int6
 */
 void Detail::Opcodes::LastOne(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 	CPF_ASSERT(count >= 0 && count<1000);
 
 	// If this is the last thread to arrive, execute.
@@ -85,14 +85,14 @@ void Detail::Opcodes::LastOne(Scheduler& vm, const WorkContext* tc, int64_t inde
 */
 void Detail::Opcodes::LastOneBarrier(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 	CPF_ASSERT(count >= 0 && count<1000);
 
 	// If this is the last thread to arrive, execute.
 	if (count == 0)
 	{
 		(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
-		Atomic::Store(vm.mPredicateRing[index], -1);
+		vm.mPredicateRing[index].store(-1);
 	}
 	else
 		Wait(vm, index);
@@ -107,7 +107,7 @@ void Detail::Opcodes::LastOneBarrier(Scheduler& vm, const WorkContext* tc, int64
 void Detail::Opcodes::All(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
 	// First/Last, who cares, execute!
-	CPF_ASSERT(Atomic::Load(vm.mPredicateRing[index]) == Atomic::Load(vm.mActiveCount));
+	CPF_ASSERT(vm.mPredicateRing[index].load() == vm.mActiveCount.load());
 	(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 }
 
@@ -123,11 +123,11 @@ void Detail::Opcodes::AllBarrier(Scheduler& vm, const WorkContext* tc, int64_t i
 	(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 
 	// Last thread consumes, others wait.
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 	CPF_ASSERT(count >= 0 && count < 1000);
 	if (count == 0)
 	{
-		Atomic::Store(vm.mPredicateRing[index], -1);
+		vm.mPredicateRing[index].store(-1);
 	}
 	else
 		Wait(vm, index);
@@ -141,13 +141,13 @@ void Detail::Opcodes::AllBarrier(Scheduler& vm, const WorkContext* tc, int64_t i
 */
 void Detail::Opcodes::Barrier(Scheduler &vm, const WorkContext*, int64_t index)
 {
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 	CPF_ASSERT(count >= 0 && count < 1000);
 
 	// If this is the last thread, let everything continue.
 	if (count == 0)
 	{
-		Atomic::Store(vm.mPredicateRing[index], -1);
+		vm.mPredicateRing[index].store(-1);
 	}
 	else
 		Wait(vm, index);
@@ -162,20 +162,20 @@ void Detail::Opcodes::Barrier(Scheduler &vm, const WorkContext*, int64_t index)
 void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
 	// NOTE: Only one of these instructions can be in flight at any give time.
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 	CPF_ASSERT(count >= 0 && count<1000);
 
 	// Last thread to arrive performs the actual change.
 	if (count == 0)
 	{
-		auto target = Atomic::Load(vm.mTargetCount);
-		auto active = Atomic::Load(vm.mActiveCount);
+		auto target = vm.mTargetCount.load();
+		auto active = vm.mActiveCount.load();
 		if (target != active)
 		{
 			// Make the actual change by acquiring the condition lock and then storing the new value.
 			// This guarantee's no thread is sporadically woken and misses the changed active count.
 			vm.mActiveLock.Acquire();
-			Atomic::Store(vm.mActiveCount, target);
+			vm.mActiveCount.store(target);
 
 			// Modify each threads head index in the ring buffer so they come out
 			// of here with the intended state.
@@ -202,7 +202,7 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 	for (;;)
 	{
 		vm.mActiveLock.Acquire();
-		if (tc->mThreadId >= Atomic::Load(vm.mActiveCount))
+		if (tc->mThreadId >= vm.mActiveCount.load())
 		{
 			vm.mActiveCondition.Acquire(vm.mActiveLock);
 			vm.mActiveLock.Release();
@@ -229,7 +229,7 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 */
 void Detail::Opcodes::HeadMinimize(Scheduler &vm, const WorkContext*, int64_t index)
 {
-	auto count = Atomic::Dec(vm.mPredicateRing[index]);
+	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
 
 	if (count == 0)
 		vm.mInstructionRing.Minimize();

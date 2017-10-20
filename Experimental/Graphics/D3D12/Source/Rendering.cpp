@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Graphics/Viewport.hpp"
 #include "Graphics/PrimitiveTopology.hpp"
 #include "Graphics/Format.hpp"
@@ -88,7 +87,7 @@ void ExperimentalD3D12::_Draw(const Concurrency::WorkContext* tc)
 
 	// End the command buffer prior to submission.
 	threadData.mpCommandBuffer[mCurrentBackbuffer]->End();
-	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpCommandBuffer[mCurrentBackbuffer];
+	mpScheduledBuffers[mCurrentScheduledBuffer.fetch_add(1)] = threadData.mpCommandBuffer[mCurrentBackbuffer];
 #endif
 }
 
@@ -112,7 +111,7 @@ void ExperimentalD3D12::_EndFrame(const Concurrency::WorkContext*)
 	mpSwapChain->Present();
 
 	// Wait for completion.
-	auto fenceToWaitFor = Atomic::Inc(mFenceTarget);
+	auto fenceToWaitFor = mFenceTarget.fetch_add(1)+1;
 	mpDevice->Signal(mpFence, fenceToWaitFor);
 
 	// TODO: This sure seems like a race condition but it is how all the examples seem to work.

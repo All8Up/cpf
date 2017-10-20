@@ -3,8 +3,8 @@
 #include "Concurrency/iFence.hpp"
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Threading/Thread.hpp"
+#include <atomic>
 
 TEST_F(ConcurrencyTest, Last_Opcode)
 {
@@ -25,12 +25,12 @@ TEST_F(ConcurrencyTest, Last_Opcode)
 		EXPECT_TRUE(GOM::Succeeded(GetRegistry()->Create(nullptr, kWorkBufferCID.GetID(), iWorkBuffer::kIID.GetID(), pWorkBuffer.AsVoidPP())));
 
 		{
-			auto firstThreadArrived = 0;
+			std::atomic<int> firstThreadArrived = 0;
 			pWorkBuffer->LastOne(
 				[](const WorkContext*, void* context)
 			{
 				// The next instruction should execute and the flag should be set.
-				for (; Atomic::Load(*reinterpret_cast<int*>(context)) != 1;)
+				for (; (*reinterpret_cast<std::atomic<int>*>(context)).load() != 1;)
 					;
 			},
 				&firstThreadArrived);
@@ -39,7 +39,7 @@ TEST_F(ConcurrencyTest, Last_Opcode)
 				[](const WorkContext*, void* context)
 			{
 				// Signal that we have arrived.
-				Atomic::Store(*reinterpret_cast<int*>(context), 1);
+				(*reinterpret_cast<std::atomic<int>*>(context)).store(1);
 			},
 				&firstThreadArrived);
 

@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Concurrency/Concurrency.hpp"
 #include "Threading/Thread.hpp"
 #include "VTune/VTune.hpp"
 

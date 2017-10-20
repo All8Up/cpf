@@ -29,7 +29,6 @@ set( INCLUDE_FILES
 	Include/Move.hpp
 	Include/Memory.hpp
 	Include/StringUtils.hpp
-	Include/HandlePool.hpp
 	Include/Tuple.hpp
 	Include/BitSet.hpp
 	Include/EnumFlagType.hpp
@@ -49,7 +48,7 @@ target_compile_definitions( s_Collections
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-target_link_libraries( s_Collections Configuration ${STL_LIB} Atomic )
+target_link_libraries( s_Collections Configuration ${STL_LIB} )
 
 target_include_directories( s_Collections PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -76,10 +75,7 @@ install( EXPORT CollectionsConfig DESTINATION CMake )
 MakeUnitTest( LIBRARY Collections GROUP Core
 	TEST_FILES
 		UnitTest/Test_All.hpp
-		UnitTest/Test_HandlePool.hpp
 		UnitTest/Test_EnumFlagType.cpp
 		../Test/UnitTestMain.cpp
-	LINK_LIBRARIES
-		Atomic:interface
 )
 ]]#

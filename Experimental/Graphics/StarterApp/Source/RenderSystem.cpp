@@ -6,7 +6,6 @@
 #include "Graphics/SwapEffect.hpp"
 #include "Graphics/ImageDesc.hpp"
 #include "Graphics/Format.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Graphics/iImage.hpp"
 #include "Graphics/iImageView.hpp"
 #include "Graphics/HeapType.hpp"
@@ -435,11 +434,11 @@ void RenderSystem::_EndFrame(const Concurrency::WorkContext*, void* context)
 	}
 
 	// Wait for completion.
-	auto fenceToWaitFor = Atomic::Inc(self.mFenceTarget);
+	auto fenceToWaitFor = self.mFenceTarget.fetch_add(1)+1;
 	self.mpDevice->Signal(self.mpFence, fenceToWaitFor);
 
 	// If too far ahead, wait here till a back buffer is available to swap to.
-	auto lastFence = self.mFenceTarget;
+	auto lastFence = self.mFenceTarget.load();
 	if (lastFence - self.mpFence->GetValue() >= kBufferCount)
 		self.mpFence->WaitFor(lastFence - (kBufferCount - 1));
 

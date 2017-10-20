@@ -8,7 +8,7 @@
 #include "Graphics/iRenderPass.hpp"
 #include "Graphics/iFrameBuffer.hpp"
 #include "MultiCore/System/iTimer.hpp"
-
+#include <atomic>
 
 namespace CPF
 {
@@ -98,7 +98,7 @@ namespace CPF
 
 		int mBufferIndex = 0;
 		int mSwapIndex = 0;
-		uint64_t mFenceTarget = 4;
+		std::atomic<uint64_t> mFenceTarget = 4;
 		IntrusivePtr<Graphics::iCommandPool> mpPrimaryPool[kBufferCount];
 		IntrusivePtr<Graphics::iCommandBuffer> mpPrimaryBuffer[kBufferCount];
 		IntrusivePtr<Graphics::iCommandPool> mpDebugUIPool[kBufferCount];

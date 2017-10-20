@@ -2,7 +2,6 @@
 #include "ExperimentalD3D12.hpp"
 #include "Graphics/iImageView.hpp"
 #include "Concurrency/WorkContext.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Std/Std.hpp"
 
 using namespace CPF;
@@ -90,5 +89,5 @@ void ExperimentalD3D12::_DebugUI(const Concurrency::WorkContext* tc)
 	mpDebugUI->EndFrame(threadData.mpDebugUIBuffer[mCurrentBackbuffer]);
 
 	threadData.mpDebugUIBuffer[mCurrentBackbuffer]->End();
-	mpScheduledBuffers[Atomic::Inc(mCurrentScheduledBuffer) - 1] = threadData.mpDebugUIBuffer[mCurrentBackbuffer];
+	mpScheduledBuffers[mCurrentScheduledBuffer.fetch_add(1)] = threadData.mpDebugUIBuffer[mCurrentBackbuffer];
 }

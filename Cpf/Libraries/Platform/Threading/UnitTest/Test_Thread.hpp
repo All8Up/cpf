@@ -1,9 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Threading/Thread.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Threading.hpp"
-
+#include <atomic>
 
 TEST(Threading, Thread_Run)
 {
@@ -39,9 +38,10 @@ TEST(Threading, Thread_Group)
 	using namespace CPF::Threading;
 
 	Thread::Group testGroup(10);
-	int testValue = 0;
-	testGroup(std::move(std::bind([](int* test) {
-		CPF::Atomic::Inc(*test);}, &testValue)));
+	std::atomic <int> testValue = 0;
+	testGroup(std::move(std::bind([](std::atomic<int>* test) {
+		(*test).fetch_add(1);
+	}, &testValue)));
 	testGroup.Join();
 	EXPECT_EQ(10, testValue);
 }

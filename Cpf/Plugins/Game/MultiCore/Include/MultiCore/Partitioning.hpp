@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Concurrency/WorkContext.hpp"
-#include "Atomic/Atomic.hpp"
+#include <atomic>
 
 namespace CPF
 {
@@ -13,20 +13,20 @@ namespace CPF
 			static constexpr uint32_t kDivisionSize = 10;
 			struct Context
 			{
-				uint32_t mIndex = 0;
+				std::atomic<uint32_t> mIndex = 0;
 			};
 
-			static void Begin(Context& context) { Atomic::Store(context.mIndex, 0); }
+			static void Begin(Context& context) { context.mIndex.store(0); }
 			static void End(Context&) {}
 
 			static void Execute(const CONTAINER& container, const Concurrency::WorkContext* tc, Context* context, CALLER* caller)
 			{
 				uint32_t workCount = uint32_t(container.GetSize());
-				for (uint32_t lastIndex = Atomic::Add(context->mIndex, kDivisionSize),
-					firstIndex = lastIndex - kDivisionSize;
+				for (uint32_t firstIndex = context->mIndex.fetch_add(kDivisionSize),
+					lastIndex = firstIndex + kDivisionSize;
 					firstIndex < workCount;
-					lastIndex = Atomic::Add(context->mIndex, kDivisionSize),
-					firstIndex = lastIndex - kDivisionSize
+					firstIndex = context->mIndex.fetch_add(kDivisionSize),
+					lastIndex = firstIndex + kDivisionSize
 					)
 				{
 					for (uint32_t i = firstIndex; i<workCount && i<lastIndex; ++i)

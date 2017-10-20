@@ -4,15 +4,15 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Concurrency/iFence.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Threading/Thread.hpp"
 #include "Threading/Semaphore.hpp"
+#include <atomic>
 
 namespace ConcurrencyTestData
 {
 	struct CPF_ALIGN(16) TestData
 	{
-		int32_t HitCount;
+		std::atomic <int32_t> HitCount;
 		CPF::Threading::Semaphore Complete;
 	};
 }
@@ -44,7 +44,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 
 		for (auto threads = 1; threads < pScheduler->GetMaxThreads(); ++threads)
 		{
-			testData->HitCount = 0;
+			testData->HitCount.store(0);
 			pScheduler->SetActiveThreads(threads);
 
 			for (auto i = 0; i < loopCount*threads; ++i)
@@ -53,7 +53,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 					[](const WorkContext*, void* context)
 				{
 					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x70000000);
-					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
+					(reinterpret_cast<TestData*>(context)->HitCount).fetch_add(1);
 					auto accumulator = 0;
 					for (auto i = 0; i < innerLoopCount; ++i)
 						accumulator += i;
@@ -71,11 +71,11 @@ TEST_F(ConcurrencyTest, ActiveChange)
 
 			pScheduler->Execute(pWorkBuffer);
 			testData->Complete.Acquire();
-			EXPECT_EQ(loopCount*threads, CPF::Atomic::Load(testData->HitCount));
+			EXPECT_EQ(loopCount*threads, testData->HitCount.load());
 		}
 		for (auto threads = pScheduler->GetMaxThreads(); threads > 0; --threads)
 		{
-			testData->HitCount = 0;
+			testData->HitCount.store(0);
 			pScheduler->SetActiveThreads(threads);
 
 			for (auto i = 0; i < loopCount*threads; ++i)
@@ -84,7 +84,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 					[](const WorkContext*, void* context)
 				{
 					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x70000000);
-					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
+					(reinterpret_cast<TestData*>(context)->HitCount).fetch_add(1);
 					auto accumulator = 0;
 					for (auto i = 0; i < innerLoopCount; ++i)
 						accumulator += i;
@@ -102,7 +102,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 
 			pScheduler->Execute(pWorkBuffer);
 			testData->Complete.Acquire();
-			EXPECT_EQ(loopCount*threads, Atomic::Load(testData->HitCount));
+			EXPECT_EQ(loopCount*threads, testData->HitCount.load());
 		}
 
 		for (auto threads = 0; threads < 50; ++threads)
@@ -119,7 +119,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 					[](const WorkContext*, void* context)
 				{
 					CPF_ASSERT(reinterpret_cast<TestData*>(context)->HitCount < 0x70000000);
-					Atomic::Inc(reinterpret_cast<TestData*>(context)->HitCount);
+					(reinterpret_cast<TestData*>(context)->HitCount).fetch_add(1);
 					auto accumulator = 0;
 					for (auto i = 0; i < innerLoopCount; ++i)
 						accumulator += i;
@@ -137,7 +137,7 @@ TEST_F(ConcurrencyTest, ActiveChange)
 
 			pScheduler->Execute(pWorkBuffer);
 			testData->Complete.Acquire();
-			EXPECT_EQ(loopCount*threadCount, CPF::Atomic::Load(testData->HitCount));
+			EXPECT_EQ(loopCount*threadCount, testData->HitCount.load());
 		}
 
 		pScheduler->Shutdown();

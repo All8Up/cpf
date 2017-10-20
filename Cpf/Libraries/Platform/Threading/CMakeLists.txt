@@ -37,7 +37,7 @@ target_include_directories (Threading INTERFACE
 if (WIN32)
 	set (ADDITIONAL_LIBS "Pdh.lib")
 endif ()
-target_link_libraries (Threading INTERFACE Configuration s_Collections Time Atomic Logging ${ADDITIONAL_LIBS})
+target_link_libraries (Threading INTERFACE Configuration s_Collections Time Logging ${ADDITIONAL_LIBS})
 
 add_custom_target (Threading_IDE SOURCES ${THREADING_INCLUDE_FILES} ${THREADING_PLATFORM_INCLUDE_FILES})
 set_property (TARGET Threading_IDE PROPERTY FOLDER Libraries/Interface/Platform)

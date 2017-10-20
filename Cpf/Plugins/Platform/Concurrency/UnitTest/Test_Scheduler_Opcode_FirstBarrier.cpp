@@ -3,8 +3,8 @@
 #include "Concurrency/iFence.hpp"
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Threading/Thread.hpp"
+#include <atomic>
 
 TEST_F(ConcurrencyTest, FirstFenced_Opcode)
 {
@@ -25,16 +25,16 @@ TEST_F(ConcurrencyTest, FirstFenced_Opcode)
 		EXPECT_TRUE(GOM::Succeeded(GetRegistry()->Create(nullptr, kWorkBufferCID.GetID(), iWorkBuffer::kIID.GetID(), pWorkBuffer.AsVoidPP())));
 
 		{
-			auto firstThreadArrived = 0;
+			std::atomic<int> firstThreadArrived = 0;
 			pWorkBuffer->FirstOneBarrier([](const WorkContext*, void* context)
 			{
-				Atomic::Store(*reinterpret_cast<int*>(context), 1);
+				(*reinterpret_cast<std::atomic<int>*>(context)).store(1);
 			},
 				&firstThreadArrived);
 
 			pWorkBuffer->AllBarrier([](const WorkContext*, void* context)
 			{
-				EXPECT_EQ(1, Atomic::Load(*reinterpret_cast<int*>(context)));
+				EXPECT_EQ(1, (*reinterpret_cast<std::atomic<int>*>(context)).load());
 			},
 				&firstThreadArrived);
 

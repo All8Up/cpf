@@ -1,11 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Concurrency/Concurrency.hpp"
-#include "Atomic/Atomic.hpp"
 #include "Vector.hpp"
 #include "Move.hpp"
 #include <algorithm>
-
+#include <atomic>
 
 namespace CPF
 {
@@ -54,14 +53,14 @@ namespace CPF
 				// lines to prevent false sharing.
 				struct HeadIndex
 				{
-					int64_t mHead;
+					std::atomic<int64_t> mHead;
 					int8_t pad0[64 - sizeof(int64_t)];
 				};
 
 				// Need these to be in individual cache lines to prevent false sharing.
-				int64_t mHead;
+				std::atomic<int64_t> mHead;
 				int8_t pad0[64 - sizeof(int64_t)];
-				int64_t mTail;
+				std::atomic<int64_t> mTail;
 
 				// The rest is all constant after initialization, at least the pointers are.
 				// But we pad it out to avoid false sharing with the mTail above.
@@ -70,7 +69,7 @@ namespace CPF
 				const size_t mSize;
 				const size_t mSizeMask;
 				HeadIndex* mpThreadHead;
-				Vector<TYPE> mBuffer;
+				TYPE* mpBuffer;
 			};
 
 
@@ -78,7 +77,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template<typename VALUE_TYPE>
-			inline RingBuffer<VALUE_TYPE>::RingBuffer(size_t size)
+			RingBuffer<VALUE_TYPE>::RingBuffer(size_t size)
 				: mHead(0)
 				, mTail(0)
 				, mThreadCount(0)
@@ -87,13 +86,14 @@ namespace CPF
 				, mpThreadHead(nullptr)
 			{
 				CPF_ASSERT((mSize&(mSize - 1)) == 0);
-				mBuffer.resize(size);
+				mpBuffer = new VALUE_TYPE[size];
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline RingBuffer<VALUE_TYPE>::~RingBuffer()
+			RingBuffer<VALUE_TYPE>::~RingBuffer()
 			{
+				delete[] mpBuffer;
 			}
 
 			/**
@@ -104,7 +104,7 @@ namespace CPF
 			* @return true if it succeeds, false if it fails.
 			*/
 			template<typename VALUE_TYPE>
-			inline bool RingBuffer<VALUE_TYPE>::Initialize(size_t threadCount)
+			bool RingBuffer<VALUE_TYPE>::Initialize(size_t threadCount)
 			{
 				if (mThreadCount != 0 || mpThreadHead != nullptr)
 					return false;
@@ -113,71 +113,71 @@ namespace CPF
 					return false;
 				mThreadCount = int(threadCount);
 				for (auto i = 0; i < mThreadCount; ++i)
-					mpThreadHead[i].mHead = mHead;
+					mpThreadHead[i].mHead.store(mHead);
 				return true;
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline VALUE_TYPE& RingBuffer<VALUE_TYPE>::operator [](size_t idx)
+			VALUE_TYPE& RingBuffer<VALUE_TYPE>::operator [](size_t idx)
 			{
-				return mBuffer[idx & mSizeMask];
+				return mpBuffer[idx & mSizeMask];
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline const VALUE_TYPE& RingBuffer<VALUE_TYPE>::operator [](size_t idx) const
+			const VALUE_TYPE& RingBuffer<VALUE_TYPE>::operator [](size_t idx) const
 			{
-				return mBuffer[idx & mSizeMask];
+				return mpBuffer[idx & mSizeMask];
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline int64_t RingBuffer<VALUE_TYPE>::Head() const
+			int64_t RingBuffer<VALUE_TYPE>::Head() const
 			{
-				return Atomic::Load(mHead);
+				return mHead.load();
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline void RingBuffer<VALUE_TYPE>::Head(int64_t v)
+			void RingBuffer<VALUE_TYPE>::Head(int64_t v)
 			{
-				Atomic::Store(mHead, v);
+				mHead.store(v);
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline int64_t RingBuffer<VALUE_TYPE>::Tail() const
+			int64_t RingBuffer<VALUE_TYPE>::Tail() const
 			{
-				return Atomic::Load(mTail);
+				return mTail.load();
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline void RingBuffer<VALUE_TYPE>::Tail(int64_t v)
+			void RingBuffer<VALUE_TYPE>::Tail(int64_t v)
 			{
-				return Atomic::Store(mTail, v);
+				return mTail.store(v);
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline int64_t RingBuffer<VALUE_TYPE>::ThreadHead(int64_t tid) const
-			{
-				CPF_ASSERT(tid < mThreadCount);
-				return Atomic::Load(mpThreadHead[tid].mHead);
-			}
-
-
-			template<typename VALUE_TYPE>
-			inline void RingBuffer<VALUE_TYPE>::ThreadHead(int64_t tid, int64_t v)
+			int64_t RingBuffer<VALUE_TYPE>::ThreadHead(int64_t tid) const
 			{
 				CPF_ASSERT(tid < mThreadCount);
-				Atomic::Store(mpThreadHead[tid].mHead, v);
+				return mpThreadHead[tid].mHead.load();
 			}
 
 
 			template<typename VALUE_TYPE>
-			inline int64_t RingBuffer<VALUE_TYPE>::Fetch(int64_t tid, VALUE_TYPE& outBuffer)
+			void RingBuffer<VALUE_TYPE>::ThreadHead(int64_t tid, int64_t v)
+			{
+				CPF_ASSERT(tid < mThreadCount);
+				mpThreadHead[tid].mHead.store(v);
+			}
+
+
+			template<typename VALUE_TYPE>
+			int64_t RingBuffer<VALUE_TYPE>::Fetch(int64_t tid, VALUE_TYPE& outBuffer)
 			{
 				CPF_ASSERT(tid < mThreadCount);
 				auto tail = Tail();
@@ -195,7 +195,7 @@ namespace CPF
 
 
 			template<typename TYPE>
-			inline void RingBuffer<TYPE>::Consume(int tid, int64_t index)
+			void RingBuffer<TYPE>::Consume(int tid, int64_t index)
 			{
 				CPF_ASSERT(ThreadHead(tid) == index);
 				ThreadHead(tid, index+1);
@@ -209,7 +209,7 @@ namespace CPF
 			* @tparam SIZE		  Maximum number of items stored, minus one for the sentinel.
 			*/
 			template<typename VALUE_TYPE>
-			inline void RingBuffer<VALUE_TYPE>::Minimize()
+			void RingBuffer<VALUE_TYPE>::Minimize()
 			{
 				/*
 				auto head = Head() % SIZE;
@@ -230,17 +230,17 @@ namespace CPF
 			* @return The number of free slots in the ring buffer.
 			*/
 			template<typename VALUE_TYPE>
-			inline size_t RingBuffer<VALUE_TYPE>::Reclaim(int threadCount)
+			size_t RingBuffer<VALUE_TYPE>::Reclaim(int threadCount)
 			{
 				CPF_ASSERT(threadCount > 0);
 				CPF_ASSERT(threadCount <= mThreadCount);
 
 				// We need to look for the minimal head index in all threads.
 				// The minimal location is as far as we can advance the head index.
-				auto head = Atomic::Load(mpThreadHead[0].mHead);
+				auto head = mpThreadHead[0].mHead.load();
 				for (auto i = 1; i < threadCount; ++i)
 				{
-					auto threadIndex = Atomic::Load(mpThreadHead[i].mHead);
+					auto threadIndex = mpThreadHead[i].mHead.load();
 					head = (threadIndex < head) ? threadIndex : head;
 				}
 
@@ -277,7 +277,7 @@ namespace CPF
 			{
 				if (Reserve(threadCount, 1))
 				{
-					mBuffer[(Tail()) & mSizeMask] = CPF::Move(data);
+					mpBuffer[(Tail()) & mSizeMask] = CPF::Move(data);
 					Commit(1);
 					return true;
 				}
@@ -288,7 +288,7 @@ namespace CPF
 			template<typename TYPE>
 			void RingBuffer<TYPE>::Commit(size_t count)
 			{
-				Atomic::Add(mTail, count);
+				mTail.fetch_add(count);
 			}
 		}
 	}

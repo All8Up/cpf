@@ -6,7 +6,7 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Threading/Thread.hpp"
-#include "Atomic/Atomic.hpp"
+#include <atomic>
 
 TEST_F(ConcurrencyTest, All_Opcode)
 {
@@ -31,12 +31,12 @@ TEST_F(ConcurrencyTest, All_Opcode)
 	pScheduler->SetActiveThreads(4);
 	{
 		//////////////////////////////////////////////////////////////////////////
-		int hitCount = 0;
+		std::atomic<int> hitCount = 0;
 		for (int i=0; i<25; ++i)
 		{
 			pWorkBuffer->All( [](const WorkContext*, void* context)
 			{
-				Atomic::Inc(*reinterpret_cast<int*>(context));
+				(*reinterpret_cast<std::atomic<int>*>(context)).fetch_add(1);
 			},
 				&hitCount);
 		}

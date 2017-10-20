@@ -51,7 +51,7 @@ target_compile_definitions (Concurrency
 	PRIVATE
 		CPF_BUILD_CONCURRENCY
 )
-target_link_libraries (Concurrency Configuration Atomic Plugin Threading Logging VTune)
+target_link_libraries (Concurrency Configuration Plugin Threading Logging VTune)
 target_include_directories (Concurrency PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 	$<INSTALL_INTERFACE:Include>
@@ -61,7 +61,7 @@ target_include_directories (Concurrency PUBLIC
 set_property (TARGET Concurrency PROPERTY FOLDER Plugins/Platform)
 
 add_library (i_Concurrency INTERFACE)
-target_link_libraries (i_Concurrency INTERFACE Configuration Atomic Plugin Threading)
+target_link_libraries (i_Concurrency INTERFACE Configuration Plugin Threading)
 target_include_directories (i_Concurrency INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
 	$<INSTALL_INTERFACE:Interface>
@@ -120,7 +120,7 @@ MakeUnitTest (LIBRARY Concurrency GROUP Platform
 		UnitTest/Test_Scheduler_Opcode_SharedAddressRegister.cpp
 		../../../Libraries/Core/Test/UnitTestMain.cpp
 	LINK_LIBRARIES
-		Configuration Atomic Threading VTune s_PluginHost
+		Configuration Threading VTune s_PluginHost
 )
 
 # ###############################################

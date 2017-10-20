@@ -4,7 +4,7 @@
 #include "Concurrency/iScheduler.hpp"
 #include "Concurrency/iWorkBuffer.hpp"
 #include "Threading/Thread.hpp"
-#include "Atomic/Atomic.hpp"
+#include <atomic>
 
 TEST_F(ConcurrencyTest, LastFenced_Opcode)
 {
@@ -27,24 +27,24 @@ TEST_F(ConcurrencyTest, LastFenced_Opcode)
 		EXPECT_TRUE(pScheduler->GetMaxThreads() >= 4);
 		pScheduler->SetActiveThreads(4);
 		{
-			auto hitCount = 0;
+			std::atomic<int> hitCount = 0;
 
 			pWorkBuffer->All([](const WorkContext*, void* context) {
 				// Increment the counter.
-				Atomic::Inc(*reinterpret_cast<int*>(context));
+				(*reinterpret_cast<std::atomic<int>*>(context)).fetch_add(1);
 			},
 			&hitCount);
 
 			pWorkBuffer->LastOneBarrier([](const WorkContext*, void* context) {
 				// All threads should have executed the counter by the time we get here
 				// and none should have gotten to the next instruction.
-				EXPECT_EQ(4, CPF::Atomic::Load(*reinterpret_cast<int*>(context)));
+				EXPECT_EQ(4, (*reinterpret_cast<std::atomic<int>*>(context)).load());
 			},
 			&hitCount);
 
 			pWorkBuffer->All([](const WorkContext*, void* context) {
 				// Increment the counter.
-				Atomic::Inc(*reinterpret_cast<int*>(context));
+				(*reinterpret_cast<std::atomic<int>*>(context)).fetch_add(1);
 			},
 			&hitCount);
 

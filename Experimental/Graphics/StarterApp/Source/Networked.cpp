@@ -39,7 +39,7 @@ namespace
 {
 	const char* kResourcePlugin = "plugins/Resources.cfp";
 	const char* kConcurrencyPlugin = "plugins/Concurrency.cfp";
-	const char* kAdapterSDL2Plugin = "plugins/Adapter_SDL2.cfp";
+	const char* kAdapterSDL2Plugin = "plugins/AdapterSDL2.cfp";
 	const char* kAdapterD3D12Plugin = "plugins/AdapterD3D12.cfp";
 	const char* kMultiCorePlugin = "plugins/MultiCore.cfp";
 	const char* kDebugUIPlugin = "plugins/DebugUI.cfp";
