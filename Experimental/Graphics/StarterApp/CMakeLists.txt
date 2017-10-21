@@ -1,13 +1,11 @@
 file (GLOB_RECURSE DataFiles networked/*)
 
 set (HEADER_FILES
-	Include/Networked.hpp
-	Include/NetworkSystem.hpp
+	Include/StarterApp.hpp
 	Include/RenderSystem.hpp
 )
 set (SOURCE_FILES
-	Source/Networked.cpp
-	Source/NetworkSystem.cpp
+	Source/StarterApp.cpp
 	Source/RenderSystem.cpp
 )
 
@@ -29,32 +27,31 @@ target_link_libraries (StarterApp
 	s_Application
 	i_DebugUI
 	AdapterSDL2
-#	i_Python3
 	asio
 )
 set_property (TARGET StarterApp PROPERTY FOLDER Experimental/Graphics)
 
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_integration/__init__.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_integration/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_integration/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_integration/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_integration/__init__.py COPYONLY)
 
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/result.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/result.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/result.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/result.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/classid.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/classid.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/classid.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/classid.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/interfaceid.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/interfaceid.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/interfaceid.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/interfaceid.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/methods.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/methods.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/methods.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/methods.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_gom/__init__.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_gom/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/result.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_gom/result.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/result.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_gom/result.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/classid.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_gom/classid.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/classid.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_gom/classid.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/interfaceid.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_gom/interfaceid.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/interfaceid.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_gom/interfaceid.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/methods.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_gom/methods.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/methods.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_gom/methods.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_gom/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_gom/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_gom/__init__.py COPYONLY)
 
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_plugin/__init__.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_plugin/__init__.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Debug/resources/networked/test_plugin/registry.py COPYONLY)
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/networked/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Release/resources/networked/test_plugin/registry.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_plugin/__init__.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_plugin/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_plugin/__init__.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_plugin/__init__.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Debug/resources/starterapp/test_plugin/registry.py COPYONLY)
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/starterapp/test_plugin/registry.py ${CMAKE_BINARY_DIR}/Release/resources/starterapp/test_plugin/registry.py COPYONLY)
 
 foreach (file ${DataFiles})
-	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR}/networked ${file})
+	file (RELATIVE_PATH relative ${CMAKE_CURRENT_SOURCE_DIR}/starterapp ${file})
 	set (groupName "Data/${relative}")
 	get_filename_component (group ${groupName} DIRECTORY)
 	string (REPLACE "/" "\\\\" group ${group})

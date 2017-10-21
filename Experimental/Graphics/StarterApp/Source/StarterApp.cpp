@@ -1,9 +1,8 @@
-#include "Networked.hpp"
+#include "StarterApp.hpp"
 #include "CPF/Logging.hpp"
 #include "MultiCore.hpp"
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iExecutionPlan.hpp"
-#include "NetworkSystem.hpp"
 #include "RenderSystem.hpp"
 #include "Resources/iConfiguration.hpp"
 #include "Concurrency/iFence.hpp"
@@ -23,16 +22,16 @@ using namespace Threading;
 using namespace MultiCore;
 
 //////////////////////////////////////////////////////////////////////////
-Networked::Networked()
+StarterApp::StarterApp()
 	: mpRegistry(nullptr)
 	, mpWindowedApplication(nullptr)
 {
-	CPF_INIT_LOG(Networked);
+	CPF_INIT_LOG(StarterApp);
 }
 
-Networked::~Networked()
+StarterApp::~StarterApp()
 {
-	CPF_DROP_LOG(Networked);
+	CPF_DROP_LOG(StarterApp);
 }
 
 namespace
@@ -52,7 +51,7 @@ struct iTestRust : GOM::iUnknown
 	virtual uint32_t CPF_STDCALL Test(uint32_t value) = 0;
 };
 
-GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
+GOM::Result CPF_STDCALL StarterApp::Initialize(Plugin::iRegistry* registry, GOM::ClassID* appCid)
 {
 	mpRegistry = registry;
 	*appCid = SDL2::kWindowedApplicationCID;
@@ -96,7 +95,7 @@ GOM::Result CPF_STDCALL Networked::Initialize(Plugin::iRegistry* registry, GOM::
 	return GOM::kOK;
 }
 
-void CPF_STDCALL Networked::Shutdown()
+void CPF_STDCALL StarterApp::Shutdown()
 {
 	// TODO: Need a solution to allow these pointers to be scoped such that
 	// they don't end up dangling when the plugins are unloaded.
@@ -105,7 +104,6 @@ void CPF_STDCALL Networked::Shutdown()
 	mpPython3.Adopt(nullptr);
 	*/
 	mpRenderSystem.Adopt(nullptr);
-	mpNetworkSystem.Adopt(nullptr);
 	mpTimer.Adopt(nullptr);
 	mpPipeline.Adopt(nullptr);
 	mpLocator.Adopt(nullptr);
@@ -125,7 +123,7 @@ void CPF_STDCALL Networked::Shutdown()
 	IOInitializer::Remove();
 }
 
-GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
+GOM::Result CPF_STDCALL StarterApp::Main(iApplication* application)
 {
 	application->QueryInterface(iWindowedApplication::kIID.GetID(), reinterpret_cast<void**>(&mpWindowedApplication));
 
@@ -169,16 +167,16 @@ GOM::Result CPF_STDCALL Networked::Main(iApplication* application)
 	return GOM::kOK;
 }
 
-void Networked::_ConfigureDebugUI()
+void StarterApp::_ConfigureDebugUI()
 {
 	Graphics::iDebugUI* debugUI = mpRenderSystem->GetDebugUI();
-	debugUI->Add(&Networked::_PerformanceUI, this);
+	debugUI->Add(&StarterApp::_PerformanceUI, this);
 	mLastTime = Time::Now();
 }
 
-void Networked::_PerformanceUI(Graphics::iDebugUI* ui, void* context)
+void StarterApp::_PerformanceUI(Graphics::iDebugUI* ui, void* context)
 {
-	Networked& self = *reinterpret_cast<Networked*>(context);
+	StarterApp& self = *reinterpret_cast<StarterApp*>(context);
 
 	//////////////////////////////////////////////////////////////////////////
 	ui->Begin("Performance");
@@ -198,7 +196,7 @@ void Networked::_PerformanceUI(Graphics::iDebugUI* ui, void* context)
 	ui->End();
 }
 
-bool Networked::_CreateWindow()
+bool StarterApp::_CreateWindow()
 {
 	// Create the main window.
 	Math::Vector2i mWindowSize(400, 400);
@@ -214,41 +212,39 @@ bool Networked::_CreateWindow()
 	if (mpWindow)
 	{
 		// Bind the window events.
-		mpWindow->GetEmitter()->On<iWindow::OnResize>(Bind(&Networked::_Resize, this, Placeholders::_1, Placeholders::_2));
+		mpWindow->GetEmitter()->On<iWindow::OnResize>(Bind(&StarterApp::_Resize, this, Placeholders::_1, Placeholders::_2));
 		return true;
 	}
 	return false;
 }
 
-bool Networked::_Install()
+bool StarterApp::_Install()
 {
 	return (
-		GOM::Succeeded(NetworkSystem::Install(GetRegistry())) &&
 		GOM::Succeeded(RenderSystem::Install(GetRegistry()))
 		);
 }
 
-bool Networked::_Remove()
+bool StarterApp::_Remove()
 {
 	return (
-		GOM::Succeeded(RenderSystem::Remove(GetRegistry())) &&
-		GOM::Succeeded(NetworkSystem::Remove(GetRegistry()))
+		GOM::Succeeded(RenderSystem::Remove(GetRegistry()))
 		);
 }
 
-bool Networked::_InitializeResources()
+bool StarterApp::_InitializeResources()
 {
 //	Resources::Configuration config;
-//	config.Parse("./networked/resource_config.json");
+//	config.Parse("./starterapp/resource_config.json");
 	Resources::iConfiguration* pConfig = nullptr;
 	GetRegistry()->Create(nullptr, Resources::kConfigurationCID.GetID(), Resources::iConfiguration::kIID.GetID(), reinterpret_cast<void**>(&pConfig));
 	pConfig->Initialize(GetRegistry(), "./Experimental/resource_config.json");
 	mpLocator.Adopt(pConfig->GetLocator());
-//	mpLocator.Adopt(Resources::Configuration(GetRegistry(), "./networked/resource_config.json").GetLocator());
+//	mpLocator.Adopt(Resources::Configuration(GetRegistry(), "./starterapp/resource_config.json").GetLocator());
 	return bool(mpLocator);
 }
 
-bool Networked::_ShutdownResources()
+bool StarterApp::_ShutdownResources()
 {
 	if (mpLocator)
 	{
@@ -258,7 +254,7 @@ bool Networked::_ShutdownResources()
 	return false;
 }
 
-bool Networked::_InitializeMultiCore()
+bool StarterApp::_InitializeMultiCore()
 {
 	GetRegistry()->Create(nullptr, kThreadPoolCID.GetID(), iThreadPool::kIID.GetID(), mpThreadPool.AsVoidPP());
 	if (GOM::Succeeded(mpScheduler->Initialize(Thread::GetHardwareThreadCount(), nullptr, nullptr, nullptr)) &&
@@ -272,24 +268,20 @@ bool Networked::_InitializeMultiCore()
 	return false;
 }
 
-bool Networked::_ShutdownMultiCore()
+bool StarterApp::_ShutdownMultiCore()
 {
 	mpThreadPool->Shutdown();
 	mpScheduler->Shutdown();
 	return true;
 }
 
-bool Networked::_InitializePipeline()
+bool StarterApp::_InitializePipeline()
 {
 	if (GOM::Succeeded(GetRegistry()->Create(nullptr, MultiCore::kExecutionPlanCID.GetID(), MultiCore::iExecutionPlan::kIID.GetID(), mpPipeline.AsVoidPP())))
 	{
 		GetRegistry()->Create(nullptr, MultiCore::kTimerCID.GetID(), MultiCore::iTimer::kIID.GetID(), mpTimer.AsVoidPP());
 		mpTimer->Initialize(GetRegistry(), "Game Time", nullptr);
 		mpPipeline->Install(mpTimer);
-
-		GetRegistry()->Create(nullptr, kNetworkSystemCID.GetID(), NetworkSystem::kIID.GetID(), mpNetworkSystem.AsVoidPP());
-		mpNetworkSystem->Initialize(GetRegistry(), "Networking", nullptr);
-		mpPipeline->Install(mpNetworkSystem);
 
 		//////////////////////////////////////////////////////////////////////////
 		// Find graphics driver implementations.
@@ -314,7 +306,6 @@ bool Networked::_InitializePipeline()
 		{
 			return (
 				mpTimer &&
-				mpNetworkSystem &&
 				mpRenderSystem
 				);
 		}
@@ -322,19 +313,18 @@ bool Networked::_InitializePipeline()
 	return false;
 }
 
-GOM::Result Networked::_ConfigurePipeline()
+GOM::Result StarterApp::_ConfigurePipeline()
 {
 	if (mpPipeline)
 		return mpPipeline->Configure(GetRegistry());
 	return GOM::kInvalid;
 }
 
-bool Networked::_ShutdownPipeline()
+bool StarterApp::_ShutdownPipeline()
 {
 	if (mpPipeline)
 	{
 		mpRenderSystem->Shutdown();
-		mpNetworkSystem.Adopt(nullptr);
 		mpRenderSystem.Adopt(nullptr);
 		mpPipeline.Adopt(nullptr);
 		return true;
@@ -342,11 +332,11 @@ bool Networked::_ShutdownPipeline()
 	return false;
 }
 
-void Networked::_Resize(int32_t width, int32_t height)
+void StarterApp::_Resize(int32_t width, int32_t height)
 {
 	mpRenderSystem->Resize(width, height);
 }
 
 
 //////////////////////////////////////////////////////////////////////////
-CPF_CREATE_APPMAIN(CPF::Networked);
+CPF_CREATE_APPMAIN(CPF::StarterApp);

@@ -4,7 +4,6 @@
 #include "Application/iWindowedApplication.hpp"
 #include "MultiCore/iExecutionPlan.hpp"
 #include "RenderSystem.hpp"
-#include "NetworkSystem.hpp"
 #include "Concurrency/iThreadPool.hpp"
 #include "Concurrency/iLoadBalancer.hpp"
 #include "MultiCore/System/iTimer.hpp"
@@ -13,11 +12,11 @@
 
 namespace CPF
 {
-	class Networked : public tRefCounted<iApplicationMain>
+	class StarterApp : public tRefCounted<iApplicationMain>
 	{
 	public:
-		Networked();
-		~Networked() override;
+		StarterApp();
+		~StarterApp() override;
 
 		GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override { return GOM::kNotImplemented; }
 
@@ -54,7 +53,6 @@ namespace CPF
 
 		IntrusivePtr<MultiCore::iExecutionPlan> mpPipeline;
 		IntrusivePtr<MultiCore::iTimer> mpTimer;
-		IntrusivePtr<NetworkSystem> mpNetworkSystem;
 		IntrusivePtr<RenderSystem> mpRenderSystem;
 
 //		IntrusivePtr<Tools::iPython3> mpPython3;
