@@ -9,12 +9,11 @@ namespace ComTest
 			AddWrapper(new iClassInstanceWrapper(this));
 		}
 
-		public uint CreateInstance(IntPtr self, IntPtr registry, iUnknown outer, out IntPtr outInstance)
+		public uint CreateInstance(IntPtr self, IntPtr registry, IUnknown outer, out IntPtr outInstance)
 		{
 			var testPlugin = new TestPlugin(outer);
 
-			outInstance = Plugin.CustomMarshal(testPlugin);
-			ReferenceStorage.Add(outInstance);
+			outInstance = testPlugin.QueryInterface<iTestPluginWrapper>();
 
 			return 0x7b48e63f;
 		}

@@ -96,6 +96,9 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->Indent();
 	mpWriter->Output("%spub base: gom::iUnknownVTable", mpWriter->GetIndentString().c_str());*/
 
+	mpWriter->OutputLine("using System;");
+	mpWriter->OutputLine("using System.Runtime.InteropServices;");
+
 	//////////////////////////// VTABLE ////////////////////////////
 	mpWriter->LineFeed();
 	mpWriter->OutputLine("[StructLayout(LayoutKind.Sequential)]");
@@ -176,7 +179,7 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 
 	mpWriter->OutputLine("public IntPtr NativePointer => unmanagedInstance;");
-	mpWriter->OutputLine("public UInt64 CID => 0x%X;",  CPF::Hash::ComputeCrc64(decl.mName.c_str(), decl.mName.length(), uint64_t(-1)));
+	mpWriter->OutputLine("public UInt64 CID => 0x%" PRIX64 ";",  CPF::Hash::ComputeCrc64(decl.mName.c_str(), decl.mName.length(), uint64_t(-1)));
 	mpWriter->LineFeed(eInterfaces, CodeWriter::kNoSection, CodeWriter::kAnySection);
 
 	// C++ -> C# constructor
@@ -206,6 +209,12 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	{
 		mpWriter->OutputLine("vTable.%s = inst.%s;", func.mName.c_str(), func.mName.c_str());
 	}
+
+	mpWriter->LineFeed();
+	mpWriter->OutputLine("genericObject.VTablePtr = Marshal.AllocHGlobal(Marshal.SizeOf(vTable));");
+	mpWriter->OutputLine("unmanagedInstance = Marshal.AllocHGlobal(Marshal.SizeOf(genericObject));");
+
+	mpWriter->LineFeed();
 
 	mpWriter->OutputLine("Marshal.StructureToPtr(vTable, genericObject.VTablePtr, false);");
 	mpWriter->OutputLine("Marshal.StructureToPtr(genericObject, unmanagedInstance, false);");

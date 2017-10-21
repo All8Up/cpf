@@ -7,7 +7,7 @@ namespace ComTest
 	public class iClassInstanceVTable : iUnknownVTable
 	{
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		public delegate UInt32 CreateInstanceFunc(IntPtr self, IntPtr registry, iUnknown outer, out IntPtr outInstance);
+		public delegate UInt32 CreateInstanceFunc(IntPtr self, IntPtr registry, IUnknown outer, out IntPtr outInstance);
 
 		[MarshalAs(UnmanagedType.FunctionPtr)]
 		public CreateInstanceFunc CreateInstance;
@@ -15,7 +15,7 @@ namespace ComTest
 	}
 	public interface iClassInstance
 	{
-		uint CreateInstance(IntPtr self, IntPtr registry, iUnknown outer, out IntPtr outInstance);
+		uint CreateInstance(IntPtr self, IntPtr registry, IUnknown outer, out IntPtr outInstance);
 	}
 	public class iClassInstanceWrapper :  IWrapper
 	{
@@ -51,7 +51,7 @@ namespace ComTest
 			Marshal.StructureToPtr(genericObject, unmanagedInstance, false);
 		}
 
-		public UInt32 CreateInstance(IntPtr registry, iUnknown outer, out IntPtr outInstance)
+		public UInt32 CreateInstance(IntPtr registry, IUnknown outer, out IntPtr outInstance)
 		{
 			return vTable.CreateInstance(unmanagedInstance, registry, outer, out outInstance);
 		}

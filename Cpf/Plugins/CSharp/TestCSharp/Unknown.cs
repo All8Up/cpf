@@ -45,19 +45,21 @@ namespace ComTest
 			if(id == 123456789)
 			{
 				Marshal.WriteIntPtr(outInterface, wrappers.First().Value.NativePointer);
-				return 1;
+				AddRef(self);
+				return 0x7b48e63f;
 			}
 			
 			if(wrappers.TryGetValue(id, out var wrapper))
 			{
 				Marshal.WriteIntPtr(outInterface, wrapper.NativePointer);
-				return 1;
+				AddRef(self);
+				return 0x7b48e63f;
 			}
 			
 			return 0;
 		}
 
-		public IntPtr QueryInterface<T>()
+		public IntPtr QueryInterface<T>() where T : IWrapper
 		{
 			return wrappersByType[typeof(T)].NativePointer;
 		}
