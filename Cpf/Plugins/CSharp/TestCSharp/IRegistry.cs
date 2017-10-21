@@ -43,7 +43,7 @@ namespace ComTest
 		public ExistsFunc Exists;
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		public delegate UInt32 CreateFunc(IntPtr self, iUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface);
+		public delegate UInt32 CreateFunc(IntPtr self, IUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface);
 
 		[MarshalAs(UnmanagedType.FunctionPtr)]
 		public CreateFunc Create;
@@ -67,7 +67,7 @@ namespace ComTest
 		public GetClassesFunc GetClasses;
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		public delegate UInt32 InstanceInstallFunc(IntPtr self, UInt64 id, iUnknown instance);
+		public delegate UInt32 InstanceInstallFunc(IntPtr self, UInt64 id, IUnknown instance);
 
 		[MarshalAs(UnmanagedType.FunctionPtr)]
 		public InstanceInstallFunc InstanceInstall;
@@ -79,7 +79,7 @@ namespace ComTest
 		public InstanceRemoveFunc InstanceRemove;
 
 		[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-		public delegate UInt32 GetInstanceFunc(IntPtr self, UInt64 id, iUnknown outIface);
+		public delegate UInt32 GetInstanceFunc(IntPtr self, UInt64 id, IUnknown outIface);
 
 		[MarshalAs(UnmanagedType.FunctionPtr)]
 		public GetInstanceFunc GetInstance;
@@ -93,13 +93,13 @@ namespace ComTest
 		UInt32 Remove(IntPtr self, UInt64 cid);
 		UInt32 GetClassInstance(IntPtr self, UInt64 cid, iClassInstance clsInst);
 		UInt32 Exists(IntPtr self, UInt64 cid);
-		UInt32 Create(IntPtr self, iUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface);
+		UInt32 Create(IntPtr self, IUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface);
 		UInt32 ClassInstall(IntPtr self, Int32 count, IID_CID pairs);
 		UInt32 ClassRemove(IntPtr self, Int32 count, IID_CID pairs);
 		UInt32 GetClasses(IntPtr self, UInt64 id, ref Int32 count, ref UInt64 cid);
-		UInt32 InstanceInstall(IntPtr self, UInt64 id, iUnknown instance);
+		UInt32 InstanceInstall(IntPtr self, UInt64 id, IUnknown instance);
 		UInt32 InstanceRemove(IntPtr self, UInt64 id);
-		UInt32 GetInstance(IntPtr self, UInt64 id, iUnknown outIface);
+		UInt32 GetInstance(IntPtr self, UInt64 id, IUnknown outIface);
 	}
 	public class iRegistryWrapper
 	{
@@ -168,7 +168,7 @@ namespace ComTest
 			return vTable.Exists(unmanagedInstance, cid);
 		}
 
-		public UInt32 Create(iUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface)
+		public UInt32 Create(IUnknown outer, UInt64 cid, UInt64 iid, IntPtr outIface)
 		{
 			return vTable.Create(unmanagedInstance, outer, cid, iid, outIface);
 		}
@@ -188,7 +188,7 @@ namespace ComTest
 			return vTable.GetClasses(unmanagedInstance, id, ref count, ref cid);
 		}
 
-		public UInt32 InstanceInstall(UInt64 id, iUnknown instance)
+		public UInt32 InstanceInstall(UInt64 id, IUnknown instance)
 		{
 			return vTable.InstanceInstall(unmanagedInstance, id, instance);
 		}
@@ -198,7 +198,7 @@ namespace ComTest
 			return vTable.InstanceRemove(unmanagedInstance, id);
 		}
 
-		public UInt32 GetInstance(UInt64 id, iUnknown outIface)
+		public UInt32 GetInstance(UInt64 id, IUnknown outIface)
 		{
 			return vTable.GetInstance(unmanagedInstance, id, outIface);
 		}
