@@ -77,7 +77,8 @@ interface_block         : LBRACE interface_item* RBRACE;
 // Statements allowed at interface scope.
 interface_item          : function_decl
                         | const_def
-                        | enum_def;
+                        | enum_def
+                        | event_decl;
 
 // Function declarations.
 function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN Const? SEMICOLON;
