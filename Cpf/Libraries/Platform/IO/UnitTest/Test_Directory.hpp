@@ -85,7 +85,7 @@ TEST(IO, Directory_File_Iterator)
 	}))
 	{
 		std::cout << "..: " << entry.mName << " " <<
-				  (entry.mAttributes & Directory::eFile ? "<file>" : "<other>") <<
+				  (IsSet(entry.mAttributes, Attributes::eFile) ? "<file>" : "<other>") <<
 				  std::endl;
 	}
 }

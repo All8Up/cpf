@@ -16,24 +16,6 @@ namespace CPF
 		using StreamPtr = IntrusivePtr<Stream>;
 
 
-		/** @brief Stream access enumeration. */
-		enum class StreamAccess : int64_t
-		{
-			eRead,
-			eWrite,
-			eBoth
-		};
-
-
-		/** @brief Relative origin enumeration */
-		enum class StreamOrigin : int64_t
-		{
-			eBegin,
-			eEnd,
-			eCurrent
-		};
-
-
 		/** @brief Base class for streams. */
 		class Stream : public iRefCounted
 		{

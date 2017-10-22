@@ -93,11 +93,11 @@ struct Directory::Entries::OsIterator
 		DirEntry result;
 
 		result.mName = mFindData.cFileName;
-		result.mAttributes = 0;
+		result.mAttributes = Attributes::eNone;
 		if (mFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			result.mAttributes |= eDirectory;
+			result.mAttributes |= Attributes::eDirectory;
 		else
-			result.mAttributes |= eFile;
+			result.mAttributes |= Attributes::eFile;
 
 		return result;
 	}
@@ -164,7 +164,7 @@ Directory::DirEntry Directory::Entries::Iterator::operator *() const
 		return mpIterator->ToEntry();
 
 	DirEntry result;
-	result.mAttributes = 0;
+	result.mAttributes = Attributes::eNone;
 	return result;
 }
 
@@ -193,23 +193,27 @@ Directory::Entries::Iterator Directory::Entries::end()
 
 //////////////////////////////////////////////////////////////////////////
 Directory::Files::Files(const String& path)
-	: Entries(path, [](const DirEntry& entry) { return (entry.mAttributes&eFile) != 0; })
+	: Entries(path, [](const DirEntry& entry) { return IsSet(entry.mAttributes, Attributes::eFile); })
 {}
 
 
 Directory::Files::Files(const String& path, Predicate&& pred)
 	: Entries(path, [=](const DirEntry& entry)
 	{
-		if (entry.mAttributes&eFile) { return pred(entry); } return false;
+		if (IsSet(entry.mAttributes, Attributes::eFile))
+		{
+			return pred(entry);
+		}
+		return false;
 	})
 {
 }
 
 //////////////////////////////////////////////////////////////////////////
 Directory::Directories::Directories(const String& path)
-	: Entries(path, [](const DirEntry& entry) {return (entry.mAttributes&eDirectory) != 0; })
+	: Entries(path, [](const DirEntry& entry) {return IsSet(entry.mAttributes, Attributes::eDirectory); })
 {}
 
 Directory::Directories::Directories(const String& path, Predicate&& pred)
-	: Entries(path, [=](const DirEntry& entry) {if (entry.mAttributes&eDirectory) { return pred(entry); } return false; })
+	: Entries(path, [=](const DirEntry& entry) {if (IsSet(entry.mAttributes, Attributes::eDirectory)) { return pred(entry); } return false; })
 {}

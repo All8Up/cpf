@@ -1,0 +1,9 @@
+import Configuration;
+module CPF::IO;
+
+enum StreamAccess : s32
+{
+	eRead,
+	eWrite,
+	eBoth
+}

@@ -41,7 +41,7 @@ CPF_EXPORT_IO bool Directory::Delete(const String& dir, bool recursive)
 	else
 	{
 		String current = dir;
-		for (const auto& it : Directory::Directories(dir))
+		for (const auto& it : Directories(dir))
 		{
 			// Ignore the links . and ..
 			if (it.mName == "." || it.mName == "..")
@@ -53,9 +53,9 @@ CPF_EXPORT_IO bool Directory::Delete(const String& dir, bool recursive)
 		}
 
 		// Now delete the contents which are not directories.
-		for (const auto& it : Directory::Entries(dir))
+		for (const auto& it : Entries(dir))
 		{
-			if (it.mAttributes&eFile)
+			if (IsSet(it.mAttributes, Attributes::eFile))
 			{
 				if (!File::Delete(Path::ToOS(Path::Combine(current, it.mName))))
 					return false;

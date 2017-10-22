@@ -1,4 +1,16 @@
 # ###############################################
+set (IDL_FLAGS
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Attributes.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamAccess.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamOrigin.idl
+)
+CPF_GEN_GOM(CPP_IO_FLAGS cpp
+	hpp
+	${CPF_GENERATED}/CPP/IO
+	${IDL_FLAGS}
+)
+
+# ###############################################
 set( INCLUDE_FILES
 	Include/IO/IO.hpp
 	Include/IO/File.hpp
@@ -32,55 +44,32 @@ set( SOURCE_FILES
 add_library( s_IO STATIC
 	${INCLUDE_FILES}
 	${SOURCE_FILES}
+	${IDL_FLAGS}
+	${CPP_IO_FLAGS}
 )
 target_compile_definitions( s_IO
 	PUBLIC CPF_STATIC_IO
 	PRIVATE CPF_BUILD_IO
 )
-#[[
-add_library( IO SHARED
-	${INCLUDE_FILES}
-	${SOURCE_FILES}
-)
-target_compile_definitions( IO
-	PRIVATE CPF_BUILD_IO
-)
-#]]
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
-#target_link_libraries( IO Configuration Collections RefCount)
 target_link_libraries (s_IO Configuration Std s_Collections RefCount)
 
-#[[
-target_include_directories( IO
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<INSTALL_INTERFACE:Include>
-)
-#]]
 target_include_directories( s_IO
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>
+		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
 
 set_property( TARGET s_IO PROPERTY FOLDER Libraries/Static/Platform )
-#set_property( TARGET IO PROPERTY FOLDER Libraries/Shared/Platform )
 
 install( DIRECTORY Include/IO
 	DESTINATION Include/IO
 	PATTERN *
 )
 
-#[[
-install( TARGETS IO
-	EXPORT IOConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
-#]]
 install( TARGETS s_IO
 	EXPORT IOConfig
 	CONFIGURATIONS Debug Release

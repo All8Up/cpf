@@ -30,4 +30,6 @@ inline constexpr type operator & (type lhs, type rhs) { return type(((CPF::Sized
 inline type& operator &= (type& lhs, type rhs) { lhs = (lhs & rhs); return lhs; } \
 inline constexpr type operator ~ (type lhs) { return type(~(CPF::SizedUInt<type>::Type)lhs); } \
 inline constexpr type operator ^ (type lhs, type rhs) { return type(((CPF::SizedUInt<type>::Type)lhs) ^ ((CPF::SizedUInt<type>::Type)rhs)); } \
-inline type& operator ^= (type& lhs, type rhs) { lhs = (lhs ^ rhs); return lhs; }
+inline type& operator ^= (type& lhs, type rhs) { lhs = (lhs ^ rhs); return lhs; } \
+inline bool IsSet(const type& lhs, const type& rhs) { return (lhs & rhs) != type(0); } \
+inline bool IsClear(const type& lhs, const type& rhs) { return (lhs & rhs) == type(0); }

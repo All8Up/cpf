@@ -53,21 +53,12 @@ namespace CPF
 		};
 
 
-		/** @brief File attributes. */
-		namespace Attributes
-		{
-			enum
-			{
-				eFile = 1 << 0,
-				eDirectory = 1 << 1,
-				eHidden = 1 << 2,
-				eReadOnly = 1 << 3
-			};
-		}
-
-
 		//////////////////////////////////////////////////////////////////////////
-		enum class StreamAccess : int64_t;
-		enum class StreamOrigin : int64_t;
+		enum class StreamAccess : int32_t;
+		enum class StreamOrigin : int32_t;
 	}
 }
+
+#include "IO/Attributes.hpp"
+#include "IO/StreamAccess.hpp"
+#include "IO/StreamOrigin.hpp"

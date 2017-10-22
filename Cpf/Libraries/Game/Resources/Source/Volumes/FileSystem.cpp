@@ -98,7 +98,7 @@ bool FileSystem::Mount(const char* const mp)
 				return true;
 			}))
 			{
-				if (entry.mAttributes & Directory::Attributes::eDirectory)
+				if (IsSet(entry.mAttributes, Attributes::eDirectory))
 				{
 					dirs.push_back(entry.mName);
 				}

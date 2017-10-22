@@ -1,0 +1,12 @@
+import EnumFlagType;
+module CPF::IO;
+
+flags Attributes : s32
+{
+	eNone = 0,
+	eFile = 1 << 0,
+	eDirectory = 1 << 1,
+	eHidden = 1 << 2,
+	eReadOnly = 1 << 3,
+	eSymLink = 1 << 4
+}

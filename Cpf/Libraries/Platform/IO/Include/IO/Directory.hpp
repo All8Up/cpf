@@ -24,16 +24,10 @@ namespace CPF
 			CPF_EXPORT_IO bool Delete(const String& dir, bool recursive = false);
 
 			//
-			enum Attributes : uint32_t
-			{
-				eFile = 1 << 0,
-				eDirectory = 1 << 1,
-				eSymlink = 1 << 2
-			};
 			struct DirEntry
 			{
 				String mName;
-				uint32_t mAttributes;
+				Attributes mAttributes;
 			};
 
 			/** @brief Iterates all entries found within a given directory.. */

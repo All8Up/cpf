@@ -1,0 +1,9 @@
+import Configuration;
+module CPF::IO;
+
+enum StreamOrigin : s32
+{
+	eBegin,
+	eEnd,
+	eCurrent
+};
