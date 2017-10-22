@@ -10,6 +10,7 @@ global_statement        : import_stmt
                         | struct_stmt
                         | union_stmt
                         | interface_stmt
+                        | event_decl
                         | const_def
                         | enum_def
                         | flags_fwd
@@ -88,6 +89,9 @@ function_param          : param_dir_qualifier? type_decl IDENT;
 param_dir_qualifier     : LBRACKET IN RBRACKET
                         | LBRACKET OUT RBRACKET
                         | LBRACKET IN COMMA OUT RBRACKET;
+
+// Event declarations.
+event_decl              : EVENT IDENT EQUALS any_type LPAREN function_param_list RPAREN SEMICOLON;
 
 // Constant definitions.
 const_def               : const_integral_def
@@ -174,7 +178,8 @@ pointer_decl             : Const? STAR;
 any_type                : integral_type
                         | float_type
                         | utility_type
-                        | qualified_ident;
+                        | qualified_ident
+                        | template_type;
 
 utility_type            : Void
                         | RESULT;
@@ -186,3 +191,8 @@ integral_type           : U8 | S8
                         ;
 
 float_type              : F32 | F64;
+
+template_type           : qualified_ident LT template_params GT;
+template_params         : template_params COMMA template_params
+                        | template_param;
+template_param          : any_type;

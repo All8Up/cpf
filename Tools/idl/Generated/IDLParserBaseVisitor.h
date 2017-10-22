@@ -135,6 +135,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitConst_def(IDLParser::Const_defContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -292,6 +296,18 @@ public:
   }
 
   virtual antlrcpp::Any visitFloat_type(IDLParser::Float_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitTemplate_type(IDLParser::Template_typeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitTemplate_params(IDLParser::Template_paramsContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitTemplate_param(IDLParser::Template_paramContext *ctx) override {
     return visitChildren(ctx);
   }
 

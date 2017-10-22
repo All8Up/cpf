@@ -79,6 +79,8 @@ public:
 
     virtual antlrcpp::Any visitParam_dir_qualifier(IDLParser::Param_dir_qualifierContext *context) = 0;
 
+    virtual antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *context) = 0;
+
     virtual antlrcpp::Any visitConst_def(IDLParser::Const_defContext *context) = 0;
 
     virtual antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *context) = 0;
@@ -158,6 +160,12 @@ public:
     virtual antlrcpp::Any visitIntegral_type(IDLParser::Integral_typeContext *context) = 0;
 
     virtual antlrcpp::Any visitFloat_type(IDLParser::Float_typeContext *context) = 0;
+
+    virtual antlrcpp::Any visitTemplate_type(IDLParser::Template_typeContext *context) = 0;
+
+    virtual antlrcpp::Any visitTemplate_params(IDLParser::Template_paramsContext *context) = 0;
+
+    virtual antlrcpp::Any visitTemplate_param(IDLParser::Template_paramContext *context) = 0;
 
 
 };
