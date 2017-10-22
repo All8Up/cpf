@@ -1,4 +1,12 @@
 # ###############################################
+set (IDL_INTERFACES
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFileSystem.idl
+)
+CPF_GEN_GOM(CPP_IO_INTERFACES cpp
+	hpp
+	${CPF_GENERATED}/CPP/IO
+	${IDL_INTERFACES}
+)
 set (IDL_FLAGS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Attributes.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamAccess.idl
@@ -46,6 +54,8 @@ add_library( s_IO STATIC
 	${SOURCE_FILES}
 	${IDL_FLAGS}
 	${CPP_IO_FLAGS}
+	${IDL_INTERFACES}
+	${CPP_IO_INTERFACES}
 )
 target_compile_definitions( s_IO
 	PUBLIC CPF_STATIC_IO
@@ -53,10 +63,12 @@ target_compile_definitions( s_IO
 )
 source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
+source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
+source_group (IDL\\Flags FILES ${IDL_FLAGS})
 
-target_link_libraries (s_IO Configuration Std s_Collections RefCount)
+target_link_libraries (s_IO Configuration Std s_Collections RefCount GOM)
 
-target_include_directories( s_IO
+target_include_directories (s_IO
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<INSTALL_INTERFACE:Include>

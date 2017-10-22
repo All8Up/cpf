@@ -20,7 +20,6 @@ namespace
 		bool CanSeek() override;
 		bool CanRead() override;
 		bool CanWrite() override;
-		bool CanTimeout() override;
 
 		//
 		void Close(Error* error = nullptr) override;
@@ -81,11 +80,6 @@ namespace
 	bool RawFileStream::CanWrite()
 	{
 		return true;
-	}
-
-	bool RawFileStream::CanTimeout()
-	{
-		return false;
 	}
 
 	void RawFileStream::Close(Error* error)

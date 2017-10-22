@@ -102,7 +102,7 @@ void CppGenerator::OnImportStmt(const String& name)
 void CppGenerator::OnImportFromStmt(const String& item, const SymbolPath& from)
 {
 	mpWriter->LineFeed(eImports, eImports | eHeader, CodeWriter::kAnySection);
-	auto path = CPF::IO::Path::Combine(from.ToString("/"), item+".hpp");
+	auto path = CPF::IO::Path::Combine(from.ToString("/"), item + ".hpp");
 	mpWriter->OutputLine("#include \"%s\"", path.c_str());
 }
 
@@ -163,8 +163,6 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			mpWriter->Output(") = 0;");
 	}
 
-	if (!decl.mFunctions.empty())
-		mpWriter->LineFeed(CodeWriter::kNoSection, CodeWriter::kNoSection);
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
 }

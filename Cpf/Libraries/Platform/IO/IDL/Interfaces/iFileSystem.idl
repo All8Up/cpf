@@ -1,0 +1,32 @@
+import iUnknown from GOM;
+import StreamAccess from IO;
+module CPF::IO;
+
+interface iStream : GOM::iUnknown
+{
+	StreamAccess GetAccess();
+	bool CanSeek();
+	bool CanRead();
+	bool CanWrite();
+
+	event OnComplete = void ();
+
+	result Close(OnComplete* cb);
+	result Flush(OnComplete* cb);
+}
+
+interface iFile : GOM::iUnknown
+{
+	result Exists(const char* name);
+	result Delete(const char* name);
+	result Create(const char* name, StreamAccess access, iStream** stream);
+}
+
+interface iFileSystem : GOM::iUnknown
+{
+
+}
+
+interface iStream : GOM::iUnknown
+{
+}

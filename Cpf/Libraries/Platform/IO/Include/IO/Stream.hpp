@@ -29,7 +29,6 @@ namespace CPF
 			virtual bool CanSeek() = 0;
 			virtual bool CanRead() = 0;
 			virtual bool CanWrite() = 0;
-			virtual bool CanTimeout() = 0;
 
 			//
 			virtual void Close(Error* error = nullptr) = 0;
