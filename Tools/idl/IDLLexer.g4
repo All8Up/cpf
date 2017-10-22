@@ -16,6 +16,7 @@ IMPORT                      : 'import';
 STRUCT                      : 'struct';
 DEFAULT                     : 'default';
 UNION                       : 'union';
+EVENT                       : 'event';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';
 FLAGS                       : 'flags';
