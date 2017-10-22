@@ -589,9 +589,9 @@ public:
     antlr4::tree::TerminalNode *EQUALS();
     Any_typeContext *any_type();
     antlr4::tree::TerminalNode *LPAREN();
-    Function_param_listContext *function_param_list();
     antlr4::tree::TerminalNode *RPAREN();
     antlr4::tree::TerminalNode *SEMICOLON();
+    Function_param_listContext *function_param_list();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    

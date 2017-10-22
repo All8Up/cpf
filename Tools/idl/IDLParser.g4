@@ -92,7 +92,7 @@ param_dir_qualifier     : LBRACKET IN RBRACKET
                         | LBRACKET IN COMMA OUT RBRACKET;
 
 // Event declarations.
-event_decl              : EVENT IDENT EQUALS any_type LPAREN function_param_list RPAREN SEMICOLON;
+event_decl              : EVENT IDENT EQUALS any_type LPAREN function_param_list? RPAREN SEMICOLON;
 
 // Constant definitions.
 const_def               : const_integral_def
