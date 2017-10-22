@@ -163,6 +163,8 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			mpWriter->Output(") = 0;");
 	}
 
+	if (!decl.mFunctions.empty())
+		mpWriter->LineFeed(CodeWriter::kNoSection, CodeWriter::kNoSection);
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
 }

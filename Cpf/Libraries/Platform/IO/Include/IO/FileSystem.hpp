@@ -25,7 +25,7 @@ namespace CPF
 			virtual Error GetError(FileHandle) = 0;
 
 			// Preparation for Async IO.
-//			virtual Future<FileHandle, IOError> Open(const String& name, StreamAccess access) = 0;
+//			virtual Future<FileHandle, GOM::Result> Open(const String& name, StreamAccess access) = 0;
 		};
 
 		CPF_EXPORT_IO iFileSystem* GetFileSystem();
