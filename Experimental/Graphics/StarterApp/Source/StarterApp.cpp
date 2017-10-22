@@ -36,6 +36,7 @@ StarterApp::~StarterApp()
 
 namespace
 {
+	const char* kFileSystemPlugin = "plugins/BasicFilesystem.cfp";
 	const char* kResourcePlugin = "plugins/Resources.cfp";
 	const char* kConcurrencyPlugin = "plugins/Concurrency.cfp";
 	const char* kAdapterSDL2Plugin = "plugins/AdapterSDL2.cfp";
