@@ -155,6 +155,24 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 
 			decl.mFunctions.push_back(funcDecl);
 		}
+		else if (item->event_decl())
+		{
+			auto eventCtx = item->event_decl();
+			EventDecl eventDecl;
+			eventDecl.mName = eventCtx->IDENT()->toString();
+			eventDecl.mReturnType = ParseTypeDecl(eventCtx->type_decl());
+			if (eventCtx->function_param_list())
+			{
+				for (auto param : eventCtx->function_param_list()->function_param())
+				{
+					ParamDecl paramDecl;
+					paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
+					paramDecl.mType = ParseTypeDecl(param->type_decl());
+					eventDecl.mParams.push_back(paramDecl);
+				}
+			}
+			decl.mEvents.push_back(eventDecl);
+		}
 	}
 
 	Emit<InterfaceDeclStmt>(decl);
@@ -165,6 +183,25 @@ antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
 {
 	Emit<InterfaceFwdStmt>(ParseQualifiedIdent(ctx->qualified_ident()).ToString("::"));
 	return visitChildren(ctx);
+}
+
+antlrcpp::Any Visitor::visitEvent_decl(IDLParser::Event_declContext *ctx)
+{
+	EventDecl eventDecl;
+	eventDecl.mName = ctx->IDENT()->toString();
+	eventDecl.mReturnType = ParseTypeDecl(ctx->type_decl());
+	if (ctx->function_param_list())
+	{
+		for (auto param : ctx->function_param_list()->function_param())
+		{
+			ParamDecl paramDecl;
+			paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
+			paramDecl.mType = ParseTypeDecl(param->type_decl());
+			eventDecl.mParams.push_back(paramDecl);
+		}
+	}
+	Emit<EventDeclStmt>(eventDecl);
+	return defaultResult();
 }
 
 antlrcpp::Any Visitor::visitStruct_fwd(IDLParser::Struct_fwdContext *ctx)

@@ -1,0 +1,10 @@
+import iUnknown from GOM;
+module CPF::IO;
+
+interface iDirectory : GOM::iUnknown
+{
+	event OnComplete = void(result value);
+	void Exists(const char* name, OnComplete cb);
+	void Create(const char* dir, bool recursive, OnComplete cb);
+	void Delete(const char* dir, bool recursive, OnComplete cb);
+}

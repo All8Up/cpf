@@ -33,9 +33,6 @@ namespace
 		int64_t Write(const void* inBuffer, int64_t length, Error* error = nullptr) override;
 
 		//
-		void CopyTo(Stream* target, Error* error = nullptr) const override;
-
-		//
 		operator bool() const override;
 
 		//////////////////////////////////////////////////////////////////////////
@@ -115,15 +112,6 @@ namespace
 	int64_t RawFileStream::Write(const void* inBuffer, int64_t length, Error* error)
 	{
 		return GetFileSystem()->Write(mpFile, inBuffer, length, error);
-	}
-
-
-	void RawFileStream::CopyTo(Stream* target, Error*) const
-	{
-		(void)target;
-
-		// Not implemented.
-		CPF_ASSERT_ALWAYS;
 	}
 
 

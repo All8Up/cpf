@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Tools/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/MotD/CPF/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -587,7 +587,7 @@ public:
     antlr4::tree::TerminalNode *EVENT();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *EQUALS();
-    Any_typeContext *any_type();
+    Type_declContext *type_decl();
     antlr4::tree::TerminalNode *LPAREN();
     antlr4::tree::TerminalNode *RPAREN();
     antlr4::tree::TerminalNode *SEMICOLON();

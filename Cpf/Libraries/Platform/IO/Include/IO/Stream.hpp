@@ -42,9 +42,6 @@ namespace CPF
 			virtual int64_t Write(const void* inBuffer, int64_t length, Error* error = nullptr) = 0;
 
 			//
-			virtual void CopyTo(Stream* target, Error* error = nullptr) const = 0;
-
-			//
 			virtual operator bool() const = 0;
 
 		protected:

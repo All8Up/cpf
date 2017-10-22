@@ -31,23 +31,3 @@ interface iStream : GOM::iUnknown
 	event OnWrite = void(result value, s64 count);
 	void Write(const void* inBuffer, s64 length, OnWrite cb);
 }
-
-interface iFile : GOM::iUnknown
-{
-	event OnComplete = void(result value);
-	void Exists(const char* name, OnComplete cb);
-	void Delete(const char* name, OnComplete cb);
-	event OnCreate = void(result value, iStream* stream);
-	void Create(const char* name, StreamAccess access, OnCreate cb);
-}
-
-interface iDirectory : GOM::iUnknown
-{
-	void SetWorkingDirectory(const char* directory);
-	s64 GetWorkingDirectory(char* outBuffer, s64 length);
-
-	event OnComplete = void(result value);
-	void Exists(const char* name, OnComplete cb);
-	void Create(const char* dir, bool recursive, OnComplete cb);
-	void Delete(const char* dir, bool recursive, OnComplete cb);
-}

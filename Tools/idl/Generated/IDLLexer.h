@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/Cpf/Tools/idl\IDLLexer.g4 by ANTLR 4.7
+// Generated from C:/Projects/MotD/CPF/Tools/idl\IDLLexer.g4 by ANTLR 4.7
 
 #pragma once
 

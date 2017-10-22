@@ -133,6 +133,34 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		);
 	}
 
+	if (!decl.mEvents.empty())
+	{
+		mpWriter->LineFeed(eEvents, eEvents);
+		for (const auto& eventItem : decl.mEvents)
+		{
+			mpWriter->Output("%susing %s = %s (*) (",
+				mpWriter->GetIndentString().c_str(),
+				eventItem.mName.c_str(),
+				TypeToString(eventItem.mReturnType).c_str());
+
+			if (!eventItem.mParams.empty())
+			{
+				mpWriter->Output("%s", TypeToString(eventItem.mParams[0].mType).c_str());
+				if (!eventItem.mParams[0].mName.empty())
+					mpWriter->Output(" %s", eventItem.mParams[0].mName.c_str());
+
+				for (auto it = eventItem.mParams.begin() + 1; it != eventItem.mParams.end(); ++it)
+				{
+					mpWriter->Output(", %s", TypeToString(it->mType).c_str());
+					if (!it->mName.empty())
+						mpWriter->Output(" %s", it->mName.c_str());
+				}
+			}
+			mpWriter->Output(");");
+			mpWriter->LineFeed(eEvents, CodeWriter::kNoSection);
+		}
+	}
+
 	for (const auto& func : decl.mFunctions)
 	{
 		mpWriter->LineFeed(eInterfaces, eNamespace, CodeWriter::kAnySection);
@@ -162,6 +190,9 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		else
 			mpWriter->Output(") = 0;");
 	}
+
+	if (!decl.mFunctions.empty())
+		mpWriter->LineFeed(CodeWriter::kNoSection, CodeWriter::kNoSection, CodeWriter::kAnySection);
 
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");

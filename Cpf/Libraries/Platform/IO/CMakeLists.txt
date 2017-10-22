@@ -1,6 +1,8 @@
 # ###############################################
 set (IDL_INTERFACES
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFileSystem.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iDirectory.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFile.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iStream.idl
 )
 CPF_GEN_GOM(CPP_IO_INTERFACES cpp
 	hpp
@@ -61,8 +63,10 @@ target_compile_definitions( s_IO
 	PUBLIC CPF_STATIC_IO
 	PRIVATE CPF_BUILD_IO
 )
-source_group( Headers FILES ${INCLUDE_FILES} )
-source_group( Sources FILES ${SOURCE_FILES} )
+source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Headers\\Interfaces FILES ${CPP_IO_INTERFACES})
+source_group (Headers\\Flags FILES ${CPP_IO_FLAGS})
+source_group (Sources FILES ${SOURCE_FILES})
 source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
 source_group (IDL\\Flags FILES ${IDL_FLAGS})
 

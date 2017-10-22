@@ -20,7 +20,8 @@ namespace IDL
 				eInterfaces = 1<<3,
 				eConstants = 1<<4,
 				eStructures = 1<<5,
-				eForwards = 1<<6
+				eForwards = 1<<6,
+				eEvents = 1<<7
 			};
 
 		private:
