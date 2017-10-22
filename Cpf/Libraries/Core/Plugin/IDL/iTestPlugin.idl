@@ -1,0 +1,4 @@
+interface iTestPlugin
+{
+	result Test();
+}
