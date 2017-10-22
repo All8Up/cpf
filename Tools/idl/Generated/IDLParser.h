@@ -509,6 +509,7 @@ public:
     Function_declContext *function_decl();
     Const_defContext *const_def();
     Enum_defContext *enum_def();
+    Event_declContext *event_decl();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
