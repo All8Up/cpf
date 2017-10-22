@@ -51,7 +51,10 @@ namespace CPF
 
 			explicit Sector(StorageType value) : mSector(value) {}
 			Sector(LaneType x, LaneType y, LaneType z) : mSector(0) { mElements.x = x; mElements.y = y; mElements.z = z; }
+			explicit Sector(SectorRep v) { mElements.x = v.x; mElements.y = v.y; mElements.z = v.z; }
+
 			explicit operator StorageType () const { return mSector; }
+			explicit operator SectorRep() const { return SectorRep(mElements.x, mElements.y, mElements.z); }
 
 			int32_t GetX() const { return mElements.x; }
 			void SetX(int32_t x) { mElements.x = x; }
@@ -59,9 +62,6 @@ namespace CPF
 			void SetY(int32_t y) { mElements.y = y; }
 			int32_t GetZ() const { return mElements.z; }
 			void SetZ(int32_t z) { mElements.z = z; }
-
-			Vector3v<SIMD::I32x4_3> AsRep() const { return Vector3v<SIMD::I32x4_3>(mElements.x, mElements.y, mElements.z); }
-			void FromRep(Vector3v<SIMD::I32x4_3> v) { mElements.x = v.x; mElements.y = v.y; mElements.z = v.z; }
 
 		private:
 			struct

@@ -109,8 +109,8 @@ namespace CPF
 			const LargeVector<LargeVectorDesc_FI>& to
 		)
 		{
-			auto toSector = ExtractSector(to).AsRep();
-			auto delta = toSector - from.AsRep();
+			auto toSector = LargeVector<LargeVectorDesc_FI>::SectorRep(ExtractSector(to));
+			auto delta = toSector - LargeVector<LargeVectorDesc_FI>::SectorRep(from);
 			auto offset = delta * (LargeVectorDesc_FI::HalfBound * 2);
 			return ExtractVector3(to) + LargeVector<LargeVectorDesc_FI>::VectorType(offset.xyz);
 		}
@@ -122,7 +122,8 @@ namespace CPF
 		)
 		{
 			auto relDelta = ExtractVector3(to) - ExtractVector3(from);
-			auto relSector = ExtractSector(to).AsRep() - ExtractSector(from).AsRep();
+			auto relSector = LargeVector<LargeVectorDesc_FI>::SectorRep(ExtractSector(to)) -
+				LargeVector<LargeVectorDesc_FI>::SectorRep(ExtractSector(from));
 			return relDelta + LargeVector<LargeVectorDesc_FI>::VectorType((relSector * (LargeVectorDesc_FI::HalfBound*2)).xyz);
 		}
 	}
