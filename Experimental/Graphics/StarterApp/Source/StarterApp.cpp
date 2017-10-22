@@ -202,7 +202,7 @@ bool StarterApp::_CreateWindow()
 	// Create the main window.
 	Math::Vector2i mWindowSize(400, 400);
 	WindowDesc windowDesc;
-	windowDesc.mpTitle = "Network Test";
+	windowDesc.mpTitle = "Starter app";
 	windowDesc.mX = iWindow::Centered();
 	windowDesc.mY = iWindow::Centered();
 	windowDesc.mWidth = mWindowSize.x;

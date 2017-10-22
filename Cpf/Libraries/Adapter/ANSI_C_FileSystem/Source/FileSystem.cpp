@@ -5,6 +5,41 @@
 #include "IO/Stream.hpp"
 #include "Std/String.hpp"
 #include "Std/IO.hpp"
+#include "Threading/Thread.hpp"
+#include "Threading/Reactor.hpp"
+
+namespace CPF
+{
+	namespace Adapter
+	{
+		class ANSI_C_FileSystem : public IO::iFileSystem
+		{
+		public:
+			using Error = IO::Error;
+			using FileHandle = IO::FileHandle;
+			using StreamAccess = IO::StreamAccess;
+			using StreamOrigin = IO::StreamOrigin;
+
+			ANSI_C_FileSystem();
+			~ANSI_C_FileSystem() override;
+
+			FileHandle Open(const String&, StreamAccess, Error*) override;
+			void Close(FileHandle, Error*) override;
+			void Flush(FileHandle, Error*) override;
+			int64_t GetPosition(FileHandle, Error*) override;
+			int64_t GetLength(FileHandle, Error*) override;
+			void Seek(FileHandle, int64_t, StreamOrigin, Error*) override;
+			int64_t Read(FileHandle, void*, int64_t, Error*) override;
+			int64_t Write(FileHandle, const void*, int64_t, Error* = nullptr) override;
+			Error GetError(FileHandle handle) override;
+
+		private:
+			Threading::Reactor mReactor;
+			Threading::Reactor::WorkQueue mQueue;
+			Threading::Thread mWorker;
+		};
+	}
+}
 
 using namespace CPF;
 using namespace Adapter;
@@ -31,11 +66,48 @@ namespace CPF
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////
-ANSI_C_FileSystem::~ANSI_C_FileSystem()
-{}
+enum class FSCommands
+{
+	eOpen
+};
 
-IO::FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAccess access, Error* error)
+struct FSOpenCmd
+{
+	const char* mpName;
+	StreamAccess mAccess;
+};
+struct FSGetLengthCmd
+{
+	Stream* mpStream;
+};
+
+struct FSCmd
+{
+	FSCommands mCommand;
+	union
+	{
+		FSOpenCmd mOpen;
+		FSGetLengthCmd mGetLength;
+	};
+};
+
+//////////////////////////////////////////////////////////////////////////
+ANSI_C_FileSystem::ANSI_C_FileSystem()
+	: mReactor()
+	, mQueue(&mReactor)
+	, mWorker([&]() {
+		mReactor.Run();
+	})
+{
+}
+
+ANSI_C_FileSystem::~ANSI_C_FileSystem()
+{
+	mReactor.Quit();
+	mWorker.Join();
+}
+
+FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAccess access, Error* error)
 {
 	char mode[4];
 	switch (access)
@@ -51,7 +123,7 @@ IO::FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAccess access, 
 		break;
 	}
 
-	FileHandle handle = Std::FOpen(IO::Path::ToOS(name).c_str(), mode);
+	FileHandle handle = Std::FOpen(Path::ToOS(name).c_str(), mode);
 
 	if (error && handle == nullptr)
 	{

@@ -15,7 +15,7 @@ target_compile_definitions (s_ANSI_C_FileSystem
 	PUBLIC CPF_STATIC_ANSI_C_FILESYSTEM
 	PRIVATE CPF_BUILD_ANSI_C_FILESYSTEM
 )
-target_link_libraries (s_ANSI_C_FileSystem Configuration s_Collections s_IO Logging)
+target_link_libraries (s_ANSI_C_FileSystem Configuration s_Collections s_IO Threading Logging)
 
 target_include_directories (s_ANSI_C_FileSystem
 	PRIVATE

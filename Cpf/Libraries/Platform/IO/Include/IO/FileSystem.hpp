@@ -23,6 +23,9 @@ namespace CPF
 			virtual int64_t Read(FileHandle, void*, int64_t, Error* = nullptr) = 0;
 			virtual int64_t Write(FileHandle, const void*, int64_t, Error* = nullptr) = 0;
 			virtual Error GetError(FileHandle) = 0;
+
+			// Preparation for Async IO.
+//			virtual Future<FileHandle, IOError> Open(const String& name, StreamAccess access) = 0;
 		};
 
 		CPF_EXPORT_IO iFileSystem* GetFileSystem();
