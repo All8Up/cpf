@@ -21,6 +21,22 @@ CPF_GEN_GOM(CPP_IO_FLAGS cpp
 )
 
 # ###############################################
+add_library (IO INTERFACE)
+target_include_directories (IO
+	INTERFACE
+		${CPF_GENERATED}/CPP
+)
+add_custom_target (IO_Interfaces
+	SOURCES
+		${IDL_INTERFACES}
+		${CPP_IO_INTERFACES}
+		${IDL_FLAGS}
+		${CPP_IO_FLAGS}
+)
+add_dependencies (IO IO_Interfaces)
+set_property (TARGET IO_Interfaces PROPERTY FOLDER Interfaces/IO)
+
+# ###############################################
 set( INCLUDE_FILES
 	Include/IO/IO.hpp
 	Include/IO/File.hpp
@@ -64,8 +80,7 @@ target_compile_definitions( s_IO
 	PRIVATE CPF_BUILD_IO
 )
 source_group (Headers FILES ${INCLUDE_FILES})
-source_group (Headers\\Interfaces FILES ${CPP_IO_INTERFACES})
-source_group (Headers\\Flags FILES ${CPP_IO_FLAGS})
+source_group (IO FILES ${CPP_IO_INTERFACES} ${CPP_IO_FLAGS})
 source_group (Sources FILES ${SOURCE_FILES})
 source_group (IDL\\Interfaces FILES ${IDL_INTERFACES})
 source_group (IDL\\Flags FILES ${IDL_FLAGS})
