@@ -1,6 +1,6 @@
-import BindingType from Graphics;
-import ParamFlags from Graphics;
-import ParamVisibility from Graphics;
+import BindingType from CPF::Graphics;
+import ParamFlags from CPF::Graphics;
+import ParamVisibility from CPF::Graphics;
 
 module CPF::Graphics;
 

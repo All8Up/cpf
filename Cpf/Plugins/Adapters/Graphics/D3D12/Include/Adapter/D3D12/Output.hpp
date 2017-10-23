@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iOutput.hpp"
+#include "CPF/Graphics/iOutput.hpp"
 #include "IntrusivePtr.hpp"
 #include <dxgi1_4.h>
 

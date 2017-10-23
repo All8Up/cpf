@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Application/iKeyboardDevice.hpp"
+#include "CPF/Application/iKeyboardDevice.hpp"
 
 namespace CPF
 {

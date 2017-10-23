@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/FrameBuffer.hpp"
-#include "Graphics/iRenderPass.hpp"
+#include "CPF/Graphics/iRenderPass.hpp"
 
 using namespace CPF;
 using namespace Adapter;

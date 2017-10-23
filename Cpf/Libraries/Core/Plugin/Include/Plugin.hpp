@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 
 // Name and type of the plugin Install function.
 const char kPluginAPIInstall[] = "Install";

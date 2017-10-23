@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Instance.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/SwapChain.hpp"

@@ -1,4 +1,4 @@
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 #include "Plugin/tClassInstance.hpp"
 #include "Window.hpp"
 #include "WindowedApplication.hpp"

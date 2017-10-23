@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/InputLayoutDesc.hpp"
+#include "CPF/Graphics/InputLayoutDesc.hpp"
 #include <initializer_list>
 
 namespace CPF

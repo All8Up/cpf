@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/DepthStencilStateDesc.hpp"
+#include "CPF/Graphics/DepthStencilStateDesc.hpp"
 
 namespace CPF
 {

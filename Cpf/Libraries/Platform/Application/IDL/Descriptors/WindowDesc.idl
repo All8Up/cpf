@@ -1,4 +1,4 @@
-import WindowFlags from Application;
+import WindowFlags from CPF::Application;
 module CPF;
 
 struct WindowDesc

@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "MultiCore/iExecutionPlan.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 #include "UnorderedMap.hpp"
 
 namespace CPF

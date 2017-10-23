@@ -1,7 +1,7 @@
-import BlendFunc from Graphics;
-import BlendOp from Graphics;
-import LogicOp from Graphics;
-import WriteMask from Graphics;
+import BlendFunc from CPF::Graphics;
+import BlendOp from CPF::Graphics;
+import LogicOp from CPF::Graphics;
+import WriteMask from CPF::Graphics;
 
 module CPF::Graphics;
 

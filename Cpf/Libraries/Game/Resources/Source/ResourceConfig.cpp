@@ -6,7 +6,7 @@
 #include "IO/Directory.hpp"
 #include "jsoncons/json.hpp"
 #include "Resources/Locator.hpp"
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 
 using namespace CPF;
 using namespace Resources;

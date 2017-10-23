@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include <SDL_syswm.h>
 #include "Window.hpp"
-#include "Application/WindowDesc.hpp"
+#include "CPF/Application/WindowDesc.hpp"
 #include "CPF/Logging.hpp"
 #include "SDL_syswm.h"
-#include "Application/OSWindowData.hpp"
+#include "CPF/Application/OSWindowData.hpp"
 
 using namespace CPF;
 using namespace SDL2;

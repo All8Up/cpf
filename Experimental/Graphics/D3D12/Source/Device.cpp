@@ -1,25 +1,25 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
-#include "Graphics/iOutput.hpp"
-#include "Graphics/ImageFlags.hpp"
-#include "Graphics/OutputDesc.hpp"
-#include "Graphics/ImageDesc.hpp"
-#include "Graphics/ModeRotation.hpp"
-#include "Graphics/EnumMode.hpp"
-#include "Graphics/ModeDesc.hpp"
-#include "Graphics/SwapChainDesc.hpp"
-#include "Graphics/SwapEffect.hpp"
-#include "Graphics/Format.hpp"
-#include "Graphics/iImageView.hpp"
-#include "Graphics/WindowData.hpp"
-#include "Graphics/ResourceState.hpp"
-#include "Graphics/RenderPassDesc.hpp"
-#include "Graphics/HeapType.hpp"
-#include "Graphics/ClearValue.hpp"
-#include "Graphics/AttachmentDesc.hpp"
-#include "Graphics/SubPassDesc.hpp"
-#include "Graphics/PipelineBindPoint.hpp"
-#include "Application/OSWindowData.hpp"
+#include "CPF/Graphics/iOutput.hpp"
+#include "CPF/Graphics/ImageFlags.hpp"
+#include "CPF/Graphics/OutputDesc.hpp"
+#include "CPF/Graphics/ImageDesc.hpp"
+#include "CPF/Graphics/ModeRotation.hpp"
+#include "CPF/Graphics/EnumMode.hpp"
+#include "CPF/Graphics/ModeDesc.hpp"
+#include "CPF/Graphics/SwapChainDesc.hpp"
+#include "CPF/Graphics/SwapEffect.hpp"
+#include "CPF/Graphics/Format.hpp"
+#include "CPF/Graphics/iImageView.hpp"
+#include "CPF/Graphics/WindowData.hpp"
+#include "CPF/Graphics/ResourceState.hpp"
+#include "CPF/Graphics/RenderPassDesc.hpp"
+#include "CPF/Graphics/HeapType.hpp"
+#include "CPF/Graphics/ClearValue.hpp"
+#include "CPF/Graphics/AttachmentDesc.hpp"
+#include "CPF/Graphics/SubPassDesc.hpp"
+#include "CPF/Graphics/PipelineBindPoint.hpp"
+#include "CPF/Application/OSWindowData.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;
@@ -114,7 +114,7 @@ bool ExperimentalD3D12::_EnumerateOutputs(iAdapter* adapter)
 	return true;
 }
 
-#include "Graphics/FrameBufferDesc.hpp"
+#include "CPF/Graphics/FrameBufferDesc.hpp"
 bool ExperimentalD3D12::_CreateSwapChain(iInstance* instance)
 {
 	//////////////////////////////////////////////////////////////////////////

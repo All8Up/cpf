@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Application/iWindowedApplication.hpp"
+#include "CPF/Application/iWindowedApplication.hpp"
 #include "SDL.h"
 
 namespace CPF

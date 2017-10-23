@@ -43,7 +43,7 @@ int EntityServiceInitializer::Remove()
 
 
 #ifndef CPF_STATIC_ENTITYSERVICE
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 extern "C"
 GOM::Result CPF_EXPORT CPF_STDCALL Install(Plugin::iRegistry* registry)
 {

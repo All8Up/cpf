@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/BlendStateDesc.hpp"
+#include "CPF/Graphics/BlendStateDesc.hpp"
 
 namespace CPF
 {

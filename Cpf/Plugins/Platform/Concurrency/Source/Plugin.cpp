@@ -1,11 +1,11 @@
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 #include "Concurrency/WorkBuffer.hpp"
 #include "Concurrency/Scheduler.hpp"
 #include "Concurrency/ThreadTimes.hpp"
 #include "Concurrency/Fence.hpp"
 #include "Concurrency/ThreadPool.hpp"
 #include "Concurrency/LoadBalancer.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;

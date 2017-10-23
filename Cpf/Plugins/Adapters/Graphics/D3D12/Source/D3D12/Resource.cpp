@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Resource.hpp"
 #include "Adapter/D3D12/Device.hpp"
-#include "Graphics/ResourceDesc.hpp"
-#include "Graphics/HeapType.hpp"
+#include "CPF/Graphics/ResourceDesc.hpp"
+#include "CPF/Graphics/HeapType.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;

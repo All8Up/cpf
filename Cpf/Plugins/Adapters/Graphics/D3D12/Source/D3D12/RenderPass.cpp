@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/RenderPass.hpp"
-#include "Graphics/RenderPassDesc.hpp"
-#include "Graphics/ResourceState.hpp"
+#include "CPF/Graphics/RenderPassDesc.hpp"
+#include "CPF/Graphics/ResourceState.hpp"
 #include "Std/Memory.hpp"
 
 using namespace CPF;

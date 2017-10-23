@@ -1,17 +1,17 @@
 //////////////////////////////////////////////////////////////////////////
 #include "ExperimentalD3D12.hpp"
-#include "Application/iWindowedApplication.hpp"
-#include "Application/WindowFlags.hpp"
-#include "Application/WindowDesc.hpp"
-#include "Graphics/ImageFlags.hpp"
+#include "CPF/Application/iWindowedApplication.hpp"
+#include "CPF/Application/WindowFlags.hpp"
+#include "CPF/Application/WindowDesc.hpp"
+#include "CPF/Graphics/ImageFlags.hpp"
 #include "CPF/Logging.hpp"
 #include "Math/Constants.hpp"
-#include "Graphics/ImageDesc.hpp"
-#include "Graphics/ResourceState.hpp"
-#include "Graphics/Format.hpp"
-#include "Graphics/HeapType.hpp"
-#include "Graphics/ClearValue.hpp"
-#include "Graphics/FrameBufferDesc.hpp"
+#include "CPF/Graphics/ImageDesc.hpp"
+#include "CPF/Graphics/ResourceState.hpp"
+#include "CPF/Graphics/Format.hpp"
+#include "CPF/Graphics/HeapType.hpp"
+#include "CPF/Graphics/ClearValue.hpp"
+#include "CPF/Graphics/FrameBufferDesc.hpp"
 
 using namespace CPF;
 

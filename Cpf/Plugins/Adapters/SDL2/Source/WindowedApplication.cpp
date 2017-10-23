@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include "WindowedApplication.hpp"
-#include "Application/MouseButton.hpp"
+#include "CPF/Application/MouseButton.hpp"
 #include "Application/iApplicationMain.hpp"
 #include "Application/iInputManager.hpp"
 #include "Application/iWindow.hpp"
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 #include "CPF/Logging.hpp"
 #include "SDL2/CIDs.hpp"
 

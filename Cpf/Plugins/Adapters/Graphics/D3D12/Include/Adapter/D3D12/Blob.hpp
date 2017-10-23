@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iBlob.hpp"
+#include "CPF/Graphics/iBlob.hpp"
 #include "Vector.hpp"
 
 namespace CPF

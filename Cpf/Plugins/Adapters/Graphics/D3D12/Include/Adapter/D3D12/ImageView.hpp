@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iImageView.hpp"
+#include "CPF/Graphics/iImageView.hpp"
 #include "DescriptorManager.hpp"
 #include "Move.hpp"
 

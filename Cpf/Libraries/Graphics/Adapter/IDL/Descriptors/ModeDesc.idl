@@ -1,4 +1,4 @@
-import Ratio from Graphics;
+import Ratio from CPF::Graphics;
 
 module CPF::Graphics;
 

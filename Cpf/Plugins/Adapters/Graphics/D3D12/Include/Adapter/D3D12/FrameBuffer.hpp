@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Graphics/iFrameBuffer.hpp"
-#include "Graphics/FrameBufferDesc.hpp"
-#include "Graphics/iImageView.hpp"
+#include "CPF/Graphics/iFrameBuffer.hpp"
+#include "CPF/Graphics/FrameBufferDesc.hpp"
+#include "CPF/Graphics/iImageView.hpp"
 #include "Vector.hpp"
 
 namespace CPF

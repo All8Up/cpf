@@ -12,7 +12,7 @@ set (IDL_INTERFACES
 
 CPF_GEN_GOM (CPP_INTERFACES cpp
 	hpp
-	${CPF_GENERATED}/CPP/Application
+	${CPF_GENERATED}/CPP/CPF/Application
 	${IDL_INTERFACES}
 )
 
@@ -21,7 +21,7 @@ set (IDL_DESCRIPTORS
 )
 CPF_GEN_GOM (CPP_DESCRIPTORS cpp
 	hpp
-	${CPF_GENERATED}/CPP/Application
+	${CPF_GENERATED}/CPP/CPF/Application
 	${IDL_DESCRIPTORS}
 )
 
@@ -34,7 +34,7 @@ set (IDL_FLAGS
 )
 CPF_GEN_GOM (CPP_FLAGS cpp
 	hpp
-	${CPF_GENERATED}/CPP/Application
+	${CPF_GENERATED}/CPP/CPF/Application
 	${IDL_FLAGS}
 )
 
@@ -43,7 +43,7 @@ set (IDL_STRUCTURES
 )
 CPF_GEN_GOM (CPP_STRUCTURES cpp
 	hpp
-	${CPF_GENERATED}/CPP/Application
+	${CPF_GENERATED}/CPP/CPF/Application
 	${IDL_STRUCTURES}
 )
 

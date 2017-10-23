@@ -7,12 +7,12 @@ set (IDL_FILES
 # ###############################################
 CPF_GEN_GOM(CppPluginFiles cpp
 	hpp
-	${CPF_GENERATED}/CPP/Plugin
+	${CPF_GENERATED}/CPP/CPF/Plugin
 	${IDL_FILES}
 )
 CPF_GEN_GOM(RustPluginFiles rust
 	rs
-	${CPF_GENERATED}/Rust/Plugin
+	${CPF_GENERATED}/Rust/CPF/Plugin
 	${IDL_FILES}
 )
 

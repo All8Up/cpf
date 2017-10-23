@@ -1,6 +1,6 @@
 import Result from GOM;
 import iUnknown from GOM;
-import iClassInstance from Plugin;
+import iClassInstance from CPF::Plugin;
 module CPF::Plugin;
 
 failure InstanceExists ("Plugin", "Instance already exists");

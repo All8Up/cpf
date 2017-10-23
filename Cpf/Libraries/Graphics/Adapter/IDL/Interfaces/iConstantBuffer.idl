@@ -1,4 +1,4 @@
-import iResource from Graphics;
+import iResource from CPF::Graphics;
 module CPF::Graphics;
 
 interface iConstantBuffer : iResource

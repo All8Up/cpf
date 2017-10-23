@@ -1,5 +1,5 @@
 import Graphics;
-import RenderTargetBlendStateDesc from Graphics;
+import RenderTargetBlendStateDesc from CPF::Graphics;
 
 module CPF::Graphics;
 

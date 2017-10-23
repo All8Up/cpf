@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iConstantBuffer.hpp"
+#include "CPF/Graphics/iConstantBuffer.hpp"
 #include "RefCounted.hpp"
 #include "Resource.hpp"
 #include "DescriptorManager.hpp"

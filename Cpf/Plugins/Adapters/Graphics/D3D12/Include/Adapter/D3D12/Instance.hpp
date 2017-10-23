@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iInstance.hpp"
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Graphics/iInstance.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 #include "IntrusivePtr.hpp"
 #include "D3D12Utils.hpp"
 

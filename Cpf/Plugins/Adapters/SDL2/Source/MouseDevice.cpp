@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "MouseDevice.hpp"
-#include "Application/MouseButton.hpp"
+#include "CPF/Application/MouseButton.hpp"
 #include "SDL.h"
 
 using namespace CPF;

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Application/iMouseDevice.hpp"
+#include "CPF/Application/iMouseDevice.hpp"
 
 namespace CPF
 {

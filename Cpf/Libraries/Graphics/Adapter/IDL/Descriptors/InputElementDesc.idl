@@ -1,5 +1,5 @@
-import Format from Graphics;
-import InputClassification from Graphics;
+import Format from CPF::Graphics;
+import InputClassification from CPF::Graphics;
 
 module CPF::Graphics;
 

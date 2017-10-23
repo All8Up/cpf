@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/PipelineStateDesc.hpp"
-#include "Graphics/InputElementDesc.hpp"
+#include "CPF/Graphics/PipelineStateDesc.hpp"
+#include "CPF/Graphics/InputElementDesc.hpp"
 
 namespace CPF
 {

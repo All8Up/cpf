@@ -7,10 +7,10 @@
 #include <D3Dcompiler.h>
 #include <d3d12sdklayers.h>
 #include "Adapter/D3D12/d3dx12.h"
-#include "Graphics/Format.hpp"
-#include "Graphics/iOutput.hpp"
-#include "Graphics/iSwapChain.hpp"
-#include "Graphics/iCommandBuffer.hpp"
+#include "CPF/Graphics/Format.hpp"
+#include "CPF/Graphics/iOutput.hpp"
+#include "CPF/Graphics/iSwapChain.hpp"
+#include "CPF/Graphics/iCommandBuffer.hpp"
 
 #define SAFE_RELEASE(a) {if (a) a->Release();}
 

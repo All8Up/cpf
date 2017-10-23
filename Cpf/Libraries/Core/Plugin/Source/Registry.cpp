@@ -2,7 +2,7 @@
 #include "PluginHost/Registry.hpp"
 #include "Plugin/Library.hpp"
 #include "Plugin.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 #include "Move.hpp"
 #include "Vector.hpp"
 #include "UnorderedMap.hpp"

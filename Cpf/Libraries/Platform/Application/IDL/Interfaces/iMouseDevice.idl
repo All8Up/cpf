@@ -1,5 +1,5 @@
-import iInputDevice from Application;
-import MouseButton from Application;
+import iInputDevice from CPF::Application;
+import MouseButton from CPF::Application;
 module CPF;
 
 interface iMouseDevice : iInputDevice

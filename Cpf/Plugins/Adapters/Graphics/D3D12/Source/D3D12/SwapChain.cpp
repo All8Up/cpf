@@ -5,7 +5,7 @@
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "Adapter/D3D12/Image.hpp"
 #include "Adapter/D3D12/ImageView.hpp"
-#include "Graphics/WindowData.hpp"
+#include "CPF/Graphics/WindowData.hpp"
 #include "CPF/Logging.hpp"
 #include "Move.hpp"
 

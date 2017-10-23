@@ -3,7 +3,7 @@
 #include "MultiCore/iSystem.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/System/iTimer.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 
 namespace CPF
 {

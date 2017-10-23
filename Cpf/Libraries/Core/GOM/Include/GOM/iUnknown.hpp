@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "GOM/Types.hpp"
-#include "GOM/ResultCodes.hpp"
+#include "CPF/GOM/ResultCodes.hpp"
 #include "IntrusivePtr.hpp"
 
 namespace CPF

@@ -2,11 +2,11 @@
 #pragma once
 #include "MultiCore/iSystem.hpp"
 #include "iDebugUI.hpp"
-#include "Graphics/iInstance.hpp"
-#include "Graphics/iDevice.hpp"
-#include "Graphics/iSwapChain.hpp"
-#include "Graphics/iRenderPass.hpp"
-#include "Graphics/iFrameBuffer.hpp"
+#include "CPF/Graphics/iInstance.hpp"
+#include "CPF/Graphics/iDevice.hpp"
+#include "CPF/Graphics/iSwapChain.hpp"
+#include "CPF/Graphics/iRenderPass.hpp"
+#include "CPF/Graphics/iFrameBuffer.hpp"
 #include "MultiCore/System/iTimer.hpp"
 #include <atomic>
 

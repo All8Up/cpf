@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Output.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
-#include "Graphics/OutputDesc.hpp"
-#include "Graphics/ModeDesc.hpp"
+#include "CPF/Graphics/OutputDesc.hpp"
+#include "CPF/Graphics/ModeDesc.hpp"
 #include "Vector.hpp"
 #include "CPF/Logging.hpp"
 

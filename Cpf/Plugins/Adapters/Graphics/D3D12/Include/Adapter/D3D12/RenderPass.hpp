@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iRenderPass.hpp"
+#include "CPF/Graphics/iRenderPass.hpp"
+#include "CPF/Graphics/AttachmentDesc.hpp"
+#include "CPF/Graphics/DependencyDesc.hpp"
+#include "CPF/Graphics/PipelineBindPoint.hpp"
+#include "CPF/Graphics/SubPassDesc.hpp"
 #include "Vector.hpp"
-#include "Graphics/AttachmentDesc.hpp"
-#include "Graphics/DependencyDesc.hpp"
-#include "Graphics/PipelineBindPoint.hpp"
-#include "Graphics/SubPassDesc.hpp"
 
 namespace CPF
 {

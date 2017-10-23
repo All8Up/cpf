@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics.hpp"
-#include "Graphics/iPipeline.hpp"
+#include "CPF/Graphics/iPipeline.hpp"
 #include "D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 

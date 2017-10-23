@@ -3,7 +3,7 @@
 #include "Tuple.hpp"
 #include "MultiCore/iStage.hpp"
 #include "MultiCore/Container.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 
 namespace CPF
 {

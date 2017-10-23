@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/VertexBuffer.hpp"
 #include "Adapter/D3D12/Device.hpp"
-#include "Graphics/Range.hpp"
-#include "Graphics/HeapType.hpp"
+#include "CPF/Graphics/Range.hpp"
+#include "CPF/Graphics/HeapType.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;

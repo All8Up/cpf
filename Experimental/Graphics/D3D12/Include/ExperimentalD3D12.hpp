@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Application/iApplicationMain.hpp"
-#include "Application/iWindowedApplication.hpp"
+#include "CPF/Application/iWindowedApplication.hpp"
 #include "Application/iWindow.hpp"
 #include "Graphics.hpp"
 #include "Concurrency/iScheduler.hpp"
@@ -11,10 +11,10 @@
 #include "iDebugUI.hpp"
 #include "MultiCore/iExecutionPlan.hpp"
 #include "MovementSystem.hpp"
-#include "Graphics/iImage.hpp"
-#include "Graphics/iImageView.hpp"
-#include "Graphics/iFrameBuffer.hpp"
-#include "Graphics/iRenderPass.hpp"
+#include "CPF/Graphics/iImage.hpp"
+#include "CPF/Graphics/iImageView.hpp"
+#include "CPF/Graphics/iFrameBuffer.hpp"
+#include "CPF/Graphics/iRenderPass.hpp"
 #include <atomic>
 
 //

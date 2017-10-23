@@ -1,9 +1,9 @@
-import Format from Graphics;
-import LoadOp from Graphics;
-import StoreOp from Graphics;
-import SampleDesc from Graphics;
-import ResourceState from Graphics;
-import AttachmentRef from Graphics;
+import Format from CPF::Graphics;
+import LoadOp from CPF::Graphics;
+import StoreOp from CPF::Graphics;
+import SampleDesc from CPF::Graphics;
+import ResourceState from CPF::Graphics;
+import AttachmentRef from CPF::Graphics;
 
 module CPF::Graphics;
 

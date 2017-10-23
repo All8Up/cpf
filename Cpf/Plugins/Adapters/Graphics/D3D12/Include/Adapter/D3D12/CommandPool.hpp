@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics.hpp"
-#include "Graphics/iCommandPool.hpp"
+#include "CPF/Graphics/iCommandPool.hpp"
 #include "IntrusivePtr.hpp"
 #include <d3d12.h>
 

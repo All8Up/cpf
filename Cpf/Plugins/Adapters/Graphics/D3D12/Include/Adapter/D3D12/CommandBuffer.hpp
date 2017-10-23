@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics.hpp"
-#include "Graphics/iCommandBuffer.hpp"
-#include "Graphics/RenderPassBeginDesc.hpp"
+#include "CPF/Graphics/iCommandBuffer.hpp"
+#include "CPF/Graphics/RenderPassBeginDesc.hpp"
 #include <d3d12.h>
 #include "Math/Rectangle.hpp"
 #include "Math/Vector4v.hpp"

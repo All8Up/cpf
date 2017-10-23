@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Application/iApplicationMain.hpp"
-#include "Application/iWindowedApplication.hpp"
+#include "CPF/Application/iWindowedApplication.hpp"
 #include "MultiCore/iExecutionPlan.hpp"
 #include "RenderSystem.hpp"
 #include "Concurrency/iThreadPool.hpp"

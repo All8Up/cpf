@@ -3,8 +3,8 @@
 #include "Adapter/D3D12/Shader.hpp"
 #include "Adapter/D3D12/Device.hpp"
 #include "Adapter/D3D12/ResourceBinding.hpp"
-#include "Graphics/PipelineStateDesc.hpp"
-#include "Graphics/InputElementDesc.hpp"
+#include "CPF/Graphics/PipelineStateDesc.hpp"
+#include "CPF/Graphics/InputElementDesc.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;

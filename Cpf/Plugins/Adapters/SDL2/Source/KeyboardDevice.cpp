@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "KeyboardDevice.hpp"
-#include "Application/KeyModifiers.hpp"
+#include "CPF/Application/KeyModifiers.hpp"
 #include "SDL.h"
 
 using namespace CPF;

@@ -1,4 +1,4 @@
-#include "GOM/ResultCodes.hpp"
+#include "CPF/GOM/ResultCodes.hpp"
 
 
 TEST(GOM, Info)

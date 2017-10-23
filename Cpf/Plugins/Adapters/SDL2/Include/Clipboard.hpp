@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Application/iClipboard.hpp"
+#include "CPF/Application/iClipboard.hpp"
 
 namespace CPF
 {

@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics.hpp"
-#include "Graphics/iSwapChain.hpp"
-#include "Graphics/SwapChainDesc.hpp"
+#include "CPF/Graphics/iSwapChain.hpp"
+#include "CPF/Graphics/SwapChainDesc.hpp"
 #include "Vector.hpp"
 #include "RefCounted.hpp"
 #include "IntrusivePtr.hpp"

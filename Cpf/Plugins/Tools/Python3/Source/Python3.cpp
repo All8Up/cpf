@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Python3.hpp"
 #include "CPF/Logging.hpp"
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 #include <Python.h>
 
 using namespace CPF;

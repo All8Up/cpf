@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/RasterizerStateDesc.hpp"
+#include "CPF/Graphics/RasterizerStateDesc.hpp"
 
 namespace CPF
 {

@@ -1,7 +1,7 @@
 import Graphics;
-import DepthWriteMask from Graphics;
-import ComparisonFunc from Graphics;
-import StencilOp from Graphics;
+import DepthWriteMask from CPF::Graphics;
+import ComparisonFunc from CPF::Graphics;
+import StencilOp from CPF::Graphics;
 
 module CPF::Graphics;
 

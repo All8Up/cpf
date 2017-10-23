@@ -1,7 +1,7 @@
-import Format from Graphics;
-import ImageFlags from Graphics;
-import SampleDesc from Graphics;
-import ResourceState from Graphics;
+import Format from CPF::Graphics;
+import ImageFlags from CPF::Graphics;
+import SampleDesc from CPF::Graphics;
+import ResourceState from CPF::Graphics;
 
 module CPF::Graphics;
 

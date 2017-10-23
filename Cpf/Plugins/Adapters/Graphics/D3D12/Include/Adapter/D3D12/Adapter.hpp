@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iAdapter.hpp"
+#include "CPF/Graphics/iAdapter.hpp"
 #include "IntrusivePtr.hpp"
 #include <dxgi1_4.h>
 #include "Plugin/tClassInstance.hpp"

@@ -1,5 +1,5 @@
-import FilterMode from Graphics;
-import WrapMode from Graphics;
+import FilterMode from CPF::Graphics;
+import WrapMode from CPF::Graphics;
 
 module CPF::Graphics;
 

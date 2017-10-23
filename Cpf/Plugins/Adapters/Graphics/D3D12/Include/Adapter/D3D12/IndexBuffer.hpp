@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iIndexBuffer.hpp"
+#include "CPF/Graphics/iIndexBuffer.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 

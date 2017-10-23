@@ -4,7 +4,7 @@
 #include "UnorderedMap.hpp"
 #include "RefCounted.hpp"
 #include "Functional.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 #include "MultiCore/iExecutionPlan.hpp"
 #include "EntityService/Interfaces/iManager.hpp"
 

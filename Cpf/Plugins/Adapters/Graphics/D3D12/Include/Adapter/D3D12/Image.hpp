@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Graphics.hpp"
-#include "Graphics/iImage.hpp"
-#include "Graphics/ImageDesc.hpp"
+#include "CPF/Graphics/iImage.hpp"
+#include "CPF/Graphics/ImageDesc.hpp"
 #include "DescriptorManager.hpp"
 
 namespace CPF

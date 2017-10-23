@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iVertexBuffer.hpp"
-#include "Graphics/ResourceDesc.hpp"
+#include "CPF/Graphics/iVertexBuffer.hpp"
+#include "CPF/Graphics/ResourceDesc.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 

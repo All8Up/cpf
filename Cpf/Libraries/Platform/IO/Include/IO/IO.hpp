@@ -59,6 +59,6 @@ namespace CPF
 	}
 }
 
-#include "IO/Attributes.hpp"
-#include "IO/StreamAccess.hpp"
-#include "IO/StreamOrigin.hpp"
+#include "CPF/IO/Attributes.hpp"
+#include "CPF/IO/StreamAccess.hpp"
+#include "CPF/IO/StreamOrigin.hpp"

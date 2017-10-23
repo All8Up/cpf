@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Graphics/iSampler.hpp"
+#include "CPF/Graphics/iSampler.hpp"
 #include "Adapter/D3D12/D3D12Utils.hpp"
 #include "IntrusivePtr.hpp"
 #include "DescriptorManager.hpp"

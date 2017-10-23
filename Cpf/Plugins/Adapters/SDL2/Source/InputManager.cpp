@@ -1,10 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include "InputManager.hpp"
-#include "Application/iMouseDevice.hpp"
-#include "Application/iKeyboardDevice.hpp"
+#include "CPF/Application/iMouseDevice.hpp"
+#include "CPF/Application/iKeyboardDevice.hpp"
 #include "SDL2/CIDs.hpp"
 #include "SDL2.hpp"
-#include "Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 
 using namespace CPF;
 using namespace SDL2;

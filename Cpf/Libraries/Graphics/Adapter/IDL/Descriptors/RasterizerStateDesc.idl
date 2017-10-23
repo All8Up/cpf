@@ -1,7 +1,7 @@
-import FillMode from Graphics;
-import CullMode from Graphics;
-import WindingOrder from Graphics;
-import ConservativeRasterization from Graphics;
+import FillMode from CPF::Graphics;
+import CullMode from CPF::Graphics;
+import WindingOrder from CPF::Graphics;
+import ConservativeRasterization from CPF::Graphics;
 
 module CPF::Graphics;
 

@@ -1,11 +1,11 @@
-import BlendStateDesc from Graphics;
-import RasterizerStateDesc from Graphics;
-import DepthStencilStateDesc from Graphics;
-import InputLayoutDesc from Graphics;
-import IndexStripCut from Graphics;
-import TopologyType from Graphics;
-import Format from Graphics;
-import SampleDesc from Graphics;
+import BlendStateDesc from CPF::Graphics;
+import RasterizerStateDesc from CPF::Graphics;
+import DepthStencilStateDesc from CPF::Graphics;
+import InputLayoutDesc from CPF::Graphics;
+import IndexStripCut from CPF::Graphics;
+import TopologyType from CPF::Graphics;
+import Format from CPF::Graphics;
+import SampleDesc from CPF::Graphics;
 
 module CPF::Graphics;
 

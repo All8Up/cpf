@@ -1,5 +1,5 @@
-#include "Plugin/iRegistry.hpp"
-#include "Plugin/iClassInstance.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
+#include "CPF/Plugin/iClassInstance.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;

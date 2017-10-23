@@ -1,4 +1,4 @@
-import ResourceState from Graphics;
+import ResourceState from CPF::Graphics;
 
 module CPF::Graphics;
 

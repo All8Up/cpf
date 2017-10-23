@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/Image.hpp"
 #include "Adapter/D3D12/Device.hpp"
-#include "Graphics/ImageFlags.hpp"
-#include "Graphics/HeapType.hpp"
-#include "Graphics/ClearValue.hpp"
+#include "CPF/Graphics/ImageFlags.hpp"
+#include "CPF/Graphics/HeapType.hpp"
+#include "CPF/Graphics/ClearValue.hpp"
 #include "CPF/Logging.hpp"
 
 using namespace CPF;

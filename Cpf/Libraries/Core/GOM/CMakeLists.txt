@@ -6,12 +6,12 @@ set (IDL_FILES
 # ###############################################
 CPF_GEN_GOM(CppGOMFiles cpp
 	hpp
-	${CPF_GENERATED}/CPP/GOM
+	${CPF_GENERATED}/CPP/CPF/GOM
 	${IDL_FILES}
 )
 CPF_GEN_GOM(RustGOMFiles rust
 	rs
-	${CPF_GENERATED}/Rust/GOM
+	${CPF_GENERATED}/Rust/CPF/GOM
 	${IDL_FILES}
 )
 

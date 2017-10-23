@@ -1,4 +1,4 @@
-import ParamBindingDesc from Graphics;
+import ParamBindingDesc from CPF::Graphics;
 module CPF::Graphics;
 
 struct ResourceBindingDesc

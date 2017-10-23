@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #include "Adapter/D3D12/D3D12Utils.hpp"
-#include "Graphics/Format.hpp"
-#include "Graphics/iOutput.hpp"
-#include "Graphics/ResourceBindingDesc.hpp"
-#include "Graphics/SubResource.hpp"
-#include "Graphics/ResourceState.hpp"
-#include "Graphics/ScanlineOrder.hpp"
-#include "Graphics/ModeScaling.hpp"
-#include "Graphics/EnumMode.hpp"
-#include "Graphics/SwapEffect.hpp"
-#include "Graphics/BindingType.hpp"
+#include "CPF/Graphics/Format.hpp"
+#include "CPF/Graphics/iOutput.hpp"
+#include "CPF/Graphics/ResourceBindingDesc.hpp"
+#include "CPF/Graphics/SubResource.hpp"
+#include "CPF/Graphics/ResourceState.hpp"
+#include "CPF/Graphics/ScanlineOrder.hpp"
+#include "CPF/Graphics/ModeScaling.hpp"
+#include "CPF/Graphics/EnumMode.hpp"
+#include "CPF/Graphics/SwapEffect.hpp"
+#include "CPF/Graphics/BindingType.hpp"
 #include <dxgi1_2.h>
 
 using namespace CPF;
