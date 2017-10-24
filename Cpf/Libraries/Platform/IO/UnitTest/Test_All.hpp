@@ -9,11 +9,11 @@ TEST(IO, Basics)
 	try
 	{
 		if (CPF::GOM::Failed(Exists("does_not_exist.txt").Get()))
-			;
+		{}
 	}
 	catch (CPF::Exception& exception)
 	{
-		
+		(void)exception;
 	}
 }
 

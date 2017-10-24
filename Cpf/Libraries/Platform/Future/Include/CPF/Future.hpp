@@ -12,6 +12,8 @@ namespace CPF
 	class FutureState : public tRefCounted<iRefCounted>
 	{
 	public:
+		~FutureState()
+		{}
 		void SetResult(TYPE&& value)
 		{
 			Threading::ScopedLock<Threading::Mutex> lock(mLock);
@@ -84,7 +86,8 @@ namespace CPF
 		Future& operator =(const Future&) = delete;
 		Future(Future&& rhs) noexcept : mpState(Move(rhs.mpState)) {}
 		Future& operator =(Future&& rhs) noexcept { mpState = rhs.mpState; rhs.mpState = nullptr; return *this; }
-		~Future() {}
+		~Future()
+		{}
 
 		bool IsValid() const noexcept { return mpState!=nullptr; }
 
@@ -96,7 +99,11 @@ namespace CPF
 		template<typename PTYPE>
 		friend class Promise;
 
-		Future(FutureState<TYPE>* pstate) : mpState(pstate) {}
+		Future(FutureState<TYPE>* pstate)
+		: mpState(pstate)
+		{
+			mpState->AddRef();
+		}
 
 		IntrusivePtr<FutureState<TYPE>> mpState;
 	};
@@ -132,17 +139,33 @@ namespace CPF
 	class Promise
 	{
 	public:
-		Promise() : mpFutureState(new FutureState<TYPE>()), mFuture(mpFutureState) {}
+		Promise()
+			: mpFutureState(new FutureState<TYPE>())
+			, mFuture(mpFutureState)
+		{
+		}
 		Promise(const Promise&) = delete;
 		Promise& operator =(const Promise&) = delete;
-		Promise(Promise&&) noexcept {}
-		Promise& operator =(Promise&&) noexcept { return *this; }
-		~Promise() { if (mpFutureState) mpFutureState->SetException(std::make_exception_ptr<std::exception>(std::exception())); }
+		Promise(Promise&& rhs) noexcept
+			: mpFutureState(Move(rhs.mpFutureState))
+			, mFuture(Move(rhs.mFuture))
+		{}
+		Promise& operator =(Promise&& rhs) noexcept
+		{
+			mpFutureState = Move(rhs.mpFutureState);
+			mFuture = Move(rhs.mFuture);
+			return *this;
+		}
+		~Promise()
+		{
+			if (mpFutureState)
+				mpFutureState->SetException(std::make_exception_ptr<std::exception>(std::exception()));
+		}
 
 		Future<TYPE> GetFuture() { return Move(mFuture); }
 
-		void SetResult(TYPE&& value) { if (mpFutureState) mpFutureState->SetResult(Move(value)); else throw std::exception(); mpFutureState.Release(); }
-		void SetException(std::exception_ptr&& ptr) { if (mpFutureState) mpFutureState->SetException(Move(ptr)); else throw std::exception(); mpFutureState.Release(); }
+		void SetResult(TYPE&& value) { if (mpFutureState) mpFutureState->SetResult(Move(value)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
+		void SetException(std::exception_ptr&& ptr) { if (mpFutureState) mpFutureState->SetException(Move(ptr)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
 
 	private:
 		IntrusivePtr<FutureState<TYPE>> mpFutureState;

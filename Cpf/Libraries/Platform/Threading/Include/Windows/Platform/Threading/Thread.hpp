@@ -9,34 +9,34 @@ namespace CPF
 {
 	namespace Threading
 	{
-		class Thread
+		class Thread : private std::thread
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
 			class Group;
 
 			//////////////////////////////////////////////////////////////////////////
-			Thread() : m_Handle(InvalidThread) {}
-			~Thread() { ::CloseHandle(m_Handle); }
+			Thread() {}
+			Thread(Thread&& rhs) { swap(rhs); }
+			~Thread() {}
 
 			//////////////////////////////////////////////////////////////////////////
 			template<typename tFunction, typename... tArgs>
 			explicit Thread(tFunction&& func, tArgs&&... args);
 
-			template<typename tFunction, typename... tArgs>
-			void operator ()(tFunction&& func, tArgs&&... args);
+			Thread& operator = (Thread&& rhs) noexcept { swap(rhs); return *this; }
 
 			//////////////////////////////////////////////////////////////////////////
 			void Join()
 			{
-				::WaitForSingleObject(m_Handle, INFINITE);
+				join();
 			}
 
 			//////////////////////////////////////////////////////////////////////////
 			static void Sleep(const Time::Value& tp)
 			{
 				auto ms = int64_t(Time::Ms(tp));
-				::SleepEx(DWORD(ms), TRUE);
+				std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 			}
 			static void Pause()
 			{
@@ -84,26 +84,12 @@ namespace CPF
 				{
 				}
 			}
-			static int GetHardwareThreadCount() { return std::thread::hardware_concurrency(); }
-
-			//////////////////////////////////////////////////////////////////////////
-			Thread_t& NativeHandle()
-			{
-				return m_Handle;
-			}
+			static int GetHardwareThreadCount() { return hardware_concurrency(); }
 
 		private:
 			//////////////////////////////////////////////////////////////////////////
 			Thread(const Thread&) = delete;
-			Thread(Thread&&) = delete;
 			const Thread& operator =(const Thread&) = delete;
-			Thread& operator =(Thread&&) = delete;
-
-			//////////////////////////////////////////////////////////////////////////
-			void _Start(Function<void(void)>&&);
-
-			//////////////////////////////////////////////////////////////////////////
-			Thread_t m_Handle;
 		};
 
 		/**
@@ -113,47 +99,8 @@ namespace CPF
 		*/
 		template<typename tFunction, typename... tArgs>
 		Thread::Thread(tFunction&& func, tArgs&&... args)
+			: std::thread(std::forward<tFunction>(func), std::forward<tArgs>(args)...)
 		{
-			_Start(Move(std::bind(func, std::forward<tArgs>(args)...)));
-		}
-
-
-		namespace
-		{
-			inline DWORD WINAPI OsThreadRunner(LPVOID startData)
-			{
-				std::function<void(void)>* tramp = reinterpret_cast<Function<void(void)>*>(startData);
-				(*tramp)();
-				delete tramp;
-				return 0;
-			}
-		}
-
-
-		inline void Thread::_Start(Function<void(void)>&& func)
-		{
-			std::function<void(void)>* funcData = new Function< void(void) >;
-			*funcData = Move(func);
-
-			NativeHandle() = CreateThread(
-				nullptr,
-				0,
-				&OsThreadRunner,
-				funcData,
-				0,
-				nullptr
-			);
-		}
-
-		/**
-		* @brief Command operator to start a function and arguments as a thread.
-		* @param func The thread function to run.
-		* @param args The arguments sent to the thread function.
-		*/
-		template<typename tFunction, typename... tArgs>
-		void Thread::operator ()(tFunction&& func, tArgs&&... args)
-		{
-			_Start(CPF::Move(std::bind(func, args...)));
 		}
 	}
 }

@@ -142,7 +142,7 @@ namespace CPF
 		inline void Thread::Group::_Start(size_t index, Function<void(void)> func)
 		{
 			CPF_ASSERT(mpThreads != nullptr && mCount > index);
-			mpThreads[index](Move(func));
+			mpThreads[index] = Move(Thread(func));
 		}
 
 
@@ -151,7 +151,7 @@ namespace CPF
 			for (auto i = 0; i < mCount; ++i)
 			{
 				Function<void()>  startCopy = start;
-				mpThreads[i](Move(startCopy));
+				mpThreads[i] = Move(Thread(startCopy));
 			}
 		}
 	}

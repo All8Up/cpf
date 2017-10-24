@@ -31,13 +31,12 @@ TEST(Future, BasicThreading)
 	using namespace CPF;
 	Promise<int32_t> promise;
 	auto future = promise.GetFuture();
-	promise.SetResult(5);
 
 	Threading::Thread testThread(
 		[](Promise<int32_t>&& p)
 		{
 			Threading::Thread::Sleep(Time::Seconds(1.0f));
-//			p.SetResult(5);
+			p.SetResult(5);
 		},
 		Move(promise)
 	);
