@@ -1,20 +1,25 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include <gmock/gmock.h>
 #include "CPF/IO/File.hpp"
+#include "GOM/Result.hpp"
+#include "PluginHost/Registry.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
+#include "CPF/IO/Default.hpp"
 
 TEST(IO, Basics)
 {
-	using namespace CPF::IO::File;
-	FileSystemHelper::Initialize();
-	try
-	{
-		if (CPF::GOM::Failed(Exists("does_not_exist.txt").Get()))
-		{}
-	}
-	catch (CPF::Exception& exception)
-	{
-		(void)exception;
-	}
+	using namespace CPF;
+	using namespace GOM;
+	using namespace IO;
+	using namespace File;
+	IntrusivePtr<Plugin::iRegistry> registry;
+
+	EXPECT_TRUE(Succeeded(PluginHost::CreateRegistry(registry.AsTypePP())));
+	EXPECT_TRUE(Succeeded(DefaultIO::Install(registry)));
+	EXPECT_TRUE(FileSystemHelper::Initialize(registry));
+
+	ASSERT_THROW(Failed(Exists("does_not_exist.txt").Get()), std::exception);
 }
 
 #if 0

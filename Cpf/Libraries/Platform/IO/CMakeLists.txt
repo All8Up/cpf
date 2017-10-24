@@ -23,7 +23,14 @@ CPF_GEN_GOM(CPP_IO_FLAGS cpp
 
 # ###############################################
 set (IO_INCLUDE_FILES
+	Include/CPF/IO/Default.hpp
 	Include/CPF/IO/File.hpp
+)
+set (IO_DETAIL_INCLUDE_FILES
+	Include/CPF/IO/Detail/DefaultDirectory.hpp
+	Include/CPF/IO/Detail/DefaultExecutor.hpp
+	Include/CPF/IO/Detail/DefaultFile.hpp
+	Include/CPF/IO/Detail/DefaultStream.hpp
 )
 
 # ###############################################
@@ -46,18 +53,22 @@ add_custom_target (IO_IDE
 		${CPP_IO_FLAGS}
 		Include/CPF/IO.hpp
 		${IO_INCLUDE_FILES}
+		${IO_DETAIL_INCLUDE_FILES}
 )
 add_dependencies (IO IO_IDE)
 set_property (TARGET IO_IDE PROPERTY FOLDER Libraries/Interface/Platform)
 
 source_group (Headers FILES Include/CPF/IO.hpp)
 source_group (Headers\\IO FILES ${IO_INCLUDE_FILES})
+source_group (Headers\\IO\\Detail FILES ${IO_DETAIL_INCLUDE_FILES})
 
 # ###############################################
 MakeUnitTest (LIBRARY IO GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
 		../../Core/Test/UnitTestMain.cpp
+	LINK_LIBRARIES
+		s_PluginHost
 )
 
 

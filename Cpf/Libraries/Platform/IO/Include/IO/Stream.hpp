@@ -5,7 +5,7 @@
 #include "IO/IO.hpp"
 #include "RefCount.hpp"
 #include "Vector.hpp"
-
+#include "String.hpp"
 
 namespace CPF
 {

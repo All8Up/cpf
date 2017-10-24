@@ -72,9 +72,9 @@ SwapChain::SwapChain(
 			mpSwapChain->GetBuffer(i, IID_PPV_ARGS(&rt));
 			mRenderTargets[i].Adopt(new Image(rt));
 			d3d12Device->CreateRenderTargetView(
-				mRenderTargets[i].Cast<Image>()->GetResource(),
+				mRenderTargets[i].As<Image>()->GetResource(),
 				nullptr, 
-				mRenderTargetViews[i].Cast<ImageView>()->GetDescriptor()
+				mRenderTargetViews[i].As<ImageView>()->GetDescriptor()
 				);
 		}
 	}
@@ -134,8 +134,8 @@ void SwapChain::Resize(int32_t x, int32_t y)
 			ID3D12Resource* rt;
 			mpSwapChain->GetBuffer(i, IID_PPV_ARGS(&rt));
 			mRenderTargets[i].Adopt(new Image(rt));
-			mpDevice->GetD3DDevice()->CreateRenderTargetView(mRenderTargets[i].Cast<Image>()->GetResource(), nullptr, 
-				mRenderTargetViews[i].Cast<ImageView>()->GetDescriptor()
+			mpDevice->GetD3DDevice()->CreateRenderTargetView(mRenderTargets[i].As<Image>()->GetResource(), nullptr, 
+				mRenderTargetViews[i].As<ImageView>()->GetDescriptor()
 				);
 		}
 	}

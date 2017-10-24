@@ -1,15 +1,12 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Platform/Threading/Types.hpp"
-#include "Move.hpp"
-#include "Functional.hpp"
 #include <thread>
 
 namespace CPF
 {
 	namespace Threading
 	{
-		class Thread : private std::thread
+		class Thread : std::thread
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
@@ -17,12 +14,12 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			Thread() {}
-			Thread(Thread&& rhs) { swap(rhs); }
+			Thread(Thread&& rhs) noexcept { swap(rhs); }
 			~Thread() {}
 
 			//////////////////////////////////////////////////////////////////////////
-			template<typename tFunction, typename... tArgs>
-			explicit Thread(tFunction&& func, tArgs&&... args);
+			template<typename FUNCTION, typename... ARGS>
+			explicit Thread(FUNCTION&& func, ARGS&&... args);
 
 			Thread& operator = (Thread&& rhs) noexcept { swap(rhs); return *this; }
 
@@ -35,7 +32,7 @@ namespace CPF
 			//////////////////////////////////////////////////////////////////////////
 			static void Sleep(const Time::Value& tp)
 			{
-				auto ms = int64_t(Time::Ms(tp));
+				const auto ms = int64_t(Time::Ms(tp));
 				std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 			}
 			static void Pause()
@@ -46,14 +43,14 @@ namespace CPF
 			{
 				FILETIME unused;
 				FILETIME kernel, user;
-				HANDLE handle = ::GetCurrentThread();
+				const HANDLE handle = ::GetCurrentThread();
 				::GetThreadTimes(handle, &unused, &unused, &kernel, &user);
 
-				uint64_t kernel64 = (((uint64_t)kernel.dwHighDateTime) << 32) + kernel.dwLowDateTime;
-				uint64_t user64 = (((uint64_t)user.dwHighDateTime) << 32) + user.dwLowDateTime;
+				const uint64_t kernel64 = (uint64_t(kernel.dwHighDateTime) << 32) + kernel.dwLowDateTime;
+				const uint64_t user64 = (uint64_t(user.dwHighDateTime) << 32) + user.dwLowDateTime;
 
 				// Convert the time from FILETIME 100ns multiples to time value.
-				using oneHundredNs = Time::UnitBase < int64_t, 1, 10000000 >;
+				using oneHundredNs = Time::UnitBase<int64_t, 1, 10000000>;
 				kernelTime = oneHundredNs(kernel64);
 				userTime = oneHundredNs(user64);
 			}
@@ -78,7 +75,7 @@ namespace CPF
 
 				__try
 				{
-					RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+					RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), reinterpret_cast<ULONG_PTR*>(&info));
 				}
 				__except (EXCEPTION_EXECUTE_HANDLER)
 				{
@@ -97,9 +94,9 @@ namespace CPF
 		* @param func The thread function to run.
 		* @param args The arguments sent to the thread function.
 		*/
-		template<typename tFunction, typename... tArgs>
-		Thread::Thread(tFunction&& func, tArgs&&... args)
-			: std::thread(std::forward<tFunction>(func), std::forward<tArgs>(args)...)
+		template<typename FUNCTION, typename... ARGS>
+		Thread::Thread(FUNCTION&& func, ARGS&&... args)
+			: std::thread(std::forward<FUNCTION>(func), std::forward<ARGS>(args)...)
 		{
 		}
 	}

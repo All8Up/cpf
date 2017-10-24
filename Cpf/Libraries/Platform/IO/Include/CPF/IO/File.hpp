@@ -5,6 +5,7 @@
 #include "CPF/IO/iStream.hpp"
 #include "CPF/Future.hpp"
 #include "CPF/IO/iFile.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
 
 namespace CPF
 {
@@ -19,7 +20,14 @@ namespace CPF
 			class tFileSystemHelper
 			{
 			public:
-				static void Initialize() {}
+				static GOM::Result Initialize(Plugin::iRegistry* regy)
+				{
+					if (GOM::Succeeded(regy->GetInstance(iFile::kIID.GetID(), mpFileInterface.AsPP<GOM::iUnknown>())))
+					{
+						return true;
+					}
+					return false;
+				}
 				static iFile* GetFileInterface() { return mpFileInterface; }
 
 			private:
@@ -28,6 +36,7 @@ namespace CPF
 
 			template <typename IGNORED>
 			IntrusivePtr<iFile> tFileSystemHelper<IGNORED>::mpFileInterface;
+
 			class FileSystemHelper : public tFileSystemHelper<void> {};
 
 

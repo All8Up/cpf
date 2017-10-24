@@ -55,7 +55,9 @@ namespace CPF
 		void** AsVoidPP() { return reinterpret_cast<void**>(&mpTarget); }
 		TARGET** AsTypePP() { return &mpTarget; }
 		template <typename TYPE>
-		TYPE* Cast() { return static_cast<TYPE*>(Cast()); }
+		TYPE* As() { return static_cast<TYPE*>(Cast()); }
+		template <typename TYPE>
+		TYPE** AsPP() { return reinterpret_cast<TYPE**>(&mpTarget); }
 
 		// Safe variations.
 		void AddRef() { _AddRef(); }
