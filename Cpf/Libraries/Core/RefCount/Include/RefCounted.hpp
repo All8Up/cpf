@@ -17,14 +17,14 @@ namespace CPF
 	//////////////////////////////////////////////////////////////////////////
 	// Utilities for ref counted objects.
 	template<typename T>
-	inline int32_t SafeAddRef(T* rc)
+	int32_t SafeAddRef(T* rc)
 	{
 		if (rc)
 			return rc->AddRef();
 		return 0;
 	}
 	template<typename T>
-	inline int32_t SafeRelease(T* rc)
+	int32_t SafeRelease(T* rc)
 	{
 		if (rc)
 			return rc->Release();

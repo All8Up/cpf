@@ -75,7 +75,7 @@ IDLParser::MainContext* IDLParser::main() {
       ((1ULL << _la) & ((1ULL << IDLParser::IMPORT)
       | (1ULL << IDLParser::STRUCT)
       | (1ULL << IDLParser::UNION)
-      | (1ULL << IDLParser::EVENT)
+      | (1ULL << IDLParser::CALLBACK)
       | (1ULL << IDLParser::INTERFACE)
       | (1ULL << IDLParser::ENUM)
       | (1ULL << IDLParser::FLAGS)
@@ -149,7 +149,7 @@ IDLParser::Global_statementsContext* IDLParser::global_statements() {
       ((1ULL << _la) & ((1ULL << IDLParser::IMPORT)
       | (1ULL << IDLParser::STRUCT)
       | (1ULL << IDLParser::UNION)
-      | (1ULL << IDLParser::EVENT)
+      | (1ULL << IDLParser::CALLBACK)
       | (1ULL << IDLParser::INTERFACE)
       | (1ULL << IDLParser::ENUM)
       | (1ULL << IDLParser::FLAGS)
@@ -191,8 +191,8 @@ IDLParser::Interface_stmtContext* IDLParser::Global_statementContext::interface_
   return getRuleContext<IDLParser::Interface_stmtContext>(0);
 }
 
-IDLParser::Event_declContext* IDLParser::Global_statementContext::event_decl() {
-  return getRuleContext<IDLParser::Event_declContext>(0);
+IDLParser::Callback_declContext* IDLParser::Global_statementContext::callback_decl() {
+  return getRuleContext<IDLParser::Callback_declContext>(0);
 }
 
 IDLParser::Const_defContext* IDLParser::Global_statementContext::const_def() {
@@ -285,7 +285,7 @@ IDLParser::Global_statementContext* IDLParser::global_statement() {
     case 5: {
       enterOuterAlt(_localctx, 5);
       setState(162);
-      event_decl();
+      callback_decl();
       break;
     }
 
@@ -1798,7 +1798,7 @@ IDLParser::Interface_blockContext* IDLParser::interface_block() {
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & ((1ULL << IDLParser::EVENT)
+      ((1ULL << _la) & ((1ULL << IDLParser::CALLBACK)
       | (1ULL << IDLParser::ENUM)
       | (1ULL << IDLParser::COLON)
       | (1ULL << IDLParser::Const)
@@ -1852,8 +1852,8 @@ IDLParser::Enum_defContext* IDLParser::Interface_itemContext::enum_def() {
   return getRuleContext<IDLParser::Enum_defContext>(0);
 }
 
-IDLParser::Event_declContext* IDLParser::Interface_itemContext::event_decl() {
-  return getRuleContext<IDLParser::Event_declContext>(0);
+IDLParser::Callback_declContext* IDLParser::Interface_itemContext::callback_decl() {
+  return getRuleContext<IDLParser::Callback_declContext>(0);
 }
 
 
@@ -1903,7 +1903,7 @@ IDLParser::Interface_itemContext* IDLParser::interface_item() {
     case 4: {
       enterOuterAlt(_localctx, 4);
       setState(299);
-      event_decl();
+      callback_decl();
       break;
     }
 
@@ -2258,59 +2258,59 @@ IDLParser::Param_dir_qualifierContext* IDLParser::param_dir_qualifier() {
   return _localctx;
 }
 
-//----------------- Event_declContext ------------------------------------------------------------------
+//----------------- Callback_declContext ------------------------------------------------------------------
 
-IDLParser::Event_declContext::Event_declContext(ParserRuleContext *parent, size_t invokingState)
+IDLParser::Callback_declContext::Callback_declContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* IDLParser::Event_declContext::EVENT() {
-  return getToken(IDLParser::EVENT, 0);
+tree::TerminalNode* IDLParser::Callback_declContext::CALLBACK() {
+  return getToken(IDLParser::CALLBACK, 0);
 }
 
-tree::TerminalNode* IDLParser::Event_declContext::IDENT() {
+tree::TerminalNode* IDLParser::Callback_declContext::IDENT() {
   return getToken(IDLParser::IDENT, 0);
 }
 
-tree::TerminalNode* IDLParser::Event_declContext::EQUALS() {
+tree::TerminalNode* IDLParser::Callback_declContext::EQUALS() {
   return getToken(IDLParser::EQUALS, 0);
 }
 
-IDLParser::Type_declContext* IDLParser::Event_declContext::type_decl() {
+IDLParser::Type_declContext* IDLParser::Callback_declContext::type_decl() {
   return getRuleContext<IDLParser::Type_declContext>(0);
 }
 
-tree::TerminalNode* IDLParser::Event_declContext::LPAREN() {
+tree::TerminalNode* IDLParser::Callback_declContext::LPAREN() {
   return getToken(IDLParser::LPAREN, 0);
 }
 
-tree::TerminalNode* IDLParser::Event_declContext::RPAREN() {
+tree::TerminalNode* IDLParser::Callback_declContext::RPAREN() {
   return getToken(IDLParser::RPAREN, 0);
 }
 
-tree::TerminalNode* IDLParser::Event_declContext::SEMICOLON() {
+tree::TerminalNode* IDLParser::Callback_declContext::SEMICOLON() {
   return getToken(IDLParser::SEMICOLON, 0);
 }
 
-IDLParser::Function_param_listContext* IDLParser::Event_declContext::function_param_list() {
+IDLParser::Function_param_listContext* IDLParser::Callback_declContext::function_param_list() {
   return getRuleContext<IDLParser::Function_param_listContext>(0);
 }
 
 
-size_t IDLParser::Event_declContext::getRuleIndex() const {
-  return IDLParser::RuleEvent_decl;
+size_t IDLParser::Callback_declContext::getRuleIndex() const {
+  return IDLParser::RuleCallback_decl;
 }
 
-antlrcpp::Any IDLParser::Event_declContext::accept(tree::ParseTreeVisitor *visitor) {
+antlrcpp::Any IDLParser::Callback_declContext::accept(tree::ParseTreeVisitor *visitor) {
   if (auto parserVisitor = dynamic_cast<IDLParserVisitor*>(visitor))
-    return parserVisitor->visitEvent_decl(this);
+    return parserVisitor->visitCallback_decl(this);
   else
     return visitor->visitChildren(this);
 }
 
-IDLParser::Event_declContext* IDLParser::event_decl() {
-  Event_declContext *_localctx = _tracker.createInstance<Event_declContext>(_ctx, getState());
-  enterRule(_localctx, 60, IDLParser::RuleEvent_decl);
+IDLParser::Callback_declContext* IDLParser::callback_decl() {
+  Callback_declContext *_localctx = _tracker.createInstance<Callback_declContext>(_ctx, getState());
+  enterRule(_localctx, 60, IDLParser::RuleCallback_decl);
   size_t _la = 0;
 
   auto onExit = finally([=] {
@@ -2319,7 +2319,7 @@ IDLParser::Event_declContext* IDLParser::event_decl() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(341);
-    match(IDLParser::EVENT);
+    match(IDLParser::CALLBACK);
     setState(342);
     match(IDLParser::IDENT);
     setState(343);
@@ -5664,30 +5664,30 @@ std::vector<std::string> IDLParser::_ruleNames = {
   "union_decl", "union_fwd", "struct_block", "struct_item", "os_specific", 
   "os_tag", "interface_stmt", "interface_fwd", "interface_decl", "interface_super", 
   "interface_block", "interface_item", "function_decl", "function_param_list", 
-  "function_param", "param_dir_qualifier", "event_decl", "const_def", "const_integral_def", 
-  "const_float_def", "const_string_def", "const_class_id_def", "enum_fwd", 
-  "enum_def", "flags_fwd", "flags_def", "enum_type", "enum_elements", "enum_item", 
-  "enum_expr", "expr_add_sub", "expr_mul_div", "expr_shift", "expr_logical", 
-  "expr_value", "any_literal", "numeric_lit", "integer_lit", "float_lit", 
-  "string_lit", "char_lit", "qualified_ident", "qualified_part", "qualified_separator", 
-  "all_or_ident", "member_decl", "member_init", "member_init_value", "init_as_type", 
-  "type_decl", "type_modifier", "pointer_type", "pointer_decl", "any_type", 
-  "utility_type", "integral_type", "float_type", "template_type", "template_params", 
-  "template_param"
+  "function_param", "param_dir_qualifier", "callback_decl", "const_def", 
+  "const_integral_def", "const_float_def", "const_string_def", "const_class_id_def", 
+  "enum_fwd", "enum_def", "flags_fwd", "flags_def", "enum_type", "enum_elements", 
+  "enum_item", "enum_expr", "expr_add_sub", "expr_mul_div", "expr_shift", 
+  "expr_logical", "expr_value", "any_literal", "numeric_lit", "integer_lit", 
+  "float_lit", "string_lit", "char_lit", "qualified_ident", "qualified_part", 
+  "qualified_separator", "all_or_ident", "member_decl", "member_init", "member_init_value", 
+  "init_as_type", "type_decl", "type_modifier", "pointer_type", "pointer_decl", 
+  "any_type", "utility_type", "integral_type", "float_type", "template_type", 
+  "template_params", "template_param"
 };
 
 std::vector<std::string> IDLParser::_literalNames = {
   "", "'WINDOWS'", "'DARWIN'", "'import'", "'struct'", "'default'", "'union'", 
-  "'event'", "'interface'", "'enum'", "'flags'", "'module'", "'from'", "'as'", 
-  "'in'", "'out'", "':'", "';'", "'*'", "'/'", "'.'", "','", "'='", "'\"'", 
-  "'''", "'{'", "'}'", "'('", "')'", "'['", "']'", "'<'", "'>'", "'+'", 
-  "'-'", "'<<'", "'>>'", "'|'", "'const'", "'void'", "'result'", "'success'", 
-  "'failure'", "'class_id'", "'string'", "'u8'", "'s8'", "'u16'", "'s16'", 
-  "'u32'", "'s32'", "'u64'", "'s64'", "'f32'", "'f64'"
+  "'callback'", "'interface'", "'enum'", "'flags'", "'module'", "'from'", 
+  "'as'", "'in'", "'out'", "':'", "';'", "'*'", "'/'", "'.'", "','", "'='", 
+  "'\"'", "'''", "'{'", "'}'", "'('", "')'", "'['", "']'", "'<'", "'>'", 
+  "'+'", "'-'", "'<<'", "'>>'", "'|'", "'const'", "'void'", "'result'", 
+  "'success'", "'failure'", "'class_id'", "'string'", "'u8'", "'s8'", "'u16'", 
+  "'s16'", "'u32'", "'s32'", "'u64'", "'s64'", "'f32'", "'f64'"
 };
 
 std::vector<std::string> IDLParser::_symbolicNames = {
-  "", "Windows", "Darwin", "IMPORT", "STRUCT", "DEFAULT", "UNION", "EVENT", 
+  "", "Windows", "Darwin", "IMPORT", "STRUCT", "DEFAULT", "UNION", "CALLBACK", 
   "INTERFACE", "ENUM", "FLAGS", "MODULE", "FROM", "AS", "IN", "OUT", "COLON", 
   "SEMICOLON", "STAR", "SLASH", "DOT", "COMMA", "EQUALS", "QUOTE", "SQUOTE", 
   "LBRACE", "RBRACE", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", "LT", 

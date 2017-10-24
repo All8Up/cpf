@@ -155,12 +155,12 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 
 			decl.mFunctions.push_back(funcDecl);
 		}
-		else if (item->event_decl())
+		else if (item->callback_decl())
 		{
-			auto eventCtx = item->event_decl();
-			EventDecl eventDecl;
-			eventDecl.mName = eventCtx->IDENT()->toString();
-			eventDecl.mReturnType = ParseTypeDecl(eventCtx->type_decl());
+			auto eventCtx = item->callback_decl();
+			CallbackDecl callbackDecl;
+			callbackDecl.mName = eventCtx->IDENT()->toString();
+			callbackDecl.mReturnType = ParseTypeDecl(eventCtx->type_decl());
 			if (eventCtx->function_param_list())
 			{
 				for (auto param : eventCtx->function_param_list()->function_param())
@@ -168,10 +168,10 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 					ParamDecl paramDecl;
 					paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
 					paramDecl.mType = ParseTypeDecl(param->type_decl());
-					eventDecl.mParams.push_back(paramDecl);
+					callbackDecl.mParams.push_back(paramDecl);
 				}
 			}
-			decl.mEvents.push_back(eventDecl);
+			decl.mCallbacks.push_back(callbackDecl);
 		}
 	}
 
@@ -185,11 +185,11 @@ antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
 	return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitEvent_decl(IDLParser::Event_declContext *ctx)
+antlrcpp::Any Visitor::visitCallback_decl(IDLParser::Callback_declContext *ctx)
 {
-	EventDecl eventDecl;
-	eventDecl.mName = ctx->IDENT()->toString();
-	eventDecl.mReturnType = ParseTypeDecl(ctx->type_decl());
+	CallbackDecl callbackDecl;
+	callbackDecl.mName = ctx->IDENT()->toString();
+	callbackDecl.mReturnType = ParseTypeDecl(ctx->type_decl());
 	if (ctx->function_param_list())
 	{
 		for (auto param : ctx->function_param_list()->function_param())
@@ -197,10 +197,10 @@ antlrcpp::Any Visitor::visitEvent_decl(IDLParser::Event_declContext *ctx)
 			ParamDecl paramDecl;
 			paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
 			paramDecl.mType = ParseTypeDecl(param->type_decl());
-			eventDecl.mParams.push_back(paramDecl);
+			callbackDecl.mParams.push_back(paramDecl);
 		}
 	}
-	Emit<EventDeclStmt>(eventDecl);
+	Emit<CallbackDeclStmt>(callbackDecl);
 	return defaultResult();
 }
 

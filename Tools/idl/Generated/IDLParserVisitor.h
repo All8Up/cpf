@@ -79,7 +79,7 @@ public:
 
     virtual antlrcpp::Any visitParam_dir_qualifier(IDLParser::Param_dir_qualifierContext *context) = 0;
 
-    virtual antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *context) = 0;
+    virtual antlrcpp::Any visitCallback_decl(IDLParser::Callback_declContext *context) = 0;
 
     virtual antlrcpp::Any visitConst_def(IDLParser::Const_defContext *context) = 0;
 

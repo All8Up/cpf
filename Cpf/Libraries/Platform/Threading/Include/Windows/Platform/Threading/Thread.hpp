@@ -114,7 +114,7 @@ namespace CPF
 		template<typename tFunction, typename... tArgs>
 		Thread::Thread(tFunction&& func, tArgs&&... args)
 		{
-			_Start(CPF::Move(std::bind(func, args...)));
+			_Start(Move(std::bind(func, std::forward<tArgs>(args)...)));
 		}
 
 

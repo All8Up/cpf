@@ -1,6 +1,50 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gmock/gmock.h>
-#include "Future.hpp"
+#include "CPF/Future.hpp"
+#include "Threading/Thread.hpp"
+
+TEST(Future, LogicTest)
+{
+	using namespace CPF;
+	Promise<int32_t> promise;
+	auto future = promise.GetFuture();
+
+	promise.SetResult(5);
+	auto test = future.Get();
+	EXPECT_EQ(5, test);
+
+	try
+	{
+		auto failure = future.Get();
+		EXPECT_FALSE(true); // Should not happen, the above should throw.
+		(void)failure;
+	}
+	catch (std::exception& ex)
+	{
+		EXPECT_TRUE(true);
+		(void)ex;
+	}
+}
+
+TEST(Future, BasicThreading)
+{
+	using namespace CPF;
+	Promise<int32_t> promise;
+	auto future = promise.GetFuture();
+	promise.SetResult(5);
+
+	Threading::Thread testThread(
+		[](Promise<int32_t>&& p)
+		{
+			Threading::Thread::Sleep(Time::Seconds(1.0f));
+//			p.SetResult(5);
+		},
+		Move(promise)
+	);
+
+	auto testValue = future.Get();
+	testThread.Join();
+}
 
 /*
 initial target for usage: s_IO::File.hpp & Stream.hpp.

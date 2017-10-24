@@ -92,7 +92,7 @@ namespace IDL
 			String mName;
 			String mValue;
 		};
-		struct EventDecl
+		struct CallbackDecl
 		{
 			String mName;
 			TypeDecl mReturnType;
@@ -107,8 +107,8 @@ namespace IDL
 			Functions mFunctions;
 			using ClassIDs = CPF::Vector<ClassID>;
 			ClassIDs mClassIDs;
-			using Events = CPF::Vector<EventDecl>;
-			Events mEvents;
+			using Callbacks = CPF::Vector<CallbackDecl>;
+			Callbacks mCallbacks;
 		};
 		struct MemberInitValue
 		{
@@ -186,7 +186,7 @@ namespace IDL
 		typedef CPF::Events::Event<14, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
 		typedef CPF::Events::Event<15, CPF::Function<void(const String&, Type)>> FlagsForwardStmt;
 		typedef CPF::Events::Event<16, CPF::Function<void(const EnumDecl&)>> FlagsDeclStmt;
-		typedef CPF::Events::Event<17, CPF::Function<void(const EventDecl&)>> EventDeclStmt;
+		typedef CPF::Events::Event<17, CPF::Function<void(const CallbackDecl&)>> CallbackDeclStmt;
 
 		Visitor();
 
@@ -199,7 +199,7 @@ namespace IDL
 		antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *ctx) override;
 		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *ctx) override;
 		antlrcpp::Any visitInterface_fwd(IDLParser::Interface_fwdContext *ctx) override;
-		antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *ctx) override;
+		antlrcpp::Any visitCallback_decl(IDLParser::Callback_declContext *ctx) override;
 		antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *ctx) override;
 		antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *ctx) override;
 		antlrcpp::Any visitUnion_fwd(IDLParser::Union_fwdContext *ctx) override;

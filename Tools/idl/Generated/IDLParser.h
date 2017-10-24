@@ -13,7 +13,7 @@ class  IDLParser : public antlr4::Parser {
 public:
   enum {
     Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULT = 5, UNION = 6, 
-    EVENT = 7, INTERFACE = 8, ENUM = 9, FLAGS = 10, MODULE = 11, FROM = 12, 
+    CALLBACK = 7, INTERFACE = 8, ENUM = 9, FLAGS = 10, MODULE = 11, FROM = 12, 
     AS = 13, IN = 14, OUT = 15, COLON = 16, SEMICOLON = 17, STAR = 18, SLASH = 19, 
     DOT = 20, COMMA = 21, EQUALS = 22, QUOTE = 23, SQUOTE = 24, LBRACE = 25, 
     RBRACE = 26, LPAREN = 27, RPAREN = 28, LBRACKET = 29, RBRACKET = 30, 
@@ -34,7 +34,7 @@ public:
     RuleOs_specific = 18, RuleOs_tag = 19, RuleInterface_stmt = 20, RuleInterface_fwd = 21, 
     RuleInterface_decl = 22, RuleInterface_super = 23, RuleInterface_block = 24, 
     RuleInterface_item = 25, RuleFunction_decl = 26, RuleFunction_param_list = 27, 
-    RuleFunction_param = 28, RuleParam_dir_qualifier = 29, RuleEvent_decl = 30, 
+    RuleFunction_param = 28, RuleParam_dir_qualifier = 29, RuleCallback_decl = 30, 
     RuleConst_def = 31, RuleConst_integral_def = 32, RuleConst_float_def = 33, 
     RuleConst_string_def = 34, RuleConst_class_id_def = 35, RuleEnum_fwd = 36, 
     RuleEnum_def = 37, RuleFlags_fwd = 38, RuleFlags_def = 39, RuleEnum_type = 40, 
@@ -89,7 +89,7 @@ public:
   class Function_param_listContext;
   class Function_paramContext;
   class Param_dir_qualifierContext;
-  class Event_declContext;
+  class Callback_declContext;
   class Const_defContext;
   class Const_integral_defContext;
   class Const_float_defContext;
@@ -168,7 +168,7 @@ public:
     Struct_stmtContext *struct_stmt();
     Union_stmtContext *union_stmt();
     Interface_stmtContext *interface_stmt();
-    Event_declContext *event_decl();
+    Callback_declContext *callback_decl();
     Const_defContext *const_def();
     Enum_defContext *enum_def();
     Flags_fwdContext *flags_fwd();
@@ -509,7 +509,7 @@ public:
     Function_declContext *function_decl();
     Const_defContext *const_def();
     Enum_defContext *enum_def();
-    Event_declContext *event_decl();
+    Callback_declContext *callback_decl();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -580,11 +580,11 @@ public:
 
   Param_dir_qualifierContext* param_dir_qualifier();
 
-  class  Event_declContext : public antlr4::ParserRuleContext {
+  class  Callback_declContext : public antlr4::ParserRuleContext {
   public:
-    Event_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Callback_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *EVENT();
+    antlr4::tree::TerminalNode *CALLBACK();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *EQUALS();
     Type_declContext *type_decl();
@@ -597,7 +597,7 @@ public:
    
   };
 
-  Event_declContext* event_decl();
+  Callback_declContext* callback_decl();
 
   class  Const_defContext : public antlr4::ParserRuleContext {
   public:

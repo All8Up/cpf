@@ -133,23 +133,23 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		);
 	}
 
-	if (!decl.mEvents.empty())
+	if (!decl.mCallbacks.empty())
 	{
 		mpWriter->LineFeed(eEvents, eEvents);
-		for (const auto& eventItem : decl.mEvents)
+		for (const auto& callbackItem : decl.mCallbacks)
 		{
 			mpWriter->Output("%susing %s = %s (*) (",
 				mpWriter->GetIndentString().c_str(),
-				eventItem.mName.c_str(),
-				TypeToString(eventItem.mReturnType).c_str());
+				callbackItem.mName.c_str(),
+				TypeToString(callbackItem.mReturnType).c_str());
 
-			if (!eventItem.mParams.empty())
+			if (!callbackItem.mParams.empty())
 			{
-				mpWriter->Output("%s", TypeToString(eventItem.mParams[0].mType).c_str());
-				if (!eventItem.mParams[0].mName.empty())
-					mpWriter->Output(" %s", eventItem.mParams[0].mName.c_str());
+				mpWriter->Output("%s", TypeToString(callbackItem.mParams[0].mType).c_str());
+				if (!callbackItem.mParams[0].mName.empty())
+					mpWriter->Output(" %s", callbackItem.mParams[0].mName.c_str());
 
-				for (auto it = eventItem.mParams.begin() + 1; it != eventItem.mParams.end(); ++it)
+				for (auto it = callbackItem.mParams.begin() + 1; it != callbackItem.mParams.end(); ++it)
 				{
 					mpWriter->Output(", %s", TypeToString(it->mType).c_str());
 					if (!it->mName.empty())

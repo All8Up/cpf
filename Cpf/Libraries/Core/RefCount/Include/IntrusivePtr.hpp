@@ -21,11 +21,11 @@ namespace CPF
 		IntrusivePtr(const IntrusivePtr& rhs);
 		template<typename SRC>
 		explicit IntrusivePtr(const IntrusivePtr<SRC>& rhs) : mpTarget(rhs) {_AddRef();}
-		IntrusivePtr(IntrusivePtr&& rhs);
+		IntrusivePtr(IntrusivePtr&& rhs) noexcept;
 		~IntrusivePtr();
 
 		IntrusivePtr& operator = (const IntrusivePtr& rhs);
-		IntrusivePtr& operator = (IntrusivePtr&& rhs);
+		IntrusivePtr& operator = (IntrusivePtr&& rhs) noexcept;
 
 		bool operator ==(const IntrusivePtr& rhs) const;
 		bool operator !=(const IntrusivePtr& rhs) const;
@@ -94,7 +94,7 @@ namespace CPF
 
 
 	template<typename TARGET>
-	IntrusivePtr<TARGET>::IntrusivePtr(IntrusivePtr&& rhs)
+	IntrusivePtr<TARGET>::IntrusivePtr(IntrusivePtr&& rhs) noexcept
 		: mpTarget(rhs.mpTarget)
 	{
 		rhs.mpTarget = nullptr;
@@ -120,7 +120,7 @@ namespace CPF
 
 
 	template<typename TARGET>
-	IntrusivePtr<TARGET>& IntrusivePtr<TARGET>::operator = (IntrusivePtr&& rhs)
+	IntrusivePtr<TARGET>& IntrusivePtr<TARGET>::operator = (IntrusivePtr&& rhs) noexcept
 	{
 		if (rhs.mpTarget == mpTarget)
 		{

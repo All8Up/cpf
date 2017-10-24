@@ -11,6 +11,7 @@ CPF_GEN_GOM(CPP_IO_INTERFACES cpp
 )
 set (IDL_FLAGS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Attributes.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Access.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamAccess.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamOrigin.idl
 )
@@ -21,20 +22,44 @@ CPF_GEN_GOM(CPP_IO_FLAGS cpp
 )
 
 # ###############################################
+set (IO_INCLUDE_FILES
+	Include/CPF/IO/File.hpp
+)
+
+# ###############################################
 add_library (IO INTERFACE)
 target_include_directories (IO
 	INTERFACE
 		${CPF_GENERATED}/CPP
+		${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
-add_custom_target (IO_Interfaces
+target_link_libraries (IO
+	INTERFACE
+		GOM
+		Future
+)
+add_custom_target (IO_IDE
 	SOURCES
 		${IDL_INTERFACES}
 		${CPP_IO_INTERFACES}
 		${IDL_FLAGS}
 		${CPP_IO_FLAGS}
+		Include/CPF/IO.hpp
+		${IO_INCLUDE_FILES}
 )
-add_dependencies (IO IO_Interfaces)
-set_property (TARGET IO_Interfaces PROPERTY FOLDER Interfaces/IO)
+add_dependencies (IO IO_IDE)
+set_property (TARGET IO_IDE PROPERTY FOLDER Libraries/Interface/Platform)
+
+source_group (Headers FILES Include/CPF/IO.hpp)
+source_group (Headers\\IO FILES ${IO_INCLUDE_FILES})
+
+# ###############################################
+MakeUnitTest (LIBRARY IO GROUP Platform
+	TEST_FILES
+		UnitTest/Test_All.hpp
+		../../Core/Test/UnitTestMain.cpp
+)
+
 
 # ###############################################
 set( INCLUDE_FILES
@@ -111,6 +136,7 @@ install( EXPORT IOConfig DESTINATION CMake )
 
 
 # ###############################################
+#[[
 MakeUnitTests( LIBRARY IO:static GROUP Platform
 	TEST_FILES
 		UnitTest/Test_All.hpp
@@ -126,3 +152,4 @@ MakeUnitTests( LIBRARY IO:static GROUP Platform
 	LINK_LIBRARIES
 		ANSI_C_FileSystem:static
 )
+#]]

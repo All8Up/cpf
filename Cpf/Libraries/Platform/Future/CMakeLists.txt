@@ -1,11 +1,11 @@
 # ###############################################
 set (INCLUDE_FILES
-	Include/Future.hpp
+	Include/CPF/Future.hpp
 )
 
 add_library (Future INTERFACE
 )
-target_link_libraries (Future INTERFACE Configuration)
+target_link_libraries (Future INTERFACE RefCount Threading)
 
 source_group (Interface FILES ${INCLUDE_FILES})
 
@@ -23,7 +23,7 @@ install( DIRECTORY Include
 	PATTERN *
 )
 
-
+#[[
 install (TARGETS Future
 	EXPORT FutureConfig
 	CONFIGURATIONS Debug Release
@@ -31,7 +31,7 @@ install (TARGETS Future
 	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
 )
 install( EXPORT FutureConfig DESTINATION CMake )
-
+#]]
 
 # ###############################################
 MakeUnitTest (LIBRARY Future GROUP Platform

@@ -1,5 +1,23 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "CPF/IO/File.hpp"
+
+TEST(IO, Basics)
+{
+	using namespace CPF::IO::File;
+	FileSystemHelper::Initialize();
+	try
+	{
+		if (CPF::GOM::Failed(Exists("does_not_exist.txt").Get()))
+			;
+	}
+	catch (CPF::Exception& exception)
+	{
+		
+	}
+}
+
+#if 0
 #include "String.hpp"
 #include "Vector.hpp"
 #include "Algorithm.hpp"
@@ -104,3 +122,4 @@ TEST(IO, Result)
 	EXPECT_FALSE(t1.IsError());
 	EXPECT_EQ(1, t1.OK());
 }
+#endif

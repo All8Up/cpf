@@ -1,33 +1,33 @@
 import iUnknown from GOM;
-import StreamAccess from IO;
-import StreamOrigin from IO;
+import Access from CPF::IO;
+import StreamOrigin from CPF::IO;
 module CPF::IO;
 
 interface iStream : GOM::iUnknown
 {
-	StreamAccess GetAccess();
+	Access GetAccess();
 	bool CanSeek();
 	bool CanRead();
 	bool CanWrite();
 
-	event OnComplete = void (result value);
+	callback OnComplete = void (result value);
 
 	void Close(OnComplete cb);
 	void Flush(OnComplete cb);
 
-	event OnPosition = void(result value, s64 position);
+	callback OnPosition = void(result value, s64 position);
 	void GetPosition(OnPosition cb);
 
-	event OnLength = void(result value, s64 length);
+	callback OnLength = void(result value, s64 length);
 	void GetLength(OnLength cb);
 
-	event OnSeek = void(result value);
+	callback OnSeek = void(result value);
 	void Seek(s32 offset, StreamOrigin origin, OnSeek cb);
 
 	//
-	event OnRead = void(result value, s64 count);
+	callback OnRead = void(result value, s64 count);
 	void Read(void* outBuffer, s64 length, OnRead cb);
 
-	event OnWrite = void(result value, s64 count);
+	callback OnWrite = void(result value, s64 count);
 	void Write(const void* inBuffer, s64 length, OnWrite cb);
 }

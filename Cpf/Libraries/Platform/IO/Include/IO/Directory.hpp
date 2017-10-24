@@ -4,7 +4,7 @@
 #include "IO/IO.hpp"
 #include "String.hpp"
 #include "Functional.hpp"
-
+#include "CPF/IO/Attributes.hpp"
 
 namespace CPF
 {
