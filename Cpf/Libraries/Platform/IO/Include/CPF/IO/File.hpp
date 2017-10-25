@@ -60,6 +60,22 @@ namespace CPF
 				});
 				return promise->GetFuture();
 			}
+
+			inline Future<GOM::Result> Delete(const char* name)
+			{
+				iFile* fileInterface = FileSystemHelper::GetFileInterface();
+				Promise<GOM::Result>* promise = new Promise<GOM::Result>();
+				fileInterface->Delete(name, promise, [](GOM::Result value, void* context)
+				{
+					Promise<GOM::Result>* promise = reinterpret_cast<Promise<GOM::Result>*>(context);
+					if (GOM::Succeeded(value))
+						promise->SetResult(Move(value));
+					else
+						promise->SetException(std::make_exception_ptr(Exception()));
+					delete promise;
+				});
+				return promise->GetFuture();
+			}
 		}
 	}
 }
