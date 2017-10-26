@@ -1,7 +1,9 @@
 # ###############################################
 set (IDL_INTERFACES
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iDirectory.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iExecutor.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFile.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iFileStream.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Interfaces/iStream.idl
 )
 CPF_GEN_GOM(CPP_IO_INTERFACES cpp
@@ -30,7 +32,7 @@ set (IO_DETAIL_INCLUDE_FILES
 	Include/CPF/IO/Detail/DefaultDirectory.hpp
 	Include/CPF/IO/Detail/DefaultExecutor.hpp
 	Include/CPF/IO/Detail/DefaultFile.hpp
-	Include/CPF/IO/Detail/DefaultStream.hpp
+	Include/CPF/IO/Detail/DefaultFileStream.hpp
 )
 
 # ###############################################

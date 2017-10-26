@@ -1,0 +1,11 @@
+import iUnknown from GOM;
+import Reactor from Threading;
+module CPF::IO;
+
+// TODO: This will move into the threading systems eventually.
+// TODO: This is a hacked solution to allow std::function, will need to decide how to deal with
+// passing work in a more appropriate manner later.
+interface iExecutor : GOM::iUnknown
+{
+	CPF::Threading::Reactor::WorkQueue* GetQueue();
+}

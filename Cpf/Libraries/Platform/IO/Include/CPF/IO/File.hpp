@@ -76,6 +76,21 @@ namespace CPF
 				});
 				return promise->GetFuture();
 			}
+
+			inline Future<iStream*> Open(const char* name, Access access)
+			{
+				iFile* fileInterface = FileSystemHelper::GetFileInterface();
+				Promise<iStream*>* promise = new Promise<iStream*>();
+				fileInterface->Open(name, access, promise, [](GOM::Result value, iStream* stream, void* context) {
+					Promise<iStream*>* promise = reinterpret_cast<Promise<iStream*>*>(context);
+					if (GOM::Succeeded(value))
+						promise->SetResult(Move(stream));
+					else
+						promise->SetException(std::make_exception_ptr(Exception()));
+					delete promise;
+				});
+				return promise->GetFuture();
+			}
 		}
 	}
 }

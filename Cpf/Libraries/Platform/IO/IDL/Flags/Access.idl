@@ -1,9 +1,11 @@
 import Configuration;
+import EnumFlagType;
 module CPF::IO;
 
-enum Access : s32
+flags Access : s32
 {
-	eRead,
-	eWrite,
-	eBoth
+	eNone = 0,
+	eRead = 1<<0,
+	eWrite = 1<<1,
+	eBoth = 1 | 2
 }

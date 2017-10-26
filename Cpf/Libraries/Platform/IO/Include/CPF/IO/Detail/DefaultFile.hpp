@@ -3,6 +3,7 @@
 #include "CPF/IO/iFile.hpp"
 #include "Threading/Reactor.hpp"
 #include "Threading/Thread.hpp"
+#include "DefaultFileStream.hpp"
 
 namespace CPF
 {
@@ -17,28 +18,27 @@ namespace CPF
 			virtual ~DefaultFile();
 
 			GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
-			void CPF_STDCALL Exists(const char* name, void* context, OnComplete cb) override;
-			void CPF_STDCALL Delete(const char* name, void* context, OnComplete cb) override;
-			void CPF_STDCALL Create(const char* name, Access access, void* context, OnCreate cb) override;
+			GOM::Result CPF_STDCALL Exists(const char* name, void* context, OnComplete cb) override;
+			GOM::Result CPF_STDCALL Delete(const char* name, void* context, OnComplete cb) override;
+			GOM::Result CPF_STDCALL Open(const char* name, Access access, void* context, OnOpen cb) override;
 
 		private:
-			Threading::Reactor mReactor;
-			Threading::Reactor::WorkQueue mQueue;
-			Threading::Thread mWorker;
+			Plugin::iRegistry* mpRegistry;
+			IntrusivePtr<iExecutor> mpExecutor;
 		};
 
-		inline DefaultFile::DefaultFile(Plugin::iRegistry* regy, GOM::iUnknown* outer)
+
+		//////////////////////////////////////////////////////////////////////////
+		inline DefaultFile::DefaultFile(Plugin::iRegistry* regy, GOM::iUnknown*)
 			: tRefCounted<iFile>()
+			, mpRegistry(regy)
 		{
-			mQueue.Initialize(&mReactor);
-			mWorker = Move(Threading::Thread([&]()
-			{
-				mReactor.Run();
-			}));
+			regy->GetInstance(iExecutor::kIID.GetID(), mpExecutor.AsPP<iUnknown>());
 		}
 
 		inline DefaultFile::~DefaultFile()
-		{}
+		{
+		}
 
 		inline GOM::Result CPF_STDCALL DefaultFile::QueryInterface(uint64_t id, void** outIface)
 		{
@@ -61,27 +61,41 @@ namespace CPF
 			return GOM::kInvalidParameter;
 		}
 
-		inline void CPF_STDCALL DefaultFile::Exists(const char* name, void* context, OnComplete cb)
+		inline GOM::Result CPF_STDCALL DefaultFile::Exists(const char* name, void* context, OnComplete cb)
 		{
-			mQueue([=]() {
+			(*mpExecutor->GetQueue())( [=]() {
 				DWORD ftype = GetFileAttributesA(name);
 				if ((ftype & FILE_ATTRIBUTE_DIRECTORY) == 0)
 					(*cb)(GOM::kOK, context);
 				(*cb)(GOM::kError, context);
 			});
+			return GOM::kOK;
 		}
 
-		inline void CPF_STDCALL DefaultFile::Delete(const char* name, void* context, OnComplete cb)
+		inline GOM::Result CPF_STDCALL DefaultFile::Delete(const char* name, void* context, OnComplete cb)
 		{
-			mQueue([=]() {
+			(*mpExecutor->GetQueue())( [=]() {
 				DWORD error = ::DeleteFileA(name);
 				if (error != 0)
 					(*cb)(GOM::kOK, context);
 				(*cb)(GOM::kError, context);
 			});
+			return GOM::kOK;
 		}
 
-		inline void CPF_STDCALL DefaultFile::Create(const char* name, Access access, void* context, OnCreate cb)
-		{}
+		inline GOM::Result CPF_STDCALL DefaultFile::Open(const char* name, Access access, void* context, OnOpen cb)
+		{
+			if (mpRegistry)
+			{
+				GOM::Result result;
+				iFileStream* fileStream = nullptr;
+
+				if (GOM::Succeeded(result = mpRegistry->Create(nullptr, kDefaultFileStreamCID.GetID(), iFileStream::kIID.GetID(), (void**)&fileStream)))
+					return fileStream->Open(name, access, context, cb);
+
+				return result;
+			}
+			return GOM::kNotInitialized;
+		}
 	}
 }

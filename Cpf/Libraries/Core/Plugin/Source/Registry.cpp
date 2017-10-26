@@ -235,7 +235,8 @@ GOM::Result CPF_STDCALL Registry::Create(iUnknown* outer, uint64_t cid, uint64_t
 				if (instance)
 				{
 					GOM::Result result = instance->QueryInterface(id, outIface);
-					instance->Release();
+					if (instance)
+						instance->Release();
 					return result;
 				}
 				// There is an error in the plugin.
