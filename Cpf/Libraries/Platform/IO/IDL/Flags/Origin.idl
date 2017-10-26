@@ -1,7 +1,7 @@
 import Configuration;
 module CPF::IO;
 
-enum StreamOrigin : s32
+enum Origin : s32
 {
 	eBegin,
 	eEnd,

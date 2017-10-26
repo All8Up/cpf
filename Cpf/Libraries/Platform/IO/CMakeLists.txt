@@ -14,8 +14,7 @@ CPF_GEN_GOM(CPP_IO_INTERFACES cpp
 set (IDL_FLAGS
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Attributes.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Access.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamAccess.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/StreamOrigin.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Flags/Origin.idl
 )
 CPF_GEN_GOM(CPP_IO_FLAGS cpp
 	hpp
