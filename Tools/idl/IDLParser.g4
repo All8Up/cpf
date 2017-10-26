@@ -87,9 +87,9 @@ function_param_list     : function_param (COMMA function_param)*;
 
 function_param          : param_dir_qualifier? type_decl IDENT;
 
-param_dir_qualifier     : LBRACKET IN RBRACKET
-                        | LBRACKET OUT RBRACKET
-                        | LBRACKET IN COMMA OUT RBRACKET;
+param_dir_qualifier     : LBRACKET In RBRACKET
+                        | LBRACKET Out RBRACKET
+                        | LBRACKET In COMMA Out RBRACKET;
 
 // Callback declarations.
 callback_decl           : CALLBACK IDENT EQUALS type_decl LPAREN function_param_list? RPAREN SEMICOLON;

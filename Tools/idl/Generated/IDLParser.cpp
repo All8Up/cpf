@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/MotD/CPF/Tools/idl\IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 
 #include "IDLParserVisitor.h"
@@ -2170,16 +2170,16 @@ tree::TerminalNode* IDLParser::Param_dir_qualifierContext::LBRACKET() {
   return getToken(IDLParser::LBRACKET, 0);
 }
 
-tree::TerminalNode* IDLParser::Param_dir_qualifierContext::IN() {
-  return getToken(IDLParser::IN, 0);
+tree::TerminalNode* IDLParser::Param_dir_qualifierContext::In() {
+  return getToken(IDLParser::In, 0);
 }
 
 tree::TerminalNode* IDLParser::Param_dir_qualifierContext::RBRACKET() {
   return getToken(IDLParser::RBRACKET, 0);
 }
 
-tree::TerminalNode* IDLParser::Param_dir_qualifierContext::OUT() {
-  return getToken(IDLParser::OUT, 0);
+tree::TerminalNode* IDLParser::Param_dir_qualifierContext::Out() {
+  return getToken(IDLParser::Out, 0);
 }
 
 tree::TerminalNode* IDLParser::Param_dir_qualifierContext::COMMA() {
@@ -2214,7 +2214,7 @@ IDLParser::Param_dir_qualifierContext* IDLParser::param_dir_qualifier() {
       setState(328);
       match(IDLParser::LBRACKET);
       setState(329);
-      match(IDLParser::IN);
+      match(IDLParser::In);
       setState(330);
       match(IDLParser::RBRACKET);
       break;
@@ -2225,7 +2225,7 @@ IDLParser::Param_dir_qualifierContext* IDLParser::param_dir_qualifier() {
       setState(331);
       match(IDLParser::LBRACKET);
       setState(332);
-      match(IDLParser::OUT);
+      match(IDLParser::Out);
       setState(333);
       match(IDLParser::RBRACKET);
       break;
@@ -2236,11 +2236,11 @@ IDLParser::Param_dir_qualifierContext* IDLParser::param_dir_qualifier() {
       setState(334);
       match(IDLParser::LBRACKET);
       setState(335);
-      match(IDLParser::IN);
+      match(IDLParser::In);
       setState(336);
       match(IDLParser::COMMA);
       setState(337);
-      match(IDLParser::OUT);
+      match(IDLParser::Out);
       setState(338);
       match(IDLParser::RBRACKET);
       break;
@@ -5688,7 +5688,7 @@ std::vector<std::string> IDLParser::_literalNames = {
 
 std::vector<std::string> IDLParser::_symbolicNames = {
   "", "Windows", "Darwin", "IMPORT", "STRUCT", "DEFAULT", "UNION", "CALLBACK", 
-  "INTERFACE", "ENUM", "FLAGS", "MODULE", "FROM", "AS", "IN", "OUT", "COLON", 
+  "INTERFACE", "ENUM", "FLAGS", "MODULE", "FROM", "AS", "In", "Out", "COLON", 
   "SEMICOLON", "STAR", "SLASH", "DOT", "COMMA", "EQUALS", "QUOTE", "SQUOTE", 
   "LBRACE", "RBRACE", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", "LT", 
   "GT", "PLUS", "MINUS", "LSHIFT", "RSHIFT", "PIPE", "Const", "Void", "RESULT", 

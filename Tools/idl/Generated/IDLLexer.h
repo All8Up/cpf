@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/MotD/CPF/Tools/idl\IDLLexer.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf/Tools/idl\IDLLexer.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -14,7 +14,7 @@ public:
   enum {
     Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULT = 5, UNION = 6, 
     CALLBACK = 7, INTERFACE = 8, ENUM = 9, FLAGS = 10, MODULE = 11, FROM = 12, 
-    AS = 13, IN = 14, OUT = 15, COLON = 16, SEMICOLON = 17, STAR = 18, SLASH = 19, 
+    AS = 13, In = 14, Out = 15, COLON = 16, SEMICOLON = 17, STAR = 18, SLASH = 19, 
     DOT = 20, COMMA = 21, EQUALS = 22, QUOTE = 23, SQUOTE = 24, LBRACE = 25, 
     RBRACE = 26, LPAREN = 27, RPAREN = 28, LBRACKET = 29, RBRACKET = 30, 
     LT = 31, GT = 32, PLUS = 33, MINUS = 34, LSHIFT = 35, RSHIFT = 36, PIPE = 37, 

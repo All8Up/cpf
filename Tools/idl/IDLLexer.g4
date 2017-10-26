@@ -24,8 +24,8 @@ MODULE                      : 'module';
 FROM                        : 'from';
 AS                          : 'as';
 
-IN                          : 'in';
-OUT                         : 'out';
+In                          : 'in';
+Out                         : 'out';
 
 COLON                       : ':';
 SEMICOLON                   : ';';
