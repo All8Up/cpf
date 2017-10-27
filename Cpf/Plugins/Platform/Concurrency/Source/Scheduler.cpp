@@ -255,14 +255,14 @@ void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdown
 		checkWork:
 		{
 			int64_t workIndex = mInstructionRing.Fetch(index, work);
-			if (workIndex != mInstructionRing.InvalidIndex)
+			if (workIndex != mInstructionRing.kInvalidIndex)
 			{
 				if (work.mpHandler)
 				{
 					work.mpHandler(*this, &context, workIndex);
 
 					// Mark the instruction consumed.
-					mInstructionRing.Consume(index, mInstructionRing.ThreadHead(index));
+					mInstructionRing.ConsumeThreadHead(index);
 				}
 				else
 					break;
@@ -340,7 +340,7 @@ bool Scheduler::_FetchWork()
 		if (pullCount == 0)
 			return false;
 
-		auto start = mInstructionRing.Tail();
+		auto start = mInstructionRing.GetTail();
 
 		// Move instructions off the external and into the internal.
 		for (auto i = 0; i<pullCount; ++i)

@@ -20,7 +20,7 @@ namespace CPF
 			class RingBuffer
 			{
 			public:
-				static const int64_t InvalidIndex = int64_t(-1);
+				static const int64_t kInvalidIndex = int64_t(-1);
 
 				RingBuffer(size_t size=4096);
 				~RingBuffer();
@@ -30,25 +30,26 @@ namespace CPF
 				TYPE& operator [](size_t idx);
 				const TYPE& operator [](size_t idx) const;
 
-				int64_t Head() const;
-				void Head(int64_t);
-				int64_t Tail() const;
-				void Tail(int64_t);
-
-				int64_t ThreadHead(int64_t) const;
-				void ThreadHead(int64_t, int64_t);
+				int64_t GetTail() const;
+				void SetThreadHead(int64_t, int64_t);
 
 				int64_t Fetch(int64_t, TYPE&);
-				void Consume(int tid, int64_t index);
+				void ConsumeThreadHead(int tid);
 
-				void Minimize();
 				size_t Reclaim(int threadCount);
 				size_t Reserve(int threadCount, size_t requested);
 
 				bool PushBack(int threadCount, TYPE&& data);
+
 				void Commit(size_t count);
 
 			private:
+				// Internal functionality.
+				int64_t GetThreadHead(int64_t) const;
+				int64_t GetHead() const;
+				void SetHead(int64_t);
+				void SetTail(int64_t);
+
 				// Internal indexing for each thread.  Should be aligned to cache
 				// lines to prevent false sharing.
 				struct HeadIndex
@@ -73,9 +74,11 @@ namespace CPF
 			};
 
 
-
-
-			//////////////////////////////////////////////////////////////////////////
+			/**
+			 @brief Constructor
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param size The sizeof the ring buffer.
+			 */
 			template<typename VALUE_TYPE>
 			RingBuffer<VALUE_TYPE>::RingBuffer(size_t size)
 				: mHead(0)
@@ -89,7 +92,10 @@ namespace CPF
 				mpBuffer = new VALUE_TYPE[size];
 			}
 
-
+			/**
+			 @brief Destructor
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 */
 			template<typename VALUE_TYPE>
 			RingBuffer<VALUE_TYPE>::~RingBuffer()
 			{
@@ -99,7 +105,6 @@ namespace CPF
 			/**
 			* @brief Initializes this object with the expected max number of threads which will call into this.
 			* @tparam VALUE_TYPE Type of stored data.
-			* @tparam SIZE		  Size of the ring buffer.
 			* @param threadCount Number of threads.
 			* @return true if it succeeds, false if it fails.
 			*/
@@ -117,115 +122,140 @@ namespace CPF
 				return true;
 			}
 
-
+			/**
+			 @brief Array indexer operator
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param idx Zero-based index of the element.
+			 @return The element at the given index.
+			 */
 			template<typename VALUE_TYPE>
 			VALUE_TYPE& RingBuffer<VALUE_TYPE>::operator [](size_t idx)
 			{
 				return mpBuffer[idx & mSizeMask];
 			}
 
-
+			/**
+			 @brief Array indexer operator
+			 @tparam VALUE_TYPE Type of the value type.
+			 @param idx Zero-based index of the element.
+			 @return The element at the given index.
+			 */
 			template<typename VALUE_TYPE>
 			const VALUE_TYPE& RingBuffer<VALUE_TYPE>::operator [](size_t idx) const
 			{
 				return mpBuffer[idx & mSizeMask];
 			}
 
-
+			/**
+			 @brief Get the head index of the ring buffer.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @return The head index.
+			 */
 			template<typename VALUE_TYPE>
-			int64_t RingBuffer<VALUE_TYPE>::Head() const
+			int64_t RingBuffer<VALUE_TYPE>::GetHead() const
 			{
 				return mHead.load();
 			}
 
-
+			/**
+			 @brief Sets the global head index of the ring buffer.
+			 Always <= to the minimum of all thread specific head values.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param v The new head index.
+			 */
 			template<typename VALUE_TYPE>
-			void RingBuffer<VALUE_TYPE>::Head(int64_t v)
+			void RingBuffer<VALUE_TYPE>::SetHead(int64_t v)
 			{
 				mHead.store(v);
 			}
 
-
+			/**
+			 @brief Gets the tail of the ring buffer.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @return The tail index.
+			 */
 			template<typename VALUE_TYPE>
-			int64_t RingBuffer<VALUE_TYPE>::Tail() const
+			int64_t RingBuffer<VALUE_TYPE>::GetTail() const
 			{
 				return mTail.load();
 			}
 
-
+			/**
+			 @brief Sets the tail index of the ring buffer.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param v The index of the new last element.
+			 */
 			template<typename VALUE_TYPE>
-			void RingBuffer<VALUE_TYPE>::Tail(int64_t v)
+			void RingBuffer<VALUE_TYPE>::SetTail(int64_t v)
 			{
 				return mTail.store(v);
 			}
 
-
+			/**
+			 @brief Gets thread specific head index.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param tid The thread id.
+			 @return The thread specific index.
+			 */
 			template<typename VALUE_TYPE>
-			int64_t RingBuffer<VALUE_TYPE>::ThreadHead(int64_t tid) const
+			int64_t RingBuffer<VALUE_TYPE>::GetThreadHead(int64_t tid) const
 			{
 				CPF_ASSERT(tid < mThreadCount);
 				return mpThreadHead[tid].mHead.load();
 			}
 
-
+			/**
+			 @brief Sets a thread specific head index.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param tid The thread id of the thread specific head to change.
+			 @param v The value to store in the thread specific head value.
+			 */
 			template<typename VALUE_TYPE>
-			void RingBuffer<VALUE_TYPE>::ThreadHead(int64_t tid, int64_t v)
+			void RingBuffer<VALUE_TYPE>::SetThreadHead(int64_t tid, int64_t v)
 			{
 				CPF_ASSERT(tid < mThreadCount);
 				mpThreadHead[tid].mHead.store(v);
 			}
 
-
+			/**
+			 @brief Fetches an element from the ring buffer.
+			 @tparam VALUE_TYPE Type of the contained elements.
+			 @param tid The thread id which is attempting the fetch.
+			 @param [in,out] The resulting value.
+			 @return The new head index or invalid index if there is nothing to fetch.
+			 */
 			template<typename VALUE_TYPE>
 			int64_t RingBuffer<VALUE_TYPE>::Fetch(int64_t tid, VALUE_TYPE& outBuffer)
 			{
 				CPF_ASSERT(tid < mThreadCount);
-				auto tail = Tail();
-				auto head = ThreadHead(tid);
+				auto tail = GetTail();
+				auto head = GetThreadHead(tid);
 				if (head < tail)
 				{
 					// There is some work to fetch.
 					auto ringIndex = head & mSizeMask;
 					outBuffer = (*this)[ringIndex];
-					CPF_ASSERT(head != InvalidIndex);
+					CPF_ASSERT(head != kInvalidIndex);
 					return head;
 				}
-				return InvalidIndex;
+				return kInvalidIndex;
 			}
-
-
-			template<typename TYPE>
-			void RingBuffer<TYPE>::Consume(int tid, int64_t index)
-			{
-				CPF_ASSERT(ThreadHead(tid) == index);
-				ThreadHead(tid, index+1);
-			}
-
-
 
 			/**
-			* @brief Set all the head indices to a minimal value and update tail.
-			* @tparam VALUE_TYPE Type of the value stored in the ring buffer.
-			* @tparam SIZE		  Maximum number of items stored, minus one for the sentinel.
-			*/
-			template<typename VALUE_TYPE>
-			void RingBuffer<VALUE_TYPE>::Minimize()
+			 @brief Consume elements in the ring buffer up to the given threads head index.
+			 @tparam TYPE Type of the contained elements.
+			 @param tid The tid.
+			 */
+			template<typename TYPE>
+			void RingBuffer<TYPE>::ConsumeThreadHead(int tid)
 			{
-				/*
-				auto head = Head() % SIZE;
-				auto delta = Tail() - Head();
-				Head(head);
-				Tail(head + delta);
-				for (auto i = 0; i < mThreadCount; ++i)
-				mpThreadHead[i].mHead = head;
-				*/
+				SetThreadHead(tid, GetThreadHead(tid) + 1);
 			}
-
 
 			/**
 			* @brief Reclaims free space in the ring buffer.
 			* @tparam VALUE_TYPE Type of the value stored in the ring buffer.
-			* @tparam SIZE		  Maximum number of items stored, minus one for the sentinel.
+			* @tparam SIZE Maximum number of items stored, minus one for the sentinel.
 			* @param threadCount Number of threads to test inclusive.
 			* @return The number of free slots in the ring buffer.
 			*/
@@ -244,12 +274,11 @@ namespace CPF
 					head = (threadIndex < head) ? threadIndex : head;
 				}
 
-				Head(head);
-				size_t result = (mSize)-(Tail() - head);
+				SetHead(head);
+				size_t result = (mSize)-(GetTail() - head);
 				CPF_ASSERT(result <= mSize);
 				return result;
 			}
-
 
 			/**
 			* @brief Attempts to reserve a number of entries or make them available.
@@ -262,7 +291,7 @@ namespace CPF
 			inline size_t RingBuffer<VALUE_TYPE>::Reserve(int threadCount, size_t requested)
 			{
 				CPF_ASSERT(threadCount <= mThreadCount);
-				if ((Tail() + requested) - Head() >= mSize)
+				if ((GetTail() + requested) - GetHead() >= mSize)
 				{
 					// Need to reclaim space.
 					return std::min(Reclaim(threadCount), requested);
@@ -271,20 +300,30 @@ namespace CPF
 				return requested;
 			}
 
-
+			/**
+			 @brief Pushes a new element onto the buffer and commits it if possible.
+			 @tparam TYPE Type of the contained elements.
+			 @param threadCount Number of threads currently active in the system.
+			 @param [in,out] New element to be appended.
+			 @return True if it succeeds, false if it fails.
+			 */
 			template<typename TYPE>
 			bool RingBuffer<TYPE>::PushBack(int threadCount, TYPE&& data)
 			{
 				if (Reserve(threadCount, 1))
 				{
-					mpBuffer[(Tail()) & mSizeMask] = CPF::Move(data);
+					mpBuffer[(GetTail()) & mSizeMask] = CPF::Move(data);
 					Commit(1);
 					return true;
 				}
 				return false;
 			}
 
-
+			/**
+			 @brief Commits a number of elements to be processed.
+			 @tparam TYPE Type of the contained elements.
+			 @param count Number of elements which will become available.
+			 */
 			template<typename TYPE>
 			void RingBuffer<TYPE>::Commit(size_t count)
 			{

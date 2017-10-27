@@ -181,7 +181,7 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 			// of here with the intended state.
 			for (auto i = 0; i < vm.mThreadCount; ++i)
 			{
-				vm.mInstructionRing.ThreadHead(i, index);
+				vm.mInstructionRing.SetThreadHead(i, index);
 			}
 
 			// Wake the currently parked threads.
@@ -219,20 +219,4 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 			return;
 		}
 	}
-}
-
-/**
-* @brief Opcode that resets all head indices to minimal values.
-* @param vm The virtual machine.
-* @param context Thread context information.
-* @param index Threads current instruction index.
-*/
-void Detail::Opcodes::HeadMinimize(Scheduler &vm, const WorkContext*, int64_t index)
-{
-	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
-
-	if (count == 0)
-		vm.mInstructionRing.Minimize();
-	else
-		Wait(vm, index);
 }

@@ -23,7 +23,6 @@ namespace CPF
 				static void Barrier(Scheduler &vm, const WorkContext* context, int64_t index);
 
 				static void ActiveThreads(Scheduler &vm, const WorkContext* context, int64_t index);
-				static void HeadMinimize(Scheduler &vm, const WorkContext* context, int64_t index);
 			};
 		}
 	}
