@@ -14,12 +14,12 @@ namespace CPF
 		public:
 			virtual ~iFileSystem() = 0;
 
-			virtual FileHandle Open(const String& name, StreamAccess access, Error* = nullptr) = 0;
+			virtual FileHandle Open(const String& name, Access access, Error* = nullptr) = 0;
 			virtual void Close(FileHandle, Error* = nullptr) = 0;
 			virtual void Flush(FileHandle, Error* = nullptr) = 0;
 			virtual int64_t GetPosition(FileHandle, Error* = nullptr) = 0;
 			virtual int64_t GetLength(FileHandle, Error* = nullptr) = 0;
-			virtual void Seek(FileHandle, int64_t, StreamOrigin, Error* = nullptr) = 0;
+			virtual void Seek(FileHandle, int64_t, Origin, Error* = nullptr) = 0;
 			virtual int64_t Read(FileHandle, void*, int64_t, Error* = nullptr) = 0;
 			virtual int64_t Write(FileHandle, const void*, int64_t, Error* = nullptr) = 0;
 			virtual Error GetError(FileHandle) = 0;

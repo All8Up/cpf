@@ -66,7 +66,7 @@ int main(int argc, char** argv)
 	//////////////////////////////////////////////////////////////////////////
 	// Transform the parse tree to the IDL syntax tree.
 	IDL::Visitor visitor;
-	CPF::IO::StreamPtr outStream(CPF::IO::File::Create(FLAGS_output, CPF::IO::StreamAccess::eWrite));
+	CPF::IO::StreamPtr outStream(CPF::IO::File::Create(FLAGS_output, CPF::IO::Access::eWrite));
 	CPF::IO::TextWriter textWriter(outStream);
 	IDL::CodeGen::CodeWriter writer(textWriter);
 	{

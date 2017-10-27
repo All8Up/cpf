@@ -1,6 +1,6 @@
 import iUnknown from GOM;
 import Access from CPF::IO;
-import StreamOrigin from CPF::IO;
+import Origin from CPF::IO;
 module CPF::IO;
 
 interface iStream : GOM::iUnknown
@@ -22,7 +22,7 @@ interface iStream : GOM::iUnknown
 	void GetLength(OnLength cb);
 
 	callback OnSeek = void(result value);
-	void Seek(s32 offset, StreamOrigin origin, OnSeek cb);
+	void Seek(s32 offset, Origin origin, OnSeek cb);
 
 	//
 	callback OnRead = void(result value, s64 count);

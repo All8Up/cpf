@@ -54,11 +54,11 @@ namespace CPF
 
 
 		//////////////////////////////////////////////////////////////////////////
-		enum class StreamAccess : int32_t;
-		enum class StreamOrigin : int32_t;
+		enum class Access : int32_t;
+		enum class Origin : int32_t;
 	}
 }
 
 #include "CPF/IO/Attributes.hpp"
-#include "CPF/IO/StreamAccess.hpp"
-#include "CPF/IO/StreamOrigin.hpp"
+#include "CPF/IO/Access.hpp"
+#include "CPF/IO/Origin.hpp"

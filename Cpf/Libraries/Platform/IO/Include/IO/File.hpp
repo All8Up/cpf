@@ -27,7 +27,7 @@ namespace CPF
 			CPF_EXPORT_IO uint32_t GetAttributes(const WString& name);
 			 */
 
-			CPF_EXPORT_IO Stream* Create(const String& name, StreamAccess access, Error* error = nullptr);
+			CPF_EXPORT_IO Stream* Create(const String& name, Access access, Error* error = nullptr);
 
 			String CPF_EXPORT_IO GetExecutableFilePath();
 		}

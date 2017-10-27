@@ -26,7 +26,7 @@ namespace
 		void Flush(Error* error = nullptr) override;
 		int64_t GetPosition(Error* error = nullptr) override;
 		int64_t GetLength(Error* error = nullptr) override;
-		void Seek(int64_t offset, StreamOrigin origin, Error* error = nullptr) override;
+		void Seek(int64_t offset, Origin origin, Error* error = nullptr) override;
 
 		//
 		int64_t Read(void* outBuffer, int64_t length, Error* error = nullptr) override;
@@ -36,7 +36,7 @@ namespace
 		operator bool() const override;
 
 		//////////////////////////////////////////////////////////////////////////
-		bool Open(const String& name, StreamAccess access, Error* error);
+		bool Open(const String& name, Access access, Error* error);
 
 	private:
 		FileHandle mpFile;
@@ -53,7 +53,7 @@ namespace
 		GetFileSystem()->Close(mpFile);
 	}
 
-	bool RawFileStream::Open(const String& name, StreamAccess access, Error* error)
+	bool RawFileStream::Open(const String& name, Access access, Error* error)
 	{
 		mpFile = GetFileSystem()->Open(name, access, error);
 		return mpFile != nullptr;
@@ -61,7 +61,7 @@ namespace
 
 	Stream::Access RawFileStream::GetAccess()
 	{
-		return StreamAccess::eBoth;
+		return Access::eBoth;
 	}
 
 	bool RawFileStream::CanSeek()
@@ -99,7 +99,7 @@ namespace
 		return GetFileSystem()->GetLength(mpFile, error);
 	}
 
-	void RawFileStream::Seek(int64_t offset, StreamOrigin origin, Error* error)
+	void RawFileStream::Seek(int64_t offset, Origin origin, Error* error)
 	{
 		GetFileSystem()->Seek(mpFile, offset, origin, error);
 	}
@@ -126,7 +126,7 @@ namespace
 * @brief Creates a new file stream.
 * @return A StreamPtr.
 */
-CPF_EXPORT_IO Stream* File::Create(const String& name, StreamAccess access, Error* error)
+CPF_EXPORT_IO Stream* File::Create(const String& name, Access access, Error* error)
 {
 	RawFileStream* filestream = new RawFileStream;
 	if (!filestream)

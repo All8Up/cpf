@@ -26,7 +26,7 @@ namespace CPF
 			void CPF_STDCALL Flush(OnComplete cb) override;
 			void CPF_STDCALL GetPosition(OnPosition cb) override;
 			void CPF_STDCALL GetLength(OnLength cb) override;
-			void CPF_STDCALL Seek(int32_t offset, StreamOrigin origin, OnSeek cb) override;
+			void CPF_STDCALL Seek(int32_t offset, Origin origin, OnSeek cb) override;
 			void CPF_STDCALL Read(void* outBuffer, int64_t length, OnRead cb) override;
 			void CPF_STDCALL Write(const void* inBuffer, int64_t length, OnWrite cb) override;
 
@@ -144,13 +144,13 @@ namespace CPF
 			});
 		}
 
-		inline void CPF_STDCALL DefaultFileStream::Seek(int32_t offset, StreamOrigin origin, OnSeek cb)
+		inline void CPF_STDCALL DefaultFileStream::Seek(int32_t offset, Origin origin, OnSeek cb)
 		{
 			(*mpExecutor->GetQueue())([=, this]() {
 				/* auto err = */ fseek(
 					mpFile,
 					long(offset),
-					(origin == StreamOrigin::eBegin) ? SEEK_SET : ((origin == StreamOrigin::eCurrent) ? SEEK_CUR : SEEK_END));
+					(origin == Origin::eBegin) ? SEEK_SET : ((origin == Origin::eCurrent) ? SEEK_CUR : SEEK_END));
 				(*cb)(GOM::kOK);
 			});
 		}

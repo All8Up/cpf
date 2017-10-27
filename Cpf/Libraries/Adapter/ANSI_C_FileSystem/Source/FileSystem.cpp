@@ -17,18 +17,18 @@ namespace CPF
 		public:
 			using Error = IO::Error;
 			using FileHandle = IO::FileHandle;
-			using StreamAccess = IO::StreamAccess;
-			using StreamOrigin = IO::StreamOrigin;
+			using Access = IO::Access;
+			using Origin = IO::Origin;
 
 			ANSI_C_FileSystem();
 			~ANSI_C_FileSystem() override;
 
-			FileHandle Open(const String&, StreamAccess, Error*) override;
+			FileHandle Open(const String&, Access, Error*) override;
 			void Close(FileHandle, Error*) override;
 			void Flush(FileHandle, Error*) override;
 			int64_t GetPosition(FileHandle, Error*) override;
 			int64_t GetLength(FileHandle, Error*) override;
-			void Seek(FileHandle, int64_t, StreamOrigin, Error*) override;
+			void Seek(FileHandle, int64_t, Origin, Error*) override;
 			int64_t Read(FileHandle, void*, int64_t, Error*) override;
 			int64_t Write(FileHandle, const void*, int64_t, Error* = nullptr) override;
 			Error GetError(FileHandle handle) override;
@@ -74,7 +74,7 @@ enum class FSCommands
 struct FSOpenCmd
 {
 	const char* mpName;
-	StreamAccess mAccess;
+	Access mAccess;
 };
 struct FSGetLengthCmd
 {
@@ -107,18 +107,18 @@ ANSI_C_FileSystem::~ANSI_C_FileSystem()
 	mWorker.Join();
 }
 
-FileHandle ANSI_C_FileSystem::Open(const String& name, StreamAccess access, Error* error)
+FileHandle ANSI_C_FileSystem::Open(const String& name, Access access, Error* error)
 {
 	char mode[4];
 	switch (access)
 	{
-	case StreamAccess::eRead:
+	case Access::eRead:
 		Std::StrCpy(mode, "rb");
 		break;
-	case StreamAccess::eWrite:
+	case Access::eWrite:
 		Std::StrCpy(mode, "wb");
 		break;
-	case StreamAccess::eBoth:
+	case Access::eBoth:
 		Std::StrCpy(mode, "rb+");
 		break;
 	}
@@ -187,12 +187,12 @@ int64_t ANSI_C_FileSystem::GetLength(FileHandle handle, Error* error)
 	return len;
 }
 
-void ANSI_C_FileSystem::Seek(FileHandle handle, int64_t offset, StreamOrigin origin, Error* error)
+void ANSI_C_FileSystem::Seek(FileHandle handle, int64_t offset, Origin origin, Error* error)
 {
 	auto err = Std::FSeek(
 		(FILE*)handle,
 		long(offset),
-		(origin == StreamOrigin::eBegin) ? SEEK_SET : ((origin == StreamOrigin::eCurrent) ? SEEK_CUR : SEEK_END));
+		(origin == Origin::eBegin) ? SEEK_SET : ((origin == Origin::eCurrent) ? SEEK_CUR : SEEK_END));
 	if (error)
 		*error = err == 0 ? Error::eNone : Error::eUnknownError;
 }

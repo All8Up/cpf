@@ -137,7 +137,7 @@ Stream* FileSystem::Open(ID id)
 			realDir.erase(realDir.begin(), realDir.begin() + mMountPoint.size());
 			String openPath = Path::Combine(mRoot, Path::Combine(realDir));
 			openPath = Path::Combine(openPath, fileIt->second);
-			return File::Create(openPath, StreamAccess::eRead);
+			return File::Create(openPath, Access::eRead);
 		}
 	}
 	return nullptr;

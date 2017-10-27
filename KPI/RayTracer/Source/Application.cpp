@@ -84,7 +84,7 @@ bool Application::OpenScene()
 	//////////////////////////////////////////////////////////////////////////
 	{
 		CPF::IntrusivePtr<CPF::IO::Stream> stream(
-			CPF::IO::File::Create(mSceneFilename, CPF::IO::StreamAccess::eRead));
+			CPF::IO::File::Create(mSceneFilename, CPF::IO::Access::eRead));
 		SceneReader reader(mContext.Scene(), mNodeTypes);
 		if (reader.Load(stream))
 		{

@@ -21,8 +21,8 @@ namespace CPF
 		{
 		public:
 			//
-			using Access = StreamAccess;
-			using Origin = StreamOrigin;
+			using Access = IO::Access;
+			using Origin = IO::Origin;
 
 			//
 			virtual Access GetAccess() = 0;
@@ -35,7 +35,7 @@ namespace CPF
 			virtual void Flush(Error* error = nullptr) = 0;
 			virtual int64_t GetPosition(Error* error = nullptr) = 0;
 			virtual int64_t GetLength(Error* error = nullptr) = 0;
-			virtual void Seek(int64_t offset, StreamOrigin origin, Error* error = nullptr) = 0;
+			virtual void Seek(int64_t offset, Origin origin, Error* error = nullptr) = 0;
 
 			//
 			virtual int64_t Read(void* outBuffer, int64_t length, Error* error = nullptr) = 0;
