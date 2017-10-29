@@ -349,7 +349,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 				concurrencyFence->Signal();
 
 				// Testing..
-//				mpScheduler->SetActiveThreads(3);
+//				mpScheduler->SetActiveThreads(1);
 
 				// Create a graphics fence to track back buffers.
 				mpDevice->CreateFence(0, mpFence.AsTypePP());

@@ -41,6 +41,25 @@ namespace CPF
 			void CPF_STDCALL All(WorkFunction func, void* context) override;
 			void CPF_STDCALL AllBarrier(WorkFunction func, void* context) override;
 
+			// TODO: Add the following
+			// 
+			// <N unique threads will execute the work function.>
+			// void CPF_STDCALL FirstN(int32_t n, WorkFunction func, void* context) override;
+			// void CPF_STDCALL FirstNBarrier(int32_t n, WorkFunction func, void* context) override;
+			// void CPF_STDCALL LastN(int32_t n, WorkFunction func, void* context) override;
+			// void CPF_STDCALL LastNBarrier(int32_t n, WorkFunction func, void* context) override;
+			// 
+			// <Execute the work function n times, potentially from the same thread or any mix>
+			// void CPF_STDCALL RepeatN(int32_t n, WorkFunction func, void* context) override;
+			// void CPF_STDCALL RepeatNBarrier(int32_t n, WorkFunction func, void* context) override;
+			// 
+			// <Branching, only backwards, non-nested supported.  I.e. one label is paired
+			// to a branch instruction, when the branch fails the label and any instructions
+			// between it and the branch are considered consumed and no longer valid targets.>
+			// LabelID CPF_STDCALL Label();
+			// void CPF_STDCALL BranchIfZero(LabelID, DataRef);
+			// void CPF_STDCALL BranchIfNotZero(LabelID, DataRef);
+
 			void CPF_STDCALL Barrier() override;
 			void CPF_STDCALL Fence(WorkFunction func, void* context) override;
 
@@ -55,6 +74,22 @@ namespace CPF
 			void SD(int index, int32_t value);
 			void SA(int index, void* value);
 #endif
+			// TODO: Data sharing api.
+			// <Thread local data, basically a localized TLS system>
+			// template <typename TYPE>
+			// DataRef MakeThreadLocal();
+			// template <typename TYPE>
+			// TYPE& GetThreadLocal(DataRef);
+			// template <typename TYPE>
+			// void SetThreadLocal(DataRef, TYPE&);
+			// 
+			// <Shared data system, changes are performed on each thread as part of the instruction stream.>
+			// template <typename TYPE>
+			// DataRef MakeThreadShared();
+			// template <typename TYPE>
+			// TYPE& GetThreadShared(DataRef);
+			// template <typename TYPE>
+			// void SetThreadShared(DataRef, TYPE&);
 
 #if CPF_SCHEDULER_DISASSEMBLER
 			enum class Op : int32_t

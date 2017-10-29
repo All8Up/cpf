@@ -290,7 +290,6 @@ void Scheduler::_Worker(int index, InitOrShutdownFunc_t initFunc, InitOrShutdown
 				continue;
 		}
 
-
 		//////////////////////////////////////////////////////////////////////////
 		// Perform exponential backoff.
 		// NOTE: This entire loop is setup to work like a spin lock such that
@@ -325,7 +324,7 @@ bool Scheduler::_StartMaster()
 void Scheduler::_EndMaster()
 {
 	// Restore the lock to 0.
-	mControlLock.store(0);
+	mControlLock.store(0, std::memory_order::memory_order_release);
 }
 
 /**
