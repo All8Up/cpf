@@ -107,6 +107,7 @@ namespace CPF
 			Collections::RingBuffer<std::atomic<int64_t>> mPredicateRing;
 
 			// Tracking for external queue size.
+			int8_t pad2[64];
 			std::atomic<size_t> mWorkCount;
 
 			// Thread parking.

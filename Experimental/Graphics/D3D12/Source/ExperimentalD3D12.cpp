@@ -348,6 +348,9 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 				GetRegistry()->Create(nullptr, kFenceCID.GetID(), Concurrency::iFence::kIID.GetID(), concurrencyFence.AsVoidPP());
 				concurrencyFence->Signal();
 
+				// Testing..
+//				mpScheduler->SetActiveThreads(3);
+
 				// Create a graphics fence to track back buffers.
 				mpDevice->CreateFence(0, mpFence.AsTypePP());
 
