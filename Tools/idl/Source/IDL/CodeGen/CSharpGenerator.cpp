@@ -37,18 +37,27 @@ void CSharpGenerator::End()
 
 void CSharpGenerator::OnStart()
 {
-
+	mpWriter->OutputLine("using System;");
+	mpWriter->OutputLine("using System.Runtime.InteropServices;");
 }
 
 void CSharpGenerator::OnModule(const SymbolPath& path)
 {
-	(void)path;
+	mpWriter->LineFeed(eNamespace, eNamespace, CodeWriter::kAnySection);
+	mModule = path;
+	for (const auto& part : path.GetPath())
+	{
+		mpWriter->OutputLine("namespace %s", part.c_str());
+		mpWriter->OutputLine("{");
+		mpWriter->Indent();
+	}
 }
 
 void CSharpGenerator::OnSuccessType(const String& name, const String& subSystem, const String& desc)
 {
-	mpWriter->OutputLine("pub const %s : u32 = 0x%" PRIx32 "; // %s - %s",
-		(name).c_str(),
+	mpWriter->LineFeed(eConstants, eNamespace | eConstants, CodeWriter::kAnySection);
+	mpWriter->OutputLine("//const UInt32 k%s = 0x%" PRIx32 "; // %s - %s",
+		name.c_str(),
 		CPF::GOM::CreateResult(
 			0,
 			CPF::Hash::Crc15(subSystem.c_str(), subSystem.length()),
@@ -59,8 +68,9 @@ void CSharpGenerator::OnSuccessType(const String& name, const String& subSystem,
 
 void CSharpGenerator::OnFailureType(const String& name, const String& subSystem, const String& desc)
 {
-	mpWriter->OutputLine("pub const %s : u32 = 0x%" PRIx32 "; // %s - %s",
-		(name).c_str(),
+	mpWriter->LineFeed(eConstants, eNamespace | eConstants, CodeWriter::kAnySection);
+	mpWriter->OutputLine("//const UInt32 k%s = 0x%" PRIx32 "; // %s - %s",
+		name.c_str(),
 		CPF::GOM::CreateResult(
 			1,
 			CPF::Hash::Crc15(subSystem.c_str(), subSystem.length()),
@@ -74,6 +84,9 @@ void CSharpGenerator::OnImportStmt(const String& item, const SymbolPath& from)
 	(void)item;  (void)from;
 	//	mpWriter->OutputLine("#include \"GOM/Result.hpp\"");
 	//	mpWriter->OutputLine("");
+	mpWriter->LineFeed(eImports, eImports | eHeader, CodeWriter::kAnySection);
+	//auto path = CPF::IO::Path::Combine(from.ToString("/"), item + ".hpp");
+	mpWriter->OutputLine("using %s;", from.ToString(".").c_str());
 }
 
 void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
@@ -96,9 +109,6 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->Indent();
 	mpWriter->Output("%spub base: gom::iUnknownVTable", mpWriter->GetIndentString().c_str());*/
 
-	mpWriter->OutputLine("using System;");
-	mpWriter->OutputLine("using System.Runtime.InteropServices;");
-
 	//////////////////////////// VTABLE ////////////////////////////
 	mpWriter->LineFeed();
 	mpWriter->OutputLine("[StructLayout(LayoutKind.Sequential)]");
@@ -111,7 +121,7 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		mpWriter->OutputLine("[UnmanagedFunctionPointer(CallingConvention.StdCall)]");
 		mpWriter->Output("%spublic delegate %s %sFunc(IntPtr self", 
 			mpWriter->GetIndentString().c_str(),
-			TypeToString(func.mReturnType).c_str(),
+			TypeToString(func.mReturnType, {}).c_str(),
 			func.mName.c_str());
 
 		/*mpWriter->OutputLine("[MarshalAs(UnmanagedType.FunctionPtr)]");
@@ -119,7 +129,7 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 
 		for (const auto paramDecl : func.mParams)
 		{
-			mpWriter->Output(", %s %s", TypeToString(paramDecl.mType).c_str(), paramDecl.mName.c_str());
+			mpWriter->Output(", %s %s", TypeToString(paramDecl.mType, paramDecl.mDir).c_str(), paramDecl.mName.c_str());
 		}
 
 		/*mpWriter->Output(", %s> %s;", 
@@ -149,12 +159,12 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	{
 		mpWriter->Output("%s%s %s(IntPtr self",
 			mpWriter->GetIndentString().c_str(),
-			TypeToString(func.mReturnType).c_str(),
+			TypeToString(func.mReturnType, {}).c_str(),
 			func.mName.c_str());
 
 		for (const auto paramDecl : func.mParams)
 		{
-			mpWriter->Output(", %s %s", TypeToString(paramDecl.mType).c_str(), paramDecl.mName.c_str());
+			mpWriter->Output(", %s %s", TypeToString(paramDecl.mType, paramDecl.mDir).c_str(), paramDecl.mName.c_str());
 		}
 
 		mpWriter->Output(");");
@@ -230,14 +240,14 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		// Function signature
 		mpWriter->Output("%spublic %s %s(",
 			mpWriter->GetIndentString().c_str(),
-			TypeToString(func.mReturnType).c_str(),
+			TypeToString(func.mReturnType, {}).c_str(),
 			func.mName.c_str());
 
 		bool firstParam = true;
 
 		for (const auto paramDecl : func.mParams)
 		{
-			mpWriter->Output("%s%s %s", !firstParam ? ", " : "", TypeToString(paramDecl.mType).c_str(), paramDecl.mName.c_str());
+			mpWriter->Output("%s%s %s", !firstParam ? ", " : "", TypeToString(paramDecl.mType, paramDecl.mDir).c_str(), paramDecl.mName.c_str());
 
 			firstParam = false;
 		}
@@ -254,7 +264,7 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 
 		for (const auto paramDecl : func.mParams)
 		{
-			mpWriter->Output(", %s", paramDecl.mName.c_str());
+			mpWriter->Output(", %s%s", TypeModifier(paramDecl.mType, paramDecl.mDir).c_str(), paramDecl.mName.c_str());
 		}
 
 		mpWriter->Output(");");
@@ -267,15 +277,46 @@ void CSharpGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	mpWriter->OutputLine("}");
 }
 
-CPF::String CSharpGenerator::TypeToString(const Visitor::TypeDecl& decl)
+CSharpGenerator::String CSharpGenerator::TypeModifier(const Visitor::TypeDecl& decl, const Visitor::ParamDir& paramDir)
 {
 	String result;
+
+	if (decl.mIdent.ToString("") == "char")
+	{
+		return "";
+	}
+
+	if (paramDir.mOut && paramDir.mIn)
+	{
+		return "ref ";
+	}
+
+	if (paramDir.mOut)
+	{
+		return "out ";
+	}
+
 	if (decl.mType != Visitor::Type::Ident)
 	{
-		for (const auto& ptr : decl.mPointer)
+		if (decl.mPointer.size() == 1)
 		{
-			(void)ptr;
-			result += "ref ";
+			return "ref ";
+		}
+	}
+
+	return "";
+}
+
+
+CPF::String CSharpGenerator::TypeToString(const Visitor::TypeDecl& decl, const Visitor::ParamDir& paramDir)
+{
+	String result = TypeModifier(decl, paramDir);
+
+	if (decl.mType != Visitor::Type::Ident)
+	{
+		if (decl.mPointer.size() > 1)
+		{
+			return result + "IntPtr";
 		}
 	}
 
@@ -297,7 +338,18 @@ CPF::String CSharpGenerator::TypeToString(const Visitor::TypeDecl& decl)
 	case Visitor::Type::Result: result += "UInt32"; break;
 	case Visitor::Type::Ident:
 	{
-		result += decl.mIdent.ToString("");
+		if(decl.mIdent.ToString("") == "char")
+		{
+			return "string";
+		}
+
+		if(decl.mIdent.ToString("") == "IID_CID")
+		{
+			return "IID_CID";
+		}
+
+		return result + "IntPtr";
+		//result += decl.mIdent.ToString("");
 		/*for (auto it = decl.mIdent.begin(); it != decl.mIdent.end(); ++it)
 		{
 			bool last = (it + 1) == decl.mIdent.end();
