@@ -86,13 +86,13 @@ install (EXPORT MathConfig
 )
 
 set_property (TARGET Math_IDE PROPERTY FOLDER Libraries/Interface/Core)
-source_group (Interface FILES Include/Math.hpp)
-source_group (Interface\\Math FILES ${MATH_INCLUDE_FILES})
-source_group (Interface\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDE_FILES})
-source_group (Interface\\Math\\Distance FILES ${MATH_DISTANCE_INCLUDE_FILES})
-source_group (Interface\\Math\\Geometry FILES ${MATH_GEOMETRY_INCLUDE_FILES})
-source_group (Interface\\Math\\Intersection FILES ${MATH_INTERSECTION_INCLUDE_FILES})
-source_group (Interface\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
+source_group (Headers FILES Include/Math.hpp)
+source_group (Headers\\Math FILES ${MATH_INCLUDE_FILES})
+source_group (Headers\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDE_FILES})
+source_group (Headers\\Math\\Distance FILES ${MATH_DISTANCE_INCLUDE_FILES})
+source_group (Headers\\Math\\Geometry FILES ${MATH_GEOMETRY_INCLUDE_FILES})
+source_group (Headers\\Math\\Intersection FILES ${MATH_INTERSECTION_INCLUDE_FILES})
+source_group (Headers\\Math\\Detail FILES ${MATH_DETAIL_INCLUDE_FILES})
 
 # ###############################################
 MakeUnitTest (LIBRARY Math GROUP Platform

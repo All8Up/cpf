@@ -69,6 +69,7 @@ namespace CPF
 	namespace Math
 	{
 		using Vector3fv = Vector3v<SIMD::F32x4_3>;
+//		using Vector3dv = Vector3v<SIMD::F64x4_3>;
 		using Vector3f = Vector3v<SIMD::FPU::F32x3_3>;
 	}
 }

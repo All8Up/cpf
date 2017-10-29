@@ -14,7 +14,7 @@ namespace CPF
 				return mSIMD;
 			}
 
-			template<int COUNT> // template <typename>
+			template<int COUNT>
 			F32x4<__m128, float, COUNT>::operator const LaneType() const
 			{
 				return _mm_cvtss_f32(mSIMD);

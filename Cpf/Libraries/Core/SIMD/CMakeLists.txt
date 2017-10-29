@@ -50,6 +50,11 @@ set (SIMD_DETAIL_SSE4_1_INCLUDE_FILES
 	Include/SIMD/Detail/SSE4_1/F32x4_comparison.inl
 	Include/SIMD/Detail/SSE4_1/F32x4_construction.inl
 	Include/SIMD/Detail/SSE4_1/F32x4_operations.inl
+	Include/SIMD/Detail/SSE4_1/F64x4.hpp
+	Include/SIMD/Detail/SSE4_1/F64x4_access.inl
+	Include/SIMD/Detail/SSE4_1/F64x4_comparison.inl
+	Include/SIMD/Detail/SSE4_1/F64x4_construction.inl
+	Include/SIMD/Detail/SSE4_1/F64x4_operations.inl
 	Include/SIMD/Detail/SSE4_1/I32x4.hpp
 	Include/SIMD/Detail/SSE4_1/Utilities.hpp
 )
@@ -82,12 +87,12 @@ install (EXPORT SIMDConfig
 )
 
 set_property (TARGET SIMD_IDE PROPERTY FOLDER Libraries/Interface/Core)
-source_group (Interface FILES ${INCLUDE_FILES})
-source_group (Interface\\SIMD FILES ${SIMD_INCLUDE_FILES})
-source_group (Interface\\SIMD\\Detail FILES ${SIMD_DETAIL_INCLUDE_FILES})
-source_group (Interface\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDE_FILES})
-source_group (Interface\\SIMD\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDE_FILES})
-source_group (Interface\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDE_FILES})
+source_group (Headers FILES ${INCLUDE_FILES})
+source_group (Headers\\SIMD FILES ${SIMD_INCLUDE_FILES})
+source_group (Headers\\SIMD\\Detail FILES ${SIMD_DETAIL_INCLUDE_FILES})
+source_group (Headers\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDE_FILES})
+source_group (Headers\\SIMD\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDE_FILES})
+source_group (Headers\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDE_FILES})
 
 # ###############################################
 MakeUnitTest (LIBRARY SIMD GROUP Core
