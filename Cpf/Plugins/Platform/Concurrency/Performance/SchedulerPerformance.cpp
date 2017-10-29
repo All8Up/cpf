@@ -1,30 +1,35 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Application/Application.hpp"
-#include "Application/Arguments.hpp"
-#include "Concurrency/Scheduler.hpp"
-#include "Logging/Logging.hpp"
+#include "Application/iApplicationMain.hpp"
+#include "Concurrency/iScheduler.hpp"
+#include "CPF/Logging.hpp"
 #include "Memory/Memory.hpp"
 #include "Threading.hpp"
 
+using namespace CPF;
 
 //////////////////////////////////////////////////////////////////////////
-class SchedulerPerformance : public Cpf::Application
+class SchedulerPerformance : public tRefCounted<iApplicationMain>
 {
 public:
-	CPF_ALIGNED_OBJECT(SchedulerPerformance);
-
 	SchedulerPerformance();
 	virtual ~SchedulerPerformance();
 
-	virtual int Start(const Cpf::CommandLine*) override;
+	GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override { return GOM::kNotImplemented; }
+
+	GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry*, GOM::ClassID* appCid) override;
+	GOM::Result CPF_STDCALL Main(iApplication* application) override;
+	void CPF_STDCALL Shutdown() override;
+
+	Plugin::iRegistry* GetRegistry() { return mpRegistry; }
 
 private:
 	int64_t _InstructionRate(int threadCount);
 	int64_t _BasicWork(int threadCount);
 	int64_t _InstructionRateAlternatePassWait(int threadCount);
 
-	Cpf::Concurrency::Scheduler m_Scheduler;
-	Cpf::ScopedInitializer<Cpf::ThreadingInitializer> mLibInit;
+	Plugin::iRegistry* mpRegistry;
+
+	IntrusivePtr<Concurrency::iScheduler> mpScheduler;
 };
 
 

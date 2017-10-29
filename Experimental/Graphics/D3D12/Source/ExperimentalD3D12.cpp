@@ -345,7 +345,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 
 				// Currently only a single frame.  Will Eventually match the number of back buffers and other resources.
 				IntrusivePtr<Concurrency::iFence> concurrencyFence;
-				GetRegistry()->Create(nullptr, Concurrency::kFenceCID.GetID(), Concurrency::iFence::kIID.GetID(), concurrencyFence.AsVoidPP());
+				GetRegistry()->Create(nullptr, kFenceCID.GetID(), Concurrency::iFence::kIID.GetID(), concurrencyFence.AsVoidPP());
 				concurrencyFence->Signal();
 
 				// Create a graphics fence to track back buffers.
@@ -397,6 +397,17 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 						auto now = Time::Now() - mStartTime;
 						mDeltaTime = now - mCurrentTime;
 						mCurrentTime = now;
+
+						static int fpsCounter = 0;
+						static Time::Value fpsTime;
+						fpsTime += mDeltaTime;
+						++fpsCounter;
+						if (fpsTime >= Time::Seconds(5))
+						{
+							fpsTime -= Time::Seconds(5);
+							CPF_LOG(Experimental, Info) << "FPS (5s avg): " << fpsCounter / 5.0f;
+							fpsCounter = 0;
+						}
 
 						//////////////////////////////////////////////////////////////////////////
 						// Issue all the stages.

@@ -159,6 +159,7 @@ void Scheduler::_Emit(OpcodeFunc_t opcode, WorkFunction func, void* context)
 	{
 		Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
 		mExternalQueue.push_back({opcode, func, context});
+		mWorkCount.fetch_add(1);
 	}
 }
 
@@ -212,6 +213,7 @@ void CPF_STDCALL Scheduler::Execute(iWorkBuffer* queue, bool clear)
 	Threading::ScopedLock<Threading::Mutex> lock(mWorkLock);
 	WorkBuffer* q = static_cast<WorkBuffer*>(queue);
 	mExternalQueue.insert(mExternalQueue.end(), q->begin(), q->end());
+	mWorkCount.fetch_sub(mExternalQueue.size());
 	if (clear)
 		q->Reset();
 }
@@ -311,8 +313,12 @@ bool Scheduler::_StartMaster()
 {
 	// Simply attempt to poke a 1 into the lock, we are
 	// control if that happens.
-	auto oldValue = mControlLock.load();
-	return mControlLock.compare_exchange_weak(oldValue, 1);
+	if (mWorkCount.load() >= 0)
+	{
+		auto oldValue = mControlLock.load();
+		return mControlLock.compare_exchange_weak(oldValue, 1);
+	}
+	return false;
 }
 
 /** @brief Release access to the ring buffer tail pointer. */
@@ -367,6 +373,7 @@ bool Scheduler::_FetchWork()
 			}
 		}
 		mExternalQueue.erase(mExternalQueue.begin(), mExternalQueue.begin() + pullCount);
+		mWorkCount.fetch_sub(pullCount);
 
 		// Update the tail with new instructions.
 		std::atomic_thread_fence(std::memory_order_release);

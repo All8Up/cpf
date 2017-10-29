@@ -106,6 +106,9 @@ namespace CPF
 			Collections::RingBuffer<Instruction> mInstructionRing;
 			Collections::RingBuffer<std::atomic<int64_t>> mPredicateRing;
 
+			// Tracking for external queue size.
+			std::atomic<size_t> mWorkCount;
+
 			// Thread parking.
 			Threading::Semaphore mActive;
 			Threading::Mutex mActiveLock;
