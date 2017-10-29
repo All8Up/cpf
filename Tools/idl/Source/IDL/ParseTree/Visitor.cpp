@@ -148,6 +148,7 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 				{
 					ParamDecl paramDecl;
 					paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
+					paramDecl.mDir = ParseParamDir(param->param_dir_qualifier());
 					paramDecl.mType = ParseTypeDecl(param->type_decl());
 					funcDecl.mParams.push_back(paramDecl);
 				}
@@ -476,6 +477,25 @@ Visitor::Type Visitor::ParseIntegralType(IDLParser::Integral_typeContext* integr
 	else { result = Type::Void; CPF_ASSERT_ALWAYS }
 
 	return result;
+}
+
+Visitor::ParamDir Visitor::ParseParamDir(IDLParser::Param_dir_qualifierContext* ctx)
+{
+	ParamDir dir{};
+
+	if(ctx)
+	{
+		if(ctx->In())
+		{
+			dir.mIn = true;
+		}
+		if(ctx->Out())
+		{
+			dir.mOut = true;
+		}
+	}
+
+	return dir;
 }
 
 Visitor::TypeDecl Visitor::ParseTypeDecl(IDLParser::Type_declContext* typeDecl)

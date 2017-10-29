@@ -5,6 +5,7 @@
 #include "Events/Emitter.hpp"
 #include "Vector.hpp"
 #include "Map.hpp"
+#include "EnumFlagType.hpp"
 
 namespace IDL
 {
@@ -75,9 +76,15 @@ namespace IDL
 			SymbolPath mIdent;
 			CPF::Vector<Pointer> mPointer;
 		};
+		struct ParamDir
+		{
+			bool mIn;
+			bool mOut;
+		};
 		struct ParamDecl
 		{
 			String mName;
+			ParamDir mDir;
 			TypeDecl mType;
 		};
 		struct FunctionDecl
@@ -211,6 +218,7 @@ namespace IDL
 		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
 
 		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
+		static ParamDir ParseParamDir(IDLParser::Param_dir_qualifierContext* ctx);
 		static TypeDecl ParseTypeDecl(IDLParser::Type_declContext* anyType);
 		static String ParseEnumExpr(IDLParser::Enum_exprContext* expr);
 		static int64_t ParseIntegerLit(IDLParser::Integer_litContext* lit);
