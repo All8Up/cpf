@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ComTest
+namespace CPF.Plugin
 {
 	public interface IUnknown
 	{

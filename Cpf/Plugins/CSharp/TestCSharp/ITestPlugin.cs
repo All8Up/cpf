@@ -1,7 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
-using ComTest;
-
+using CPF.Plugin;
 [StructLayout(LayoutKind.Sequential)]
 public class iTestPluginVTable : iUnknownVTable
 {

@@ -3,23 +3,25 @@ pub const NotInstalled : u32 = 0xb422f63a; // Plugin - Instance not installed
 pub const NotLoaded : u32 = 0xb422fd24; // Plugin - Plugin not loaded
 pub const CantUnload : u32 = 0xb422fdb5; // Plugin - Plugin can not be unloaded
 pub const ExportMissing : u32 = 0xb422fa48; // Plugin - Plugin does not expose correct function
+using System;
+using System.Runtime.InteropServices;
 [StructLayout(LayoutKind.Sequential)]
 public class iRegistryVTable : iUnknownVTable
 {
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 LoadFunc(IntPtr self, char library);    
+    public delegate UInt32 LoadFunc(IntPtr self, string library);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public LoadFunc Load;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 UnloadFunc(IntPtr self, char library);    
+    public delegate UInt32 UnloadFunc(IntPtr self, string library);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public UnloadFunc Unload;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 InstallFunc(IntPtr self, UInt64 cid, iClassInstance clsInst);    
+    public delegate UInt32 InstallFunc(IntPtr self, UInt64 cid, IntPtr clsInst);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public InstallFunc Install;
@@ -31,7 +33,7 @@ public class iRegistryVTable : iUnknownVTable
     public RemoveFunc Remove;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 GetClassInstanceFunc(IntPtr self, UInt64 cid, iClassInstance clsInst);    
+    public delegate UInt32 GetClassInstanceFunc(IntPtr self, UInt64 cid, IntPtr clsInst);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public GetClassInstanceFunc GetClassInstance;
@@ -43,7 +45,7 @@ public class iRegistryVTable : iUnknownVTable
     public ExistsFunc Exists;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 CreateFunc(IntPtr self, iUnknown outer, UInt64 cid, UInt64 iid, ref ref void outIface);    
+    public delegate UInt32 CreateFunc(IntPtr self, IntPtr outer, UInt64 cid, UInt64 iid, IntPtr outIface);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public CreateFunc Create;
@@ -67,7 +69,7 @@ public class iRegistryVTable : iUnknownVTable
     public GetClassesFunc GetClasses;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 InstanceInstallFunc(IntPtr self, UInt64 id, iUnknown instance);    
+    public delegate UInt32 InstanceInstallFunc(IntPtr self, UInt64 id, IntPtr instance);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public InstanceInstallFunc InstanceInstall;
@@ -79,7 +81,7 @@ public class iRegistryVTable : iUnknownVTable
     public InstanceRemoveFunc InstanceRemove;
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate UInt32 GetInstanceFunc(IntPtr self, UInt64 id, iUnknown outIface);    
+    public delegate UInt32 GetInstanceFunc(IntPtr self, UInt64 id, IntPtr outIface);    
     
     [MarshalAs(UnmanagedType.FunctionPtr)]
     public GetInstanceFunc GetInstance;
@@ -87,26 +89,29 @@ public class iRegistryVTable : iUnknownVTable
 }
 public interface iRegistry
 {
-    UInt32 Load(IntPtr self, char library);    
-    UInt32 Unload(IntPtr self, char library);    
-    UInt32 Install(IntPtr self, UInt64 cid, iClassInstance clsInst);    
+    UInt32 Load(IntPtr self, string library);    
+    UInt32 Unload(IntPtr self, string library);    
+    UInt32 Install(IntPtr self, UInt64 cid, IntPtr clsInst);    
     UInt32 Remove(IntPtr self, UInt64 cid);    
-    UInt32 GetClassInstance(IntPtr self, UInt64 cid, iClassInstance clsInst);    
+    UInt32 GetClassInstance(IntPtr self, UInt64 cid, IntPtr clsInst);    
     UInt32 Exists(IntPtr self, UInt64 cid);    
-    UInt32 Create(IntPtr self, iUnknown outer, UInt64 cid, UInt64 iid, ref ref void outIface);    
+    UInt32 Create(IntPtr self, IntPtr outer, UInt64 cid, UInt64 iid, IntPtr outIface);    
     UInt32 ClassInstall(IntPtr self, Int32 count, IID_CID pairs);    
     UInt32 ClassRemove(IntPtr self, Int32 count, IID_CID pairs);    
     UInt32 GetClasses(IntPtr self, UInt64 id, ref Int32 count, ref UInt64 cid);    
-    UInt32 InstanceInstall(IntPtr self, UInt64 id, iUnknown instance);    
+    UInt32 InstanceInstall(IntPtr self, UInt64 id, IntPtr instance);    
     UInt32 InstanceRemove(IntPtr self, UInt64 id);    
-    UInt32 GetInstance(IntPtr self, UInt64 id, iUnknown outIface);    
+    UInt32 GetInstance(IntPtr self, UInt64 id, IntPtr outIface);    
 }
-public class iRegistryWrapper
+public class iRegistryWrapper : IWrapper
 {
     private IntPtr unmanagedInstance;
     private iRegistry instance;
     private iRegistryVTable vTable = new iRegistryVTable();
     private GenericObject genericObject = new GenericObject();
+
+    public IntPtr NativePointer => unmanagedInstance;
+    public UInt64 CID => 0x5DD69891C7355763;
 
     public iRegistryWrapper(IntPtr unmanagedInst)
     {
@@ -136,70 +141,74 @@ public class iRegistryWrapper
         vTable.InstanceInstall = inst.InstanceInstall;
         vTable.InstanceRemove = inst.InstanceRemove;
         vTable.GetInstance = inst.GetInstance;
+        genericObject.VTablePtr = Marshal.AllocHGlobal(Marshal.SizeOf(vTable));
+        unmanagedInstance = Marshal.AllocHGlobal(Marshal.SizeOf(genericObject));
+        Marshal.StructureToPtr(vTable, genericObject.VTablePtr, false);
+        Marshal.StructureToPtr(genericObject, unmanagedInstance, false);
     }
 
-    public UInt32 Load(char library)
+    public UInt32 Load(string library)
     {
-         return vTable.Load(unmanagedInstance, library);
+         return vTable.Load(unmanagedInstance, `élibrary);
     }
 
-    public UInt32 Unload(char library)
+    public UInt32 Unload(string library)
     {
-         return vTable.Unload(unmanagedInstance, library);
+         return vTable.Unload(unmanagedInstance, `élibrary);
     }
 
-    public UInt32 Install(UInt64 cid, iClassInstance clsInst)
+    public UInt32 Install(UInt64 cid, IntPtr clsInst)
     {
-         return vTable.Install(unmanagedInstance, cid, clsInst);
+         return vTable.Install(unmanagedInstance, °écid, PéclsInst);
     }
 
     public UInt32 Remove(UInt64 cid)
     {
-         return vTable.Remove(unmanagedInstance, cid);
+         return vTable.Remove(unmanagedInstance, °écid);
     }
 
-    public UInt32 GetClassInstance(UInt64 cid, iClassInstance clsInst)
+    public UInt32 GetClassInstance(UInt64 cid, IntPtr clsInst)
     {
-         return vTable.GetClassInstance(unmanagedInstance, cid, clsInst);
+         return vTable.GetClassInstance(unmanagedInstance,  écid, `éclsInst);
     }
 
     public UInt32 Exists(UInt64 cid)
     {
-         return vTable.Exists(unmanagedInstance, cid);
+         return vTable.Exists(unmanagedInstance,  écid);
     }
 
-    public UInt32 Create(iUnknown outer, UInt64 cid, UInt64 iid, ref ref void outIface)
+    public UInt32 Create(IntPtr outer, UInt64 cid, UInt64 iid, IntPtr outIface)
     {
-         return vTable.Create(unmanagedInstance, outer, cid, iid, outIface);
+         return vTable.Create(unmanagedInstance, `éouter, `écid, iid, `éoutIface);
     }
 
     public UInt32 ClassInstall(Int32 count, IID_CID pairs)
     {
-         return vTable.ClassInstall(unmanagedInstance, count, pairs);
+         return vTable.ClassInstall(unmanagedInstance, °écount,  épairs);
     }
 
     public UInt32 ClassRemove(Int32 count, IID_CID pairs)
     {
-         return vTable.ClassRemove(unmanagedInstance, count, pairs);
+         return vTable.ClassRemove(unmanagedInstance, count, Pépairs);
     }
 
     public UInt32 GetClasses(UInt64 id, ref Int32 count, ref UInt64 cid)
     {
-         return vTable.GetClasses(unmanagedInstance, id, count, cid);
+         return vTable.GetClasses(unmanagedInstance, id, Pécount, cid);
     }
 
-    public UInt32 InstanceInstall(UInt64 id, iUnknown instance)
+    public UInt32 InstanceInstall(UInt64 id, IntPtr instance)
     {
-         return vTable.InstanceInstall(unmanagedInstance, id, instance);
+         return vTable.InstanceInstall(unmanagedInstance, `éid,  éinstance);
     }
 
     public UInt32 InstanceRemove(UInt64 id)
     {
-         return vTable.InstanceRemove(unmanagedInstance, id);
+         return vTable.InstanceRemove(unmanagedInstance, `éid);
     }
 
-    public UInt32 GetInstance(UInt64 id, iUnknown outIface)
+    public UInt32 GetInstance(UInt64 id, IntPtr outIface)
     {
-         return vTable.GetInstance(unmanagedInstance, id, outIface);
+         return vTable.GetInstance(unmanagedInstance, °éid, PéoutIface);
     }
 }

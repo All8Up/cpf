@@ -1,10 +1,10 @@
 using System;
 
-namespace ComTest
+namespace CPF.Plugin
 {
 	public class TestPlugin : Unknown, iTestPlugin
 	{
-		public TestPlugin(IUnknown iUnknown)
+		public TestPlugin(IntPtr iUnknown)
 		{
 			AddWrapper(new iTestPluginWrapper(this));
 		}

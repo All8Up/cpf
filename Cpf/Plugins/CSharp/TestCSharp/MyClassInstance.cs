@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ComTest
+namespace CPF.Plugin
 {
 	public class MyClassInstance : Unknown, iClassInstance
 	{
@@ -9,7 +9,7 @@ namespace ComTest
 			AddWrapper(new iClassInstanceWrapper(this));
 		}
 
-		public uint CreateInstance(IntPtr self, IntPtr registry, IUnknown outer, out IntPtr outInstance)
+		public uint CreateInstance(IntPtr self, IntPtr registry, IntPtr outer, out IntPtr outInstance)
 		{
 			var testPlugin = new TestPlugin(outer);
 
