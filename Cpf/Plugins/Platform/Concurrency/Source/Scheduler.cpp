@@ -313,7 +313,7 @@ bool Scheduler::_StartMaster()
 {
 	// Simply attempt to poke a 1 into the lock, we are
 	// control if that happens.
-	if (mWorkCount.load() >= 0)
+	if (mWorkCount.load() > 0)
 	{
 		auto oldValue = mControlLock.load();
 		return mControlLock.compare_exchange_weak(oldValue, 1);
@@ -345,6 +345,7 @@ bool Scheduler::_FetchWork()
 		auto pullCount = mInstructionRing.Reserve(mActiveCount.load(), std::min(mQueueSize-1, externalCount));
 		if (pullCount == 0)
 			return false;
+		mWorkCount.fetch_sub(pullCount);
 
 		auto start = mInstructionRing.GetTail();
 
@@ -373,7 +374,6 @@ bool Scheduler::_FetchWork()
 			}
 		}
 		mExternalQueue.erase(mExternalQueue.begin(), mExternalQueue.begin() + pullCount);
-		mWorkCount.fetch_sub(pullCount);
 
 		// Update the tail with new instructions.
 		std::atomic_thread_fence(std::memory_order_release);
