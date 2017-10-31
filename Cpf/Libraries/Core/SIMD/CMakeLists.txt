@@ -99,8 +99,8 @@ source_group (Headers\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDE_F
 MakeUnitTest (LIBRARY SIMD GROUP Core
 	TEST_FILES
 		UnitTest/Test_Bool4.cpp
-		UnitTest/Test_F32x4_1.cpp
-		UnitTest/Test_F32x4_2.cpp
+		UnitTest/Test_FXXx4_1.cpp
+		UnitTest/Test_FXXx4_2.cpp
 		UnitTest/Test_FXXx4_3.cpp
 		UnitTest/Test_FXXx4_4.cpp
 		UnitTest/Test_FPU_F32x3.cpp
