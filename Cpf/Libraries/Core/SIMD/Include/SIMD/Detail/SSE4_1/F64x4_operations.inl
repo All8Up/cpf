@@ -352,7 +352,7 @@ namespace CPF
 					_mm_cmpeq_pd(_mm_mul_pd(value.mSIMD.mData[0], _mm_setzero_pd()), _mm_setzero_pd()),
 					_mm_cmpeq_pd(_mm_mul_pd(value.mSIMD.mData[1], _mm_setzero_pd()), _mm_setzero_pd())
 				};
-				int mask = _mm_movemask_pd(test.mData[0]) | (_mm_movemask_pd(test.mData[1]) << 2);
+				int mask = _mm_movemask_pd(test.mData[1]) | (_mm_movemask_pd(test.mData[0]) << 2);
 				return(F64x4_<COUNT>::LaneMask == (mask & F64x4_<COUNT>::LaneMask));
 			}
 		}
