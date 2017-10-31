@@ -12,7 +12,7 @@ using namespace CPF;
 using namespace Math;
 using namespace Graphics;
 
-#define DISABLE_RENDERING
+//#define DISABLE_RENDERING
 
 void ExperimentalD3D12::_BeginFrame(const Concurrency::WorkContext*)
 {

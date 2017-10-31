@@ -11,9 +11,9 @@ namespace CPF
 	{
 		namespace SSE4_1
 		{
-			struct alignas(16) F64x4Type
+			struct alignas(16) double4
 			{
-				__m128 mData[2];
+				__m128d mData[2];
 			};
 
 			//////////////////////////////////////////////////////////////////////////
@@ -26,19 +26,19 @@ namespace CPF
 			 * @tparam LANES_USED Number of lanes in use within the simd type.
 			 */
 			template<int LANES_USED>
-			struct alignas(16) F64x4<F64x4Type, float, LANES_USED>
+			struct alignas(16) F64x4<double4, double, LANES_USED>
 			{
 				// Implementation details.
-				using StorageType = F64x4Type;
-				using LaneType = float;
+				using StorageType = double4;
+				using LaneType = double;
 				using BoolType = Bool4<__m128i, bool, LANES_USED>;
 				static constexpr int LaneCount = LANES_USED;
 				static constexpr int LaneMask = (1 << LaneCount) - 1;
 
-				using Lanes_1 = F64x4<F64x4Type, float, 1>;
-				using Lanes_2 = F64x4<F64x4Type, float, 2>;
-				using Lanes_3 = F64x4<F64x4Type, float, 3>;
-				using Lanes_4 = F64x4<F64x4Type, float, 4>;
+				using Lanes_1 = F64x4<double4, double, 1>;
+				using Lanes_2 = F64x4<double4, double, 2>;
+				using Lanes_3 = F64x4<double4, double, 3>;
+				using Lanes_4 = F64x4<double4, double, 4>;
 
 				// Default construction.
 				F64x4();
@@ -78,7 +78,7 @@ namespace CPF
 
 				// Lane accessors.
 				
-				void SetLane(int index, float value);
+				void SetLane(int index, double value);
 				template <int I0> LaneType GetLane() const;
 				template <int I0, int I1> Lanes_2 GetLanes() const;
 				template <int I0, int I1, int I2> Lanes_3 GetLanes() const;
@@ -89,14 +89,14 @@ namespace CPF
 			};
 
 			//////////////////////////////////////////////////////////////////////////
-			using F64x4_1 = F64x4<F64x4Type, float, 1>;
-			using F64x4_2 = F64x4<F64x4Type, float, 2>;
-			using F64x4_3 = F64x4<F64x4Type, float, 3>;
-			using F64x4_4 = F64x4<F64x4Type, float, 4>;
+			using F64x4_1 = F64x4<double4, double, 1>;
+			using F64x4_2 = F64x4<double4, double, 2>;
+			using F64x4_3 = F64x4<double4, double, 3>;
+			using F64x4_4 = F64x4<double4, double, 4>;
 
 			//////////////////////////////////////////////////////////////////////////
 			template<int COUNT>
-			using F64x4_ = F64x4<F64x4Type, float, COUNT>;
+			using F64x4_ = F64x4<double4, double, COUNT>;
 		}
 	}
 }

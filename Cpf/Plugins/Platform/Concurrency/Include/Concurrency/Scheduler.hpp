@@ -30,6 +30,8 @@ namespace CPF
 		public:
 			//
 			static constexpr int kQueueSize = 4096;
+			static constexpr int kMaxLocalSlots = 4096;
+			static constexpr int kMaxSharedSlots = 4096;
 			using InitOrShutdownFunc_t = WorkFunction;
 			using OpcodeFunc_t = void(*)(Scheduler &vm, const WorkContext* context, int64_t index);
 			struct Instruction

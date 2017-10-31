@@ -75,7 +75,7 @@ namespace CPF
 			void SA(int index, void* value);
 #endif
 			// TODO: Data sharing api.
-			// <Thread local data, basically a localized TLS system>
+			// <Thread local data, basically a scheduler specific TLS system>
 			// template <typename TYPE>
 			// DataRef MakeThreadLocal();
 			// template <typename TYPE>
@@ -83,7 +83,8 @@ namespace CPF
 			// template <typename TYPE>
 			// void SetThreadLocal(DataRef, TYPE&);
 			// 
-			// <Shared data system, changes are performed on each thread as part of the instruction stream.>
+			// <Shared data system, the data is changed at certain points in the instruction stream
+			// rather than immediately.>
 			// template <typename TYPE>
 			// DataRef MakeThreadShared();
 			// template <typename TYPE>

@@ -32,6 +32,7 @@ set (SIMD_DETAIL_FPU_INCLUDE_FILES
 set (SIMD_DETAIL_REFERENCE_INCLUDE_FILES
 	Include/SIMD/Detail/Reference/Bool4.hpp
 	Include/SIMD/Detail/Reference/F32x4.hpp
+	Include/SIMD/Detail/Reference/F64x4.hpp
 	Include/SIMD/Detail/Reference/I32x4.hpp
 )
 set (SIMD_DETAIL_SSE3_INCLUDE_FILES
@@ -100,8 +101,8 @@ MakeUnitTest (LIBRARY SIMD GROUP Core
 		UnitTest/Test_Bool4.cpp
 		UnitTest/Test_F32x4_1.cpp
 		UnitTest/Test_F32x4_2.cpp
-		UnitTest/Test_F32x4_3.cpp
-		UnitTest/Test_F32x4_4.cpp
+		UnitTest/Test_FXXx4_3.cpp
+		UnitTest/Test_FXXx4_4.cpp
 		UnitTest/Test_FPU_F32x3.cpp
 		UnitTest/Test_SSE4_1_Utilities.cpp
 		../Test/UnitTestMain.cpp
