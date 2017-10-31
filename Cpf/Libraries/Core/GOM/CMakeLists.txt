@@ -14,6 +14,11 @@ CPF_GEN_GOM(RustGOMFiles rust
 	${CPF_GENERATED}/Rust/CPF/GOM
 	${IDL_FILES}
 )
+CPF_GEN_GOM(CSharpGOMFiles csharp
+	cs
+	${CPF_GENERATED}/CSharp/CPF/GOM
+	${IDL_FILES}
+)
 
 # ###############################################
 set (INCLUDE_FILES
@@ -22,6 +27,7 @@ set (INCLUDE_FILES
 	Include/GOM/iUnknown.hpp
 	Include/GOM/Result.hpp
 	${CppGOMFiles}
+	${CSharpGOMFiles}
 )
 set (RUST_FILES
 	${RustGOMFiles}

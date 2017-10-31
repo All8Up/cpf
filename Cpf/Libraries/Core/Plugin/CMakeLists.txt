@@ -15,6 +15,11 @@ CPF_GEN_GOM(RustPluginFiles rust
 	${CPF_GENERATED}/Rust/CPF/Plugin
 	${IDL_FILES}
 )
+CPF_GEN_GOM(CSharpPluginFiles csharp
+	cs
+	${CPF_GENERATED}/CSharp/CPF/Plugin
+	${IDL_FILES}
+)
 
 # ###############################################
 set (INCLUDE_FILES
@@ -36,6 +41,7 @@ add_custom_target (Plugin_IDE
 		${IDL_FILES}
 		${CppPluginFiles}
 		${RustPluginFiles}
+		${CSharpPluginFiles}
 )
 set_property (TARGET Plugin_IDE PROPERTY FOLDER Libraries/Interface/Core)
 
