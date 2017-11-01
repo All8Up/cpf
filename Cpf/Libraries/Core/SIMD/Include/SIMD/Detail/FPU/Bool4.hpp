@@ -139,31 +139,31 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			inline bool operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				return lhs.mVector == rhs.mVector;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			inline bool operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				return lhs.mVector != rhs.mVector;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE bool Any(const Bool4_<COUNT> value)
+			inline bool Any(const Bool4_<COUNT> value)
 			{
 				return value.mVector != 0;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool All(const Bool4_<COUNT> value)
+			inline bool All(const Bool4_<COUNT> value)
 			{
 				return value.mVector == Bool4_<COUNT>::LaneMask;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool None(const Bool4_<COUNT> value)
+			inline bool None(const Bool4_<COUNT> value)
 			{
 				return value.mVector == 0;
 			}

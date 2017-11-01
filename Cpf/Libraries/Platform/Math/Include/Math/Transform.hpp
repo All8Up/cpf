@@ -12,7 +12,7 @@ namespace CPF
 		class Transform
 		{
 		public:
-#define DOUBLE_TRANSFORM 1
+#define DOUBLE_TRANSFORM 0
 #if DOUBLE_TRANSFORM
 			using Real = double;
 			using Quaternion = Quaterniond;

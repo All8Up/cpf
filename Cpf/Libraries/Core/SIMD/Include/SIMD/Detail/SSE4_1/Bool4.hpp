@@ -168,13 +168,13 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE bool CPF_VECTORCALL operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			inline bool CPF_VECTORCALL operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				auto cmp = _mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs));
 				return Bool4_<COUNT>(cmp).ToMask() == Bool4_<COUNT>::LaneMask;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE bool CPF_VECTORCALL operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			inline bool CPF_VECTORCALL operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(lhs)),
@@ -184,19 +184,19 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE bool Any(const Bool4_<COUNT> value)
+			inline bool Any(const Bool4_<COUNT> value)
 			{
 				return (value.ToMask() & Bool4_<COUNT>::LaneMask) != 0;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool All(const Bool4_<COUNT> value)
+			inline bool All(const Bool4_<COUNT> value)
 			{
 				return value.ToMask() == Bool4_<COUNT>::LaneMask;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool None(const Bool4_<COUNT> value)
+			inline bool None(const Bool4_<COUNT> value)
 			{
 				return value.ToMask() == 0;
 			}

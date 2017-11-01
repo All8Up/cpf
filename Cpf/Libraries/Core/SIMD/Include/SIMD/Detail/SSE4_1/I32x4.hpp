@@ -161,13 +161,13 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline Bool4_<COUNT> CPF_VECTORCALL operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs));
 				return Bool4_<COUNT>(cmp);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline Bool4_<COUNT> CPF_VECTORCALL operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmpeq_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
@@ -175,12 +175,12 @@ namespace CPF
 				return Bool4_<COUNT>(cmp);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline Bool4_<COUNT> CPF_VECTORCALL operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				return Bool4_<COUNT>(_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline Bool4_<COUNT> CPF_VECTORCALL operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
@@ -188,12 +188,12 @@ namespace CPF
 				return Bool4_<COUNT>(cmp);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline Bool4_<COUNT> CPF_VECTORCALL operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				return Bool4_<COUNT>(_mm_cmpgt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> CPF_VECTORCALL operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline Bool4_<COUNT> CPF_VECTORCALL operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto cmp = _mm_andnot_si128(
 					_mm_cmplt_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)),
@@ -203,30 +203,30 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator - (const I32x4_<COUNT> value)
+			inline I32x4_<COUNT> CPF_VECTORCALL operator - (const I32x4_<COUNT> value)
 			{
 				auto l = _mm_cvtepi32_ps(static_cast<__m128i>(value));
 				return I32x4_<COUNT>(_mm_cvttps_epi32(_mm_mul_ps(l, _mm_set_ps(-1.0f, -1.0f, -1.0f, -1.0f))));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator + (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL operator + (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				return I32x4_<COUNT>(_mm_add_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator - (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL operator - (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				return I32x4_<COUNT>(_mm_sub_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator * (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL operator * (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto l = _mm_cvtepi32_ps(static_cast<__m128i>(lhs));
 				auto r = _mm_cvtepi32_ps(static_cast<__m128i>(rhs));
 				return I32x4_<COUNT>(_mm_cvttps_epi32(_mm_mul_ps(l, r)));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL operator / (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL operator / (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				auto l = _mm_cvtepi32_ps(static_cast<__m128i>(lhs));
 				auto r = _mm_cvtepi32_ps(static_cast<__m128i>(rhs));
@@ -235,16 +235,16 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Min(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL Min(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				return I32x4_<COUNT>(_mm_min_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<COUNT> value);
+			inline I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<COUNT> value);
 
 			template <>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<2> value)
+			inline I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<2> value)
 			{
 				auto second = _mm_castps_si128(
 					_mm_shuffle_ps(
@@ -254,7 +254,7 @@ namespace CPF
 				return I32x4_<1>(the_low);
 			}
 			template <>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<3> value)
+			inline I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<3> value)
 			{
 				auto folded = _mm_castps_si128(_mm_movehl_ps(
 					_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value))));
@@ -264,7 +264,7 @@ namespace CPF
 				return I32x4_<1>(the_low);
 			}
 			template <>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<4> value)
+			inline I32x4_<1> CPF_VECTORCALL HMin(const I32x4_<4> value)
 			{
 				auto folded = _mm_castps_si128(_mm_movehl_ps(
 					_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value))));
@@ -274,16 +274,16 @@ namespace CPF
 				return I32x4_<1>(the_low);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Max(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL Max(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				return I32x4_<COUNT>(_mm_max_epi32(static_cast<__m128i>(lhs), static_cast<__m128i>(rhs)));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<COUNT> value);
+			inline I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<COUNT> value);
 
 			template <>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<2> value)
+			inline I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<2> value)
 			{
 				auto second = _mm_castps_si128(
 					_mm_shuffle_ps(
@@ -293,7 +293,7 @@ namespace CPF
 				return I32x4_<1>(the_high);
 			}
 			template <>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<3> value)
+			inline I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<3> value)
 			{
 				auto folded = _mm_movehl_ps(_mm_castsi128_ps(static_cast<__m128i>(value)), _mm_castsi128_ps(static_cast<__m128i>(value)));
 				auto two_high = _mm_max_epi32(static_cast<__m128i>(value), _mm_castps_si128(folded));
@@ -303,7 +303,7 @@ namespace CPF
 			}
 
 			template <>
-			CPF_FORCE_INLINE I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<4> value)
+			inline I32x4_<1> CPF_VECTORCALL HMax(const I32x4_<4> value)
 			{
 				auto folded = cpf_movehl_epi32(static_cast<__m128i>(value), static_cast<__m128i>(value));
 				auto two_low = _mm_max_epi32(static_cast<__m128i>(value), folded);
@@ -313,14 +313,14 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Sqrt(const I32x4_<COUNT> value)
+			inline I32x4_<COUNT> CPF_VECTORCALL Sqrt(const I32x4_<COUNT> value)
 			{
 				auto v = _mm_cvtepi32_ps(static_cast<__m128i>(value));
 				return I32x4_<COUNT>(_mm_cvttps_epi32(_mm_sqrt_ps(v)));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Clamp(
+			inline I32x4_<COUNT> CPF_VECTORCALL Clamp(
 				const I32x4_<COUNT> value, typename I32x4_<COUNT>::LaneType low, typename I32x4_<COUNT>::LaneType high)
 			{
 				return I32x4_<COUNT>(
@@ -328,7 +328,7 @@ namespace CPF
 						_mm_max_epi32(_mm_set_epi32(low, low, low, low), static_cast<__m128i>(value))));
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Modulus(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> CPF_VECTORCALL Modulus(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result = lhs / rhs;
 				result = result * rhs;
@@ -336,14 +336,14 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> CPF_VECTORCALL Abs(const I32x4_<COUNT> value)
+			inline I32x4_<COUNT> CPF_VECTORCALL Abs(const I32x4_<COUNT> value)
 			{
 				static constexpr UInt32x4 kSignBits = { 0x80000000, 0x80000000, 0x80000000, 0x80000000 };
 				return I32x4_<COUNT>(_mm_andnot_si128(kSignBits.mVector, static_cast<__m128i>(value)));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool CPF_VECTORCALL Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
+			inline bool CPF_VECTORCALL Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
 			{
 				return All(Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance));
 			}

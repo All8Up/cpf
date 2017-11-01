@@ -9,7 +9,7 @@ namespace CPF
 	{
 		namespace FPU
 		{
-			CPF_FORCE_INLINE bool Near(const float lhs, const float rhs, float tolerance)
+			inline bool Near(const float lhs, const float rhs, float tolerance)
 			{
 				return std::fabs(lhs - rhs) <= tolerance;
 			}

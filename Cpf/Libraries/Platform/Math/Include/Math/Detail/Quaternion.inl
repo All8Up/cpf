@@ -45,7 +45,7 @@ namespace CPF
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename Quaternion<TYPE>::Element CPF_VECTORCALL Quaternion<TYPE>::operator [](int idx) const
+		inline typename Quaternion<TYPE>::Element CPF_VECTORCALL Quaternion<TYPE>::operator [](int idx) const
 		{
 			switch (idx)
 			{
@@ -60,7 +60,7 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		CPF_FORCE_INLINE Quaternion<TYPE> CPF_VECTORCALL Conjugate(Quaternion<TYPE> value)
+		inline Quaternion<TYPE> CPF_VECTORCALL Conjugate(Quaternion<TYPE> value)
 		{
 			return Quaternion<TYPE>(-value.xyz, value.w);
 		}

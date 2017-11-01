@@ -85,7 +85,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator == (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline Bool4_<COUNT> operator == (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				int32_t result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -94,7 +94,7 @@ namespace CPF
 				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator != (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline Bool4_<COUNT> operator != (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -103,7 +103,7 @@ namespace CPF
 				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator < (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline Bool4_<COUNT> operator < (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -112,7 +112,7 @@ namespace CPF
 				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator <= (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline Bool4_<COUNT> operator <= (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -121,7 +121,7 @@ namespace CPF
 				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator > (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline Bool4_<COUNT> operator > (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -130,7 +130,7 @@ namespace CPF
 				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE Bool4_<COUNT> operator >= (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline Bool4_<COUNT> operator >= (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -141,7 +141,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> operator - (const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> operator - (const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -150,7 +150,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> operator + (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> operator + (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -158,7 +158,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> operator - (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> operator - (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -166,7 +166,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> operator * (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> operator * (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -174,7 +174,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> operator / (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> operator / (const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -184,7 +184,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Min(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> Min(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -192,7 +192,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<1> HMin(const F32x2_<COUNT> value)
+			inline F32x2_<1> HMin(const F32x2_<COUNT> value)
 			{
 				float result = value.mVector.mData[0];
 				for (int i = 1; i < COUNT; ++i)
@@ -200,7 +200,7 @@ namespace CPF
 				return F32x2_<1>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Max(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> Max(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -208,7 +208,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<1> HMax(const F32x2_<COUNT> value)
+			inline F32x2_<1> HMax(const F32x2_<COUNT> value)
 			{
 				float result = value.mVector.mData[0];
 				for (int i = 1; i < COUNT; ++i)
@@ -216,7 +216,7 @@ namespace CPF
 				return F32x2_<1>(result);
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Sqrt(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> Sqrt(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -224,7 +224,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Reciprocal(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> Reciprocal(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -232,7 +232,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> RSqrt(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> RSqrt(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -240,7 +240,7 @@ namespace CPF
 				return result;
 			}
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Clamp(const F32x2_<COUNT> value, typename F32x2_<COUNT>::Element low, typename F32x2_<COUNT>::Element high)
+			inline F32x2_<COUNT> Clamp(const F32x2_<COUNT> value, typename F32x2_<COUNT>::Element low, typename F32x2_<COUNT>::Element high)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -249,7 +249,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x2_<COUNT>::Element Dot(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline typename F32x2_<COUNT>::Element Dot(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				typename F32x2_<COUNT>::Element result = 0.0f;
 				for (int i = 0; i < COUNT; ++i)
@@ -258,25 +258,25 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x2_<COUNT>::Element Magnitude(const F32x2_<COUNT> value)
+			inline typename F32x2_<COUNT>::Element Magnitude(const F32x2_<COUNT> value)
 			{
 				return std::sqrt(Dot(value, value));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename F32x2_<COUNT>::Element MagnitudeSq(const F32x2_<COUNT> value)
+			inline typename F32x2_<COUNT>::Element MagnitudeSq(const F32x2_<COUNT> value)
 			{
 				return Dot(value, value);
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Normalize(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> Normalize(const F32x2_<COUNT> value)
 			{
 				return value / F32x2_<COUNT>(Magnitude(value));
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Round(const F32x2_<COUNT> value, Rounding mode)
+			inline F32x2_<COUNT> Round(const F32x2_<COUNT> value, Rounding mode)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -307,7 +307,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Floor(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> Floor(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -316,7 +316,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Ceil(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> Ceil(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -325,7 +325,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Modulus(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
+			inline F32x2_<COUNT> Modulus(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -334,7 +334,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE F32x2_<COUNT> Abs(const F32x2_<COUNT> value)
+			inline F32x2_<COUNT> Abs(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -343,13 +343,13 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool Near(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs, float tolerance)
+			inline bool Near(const F32x2_<COUNT> lhs, const F32x2_<COUNT> rhs, float tolerance)
 			{
 				return (Abs(lhs - rhs) <= F32x2_<COUNT>(tolerance)) == F32x2_<COUNT>::kLaneMask;
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool Valid(const F32x2_<COUNT> value)
+			inline bool Valid(const F32x2_<COUNT> value)
 			{
 				F32x2_<COUNT> test(value * F32x2_<COUNT>{ 0.0f });
 				return (test == F32x2_<COUNT>{0.0f}) == F32x2_<COUNT>::kLaneMask;

@@ -8,21 +8,21 @@ namespace CPF
 	namespace Math
 	{
 		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE>::Matrix44()
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE>::Matrix44(Element v0)
 			: mRows{ Row(v0), Row(v0), Row(v0), Row(v0) }
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE>::Matrix44(Row r0, Row r1, Row r2, Row r3)
 			: mRows{ r0, r1, r2, r3 }
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE>::Matrix44(
 				Element _00, Element _01, Element _02, Element _03,
 				Element _10, Element _11, Element _12, Element _13,
@@ -32,7 +32,7 @@ namespace CPF
 			: mRows{ Row{ _00, _01, _02, _03 }, Row{ _10, _11, _12, _13 }, Row{ _20, _21, _22, _23 }, Row{ _30, _31, _32, _33 } }
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE>::Matrix44(Quaternion<typename TYPE::Lanes_4> value)
 		{
 			Element x2 = value.x + value.x; Element y2 = value.y + value.y; Element z2 = value.z + value.z;
@@ -47,7 +47,7 @@ namespace CPF
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE>& CPF_VECTORCALL Matrix44<TYPE>::operator = (const Matrix44<TYPE>& rhs)
 		{
 			mRows[0] = rhs.mRows[0];
@@ -57,13 +57,13 @@ namespace CPF
 			return *this;
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			typename Matrix44<TYPE>::Row& CPF_VECTORCALL Matrix44<TYPE>::operator [](int idx)
 		{
 			return mRows[idx];
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			const typename Matrix44<TYPE>::Row& CPF_VECTORCALL Matrix44<TYPE>::operator [](int idx) const
 		{
 			return mRows[idx];
@@ -85,7 +85,7 @@ namespace CPF
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::Identity()
 		{
 			return Matrix44<TYPE>(
@@ -96,7 +96,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::AxisAngle(Row axis, Element radians)
 		{
 			CPF_ASSERT(MagnitudeSq(axis) > Element(0.0001));
@@ -120,7 +120,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::RotationX(Element radians)
 		{
 			Element sa = std::sin(radians);
@@ -134,7 +134,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::RotationY(Element radians)
 		{
 			Element sa = std::sin(radians);
@@ -148,7 +148,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::RotationZ(Element radians)
 		{
 			Element sa = std::sin(radians);
@@ -162,7 +162,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::Scale(Element x, Element y, Element z)
 		{
 			using Element = typename TYPE::Element;
@@ -174,7 +174,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Matrix44<TYPE>::Translation(Element x, Element y, Element z)
 		{
 			using Element = typename TYPE::Element;
@@ -186,7 +186,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix44<TYPE> CPF_VECTORCALL Transpose(const Matrix44<TYPE> value)
 		{
 			Matrix44<TYPE> result;
@@ -298,7 +298,7 @@ namespace CPF
 			return inverse * oneOverDeterminant;
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			bool CPF_VECTORCALL Near(const Matrix44<TYPE> lhs, const Matrix44<TYPE> rhs, typename Matrix44<TYPE>::Element tolerance)
 		{
 			return Near(lhs[0], rhs[0], tolerance) && Near(lhs[1], rhs[1], tolerance)

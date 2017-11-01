@@ -132,8 +132,8 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 	transform->GetTransform().SetTranslation(pos);
 
-	Matrix33 orientation = Matrix33::AxisAngle(Vector3(0.0f, 1.0f, 0.0f), time) *
-		Matrix33::AxisAngle(Vector3(1.0f, 0.0f, 0.0f), time*2.0f);
+	Matrix33 orientation = Matrix33::AxisAngle(Vector3(0.0, 1.0, 0.0), time) *
+		Matrix33::AxisAngle(Vector3(1.0, 0.0, 0.0), time*2.0f);
 
 	// TODO: Move into drawable component.
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();

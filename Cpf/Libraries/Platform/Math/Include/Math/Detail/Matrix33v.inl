@@ -7,21 +7,21 @@ namespace CPF
 	namespace Math
 	{
 		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE>::Matrix33()
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE>::Matrix33(Element v0)
 			: mRows{ Row(v0), Row(v0), Row(v0) }
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE>::Matrix33(Row r0, Row r1, Row r2)
 			: mRows{ r0, r1, r2 }
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE>::Matrix33(
 				Element _00, Element _01, Element _02,
 				Element _10, Element _11, Element _12,
@@ -30,7 +30,7 @@ namespace CPF
 			: mRows{ Row{ _00, _01, _02 }, Row{ _10, _11, _12 }, Row{ _20, _21, _22 } }
 		{}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE>::Matrix33(Quaternion<typename TYPE::Lanes_4> value)
 		{
 			Element x2 = value.x + value.x;  Element y2 = value.y + value.y;  Element z2 = value.z + value.z;
@@ -44,7 +44,7 @@ namespace CPF
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE>& CPF_VECTORCALL Matrix33<TYPE>::operator = (const Matrix33<TYPE>& rhs)
 		{
 			mRows[0] = rhs.mRows[0];
@@ -53,12 +53,12 @@ namespace CPF
 			return *this;
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			typename Matrix33<TYPE>::Row& CPF_VECTORCALL Matrix33<TYPE>::operator [](int idx)
 		{
 			return mRows[idx];
 		}
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			const typename Matrix33<TYPE>::Row& CPF_VECTORCALL Matrix33<TYPE>::operator [](int idx) const
 		{
 			return mRows[idx];
@@ -80,7 +80,7 @@ namespace CPF
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::Identity()
 		{
 			return Matrix33<TYPE>(
@@ -90,7 +90,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::AxisAngle(Row axis, Element radians)
 		{
 			CPF_ASSERT(MagnitudeSq(axis) > Element(0.0001));
@@ -113,7 +113,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::RotationX(Element radians)
 		{
 			Element sa = Sin(radians);
@@ -126,7 +126,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::RotationY(Element radians)
 		{
 			Element sa = Sin(radians);
@@ -139,7 +139,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::RotationZ(Element radians)
 		{
 			Element sa = Sin(radians);
@@ -152,7 +152,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::Scale(Element x, Element y)
 		{
 			using Element = typename TYPE::Element;
@@ -163,7 +163,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Matrix33<TYPE>::Translation(Element x, Element y)
 		{
 			using Element = typename TYPE::Element;
@@ -174,7 +174,7 @@ namespace CPF
 				);
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			Matrix33<TYPE> CPF_VECTORCALL Transpose(const Matrix33<TYPE> value)
 		{
 			Matrix33<TYPE> result;
@@ -186,7 +186,7 @@ namespace CPF
 			return result;
 		}
 
-		template <typename TYPE> CPF_FORCE_INLINE
+		template <typename TYPE> inline
 			bool CPF_VECTORCALL Near(const Matrix33<TYPE> lhs, const Matrix33<TYPE> rhs, typename Matrix33<TYPE>::Element tolerance)
 		{
 			return Near(lhs[0], rhs[0], tolerance) && Near(lhs[1], rhs[1], tolerance) && Near(lhs[2], rhs[2], tolerance);

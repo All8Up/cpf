@@ -143,7 +143,7 @@ namespace CPF
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			inline bool operator == (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				for (int i = 0; i < COUNT; ++i)
 				{
@@ -154,7 +154,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
+			inline bool operator != (const Bool4_<COUNT> lhs, const Bool4_<COUNT> rhs)
 			{
 				for (int i = 0; i < COUNT; ++i)
 				{
@@ -166,7 +166,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			CPF_FORCE_INLINE bool Any(const Bool4_<COUNT> value)
+			inline bool Any(const Bool4_<COUNT> value)
 			{
 				for (int i = 0; i < COUNT; ++i)
 					if (value.mSIMD.mData[i] != 0)
@@ -175,7 +175,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool All(const Bool4_<COUNT> value)
+			inline bool All(const Bool4_<COUNT> value)
 			{
 				for (int i = 0; i < COUNT; ++i)
 					if (value.mSIMD.mData[i] == 0)
@@ -184,7 +184,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool None(const Bool4_<COUNT> value)
+			inline bool None(const Bool4_<COUNT> value)
 			{
 				for (int i = 0; i < COUNT; ++i)
 					if (value.mSIMD.mData[i] != 0)

@@ -255,21 +255,21 @@ namespace CPF
 			inline F64x4_<2> CPF_VECTORCALL Normalize(const F64x4_<2> value)
 			{
 				auto sq = value * value;
-				auto n = value / Dot(value, value);
+				auto n = value / F64x4_<2>(Dot(value, value));
 				return F64x4_<2>(n);
 			}
 			template <>
 			inline F64x4_<3> CPF_VECTORCALL Normalize(const F64x4_<3> value)
 			{
 				auto sq = value * value;
-				auto n = value / Dot(value, value);
+				auto n = value / F64x4_<3>(Dot(value, value));
 				return F64x4_<3>(n);
 			}
 			template <>
 			inline F64x4_<4> CPF_VECTORCALL Normalize(const F64x4_<4> value)
 			{
 				auto sq = value * value;
-				auto n = value / Dot(value, value);
+				auto n = value / F64x4_<4>(Dot(value, value));
 				return F64x4_<4>(n);
 			}
 

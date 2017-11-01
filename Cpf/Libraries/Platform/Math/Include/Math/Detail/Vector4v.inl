@@ -66,7 +66,7 @@ namespace CPF
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename Vector4v<TYPE>::LaneType CPF_VECTORCALL Vector4v<TYPE>::operator [](int idx) const
+		inline typename Vector4v<TYPE>::LaneType CPF_VECTORCALL Vector4v<TYPE>::operator [](int idx) const
 		{
 			switch (idx)
 			{
@@ -81,7 +81,7 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Cross(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL Cross(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(Cross(lhs.mSIMD, rhs.mSIMD));
 		}
@@ -89,80 +89,80 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator == (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename TYPE::BoolType CPF_VECTORCALL operator == (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return lhs.mSIMD == rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator != (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename TYPE::BoolType CPF_VECTORCALL operator != (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return lhs.mSIMD != rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator < (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename TYPE::BoolType CPF_VECTORCALL operator < (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return lhs.mSIMD < rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator <= (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename TYPE::BoolType CPF_VECTORCALL operator <= (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return lhs.mSIMD <= rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator > (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename TYPE::BoolType CPF_VECTORCALL operator > (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return lhs.mSIMD > rhs.mSIMD;
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::BoolType CPF_VECTORCALL operator >= (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename TYPE::BoolType CPF_VECTORCALL operator >= (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return lhs.mSIMD >= rhs.mSIMD;
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator - (Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator - (Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(-value.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator + (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator + (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(lhs.mSIMD + rhs.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator - (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator - (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(lhs.mSIMD - rhs.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator * (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator * (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(lhs.mSIMD * rhs.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator * (const Vector4v<TYPE> lhs, typename TYPE::LaneType rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator * (const Vector4v<TYPE> lhs, typename TYPE::LaneType rhs)
 		{
 			return Vector4v<TYPE>(lhs.mSIMD * TYPE(rhs));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator * (typename TYPE::Element lhs, const Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator * (typename TYPE::Element lhs, const Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(TYPE(lhs) * rhs.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL operator / (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL operator / (Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(lhs.mSIMD / rhs.mSIMD);
 		}
@@ -213,109 +213,109 @@ namespace CPF
 		//////////////////////////////////////////////////////////////////////////
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Min(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL Min(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(Min(lhs.mSIMD, rhs.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::Lanes_1 CPF_VECTORCALL HMin(Vector4v<TYPE> value)
+		inline typename TYPE::Lanes_1 CPF_VECTORCALL HMin(Vector4v<TYPE> value)
 		{
 			return HMin(value.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Max(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL Max(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(Max(lhs.mSIMD, rhs.mSIMD));
 		}
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename TYPE::Lanes_1 CPF_VECTORCALL HMax(Vector4v<TYPE> value)
+		inline typename TYPE::Lanes_1 CPF_VECTORCALL HMax(Vector4v<TYPE> value)
 		{
 			return HMax(value.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Sqrt(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL Sqrt(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(Sqrt(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL RSqrt(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL RSqrt(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(RSqrt(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Reciprocal(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL Reciprocal(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(Reciprocal(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Clamp(Vector4v<TYPE> value, typename TYPE::LaneType l, typename TYPE::LaneType h)
+		inline Vector4v<TYPE> CPF_VECTORCALL Clamp(Vector4v<TYPE> value, typename TYPE::LaneType l, typename TYPE::LaneType h)
 		{
 			return Vector4v<TYPE>(Clamp(value.mSIMD, l, h));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Abs(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL Abs(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(Abs(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename Vector4v<TYPE>::LaneType CPF_VECTORCALL Dot(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline typename Vector4v<TYPE>::LaneType CPF_VECTORCALL Dot(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Dot(lhs.mSIMD, rhs.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename Vector4v<TYPE>::LaneType CPF_VECTORCALL Magnitude(Vector4v<TYPE> value)
+		inline typename Vector4v<TYPE>::LaneType CPF_VECTORCALL Magnitude(Vector4v<TYPE> value)
 		{
 			return Magnitude(value.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE typename Vector4v<TYPE>::LaneType CPF_VECTORCALL MagnitudeSq(Vector4v<TYPE> value)
+		inline typename Vector4v<TYPE>::LaneType CPF_VECTORCALL MagnitudeSq(Vector4v<TYPE> value)
 		{
 			return MagnitudeSq(value.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Normalize(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL Normalize(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(Normalize(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Reflect(Vector4v<TYPE> value, Vector4v<TYPE> norm)
+		inline Vector4v<TYPE> CPF_VECTORCALL Reflect(Vector4v<TYPE> value, Vector4v<TYPE> norm)
 		{
 			const typename TYPE::LaneType dot2 = Dot(value, norm) * 2;
 			return Vector4v<TYPE>(value.mSIMD * TYPE(dot2) - norm.mSIMD);
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Ceil(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL Ceil(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(Ceil(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Floor(Vector4v<TYPE> value)
+		inline Vector4v<TYPE> CPF_VECTORCALL Floor(Vector4v<TYPE> value)
 		{
 			return Vector4v<TYPE>(Floor(value.mSIMD));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Round(Vector4v<TYPE> value, SIMD::Rounding mode)
+		inline Vector4v<TYPE> CPF_VECTORCALL Round(Vector4v<TYPE> value, SIMD::Rounding mode)
 		{
 			return Vector4v<TYPE>(Round(value.mSIMD, mode));
 		}
 
 		template <typename TYPE>
-		CPF_FORCE_INLINE Vector4v<TYPE> CPF_VECTORCALL Modulus(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
+		inline Vector4v<TYPE> CPF_VECTORCALL Modulus(Vector4v<TYPE> lhs, Vector4v<TYPE> rhs)
 		{
 			return Vector4v<TYPE>(Modulus(lhs.mSIMD, rhs.mSIMD));
 		}

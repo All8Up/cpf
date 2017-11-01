@@ -331,7 +331,7 @@ GOM::Result ExperimentalD3D12::Main(iApplication* application)
 				// Start up the threading system.
 				// Allocates a command pool and buffer per thread.
 				GetRegistry()->Create(nullptr, kSchedulerCID.GetID(), iScheduler::kIID.GetID(), mpScheduler.AsVoidPP());
-				mpScheduler->Initialize(Thread::GetHardwareThreadCount(),
+				mpScheduler->Initialize(1, //Thread::GetHardwareThreadCount(),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_CreateWorkerData),
 					SCHEDULED_CALL(ExperimentalD3D12, &ExperimentalD3D12::_DestroyWorkerData),
 					this

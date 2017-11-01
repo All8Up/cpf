@@ -136,7 +136,7 @@ namespace CPF
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline typename I32x4_<COUNT>::BoolType operator == (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
@@ -148,7 +148,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline typename I32x4_<COUNT>::BoolType operator != (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
@@ -160,7 +160,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline typename I32x4_<COUNT>::BoolType operator < (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
@@ -172,7 +172,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline typename I32x4_<COUNT>::BoolType operator <= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
@@ -184,7 +184,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline typename I32x4_<COUNT>::BoolType operator > (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
@@ -196,7 +196,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE typename I32x4_<COUNT>::BoolType operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline typename I32x4_<COUNT>::BoolType operator >= (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				typename I32x4_<COUNT>::BoolType result(false);
 				for (int i = 0; i < COUNT; ++i)
@@ -210,7 +210,7 @@ namespace CPF
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator - (const I32x4_<COUNT> value)
+			inline I32x4_<COUNT> operator - (const I32x4_<COUNT> value)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -219,7 +219,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator + (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> operator + (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -228,7 +228,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator - (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> operator - (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -237,7 +237,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator * (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> operator * (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -246,7 +246,7 @@ namespace CPF
 			}
 			
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator * (const I32x4_<COUNT> lhs, typename I32x4_<COUNT>::LaneType rhs)
+			inline I32x4_<COUNT> operator * (const I32x4_<COUNT> lhs, typename I32x4_<COUNT>::LaneType rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -255,7 +255,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator / (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> operator / (const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -264,7 +264,7 @@ namespace CPF
 			}
 			
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> operator / (const I32x4_<COUNT> lhs, typename I32x4_<COUNT>::LaneType rhs)
+			inline I32x4_<COUNT> operator / (const I32x4_<COUNT> lhs, typename I32x4_<COUNT>::LaneType rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -275,7 +275,7 @@ namespace CPF
 			//////////////////////////////////////////////////////////////////////////
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> Min(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> Min(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -284,7 +284,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<1> HMin(const I32x4_<COUNT> value)
+			inline I32x4_<1> HMin(const I32x4_<COUNT> value)
 			{
 				int32_t result = value.mSIMD.mData[0];
 				for (int i = 1; i < COUNT; ++i)
@@ -293,7 +293,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> Max(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> Max(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -302,7 +302,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<1> HMax(const I32x4_<COUNT> value)
+			inline I32x4_<1> HMax(const I32x4_<COUNT> value)
 			{
 				int32_t result = value.mSIMD.mData[0];
 				for (int i = 1; i < COUNT; ++i)
@@ -311,7 +311,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> Sqrt(const I32x4_<COUNT> value)
+			inline I32x4_<COUNT> Sqrt(const I32x4_<COUNT> value)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -320,7 +320,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> Clamp(const I32x4_<COUNT> value, typename I32x4_<COUNT>::LaneType l, typename I32x4_<COUNT>::LaneType h)
+			inline I32x4_<COUNT> Clamp(const I32x4_<COUNT> value, typename I32x4_<COUNT>::LaneType l, typename I32x4_<COUNT>::LaneType h)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -331,7 +331,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> Modulus(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
+			inline I32x4_<COUNT> Modulus(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -342,7 +342,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE I32x4_<COUNT> Abs(const I32x4_<COUNT> value)
+			inline I32x4_<COUNT> Abs(const I32x4_<COUNT> value)
 			{
 				I32x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
@@ -351,7 +351,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			CPF_FORCE_INLINE bool Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
+			inline bool Near(const I32x4_<COUNT> lhs, const I32x4_<COUNT> rhs, int32_t tolerance)
 			{
 				return All(Abs(lhs - rhs) <= I32x4_<COUNT>(tolerance));
 			}
