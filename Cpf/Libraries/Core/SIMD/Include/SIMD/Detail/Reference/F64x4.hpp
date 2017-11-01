@@ -416,7 +416,7 @@ namespace CPF
 			{
 				F64x4_<COUNT> result;
 				for (int i = 0; i < COUNT; ++i)
-					result.mSIMD.mData[i] = std::mod(lhs.mSIMD.mData[i], rhs.mSIMD.mData[i]);
+					result.mSIMD.mData[i] = std::fmod(lhs.mSIMD.mData[i], rhs.mSIMD.mData[i]);
 				return result;
 			}
 

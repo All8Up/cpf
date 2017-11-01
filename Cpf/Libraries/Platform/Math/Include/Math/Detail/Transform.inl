@@ -5,7 +5,7 @@ namespace CPF
 {
 	namespace Math
 	{
-		inline Transform::Transform(Quaternionf orientation, Vector3fv scale, Vector3fv translation)
+		inline Transform::Transform(Quaternion orientation, Vector3 scale, Vector3 translation)
 			: mOrientation(orientation)
 			, mScale(scale)
 			, mTranslation(translation)
@@ -27,47 +27,47 @@ namespace CPF
 
 		inline Transform Transform::operator * (const Transform& rhs) const
 		{
-			Quaternionf q = mOrientation * rhs.mOrientation;
-			Vector3fv s = mScale * rhs.mScale;
-			Vector3fv t = mTranslation + mOrientation * rhs.mTranslation;
+			Quaternion q = mOrientation * rhs.mOrientation;
+			Vector3 s = mScale * rhs.mScale;
+			Vector3 t = mTranslation + mOrientation * rhs.mTranslation;
 
 			return Transform(q, s, t);
 		}
 
 		// Interface.
-		inline Quaternionf Transform::GetOrientation() const
+		inline Transform::Quaternion Transform::GetOrientation() const
 		{
 			return mOrientation;
 		}
 
-		inline void Transform::SetOrientation(Quaternionf q)
+		inline void Transform::SetOrientation(Quaternion q)
 		{
 			mOrientation = q;
 		}
 
-		inline Vector3fv Transform::GetScale() const
+		inline Transform::Vector3 Transform::GetScale() const
 		{
 			return mScale;
 		}
 
-		inline void Transform::SetScale(Vector3fv v)
+		inline void Transform::SetScale(Vector3 v)
 		{
 			mScale = v;
 		}
 
-		inline Vector3fv Transform::GetTranslation() const
+		inline Transform::Vector3 Transform::GetTranslation() const
 		{
 			return mTranslation;
 		}
 
-		inline void Transform::SetTranslation(Vector3fv v)
+		inline void Transform::SetTranslation(Vector3 v)
 		{
 			mTranslation = v;
 		}
 
-		inline Matrix44fv Transform::GetMatrix() const
+		inline Transform::Matrix44 Transform::GetMatrix() const
 		{
-			return Matrix44fv();
+			return Matrix44();
 		}
 	}
 }

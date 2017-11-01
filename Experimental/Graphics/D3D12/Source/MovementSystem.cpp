@@ -105,6 +105,12 @@ void MoverSystem::MoverComponent::Deactivate()
 
 void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
+	using Real = typename Math::Transform::Real;
+	using Quaternion = typename Math::Transform::Quaternion;
+	using Vector3 = typename Math::Transform::Vector3;
+	using Matrix44 = typename Math::Transform::Matrix44;
+	using Matrix33 = Math::Matrix33<typename Math::Transform::Matrix44::Row>;
+
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	iTimer* timer = mover->mpTime;
 
@@ -114,26 +120,26 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	int yc = (i / count) % count;
 	int zc = (i / (count * count)) % count;
 
-	Vector3fv pos((xc - count / 2) * 1.5f, (yc - count / 2) * 1.5f, (zc - count / 2) * 1.5f);
-	float magnitude = Magnitude(pos + Vector3fv(0.0f, 50.0f, 0.0f)) * 0.03f;
+	Vector3 pos((xc - count / 2) * Real(1.5), (yc - count / 2) * Real(1.5), (zc - count / 2) * Real(1.5));
+	Real magnitude = Magnitude(pos + Vector3(Real(0.0), Real(50.0), Real(0.0))) * Real(0.03);
 	magnitude *= magnitude;
-	float time = float(Time::Seconds(timer->GetTime()));
-	float angle = Sin(0.25f * time);
+	Real time = Real(Time::Seconds(timer->GetTime()));
+	Real angle = Sin(Real(0.25) * time);
 	pos.x = Sin(angle * magnitude) * pos.x - Cos(angle * magnitude) * pos.z;
-	pos.y = (Sin(angle) + 0.5f) * pos.y * magnitude;
+	pos.y = (Sin(angle) + Real(0.5)) * pos.y * magnitude;
 	pos.z = Cos(angle * magnitude) * pos.x + Sin(angle * magnitude) * pos.z;
 
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 	transform->GetTransform().SetTranslation(pos);
 
-	Matrix33fv orientation = Matrix33fv::AxisAngle(Vector3fv(0.0f, 1.0f, 0.0f), time) *
-		Matrix33fv::AxisAngle(Vector3fv(1.0f, 0.0f, 0.0f), time*2.0f);
+	Matrix33 orientation = Matrix33::AxisAngle(Vector3(0.0f, 1.0f, 0.0f), time) *
+		Matrix33::AxisAngle(Vector3(1.0f, 0.0f, 0.0f), time*2.0f);
 
 	// TODO: Move into drawable component.
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();
 	CPF_ASSERT(instances != nullptr);
 
-	instances[i].mScale = Vector3f(1.0f);
+	instances[i].mScale = Vector3f(1.0);
 	instances[i].mOrientation0 = Vector3f(orientation[0].xyz);
 	instances[i].mOrientation1 = Vector3f(orientation[1].xyz);
 	instances[i].mOrientation2 = Vector3f(orientation[2].xyz);

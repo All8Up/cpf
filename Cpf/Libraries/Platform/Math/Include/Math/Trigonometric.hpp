@@ -13,5 +13,8 @@ namespace CPF
 		inline float ACos(float r) { return std::acos(r); }
 		inline float ATan(float r) { return std::atan(r); }
 		inline float ATan2(float x, float y) { return std::atan2(x, y); }
+
+		inline double Sin(double r) { return std::sin(r); }
+		inline double Cos(double r) { return std::cos(r); }
 	}
 }

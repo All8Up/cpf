@@ -82,7 +82,7 @@ namespace CPF
 		Vector3v<typename TYPE::Lanes_3> CPF_VECTORCALL operator * (const Quaternion<TYPE>& lhs, const Vector3v<typename TYPE::Lanes_3> rhs)
 		{
 			Vector3v<typename TYPE::Lanes_3> u(lhs.xyz);
-			float s = lhs.w;
+			typename Quaternion<TYPE>::Element s = lhs.w;
 			return Vector3v<typename TYPE::Lanes_3>(
 				2 * Dot(u, rhs) * u +
 				(s*s - Dot(u, u)) * rhs +

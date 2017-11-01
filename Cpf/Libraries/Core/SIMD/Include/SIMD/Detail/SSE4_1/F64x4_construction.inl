@@ -20,16 +20,16 @@ namespace CPF
 			template<int COUNT>
 			F64x4<double4, double, COUNT>::F64x4(LaneType v0, LaneType v1)
 				: mSIMD{
-					_mm_set_pd(0, 0),
-					_mm_set_pd(v1, v0)
+					_mm_set_pd(v1, v0),
+					_mm_set_pd(0.0, 0.0)
 				}
 			{}
 
 			template<int COUNT>
 			F64x4<double4, double, COUNT>::F64x4(LaneType v0, LaneType v1, LaneType v2)
 				: mSIMD{
-					_mm_set_pd(0, v2),
-					_mm_set_pd(v1, v0)
+					_mm_set_pd(v1, v0),
+					_mm_set_pd(0.0, v2)
 				}
 			{}
 
@@ -41,22 +41,25 @@ namespace CPF
 				}
 			{}
 
-#if 0
 			template<int COUNT>
 			F64x4<double4, double, COUNT>::F64x4(Lanes_2 v01, LaneType v2)
-				: mSIMD(Shuffle<0, 1, 0, 1>(
-					static_cast<double4>(v01),
-					_mm_set_ps(v2, 0, 0, 0))
-				)
+				: mSIMD{
+					v01.mSIMD.mData[0],
+					_mm_set_pd(v2, 0.0)
+				}
 			{
 			}
 
 			template<int COUNT>
 			F64x4<double4, double, COUNT>::F64x4(LaneType v0, Lanes_2 v12)
-				: mSIMD(_mm_set_ps(0, v12.GetLane<1>(), v12.GetLane<0>(), v0))
+				: mSIMD{
+					_mm_set_pd(_mm_cvtsd_f64(v12.mSIMD.mData[0]), v0),
+					_mm_set_pd(0.0, _mm_cvtsd_f64(_mm_unpackhi_pd(v12.mSIMD.mData[0], v12.mSIMD.mData[0])))
+				}
 			{
 			}
 
+#if 0
 			template<int COUNT>
 			F64x4<double4, double, COUNT>::F64x4(Lanes_2 v01, LaneType v2, LaneType v3)
 				: mSIMD(Shuffle<0, 1, 0, 1>(

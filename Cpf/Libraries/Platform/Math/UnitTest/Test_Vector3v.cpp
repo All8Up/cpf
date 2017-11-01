@@ -5,8 +5,10 @@
 #include "Math/Vector3v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector3fv_SSE4_1 = CPF::Math::Vector3v<CPF::SIMD::SSE4_1::F32x4_3>;
 using Vector3fv_Reference = CPF::Math::Vector3v<CPF::SIMD::Reference::F32x4_3>;
+using Vector3dv_Reference = CPF::Math::Vector3v<CPF::SIMD::Reference::F64x4_3>;
+using Vector3fv_SSE4_1 = CPF::Math::Vector3v<CPF::SIMD::SSE4_1::F32x4_3>;
+using Vector3dv_SSE4_1 = CPF::Math::Vector3v<CPF::SIMD::SSE4_1::F64x4_3>;
 
 template <typename T>
 class TypedTest_Vector3 : public::testing::Test
@@ -15,10 +17,12 @@ public:
 };
 
 typedef ::testing::Types <
-	Vector3fv_Reference,
-	Vector3fv_SSE4_1,
+/*	Vector3fv_Reference,
+	Vector3dv_Reference,
+	Vector3fv_SSE4_1, */
+	Vector3dv_SSE4_1 /* ,
 	CPF::Math::Vector3v<CPF::SIMD::Reference::I32x4_3>,
-	CPF::Math::Vector3v<CPF::SIMD::SSE4_1::I32x4_3>
+	CPF::Math::Vector3v<CPF::SIMD::SSE4_1::I32x4_3> */
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector3, F32x4_1_Types);

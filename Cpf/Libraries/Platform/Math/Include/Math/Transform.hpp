@@ -12,11 +12,24 @@ namespace CPF
 		class Transform
 		{
 		public:
+#define DOUBLE_TRANSFORM 1
+#if DOUBLE_TRANSFORM
+			using Real = double;
+			using Quaternion = Quaterniond;
+			using Vector3 = Vector3dv;
+			using Matrix44 = Matrix44dv;
+#else
+			using Real = float;
+			using Quaternion = Quaternionf;
+			using Vector3 = Vector3fv;
+			using Matrix44 = Matrix44fv;
+#endif
+
 			// Construction.
 			Transform(
-				Quaternionf = Quaternionf::Identity(),
-				Vector3fv = Vector3fv(1.0f),
-				Vector3fv = Vector3fv(0.0f)
+				Quaternion = Quaternion::Identity(),
+				Vector3 = Vector3(1.0),
+				Vector3 = Vector3(0.0)
 			);
 			Transform(const Transform& rhs);
 
@@ -25,19 +38,19 @@ namespace CPF
 			Transform operator * (const Transform& rhs) const;
 
 			// Interface.
-			Quaternionf GetOrientation() const;
-			void SetOrientation(Quaternionf q);
-			Vector3fv GetScale() const;
-			void SetScale(Vector3fv v);
-			Vector3fv GetTranslation() const;
-			void SetTranslation(Vector3fv v);
-			Matrix44fv GetMatrix() const;
+			Quaternion GetOrientation() const;
+			void SetOrientation(Quaternion q);
+			Vector3 GetScale() const;
+			void SetScale(Vector3 v);
+			Vector3 GetTranslation() const;
+			void SetTranslation(Vector3 v);
+			Matrix44 GetMatrix() const;
 
 		private:
 			// Implementation data.
-			Quaternionf mOrientation;
-			Vector3fv mScale;
-			Vector3fv mTranslation;
+			Quaternion mOrientation;
+			Vector3 mScale;
+			Vector3 mTranslation;
 		};
 	}
 }

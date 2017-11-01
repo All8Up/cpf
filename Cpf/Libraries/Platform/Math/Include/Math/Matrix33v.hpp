@@ -58,5 +58,6 @@ namespace CPF
 	namespace Math
 	{
 		using Matrix33fv = Matrix33<SIMD::F32x4>;
+		using Matrix33dv = Matrix33<SIMD::F64x4>;
 	}
 }

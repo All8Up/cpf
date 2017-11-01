@@ -69,5 +69,6 @@ namespace CPF
 	namespace Math
 	{
 		using Quaternionf = Quaternion<SIMD::F32x4>;
+		using Quaterniond = Quaternion<SIMD::F64x4>;
 	}
 }
