@@ -132,7 +132,7 @@ void TransformComponent::RemoveChild(iTransformComponent* transform)
  @brief Gets the transform in local space.
  @return The local matrix.
  */
-TransformComponent::Matrix44 TransformComponent::GetMatrix() const
+Math::Matrix44fv TransformComponent::GetMatrix() const
 {
 	return mTransform.GetMatrix();
 }
@@ -141,7 +141,7 @@ TransformComponent::Matrix44 TransformComponent::GetMatrix() const
  @brief Gets the transform to world space.
  @return The world matrix.
  */
-TransformComponent::Matrix44 TransformComponent::GetWorldMatrix() const
+Math::Matrix44fv TransformComponent::GetWorldMatrix() const
 {
 	return GetWorldTransform().GetMatrix();
 }

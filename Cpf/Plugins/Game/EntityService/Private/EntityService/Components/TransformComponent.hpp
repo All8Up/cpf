@@ -38,8 +38,8 @@ namespace CPF
 			void AddChild(iTransformComponent*);
 			void RemoveChild(iTransformComponent*);
 
-			Matrix44 GetMatrix() const;
-			Matrix44 GetWorldMatrix() const;
+			Math::Matrix44fv GetMatrix() const;
+			Math::Matrix44fv GetWorldMatrix() const;
 
 			Math::Transform& GetTransform();
 			const Math::Transform& GetTransform() const;

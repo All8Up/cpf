@@ -17,12 +17,12 @@ public:
 };
 
 typedef ::testing::Types <
-/*	Vector3fv_Reference,
+	Vector3fv_Reference,
 	Vector3dv_Reference,
-	Vector3fv_SSE4_1, */
-	Vector3dv_SSE4_1 /* ,
+	Vector3fv_SSE4_1,
+	Vector3dv_SSE4_1,
 	CPF::Math::Vector3v<CPF::SIMD::Reference::I32x4_3>,
-	CPF::Math::Vector3v<CPF::SIMD::SSE4_1::I32x4_3> */
+	CPF::Math::Vector3v<CPF::SIMD::SSE4_1::I32x4_3>
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector3, F32x4_1_Types);
@@ -62,6 +62,7 @@ TYPED_TEST(TypedTest_Vector3, ElementAccess)
 {
 	using Type = TypeParam;
 	using Element = typename Type::LaneType;
+	using Type2 = typename Type::Type::Lanes_2;
 	Type t0 = { Element(1), Element(2), Element(3) };
 
 	// NOTE: Have to cast it back to a vector type here to get the Near function to resolve.

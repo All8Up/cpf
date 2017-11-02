@@ -8,7 +8,7 @@ namespace CPF
 		namespace SSE4_1
 		{
 			template <int COUNT>
-			inline F64x4_<COUNT> CPF_VECTORCALL operator - (const F64x4_<COUNT> value)
+			F64x4_<COUNT> CPF_VECTORCALL operator - (const F64x4_<COUNT> value)
 			{
 				return F64x4_<COUNT>(
 					double4{
@@ -17,7 +17,7 @@ namespace CPF
 				});
 			}
 			template <int COUNT>
-			inline F64x4_<COUNT> CPF_VECTORCALL operator + (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
+			F64x4_<COUNT> CPF_VECTORCALL operator + (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
 			{
 				return F64x4_<COUNT>(
 					double4{
@@ -26,7 +26,7 @@ namespace CPF
 				});
 			}
 			template <int COUNT>
-			inline F64x4_<COUNT> CPF_VECTORCALL operator - (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
+			F64x4_<COUNT> CPF_VECTORCALL operator - (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
 			{
 				return F64x4_<COUNT>(
 					double4{
@@ -35,7 +35,7 @@ namespace CPF
 				});
 			}
 			template <int COUNT>
-			inline F64x4_<COUNT> CPF_VECTORCALL operator * (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
+			F64x4_<COUNT> CPF_VECTORCALL operator * (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
 			{
 				return F64x4_<COUNT>(
 					double4{
@@ -44,7 +44,7 @@ namespace CPF
 				});
 			}
 			template <int COUNT>
-			inline F64x4_<COUNT> CPF_VECTORCALL operator / (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
+			F64x4_<COUNT> CPF_VECTORCALL operator / (const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
 			{
 				return F64x4_<COUNT>(
 					double4{
@@ -55,7 +55,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			inline F64x4_<COUNT> CPF_VECTORCALL Min(const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
+			F64x4_<COUNT> CPF_VECTORCALL Min(const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)
 			{
 				return F64x4_<COUNT>(
 					double4{
@@ -65,7 +65,7 @@ namespace CPF
 			}
 
 			template <int COUNT>
-			inline F64x4_<1> CPF_VECTORCALL HMin(const F64x4_<COUNT> value);
+			F64x4_<1> CPF_VECTORCALL HMin(const F64x4_<COUNT> value);
 
 			template <>
 			inline F64x4_<1> CPF_VECTORCALL HMin(const F64x4_<2> value)
@@ -233,7 +233,7 @@ namespace CPF
 			inline typename F64x4_<4>::LaneType CPF_VECTORCALL Magnitude(const F64x4_<4> value)
 			{
 				auto sq0 = _mm_mul_pd(value.mSIMD.mData[0], value.mSIMD.mData[0]);
-				auto sq1 = _mm_mul_sd(value.mSIMD.mData[1], value.mSIMD.mData[1]);
+				auto sq1 = _mm_mul_pd(value.mSIMD.mData[1], value.mSIMD.mData[1]);
 				auto part = _mm_add_sd(
 					_mm_add_sd(sq0, _mm_unpackhi_pd(sq0, sq0)),
 					_mm_add_sd(sq1, _mm_unpackhi_pd(sq1, sq1))
@@ -269,38 +269,62 @@ namespace CPF
 			inline F64x4_<4> CPF_VECTORCALL Normalize(const F64x4_<4> value)
 			{
 				auto sq = value * value;
-				auto n = value / F64x4_<4>(Dot(value, value));
+				auto n = value / F64x4_<4>(Magnitude(value));
 				return F64x4_<4>(n);
 			}
 
-#if 0
 			template <int COUNT>
 			inline F64x4_<COUNT> CPF_VECTORCALL Round(const F64x4_<COUNT> value, Rounding mode)
 			{
 				switch (mode)
 				{
-				case Rounding::eCurrent: return F64x4_<COUNT>(_mm_round_ps(static_cast<__m128>(value), _MM_FROUND_CUR_DIRECTION));
-				case Rounding::eTruncate: return F64x4_<COUNT>(_mm_round_ps(static_cast<__m128>(value), _MM_FROUND_TRUNC));
-				case Rounding::eNearest: return F64x4_<COUNT>(_mm_round_ps(static_cast<__m128>(value), _MM_FROUND_NEARBYINT));
-				case Rounding::eDown: return F64x4_<COUNT>(_mm_round_ps(static_cast<__m128>(value), _MM_FROUND_TO_NEG_INF));
-				case Rounding::eUp: return F64x4_<COUNT>(_mm_round_ps(static_cast<__m128>(value), _MM_FROUND_TO_POS_INF));
+				case Rounding::eCurrent:
+					return F64x4_<COUNT>(double4{
+						_mm_round_pd(value.mSIMD.mData[0], _MM_FROUND_CUR_DIRECTION),
+						_mm_round_pd(value.mSIMD.mData[1], _MM_FROUND_CUR_DIRECTION)
+					});
+				case Rounding::eTruncate:
+					return F64x4_<COUNT>(double4{
+						_mm_round_pd(value.mSIMD.mData[0], _MM_FROUND_TRUNC),
+						_mm_round_pd(value.mSIMD.mData[1], _MM_FROUND_TRUNC)
+					});
+				case Rounding::eNearest:
+					return F64x4_<COUNT>(double4{
+						_mm_round_pd(value.mSIMD.mData[0], _MM_FROUND_NEARBYINT),
+						_mm_round_pd(value.mSIMD.mData[1], _MM_FROUND_NEARBYINT)
+					});
+				case Rounding::eDown:
+					return F64x4_<COUNT>(double4{
+						_mm_round_pd(value.mSIMD.mData[0], _MM_FROUND_TO_NEG_INF),
+						_mm_round_pd(value.mSIMD.mData[1], _MM_FROUND_TO_NEG_INF)
+					});
+				case Rounding::eUp:
+					return F64x4_<COUNT>(double4{
+						_mm_round_pd(value.mSIMD.mData[0], _MM_FROUND_TO_POS_INF),
+						_mm_round_pd(value.mSIMD.mData[1], _MM_FROUND_TO_POS_INF)
+					});
 				}
 				CPF_ASSERT_ALWAYS; // Improper mode given.
-				return F64x4_<COUNT>(_mm_round_ps(static_cast<__m128>(value), _MM_FROUND_CUR_DIRECTION));
+				return F64x4_<COUNT>(double4{0, 0});
 			}
 
 			template <int COUNT>
 			inline F64x4_<COUNT> CPF_VECTORCALL Floor(const F64x4_<COUNT> value)
 			{
-				return F64x4_<COUNT>(_mm_floor_ps(static_cast<__m128>(value)));
+				return F64x4_<COUNT>(double4{
+					_mm_floor_pd(value.mSIMD.mData[0]),
+					_mm_floor_pd(value.mSIMD.mData[1])
+				});
 			}
 
 			template <int COUNT>
 			inline F64x4_<COUNT> CPF_VECTORCALL Ceil(const F64x4_<COUNT> value)
 			{
-				return F64x4_<COUNT>(_mm_ceil_ps(static_cast<__m128>(value)));
+				return F64x4_<COUNT>(double4{
+					_mm_ceil_pd(value.mSIMD.mData[0]),
+					_mm_ceil_pd(value.mSIMD.mData[1])
+				});
 			}
-#endif
 
 			template <int COUNT>
 			inline F64x4_<COUNT> CPF_VECTORCALL Modulus(const F64x4_<COUNT> lhs, const F64x4_<COUNT> rhs)

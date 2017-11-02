@@ -5,9 +5,6 @@
 #include "Math/Vector4v.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector4fv_SSE4_1 = CPF::Math::Vector4v<CPF::SIMD::SSE4_1::F32x4_4>;
-using Vector4fv_Reference = CPF::Math::Vector4v<CPF::SIMD::Reference::F32x4_4>;
-
 template <typename T>
 class TypedTest_Vector4 : public::testing::Test
 {
@@ -15,8 +12,10 @@ public:
 };
 
 typedef ::testing::Types <
-	Vector4fv_Reference,
-	Vector4fv_SSE4_1,
+	CPF::Math::Vector4v<CPF::SIMD::Reference::F32x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::SSE4_1::F32x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::Reference::F64x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::SSE4_1::F64x4_4>,
 	CPF::Math::Vector4v<CPF::SIMD::Reference::I32x4_4>,
 	CPF::Math::Vector4v<CPF::SIMD::SSE4_1::I32x4_4>
 > x32x4_1_Types;
@@ -373,8 +372,10 @@ public:
 };
 
 typedef ::testing::Types <
-	Vector4fv_Reference,
-	Vector4fv_SSE4_1
+	CPF::Math::Vector4v<CPF::SIMD::Reference::F32x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::SSE4_1::F32x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::Reference::F64x4_4>,
+	CPF::Math::Vector4v<CPF::SIMD::SSE4_1::F64x4_4>
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector4fv, F32x4_1_Types);
@@ -406,7 +407,7 @@ TYPED_TEST(TypedTest_Vector4fv, MagnitudeSq)
 	using Element = typename Type::LaneType;
 
 	Type t0 = { 5.0f, 12.0f, 13.0f, 15.0f };
-	float dot = MagnitudeSq(t0);
+	Element dot = MagnitudeSq(t0);
 	EXPECT_NEAR(dot, (5.0f * 5.0f) + (12.0f * 12.0f) + (13.0f * 13.0f) + (15.0f * 15.0f), 0.01f);
 }
 

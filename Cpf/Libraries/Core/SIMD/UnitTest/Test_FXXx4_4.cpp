@@ -10,9 +10,9 @@ public:
 };
 
 typedef ::testing::Types <
-//	CPF::SIMD::Reference::F32x4_4,
+	CPF::SIMD::Reference::F32x4_4,
 	CPF::SIMD::Reference::F64x4_4,
-//	CPF::SIMD::SSE4_1::F32x4_4,
+	CPF::SIMD::SSE4_1::F32x4_4,
 	CPF::SIMD::SSE4_1::F64x4_4
 > F32x4_4_Types;
 
@@ -33,9 +33,30 @@ TYPED_TEST(TypedTest_FXXx4_4, Construction_BasicAccess_Near)
 	EXPECT_TRUE(Valid(a));
 	EXPECT_TRUE(Valid(b));
 
-	// Test pair construction.
+	// Test construction combinations.
 	Type aa = { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) };
 	EXPECT_TRUE(Near(aa, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
+
+	// Identity, just a validation.
+	Type dd = { typename Type::Lanes_4{ Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) } };
+	EXPECT_TRUE(Near(dd, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
+
+	// Variations with 2 lane items.
+	Type bb = { {Lane(1.0), Lane(2.0)}, Lane(3.0), Lane(4.0) };
+	EXPECT_TRUE(Near(bb, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
+
+	Type ee = { Lane(1.0), typename Type::Lanes_2{Lane(2.0), Lane(3.0)}, Lane(4.0) };
+	EXPECT_TRUE(Near(ee, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
+
+	Type ff = { Lane(1.0), Lane(2.0), typename Type::Lanes_2{ Lane(3.0), Lane(4.0) } };
+	EXPECT_TRUE(Near(ff, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
+
+	// Variations with 3 lane items.
+	Type cc = { typename Type::Lanes_3{ Lane(1.0), Lane(2.0), Lane(3.0) }, Lane(4.0) };
+	EXPECT_TRUE(Near(cc, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
+
+	Type gg = { Lane(1.0), typename Type::Lanes_3{ Lane(2.0), Lane(3.0), Lane(4.0) } };
+	EXPECT_TRUE(Near(gg, { Lane(1.0), Lane(2.0), Lane(3.0), Lane(4.0) }, Lane(0.01)));
 }
 
 TYPED_TEST(TypedTest_FXXx4_4, Addition)

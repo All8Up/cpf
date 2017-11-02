@@ -26,9 +26,9 @@ namespace CPF
 				switch (index)
 				{
 				case 0: mSIMD.mData[0] = _mm_set_pd(_mm_cvtsd_f64(_mm_unpackhi_pd(mSIMD.mData[0], mSIMD.mData[0])), value); break;
-				case 1: mSIMD.mData[0] = _mm_set_pd(value, _mm_cvtsd_f64(_mm_unpacklo_pd(mSIMD.mData[0], mSIMD.mData[0]))); break;
+				case 1: mSIMD.mData[0] = _mm_set_pd(value, _mm_cvtsd_f64(mSIMD.mData[0])); break;
 				case 2: mSIMD.mData[1] = _mm_set_pd(_mm_cvtsd_f64(_mm_unpackhi_pd(mSIMD.mData[1], mSIMD.mData[1])), value); break;
-				case 3: mSIMD.mData[1] = _mm_set_pd(value, _mm_cvtsd_f64(_mm_unpacklo_pd(mSIMD.mData[1], mSIMD.mData[1]))); break;
+				case 3: mSIMD.mData[1] = _mm_set_pd(value, _mm_cvtsd_f64(mSIMD.mData[1])); break;
 				}
 			}
 

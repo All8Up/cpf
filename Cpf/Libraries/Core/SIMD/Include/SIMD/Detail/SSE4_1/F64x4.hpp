@@ -77,7 +77,6 @@ namespace CPF
 				operator const LaneType() const;
 
 				// Lane accessors.
-				
 				void SetLane(int index, double value);
 				template <int I0> LaneType GetLane() const;
 				template <int I0, int I1> Lanes_2 GetLanes() const;
