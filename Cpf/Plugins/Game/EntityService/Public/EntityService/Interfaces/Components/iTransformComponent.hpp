@@ -14,7 +14,7 @@ namespace CPF
 			static constexpr auto kIID = GOM::InterfaceID("EntityService::iTransformComponent"_crc64);
 
 			using Real = typename Math::Transform::Real;
-			using Quaternion = typename Math::Transform::Quaternion;
+			using Quat = typename Math::Transform::Quat;
 			using Vector3 = typename Math::Transform::Vector3;
 			using Matrix44 = typename Math::Transform::Matrix44;
 

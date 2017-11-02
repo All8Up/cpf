@@ -106,10 +106,10 @@ void MoverSystem::MoverComponent::Deactivate()
 void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 {
 	using Real = typename Math::Transform::Real;
-	using Quaternion = typename Math::Transform::Quaternion;
+	using Quat = typename Math::Transform::Quat;
 	using Vector3 = typename Math::Transform::Vector3;
 	using Matrix44 = typename Math::Transform::Matrix44;
-	using Matrix33 = Math::Matrix33<typename Math::Transform::Matrix44::Row>;
+	using Matrix33 = Math::Matrix33<typename Vector3::Type>;
 
 	MoverSystem* mover = static_cast<MoverSystem*>(system);
 	iTimer* timer = mover->mpTime;
@@ -132,8 +132,9 @@ void MoverSystem::MoverComponent::_Threaded(iSystem* system, iEntity* object)
 	iTransformComponent* transform = object->GetComponent<iTransformComponent>();
 	transform->GetTransform().SetTranslation(pos);
 
-	Matrix33 orientation = Matrix33::AxisAngle(Vector3(0.0, 1.0, 0.0), time) *
-		Matrix33::AxisAngle(Vector3(1.0, 0.0, 0.0), time*2.0f);
+	static const Vector3 YAxis = Vector3(0.0, 1.0, 0.0);
+	Matrix33 orientation = Matrix33::Identity(); // Matrix33::AxisAngle(YAxis, time) /* *
+		// Matrix33::AxisAngle(Vector3(1.0, 0.0, 0.0), time*2.0f) */;
 
 	// TODO: Move into drawable component.
 	Instance* instances = mover->GetInstanceSystem()->GetInstances();

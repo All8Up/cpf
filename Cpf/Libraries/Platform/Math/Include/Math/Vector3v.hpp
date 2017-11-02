@@ -13,6 +13,7 @@ namespace CPF
 		union Vector3v
 		{
 			//////////////////////////////////////////////////////////////////////////
+			using Type = TYPE;
 			using StorageType = typename TYPE::StorageType;
 			using LaneType = typename TYPE::LaneType;
 			static constexpr int LaneMask = TYPE::LaneMask;

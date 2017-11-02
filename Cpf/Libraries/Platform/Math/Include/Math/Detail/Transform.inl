@@ -5,7 +5,7 @@ namespace CPF
 {
 	namespace Math
 	{
-		inline Transform::Transform(Quaternion orientation, Vector3 scale, Vector3 translation)
+		inline Transform::Transform(Quat orientation, Vector3 scale, Vector3 translation)
 			: mOrientation(orientation)
 			, mScale(scale)
 			, mTranslation(translation)
@@ -27,7 +27,7 @@ namespace CPF
 
 		inline Transform Transform::operator * (const Transform& rhs) const
 		{
-			Quaternion q = mOrientation * rhs.mOrientation;
+			Quat q = mOrientation * rhs.mOrientation;
 			Vector3 s = mScale * rhs.mScale;
 			Vector3 t = mTranslation + mOrientation * rhs.mTranslation;
 
@@ -35,12 +35,12 @@ namespace CPF
 		}
 
 		// Interface.
-		inline Transform::Quaternion Transform::GetOrientation() const
+		inline Transform::Quat Transform::GetOrientation() const
 		{
 			return mOrientation;
 		}
 
-		inline void Transform::SetOrientation(Quaternion q)
+		inline void Transform::SetOrientation(Quat q)
 		{
 			mOrientation = q;
 		}
