@@ -60,7 +60,7 @@ namespace CPF
 			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterLH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element nzn, Element nzf);
 			static Matrix44<TYPE> CPF_VECTORCALL PerspectiveOffCenterRH(Element l, Element r, Element b, Element t, Element zn, Element zf, Element nzn, Element nzf);
 
-			static Matrix44<TYPE> CPF_VECTORCALL LookAt(const Vector3v<typename TYPE::Lanes_3> eye, const Vector3v<typename TYPE::Lanes_3> target, const Vector3v<typename TYPE::Lanes_3> up);
+			static Matrix44<TYPE> CPF_VECTORCALL LookAt(const Vector3<typename TYPE::Lanes_3> eye, const Vector3<typename TYPE::Lanes_3> target, const Vector3<typename TYPE::Lanes_3> up);
 
 			//////////////////////////////////////////////////////////////////////////
 			Row mRows[4];

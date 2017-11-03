@@ -10,7 +10,7 @@ namespace CPF
 	namespace Math
 	{
 		template <typename TYPE>
-		union Vector3v
+		union Vector3
 		{
 			//////////////////////////////////////////////////////////////////////////
 			using Type = TYPE;
@@ -19,34 +19,34 @@ namespace CPF
 			static constexpr int LaneMask = TYPE::LaneMask;
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector3v();
-			explicit Vector3v(typename TYPE::LaneType value);
-			Vector3v(const Vector3v& rhs);
-			Vector3v(TYPE value);
-			Vector3v(StorageType value);
-			Vector3v(LaneType v0, LaneType v1, LaneType v2);
+			Vector3();
+			explicit Vector3(typename TYPE::LaneType value);
+			Vector3(const Vector3& rhs);
+			Vector3(TYPE value);
+			Vector3(StorageType value);
+			Vector3(LaneType v0, LaneType v1, LaneType v2);
 			template <int I0, int I1, int I2>
-			Vector3v(const SIMD::LaneRef_3<TYPE, I0, I1, I2>& ref);
+			Vector3(const SIMD::LaneRef_3<TYPE, I0, I1, I2>& ref);
 			template <int I0, int I1>
-			Vector3v(const SIMD::LaneRef_2<TYPE, I0, I1>& ref, LaneType v2);
+			Vector3(const SIMD::LaneRef_2<TYPE, I0, I1>& ref, LaneType v2);
 			template <int I1, int I2>
-			Vector3v(LaneType v0, const SIMD::LaneRef_2<TYPE, I1, I2>& ref);
-			explicit Vector3v(const LaneType* data);
+			Vector3(LaneType v0, const SIMD::LaneRef_2<TYPE, I1, I2>& ref);
+			explicit Vector3(const LaneType* data);
 
 			template <typename RTYPE, int I0, int I1, int I2>
-			explicit Vector3v(const SIMD::LaneRef_3<RTYPE, I0, I1, I2>& ref);
+			explicit Vector3(const SIMD::LaneRef_3<RTYPE, I0, I1, I2>& ref);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::LaneIndex<TYPE> CPF_VECTORCALL operator [](int idx);
 			LaneType CPF_VECTORCALL operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
-			Vector3v& CPF_VECTORCALL operator += (const Vector3v& rhs);
-			Vector3v& CPF_VECTORCALL operator -= (const Vector3v& rhs);
-			Vector3v& CPF_VECTORCALL operator *= (const Vector3v& rhs);
-			Vector3v& CPF_VECTORCALL operator *= (LaneType rhs);
-			Vector3v& CPF_VECTORCALL operator /= (const Vector3v& rhs);
-			Vector3v& CPF_VECTORCALL operator /= (LaneType rhs);
+			Vector3& CPF_VECTORCALL operator += (const Vector3& rhs);
+			Vector3& CPF_VECTORCALL operator -= (const Vector3& rhs);
+			Vector3& CPF_VECTORCALL operator *= (const Vector3& rhs);
+			Vector3& CPF_VECTORCALL operator *= (LaneType rhs);
+			Vector3& CPF_VECTORCALL operator /= (const Vector3& rhs);
+			Vector3& CPF_VECTORCALL operator /= (LaneType rhs);
 
 			//////////////////////////////////////////////////////////////////////////
 			explicit operator typename TYPE::Lanes_3 () const { return static_cast<typename TYPE::Lanes_3>(mSIMD); }
@@ -69,8 +69,9 @@ namespace CPF
 {
 	namespace Math
 	{
-		using Vector3fv = Vector3v<SIMD::F32x4_3>;
-		using Vector3dv = Vector3v<SIMD::F64x4_3>;
-		using Vector3f = Vector3v<SIMD::FPU::F32x3_3>;
+		using Vector3f = Vector3<SIMD::FPU::F32x3_3>;
+//		using Vector3d = Vector3v<SIMD::FPU::F64x3_3>;
+		using Vector3fv = Vector3<SIMD::F32x4_3>;
+		using Vector3dv = Vector3<SIMD::F64x4_3>;
 	}
 }

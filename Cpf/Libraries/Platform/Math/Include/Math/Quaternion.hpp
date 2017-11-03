@@ -10,7 +10,7 @@ namespace CPF
 	namespace Math
 	{
 		template <typename TYPE>
-		union Vector3v;
+		union Vector3;
 
 		template <typename TYPE>
 		union Quaternion
@@ -68,7 +68,11 @@ namespace CPF
 {
 	namespace Math
 	{
-		using Quaternionf = Quaternion<SIMD::F32x4>;
-		using Quaterniond = Quaternion<SIMD::F64x4>;
+		using Quaternionf = Quaternion<SIMD::FPU::F32x4_4>;
+//		using Quaterniond = tQuaternion<SIMD::FPU::F64x4_4>;
+
+		// The base type is chosen at compile time.
+		using Quaternionfv = Quaternion<SIMD::F32x4>;
+		using Quaterniondv = Quaternion<SIMD::F64x4>;
 	}
 }

@@ -45,7 +45,7 @@ namespace CPF
 		}
 
 		template <typename TYPE>
-		inline typename Quaternion<TYPE>::Element CPF_VECTORCALL Quaternion<TYPE>::operator [](int idx) const
+		typename Quaternion<TYPE>::Element CPF_VECTORCALL Quaternion<TYPE>::operator [](int idx) const
 		{
 			switch (idx)
 			{
@@ -60,7 +60,7 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		inline Quaternion<TYPE> CPF_VECTORCALL Conjugate(Quaternion<TYPE> value)
+		Quaternion<TYPE> CPF_VECTORCALL Conjugate(Quaternion<TYPE> value)
 		{
 			return Quaternion<TYPE>(-value.xyz, value.w);
 		}
@@ -79,11 +79,11 @@ namespace CPF
 		}
 		
 		template <typename TYPE>
-		Vector3v<typename TYPE::Lanes_3> CPF_VECTORCALL operator * (const Quaternion<TYPE>& lhs, const Vector3v<typename TYPE::Lanes_3> rhs)
+		Vector3<typename TYPE::Lanes_3> CPF_VECTORCALL operator * (const Quaternion<TYPE>& lhs, const Vector3<typename TYPE::Lanes_3> rhs)
 		{
-			Vector3v<typename TYPE::Lanes_3> u(lhs.xyz);
+			Vector3<typename TYPE::Lanes_3> u(lhs.xyz);
 			typename Quaternion<TYPE>::Element s = lhs.w;
-			return Vector3v<typename TYPE::Lanes_3>(
+			return Vector3<typename TYPE::Lanes_3>(
 				2 * Dot(u, rhs) * u +
 				(s*s - Dot(u, u)) * rhs +
 				2 * s * Cross(u, rhs)

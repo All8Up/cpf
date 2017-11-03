@@ -7,8 +7,72 @@ namespace CPF
 {
 	namespace Math
 	{
+		/**
+		 * @class Proxy
+		 * @brief A proxy is a simple, though ugly and potentially unsafe
+		 * if used incorrectly, reference to the containing object.  The
+		 * purpose of this is to implement properties much like C# which
+		 * are accessed via simple member value (i.e. 'a.b' style) syntax
+		 * yet will go through get/set like operations.  This is needed
+		 * in cases where the property can not safely have it's address
+		 * taken or it doesn't exist in the form being represented.
+		 * In all current compilers this has been tested and will be
+		 * optimized away such that there is no additional overhead to
+		 * using the proxy.
+		 * @tparam VALUETYPE The value type that is represented by the proxy.
+		 */
+		template <typename TYPE>
+		class Proxy
+		{
+		public:
+			using ValueType = TYPE;
+
+		protected:
+			TYPE* Get()
+			{
+				union Converter
+				{
+					Converter(uint8_t* source) : mpSource(source) {}
+					uint8_t* mpSource;
+					ValueType* mpTarget;
+				} convert(mSource);
+				return convert.mpTarget;
+			}
+			const TYPE* Get() const
+			{
+				union Converter
+				{
+					Converter(const uint8_t* source) : mpSource(source) {}
+					const uint8_t* mpSource;
+					const ValueType* mpTarget;
+				} convert(mSource);
+				return convert.mpTarget;
+			}
+
+		private:
+			uint8_t mSource[1];
+		};
+
 		template <typename DESC>
-		struct LargeVector
+		struct CoordinateLaneRef : Proxy<CoordinateLaneRef<DESC>>
+		{};
+
+		/**
+		 * @struct WorldSpaceProxy
+		 * @brief A proxy of large coordinates which manipulates the coordinates in world space.
+		 * @tparam DESC The descriptor which is applied to large coordinates.
+		 */
+		template <typename DESC>
+		struct WorldSpaceProxy : Proxy<WorldSpaceProxy<DESC>>
+		{
+
+			CoordinateLaneRef<DESC> x;
+			CoordinateLaneRef<DESC> y;
+			CoordinateLaneRef<DESC> z;
+		};
+
+		template <typename DESC>
+		union LargeVector
 		{
 			using Description = DESC;
 
@@ -41,11 +105,11 @@ namespace CPF
 		//////////////////////////////////////////////////////////////////////////
 		// int32_t 3D sector.
 		template <>
-		union Sector<int32_t, Vector3v<SIMD::I32x4_3>, 3, 10>
+		union Sector<int32_t, Vector3<SIMD::I32x4_3>, 3, 10>
 		{
 			using StorageType = int32_t;
-			using SectorRep = Vector3v<SIMD::I32x4_3>;
-			using LaneType = Vector3v<SIMD::I32x4_3>::LaneType;
+			using SectorRep = Vector3<SIMD::I32x4_3>;
+			using LaneType = Vector3<SIMD::I32x4_3>::LaneType;
 			static constexpr int32_t Dimensions = 3;
 			static constexpr int32_t Bits = 10;
 
@@ -87,7 +151,7 @@ namespace CPF
 			static constexpr int HalfBound = 5;
 
 			using VectorType = Vector3fv;
-			using SectorRep = Vector3v<SIMD::I32x4_3>;
+			using SectorRep = Vector3<SIMD::I32x4_3>;
 			using SectorType = Sector<int32_t, SectorRep, 3, 10>;
 			using StorageType = SIMD::F32x4;
 		};

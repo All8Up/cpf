@@ -1,6 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Configuration.hpp"
+#include "Detail/FPU/F32x4.hpp"
+//#include "Detail/FPU/F64x4.hpp"
+#include "Detail/FPU/I32x4.hpp"
 #include "Detail/Reference/F32x4.hpp"
 #include "Detail/Reference/F64x4.hpp"
 #include "Detail/Reference/I32x4.hpp"

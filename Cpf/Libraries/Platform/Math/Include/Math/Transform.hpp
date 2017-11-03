@@ -14,7 +14,7 @@ namespace CPF
 		public:
 			// Construction.
 			Transform(
-				Quaternionf = Quaternionf::Identity(),
+				Quaternionfv = Quaternionfv::Identity(),
 				Vector3fv = Vector3fv(1.0),
 				Vector3fv = Vector3fv(0.0)
 			);
@@ -25,8 +25,8 @@ namespace CPF
 			Transform operator * (const Transform& rhs) const;
 
 			// Interface.
-			Quaternionf GetOrientation() const;
-			void SetOrientation(Quaternionf q);
+			Quaternionfv GetOrientation() const;
+			void SetOrientation(Quaternionfv q);
 			Vector3fv GetScale() const;
 			void SetScale(Vector3fv v);
 			Vector3fv GetTranslation() const;
@@ -35,7 +35,7 @@ namespace CPF
 
 		private:
 			// Implementation data.
-			Quaternionf mOrientation;
+			Quaternionfv mOrientation;
 			Vector3fv mScale;
 			Vector3fv mTranslation;
 		};

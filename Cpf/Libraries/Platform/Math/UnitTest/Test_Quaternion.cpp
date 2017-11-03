@@ -48,7 +48,7 @@ TYPED_TEST(TypedTest_Quaternion, Construction)
 TYPED_TEST(TypedTest_Quaternion, AxisAngle)
 {
 	using Type = Quaternion<TypeParam>;
-	Vector3v<typename Type::Type::Lanes_3> axis(0.0f, 1.0f, 0.0f);
+	Vector3<typename Type::Type::Lanes_3> axis(0.0f, 1.0f, 0.0f);
 	Type t0 = Type::AxisAngle(axis, 0.0f);
 	EXPECT_NEAR(t0.x, 0.0f, 0.01f);
 	EXPECT_NEAR(t0.y, 0.0f, 0.01f);

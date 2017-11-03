@@ -6,7 +6,7 @@
 #include "SIMD/Detail/FPU/I32x3.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-using Vector3f = CPF::Math::Vector3v<CPF::SIMD::FPU::F32x3_3>;
+using Vector3f = CPF::Math::Vector3<CPF::SIMD::FPU::F32x3_3>;
 
 template <typename T>
 class TypedTest_Vector3_fpu : public::testing::Test
@@ -16,7 +16,7 @@ public:
 
 typedef ::testing::Types <
 	Vector3f,
-	CPF::Math::Vector3v<CPF::SIMD::FPU::I32x3_3>
+	CPF::Math::Vector3<CPF::SIMD::FPU::I32x3_3>
 > F32x4_1_Types;
 
 TYPED_TEST_CASE(TypedTest_Vector3_fpu, F32x4_1_Types);
