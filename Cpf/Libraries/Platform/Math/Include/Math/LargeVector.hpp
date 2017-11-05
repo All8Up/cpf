@@ -55,7 +55,17 @@ namespace CPF
 
 		template <typename DESC>
 		struct CoordinateLaneRef : Proxy<CoordinateLaneRef<DESC>>
-		{};
+		{
+		};
+
+		template <typename DESC, typename TYPE>
+		struct CoordinateRef : Proxy<CoordinateRef<DESC, TYPE>>
+		{
+			CoordinateRef<DESC, TYPE>& operator = (TYPE value)
+			{
+				return *this;
+			}
+		};
 
 		/**
 		 * @struct WorldSpaceProxy
@@ -65,7 +75,7 @@ namespace CPF
 		template <typename DESC>
 		struct WorldSpaceProxy : Proxy<WorldSpaceProxy<DESC>>
 		{
-
+			CoordinateRef<DESC, typename DESC::WorldType> vector;
 			CoordinateLaneRef<DESC> x;
 			CoordinateLaneRef<DESC> y;
 			CoordinateLaneRef<DESC> z;
@@ -93,6 +103,8 @@ namespace CPF
 			LargeVector& operator =(LargeVector&& rhs) noexcept { mStorage = rhs.mStorage; return *this; }
 
 			operator StorageType() const { return mStorage; }
+
+			WorldSpaceProxy<DESC> world;
 
 		private:
 			StorageType mStorage;
@@ -154,6 +166,8 @@ namespace CPF
 			using SectorRep = Vector3<SIMD::I32x4_3>;
 			using SectorType = Sector<int32_t, SectorRep, 3, 10>;
 			using StorageType = SIMD::F32x4;
+			using RelativeType = float;
+			using WorldType = double;
 		};
 	}
 }
