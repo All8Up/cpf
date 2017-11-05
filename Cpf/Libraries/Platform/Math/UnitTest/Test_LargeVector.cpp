@@ -41,6 +41,22 @@ auto xx = p0.relative.x; // = 0 (sector absorbed the overflow)
 p0.world.x = 0; // Sets x and sector x to zero.
 */
 
+TEST(LargeVector3fv_t, Basics)
+{
+	LargeVector3fv_t lg0;
+	Set(lg0, Vector3fv(1.0f, 2.0f, 3.0f), 1234);
+	EXPECT_TRUE(Near(GetVector(lg0), {1.0f, 2.0f, 3.0f}, 0.01f));
+	EXPECT_EQ(1234, GetSector(lg0));
+
+	SetVector(lg0, {3.0f, 2.0f, 1.0f});
+	EXPECT_TRUE(Near(GetVector(lg0), { 3.0f, 2.0f, 1.0f }, 0.01f));
+	EXPECT_EQ(1234, GetSector(lg0));
+
+	SetSector(lg0, 4321);
+	EXPECT_TRUE(Near(GetVector(lg0), { 3.0f, 2.0f, 1.0f }, 0.01f));
+	EXPECT_EQ(4321, GetSector(lg0));
+}
+
 TEST(LargeVector, Construction_Extraction)
 {
 	using Type = LargeVector<LargeVectorDesc_FI>;

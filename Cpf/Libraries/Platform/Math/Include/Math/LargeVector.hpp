@@ -2,6 +2,7 @@
 #pragma once
 #include "Configuration.hpp"
 #include "Vector3v.hpp"
+#include "Vector4v.hpp"
 
 namespace CPF
 {
@@ -66,6 +67,101 @@ namespace CPF
 				return *this;
 			}
 		};
+
+		//////////////////////////////////////////////////////////////////////////
+		union Sector3u_t
+		{
+			using StorageType = uint32_t;
+
+			struct 
+			{
+				uint32_t mX : 10;
+				uint32_t mY : 10;
+				uint32_t mZ : 10;
+			} mFields;
+			StorageType mStorage;
+		};
+
+		struct alignas(16) LargeVector3fv_t
+		{
+			using StorageType = Vector4fv;
+			using VectorType = Vector3fv;
+			using SectorType = Sector3u_t;
+
+			StorageType mData;
+		};
+
+		template <typename TYPE>
+		void Set(
+			TYPE& largeVector,
+			const typename TYPE::VectorType,
+			const typename TYPE::SectorType::StorageType
+		);
+
+		template <typename TYPE>
+		typename TYPE::SectorType::StorageType GetSector(const TYPE largeVector);
+		template <typename TYPE>
+		void SetSector(TYPE& largeVector, const typename TYPE::SectorType::StorageType s);
+
+		template <typename TYPE>
+		typename TYPE::VectorType GetVector(const TYPE largeVector);
+		template <typename TYPE>
+		void SetVector(TYPE& largeVector, const typename TYPE::VectorType v);
+
+		template <>
+		void Set(LargeVector3fv_t& largeVector,
+			const Vector3fv v,
+			const uint32_t s)
+		{
+			union Convert
+			{
+				Convert(uint32_t v) : mSector(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} convert(s);
+			largeVector.mData = Vector4fv(v.xyz, convert.mStorage);
+		}
+
+		template <>
+		uint32_t GetSector(const LargeVector3fv_t lg)
+		{
+			union Convert
+			{
+				Convert(float v) : mStorage(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} convert(lg.mData.w);
+			return convert.mSector;
+		}
+
+		template <>
+		void SetSector(LargeVector3fv_t& largeVector, const uint32_t s)
+		{
+			union Convert
+			{
+				Convert(uint32_t v) : mSector(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} convert(s);
+			largeVector.mData = LargeVector3fv_t::StorageType(largeVector.mData.xyz, convert.mStorage);
+		}
+
+		template <>
+		LargeVector3fv_t::VectorType GetVector(const LargeVector3fv_t largeVector)
+		{
+			return LargeVector3fv_t::VectorType(largeVector.mData.xyz);
+		}
+		template <>
+		void SetVector(LargeVector3fv_t& largeVector, const LargeVector3fv_t::VectorType v)
+		{
+			union Convert
+			{
+				Convert(uint32_t v) : mSector(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} convert(GetSector(largeVector));
+			largeVector.mData = LargeVector3fv_t::StorageType(v.xyz, convert.mStorage);
+		}
 
 		/**
 		 * @struct WorldSpaceProxy
