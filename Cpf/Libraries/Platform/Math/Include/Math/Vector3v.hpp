@@ -73,5 +73,6 @@ namespace CPF
 //		using Vector3d = Vector3v<SIMD::FPU::F64x3_3>;
 		using Vector3fv = Vector3<SIMD::F32x4_3>;
 		using Vector3dv = Vector3<SIMD::F64x4_3>;
+		using Vector3iv = Vector3<SIMD::I32x4_3>;
 	}
 }

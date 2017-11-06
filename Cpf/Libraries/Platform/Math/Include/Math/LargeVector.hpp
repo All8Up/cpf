@@ -54,24 +54,20 @@ namespace CPF
 			uint8_t mSource[1];
 		};
 
-		template <typename DESC>
-		struct CoordinateLaneRef : Proxy<CoordinateLaneRef<DESC>>
-		{
-		};
-
-		template <typename DESC, typename TYPE>
-		struct CoordinateRef : Proxy<CoordinateRef<DESC, TYPE>>
-		{
-			CoordinateRef<DESC, TYPE>& operator = (TYPE value)
-			{
-				return *this;
-			}
-		};
-
 		//////////////////////////////////////////////////////////////////////////
-		union Sector3u_t
+		union SectorCodec
 		{
 			using StorageType = uint32_t;
+
+			SectorCodec(int32_t x, int32_t y, int32_t z)
+			{
+				mFields.mX = x;
+				mFields.mY = y;
+				mFields.mZ = z;
+			}
+			SectorCodec(StorageType value)
+				: mStorage(value)
+			{}
 
 			struct 
 			{
@@ -82,101 +78,44 @@ namespace CPF
 			StorageType mStorage;
 		};
 
+		//
 		struct alignas(16) LargeVector3fv_t
 		{
 			using StorageType = Vector4fv;
+
 			using VectorType = Vector3fv;
-			using SectorType = Sector3u_t;
+			using SectorType = Vector3iv;
+
+			using SectorStorageType = uint32_t;
+			using VectorElementType = float;
+			using WorldElementType = double;
 
 			StorageType mData;
 		};
 
+		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
-		void Set(
-			TYPE& largeVector,
-			const typename TYPE::VectorType,
-			const typename TYPE::SectorType::StorageType
-		);
+		void Set(TYPE& largeVector, const typename TYPE::VectorType, const typename TYPE::SectorType);
 
 		template <typename TYPE>
-		typename TYPE::SectorType::StorageType GetSector(const TYPE largeVector);
+		typename TYPE::SectorType GetSector(const TYPE largeVector);
 		template <typename TYPE>
-		void SetSector(TYPE& largeVector, const typename TYPE::SectorType::StorageType s);
+		void SetSector(TYPE& largeVector, const typename TYPE::SectorType s);
 
 		template <typename TYPE>
 		typename TYPE::VectorType GetVector(const TYPE largeVector);
 		template <typename TYPE>
 		void SetVector(TYPE& largeVector, const typename TYPE::VectorType v);
 
-		template <>
-		void Set(LargeVector3fv_t& largeVector,
-			const Vector3fv v,
-			const uint32_t s)
-		{
-			union Convert
-			{
-				Convert(uint32_t v) : mSector(v) {}
-				uint32_t mSector;
-				float mStorage;
-			} convert(s);
-			largeVector.mData = Vector4fv(v.xyz, convert.mStorage);
-		}
+		template <typename TYPE>
+		TYPE operator +(const TYPE& lhs, const TYPE& rhs);
+		template <typename TYPE>
+		TYPE operator -(const TYPE& lhs, const TYPE& rhs);
 
-		template <>
-		uint32_t GetSector(const LargeVector3fv_t lg)
-		{
-			union Convert
-			{
-				Convert(float v) : mStorage(v) {}
-				uint32_t mSector;
-				float mStorage;
-			} convert(lg.mData.w);
-			return convert.mSector;
-		}
 
-		template <>
-		void SetSector(LargeVector3fv_t& largeVector, const uint32_t s)
-		{
-			union Convert
-			{
-				Convert(uint32_t v) : mSector(v) {}
-				uint32_t mSector;
-				float mStorage;
-			} convert(s);
-			largeVector.mData = LargeVector3fv_t::StorageType(largeVector.mData.xyz, convert.mStorage);
-		}
-
-		template <>
-		LargeVector3fv_t::VectorType GetVector(const LargeVector3fv_t largeVector)
-		{
-			return LargeVector3fv_t::VectorType(largeVector.mData.xyz);
-		}
-		template <>
-		void SetVector(LargeVector3fv_t& largeVector, const LargeVector3fv_t::VectorType v)
-		{
-			union Convert
-			{
-				Convert(uint32_t v) : mSector(v) {}
-				uint32_t mSector;
-				float mStorage;
-			} convert(GetSector(largeVector));
-			largeVector.mData = LargeVector3fv_t::StorageType(v.xyz, convert.mStorage);
-		}
-
-		/**
-		 * @struct WorldSpaceProxy
-		 * @brief A proxy of large coordinates which manipulates the coordinates in world space.
-		 * @tparam DESC The descriptor which is applied to large coordinates.
-		 */
-		template <typename DESC>
-		struct WorldSpaceProxy : Proxy<WorldSpaceProxy<DESC>>
-		{
-			CoordinateRef<DESC, typename DESC::WorldType> vector;
-			CoordinateLaneRef<DESC> x;
-			CoordinateLaneRef<DESC> y;
-			CoordinateLaneRef<DESC> z;
-		};
-
+#if 0
+		//////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
 		template <typename DESC>
 		union LargeVector
 		{
@@ -199,8 +138,6 @@ namespace CPF
 			LargeVector& operator =(LargeVector&& rhs) noexcept { mStorage = rhs.mStorage; return *this; }
 
 			operator StorageType() const { return mStorage; }
-
-			WorldSpaceProxy<DESC> world;
 
 		private:
 			StorageType mStorage;
@@ -265,6 +202,7 @@ namespace CPF
 			using RelativeType = float;
 			using WorldType = double;
 		};
+#endif
 	}
 }
 

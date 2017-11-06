@@ -44,58 +44,29 @@ p0.world.x = 0; // Sets x and sector x to zero.
 TEST(LargeVector3fv_t, Basics)
 {
 	LargeVector3fv_t lg0;
-	Set(lg0, Vector3fv(1.0f, 2.0f, 3.0f), 1234);
+	Set(lg0, Vector3fv(1.0f, 2.0f, 3.0f), Vector3iv(1, 2, 3));
 	EXPECT_TRUE(Near(GetVector(lg0), {1.0f, 2.0f, 3.0f}, 0.01f));
-	EXPECT_EQ(1234, GetSector(lg0));
+	EXPECT_TRUE(Near(GetSector(lg0), {1, 2, 3}, 0));
 
 	SetVector(lg0, {3.0f, 2.0f, 1.0f});
 	EXPECT_TRUE(Near(GetVector(lg0), { 3.0f, 2.0f, 1.0f }, 0.01f));
-	EXPECT_EQ(1234, GetSector(lg0));
+	EXPECT_TRUE(Near(GetSector(lg0), { 1, 2, 3}, 0));
 
-	SetSector(lg0, 4321);
+	SetSector(lg0, Vector3iv(3, 2, 1));
 	EXPECT_TRUE(Near(GetVector(lg0), { 3.0f, 2.0f, 1.0f }, 0.01f));
-	EXPECT_EQ(4321, GetSector(lg0));
+	EXPECT_TRUE(Near(GetSector(lg0), { 3, 2, 1 }, 0));
 }
 
-TEST(LargeVector, Construction_Extraction)
+TEST(LargeVector3fv_t, SizeTest)
 {
-	using Type = LargeVector<LargeVectorDesc_FI>;
-	using Sector = Type::SectorType;
-
-	Type uninitialized; (void)uninitialized;  // Just tests that it compiles.
-
-	// Simple test of origin.
-	Type sector0Origin({ 0.0f, 0.0f, 0.0f }, Sector(0));
-	EXPECT_NEAR(0.0f, ExtractVector3(sector0Origin).x, 0.01f);
-	EXPECT_NEAR(0.0f, ExtractVector3(sector0Origin).y, 0.01f);
-	EXPECT_NEAR(0.0f, ExtractVector3(sector0Origin).z, 0.01f);
-	EXPECT_EQ(Sector(0), ExtractSector(sector0Origin));
-
-	// Simple test of sector passing through.
-	Type sector1Origin({ 0.0f, 0.0f, 0.0f }, Sector(1));
-	EXPECT_NEAR(0.0f, ExtractVector3(sector1Origin).x, 0.01f);
-	EXPECT_NEAR(0.0f, ExtractVector3(sector1Origin).y, 0.01f);
-	EXPECT_NEAR(0.0f, ExtractVector3(sector1Origin).z, 0.01f);
-	EXPECT_EQ(Sector(1), ExtractSector(sector1Origin));
+	EXPECT_TRUE(sizeof(LargeVector3fv_t) == sizeof(typename LargeVector3fv_t::StorageType));
 }
 
-TEST(LargeVector, Insertion)
+#if 0
+TEST(LargeVector, ValidateSize)
 {
 	using Type = LargeVector<LargeVectorDesc_FI>;
-	using Sector = Type::SectorType;
-
-	Type test0({ 0.0f, 0.0f, 0.0f }, Sector(0));
-	InsertVector(test0, {1.0f, 2.0f, 3.0f});
-	EXPECT_NEAR(1.0f, ExtractVector3(test0).x, 0.01f);
-	EXPECT_NEAR(2.0f, ExtractVector3(test0).y, 0.01f);
-	EXPECT_NEAR(3.0f, ExtractVector3(test0).z, 0.01f);
-	EXPECT_EQ(Sector(0), ExtractSector(test0));
-
-	InsertSector(test0, Sector(5));
-	EXPECT_NEAR(1.0f, ExtractVector3(test0).x, 0.01f);
-	EXPECT_NEAR(2.0f, ExtractVector3(test0).y, 0.01f);
-	EXPECT_NEAR(3.0f, ExtractVector3(test0).z, 0.01f);
-	EXPECT_EQ(Sector(5), ExtractSector(test0));
+	EXPECT_TRUE(sizeof(Type) == sizeof(typename Type::Description::StorageType));
 }
 
 TEST(LargeVector, Normalize)
@@ -157,16 +128,4 @@ TEST(LargeVector, Relative)
 		EXPECT_NEAR(48.0f, delta.z, 0.01f);
 	}
 }
-
-TEST(LargeVector, ValidateSize)
-{
-	using Type = LargeVector<LargeVectorDesc_FI>;
-	EXPECT_TRUE(sizeof(Type) == sizeof(typename Type::Description::StorageType));
-}
-
-TEST(LargeVector, WorldRepresentation)
-{
-	using Type = LargeVector<LargeVectorDesc_FI>;
-	Type position;
-	auto test = position.world;
-}
+#endif

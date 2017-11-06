@@ -5,6 +5,78 @@ namespace CPF
 {
 	namespace Math
 	{
+		template <>
+		void Set(LargeVector3fv_t& largeVector,
+			const Vector3fv v,
+			const Vector3iv s)
+		{
+			SectorCodec encode(s.x, s.y, s.z);
+			union IntToFloat
+			{
+				IntToFloat(uint32_t v) : mSector(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} intToFloat(encode.mStorage);
+			largeVector.mData = Vector4fv(v.xyz, intToFloat.mStorage);
+		}
+
+		template <>
+		Vector3iv GetSector(const LargeVector3fv_t lg)
+		{
+			union FloatToInt
+			{
+				FloatToInt(float v) : mStorage(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} floatToInt(lg.mData.w);
+			SectorCodec decode(floatToInt.mSector);
+			return Vector3iv(decode.mFields.mX, decode.mFields.mY, decode.mFields.mZ);
+		}
+
+		template <>
+		void SetSector(LargeVector3fv_t& largeVector, const Vector3iv s)
+		{
+			SectorCodec encode(s.x, s.y, s.z);
+			union IntToFloat
+			{
+				IntToFloat(uint32_t v) : mSector(v) {}
+				uint32_t mSector;
+				float mStorage;
+			} intToFloat(encode.mStorage);
+			largeVector.mData = LargeVector3fv_t::StorageType(largeVector.mData.xyz, intToFloat.mStorage);
+		}
+
+		template <>
+		LargeVector3fv_t::VectorType GetVector(const LargeVector3fv_t largeVector)
+		{
+			return LargeVector3fv_t::VectorType(largeVector.mData.xyz);
+		}
+		template <>
+		void SetVector(LargeVector3fv_t& largeVector, const LargeVector3fv_t::VectorType v)
+		{
+			largeVector.mData = LargeVector3fv_t::StorageType(v.xyz, largeVector.mData.w);
+		}
+
+
+		template <>
+		LargeVector3fv_t operator +(const LargeVector3fv_t& lhs, const LargeVector3fv_t& rhs)
+		{
+			LargeVector3fv_t result;
+			Set(result, GetVector(lhs) + GetVector(rhs), GetSector(lhs) + GetSector(rhs));
+			return result;
+		}
+
+		template <>
+		LargeVector3fv_t operator -(const LargeVector3fv_t& lhs, const LargeVector3fv_t& rhs)
+		{
+			LargeVector3fv_t result;
+			Set(result, GetVector(lhs) - GetVector(rhs), GetSector(lhs) - GetSector(rhs));
+			return result;
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
 		typename TYPE::VectorType ExtractVector3(const TYPE& rhs);
 		template <typename TYPE>
@@ -27,46 +99,10 @@ namespace CPF
 		template <typename TYPE>
 		typename TYPE::VectorType GetRelative(const TYPE& from, const TYPE& to);
 
-
-		//////////////////////////////////////////////////////////////////////////
-		// LargeVectorDesc_FI implementations.
-		template <>
-		LargeVectorDesc_FI::VectorType ExtractVector3(const LargeVector<LargeVectorDesc_FI>& lv)
+		void ElementNorm(const int32_t bound, float v, float& nv, int32_t& ns)
 		{
-			// NOTE: Doesn't need to worry about removing the w component as the math
-			// ignores it anyway.
-			return LargeVectorDesc_FI::VectorType(LargeVectorDesc_FI::StorageType(lv).GetLanes<0, 1, 2>());
-		}
-
-		template <>
-		void InsertVector(LargeVector<LargeVectorDesc_FI>& dst, const LargeVectorDesc_FI::VectorType& value)
-		{
-			float fsector = LargeVectorDesc_FI::StorageType(dst).GetLane<3>();
-			// TODO: Renormalize the coordinates?
-			SIMD::F32x4 simdValue(value.xyz, fsector);
-			dst = LargeVector<LargeVectorDesc_FI>(simdValue);
-		}
-
-		template <>
-		LargeVectorDesc_FI::SectorType ExtractSector(const LargeVector<LargeVectorDesc_FI>& lv)
-		{
-			float fsector = LargeVectorDesc_FI::StorageType(lv).GetLane<3>();
-			return *reinterpret_cast<LargeVectorDesc_FI::SectorType*>(&fsector);
-		}
-
-		template <>
-		void InsertSector(LargeVector<LargeVectorDesc_FI>& lv, const LargeVectorDesc_FI::SectorType& value)
-		{
-			SIMD::F32x4 simdValue(ExtractVector3(lv).xyz, *reinterpret_cast<const float*>(&value));
-			lv = LargeVector<LargeVectorDesc_FI>(simdValue);
-		}
-
-		void NormalizeBounds(const int32_t bound, float v, float& nv, int32_t& ns)
-		{
-			// For consistency of behavior, the ownership rules are
-			// that positive values are inclusive of the bound value while
-			// negative values are exclusive.  I.e. the range of valid x
-			// is "x > -bound && x<= bound".
+			// Coordinate inclusion rules are for values to be less than
+			// the sector size or more than or equal negative sector size.
 			const int32_t bound2 = 2 * bound;
 			if (v > bound)
 			{
@@ -85,6 +121,9 @@ namespace CPF
 			ns = 0;
 		}
 
+#if 0
+		//////////////////////////////////////////////////////////////////////////
+		// LargeVectorDesc_FI implementations.
 		template <>
 		LargeVector<LargeVectorDesc_FI> Normalize(const LargeVector<LargeVectorDesc_FI>& lv)
 		{
@@ -126,5 +165,6 @@ namespace CPF
 				LargeVector<LargeVectorDesc_FI>::SectorRep(ExtractSector(from));
 			return relDelta + LargeVector<LargeVectorDesc_FI>::VectorType((relSector * (LargeVectorDesc_FI::HalfBound*2)).xyz);
 		}
+#endif
 	}
 }
