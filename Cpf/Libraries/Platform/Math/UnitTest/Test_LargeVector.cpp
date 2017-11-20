@@ -62,6 +62,65 @@ TEST(LargeVector3fv_t, SizeTest)
 	EXPECT_TRUE(sizeof(LargeVector3fv_t) == sizeof(typename LargeVector3fv_t::StorageType));
 }
 
+TEST(LargeVector3fv_t, AddHalfSectorVector)
+{
+	LargeVector3fv_t lg0;
+	Set(lg0, Vector3fv(0.0f, 0.0f, 0.0f), Vector3iv(1, 2, 3));
+	
+	// These should all change the sector as the positive bounds are not inclusive.
+	LargeVector3fv_t vpx = lg0 + Vector3fv(kHalfSectorSize, 0.0f, 0.0f);
+	EXPECT_TRUE(Near(GetVector(vpx), Vector3fv{ -kHalfSectorSize, 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vpx), { 2, 2, 3 }, 0));
+
+	LargeVector3fv_t vpy = lg0 + Vector3fv(0.0f, kHalfSectorSize, 0.0f);
+	EXPECT_TRUE(Near(GetVector(vpy), Vector3fv{ 0.0f, -kHalfSectorSize, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vpy), { 1, 3, 3 }, 0));
+
+	LargeVector3fv_t vpz = lg0 + Vector3fv(0.0f, 0.0f, kHalfSectorSize);
+	EXPECT_TRUE(Near(GetVector(vpz), Vector3fv{ 0.0f, 0.0f, -kHalfSectorSize }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vpz), { 1, 2, 4 }, 0));
+}
+
+TEST(LargeVector3fv_t, AddNegativeHalfSectorVector)
+{
+	LargeVector3fv_t lg0;
+	Set(lg0, Vector3fv(0.0f, 0.0f, 0.0f), Vector3iv(1, 2, 3));
+
+	// NOTE: These should all leave sector alone as the negative bound is
+	// inclusive.  This is floating point though so hopefully these
+	// tests work correctly but in real use this should almost never be an issue.
+	LargeVector3fv_t vnx = lg0 + Vector3fv(-kHalfSectorSize, 0.0f, 0.0f);
+	EXPECT_TRUE(Near(GetVector(vnx), Vector3fv{ -kHalfSectorSize, 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vnx), { 1, 2, 3 }, 0));
+
+	LargeVector3fv_t vny = lg0 + Vector3fv(0.0f, -kHalfSectorSize, 0.0f);
+	EXPECT_TRUE(Near(GetVector(vny), Vector3fv{ 0.0f, -kHalfSectorSize, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vny), { 1, 2, 3 }, 0));
+
+	LargeVector3fv_t vnz = lg0 + Vector3fv(0.0f, 0.0f, -kHalfSectorSize);
+	EXPECT_TRUE(Near(GetVector(vnz), Vector3fv{ 0.0f, 0.0f, -kHalfSectorSize }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vnz), { 1, 2, 3 }, 0));
+}
+
+TEST(LargeVector3fv_t, AddNegativeSectorVector)
+{
+	LargeVector3fv_t lg0;
+	Set(lg0, Vector3fv(0.0f, 0.0f, 0.0f), Vector3iv(1, 2, 3));
+
+	LargeVector3fv_t vnx = lg0 + Vector3fv(-kSectorSize, 0.0f, 0.0f);
+	EXPECT_TRUE(Near(GetVector(vnx), Vector3fv{ 0.0f, 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vnx), { 0, 2, 3 }, 0));
+
+	LargeVector3fv_t vny = lg0 + Vector3fv(0.0f, -kSectorSize, 0.0f);
+	EXPECT_TRUE(Near(GetVector(vny), Vector3fv{ 0.0f, 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vny), { 1, 1, 3 }, 0));
+
+	LargeVector3fv_t vnz = lg0 + Vector3fv(0.0f, 0.0f, -kSectorSize);
+	EXPECT_TRUE(Near(GetVector(vnz), Vector3fv{ 0.0f, 0.0f, 0.0f }, 0.01f));
+	EXPECT_TRUE(Near(GetSector(vnz), { 1, 2, 2 }, 0));
+}
+
+
 #if 0
 TEST(LargeVector, ValidateSize)
 {

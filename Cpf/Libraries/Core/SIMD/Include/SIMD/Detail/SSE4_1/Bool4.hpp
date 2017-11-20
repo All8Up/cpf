@@ -99,6 +99,7 @@ namespace CPF
 
 				explicit operator StorageType () const { return mVector; }
 
+				template <typename = std::enable_if_t<LANES_USED == 1>>
 				operator const LaneType() const
 				{
 					return _mm_cvtsi128_si32(mVector);

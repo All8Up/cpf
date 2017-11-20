@@ -65,6 +65,12 @@ namespace CPF
 			: mSIMD(data[0], data[1], data[2])
 		{}
 
+		template <typename TYPE>
+		template <typename RTYPE>
+		Vector3<TYPE>::Vector3(const Vector3<RTYPE>& rhs)
+			: mSIMD(TYPE::LaneType(rhs.x), TYPE::LaneType(rhs.y), TYPE::LaneType(rhs.z))
+		{}
+
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
 		SIMD::LaneIndex<TYPE> CPF_VECTORCALL Vector3<TYPE>::operator [](int idx)

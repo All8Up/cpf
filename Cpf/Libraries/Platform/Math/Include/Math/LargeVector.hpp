@@ -8,6 +8,10 @@ namespace CPF
 {
 	namespace Math
 	{
+		// General information.
+		static constexpr float kHalfSectorSize = 4096.0f;	// 4,096 meters
+		static constexpr float kSectorSize = 2.0f * kHalfSectorSize;
+
 		/**
 		 * @class Proxy
 		 * @brief A proxy is a simple, though ugly and potentially unsafe
@@ -55,154 +59,94 @@ namespace CPF
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		union SectorCodec
+		// The encoding/decoding structure for manipulating sector data.
+		// TODO: This can use a bit of simd to avoid the bitfield pack/unpack.
+		union SectorCodecI32x3
 		{
-			using StorageType = uint32_t;
+			using SectorType = Vector3iv;
+			using StorageType = float;
+			static constexpr int BitsPerElement = 10;
 
-			SectorCodec(int32_t x, int32_t y, int32_t z)
+			SectorCodecI32x3(const SectorType& s)
 			{
-				mFields.mX = x;
-				mFields.mY = y;
-				mFields.mZ = z;
+				mFields.mX = s.x;
+				mFields.mY = s.y;
+				mFields.mZ = s.z;
 			}
-			SectorCodec(StorageType value)
-				: mStorage(value)
-			{}
+			SectorCodecI32x3(StorageType storage)
+				: mStorage(storage)
+			{
+			}
 
+			// Access the encoded data in three manners.
 			struct 
 			{
-				uint32_t mX : 10;
-				uint32_t mY : 10;
-				uint32_t mZ : 10;
+				// NOTE: Sign extension is going to be a bugger in simd.
+				int32_t mX : BitsPerElement;
+				int32_t mY : BitsPerElement;
+				int32_t mZ : BitsPerElement;
 			} mFields;
 			StorageType mStorage;
 		};
 
-		//
+		//////////////////////////////////////////////////////////////////////////
+		// The primitive data type which represents a large vector.
 		struct alignas(16) LargeVector3fv_t
 		{
 			using StorageType = Vector4fv;
-
 			using VectorType = Vector3fv;
 			using SectorType = Vector3iv;
-
-			using SectorStorageType = uint32_t;
-			using VectorElementType = float;
-			using WorldElementType = double;
+			using SectorCodec = SectorCodecI32x3;
 
 			StorageType mData;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
+		// API to manipulate large vectors.
 		template <typename TYPE>
-		void Set(TYPE& largeVector, const typename TYPE::VectorType, const typename TYPE::SectorType);
+		TYPE& Set(TYPE& largeVector, const typename TYPE::VectorType, const typename TYPE::SectorType);
 
 		template <typename TYPE>
 		typename TYPE::SectorType GetSector(const TYPE largeVector);
 		template <typename TYPE>
-		void SetSector(TYPE& largeVector, const typename TYPE::SectorType s);
+		TYPE& SetSector(TYPE& largeVector, const typename TYPE::SectorType s);
 
 		template <typename TYPE>
 		typename TYPE::VectorType GetVector(const TYPE largeVector);
 		template <typename TYPE>
-		void SetVector(TYPE& largeVector, const typename TYPE::VectorType v);
+		TYPE& SetVector(TYPE& largeVector, const typename TYPE::VectorType v);
 
 		template <typename TYPE>
+		TYPE GetSectorized(const TYPE& lv);
+
+		template <typename TYPE>
+		TYPE operator +(const TYPE& lhs, const typename TYPE::VectorType& rhs);
+		template <typename TYPE>
 		TYPE operator +(const TYPE& lhs, const TYPE& rhs);
+		
+		template <typename TYPE>
+		TYPE operator -(const TYPE& lhs, const typename TYPE::VectorType& rhs);
 		template <typename TYPE>
 		TYPE operator -(const TYPE& lhs, const TYPE& rhs);
 
+		// TODO: Should this bother with other operators?  Really shouldn't need to...
+		
 
-#if 0
 		//////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////
-		template <typename DESC>
-		union LargeVector
+		// High level wrapper around large vectors.
+		// This throws a wrapper around the lower level type such that customization
+		// is possible and some handy proxy utilities are possible.
+		template <typename TYPE>
+		union LargeVector3v
 		{
-			using Description = DESC;
-
-			using VectorType = typename DESC::VectorType;
-			using SectorType = typename DESC::SectorType;
-			using SectorRep = typename DESC::SectorType::SectorRep;
-			using StorageType = typename DESC::StorageType;
-
-			static constexpr int HalfBound = DESC::HalfBound;
-
-			LargeVector() {}
-			LargeVector(const LargeVector& rhs) : mStorage(rhs.mStorage) {}
-			LargeVector(LargeVector&& rhs) noexcept : mStorage(rhs.mStorage) {}
-			explicit LargeVector(const StorageType& rhs) : mStorage(rhs) {}
-			explicit LargeVector(const VectorType& vt, const SectorType& st) : mStorage(vt.xyz, *reinterpret_cast<const float*>(&st)) {}
-
-			LargeVector& operator =(const LargeVector& rhs) { mStorage = rhs.mStorage; return *this; }
-			LargeVector& operator =(LargeVector&& rhs) noexcept { mStorage = rhs.mStorage; return *this; }
-
-			operator StorageType() const { return mStorage; }
+		public:
 
 		private:
-			StorageType mStorage;
+			TYPE mLargeVector;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		template <typename STORAGETYPE, typename REPTYPE, int DIMENSIONS, int BITS>
-		union Sector;
-
-		//////////////////////////////////////////////////////////////////////////
-		// int32_t 3D sector.
-		template <>
-		union Sector<int32_t, Vector3<SIMD::I32x4_3>, 3, 10>
-		{
-			using StorageType = int32_t;
-			using SectorRep = Vector3<SIMD::I32x4_3>;
-			using LaneType = Vector3<SIMD::I32x4_3>::LaneType;
-			static constexpr int32_t Dimensions = 3;
-			static constexpr int32_t Bits = 10;
-
-			explicit Sector(StorageType value) : mSector(value) {}
-			Sector(LaneType x, LaneType y, LaneType z) : mSector(0) { mElements.x = x; mElements.y = y; mElements.z = z; }
-			explicit Sector(SectorRep v) { mElements.x = v.x; mElements.y = v.y; mElements.z = v.z; }
-
-			explicit operator StorageType () const { return mSector; }
-			explicit operator SectorRep() const { return SectorRep(mElements.x, mElements.y, mElements.z); }
-
-			int32_t GetX() const { return mElements.x; }
-			void SetX(int32_t x) { mElements.x = x; }
-			int32_t GetY() const { return mElements.y; }
-			void SetY(int32_t y) { mElements.y = y; }
-			int32_t GetZ() const { return mElements.z; }
-			void SetZ(int32_t z) { mElements.z = z; }
-
-		private:
-			struct
-			{
-				int32_t x : Bits;
-				int32_t y : Bits;
-				int32_t z : Bits;
-			} mElements;
-			StorageType mSector;
-		};
-
-		template <typename STORAGETYPE, typename REPTYPE, int DIMENSIONS, int BITS>
-		bool operator == (Sector<STORAGETYPE, REPTYPE, DIMENSIONS, BITS> lhs, Sector<STORAGETYPE, REPTYPE, DIMENSIONS, BITS> rhs)
-		{
-			using StorageType = typename Sector<STORAGETYPE, REPTYPE, DIMENSIONS, BITS>::StorageType;
-			return StorageType(lhs) == StorageType(rhs);
-		}
-
-		//////////////////////////////////////////////////////////////////////////
-		// SIMD floating point representation.
-		struct LargeVectorDesc_FI
-		{
-			static constexpr int HalfBound = 5;
-
-			using VectorType = Vector3fv;
-			using SectorRep = Vector3<SIMD::I32x4_3>;
-			using SectorType = Sector<int32_t, SectorRep, 3, 10>;
-			using StorageType = SIMD::F32x4;
-			using RelativeType = float;
-			using WorldType = double;
-		};
-#endif
+		using LargeVector3fv = LargeVector3v<LargeVector3fv_t>;
 	}
 }
 

@@ -33,8 +33,15 @@ namespace CPF
 			Vector3(LaneType v0, const SIMD::LaneRef_2<TYPE, I1, I2>& ref);
 			explicit Vector3(const LaneType* data);
 
+			template <typename RTYPE>
+			explicit Vector3(const Vector3<RTYPE>& rhs);
+
 			template <typename RTYPE, int I0, int I1, int I2>
 			explicit Vector3(const SIMD::LaneRef_3<RTYPE, I0, I1, I2>& ref);
+
+			// Accepting bool4 for integral vectors is needed for predicated equations.
+			template <typename = std::enable_if_t<std::is_integral<LaneType>::value>>
+			Vector3(typename TYPE::BoolType rhs) : mSIMD(rhs.mVector) {}
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::LaneIndex<TYPE> CPF_VECTORCALL operator [](int idx);
