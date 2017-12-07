@@ -32,7 +32,8 @@ namespace IDL
 			void OnImportStmt(const String&, const SymbolPath&);
 			void OnInterfaceDeclStmt(const Visitor::InterfaceDecl&);
 
-			static String TypeToString(const Visitor::TypeDecl& decl);
+			static String TypeModifier(const Visitor::TypeDecl& decl, const Visitor::ParamDir& paramDir);
+			static String TypeToString(const Visitor::TypeDecl& decl, const Visitor::ParamDir& paramDir);
 
 			CodeWriter* mpWriter;
 			SymbolPath mModule;

@@ -1,3 +1,5 @@
+import IWrapper from CPF::Plugin;
+
 interface iTestPlugin
 {
 	result Test();
