@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/MotD/CPF/Tools/idl\IDLLexer.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf/Tools/idl\IDLLexer.g4 by ANTLR 4.7
 
 
 #include "IDLLexer.h"
@@ -63,7 +63,7 @@ std::vector<std::string> IDLLexer::_ruleNames = {
   u8"ALPHA", u8"ALPHA_", u8"DIGIT", u8"HEX_DIGIT", u8"BIN_DIGIT", u8"OCT_DIGIT", 
   u8"WS", u8"Windows", u8"Darwin", u8"IMPORT", u8"STRUCT", u8"DEFAULT", 
   u8"UNION", u8"CALLBACK", u8"INTERFACE", u8"ENUM", u8"FLAGS", u8"MODULE", 
-  u8"FROM", u8"AS", u8"IN", u8"OUT", u8"COLON", u8"SEMICOLON", u8"STAR", 
+  u8"FROM", u8"AS", u8"In", u8"Out", u8"COLON", u8"SEMICOLON", u8"STAR", 
   u8"SLASH", u8"DOT", u8"COMMA", u8"EQUALS", u8"QUOTE", u8"SQUOTE", u8"LBRACE", 
   u8"RBRACE", u8"LPAREN", u8"RPAREN", u8"LBRACKET", u8"RBRACKET", u8"LT", 
   u8"GT", u8"PLUS", u8"MINUS", u8"LSHIFT", u8"RSHIFT", u8"PIPE", u8"Const", 
@@ -99,7 +99,7 @@ std::vector<std::string> IDLLexer::_literalNames = {
 std::vector<std::string> IDLLexer::_symbolicNames = {
   "", u8"Windows", u8"Darwin", u8"IMPORT", u8"STRUCT", u8"DEFAULT", u8"UNION", 
   u8"CALLBACK", u8"INTERFACE", u8"ENUM", u8"FLAGS", u8"MODULE", u8"FROM", 
-  u8"AS", u8"IN", u8"OUT", u8"COLON", u8"SEMICOLON", u8"STAR", u8"SLASH", 
+  u8"AS", u8"In", u8"Out", u8"COLON", u8"SEMICOLON", u8"STAR", u8"SLASH", 
   u8"DOT", u8"COMMA", u8"EQUALS", u8"QUOTE", u8"SQUOTE", u8"LBRACE", u8"RBRACE", 
   u8"LPAREN", u8"RPAREN", u8"LBRACKET", u8"RBRACKET", u8"LT", u8"GT", u8"PLUS", 
   u8"MINUS", u8"LSHIFT", u8"RSHIFT", u8"PIPE", u8"Const", u8"Void", u8"RESULT", 
