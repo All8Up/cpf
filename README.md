@@ -1,2 +1,1 @@
-# cpf_kpi
-Key Performance Indicators
+Key Performance Indicators for the cpf libraries.
