@@ -1,8 +1,0 @@
-import iStream from CPF::IO;
-module CPF::IO;
-
-interface iFileStream : iStream
-{
-	callback OnOpen = void(result value, iStream* stream, void* context);
-	result Open(const char* name, Access access, void* context, OnOpen cb);
-}

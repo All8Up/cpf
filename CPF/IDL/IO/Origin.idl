@@ -1,0 +1,10 @@
+import Configuration from CPF;
+
+module CPF::IO;
+
+enum Origin : s32
+{
+	eBegin,
+	eEnd,
+	eCurrent
+};

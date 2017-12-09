@@ -1,0 +1,15 @@
+import iUnknown from CPF::GOM;
+import Access from CPF::IO;
+
+module CPF::IO;
+
+interface iStream;
+
+interface iFile : GOM::iUnknown
+{
+	callback OnComplete = void(result value, void* context);
+	result Exists(const char* name, void* context, OnComplete cb);
+	result Delete(const char* name, void* context, OnComplete cb);
+	callback OnOpen = void(result value, iStream* stream, void* context);
+	result Open(const char* name, Access access, void* context, OnOpen cb);
+}

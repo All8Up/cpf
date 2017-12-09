@@ -1,4 +1,4 @@
-import Result from GOM;
+import Result from CPF::GOM;
 module CPF::GOM;
 
 success OK ("Core", "OK");

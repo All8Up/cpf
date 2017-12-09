@@ -3,45 +3,322 @@ configure_file (Include/CPF/Configuration/Setup.hpp.in
 	${CPF_GENERATED}/CPP/CPF/Configuration/Setup.hpp )
 
 # ###############################################
-set (INCLUDE_FILES
+set (CPF_INCLUDES
 	Include/CPF/Configuration.hpp
+	Include/CPF/EnumFlagType.hpp
+	Include/CPF/GOM.hpp
+	Include/CPF/IntrusivePtr.hpp
+	Include/CPF/IO.hpp
+	Include/CPF/iRefCounted.hpp
+	Include/CPF/Logging.hpp
+	Include/CPF/Math.hpp
+	Include/CPF/Plugin.hpp
+	Include/CPF/Simd.hpp
 )
-set (INCLUDE_CONFIGURATION_FILES
-	Include/CPF/Configuration/Macros.hpp
-	Include/CPF/Configuration/Setup.hpp.in
-	${CMAKE_BINARY_DIR}/CPF/Configuration/Setup.hpp
-)
-set (SOURCE_FILES
+set (CPF_SOURCES
 	Source/CPF.cpp
 )
 
-# ###############################################
-set (IDL_FILES
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/ResultCodes.idl
+set (CONFIGURATION_INCLUDES
+	Include/CPF/Configuration/Macros.hpp
+	Include/CPF/Configuration/Setup.hpp.in
+	${CPF_GENERATED}/CPP/CPF/Configuration/Setup.hpp
 )
 
-# ###############################################
-CPF_GEN_GOM(CppGOMFiles cpp
-	hpp
-	${CPF_GENERATED}/CPP/CPF/GOM
-	${IDL_FILES}
+set (GOM_IDL
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/ResultCodes.idl
+)
+CPF_GEN_GOM(GOM_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/GOM ${GOM_IDL})
+set (GOM_INCLUDES
+	Include/CPF/GOM/iUnknown.hpp
+	Include/CPF/GOM/Result.hpp
+	Include/CPF/GOM/Types.hpp
+)
+
+set (HASH_INCLUDES
+	Include/CPF/Hash/Crc.hpp
+	Include/CPF/Hash/HashID.hpp
+	Include/CPF/Hash/HashString.hpp
+)
+set (HASH_DETAIL_INCLUDES
+	Include/CPF/Hash/Detail/Crc15Table.hpp
+	Include/CPF/Hash/Detail/Crc16Table.hpp
+	Include/CPF/Hash/Detail/Crc32Table.hpp
+	Include/CPF/Hash/Detail/Crc64Table.hpp
+)
+
+set (IO_IDL
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Access.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Attributes.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iDirectory.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iExecutor.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFile.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFileStream.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iStream.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Origin.idl
+)
+CPF_GEN_GOM(IO_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/IO ${IO_IDL})
+set (IO_INCLUDES
+	Include/CPF/IO/BinaryReader.hpp
+	Include/CPF/IO/BinaryWriter.hpp
+	Include/CPF/IO/Directory.hpp
+	Include/CPF/IO/File.hpp
+	Include/CPF/IO/FileSystem.hpp
+	Include/CPF/IO/Globbing.hpp
+	Include/CPF/IO/Path.hpp
+	Include/CPF/IO/Result.hpp
+	Include/CPF/IO/Stream.hpp
+	Include/CPF/IO/TextReader.hpp
+	Include/CPF/IO/TextWriter.hpp
+)
+set (IO_SOURCES
+	Source/IO/BinaryReader.cpp
+	Source/IO/BinaryWriter.cpp
+	Source/IO/Directory.cpp
+	Source/IO/File.cpp
+	Source/IO/FileSystem.cpp
+	Source/IO/Globbing.cpp
+	Source/IO/IO.cpp
+	Source/IO/Path.cpp
+	Source/IO/Stream.cpp
+	Source/IO/TextReader.cpp
+	Source/IO/TextWriter.cpp
+)
+
+set (MATH_INCLUDES
+	Include/CPF/Math/Algorithm.hpp
+	Include/CPF/Math/Ballistics.hpp
+	Include/CPF/Math/BitManipulation.hpp
+	Include/CPF/Math/Constants.hpp
+	Include/CPF/Math/Exponential.hpp
+	Include/CPF/Math/FixedPoint.hpp
+	Include/CPF/Math/Hyperbolic.hpp
+	Include/CPF/Math/Interpolation.hpp
+	Include/CPF/Math/LargeVector.hpp
+	Include/CPF/Math/Matrix22v.hpp
+	Include/CPF/Math/Matrix33v.hpp
+	Include/CPF/Math/Matrix44v.hpp
+	Include/CPF/Math/Power.hpp
+	Include/CPF/Math/Quaternion.hpp
+	Include/CPF/Math/Rectangle.hpp
+	Include/CPF/Math/Rounding.hpp
+	Include/CPF/Math/Signal.hpp
+	Include/CPF/Math/Transform.hpp
+	Include/CPF/Math/Trigonometric.hpp
+	Include/CPF/Math/Types.hpp
+	Include/CPF/Math/Vector2v.hpp
+	Include/CPF/Math/Vector3v.hpp
+	Include/CPF/Math/Vector4v.hpp
+)
+set (MATH_BOUNDS_INCLUDES
+	Include/CPF/Math/Bounds/AABB.hpp
+	Include/CPF/Math/Bounds/OBB.hpp
+	Include/CPF/Math/Bounds/Sphere.hpp
+)
+set (MATH_DISTANCE_INCLUDES
+	Include/CPF/Math/Distance/Vector_Plane.hpp
+)
+set (MATH_GEOMETRY_INCLUDES
+	Include/CPF/Math/Geometry/AABB.hpp
+	Include/CPF/Math/Geometry/OBB.hpp
+	Include/CPF/Math/Geometry/Ray3.hpp
+	Include/CPF/Math/Geometry/Sphere.hpp
+	Include/CPF/Math/Geometry/Plane.hpp
+)
+set (MATH_INTERSECTION_INCLUDES
+	Include/CPF/Math/Intersection/Intersection.hpp
+	Include/CPF/Math/Intersection/Ray3_Sphere.hpp
+	Include/CPF/Math/Intersection/Ray3_Plane.hpp
+)
+set (MATH_DETAIL_INCLUDES
+	Include/CPF/Math/Detail/LargeVector.inl
+	Include/CPF/Math/Detail/Matrix22v.inl
+	Include/CPF/Math/Detail/Matrix33v.inl
+	Include/CPF/Math/Detail/Matrix44v.inl
+	Include/CPF/Math/Detail/Quaternion.inl
+	Include/CPF/Math/Detail/Rectangle.inl
+	Include/CPF/Math/Detail/Transform.inl
+	Include/CPF/Math/Detail/Vector2v.inl
+	Include/CPF/Math/Detail/Vector3v.inl
+	Include/CPF/Math/Detail/Vector4v.inl
+)
+
+set (PLUGIN_IDL
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iClassFactory.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iRegistry.idl
+)
+CPF_GEN_GOM(PLUGIN_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/Plugin ${PLUGIN_IDL})
+set (PLUGIN_INCLUDES
+	Include/CPF/Plugin/Library.hpp
+	Include/CPF/Plugin/Registry.hpp
+	Include/CPF/Plugin/SharedLibrary.hpp
+)
+set (PLUGIN_SOURCES
+	Source/Plugin/Registry.cpp
+)
+
+set (SIMD_INCLUDES
+	Include/CPF/SIMD/Types.hpp
+	Include/CPF/SIMD/Rounding.hpp
+)
+set (SIMD_DETAIL_INCLUDES
+	Include/CPF/SIMD/Detail/Accessor.hpp
+	Include/CPF/SIMD/Detail/LaneIndex.hpp
+	Include/CPF/SIMD/Detail/LaneRef.hpp
+	Include/CPF/SIMD/Detail/LaneRef_1.inl
+	Include/CPF/SIMD/Detail/LaneRef_2.inl
+	Include/CPF/SIMD/Detail/LaneRef_3.inl
+	Include/CPF/SIMD/Detail/LaneRef_4.inl
+	Include/CPF/SIMD/Detail/Swizzles.hpp
+)
+set (SIMD_DETAIL_FPU_INCLUDES
+	Include/CPF/SIMD/Detail/FPU/Bool4.hpp
+	Include/CPF/SIMD/Detail/FPU/F32x1.hpp
+	Include/CPF/SIMD/Detail/FPU/F32x2.hpp
+	Include/CPF/SIMD/Detail/FPU/F32x3.hpp
+	Include/CPF/SIMD/Detail/FPU/F32x4.hpp
+	Include/CPF/SIMD/Detail/FPU/FPU.hpp
+	Include/CPF/SIMD/Detail/FPU/I32x1.hpp
+	Include/CPF/SIMD/Detail/FPU/I32x2.hpp
+	Include/CPF/SIMD/Detail/FPU/I32x3.hpp
+	Include/CPF/SIMD/Detail/FPU/I32x4.hpp
+)
+set (SIMD_DETAIL_REFERENCE_INCLUDES
+	Include/CPF/SIMD/Detail/Reference/Bool4.hpp
+	Include/CPF/SIMD/Detail/Reference/F32x4.hpp
+	Include/CPF/SIMD/Detail/Reference/F64x4.hpp
+	Include/CPF/SIMD/Detail/Reference/I32x4.hpp
+)
+set (SIMD_DETAIL_SSE3_INCLUDES
+	Include/CPF/SIMD/Detail/SSE3/Bool4.hpp
+	Include/CPF/SIMD/Detail/SSE3/F32x4.hpp
+	Include/CPF/SIMD/Detail/SSE3/F32x4_access.inl
+	Include/CPF/SIMD/Detail/SSE3/F32x4_comparison.inl
+	Include/CPF/SIMD/Detail/SSE3/F32x4_construction.inl
+	Include/CPF/SIMD/Detail/SSE3/F32x4_operations.inl
+	Include/CPF/SIMD/Detail/SSE3/I32x4.hpp
+)
+set (SIMD_DETAIL_SSE4_1_INCLUDES
+	Include/CPF/SIMD/Detail/SSE4_1/Bool4.hpp
+	Include/CPF/SIMD/Detail/SSE4_1/F32x4.hpp
+	Include/CPF/SIMD/Detail/SSE4_1/F32x4_access.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F32x4_comparison.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F32x4_construction.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F32x4_operations.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F64x4.hpp
+	Include/CPF/SIMD/Detail/SSE4_1/F64x4_access.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F64x4_comparison.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F64x4_construction.inl
+	Include/CPF/SIMD/Detail/SSE4_1/F64x4_operations.inl
+	Include/CPF/SIMD/Detail/SSE4_1/I32x4.hpp
+	Include/CPF/SIMD/Detail/SSE4_1/Utilities.hpp
+)
+
+set (STD_INCLUDES
+	Include/CPF/Std/Algorithm.hpp
+	Include/CPF/Std/Array.hpp
+	Include/CPF/Std/BitSet.hpp
+	Include/CPF/Std/CCType.hpp
+	Include/CPF/Std/Deque.hpp
+	Include/CPF/Std/ForwardList.hpp
+	Include/CPF/Std/Functional.hpp
+	Include/CPF/Std/Hash.hpp
+	Include/CPF/Std/List.hpp
+	Include/CPF/Std/Map.hpp
+	Include/CPF/Std/Memory.hpp
+	Include/CPF/Std/Move.hpp
+	Include/CPF/Std/Pair.hpp
+	Include/CPF/Std/Queue.hpp
+	Include/CPF/Std/Set.hpp
+	Include/CPF/Std/Stack.hpp
+	Include/CPF/Std/String.hpp
+	Include/CPF/Std/StringUtils.hpp
+	Include/CPF/Std/Time.hpp
+	Include/CPF/Std/Tuple.hpp
+	Include/CPF/Std/UnorderedMap.hpp
+	Include/CPF/Std/UnorderedSet.hpp
+	Include/CPF/Std/Vector.hpp
 )
 
 # ###############################################
 add_library (CPF STATIC
-	${INCLUDE_FILES}
-	${INCLUDE_CONFIGURATION_FILES}
-	${SOURCE_FILES}
-	${CppGOMFiles}
+	${CPF_INCLUDES}
+	${CPF_SOURCES}
+
+	${CONFIGURATION_INCLUDES}
+
+	${GOM_IDL}
+	${GOM_INCLUDES}
+	${GOM_GEN_INCLUDES}
+
+	${HASH_INCLUDES}
+	${HASH_DETAIL_INCLUDES}
+
+	${IO_IDL}
+	${IO_INCLUDES}
+	${IO_GEN_INCLUDES}
+	${IO_SOURCES}
+
+	${MATH_INCLUDES}
+	${MATH_BOUNDS_INCLUDES}
+	${MATH_DISTANCE_INCLUDES}
+	${MATH_GEOMETRY_INCLUDES}
+	${MATH_INTERSECTION_INCLUDES}
+	${MATH_DETAIL_INCLUDES}
+
+	${PLUGIN_IDL}
+	${PLUGIN_INCLUDES}
+	${PLUGIN_GEN_INCLUDES}
+	${PLUGIN_SOURCES}
+
+	${SIMD_INCLUDES}
+	${SIMD_DETAIL_INCLUDES}
+	${SIMD_DETAIL_FPU_INCLUDES}
+	${SIMD_DETAIL_REFERENCE_INCLUDES}
+#	${SIMD_DETAIL_SSE3_INCLUDES}
+	${SIMD_DETAIL_SSE4_1_INCLUDES}
+
+	${STD_INCLUDES}
 )
 target_include_directories (CPF
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
-source_group (Headers FILES ${INCLUDE_FILES})
-source_group (Headers\\Configuration FILES ${INCLUDE_CONFIGURATION_FILES})
-source_group (Sources FILES ${SOURCE_FILES})
+source_group (Headers FILES ${CPF_INCLUDES})
+source_group (Sources FILES ${CPF_SOURCES})
+
+source_group (Headers\\Configuration FILES ${CONFIGURATION_INCLUDES})
+
+source_group (IDL\\GOM FILES ${GOM_IDL})
+source_group (Headers\\GOM FILES ${GOM_GEN_INCLUDES} ${GOM_INCLUDES})
+
+source_group (Headers\\Hash FILES ${HASH_INCLUDES})
+source_group (Headers\\Hash\\Detail FILES ${HASH_DETAIL_INCLUDES})
+
+source_group (IDL\\IO FILES ${IO_IDL})
+source_group (Headers\\IO FILES ${IO_GEN_INCLUDES} ${IO_INCLUDES})
+
+source_group (Headers\\Math FILES ${MATH_INCLUDES})
+source_group (Headers\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDES})
+source_group (Headers\\Math\\Distance FILES ${MATH_DISTANCE_INCLUDES})
+source_group (Headers\\Math\\Geometry FILES ${MATH_GEOMETRY_INCLUDES})
+source_group (Headers\\Math\\Intersection FILES ${MATH_INTERSECTION_INCLUDES})
+source_group (Headers\\Math\\Detail FILES ${MATH_DETAIL_INCLUDES})
+
+source_group (Headers\\SIMD FILES ${SIMD_INCLUDES})
+source_group (Headers\\SIMD\\Detail FILES ${SIMD_DETAIL_INCLUDES})
+source_group (Headers\\SIMD\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDES})
+source_group (Headers\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDES})
+source_group (Headers\\SIMD\\Detail\\SSE3 FILES ${SIMD_DETAIL_SSE3_INCLUDES})
+source_group (Headers\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES})
+
+source_group (IDL\\Plugin FILES ${PLUGIN_IDL})
+source_group (Headers\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
+source_group (Sources\\Plugin FILES ${PLUGIN_SOURCES})
+
+source_group (Headers\\Std FILES ${STD_INCLUDES})
+
 set_property (TARGET CPF PROPERTY FOLDER Core)
 
 # ###############################################
