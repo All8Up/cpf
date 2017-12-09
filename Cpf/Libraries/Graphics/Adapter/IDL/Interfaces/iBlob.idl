@@ -1,9 +1,0 @@
-import iUnknown from GOM;
-module CPF::Graphics;
-
-interface iBlob : GOM::iUnknown
-{
-	result Initialize(const void* source, s64 size);
-	void* GetData();
-	s64 GetSize();
-}

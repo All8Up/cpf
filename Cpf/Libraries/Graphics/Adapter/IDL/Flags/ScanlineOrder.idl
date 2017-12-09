@@ -1,9 +1,0 @@
-module CPF::Graphics;
-
-enum ScanlineOrder : s32
-{
-	eUnspecified,
-	eProgressive,
-	eUpperFieldFirst,
-	eLowerFieldFirst
-};

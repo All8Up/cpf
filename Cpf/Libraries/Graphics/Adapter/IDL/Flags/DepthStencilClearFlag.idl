@@ -1,8 +1,0 @@
-import EnumFlagType;
-module CPF::Graphics;
-
-flags DepthStencilClearFlag : s32
-{
-	eDepth = 1 << 0,
-	eStencil = 1 << 1
-};

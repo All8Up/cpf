@@ -1,3 +1,7 @@
+# Antlr generation notes:
+# set CLASSPATH=.;C:\Projects\cpf_core\Bin\antlr-4.7-complete.jar;%CLASSPATH%
+# java org.antlr.v4.Tool -o Generated -Dlanguage=Cpp -no-listener -visitor IDLLexer.g4 IDLParser.g4
+
 set (WITH_DEMO OFF CACHE BOOL "" FORCE)
 cmake_policy (SET CMP0054 NEW)
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Antlr4/Cpp")
@@ -98,7 +102,6 @@ add_executable (IDL
 
 	${LexerFiles}
 	${ParserFiles}
-	${ListenerFiles}
 	${VisitorFiles}
 )
 set_property (TARGET IDL PROPERTY FOLDER Tools)

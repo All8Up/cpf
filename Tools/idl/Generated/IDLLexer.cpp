@@ -1,5 +1,5 @@
 
-// Generated from C:/Projects/cpf/Tools/idl\IDLLexer.g4 by ANTLR 4.7
+// Generated from IDLLexer.g4 by ANTLR 4.7
 
 
 #include "IDLLexer.h"

@@ -1,7 +1,0 @@
-module CPF::Graphics;
-
-enum DepthWriteMask : s32
-{
-	eZero = 0,
-	eAll
-};

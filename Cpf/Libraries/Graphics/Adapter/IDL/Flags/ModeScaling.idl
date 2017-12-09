@@ -1,8 +1,0 @@
-module CPF::Graphics;
-
-enum ModeScaling : s32
-{
-	eUnspecified,
-	eCentered,
-	eStretched
-};

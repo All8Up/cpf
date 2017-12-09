@@ -1,7 +1,0 @@
-module CPF::Graphics;
-
-struct Ratio
-{
-	s32 mNumerator;
-	s32 mDenominator;
-}

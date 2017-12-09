@@ -1,9 +1,0 @@
-module CPF::Graphics;
-
-struct WindowData
-{
-	WINDOWS
-	{
-		HWND mHWnd;
-	}
-}

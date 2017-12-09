@@ -1,8 +1,0 @@
-module CPF::Graphics;
-
-enum LoadOp : s32
-{
-	eLoad,
-	eClear,
-	eDontCare
-}

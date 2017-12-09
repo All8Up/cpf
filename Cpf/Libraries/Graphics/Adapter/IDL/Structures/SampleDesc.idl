@@ -1,8 +1,0 @@
-import Utilities from Graphics;
-module CPF::Graphics;
-
-struct SampleDesc
-{
-	s32 mCount = 1;
-	s32 mQuality = 0;
-};
