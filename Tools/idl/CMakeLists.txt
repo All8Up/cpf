@@ -5,7 +5,7 @@
 set (WITH_DEMO OFF CACHE BOOL "" FORCE)
 cmake_policy (SET CMP0054 NEW)
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Antlr4/Cpp")
-set_property (TARGET antlr4_static PROPERTY FOLDER External/Antlr4)
+set_property (TARGET antlr4_static PROPERTY FOLDER Tools/Antlr4)
 
 set (LexerFiles
 	Generated/IDLLexer.h
@@ -16,12 +16,6 @@ set (ParserFiles
 	Generated/IDLParser.h
 	Generated/IDLParser.tokens
 	Generated/IDLParser.cpp
-)
-set (ListenerFiles
-	Generated/IDLParserBaseListener.h
-	Generated/IDLParserBaseListener.cpp
-	Generated/IDLParserListener.h
-	Generated/IDLParserListener.cpp
 )
 set (VisitorFiles
 	Generated/IDLParserBaseVisitor.h
