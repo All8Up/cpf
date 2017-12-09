@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/Configuration.hpp"
-#include "Hash/HashID.hpp"
+#include "CPF/Hash/HashID.hpp"
 
 namespace CPF
 {

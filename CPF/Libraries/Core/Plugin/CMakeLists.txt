@@ -47,7 +47,7 @@ source_group (Rust FILES ${RustPluginFiles})
 
 add_library (Plugin INTERFACE)
 add_dependencies (Plugin Plugin_IDE)
-target_link_libraries (Plugin INTERFACE Configuration GOM)
+target_link_libraries (Plugin INTERFACE CPF GOM)
 
 target_include_directories (Plugin INTERFACE
 	$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

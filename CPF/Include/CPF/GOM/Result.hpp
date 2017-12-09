@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/Configuration.hpp"
-#include "Hash/Crc.hpp"
+#include "CPF/Hash/Crc.hpp"
 
 namespace CPF
 {

@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
-#include "Configuration.hpp"
+#include "CPF/Configuration.hpp"
 #include "gmock/gmock.h"
 
 /**

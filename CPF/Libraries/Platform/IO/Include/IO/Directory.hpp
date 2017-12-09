@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "CPF/Configuration.hpp"
 #include "IO/IO.hpp"
 #include "String.hpp"
 #include "Functional.hpp"

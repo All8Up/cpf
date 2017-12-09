@@ -1,3 +1,4 @@
+#[[
 #
 configure_file (Include/Configuration/Setup.hpp.in
 	${CMAKE_BINARY_DIR}/${CPF_PLATFORM_INCLUDE_DIR}/Configuration/Setup.hpp )
@@ -63,3 +64,4 @@ MakeUnitTest (LIBRARY Configuration GROUP Core
 		UnitTest/Test_All.hpp
 		../Test/UnitTestMain.cpp
 )
+#]]

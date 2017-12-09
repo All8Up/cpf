@@ -22,7 +22,7 @@ source_group( Headers FILES ${INCLUDE_FILES} )
 source_group( Sources FILES ${SOURCE_FILES} )
 
 
-target_link_libraries( s_Memory Configuration )
+target_link_libraries( s_Memory CPF )
 
 
 target_include_directories( s_Memory PUBLIC
