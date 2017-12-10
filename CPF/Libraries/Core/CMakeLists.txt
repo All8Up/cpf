@@ -26,6 +26,3 @@ set_property (TARGET gmock PROPERTY FOLDER Core/External/gtest-1.8.0)
 set_property (TARGET gmock_main PROPERTY FOLDER Core/External/gtest-1.8.0)
 set_property (TARGET gtest PROPERTY FOLDER Core/External/gtest-1.8.0)
 set_property (TARGET gtest_main PROPERTY FOLDER Core/External/gtest-1.8.0)
-
-# Cpf Core Libraries.
-add_subdirectory (SIMD)
