@@ -1,8 +1,0 @@
-//////////////////////////////////////////////////////////////////////////
-#pragma once
-#include "Threading/ScopedLock.hpp"
-
-
-TEST(Threading, Scoped_Create)
-{
-}

@@ -1,4 +1,34 @@
 # ###############################################
+# External libraries.
+# gflags
+set (BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_PACKAGING OFF CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_gflags_LIB ON CACHE BOOL "" FORCE)
+set (GFLAGS_BUILD_gflags_nothreads_LIB OFF CACHE BOOL "" FORCE)
+set (GFLAGS_INSTALL_STATIC_LIBS ON CACHE BOOL "" FORCE)
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/gflags-2.2.1")
+set_property (TARGET gflags_static PROPERTY FOLDER Core/External/gflags-2.2.1)
+target_compile_options (gflags_static PRIVATE /wd4127 /wd4100 /wd4459)
+
+# glog
+set (DISABLE_RTTI ON CACHE BOOL "" FORCE)
+set (CPF_HAVE_GLOG 1 PARENT_SCOPE)
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/glog-0.3.5")
+set_property (TARGET glog PROPERTY FOLDER Core/External/glog-0.3.5)
+target_compile_options (glog PRIVATE /wd4722 /wd4267 /wd4100 /wd4505)
+
+# gtest
+add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/googletest-release-1.8.0")
+set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set_property (TARGET gmock PROPERTY FOLDER Core/External/gtest-1.8.0)
+set_property (TARGET gmock_main PROPERTY FOLDER Core/External/gtest-1.8.0)
+set_property (TARGET gtest PROPERTY FOLDER Core/External/gtest-1.8.0)
+set_property (TARGET gtest_main PROPERTY FOLDER Core/External/gtest-1.8.0)
+
+# ###############################################
 configure_file (Include/CPF/Configuration/Setup.hpp.in
 	${CPF_GENERATED}/CPP/CPF/Configuration/Setup.hpp )
 
@@ -14,6 +44,8 @@ set (CPF_INCLUDES
 	Include/CPF/Math.hpp
 	Include/CPF/Plugin.hpp
 	Include/CPF/Simd.hpp
+	Include/CPF/Threading.hpp
+	Include/CPF/Time.hpp
 )
 set (CPF_SOURCES
 	Source/CPF.cpp
@@ -240,6 +272,27 @@ set (STD_INCLUDES
 	Include/CPF/Std/Vector.hpp
 )
 
+set (THREADING_INCLUDES
+	Include/CPF/Threading/ConditionVariable.hpp
+	Include/CPF/Threading/CPU.hpp
+	Include/CPF/Threading/Mutex.hpp
+	Include/CPF/Threading/Reactor.hpp
+	Include/CPF/Threading/ScopedLock.hpp
+	Include/CPF/Threading/Semaphore.hpp
+	Include/CPF/Threading/Thread.hpp
+	Include/CPF/Threading/ThreadGroup.hpp
+	Include/CPF/Threading/ThreadLocal.hpp
+)
+
+set (TIME_INCLUDES
+	Include/CPF/Time/Counter.hpp
+	Include/CPF/Time/Ratio.hpp
+	Include/CPF/Time/Unit.hpp
+	Include/CPF/Time/Unit.inl
+	Include/CPF/Time/Value.hpp
+	Include/CPF/Time/Value.inl
+)
+
 # ###############################################
 add_library (CPF STATIC
 	${CPF_INCLUDES}
@@ -279,6 +332,14 @@ add_library (CPF STATIC
 	${SIMD_DETAIL_SSE4_1_INCLUDES}
 
 	${STD_INCLUDES}
+
+	${THREADING_INCLUDES}
+
+	${TIME_INCLUDES}
+)
+target_link_libraries (CPF
+	gflags_static
+	glog
 )
 target_include_directories (CPF
 	PUBLIC
@@ -319,20 +380,13 @@ source_group (Sources\\Plugin FILES ${PLUGIN_SOURCES})
 
 source_group (Headers\\Std FILES ${STD_INCLUDES})
 
+source_group (Headers\\Threading FILES ${THREADING_INCLUDES})
+
+source_group (Headers\\Time FILES ${TIME_INCLUDES})
+
 set_property (TARGET CPF PROPERTY FOLDER Core)
 
 # ###############################################
-install (TARGETS CPF
-	EXPORT CPFConfig
-	CONFIGURATIONS Debug Release
-	ARCHIVE DESTINATION ${CPF_STATIC_LIB_DIR}
-	LIBRARY DESTINATION ${CPF_SHARED_LIB_DIR}
-)
-install (EXPORT CPFConfig DESTINATION CMake)
-
-# ###############################################
-add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Libraries")
-
 set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
 if (CPF_BUILD_TOOLS)
 	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Tools" )

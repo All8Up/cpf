@@ -1,6 +1,0 @@
-import iInputDevice from Application;
-module CPF;
-
-interface iJoystickDevice : iInputDevice
-{
-};

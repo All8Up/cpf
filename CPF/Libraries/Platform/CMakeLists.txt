@@ -1,5 +1,0 @@
-add_subdirectory (Application)
-add_subdirectory (Events)
-add_subdirectory (Threading)
-add_subdirectory (Future)
-add_subdirectory (Time)

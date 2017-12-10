@@ -1,6 +1,0 @@
-import iUnknown from GOM;
-module CPF;
-
-interface iInputDevice : GOM::iUnknown
-{
-};
