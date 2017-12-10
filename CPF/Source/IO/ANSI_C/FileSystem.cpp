@@ -52,13 +52,11 @@ namespace CPF
 		iFileSystem* CreateFileSystem()
 		{
 			CPF_INIT_LOG(ANSI_C_FileSystem);
-			CPF_LOG(ANSI_C_FileSystem, Info) << "Installing ANSI C FileSystem";
 			CPF_ASSERT(GetFileSystem() == nullptr);
 			return new ANSI_C_FileSystem;
 		}
 		void DestroyFileSystem(iFileSystem*)
 		{
-			CPF_LOG(ANSI_C_FileSystem, Info) << "Removing ANSI C FileSystem";
 			delete GetFileSystem();
 			SetFileSystem(nullptr);
 			CPF_DROP_LOG(ANSI_C_FileSystem);
