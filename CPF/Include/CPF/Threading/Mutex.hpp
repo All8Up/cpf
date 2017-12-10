@@ -1,8 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Export.hpp"
-#include "Platform/Threading/Types.hpp"
-
+#include "CPF/Threading/Types.hpp"
 
 namespace CPF
 {

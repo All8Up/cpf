@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "CPF/Configuration.hpp"
 
 #ifdef CPF_TARGET_WINDOWS
 #	ifdef CPF_STATIC_THREADING

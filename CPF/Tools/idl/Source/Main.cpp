@@ -8,12 +8,12 @@
 #ifdef _WIN32
 #   include <Windows.h>
 #endif
-#include "IO/IO.hpp"
-#include "IO/Path.hpp"
-#include "IO/File.hpp"
-#include "IO/Stream.hpp"
-#include "IO/Directory.hpp"
-#include "IO/TextWriter.hpp"
+#include "CPF/IO.hpp"
+#include "CPF/IO/Path.hpp"
+#include "CPF/IO/File.hpp"
+#include "CPF/IO/Stream.hpp"
+#include "CPF/IO/Directory.hpp"
+#include "CPF/IO/TextWriter.hpp"
 #include "CPF/Logging.hpp"
 #include <gflags/gflags.h>
 

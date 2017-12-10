@@ -2,7 +2,7 @@
 #pragma once
 #include "CPF/Threading/Types.hpp"
 #include "CPF/Time/Value.hpp"
-#include "Functional.hpp"
+#include "CPF/Std/Functional.hpp"
 
 namespace CPF
 {

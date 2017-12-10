@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
-#include "IO/Directory.hpp"
-#include "IO/Path.hpp"
-#include "Move.hpp"
-#include "Std/Memory.hpp"
+#include "CPF/IO/Directory.hpp"
+#include "CPF/IO/Path.hpp"
+#include "CPF/Std/Move.hpp"
+#include "CPF/Std/Memory.hpp"
 
 
 using namespace CPF;

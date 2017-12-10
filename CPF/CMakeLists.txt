@@ -36,6 +36,7 @@ configure_file (Include/CPF/Configuration/Setup.hpp.in
 set (CPF_INCLUDES
 	Include/CPF/Configuration.hpp
 	Include/CPF/EnumFlagType.hpp
+	Include/CPF/Event.hpp
 	Include/CPF/GOM.hpp
 	Include/CPF/IntrusivePtr.hpp
 	Include/CPF/IO.hpp
@@ -55,6 +56,14 @@ set (CONFIGURATION_INCLUDES
 	Include/CPF/Configuration/Macros.hpp
 	Include/CPF/Configuration/Setup.hpp.in
 	${CPF_GENERATED}/CPP/CPF/Configuration/Setup.hpp
+)
+
+set (EVENT_INCLUDES
+	Include/CPF/Event/Emitter.hpp
+	Include/CPF/Event/Event.hpp
+	Include/CPF/Event/Handle.hpp
+	Include/CPF/Event/Id.hpp
+	Include/CPF/Event/Integrators.hpp
 )
 
 set (GOM_IDL
@@ -115,6 +124,9 @@ set (IO_SOURCES
 	Source/IO/Stream.cpp
 	Source/IO/TextReader.cpp
 	Source/IO/TextWriter.cpp
+	Source/IO/ANSI_C/FileSystem.cpp
+	Source/IO/Windows/OsDirectory.cpp
+	Source/IO/Windows/OsFile.cpp
 )
 
 set (MATH_INCLUDES
@@ -300,6 +312,8 @@ add_library (CPF STATIC
 
 	${CONFIGURATION_INCLUDES}
 
+	${EVENT_INCLUDES}
+
 	${GOM_IDL}
 	${GOM_INCLUDES}
 	${GOM_GEN_INCLUDES}
@@ -350,6 +364,8 @@ source_group (Headers FILES ${CPF_INCLUDES})
 source_group (Sources FILES ${CPF_SOURCES})
 
 source_group (Headers\\Configuration FILES ${CONFIGURATION_INCLUDES})
+
+source_group (Headers\\Event FILES ${EVENT_INCLUDES})
 
 source_group (IDL\\GOM FILES ${GOM_IDL})
 source_group (Headers\\GOM FILES ${GOM_GEN_INCLUDES} ${GOM_INCLUDES})

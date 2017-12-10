@@ -2,10 +2,10 @@
 #pragma once
 #include "IDLParserBaseVisitor.h"
 #include "IDL/CodeGen/Context.hpp"
-#include "Events/Emitter.hpp"
-#include "Vector.hpp"
-#include "Map.hpp"
-#include "EnumFlagType.hpp"
+#include "CPF/Event/Emitter.hpp"
+#include "CPF/Std/Vector.hpp"
+#include "CPF/Std/Map.hpp"
+#include "CPF/EnumFlagType.hpp"
 
 namespace IDL
 {

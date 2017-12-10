@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Time/Unit.hpp"
-#include "Time/Ratio.hpp"
-#include "Time/Counter.hpp"
+#include "CPF/Time/Unit.hpp"
+#include "CPF/Time/Ratio.hpp"
+#include "CPF/Time/Counter.hpp"
 
 namespace CPF
 {

@@ -2,7 +2,7 @@
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <cassert>
 #include <cstdarg>
-#include "Std/String.hpp"
+#include "CPF/Std/String.hpp"
 
 using namespace IDL;
 using namespace CodeGen;

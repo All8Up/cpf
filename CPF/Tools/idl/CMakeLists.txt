@@ -128,11 +128,7 @@ target_compile_definitions (IDL
 )
 target_link_libraries (IDL
 	antlr4_static
-	s_Collections
-	s_IO
-	s_ANSI_C_FileSystem
-	GOM
-	Events
+	CPF
 	gflags_static
 )
 target_compile_options (IDL PRIVATE /wd4100)

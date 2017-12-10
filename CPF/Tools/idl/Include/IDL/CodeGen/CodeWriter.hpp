@@ -2,7 +2,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include <string>
-#include "IO/TextWriter.hpp"
+#include "CPF/IO/TextWriter.hpp"
 
 
 namespace IDL

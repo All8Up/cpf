@@ -1,11 +1,11 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Export.hpp"
-#include "Threading/Mutex.hpp"
-#include "Threading/ConditionVariable.hpp"
-#include "Queue.hpp"
-#include "Functional.hpp"
-#include "Move.hpp"
+#include "CPF/Threading/Mutex.hpp"
+#include "CPF/Threading/ConditionVariable.hpp"
+#include "CPF/Std/Queue.hpp"
+#include "CPF/Std/Functional.hpp"
+#include "CPF/Std/Move.hpp"
 
 
 namespace CPF

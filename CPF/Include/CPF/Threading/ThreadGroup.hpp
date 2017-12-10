@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Threading/Thread.hpp"
+#include "CPF/Threading/Thread.hpp"
 
 namespace CPF
 {

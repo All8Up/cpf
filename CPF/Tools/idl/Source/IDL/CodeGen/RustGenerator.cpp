@@ -2,9 +2,9 @@
 #include "IDL/CodeGen/RustGenerator.hpp"
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <inttypes.h>
-#include "Hash/Crc.hpp"
-#include "GOM/Result.hpp"
-#include "Algorithm.hpp"
+#include "CPF/Hash/Crc.hpp"
+#include "CPF/GOM/Result.hpp"
+#include "CPF/Std/Algorithm.hpp"
 
 using namespace IDL;
 using namespace CodeGen;

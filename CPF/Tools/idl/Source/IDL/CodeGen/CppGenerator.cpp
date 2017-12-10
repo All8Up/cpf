@@ -2,10 +2,10 @@
 #include "IDL/CodeGen/CppGenerator.hpp"
 #include "IDL/CodeGen/CodeWriter.hpp"
 #include <inttypes.h>
-#include "Hash/Crc.hpp"
-#include "GOM/Result.hpp"
-#include "IO/Path.hpp"
-#include "GOM/Types.hpp"
+#include "CPF/Hash/Crc.hpp"
+#include "CPF/GOM/Result.hpp"
+#include "CPF/IO/Path.hpp"
+#include "CPF/GOM/Types.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
