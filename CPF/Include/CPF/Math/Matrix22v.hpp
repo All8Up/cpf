@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector2v.hpp"
+#include "CPF/Math/Vector2v.hpp"
 
 namespace CPF
 {
@@ -40,4 +40,4 @@ namespace CPF
 	}
 }
 
-#include "Math/Detail/Matrix22v.inl"
+#include "CPF/Math/Detail/Matrix22v.inl"

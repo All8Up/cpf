@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Quaternion.hpp"
-#include "Math/Constants.hpp"
+#include "CPF/Math/Quaternion.hpp"
+#include "CPF/Math/Constants.hpp"
 
 namespace CPF
 {

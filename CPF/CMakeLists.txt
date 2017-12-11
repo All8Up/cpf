@@ -187,6 +187,10 @@ set (MATH_DETAIL_INCLUDES
 	Include/CPF/Math/Detail/Vector4v.inl
 )
 
+set (PATTERNS_INCLUDES
+	Include/CPF/Patterns/Factory.hpp
+)
+
 set (PLUGIN_IDL
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iClassFactory.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iRegistry.idl
@@ -333,6 +337,8 @@ add_library (CPF STATIC
 	${MATH_INTERSECTION_INCLUDES}
 	${MATH_DETAIL_INCLUDES}
 
+	${PATTERNS_INCLUDES}
+
 	${PLUGIN_IDL}
 	${PLUGIN_INCLUDES}
 	${PLUGIN_GEN_INCLUDES}
@@ -390,6 +396,8 @@ source_group (Headers\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INC
 source_group (Headers\\SIMD\\Detail\\SSE3 FILES ${SIMD_DETAIL_SSE3_INCLUDES})
 source_group (Headers\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES})
 
+source_group (Headers\\Patterns FILES ${PATTERNS_INCLUDES})
+
 source_group (IDL\\Plugin FILES ${PLUGIN_IDL})
 source_group (Headers\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
 source_group (Sources\\Plugin FILES ${PLUGIN_SOURCES})
@@ -406,4 +414,64 @@ set_property (TARGET CPF PROPERTY FOLDER Core)
 set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
 if (CPF_BUILD_TOOLS)
 	add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/Tools" )
+endif ()
+
+
+# ###############################################
+if (CPF_ENABLE_UNITTESTS)
+	add_executable (Test_Core
+		Tests/Test_AABB.cpp
+		Tests/Test_BinaryReader.cpp
+		Tests/Test_BinaryWriter.cpp
+		Tests/Test_BitManipulation.cpp
+		Tests/Test_Bool4.cpp
+		Tests/Test_CodeGen.cpp
+		Tests/Test_ConditionVariable.cpp
+		Tests/Test_Crc.cpp
+		Tests/Test_DeferredEmitter.cpp
+		Tests/Test_Different_Unit_Comparison.cpp
+		Tests/Test_Directory.cpp
+		Tests/Test_Emitter.cpp
+		Tests/Test_EnumFlagType.cpp
+		Tests/Test_Factory.cpp
+		Tests/Test_File.cpp
+		Tests/Test_FixedPoint.cpp
+		Tests/Test_FPU_F32x3.cpp
+		Tests/Test_Future.cpp
+		Tests/Test_FXXx4_1.cpp
+		Tests/Test_FXXx4_2.cpp
+		Tests/Test_FXXx4_3.cpp
+		Tests/Test_FXXx4_4.cpp
+		Tests/Test_Globbing.cpp
+		Tests/Test_GOM.cpp
+		Tests/Test_HashID.cpp
+		Tests/Test_IO.cpp
+		Tests/Test_LargeVector.cpp
+		Tests/Test_Matrix22v.cpp
+		Tests/Test_Matrix33v.cpp
+		Tests/Test_Matrix44v.cpp
+		Tests/Test_Mutex.cpp
+		Tests/Test_OBB.cpp
+		Tests/Test_Path.cpp
+		Tests/Test_Plugin.cpp
+		Tests/Test_Quaternion.cpp
+		Tests/Test_Reactor.cpp
+		Tests/Test_Scoped.cpp
+		Tests/Test_Semaphore.cpp
+		Tests/Test_SSE4_1_Utilities.cpp
+		Tests/Test_TextReader.cpp
+		Tests/Test_TextWriter.cpp
+		Tests/Test_Thread.cpp
+		Tests/Test_ThreadLocal.cpp
+		Tests/Test_Unit_Us.cpp
+		Tests/Test_Value.cpp
+		Tests/Test_Vector2v.cpp
+		Tests/Test_Vector3.cpp
+		Tests/Test_Vector3v.cpp
+		Tests/Test_Vector4v.cpp
+	)
+	target_link_libraries(Test_Core
+		CPF gtest gtest_main
+	)
+	set_property (TARGET Test_Core PROPERTY FOLDER Tests)
 endif ()

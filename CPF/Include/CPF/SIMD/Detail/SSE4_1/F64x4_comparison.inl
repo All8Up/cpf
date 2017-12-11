@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "SIMD/Detail/SSE4_1/Bool4.hpp"
+#include "CPF/SIMD/Detail/SSE4_1/Bool4.hpp"
 
 namespace CPF
 {

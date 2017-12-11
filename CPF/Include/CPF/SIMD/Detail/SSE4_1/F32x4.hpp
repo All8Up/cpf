@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "SIMD/Rounding.hpp"
-#include "SIMD/Detail/SSE4_1/Bool4.hpp"
+#include "CPF/SIMD/Rounding.hpp"
+#include "CPF/SIMD/Detail/SSE4_1/Bool4.hpp"
 #include <emmintrin.h>
 #include <smmintrin.h>
 

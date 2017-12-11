@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Quaternion.hpp"
+#include "CPF/Math/Quaternion.hpp"
 
 namespace CPF
 {

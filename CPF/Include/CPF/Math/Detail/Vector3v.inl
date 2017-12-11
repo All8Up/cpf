@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector2v.hpp"
+#include "CPF/Math/Vector2v.hpp"
 
 namespace CPF
 {

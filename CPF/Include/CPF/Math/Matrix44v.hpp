@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector3v.hpp"
-#include "Math/Vector4v.hpp"
+#include "CPF/Math/Vector3v.hpp"
+#include "CPF/Math/Vector4v.hpp"
 
 namespace CPF
 {
@@ -68,8 +68,8 @@ namespace CPF
 	}
 }
 
-#include "Math/Detail/Matrix44v.inl"
-#include "SIMD/Types.hpp"
+#include "CPF/Math/Detail/Matrix44v.inl"
+#include "CPF/SIMD/Types.hpp"
 
 namespace CPF
 {

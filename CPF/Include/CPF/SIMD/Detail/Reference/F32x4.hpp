@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "SIMD/Rounding.hpp"
-#include "SIMD/Detail/LaneRef.hpp"
-#include "SIMD/Detail/LaneIndex.hpp"
-#include "SIMD/Detail/Reference/Bool4.hpp"
+#include "CPF/SIMD/Rounding.hpp"
+#include "CPF/SIMD/Detail/LaneRef.hpp"
+#include "CPF/SIMD/Detail/LaneIndex.hpp"
+#include "CPF/SIMD/Detail/Reference/Bool4.hpp"
 #include <cmath>
 
 namespace CPF

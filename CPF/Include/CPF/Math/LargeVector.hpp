@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
-#include "Vector3v.hpp"
-#include "Vector4v.hpp"
+#include "CPF/Configuration.hpp"
+#include "CPF/Math/Vector3v.hpp"
+#include "CPF/Math/Vector4v.hpp"
 
 namespace CPF
 {

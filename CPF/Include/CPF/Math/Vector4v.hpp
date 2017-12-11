@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "SIMD/Detail/LaneRef.hpp"
-#include "SIMD/Detail/LaneIndex.hpp"
-#include "SIMD/Detail/Swizzles.hpp"
+#include "CPF/SIMD/Detail/LaneRef.hpp"
+#include "CPF/SIMD/Detail/LaneIndex.hpp"
+#include "CPF/SIMD/Detail/Swizzles.hpp"
 
 namespace CPF
 {
@@ -62,9 +62,9 @@ namespace CPF
 	}
 }
 
-#include "Math/Detail/Vector4v.inl"
-#include "SIMD/Types.hpp"
-#include "SIMD/Detail/FPU/F32x4.hpp"
+#include "CPF/Math/Detail/Vector4v.inl"
+#include "CPF/SIMD/Types.hpp"
+#include "CPF/SIMD/Detail/FPU/F32x4.hpp"
 
 namespace CPF
 {

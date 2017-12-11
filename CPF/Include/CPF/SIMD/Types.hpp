@@ -1,15 +1,14 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
-#include "Detail/FPU/F32x4.hpp"
-//#include "Detail/FPU/F64x4.hpp"
-#include "Detail/FPU/I32x4.hpp"
-#include "Detail/Reference/F32x4.hpp"
-#include "Detail/Reference/F64x4.hpp"
-#include "Detail/Reference/I32x4.hpp"
-#include "Detail/SSE4_1/F32x4.hpp"
-#include "Detail/SSE4_1/F64x4.hpp"
-#include "Detail/SSE4_1/I32x4.hpp"
+#include "CPF/Configuration.hpp"
+#include "CPF/SIMD/Detail/FPU/F32x4.hpp"
+#include "CPF/SIMD/Detail/FPU/I32x4.hpp"
+#include "CPF/SIMD/Detail/Reference/F32x4.hpp"
+#include "CPF/SIMD/Detail/Reference/F64x4.hpp"
+#include "CPF/SIMD/Detail/Reference/I32x4.hpp"
+#include "CPF/SIMD/Detail/SSE4_1/F32x4.hpp"
+#include "CPF/SIMD/Detail/SSE4_1/F64x4.hpp"
+#include "CPF/SIMD/Detail/SSE4_1/I32x4.hpp"
 
 namespace CPF
 {

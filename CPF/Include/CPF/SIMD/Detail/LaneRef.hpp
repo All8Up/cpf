@@ -13,7 +13,7 @@ namespace CPF
 	}
 }
 
-#include "SIMD/Detail/LaneRef_1.inl"
-#include "SIMD/Detail/LaneRef_2.inl"
-#include "SIMD/Detail/LaneRef_3.inl"
-#include "SIMD/Detail/LaneRef_4.inl"
+#include "CPF/SIMD/Detail/LaneRef_1.inl"
+#include "CPF/SIMD/Detail/LaneRef_2.inl"
+#include "CPF/SIMD/Detail/LaneRef_3.inl"
+#include "CPF/SIMD/Detail/LaneRef_4.inl"

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector3v.hpp"
+#include "CPF/Math/Vector3v.hpp"
 
 namespace CPF
 {
@@ -50,8 +50,8 @@ namespace CPF
 	}
 }
 
-#include "Math/Detail/Matrix33v.inl"
-#include "SIMD/Types.hpp"
+#include "CPF/Math/Detail/Matrix33v.inl"
+#include "CPF/SIMD/Types.hpp"
 
 namespace CPF
 {

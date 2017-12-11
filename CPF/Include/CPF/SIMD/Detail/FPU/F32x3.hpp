@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "SIMD/Detail/FPU/FPU.hpp"
-#include "SIMD/Detail/FPU/Bool4.hpp"
-#include "SIMD/Detail/LaneRef.hpp"
-#include "SIMD/Detail/LaneIndex.hpp"
+#include "CPF/SIMD/Detail/FPU/FPU.hpp"
+#include "CPF/SIMD/Detail/FPU/Bool4.hpp"
+#include "CPF/SIMD/Detail/LaneRef.hpp"
+#include "CPF/SIMD/Detail/LaneIndex.hpp"
 
 namespace CPF
 {

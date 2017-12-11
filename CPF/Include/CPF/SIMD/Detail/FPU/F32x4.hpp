@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "FPU.hpp"
-#include "SIMD/Detail/FPU/Bool4.hpp"
+#include "CPF/SIMD/Detail/FPU/Bool4.hpp"
 
 namespace CPF
 {
