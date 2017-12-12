@@ -11,17 +11,15 @@ namespace CPF
 {
 	namespace IO
 	{
+		// TODO: Strip this down and use only utf8.
 		namespace Path
 		{
-			template<typename CHAR_TYPE>
-			struct CPF_EXPORT_IO PathConstants
-			{
-				static const CHAR_TYPE kReversedSeparator;
-				static const CHAR_TYPE kOsDirectorySeparator;
-				static const CHAR_TYPE kDirectorySeparator;
-				static const CHAR_TYPE kExtensionSeparator;
-			};
-
+#if CPF_TARGET_WINDOWS
+			static constexpr char kReversedSeparator = '\\';
+			static constexpr char kOsDirectorySeparator = '\\';
+			static constexpr char kDirectorySeparator = '/';
+			static constexpr char kExtensionSeparator = '.';
+#endif
 
 			/**
 				* @brief Normalizes the given path.
@@ -60,8 +58,8 @@ namespace CPF
 				CPF::Replace(
 					result.begin(),
 					result.end(),
-					PathConstants<typename STRING_TYPE::value_type>::kReversedSeparator,
-					PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
+					kReversedSeparator,
+					kDirectorySeparator);
 				return result;
 			}
 			inline String Normalize(const String& path) { return _Normalize(path); }
@@ -83,7 +81,7 @@ namespace CPF
 					return true;
 
 				// Is it unix style rooted.
-				if (temp.size() >= 1 && temp.at(0) == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+				if (temp.size() >= 1 && temp.at(0) == kDirectorySeparator)
 					return true;
 
 				return false;
@@ -119,8 +117,8 @@ namespace CPF
 			{
 				const STRING_TYPE temp = Normalize(path);
 
-				auto it = temp.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kExtensionSeparator);
-				auto slash = temp.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
+				auto it = temp.find_last_of(kExtensionSeparator);
+				auto slash = temp.find_last_of(kDirectorySeparator);
 				if (it < slash)
 					return false;
 				return it != STRING_TYPE::npos;
@@ -132,10 +130,10 @@ namespace CPF
 			STRING_TYPE _EnsureTrailingSeparator(const STRING_TYPE& path)
 			{
 				if (path.empty())
-					return STRING_TYPE(1, PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
-				if (path.back() == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+					return STRING_TYPE(1, kDirectorySeparator);
+				if (path.back() == kDirectorySeparator)
 					return path;
-				return path + PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator;
+				return path + STRING_TYPE::value_type(kDirectorySeparator);
 			}
 			inline String EnsureTrailingSeparator(const String& path) { return _EnsureTrailingSeparator(path); }
 			inline WString EnsureTrailingSeparator(const WString& path) { return _EnsureTrailingSeparator(path); }
@@ -155,16 +153,16 @@ namespace CPF
 
 				if (!tl.empty())
 				{
-					if (tl.back() == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+					if (tl.back() == kDirectorySeparator)
 						return STRING_TYPE(tl + rl);
 					else
 					{
 						if (!rl.empty())
 						{
-							if (rl.front() == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+							if (rl.front() == kDirectorySeparator)
 								return STRING_TYPE(tl + rl);
 						}
-						return tl + PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator + rl;
+						return tl + STRING_TYPE::value_type(kDirectorySeparator) + rl;
 					}
 				}
 				return rhs;
@@ -206,8 +204,8 @@ namespace CPF
 				CPF::Replace(
 					result.begin(),
 					result.end(),
-					PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator,
-					PathConstants<typename STRING_TYPE::value_type>::kOsDirectorySeparator
+					kDirectorySeparator,
+					kOsDirectorySeparator
 				);
 				return result;
 			}
@@ -219,8 +217,8 @@ namespace CPF
 			{
 				const STRING_TYPE temp = Normalize(src);
 
-				auto it = temp.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kExtensionSeparator);
-				auto slash = temp.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
+				auto it = temp.find_last_of(kExtensionSeparator);
+				auto slash = temp.find_last_of(kDirectorySeparator);
 				if (it < slash || it == STRING_TYPE::npos)
 					return STRING_TYPE();
 				return STRING_TYPE(temp.begin() + it, temp.end());
@@ -232,7 +230,7 @@ namespace CPF
 			template<typename STRING_TYPE>
 			bool _HasFilename(const STRING_TYPE& src)
 			{
-				if (src.size() == 0 || src.back() == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+				if (src.size() == 0 || src.back() == kDirectorySeparator)
 					return false;
 				return true;
 			}
@@ -245,7 +243,7 @@ namespace CPF
 				STRING_TYPE result = Normalize(path);
 				if (HasFilename(path))
 				{
-					auto lastSep = result.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
+					auto lastSep = result.find_last_of(kDirectorySeparator);
 					if (lastSep != STRING_TYPE::npos)
 						result.erase(result.begin() + lastSep + 1, result.end());
 					else
@@ -268,7 +266,7 @@ namespace CPF
 				if (norm.empty())
 					return STRING_TYPE();
 
-				auto it = norm.find_last_of(PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator);
+				auto it = norm.find_last_of(kDirectorySeparator);
 				if (it != STRING_TYPE::npos)
 					return STRING_TYPE(norm.begin() + it + 1, norm.end());
 
@@ -287,7 +285,7 @@ namespace CPF
 					result.erase(result.begin(), result.begin() + 2);
 
 				// Is it unix style rooted.
-				else if (result.size() >= 1 && result.at(0) == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+				else if (result.size() >= 1 && result.at(0) == kDirectorySeparator)
 					result.erase(result.begin(), result.begin() + 1);
 
 				return result;
@@ -315,7 +313,7 @@ namespace CPF
 				STRING_TYPE current;
 				for (const auto c : temp)
 				{
-					if (c == PathConstants<typename STRING_TYPE::value_type>::kDirectorySeparator)
+					if (c == kDirectorySeparator)
 					{
 						if (!current.empty())
 							result.push_back(current);

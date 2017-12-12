@@ -5,7 +5,6 @@
 #include "TestPlugin/iTestPlugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
 
-#if 0
 TEST(Plugin, LoadUnload)
 {
 	CPF::Plugin::Library testLib;
@@ -17,7 +16,7 @@ TEST(Plugin, GetAddress)
 {
 	CPF::Plugin::Library testLib;
 	EXPECT_TRUE(testLib.Load("./plugins/TestPlugin.cfp"));
-	void* addr = testLib.GetAddress(kPluginAPIInstall);
+	void* addr = testLib.GetAddress(kPluginAPIGetDesc);
 	EXPECT_TRUE(addr != nullptr);
 	EXPECT_TRUE(testLib.Unload());
 }
@@ -27,7 +26,7 @@ TEST(Plugin, GetAddressTyped)
 	CPF::Plugin::Library testLib;
 	EXPECT_TRUE(testLib.Load("./plugins/TestPlugin.cfp"));
 	using RegType = int32_t(*)(CPF::Plugin::iRegistry* registry);
-	RegType addr = testLib.GetAddress<RegType>(kPluginAPIInstall);
+	RegType addr = testLib.GetAddress<RegType>(kPluginAPIGetDesc);
 	EXPECT_TRUE(addr != nullptr);
 	EXPECT_TRUE(testLib.Unload());
 }
@@ -74,4 +73,3 @@ TEST(Plugin, CreateAndCall)
 	registry.Release();
 	EXPECT_FALSE(bool(registry));
 }
-#endif

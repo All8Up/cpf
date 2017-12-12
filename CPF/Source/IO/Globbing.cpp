@@ -9,7 +9,7 @@ using namespace IO;
  * @param inString The string to match against.
  * @return true if the string contains the pattern, false otherwise.
  */
-CPF_EXPORT_IO bool IO::Glob(const char *pattern, const char *inString)
+CPF_EXPORT bool IO::Glob(const char *pattern, const char *inString)
 {
 	const char *current = nullptr;
 	const char *mp = nullptr;
@@ -55,7 +55,7 @@ CPF_EXPORT_IO bool IO::Glob(const char *pattern, const char *inString)
 * @param inString The string to match against.
 * @return true if the string contains the pattern, false otherwise.
 */
-CPF_EXPORT_IO bool IO::Glob(const wchar_t *pattern, const wchar_t *inString)
+CPF_EXPORT bool IO::Glob(const wchar_t *pattern, const wchar_t *inString)
 {
 	const wchar_t *current = nullptr;
 	const wchar_t *mp = nullptr;

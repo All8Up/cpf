@@ -6,7 +6,7 @@ namespace CPF
 {
 	namespace IO
 	{
-		class TextWriter
+		class CPF_EXPORT TextWriter
 		{
 		public:
 			TextWriter(Stream*);
@@ -19,7 +19,9 @@ namespace CPF
 			Stream* GetStream() const;
 
 		private:
+			CPF_DLL_SAFE_BEGIN
 			StreamPtr mpStream;
+			CPF_DLL_SAFE_END
 		};
 	}
 }

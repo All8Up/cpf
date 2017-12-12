@@ -126,7 +126,7 @@ namespace
 * @brief Creates a new file stream.
 * @return A StreamPtr.
 */
-CPF_EXPORT_IO Stream* File::Create(const String& name, Access access, Error* error)
+CPF_EXPORT Stream* File::Create(const String& name, Access access, Error* error)
 {
 	RawFileStream* filestream = new RawFileStream;
 	if (!filestream)
@@ -146,7 +146,7 @@ CPF_EXPORT_IO Stream* File::Create(const String& name, Access access, Error* err
 
 
 #if CPF_TARGET_WINDOWS
-String CPF_EXPORT_IO File::GetExecutableFilePath()
+String CPF_EXPORT File::GetExecutableFilePath()
 {
 	HMODULE module = GetModuleHandle(nullptr);
 	CHAR path[MAX_PATH];

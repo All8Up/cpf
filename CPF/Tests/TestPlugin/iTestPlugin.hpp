@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/Plugin.hpp"
+#include "CPF/GOM/iUnknown.hpp"
 
 namespace CPF
 {

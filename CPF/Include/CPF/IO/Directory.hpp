@@ -11,16 +11,16 @@ namespace CPF
 	{
 		namespace Directory
 		{
-			CPF_EXPORT_IO void SetWorkingDirectory(const String&);
-			CPF_EXPORT_IO String GetWorkingDirectory();
+			CPF_EXPORT void SetWorkingDirectory(const String&);
+			CPF_EXPORT String GetWorkingDirectory();
 
-			CPF_EXPORT_IO bool OsExists(const String& dir);
-			CPF_EXPORT_IO bool OsCreate(const String& dir);
-			CPF_EXPORT_IO bool OsDelete(const String& dir);
+			CPF_EXPORT bool OsExists(const String& dir);
+			CPF_EXPORT bool OsCreate(const String& dir);
+			CPF_EXPORT bool OsDelete(const String& dir);
 
-			CPF_EXPORT_IO bool Exists(const String& dir);
-			CPF_EXPORT_IO bool Create(const String& dir, bool recursive = false);
-			CPF_EXPORT_IO bool Delete(const String& dir, bool recursive = false);
+			CPF_EXPORT bool Exists(const String& dir);
+			CPF_EXPORT bool Create(const String& dir, bool recursive = false);
+			CPF_EXPORT bool Delete(const String& dir, bool recursive = false);
 
 			//
 			struct DirEntry
@@ -30,7 +30,7 @@ namespace CPF
 			};
 
 			/** @brief Iterates all entries found within a given directory.. */
-			class CPF_EXPORT_IO Entries
+			class CPF_EXPORT Entries
 			{
 				//
 				struct OsIterator;
@@ -40,7 +40,7 @@ namespace CPF
 				using Predicate = Function<bool(const DirEntry&)>;
 
 				//
-				class CPF_EXPORT_IO Iterator
+				class CPF_EXPORT Iterator
 				{
 				public:
 					Iterator();
@@ -74,7 +74,7 @@ namespace CPF
 			};
 
 			/** @brief Iterates all files found in a given directory. */
-			class CPF_EXPORT_IO Files : public Entries
+			class CPF_EXPORT Files : public Entries
 			{
 			public:
 				Files(const String& path);
@@ -82,7 +82,7 @@ namespace CPF
 			};
 
 			/** @brief Iterates all subdirectories found in a given directory. */
-			class CPF_EXPORT_IO Directories : public Entries
+			class CPF_EXPORT Directories : public Entries
 			{
 			public:
 				Directories(const String& path);

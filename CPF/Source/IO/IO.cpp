@@ -16,13 +16,13 @@ namespace CPF
 {
 	namespace IO
 	{
-		extern CPF_EXPORT_IO iFileSystem* CreateFileSystem();
-		extern CPF_EXPORT_IO void DestroyFileSystem(iFileSystem*);
+		extern CPF_EXPORT iFileSystem* CreateFileSystem();
+		extern CPF_EXPORT void DestroyFileSystem(iFileSystem*);
 	}
 }
 
 
-CPF_EXPORT_IO int IOInitializer::Install()
+CPF_EXPORT int IOInitializer::Install()
 {
 	if (s_RefCount++ == 0)
 	{
@@ -31,7 +31,7 @@ CPF_EXPORT_IO int IOInitializer::Install()
 	return ++s_RefCount;
 }
 
-CPF_EXPORT_IO int IOInitializer::Remove()
+CPF_EXPORT int IOInitializer::Remove()
 {
 	if (--s_RefCount == 0)
 	{

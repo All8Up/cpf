@@ -7,12 +7,12 @@ using namespace CPF;
 using namespace IO;
 
 
-CPF_EXPORT_IO bool Directory::Exists(const String& dir)
+CPF_EXPORT bool Directory::Exists(const String& dir)
 {
 	return OsExists(dir);
 }
 
-CPF_EXPORT_IO bool Directory::Create(const String& dir, bool recursive)
+CPF_EXPORT bool Directory::Create(const String& dir, bool recursive)
 {
 	if (!recursive)
 		return OsCreate(dir);
@@ -34,7 +34,7 @@ CPF_EXPORT_IO bool Directory::Create(const String& dir, bool recursive)
 	return true;
 }
 
-CPF_EXPORT_IO bool Directory::Delete(const String& dir, bool recursive)
+CPF_EXPORT bool Directory::Delete(const String& dir, bool recursive)
 {
 	if (!recursive)
 		return OsDelete(dir);

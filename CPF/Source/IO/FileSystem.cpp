@@ -10,12 +10,12 @@ namespace
 }
 
 //////////////////////////////////////////////////////////////////////////
-CPF_EXPORT_IO iFileSystem* IO::GetFileSystem()
+CPF_EXPORT iFileSystem* IO::GetFileSystem()
 {
 	return s_pFileSystem;
 }
 
-CPF_EXPORT_IO void IO::SetFileSystem(iFileSystem* fs)
+CPF_EXPORT void IO::SetFileSystem(iFileSystem* fs)
 {
 	s_pFileSystem = fs;
 }

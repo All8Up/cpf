@@ -200,6 +200,7 @@ set (PLUGIN_INCLUDES
 	Include/CPF/Plugin/Library.hpp
 	Include/CPF/Plugin/Registry.hpp
 	Include/CPF/Plugin/SharedLibrary.hpp
+	Include/CPF/Plugin/tClassFactory.hpp
 )
 set (PLUGIN_SOURCES
 	Source/Plugin/Registry.cpp
@@ -309,8 +310,8 @@ set (TIME_INCLUDES
 	Include/CPF/Time/Value.inl
 )
 
-# ###############################################
-add_library (CPF STATIC
+
+set (ALL_SOURCES
 	${CPF_INCLUDES}
 	${CPF_SOURCES}
 
@@ -348,7 +349,6 @@ add_library (CPF STATIC
 	${SIMD_DETAIL_INCLUDES}
 	${SIMD_DETAIL_FPU_INCLUDES}
 	${SIMD_DETAIL_REFERENCE_INCLUDES}
-#	${SIMD_DETAIL_SSE3_INCLUDES}
 	${SIMD_DETAIL_SSE4_1_INCLUDES}
 
 	${STD_INCLUDES}
@@ -356,6 +356,33 @@ add_library (CPF STATIC
 	${THREADING_INCLUDES}
 
 	${TIME_INCLUDES}
+)
+
+# ###############################################
+add_library (CPF_s STATIC
+	${ALL_SOURCES}
+)
+target_link_libraries (CPF_s
+	gflags_static
+	glog
+)
+target_include_directories (CPF_s
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
+)
+target_compile_definitions (CPF_s
+	PUBLIC
+		CPF_STATIC
+	PRIVATE
+		CPF_BUILD
+)
+set_property (TARGET CPF_s PROPERTY FOLDER Core)
+
+
+# ###############################################
+add_library (CPF SHARED
+	${ALL_SOURCES}
 )
 target_link_libraries (CPF
 	gflags_static
@@ -366,6 +393,14 @@ target_include_directories (CPF
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
+target_compile_definitions (CPF
+	PRIVATE
+		CPF_BUILD
+)
+set_property (TARGET CPF PROPERTY FOLDER Core)
+
+
+# ###############################################
 source_group (Headers FILES ${CPF_INCLUDES})
 source_group (Sources FILES ${CPF_SOURCES})
 
@@ -381,6 +416,7 @@ source_group (Headers\\Hash\\Detail FILES ${HASH_DETAIL_INCLUDES})
 
 source_group (IDL\\IO FILES ${IO_IDL})
 source_group (Headers\\IO FILES ${IO_GEN_INCLUDES} ${IO_INCLUDES})
+source_group (Sources\\IO FILES ${IO_SOURCES})
 
 source_group (Headers\\Math FILES ${MATH_INCLUDES})
 source_group (Headers\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDES})
@@ -408,8 +444,6 @@ source_group (Headers\\Threading FILES ${THREADING_INCLUDES})
 
 source_group (Headers\\Time FILES ${TIME_INCLUDES})
 
-set_property (TARGET CPF PROPERTY FOLDER Core)
-
 # ###############################################
 set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
 if (CPF_BUILD_TOOLS)
@@ -418,60 +452,104 @@ endif ()
 
 
 # ###############################################
+set (TEST_SOURCES
+	Tests/Test_AABB.cpp
+	Tests/Test_BinaryReader.cpp
+	Tests/Test_BinaryWriter.cpp
+	Tests/Test_BitManipulation.cpp
+	Tests/Test_Bool4.cpp
+	Tests/Test_CodeGen.cpp
+	Tests/Test_ConditionVariable.cpp
+	Tests/Test_Crc.cpp
+	Tests/Test_DeferredEmitter.cpp
+	Tests/Test_Different_Unit_Comparison.cpp
+	Tests/Test_Directory.cpp
+	Tests/Test_Emitter.cpp
+	Tests/Test_EnumFlagType.cpp
+	Tests/Test_Factory.cpp
+	Tests/Test_File.cpp
+	Tests/Test_FixedPoint.cpp
+	Tests/Test_FPU_F32x3.cpp
+	Tests/Test_Future.cpp
+	Tests/Test_FXXx4_1.cpp
+	Tests/Test_FXXx4_2.cpp
+	Tests/Test_FXXx4_3.cpp
+	Tests/Test_FXXx4_4.cpp
+	Tests/Test_Globbing.cpp
+	Tests/Test_GOM.cpp
+	Tests/Test_HashID.cpp
+	Tests/Test_IO.cpp
+	Tests/Test_LargeVector.cpp
+	Tests/Test_Matrix22v.cpp
+	Tests/Test_Matrix33v.cpp
+	Tests/Test_Matrix44v.cpp
+	Tests/Test_Mutex.cpp
+	Tests/Test_OBB.cpp
+	Tests/Test_Path.cpp
+	Tests/Test_Plugin.cpp
+	Tests/Test_Quaternion.cpp
+	Tests/Test_Reactor.cpp
+	Tests/Test_Scoped.cpp
+	Tests/Test_Semaphore.cpp
+	Tests/Test_SSE4_1_Utilities.cpp
+	Tests/Test_TextReader.cpp
+	Tests/Test_TextWriter.cpp
+	Tests/Test_Thread.cpp
+	Tests/Test_ThreadLocal.cpp
+	Tests/Test_Unit_Us.cpp
+	Tests/Test_Value.cpp
+	Tests/Test_Vector2v.cpp
+	Tests/Test_Vector3.cpp
+	Tests/Test_Vector3v.cpp
+	Tests/Test_Vector4v.cpp
+)
 if (CPF_ENABLE_UNITTESTS)
 	add_executable (Test_Core
-		Tests/Test_AABB.cpp
-		Tests/Test_BinaryReader.cpp
-		Tests/Test_BinaryWriter.cpp
-		Tests/Test_BitManipulation.cpp
-		Tests/Test_Bool4.cpp
-		Tests/Test_CodeGen.cpp
-		Tests/Test_ConditionVariable.cpp
-		Tests/Test_Crc.cpp
-		Tests/Test_DeferredEmitter.cpp
-		Tests/Test_Different_Unit_Comparison.cpp
-		Tests/Test_Directory.cpp
-		Tests/Test_Emitter.cpp
-		Tests/Test_EnumFlagType.cpp
-		Tests/Test_Factory.cpp
-		Tests/Test_File.cpp
-		Tests/Test_FixedPoint.cpp
-		Tests/Test_FPU_F32x3.cpp
-		Tests/Test_Future.cpp
-		Tests/Test_FXXx4_1.cpp
-		Tests/Test_FXXx4_2.cpp
-		Tests/Test_FXXx4_3.cpp
-		Tests/Test_FXXx4_4.cpp
-		Tests/Test_Globbing.cpp
-		Tests/Test_GOM.cpp
-		Tests/Test_HashID.cpp
-		Tests/Test_IO.cpp
-		Tests/Test_LargeVector.cpp
-		Tests/Test_Matrix22v.cpp
-		Tests/Test_Matrix33v.cpp
-		Tests/Test_Matrix44v.cpp
-		Tests/Test_Mutex.cpp
-		Tests/Test_OBB.cpp
-		Tests/Test_Path.cpp
-		Tests/Test_Plugin.cpp
-		Tests/Test_Quaternion.cpp
-		Tests/Test_Reactor.cpp
-		Tests/Test_Scoped.cpp
-		Tests/Test_Semaphore.cpp
-		Tests/Test_SSE4_1_Utilities.cpp
-		Tests/Test_TextReader.cpp
-		Tests/Test_TextWriter.cpp
-		Tests/Test_Thread.cpp
-		Tests/Test_ThreadLocal.cpp
-		Tests/Test_Unit_Us.cpp
-		Tests/Test_Value.cpp
-		Tests/Test_Vector2v.cpp
-		Tests/Test_Vector3.cpp
-		Tests/Test_Vector3v.cpp
-		Tests/Test_Vector4v.cpp
+		${TEST_SOURCES}
 	)
 	target_link_libraries(Test_Core
 		CPF gtest gtest_main
 	)
 	set_property (TARGET Test_Core PROPERTY FOLDER Tests)
+
+	add_executable (Test_Core_s
+		${TEST_SOURCES}
+	)
+	target_link_libraries(Test_Core_s
+		CPF_s gtest gtest_main
+	)
+	set_property (TARGET Test_Core_s PROPERTY FOLDER Tests)
+
+	# ###############################################
+	# NOTE: Plugins always use the static library so they are issolated, including memory.
+	add_library (TestPlugin SHARED
+		Tests/TestPlugin/iTestPlugin.hpp
+		Tests/TestPlugin/TestPlugin.cpp
+	)
+	target_link_libraries (TestPlugin
+		CPF_s
+	)
+	set_property (TARGET TestPlugin PROPERTY FOLDER Tests/Plugins)
+	add_custom_command (TARGET TestPlugin POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:TestPlugin> ${CPF_COMMON_PLUGINS}/TestPlugin.cfp
+	)
+
+	add_library (TestPlugin_s STATIC
+		Tests/TestPlugin/iTestPlugin.hpp
+		Tests/TestPlugin/TestPlugin.cpp
+	)
+	target_link_libraries (TestPlugin_s
+		CPF_s
+	)
+	target_compile_definitions (TestPlugin_s
+		PRIVATE
+			CPF_PLUGIN_STATIC
+	)
+	set_property (TARGET TestPlugin_s PROPERTY FOLDER Tests/Plugins)
+
+	add_executable (Test_StaticPlugin
+		Tests/Test_StaticPlugin.cpp
+	)
+	target_link_libraries(Test_StaticPlugin gtest gtest_main CPF_s TestPlugin_s)
+	set_property (TARGET Test_StaticPlugin PROPERTY FOLDER Tests)
 endif ()

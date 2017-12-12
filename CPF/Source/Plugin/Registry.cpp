@@ -1,4 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
+#include "CPF/Plugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
 #include "CPF/Plugin/Library.hpp"
 #include "CPF/Plugin.hpp"
@@ -46,7 +47,13 @@ public:
 private:
 	int32_t mRefCount;
 
-	using LibraryMap = UnorderedMap<String, Plugin::Library>;
+	struct LibraryDesc
+	{
+		Plugin::Library Library;
+		PluginDesc Desc;
+	};
+
+	using LibraryMap = UnorderedMap<String, LibraryDesc>;
 	using CreationMap = UnorderedMap<uint64_t, IntrusivePtr<Plugin::iClassFactory>>;
 
 	LibraryMap mLibraryMap;
@@ -61,18 +68,44 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
-GOM::Result CPF_STDCALL PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
+/*
+GOM::Result InstallStaticPlugins(Plugin::iRegistry* registry)
+{
+	StaticPlugin* current = StaticPlugin::First;
+	while (current)
+	{
+		if (current->Desc && current->Desc->Install)
+			(*current->Desc->Install)(registry);
+		current = current->Next;
+	}
+	return GOM::kOK;
+}
+
+void RemoveStaticPlugins(Plugin::iRegistry* registry)
+{
+	StaticPlugin* current = StaticPlugin::First;
+	while (current)
+	{
+		if (current->Desc && current->Desc->Remove)
+			(*current->Desc->Remove)(registry);
+		current = current->Next;
+	}
+}
+*/
+
+CPF_EXPORT GOM::Result CPF_STDCALL PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
 {
 	if (outRegistry)
 	{
 		*outRegistry = new Registry;
 		if (*outRegistry)
+		{
 			return GOM::kOK;
+		}
 		return GOM::kOutOfMemory;
 	}
 	return GOM::kInvalidParameter;
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 Registry::Registry()
@@ -133,12 +166,14 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 			Plugin::Library library;
 			if (library.Load(name))
 			{
-				auto install = library.GetAddress<PluginAPIInstall>(kPluginAPIInstall);
-				if (install)
+				auto getDesc = library.GetAddress<PluginAPIGetDesc>(kPluginAPIGetDesc);
+				if (getDesc)
 				{
-					if ((*install)(this) == GOM::kOK)
+					const PluginDesc* desc = (*getDesc)();
+					if (desc && desc->Install && (*desc->Install)(this) == GOM::kOK)
 					{
-						mLibraryMap.insert(LibraryMap::value_type{ CPF::String(name), Move(library) });
+						// TODO: Need to copy the desc Name if this intends to remain valid after unload.
+						mLibraryMap.insert(LibraryMap::value_type{ CPF::String(name), LibraryDesc{ Move(library), *desc } });
 						return GOM::kOK;
 					}
 				}
@@ -158,13 +193,13 @@ GOM::Result CPF_STDCALL Registry::Unload(const char* name)
 		auto exists = mLibraryMap.find(name);
 		if (exists == mLibraryMap.end())
 			return Plugin::kNotLoaded;
-		auto unload = (exists->second).GetAddress<PluginAPIRemove>(kPluginAPIRemove);
-		if (unload)
+		auto remove = (exists->second).Desc.Remove;
+		if (remove)
 		{
-			auto result = (*unload)(this);
+			auto result = (*remove)(this);
 			if (GOM::Succeeded(result))
 			{
-				if ((exists->second).Unload())
+				if ((exists->second).Library.Unload())
 				{
 					mLibraryMap.erase(exists);
 					return GOM::kOK;

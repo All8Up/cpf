@@ -4,8 +4,6 @@
 #include "CPF/IO/Globbing.hpp"
 #include "CPF/IO/File.hpp"
 
-#if 0
-
 TEST(IO, ExistsCreateDeleteDirectory)
 {
 	using namespace CPF;
@@ -34,6 +32,7 @@ TEST(IO, DirectoryRecursive)
 	EXPECT_FALSE(Directory::Exists(testDir));
 }
 
+#if 0
 TEST_F(IOTestFixture, DirectoryAndFileRecursive)
 {
 	using namespace CPF;

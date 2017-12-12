@@ -28,7 +28,7 @@ namespace CPF
 //			virtual Future<FileHandle, GOM::Result> Open(const String& name, StreamAccess access) = 0;
 		};
 
-		CPF_EXPORT_IO iFileSystem* GetFileSystem();
-		CPF_EXPORT_IO void SetFileSystem(iFileSystem*);
+		CPF_EXPORT iFileSystem* GetFileSystem();
+		CPF_EXPORT void SetFileSystem(iFileSystem*);
 	}
 }

@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #include "iTestPlugin.hpp"
+#include "CPF/Plugin.hpp"
 #include "CPF/Plugin/iRegistry.hpp"
-#include "Plugin/tClassInstance.hpp"
+#include "CPF/Plugin/tClassFactory.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 using namespace CPF;
@@ -28,33 +29,6 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
-namespace
-{
-	int32_t sRefCount = 0;
-}
-
-extern "C"
-GOM::Result CPF_EXPORT CPF_STDCALL Install(Plugin::iRegistry* registry)
-{
-	if (registry)
-	{
-		return registry->Install(kTestPluginCID.GetID(), new Plugin::tClassInstance<TestPlugin>());
-	}
-	return GOM::kInvalidParameter;
-}
-
-extern "C"
-GOM::Result CPF_EXPORT CPF_STDCALL Remove(Plugin::iRegistry* registry)
-{
-	if (registry)
-	{
-		return registry->Remove(kTestPluginCID.GetID());
-	}
-	return GOM::kInvalidParameter;
-}
-
-
-//////////////////////////////////////////////////////////////////////////
 TestPlugin::TestPlugin(Plugin::iRegistry*, iUnknown*)
 	: mRefCount(1)
 {}
@@ -62,7 +36,6 @@ TestPlugin::TestPlugin(Plugin::iRegistry*, iUnknown*)
 TestPlugin::~TestPlugin()
 {
 	CPF_ASSERT(mRefCount == 0);
-	--sRefCount;
 }
 
 int32_t TestPlugin::AddRef()
@@ -108,3 +81,35 @@ uint32_t TestPlugin::Test()
 {
 	return 0;
 }
+
+
+//////////////////////////////////////////////////////////////////////////
+static GOM::Result CPF_STDCALL Install(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		return registry->Install(kTestPluginCID.GetID(), new Plugin::tClassFactory<TestPlugin>());
+	}
+	return GOM::kInvalidParameter;
+}
+
+static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry)
+{
+	if (registry)
+	{
+		return registry->Remove(kTestPluginCID.GetID());
+	}
+	return GOM::kInvalidParameter;
+}
+
+PluginDesc desc =
+{
+	"TestPlugin",
+	&Install,
+	&Remove
+};
+
+CPF_PLUGIN_REGISTER(TestPlugin)
+	&Install,
+	&Remove
+};

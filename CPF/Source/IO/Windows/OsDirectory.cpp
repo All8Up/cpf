@@ -8,13 +8,13 @@
 using namespace CPF;
 using namespace IO;
 
-CPF_EXPORT_IO void Directory::SetWorkingDirectory(const String& dir)
+CPF_EXPORT void Directory::SetWorkingDirectory(const String& dir)
 {
 	::SetCurrentDirectory(dir.c_str());
 }
 
 
-CPF_EXPORT_IO String Directory::GetWorkingDirectory()
+CPF_EXPORT String Directory::GetWorkingDirectory()
 {
 	String result;
 	auto required = ::GetCurrentDirectory(0, nullptr);
@@ -25,7 +25,7 @@ CPF_EXPORT_IO String Directory::GetWorkingDirectory()
 }
 
 
-CPF_EXPORT_IO bool Directory::OsExists(const String& dir)
+CPF_EXPORT bool Directory::OsExists(const String& dir)
 {
 	DWORD ftype = GetFileAttributesA(dir.c_str());
 	if (ftype == INVALID_FILE_ATTRIBUTES)
@@ -36,13 +36,13 @@ CPF_EXPORT_IO bool Directory::OsExists(const String& dir)
 }
 
 
-CPF_EXPORT_IO bool Directory::OsCreate(const String& dir)
+CPF_EXPORT bool Directory::OsCreate(const String& dir)
 {
 	return ::CreateDirectory(dir.c_str(), nullptr)!=0;
 }
 
 
-CPF_EXPORT_IO bool Directory::OsDelete(const String& dir)
+CPF_EXPORT bool Directory::OsDelete(const String& dir)
 {
 	return ::RemoveDirectory(dir.c_str())!=0;
 }

@@ -28,8 +28,25 @@
 #	define CPF_FORCE_INLINE __forceinline
 #	define CPF_DEBUG_BREAK ::DebugBreak()
 #	define CPF_ALIGN(size) alignas(size)
-#	define CPF_IMPORT __declspec(dllimport)
-#	define CPF_EXPORT __declspec(dllexport)
+#	define CPF_IMPORT_ATTR __declspec(dllimport)
+#	define CPF_EXPORT_ATTR __declspec(dllexport)
+
+#	ifdef CPF_TARGET_WINDOWS
+#		ifdef CPF_STATIC
+#pragma message("Static export")
+#			define CPF_EXPORT
+#		else // CPF_STATIC
+#			if CPF_BUILD
+#				define CPF_EXPORT CPF_EXPORT_ATTR
+#pragma message("DLL export")
+#			else
+#pragma message("DLL import")
+#				define CPF_EXPORT CPF_IMPORT_ATTR
+#			endif
+#		endif
+#	else // CPF_TARGET_WINDOWS
+#		define CPF_EXPORT CPF_EXPORT_ATTR
+#	endif // CPF_TARGET_WINDOWS
 
 //////////////////////////////////////////////////////////////////////////
 #elif CPF_TARGET_DARWIN

@@ -41,6 +41,7 @@ TEST(Future, BasicThreading)
 	);
 
 	auto testValue = future.Get();
+	EXPECT_EQ(5, testValue);
 	testThread.Join();
 }
 

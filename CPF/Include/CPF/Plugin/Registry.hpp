@@ -6,6 +6,6 @@ namespace CPF
 {
 	namespace PluginHost
 	{
-		GOM::Result CPF_STDCALL CreateRegistry(Plugin::iRegistry**);
+		CPF_EXPORT GOM::Result CPF_STDCALL CreateRegistry(Plugin::iRegistry**);
 	}
 }
