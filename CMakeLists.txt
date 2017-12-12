@@ -11,3 +11,8 @@ include (CMake/Setup.cmake)
 
 # ###############################################
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/CPF")
+
+# ###############################################
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Application")
+	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Application")
+endif ()
