@@ -82,6 +82,7 @@ namespace CPF
 	IntrusivePtr<TARGET>::IntrusivePtr(TARGET* rhs)
 		: mpTarget(rhs)
 	{
+		AddRef();
 	}
 
 
@@ -89,8 +90,7 @@ namespace CPF
 	IntrusivePtr<TARGET>::IntrusivePtr(const IntrusivePtr& rhs)
 		: mpTarget(reinterpret_cast<TARGET*>(rhs.mpTarget))
 	{
-		if (mpTarget)
-			Cast()->AddRef();
+		AddRef();
 	}
 
 
@@ -202,16 +202,6 @@ namespace CPF
 	IntrusivePtr<TARGET>::operator TARGET*() const
 	{
 		return Cast();
-	}
-
-	template<typename TARGET>
-	void IntrusivePtr<TARGET>::Assign(TARGET* rhs)
-	{
-		if (rhs == mpTarget)
-			return;
-		_Release();
-		mpTarget = rhs;
-		_AddRef();
 	}
 
 	template<typename TARGET>

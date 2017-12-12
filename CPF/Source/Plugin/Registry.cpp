@@ -68,31 +68,6 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
-/*
-GOM::Result InstallStaticPlugins(Plugin::iRegistry* registry)
-{
-	StaticPlugin* current = StaticPlugin::First;
-	while (current)
-	{
-		if (current->Desc && current->Desc->Install)
-			(*current->Desc->Install)(registry);
-		current = current->Next;
-	}
-	return GOM::kOK;
-}
-
-void RemoveStaticPlugins(Plugin::iRegistry* registry)
-{
-	StaticPlugin* current = StaticPlugin::First;
-	while (current)
-	{
-		if (current->Desc && current->Desc->Remove)
-			(*current->Desc->Remove)(registry);
-		current = current->Next;
-	}
-}
-*/
-
 CPF_EXPORT GOM::Result CPF_STDCALL PluginHost::CreateRegistry(Plugin::iRegistry** outRegistry)
 {
 	if (outRegistry)

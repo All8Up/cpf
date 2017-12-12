@@ -401,48 +401,48 @@ set_property (TARGET Core PROPERTY FOLDER CPF)
 
 
 # ###############################################
-source_group (Headers FILES ${CPF_INCLUDES})
-source_group (Sources FILES ${CPF_SOURCES})
+source_group (Include FILES ${CPF_INCLUDES})
+source_group (Source FILES ${CPF_SOURCES})
 
-source_group (Headers\\Configuration FILES ${CONFIGURATION_INCLUDES})
+source_group (Include\\Configuration FILES ${CONFIGURATION_INCLUDES})
 
-source_group (Headers\\Event FILES ${EVENT_INCLUDES})
+source_group (Include\\Event FILES ${EVENT_INCLUDES})
 
 source_group (IDL\\GOM FILES ${GOM_IDL})
-source_group (Headers\\GOM FILES ${GOM_GEN_INCLUDES} ${GOM_INCLUDES})
+source_group (Include\\GOM FILES ${GOM_GEN_INCLUDES} ${GOM_INCLUDES})
 
-source_group (Headers\\Hash FILES ${HASH_INCLUDES})
-source_group (Headers\\Hash\\Detail FILES ${HASH_DETAIL_INCLUDES})
+source_group (Include\\Hash FILES ${HASH_INCLUDES})
+source_group (Include\\Hash\\Detail FILES ${HASH_DETAIL_INCLUDES})
 
 source_group (IDL\\IO FILES ${IO_IDL})
-source_group (Headers\\IO FILES ${IO_GEN_INCLUDES} ${IO_INCLUDES})
-source_group (Sources\\IO FILES ${IO_SOURCES})
+source_group (Include\\IO FILES ${IO_GEN_INCLUDES} ${IO_INCLUDES})
+source_group (Source\\IO FILES ${IO_SOURCES})
 
-source_group (Headers\\Math FILES ${MATH_INCLUDES})
-source_group (Headers\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDES})
-source_group (Headers\\Math\\Distance FILES ${MATH_DISTANCE_INCLUDES})
-source_group (Headers\\Math\\Geometry FILES ${MATH_GEOMETRY_INCLUDES})
-source_group (Headers\\Math\\Intersection FILES ${MATH_INTERSECTION_INCLUDES})
-source_group (Headers\\Math\\Detail FILES ${MATH_DETAIL_INCLUDES})
+source_group (Include\\Math FILES ${MATH_INCLUDES})
+source_group (Include\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDES})
+source_group (Include\\Math\\Distance FILES ${MATH_DISTANCE_INCLUDES})
+source_group (Include\\Math\\Geometry FILES ${MATH_GEOMETRY_INCLUDES})
+source_group (Include\\Math\\Intersection FILES ${MATH_INTERSECTION_INCLUDES})
+source_group (Include\\Math\\Detail FILES ${MATH_DETAIL_INCLUDES})
 
-source_group (Headers\\SIMD FILES ${SIMD_INCLUDES})
-source_group (Headers\\SIMD\\Detail FILES ${SIMD_DETAIL_INCLUDES})
-source_group (Headers\\SIMD\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDES})
-source_group (Headers\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDES})
-source_group (Headers\\SIMD\\Detail\\SSE3 FILES ${SIMD_DETAIL_SSE3_INCLUDES})
-source_group (Headers\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES})
+source_group (Include\\SIMD FILES ${SIMD_INCLUDES})
+source_group (Include\\SIMD\\Detail FILES ${SIMD_DETAIL_INCLUDES})
+source_group (Include\\SIMD\\Detail\\FPU FILES ${SIMD_DETAIL_FPU_INCLUDES})
+source_group (Include\\SIMD\\Detail\\Reference FILES ${SIMD_DETAIL_REFERENCE_INCLUDES})
+source_group (Include\\SIMD\\Detail\\SSE3 FILES ${SIMD_DETAIL_SSE3_INCLUDES})
+source_group (Include\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES})
 
-source_group (Headers\\Patterns FILES ${PATTERNS_INCLUDES})
+source_group (Include\\Patterns FILES ${PATTERNS_INCLUDES})
 
 source_group (IDL\\Plugin FILES ${PLUGIN_IDL})
-source_group (Headers\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
-source_group (Sources\\Plugin FILES ${PLUGIN_SOURCES})
+source_group (Include\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
+source_group (Source\\Plugin FILES ${PLUGIN_SOURCES})
 
-source_group (Headers\\Std FILES ${STD_INCLUDES})
+source_group (Include\\Std FILES ${STD_INCLUDES})
 
-source_group (Headers\\Threading FILES ${THREADING_INCLUDES})
+source_group (Include\\Threading FILES ${THREADING_INCLUDES})
 
-source_group (Headers\\Time FILES ${TIME_INCLUDES})
+source_group (Include\\Time FILES ${TIME_INCLUDES})
 
 # ###############################################
 set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
