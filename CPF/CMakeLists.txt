@@ -10,23 +10,23 @@ set (GFLAGS_BUILD_gflags_LIB ON CACHE BOOL "" FORCE)
 set (GFLAGS_BUILD_gflags_nothreads_LIB OFF CACHE BOOL "" FORCE)
 set (GFLAGS_INSTALL_STATIC_LIBS ON CACHE BOOL "" FORCE)
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/gflags-2.2.1")
-set_property (TARGET gflags_static PROPERTY FOLDER Core/External/gflags-2.2.1)
+set_property (TARGET gflags_static PROPERTY FOLDER CPF/External/gflags-2.2.1)
 target_compile_options (gflags_static PRIVATE /wd4127 /wd4100 /wd4459)
 
 # glog
 set (DISABLE_RTTI ON CACHE BOOL "" FORCE)
 set (CPF_HAVE_GLOG 1 PARENT_SCOPE)
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/glog-0.3.5")
-set_property (TARGET glog PROPERTY FOLDER Core/External/glog-0.3.5)
+set_property (TARGET glog PROPERTY FOLDER CPF/External/glog-0.3.5)
 target_compile_options (glog PRIVATE /wd4722 /wd4267 /wd4100 /wd4505)
 
 # gtest
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/googletest-release-1.8.0")
 set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-set_property (TARGET gmock PROPERTY FOLDER Core/External/gtest-1.8.0)
-set_property (TARGET gmock_main PROPERTY FOLDER Core/External/gtest-1.8.0)
-set_property (TARGET gtest PROPERTY FOLDER Core/External/gtest-1.8.0)
-set_property (TARGET gtest_main PROPERTY FOLDER Core/External/gtest-1.8.0)
+set_property (TARGET gmock PROPERTY FOLDER CPF/External/gtest-1.8.0)
+set_property (TARGET gmock_main PROPERTY FOLDER CPF/External/gtest-1.8.0)
+set_property (TARGET gtest PROPERTY FOLDER CPF/External/gtest-1.8.0)
+set_property (TARGET gtest_main PROPERTY FOLDER CPF/External/gtest-1.8.0)
 
 # ###############################################
 configure_file (Include/CPF/Configuration/Setup.hpp.in
@@ -359,45 +359,45 @@ set (ALL_SOURCES
 )
 
 # ###############################################
-add_library (CPF_s STATIC
+add_library (Core_s STATIC
 	${ALL_SOURCES}
 )
-target_link_libraries (CPF_s
+target_link_libraries (Core_s
 	gflags_static
 	glog
 )
-target_include_directories (CPF_s
+target_include_directories (Core_s
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
-target_compile_definitions (CPF_s
+target_compile_definitions (Core_s
 	PUBLIC
 		CPF_STATIC
 	PRIVATE
 		CPF_BUILD
 )
-set_property (TARGET CPF_s PROPERTY FOLDER Core)
+set_property (TARGET Core_s PROPERTY FOLDER CPF)
 
 
 # ###############################################
-add_library (CPF SHARED
+add_library (Core SHARED
 	${ALL_SOURCES}
 )
-target_link_libraries (CPF
+target_link_libraries (Core
 	gflags_static
 	glog
 )
-target_include_directories (CPF
+target_include_directories (Core
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
 		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
 )
-target_compile_definitions (CPF
+target_compile_definitions (Core
 	PRIVATE
 		CPF_BUILD
 )
-set_property (TARGET CPF PROPERTY FOLDER Core)
+set_property (TARGET Core PROPERTY FOLDER CPF)
 
 
 # ###############################################
@@ -513,7 +513,7 @@ if (CPF_ENABLE_UNITTESTS)
 		${TEST_SOURCES}
 	)
 	target_link_libraries(Test_Core
-		CPF gtest gtest_main
+		Core gtest gtest_main
 	)
 	set_property (TARGET Test_Core PROPERTY FOLDER Tests)
 
@@ -522,18 +522,18 @@ if (CPF_ENABLE_UNITTESTS)
 		${TEST_SOURCES}
 	)
 	target_link_libraries(Test_Core_s
-		CPF_s gtest gtest_main
+		Core_s gtest gtest_main
 	)
 	set_property (TARGET Test_Core_s PROPERTY FOLDER Tests)
 
 	# ###############################################
-	# NOTE: Plugins always use the static library so they are issolated, including memory.
+	# NOTE: Plugins always use the static library so they are isolated, including memory.
 	add_library (TestPlugin SHARED
 		Tests/TestPlugin/iTestPlugin.hpp
 		Tests/TestPlugin/TestPlugin.cpp
 	)
 	target_link_libraries (TestPlugin
-		CPF_s
+		Core_s
 	)
 	set_property (TARGET TestPlugin PROPERTY FOLDER Tests/Plugins)
 	add_custom_command (TARGET TestPlugin POST_BUILD
@@ -545,7 +545,7 @@ if (CPF_ENABLE_UNITTESTS)
 		Tests/TestPlugin/TestPlugin.cpp
 	)
 	target_link_libraries (TestPlugin_s
-		CPF_s
+		Core_s
 	)
 	target_compile_definitions (TestPlugin_s
 		PRIVATE
@@ -556,6 +556,6 @@ if (CPF_ENABLE_UNITTESTS)
 	add_executable (Test_StaticPlugin
 		Tests/Test_StaticPlugin.cpp
 	)
-	target_link_libraries(Test_StaticPlugin gtest gtest_main CPF_s TestPlugin_s)
+	target_link_libraries(Test_StaticPlugin gtest gtest_main Core_s TestPlugin_s)
 	set_property (TARGET Test_StaticPlugin PROPERTY FOLDER Tests)
 endif ()

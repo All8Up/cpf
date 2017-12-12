@@ -16,3 +16,11 @@ add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/CPF")
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Application")
 	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Application")
 endif ()
+
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Graphics")
+	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Graphics")
+endif ()
+
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Examples")
+	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Examples")
+endif ()
