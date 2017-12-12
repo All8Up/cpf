@@ -1,5 +1,5 @@
 # ###############################################
-include( CheckTypeSize )
+include (CheckTypeSize)
 check_type_size( "void*" SIZEOF_VOID_P BUILTIN_TYPES_ONLY )
 
 # ###############################################

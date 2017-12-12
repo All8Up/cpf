@@ -1,8 +1,8 @@
 #
-include (CMake/Settings/General.cmake)
-include (CMake/Settings/Dialect.cmake)
-include (CMake/Settings/Optimize.cmake)
-include (CMake/Settings/CompilerSimdFlags.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/General.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Dialect.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Optimize.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/CompilerSimdFlags.cmake)
 
 foreach(type ${CMAKE_CONFIGURATION_TYPES})
 	string (TOUPPER ${type} upper_type)

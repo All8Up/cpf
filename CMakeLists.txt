@@ -7,20 +7,11 @@ cmake_policy (SET CMP0054 NEW)
 project (CPF C CXX CSharp)
 
 # ###############################################
-include (CMake/Setup.cmake)
+include ("${CMAKE_CURRENT_LIST_DIR}/CMake/Setup.cmake")
 
 # ###############################################
-add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/CPF")
+add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Core")
+
 
 # ###############################################
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Application")
-	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Application")
-endif ()
-
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Graphics")
-	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Graphics")
-endif ()
-
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/Examples")
-	add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/Examples")
-endif ()
+add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Application")
