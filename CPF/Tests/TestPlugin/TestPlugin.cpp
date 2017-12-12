@@ -102,13 +102,6 @@ static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry)
 	return GOM::kInvalidParameter;
 }
 
-PluginDesc desc =
-{
-	"TestPlugin",
-	&Install,
-	&Remove
-};
-
 CPF_PLUGIN_REGISTER(TestPlugin)
 	&Install,
 	&Remove
