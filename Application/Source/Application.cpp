@@ -14,33 +14,32 @@ int main(int argc, char** argv)
 		CPF::IntrusivePtr<iApplication> application;
 		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID.GetID(), iApplication::kIID.GetID(), application.AsVoidPP())))
 		{
-			return application->Run();
+			registry->InstanceInstall(iApplication::kIID.GetID(), application);
+			int32_t result = application->Run();
+			registry->InstanceRemove(iApplication::kIID.GetID());
+			return result;
 		}
 	}
 	return -1;
 }
 
-#if 0
-#include "CPF/Application/iWindowedApplication.hpp"
-#include "Application/iApplicationMain.hpp"
-#include "String.hpp"
-#include "StringUtils.hpp"
-#include <vector>
-#include "PluginHost/Registry.hpp"
-#include "CPF/Logging.hpp"
-
 #if CPF_TARGET_WINDOWS
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 {
 	(void)hInstance; (void)hPrevInstance;
-	CPF_INIT_LOGGING(0, "");
-	auto app = gs_AppMainCreate();
-	if (app)
+	IntrusivePtr<Plugin::iRegistry> registry;
+	if (GOM::Succeeded(PluginHost::CreateRegistry(registry.AsTypePP())))
 	{
-		auto result = RunApplication(app);
-		return CPF::GOM::Succeeded(result) ? 0 : -int(result & 0x7FFF);
+		CPF_INSTALL_STATIC_PLUGIN(registry, Application);
+		CPF::IntrusivePtr<iApplication> application;
+		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID.GetID(), iApplication::kIID.GetID(), application.AsVoidPP())))
+		{
+			registry->InstanceInstall(iApplication::kIID.GetID(), application);
+			int32_t result = application->Run();
+			registry->InstanceRemove(iApplication::kIID.GetID());
+			return result;
+		}
 	}
-	return -int(CPF::GOM::kOutOfMemory & 0x7FFF);
+	return -1;
 }
-#endif
 #endif

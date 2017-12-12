@@ -4,12 +4,13 @@
 #include "CPF/Application.hpp"
 #include "CPF/Plugin/tClassFactory.hpp"
 
+// NOTE: This app type is only really different on Win32 due to the different main.
 using namespace CPF;
 
-class BasicWindowedApp : public GOM::tUnknown<iApplication>
+class BasicConsoleApp : public GOM::tUnknown<iApplication>
 {
 public:
-	BasicWindowedApp(Plugin::iRegistry* registry, iUnknown*)
+	BasicConsoleApp(Plugin::iRegistry* registry, iUnknown*)
 		: mpRegistry(registry)
 	{}
 
@@ -18,10 +19,8 @@ public:
 		return 0;
 	}
 
-	Plugin::iRegistry* GetRegistry() { return mpRegistry; }
-
 private:
 	IntrusivePtr<Plugin::iRegistry> mpRegistry;
 };
 
-CPF_APPLICATION(BasicWindowedApp);
+CPF_APPLICATION(BasicConsoleApp);
