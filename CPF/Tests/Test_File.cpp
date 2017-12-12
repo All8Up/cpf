@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include "CPF/IO/Directory.hpp"
 #include "CPF/IO/File.hpp"
+#include "IOTestFixture.hpp"
 
-#if 0
 // NOTE: These unit tests feed each other in order, this is generally bad but
 // without assuming delete works it was the first solution which came to mind.
 
@@ -10,7 +10,7 @@ TEST_F(IOTestFixture, File_CreateForRead_Fail)
 {
 	using namespace CPF::IO;
 	EXPECT_FALSE(File::Exists("TestFile.test"));
-	auto file = File::Create("TestFile.test", StreamAccess::eRead);
+	auto file = File::Create("TestFile.test", Access::eRead);
 	EXPECT_FALSE(file);
 }
 
@@ -18,7 +18,7 @@ TEST_F(IOTestFixture, File_CreateForWrite_TestData)
 {
 	using namespace CPF::IO;
 	EXPECT_FALSE(File::Exists("TestFile.test"));
-	auto file = File::Create("TestFile.test", StreamAccess::eWrite);
+	auto file = File::Create("TestFile.test", Access::eWrite);
 	EXPECT_TRUE(file!=nullptr);
 
 	TestRawBinary testData =
@@ -35,7 +35,7 @@ TEST_F(IOTestFixture, File_CreateForRead_TestData)
 {
 	using namespace CPF::IO;
 	EXPECT_TRUE(File::Exists("TestFile.test"));
-	auto file = File::Create("TestFile.test", StreamAccess::eRead);
+	auto file = File::Create("TestFile.test", Access::eRead);
 	EXPECT_TRUE(file!=nullptr);
 
 	TestRawBinary testData;
@@ -52,4 +52,3 @@ TEST_F(IOTestFixture, File_Delete)
 	EXPECT_TRUE(File::Exists("TestFile.test"));
 	EXPECT_TRUE(File::Delete("TestFile.test"));
 }
-#endif

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "CPF/IO/Path.hpp"
+#include "IOTestFixture.hpp"
 
-#if 0
 TEST(Path, Path_Construction)
 {
 	using namespace CPF;
@@ -137,4 +137,3 @@ TEST(Path, Deconstruct_Reconstruct)
 		EXPECT_STREQ(testPath.c_str(), reconPath.c_str());
 	}
 }
-#endif

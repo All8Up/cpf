@@ -452,6 +452,10 @@ endif ()
 
 
 # ###############################################
+set (TEST_INCLUDES
+	Tests/IOTestFixture.hpp
+	Tests/TimeTestFixture.hpp
+)
 set (TEST_SOURCES
 	Tests/Test_AABB.cpp
 	Tests/Test_BinaryReader.cpp
@@ -505,6 +509,7 @@ set (TEST_SOURCES
 )
 if (CPF_ENABLE_UNITTESTS)
 	add_executable (Test_Core
+		${TEST_INCLUDES}
 		${TEST_SOURCES}
 	)
 	target_link_libraries(Test_Core
@@ -513,6 +518,7 @@ if (CPF_ENABLE_UNITTESTS)
 	set_property (TARGET Test_Core PROPERTY FOLDER Tests)
 
 	add_executable (Test_Core_s
+		${TEST_INCLUDES}
 		${TEST_SOURCES}
 	)
 	target_link_libraries(Test_Core_s

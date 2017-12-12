@@ -1,8 +1,7 @@
 #include "CPF/Time/Value.hpp"
-#include <gtest/gtest.h>
+#include "TimeTestFixture.hpp"
 
-#if 0
-TEST_F(TimeLibrary, InitializationValue)
+TEST_F(TimeTestFixture, InitializationValue)
 {
 	using namespace CPF::Time;
 	{
@@ -37,7 +36,7 @@ TEST_F(TimeLibrary, InitializationValue)
 }
 
 
-TEST_F(TimeLibrary, ComparisonsValue)
+TEST_F(TimeTestFixture, ComparisonsValue)
 {
 	using namespace CPF::Time;
 	{
@@ -70,7 +69,7 @@ TEST_F(TimeLibrary, ComparisonsValue)
 }
 
 
-TEST_F(TimeLibrary, MathValue)
+TEST_F(TimeTestFixture, MathValue)
 {
 	using namespace CPF::Time;
 	{
@@ -82,7 +81,7 @@ TEST_F(TimeLibrary, MathValue)
 }
 
 
-TEST_F(TimeLibrary, CommonUsageValue)
+TEST_F(TimeTestFixture, CommonUsageValue)
 {
 	// NOTE: This is not a proper test, this is currently just a run through of the common
 	// API usage requirements.
@@ -112,4 +111,3 @@ TEST_F(TimeLibrary, CommonUsageValue)
         }
 	}
 }
-#endif

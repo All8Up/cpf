@@ -33,14 +33,11 @@
 
 #	ifdef CPF_TARGET_WINDOWS
 #		ifdef CPF_STATIC
-#pragma message("Static export")
 #			define CPF_EXPORT
 #		else // CPF_STATIC
 #			if CPF_BUILD
 #				define CPF_EXPORT CPF_EXPORT_ATTR
-#pragma message("DLL export")
 #			else
-#pragma message("DLL import")
 #				define CPF_EXPORT CPF_IMPORT_ATTR
 #			endif
 #		endif
