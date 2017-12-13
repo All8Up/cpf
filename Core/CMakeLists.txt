@@ -1,5 +1,7 @@
 # ###############################################
 # External libraries.
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/External/Modules")
+
 # gflags
 set (BUILD_TESTING OFF CACHE BOOL "" FORCE)
 set (GFLAGS_BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
