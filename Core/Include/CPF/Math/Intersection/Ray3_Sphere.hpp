@@ -1,9 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Intersection.hpp"
-#include "Math.hpp"
-#include "Math/Geometry/Ray3.hpp"
-#include "Math/Geometry/Sphere.hpp"
+#include "CPF/Math.hpp"
+#include "CPF/Math/Geometry/Ray3.hpp"
+#include "CPF/Math/Geometry/Sphere.hpp"
 
 namespace CPF
 {
