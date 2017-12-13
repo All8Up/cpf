@@ -40,9 +40,6 @@ namespace CPF
 
 		operator TARGET*() const;
 
-		// Manipulate internal pointer with modification of ref count.
-		void Assign(TARGET* rhs);
-
 		// Manipulate internal pointer without modification of ref count.
 		void Adopt(TARGET* rhs);
 		void Abandon();

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector2v.hpp"
+#include "CPF/Math/Vector2v.hpp"
 
 namespace CPF
 {
@@ -33,8 +33,8 @@ namespace CPF
 	}
 }
 
-#include "Math/Detail/Rectangle.inl"
-#include "SIMD/Types.hpp"
+#include "CPF/Math/Detail/Rectangle.inl"
+#include "CPF/SIMD/Types.hpp"
 
 namespace CPF
 {

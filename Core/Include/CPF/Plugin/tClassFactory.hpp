@@ -57,4 +57,4 @@ namespace CPF
 	}
 }
 
-#define CPF_CLASSINSTANCE_ACCESS(name) friend struct CPF::Plugin::tClassFactory<name>;
+#define CPF_CLASSFACTORY_ACCESS(name) friend struct CPF::Plugin::tClassFactory<name>;
