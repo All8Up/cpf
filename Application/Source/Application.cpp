@@ -2,12 +2,14 @@
 #include "CPF/Application.hpp"
 #include "CPF/Plugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
+#include "CPF/Logging.hpp"
 
 using namespace CPF;
 
 int main(int argc, char** argv)
 {
 	IntrusivePtr<Plugin::iRegistry> registry;
+	CPF_INIT_LOGGING(0, "");
 	if (GOM::Succeeded(PluginHost::CreateRegistry(registry.AsTypePP())))
 	{
 		CPF_INSTALL_STATIC_PLUGIN(registry, Application);
@@ -27,6 +29,8 @@ int main(int argc, char** argv)
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 {
 	(void)hInstance; (void)hPrevInstance;
+	CPF_INIT_LOGGING(0, "");
+
 	IntrusivePtr<Plugin::iRegistry> registry;
 	if (GOM::Succeeded(PluginHost::CreateRegistry(registry.AsTypePP())))
 	{

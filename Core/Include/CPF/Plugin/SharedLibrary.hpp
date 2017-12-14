@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "CPF/Logging.hpp"
 #include <Windows.h>
 
 namespace CPF
@@ -19,7 +20,13 @@ namespace CPF
 			inline
 			Handle Load(const char* const name)
 			{
-				return ::LoadLibraryA(name);
+				Handle handle = ::LoadLibraryA(name);
+				if (handle == Platform::Library::kInvalid)
+				{
+					DWORD result = ::GetLastError();
+					CPF_LOG(Core, Info) << "Windows error code: " << result;
+				}
+				return handle;
 			}
 
 			inline
