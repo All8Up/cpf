@@ -1,0 +1,10 @@
+import Types from CPF::GOM;
+import Result from CPF::GOM;
+module CPF::GOM;
+
+interface iUnknown
+{
+	s32 AddRef();
+	s32 Release();
+	result QueryInterface(u64 id, void** outIface);
+}

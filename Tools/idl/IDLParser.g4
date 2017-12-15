@@ -10,8 +10,7 @@ global_statement        : import_stmt
                         | struct_stmt
                         | union_stmt
                         | interface_stmt
-                        | event_decl
-                        | callback_decl
+                        | function_signature
                         | const_def
                         | enum_def
                         | flags_fwd
@@ -80,7 +79,7 @@ interface_item          : function_decl
                         | const_def
                         | enum_def
                         | event_decl
-                        | callback_decl;
+                        | function_signature;
 
 // Function declarations.
 function_decl           : type_decl IDENT LPAREN function_param_list? RPAREN Const? SEMICOLON;
@@ -94,10 +93,10 @@ param_dir_qualifier     : LBRACKET In RBRACKET
                         | LBRACKET In COMMA Out RBRACKET;
 
 // Event declaration.
-event_decl              : EVENT IDENT EQUALS LPAREN function_param_list? RPAREN SEMICOLON;
+event_decl              : EVENT IDENT LPAREN function_param_list? RPAREN SEMICOLON;
 
 // Callback declarations.
-callback_decl           : CALLBACK IDENT EQUALS type_decl LPAREN function_param_list? RPAREN SEMICOLON;
+function_signature      : IDENT EQUALS type_decl LPAREN function_param_list? RPAREN SEMICOLON;
 
 // Constant definitions.
 const_def               : const_integral_def

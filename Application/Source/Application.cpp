@@ -3,6 +3,7 @@
 #include "CPF/Plugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
 #include "CPF/Logging.hpp"
+#include "CPF/IntrusivePtr.hpp"
 
 using namespace CPF;
 

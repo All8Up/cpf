@@ -2,22 +2,13 @@
 #pragma once
 #include "CPF/GOM/Types.hpp"
 #include "CPF/GOM/ResultCodes.hpp"
+#include "CPF/GOM/iUnknown.hpp"
 #include "CPF/IntrusivePtr.hpp"
 
 namespace CPF
 {
 	namespace GOM
 	{
-		//////////////////////////////////////////////////////////////////////////
-		struct iUnknown
-		{
-			static constexpr InterfaceID kIID = InterfaceID("Cpf::GOM::iUnknown"_crc64);
-
-			virtual int32_t CPF_STDCALL AddRef() = 0;
-			virtual int32_t CPF_STDCALL Release() = 0;
-			virtual Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) = 0;
-		};
-
 		//////////////////////////////////////////////////////////////////////////
 		// Utility helper to implement iUnknown objects.
 		template<typename IFACE>

@@ -4,6 +4,7 @@
 #include "CPF/Plugin/Library.hpp"
 #include "TestPlugin/iTestPlugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
+#include "CPF/IntrusivePtr.hpp"
 
 TEST(Plugin, LoadUnload)
 {

@@ -1,4 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
+#include "CPF/IntrusivePtr.hpp"
+#include "CPF/GOM/ResultCodes.hpp"
 #include "CPF/Plugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
 #include "CPF/Plugin/Library.hpp"

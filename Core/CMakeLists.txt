@@ -70,11 +70,13 @@ set (EVENT_INCLUDES
 )
 
 set (GOM_IDL
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iUnknown.idl
+	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iEventEmitter.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/ResultCodes.idl
 )
 CPF_GEN_GOM(GOM_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/GOM ${GOM_IDL})
 set (GOM_INCLUDES
-	Include/CPF/GOM/iUnknown.hpp
+	Include/CPF/GOM/tUnknown.hpp
 	Include/CPF/GOM/Result.hpp
 	Include/CPF/GOM/Types.hpp
 )

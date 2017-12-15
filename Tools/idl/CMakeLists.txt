@@ -128,7 +128,7 @@ target_compile_definitions (IDL
 )
 target_link_libraries (IDL
 	antlr4_static
-	Core
+	Core_s
 	gflags_static
 )
 target_compile_options (IDL PRIVATE /wd4100)

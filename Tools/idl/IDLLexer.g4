@@ -17,7 +17,6 @@ STRUCT                      : 'struct';
 DEFAULT                     : 'default';
 UNION                       : 'union';
 EVENT                       : 'event';
-CALLBACK                    : 'callback';
 INTERFACE                   : 'interface';
 ENUM                        : 'enum';
 FLAGS                       : 'flags';

@@ -21,7 +21,8 @@ namespace IDL
 				eConstants = 1<<4,
 				eStructures = 1<<5,
 				eForwards = 1<<6,
-				eEvents = 1<<7
+				eEvents = 1<<7,
+				eFunctionSigs = 1<<8,
 			};
 
 		private:
@@ -35,6 +36,7 @@ namespace IDL
 			void OnImportFromStmt(const String&, const SymbolPath&);
 			void OnInterfaceDeclStmt(const Visitor::InterfaceDecl&);
 			void OnInterfaceFwdStmt(const String&);
+			void OnFunctionSignatureStmt(const Visitor::FunctionSignatureDecl&);
 			void OnStructFwdStmt(const String&);
 			void OnUnionFwdStmt(const String&);
 			void OnStructStmt(const Visitor::UnionOrStructDecl&);
@@ -43,6 +45,7 @@ namespace IDL
 			void OnFlagsForwardStmt(const String&, Visitor::Type);
 			void OnFlagsDeclStmt(const Visitor::EnumDecl&);
 			void OnConstIntegral(const Visitor::ConstIntegral&);
+			void OnEventDeclStmt(const Visitor::EventDecl&);
 
 			static String TypeToString(const Visitor::Type type);
 			static String TypeToString(const Visitor::TypeDecl& decl);

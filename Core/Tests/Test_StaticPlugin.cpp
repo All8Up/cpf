@@ -2,6 +2,7 @@
 #include "CPF/Plugin.hpp"
 #include "TestPlugin/iTestPlugin.hpp"
 #include "CPF/Plugin/Registry.hpp"
+#include "CPF/IntrusivePtr.hpp"
 
 TEST(StaticPlugin, Exists)
 {

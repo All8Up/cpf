@@ -1,0 +1,12 @@
+import iUnknown from CPF::GOM;
+
+module CPF::GOM;
+
+EventHandler = void(void* context, const void* eventData);
+
+interface iEventEmitter : GOM::iUnknown
+{
+	result OnEvent(s64 id, EventHandler handler, void* context);
+	result RemoveEvent(s64 id, EventHandler handler, void* context);
+	result EmitEvent(s64 id, const void* eventData);
+};

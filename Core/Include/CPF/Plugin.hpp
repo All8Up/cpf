@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/Plugin.hpp"
-#include "GOM/Result.hpp"
+#include "CPF/GOM/Result.hpp"
+#include "CPF/GOM/ResultCodes.hpp"
 
 namespace CPF
 {

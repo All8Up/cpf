@@ -13,16 +13,16 @@ class  IDLParser : public antlr4::Parser {
 public:
   enum {
     Windows = 1, Darwin = 2, IMPORT = 3, STRUCT = 4, DEFAULT = 5, UNION = 6, 
-    EVENT = 7, CALLBACK = 8, INTERFACE = 9, ENUM = 10, FLAGS = 11, MODULE = 12, 
-    FROM = 13, AS = 14, In = 15, Out = 16, COLON = 17, SEMICOLON = 18, STAR = 19, 
-    SLASH = 20, DOT = 21, COMMA = 22, EQUALS = 23, QUOTE = 24, SQUOTE = 25, 
-    LBRACE = 26, RBRACE = 27, LPAREN = 28, RPAREN = 29, LBRACKET = 30, RBRACKET = 31, 
-    LT = 32, GT = 33, PLUS = 34, MINUS = 35, LSHIFT = 36, RSHIFT = 37, PIPE = 38, 
-    Const = 39, Void = 40, RESULT = 41, SUCCESS = 42, FAILURE = 43, CLASS_ID = 44, 
-    STRING = 45, U8 = 46, S8 = 47, U16 = 48, S16 = 49, U32 = 50, S32 = 51, 
-    U64 = 52, S64 = 53, F32 = 54, F64 = 55, IDENT = 56, DECIMAL_LIT = 57, 
-    HEX_LIT = 58, BIN_LIT = 59, OCT_LIT = 60, STRING_LIT = 61, CHAR_LIT = 62, 
-    FLOAT_LIT = 63, WHITE_SPACE = 64, BLOCK_COMMENT = 65, LINE_COMMENT = 66
+    EVENT = 7, INTERFACE = 8, ENUM = 9, FLAGS = 10, MODULE = 11, FROM = 12, 
+    AS = 13, In = 14, Out = 15, COLON = 16, SEMICOLON = 17, STAR = 18, SLASH = 19, 
+    DOT = 20, COMMA = 21, EQUALS = 22, QUOTE = 23, SQUOTE = 24, LBRACE = 25, 
+    RBRACE = 26, LPAREN = 27, RPAREN = 28, LBRACKET = 29, RBRACKET = 30, 
+    LT = 31, GT = 32, PLUS = 33, MINUS = 34, LSHIFT = 35, RSHIFT = 36, PIPE = 37, 
+    Const = 38, Void = 39, RESULT = 40, SUCCESS = 41, FAILURE = 42, CLASS_ID = 43, 
+    STRING = 44, U8 = 45, S8 = 46, U16 = 47, S16 = 48, U32 = 49, S32 = 50, 
+    U64 = 51, S64 = 52, F32 = 53, F64 = 54, IDENT = 55, DECIMAL_LIT = 56, 
+    HEX_LIT = 57, BIN_LIT = 58, OCT_LIT = 59, STRING_LIT = 60, CHAR_LIT = 61, 
+    FLOAT_LIT = 62, WHITE_SPACE = 63, BLOCK_COMMENT = 64, LINE_COMMENT = 65
   };
 
   enum {
@@ -35,7 +35,7 @@ public:
     RuleInterface_decl = 22, RuleInterface_super = 23, RuleInterface_block = 24, 
     RuleInterface_item = 25, RuleFunction_decl = 26, RuleFunction_param_list = 27, 
     RuleFunction_param = 28, RuleParam_dir_qualifier = 29, RuleEvent_decl = 30, 
-    RuleCallback_decl = 31, RuleConst_def = 32, RuleConst_integral_def = 33, 
+    RuleFunction_signature = 31, RuleConst_def = 32, RuleConst_integral_def = 33, 
     RuleConst_float_def = 34, RuleConst_string_def = 35, RuleConst_class_id_def = 36, 
     RuleEnum_fwd = 37, RuleEnum_def = 38, RuleFlags_fwd = 39, RuleFlags_def = 40, 
     RuleEnum_type = 41, RuleEnum_elements = 42, RuleEnum_item = 43, RuleEnum_expr = 44, 
@@ -91,7 +91,7 @@ public:
   class Function_paramContext;
   class Param_dir_qualifierContext;
   class Event_declContext;
-  class Callback_declContext;
+  class Function_signatureContext;
   class Const_defContext;
   class Const_integral_defContext;
   class Const_float_defContext;
@@ -170,8 +170,7 @@ public:
     Struct_stmtContext *struct_stmt();
     Union_stmtContext *union_stmt();
     Interface_stmtContext *interface_stmt();
-    Event_declContext *event_decl();
-    Callback_declContext *callback_decl();
+    Function_signatureContext *function_signature();
     Const_defContext *const_def();
     Enum_defContext *enum_def();
     Flags_fwdContext *flags_fwd();
@@ -513,7 +512,7 @@ public:
     Const_defContext *const_def();
     Enum_defContext *enum_def();
     Event_declContext *event_decl();
-    Callback_declContext *callback_decl();
+    Function_signatureContext *function_signature();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -590,7 +589,6 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *EVENT();
     antlr4::tree::TerminalNode *IDENT();
-    antlr4::tree::TerminalNode *EQUALS();
     antlr4::tree::TerminalNode *LPAREN();
     antlr4::tree::TerminalNode *RPAREN();
     antlr4::tree::TerminalNode *SEMICOLON();
@@ -602,11 +600,10 @@ public:
 
   Event_declContext* event_decl();
 
-  class  Callback_declContext : public antlr4::ParserRuleContext {
+  class  Function_signatureContext : public antlr4::ParserRuleContext {
   public:
-    Callback_declContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    Function_signatureContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *CALLBACK();
     antlr4::tree::TerminalNode *IDENT();
     antlr4::tree::TerminalNode *EQUALS();
     Type_declContext *type_decl();
@@ -619,7 +616,7 @@ public:
    
   };
 
-  Callback_declContext* callback_decl();
+  Function_signatureContext* function_signature();
 
   class  Const_defContext : public antlr4::ParserRuleContext {
   public:

@@ -156,12 +156,12 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 
 			decl.mFunctions.push_back(funcDecl);
 		}
-		else if (item->callback_decl())
+		else if (item->function_signature())
 		{
-			auto eventCtx = item->callback_decl();
-			CallbackDecl callbackDecl;
-			callbackDecl.mName = eventCtx->IDENT()->toString();
-			callbackDecl.mReturnType = ParseTypeDecl(eventCtx->type_decl());
+			auto eventCtx = item->function_signature();
+			FunctionSignatureDecl signatureDecl;
+			signatureDecl.mName = eventCtx->IDENT()->toString();
+			signatureDecl.mReturnType = ParseTypeDecl(eventCtx->type_decl());
 			if (eventCtx->function_param_list())
 			{
 				for (auto param : eventCtx->function_param_list()->function_param())
@@ -169,10 +169,27 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 					ParamDecl paramDecl;
 					paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
 					paramDecl.mType = ParseTypeDecl(param->type_decl());
-					callbackDecl.mParams.push_back(paramDecl);
+					signatureDecl.mParams.push_back(paramDecl);
 				}
 			}
-			decl.mCallbacks.push_back(callbackDecl);
+			decl.mSignatures.push_back(signatureDecl);
+		}
+		else if (item->event_decl())
+		{
+			auto eventCtx = item->event_decl();
+			EventDecl event;
+			event.mName = eventCtx->IDENT()->toString();
+			if (eventCtx->function_param_list())
+			{
+				for (auto param : eventCtx->function_param_list()->function_param())
+				{
+					ParamDecl paramDecl;
+					paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
+					paramDecl.mType = ParseTypeDecl(param->type_decl());
+					event.mParams.push_back(paramDecl);
+				}
+			}
+			decl.mEvents.push_back(event);
 		}
 	}
 
@@ -186,11 +203,11 @@ antlrcpp::Any Visitor::visitInterface_fwd(IDLParser::Interface_fwdContext *ctx)
 	return visitChildren(ctx);
 }
 
-antlrcpp::Any Visitor::visitCallback_decl(IDLParser::Callback_declContext *ctx)
+antlrcpp::Any Visitor::visitFunction_signature(IDLParser::Function_signatureContext *ctx)
 {
-	CallbackDecl callbackDecl;
-	callbackDecl.mName = ctx->IDENT()->toString();
-	callbackDecl.mReturnType = ParseTypeDecl(ctx->type_decl());
+	FunctionSignatureDecl signature;
+	signature.mName = ctx->IDENT()->toString();
+	signature.mReturnType = ParseTypeDecl(ctx->type_decl());
 	if (ctx->function_param_list())
 	{
 		for (auto param : ctx->function_param_list()->function_param())
@@ -198,10 +215,28 @@ antlrcpp::Any Visitor::visitCallback_decl(IDLParser::Callback_declContext *ctx)
 			ParamDecl paramDecl;
 			paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
 			paramDecl.mType = ParseTypeDecl(param->type_decl());
-			callbackDecl.mParams.push_back(paramDecl);
+			signature.mParams.push_back(paramDecl);
 		}
 	}
-	Emit<CallbackDeclStmt>(callbackDecl);
+	Emit<FunctionSignatureStmt>(signature);
+	return defaultResult();
+}
+
+antlrcpp::Any Visitor::visitEvent_decl(IDLParser::Event_declContext *ctx)
+{
+	EventDecl event;
+	event.mName = ctx->IDENT()->toString();
+	if (ctx->function_param_list())
+	{
+		for (auto param : ctx->function_param_list()->function_param())
+		{
+			ParamDecl paramDecl;
+			paramDecl.mName = param->IDENT() ? param->IDENT()->toString() : String();
+			paramDecl.mType = ParseTypeDecl(param->type_decl());
+			event.mParams.push_back(paramDecl);
+		}
+	}
+	Emit<EventDeclStmt>(event);
 	return defaultResult();
 }
 

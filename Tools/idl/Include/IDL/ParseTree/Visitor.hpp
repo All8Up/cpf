@@ -99,10 +99,15 @@ namespace IDL
 			String mName;
 			String mValue;
 		};
-		struct CallbackDecl
+		struct FunctionSignatureDecl
 		{
 			String mName;
 			TypeDecl mReturnType;
+			CPF::Vector<ParamDecl> mParams;
+		};
+		struct EventDecl
+		{
+			String mName;
 			CPF::Vector<ParamDecl> mParams;
 		};
 		struct InterfaceDecl
@@ -114,8 +119,10 @@ namespace IDL
 			Functions mFunctions;
 			using ClassIDs = CPF::Vector<ClassID>;
 			ClassIDs mClassIDs;
-			using Callbacks = CPF::Vector<CallbackDecl>;
-			Callbacks mCallbacks;
+			using Signatures = CPF::Vector<FunctionSignatureDecl>;
+			Signatures mSignatures;
+			using Events = CPF::Vector<EventDecl>;
+			Events mEvents;
 		};
 		struct MemberInitValue
 		{
@@ -193,7 +200,8 @@ namespace IDL
 		typedef CPF::Events::Event<14, CPF::Function<void(const ConstIntegral&)>> ConstIntegralStmt;
 		typedef CPF::Events::Event<15, CPF::Function<void(const String&, Type)>> FlagsForwardStmt;
 		typedef CPF::Events::Event<16, CPF::Function<void(const EnumDecl&)>> FlagsDeclStmt;
-		typedef CPF::Events::Event<17, CPF::Function<void(const CallbackDecl&)>> CallbackDeclStmt;
+		typedef CPF::Events::Event<17, CPF::Function<void(const FunctionSignatureDecl&)>> FunctionSignatureStmt;
+		typedef CPF::Events::Event<18, CPF::Function<void(const EventDecl&)>> EventDeclStmt;
 
 		Visitor();
 
@@ -206,7 +214,7 @@ namespace IDL
 		antlrcpp::Any visitImport_stmt(IDLParser::Import_stmtContext *ctx) override;
 		antlrcpp::Any visitInterface_decl(IDLParser::Interface_declContext *ctx) override;
 		antlrcpp::Any visitInterface_fwd(IDLParser::Interface_fwdContext *ctx) override;
-		antlrcpp::Any visitCallback_decl(IDLParser::Callback_declContext *ctx) override;
+		antlrcpp::Any visitFunction_signature(IDLParser::Function_signatureContext *ctx) override;
 		antlrcpp::Any visitStruct_fwd(IDLParser::Struct_fwdContext *ctx) override;
 		antlrcpp::Any visitStruct_decl(IDLParser::Struct_declContext *ctx) override;
 		antlrcpp::Any visitUnion_fwd(IDLParser::Union_fwdContext *ctx) override;
@@ -216,6 +224,7 @@ namespace IDL
 		antlrcpp::Any visitFlags_fwd(IDLParser::Flags_fwdContext *ctx) override;
 		antlrcpp::Any visitFlags_def(IDLParser::Flags_defContext *ctx) override;
 		antlrcpp::Any visitConst_integral_def(IDLParser::Const_integral_defContext *ctx) override;
+		antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *ctx) override;
 
 		static Type ParseIntegralType(IDLParser::Integral_typeContext* integralType);
 		static ParamDir ParseParamDir(IDLParser::Param_dir_qualifierContext* ctx);

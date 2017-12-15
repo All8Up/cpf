@@ -139,7 +139,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCallback_decl(IDLParser::Callback_declContext *ctx) override {
+  virtual antlrcpp::Any visitFunction_signature(IDLParser::Function_signatureContext *ctx) override {
     return visitChildren(ctx);
   }
 

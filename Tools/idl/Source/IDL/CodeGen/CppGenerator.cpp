@@ -33,6 +33,8 @@ void CppGenerator::Begin(Visitor& visitor, CodeWriter& writer)
 	visitor.On<Visitor::ConstIntegralStmt>(CPF::Bind(&CppGenerator::OnConstIntegral, this, _1));
 	visitor.On<Visitor::FlagsForwardStmt>(CPF::Bind(&CppGenerator::OnFlagsForwardStmt, this, _1, _2));
 	visitor.On<Visitor::FlagsDeclStmt>(CPF::Bind(&CppGenerator::OnFlagsDeclStmt, this, _1));
+	visitor.On<Visitor::FunctionSignatureStmt>(CPF::Bind(&CppGenerator::OnFunctionSignatureStmt, this, _1));
+	visitor.On<Visitor::EventDeclStmt>(CPF::Bind(&CppGenerator::OnEventDeclStmt, this, _1));
 }
 
 void CppGenerator::End()
@@ -133,23 +135,23 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 		);
 	}
 
-	if (!decl.mCallbacks.empty())
+	if (!decl.mSignatures.empty())
 	{
-		mpWriter->LineFeed(eEvents, eEvents);
-		for (const auto& callbackItem : decl.mCallbacks)
+		mpWriter->LineFeed(eFunctionSigs, eEvents);
+		for (const auto& signatureItem : decl.mSignatures)
 		{
 			mpWriter->Output("%susing %s = %s (*) (",
 				mpWriter->GetIndentString().c_str(),
-				callbackItem.mName.c_str(),
-				TypeToString(callbackItem.mReturnType).c_str());
+				signatureItem.mName.c_str(),
+				TypeToString(signatureItem.mReturnType).c_str());
 
-			if (!callbackItem.mParams.empty())
+			if (!signatureItem.mParams.empty())
 			{
-				mpWriter->Output("%s", TypeToString(callbackItem.mParams[0].mType).c_str());
-				if (!callbackItem.mParams[0].mName.empty())
-					mpWriter->Output(" %s", callbackItem.mParams[0].mName.c_str());
+				mpWriter->Output("%s", TypeToString(signatureItem.mParams[0].mType).c_str());
+				if (!signatureItem.mParams[0].mName.empty())
+					mpWriter->Output(" %s", signatureItem.mParams[0].mName.c_str());
 
-				for (auto it = callbackItem.mParams.begin() + 1; it != callbackItem.mParams.end(); ++it)
+				for (auto it = signatureItem.mParams.begin() + 1; it != signatureItem.mParams.end(); ++it)
 				{
 					mpWriter->Output(", %s", TypeToString(it->mType).c_str());
 					if (!it->mName.empty())
@@ -157,7 +159,34 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 				}
 			}
 			mpWriter->Output(");");
-			mpWriter->LineFeed(eEvents, CodeWriter::kNoSection);
+			mpWriter->LineFeed(eFunctionSigs, CodeWriter::kNoSection);
+		}
+	}
+
+	if (!decl.mEvents.empty())
+	{
+		for (const auto& eventDecl : decl.mEvents)
+		{
+			mpWriter->LineFeed(eEvents, eNamespace | eForwards, CodeWriter::kAnySection);
+			mpWriter->OutputLine("struct %s {", eventDecl.mName.c_str());
+
+			mpWriter->Indent();
+			CPF::String eventHashName = (mModule.ToString("::") + "::" + decl.mName + "::" + eventDecl.mName).c_str();
+			CPF::GOM::InterfaceID eventIid = CPF::GOM::InterfaceID(CPF::Hash::Crc64(eventHashName.c_str(), eventHashName.length()));
+			mpWriter->OutputLine("static constexpr int64_t kID = 0x%" PRIx64 "; /* %s */",
+				eventIid.GetID(), eventHashName.c_str());
+			if (!eventDecl.mParams.empty())
+			{
+				for (auto it = eventDecl.mParams.begin(); it != eventDecl.mParams.end(); ++it)
+				{
+					mpWriter->OutputLine("%s %s;",
+						TypeToString(it->mType).c_str(),
+						it->mName.c_str()
+					);
+				}
+			}
+			mpWriter->Unindent();
+			mpWriter->OutputLine("};");
 		}
 	}
 
@@ -209,6 +238,54 @@ void CppGenerator::OnClassIDStmt(const Visitor::ClassID& classID)
 }
 #endif
 
+void CppGenerator::OnEventDeclStmt(const Visitor::EventDecl& eventDecl)
+{
+	mpWriter->LineFeed(eEvents, eNamespace | eForwards, CodeWriter::kAnySection);
+	mpWriter->Output("%susing %s = %s (*) (",
+		mpWriter->GetIndentString().c_str(),
+		eventDecl.mName.c_str());
+
+	if (!eventDecl.mParams.empty())
+	{
+		mpWriter->Output("%s", TypeToString(eventDecl.mParams[0].mType).c_str());
+		if (!eventDecl.mParams[0].mName.empty())
+			mpWriter->Output(" %s", eventDecl.mParams[0].mName.c_str());
+
+		for (auto it = eventDecl.mParams.begin() + 1; it != eventDecl.mParams.end(); ++it)
+		{
+			mpWriter->Output(", %s", TypeToString(it->mType).c_str());
+			if (!it->mName.empty())
+				mpWriter->Output(" %s", it->mName.c_str());
+		}
+	}
+	mpWriter->Output(");");
+	mpWriter->LineFeed(eEvents, CodeWriter::kNoSection);
+}
+
+void CppGenerator::OnFunctionSignatureStmt(const Visitor::FunctionSignatureDecl& signature)
+{
+	mpWriter->LineFeed(eFunctionSigs, eNamespace | eForwards, CodeWriter::kAnySection);
+	mpWriter->Output("%susing %s = %s (*) (",
+		mpWriter->GetIndentString().c_str(),
+		signature.mName.c_str(),
+		TypeToString(signature.mReturnType).c_str());
+
+	if (!signature.mParams.empty())
+	{
+		mpWriter->Output("%s", TypeToString(signature.mParams[0].mType).c_str());
+		if (!signature.mParams[0].mName.empty())
+			mpWriter->Output(" %s", signature.mParams[0].mName.c_str());
+
+		for (auto it = signature.mParams.begin() + 1; it != signature.mParams.end(); ++it)
+		{
+			mpWriter->Output(", %s", TypeToString(it->mType).c_str());
+			if (!it->mName.empty())
+				mpWriter->Output(" %s", it->mName.c_str());
+		}
+	}
+	mpWriter->Output(");");
+	mpWriter->LineFeed(eFunctionSigs, CodeWriter::kNoSection);
+}
 
 void CppGenerator::OnInterfaceFwdStmt(const String& name)
 {
