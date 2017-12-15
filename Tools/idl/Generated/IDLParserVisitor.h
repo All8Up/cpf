@@ -1,5 +1,5 @@
 
-// Generated from IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf_dev/CPF/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -78,6 +78,8 @@ public:
     virtual antlrcpp::Any visitFunction_param(IDLParser::Function_paramContext *context) = 0;
 
     virtual antlrcpp::Any visitParam_dir_qualifier(IDLParser::Param_dir_qualifierContext *context) = 0;
+
+    virtual antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *context) = 0;
 
     virtual antlrcpp::Any visitCallback_decl(IDLParser::Callback_declContext *context) = 0;
 

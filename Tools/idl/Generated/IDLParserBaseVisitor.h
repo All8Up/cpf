@@ -1,5 +1,5 @@
 
-// Generated from IDLParser.g4 by ANTLR 4.7
+// Generated from C:/Projects/cpf_dev/CPF/Tools/idl\IDLParser.g4 by ANTLR 4.7
 
 #pragma once
 
@@ -132,6 +132,10 @@ public:
   }
 
   virtual antlrcpp::Any visitParam_dir_qualifier(IDLParser::Param_dir_qualifierContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitEvent_decl(IDLParser::Event_declContext *ctx) override {
     return visitChildren(ctx);
   }
 

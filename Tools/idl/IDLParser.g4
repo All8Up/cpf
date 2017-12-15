@@ -10,6 +10,7 @@ global_statement        : import_stmt
                         | struct_stmt
                         | union_stmt
                         | interface_stmt
+                        | event_decl
                         | callback_decl
                         | const_def
                         | enum_def
@@ -78,6 +79,7 @@ interface_block         : LBRACE interface_item* RBRACE;
 interface_item          : function_decl
                         | const_def
                         | enum_def
+                        | event_decl
                         | callback_decl;
 
 // Function declarations.
@@ -90,6 +92,9 @@ function_param          : param_dir_qualifier? type_decl IDENT;
 param_dir_qualifier     : LBRACKET In RBRACKET
                         | LBRACKET Out RBRACKET
                         | LBRACKET In COMMA Out RBRACKET;
+
+// Event declaration.
+event_decl              : EVENT IDENT EQUALS LPAREN function_param_list? RPAREN SEMICOLON;
 
 // Callback declarations.
 callback_decl           : CALLBACK IDENT EQUALS type_decl LPAREN function_param_list? RPAREN SEMICOLON;
