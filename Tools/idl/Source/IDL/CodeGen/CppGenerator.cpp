@@ -128,7 +128,7 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	// TODO: Extend this to handle the full range of constant types.
 	for (const auto& constItem : decl.mClassIDs)
 	{
-		mpWriter->OutputLine("static constexpr GOM::InstanceID %s = GOM::InstanceID(0x%" PRIx64 " /* %s */);",
+		mpWriter->OutputLine("static constexpr GOM::ClassID %s = GOM::ClassID(0x%" PRIx64 " /* %s */);",
 			constItem.mName.c_str(),
 			CPF::Hash::Crc64(constItem.mValue.c_str(), constItem.mValue.length()),
 			constItem.mValue.c_str()
@@ -160,33 +160,6 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			}
 			mpWriter->Output(");");
 			mpWriter->LineFeed(eFunctionSigs, CodeWriter::kNoSection);
-		}
-	}
-
-	if (!decl.mEvents.empty())
-	{
-		for (const auto& eventDecl : decl.mEvents)
-		{
-			mpWriter->LineFeed(eEvents, eNamespace | eForwards, CodeWriter::kAnySection);
-			mpWriter->OutputLine("struct %s {", eventDecl.mName.c_str());
-
-			mpWriter->Indent();
-			CPF::String eventHashName = (mModule.ToString("::") + "::" + decl.mName + "::" + eventDecl.mName).c_str();
-			CPF::GOM::InterfaceID eventIid = CPF::GOM::InterfaceID(CPF::Hash::Crc64(eventHashName.c_str(), eventHashName.length()));
-			mpWriter->OutputLine("static constexpr int64_t kID = 0x%" PRIx64 "; /* %s */",
-				eventIid.GetID(), eventHashName.c_str());
-			if (!eventDecl.mParams.empty())
-			{
-				for (auto it = eventDecl.mParams.begin(); it != eventDecl.mParams.end(); ++it)
-				{
-					mpWriter->OutputLine("%s %s;",
-						TypeToString(it->mType).c_str(),
-						it->mName.c_str()
-					);
-				}
-			}
-			mpWriter->Unindent();
-			mpWriter->OutputLine("};");
 		}
 	}
 
@@ -223,6 +196,33 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	if (!decl.mFunctions.empty())
 		mpWriter->LineFeed(CodeWriter::kNoSection, CodeWriter::kNoSection, CodeWriter::kAnySection);
 
+	if (!decl.mEvents.empty())
+	{
+		mpWriter->LineFeed(eEvents, eNamespace | eForwards, CodeWriter::kAnySection);
+		for (const auto& eventDecl : decl.mEvents)
+		{
+			mpWriter->OutputLine("struct %s {", eventDecl.mName.c_str());
+
+			mpWriter->Indent();
+			CPF::String eventHashName = (mModule.ToString("::") + "::" + decl.mName + "::" + eventDecl.mName).c_str();
+			CPF::GOM::InterfaceID eventIid = CPF::GOM::InterfaceID(CPF::Hash::Crc64(eventHashName.c_str(), eventHashName.length()));
+			mpWriter->OutputLine("static constexpr int64_t kID = 0x%" PRIx64 "; /* %s */",
+				eventIid.GetID(), eventHashName.c_str());
+			if (!eventDecl.mParams.empty())
+			{
+				for (auto it = eventDecl.mParams.begin(); it != eventDecl.mParams.end(); ++it)
+				{
+					mpWriter->OutputLine("%s %s;",
+						TypeToString(it->mType).c_str(),
+						it->mName.c_str()
+					);
+				}
+			}
+			mpWriter->Unindent();
+			mpWriter->OutputLine("};");
+		}
+	}
+
 	mpWriter->Unindent();
 	mpWriter->OutputLine("};");
 }
@@ -230,7 +230,7 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 void CppGenerator::OnClassIDStmt(const Visitor::ClassID& classID)
 {
 	mpWriter->LineFeed(eConstants, eNamespace, CodeWriter::kAnySection);
-	mpWriter->OutputLine("static constexpr GOM::InstanceID %s = GOM::InstanceID(0x%" PRIx64 " /* %s */);",
+	mpWriter->OutputLine("static constexpr GOM::ClassID %s = GOM::ClassID(0x%" PRIx64 " /* %s */);",
 		classID.mName.c_str(),
 		CPF::Hash::Crc64(classID.mValue.c_str(), classID.mValue.length()),
 		classID.mValue.c_str()
