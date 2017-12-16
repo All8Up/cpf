@@ -12,12 +12,12 @@ struct DirEntry
 
 interface iDirectory : GOM::iUnknown
 {
-	callback OnComplete = void(result value);
+	OnComplete = void(result value);
 	void Exists(const char* name, OnComplete cb);
 	void Create(const char* dir, bool recursive, OnComplete cb);
 	void Delete(const char* dir, bool recursive, OnComplete cb);
 
-	callback OnDirOpen = void(result value, const DirHandle* dirHandle);
+	OnDirOpen = void(result value, const DirHandle* dirHandle);
 	void Scan(const char* dir, OnDirOpen cb);
 	result Next(const DirHandle* handle, DirEntry* const* entry);
 }
