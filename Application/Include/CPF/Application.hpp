@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/iApplication.hpp"
+#include "CPF/Plugin/tClassFactory.hpp"
 
 #define CPF_APPLICATION(name) \
 static GOM::Result CPF_STDCALL Install(Plugin::iRegistry* registry) \
