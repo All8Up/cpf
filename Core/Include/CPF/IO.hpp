@@ -5,17 +5,6 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	struct IOInitializer
-	{
-		CPF_EXPORT static int Install();
-		CPF_EXPORT static int Remove();
-
-	private:
-		IOInitializer() = delete;
-		~IOInitializer() = delete;
-	};
-
-
 	namespace IO
 	{
 		//////////////////////////////////////////////////////////////////////////

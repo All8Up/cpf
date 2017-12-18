@@ -4,6 +4,14 @@
 using namespace CPF;
 using namespace IO;
 
+namespace CPF
+{
+	namespace IO
+	{
+		iFileSystem* CreateFileSystem();
+	}
+}
+
 namespace
 {
 	iFileSystem* s_pFileSystem = nullptr;
@@ -12,6 +20,8 @@ namespace
 //////////////////////////////////////////////////////////////////////////
 CPF_EXPORT iFileSystem* IO::GetFileSystem()
 {
+	if (s_pFileSystem == nullptr)
+		s_pFileSystem = CreateFileSystem();
 	return s_pFileSystem;
 }
 

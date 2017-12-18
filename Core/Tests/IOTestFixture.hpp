@@ -16,8 +16,6 @@ public:
 
 	virtual void SetUp() override
 	{
-		CPF::IOInitializer::Install();
-
 		CPF::String paths[] =
 		{
 			"test/path/",						// A standard non-rooted path.
@@ -62,7 +60,6 @@ public:
 
 	virtual void TearDown() override
 	{
-		CPF::IOInitializer::Remove();
 	}
 
 	struct TestRawBinary

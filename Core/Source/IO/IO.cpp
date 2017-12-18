@@ -20,23 +20,3 @@ namespace CPF
 		extern CPF_EXPORT void DestroyFileSystem(iFileSystem*);
 	}
 }
-
-
-CPF_EXPORT int IOInitializer::Install()
-{
-	if (s_RefCount++ == 0)
-	{
-		SetFileSystem(CreateFileSystem());
-	}
-	return ++s_RefCount;
-}
-
-CPF_EXPORT int IOInitializer::Remove()
-{
-	if (--s_RefCount == 0)
-	{
-		DestroyFileSystem(GetFileSystem());
-		SetFileSystem(nullptr);
-	}
-	return s_RefCount;
-}
