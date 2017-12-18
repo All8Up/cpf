@@ -25,6 +25,7 @@ target_compile_options (glog PRIVATE /wd4722 /wd4267 /wd4100 /wd4505)
 
 # gtest
 add_subdirectory ("${CMAKE_CURRENT_SOURCE_DIR}/External/googletest-release-1.8.0")
+target_compile_options (gtest PUBLIC /DGTEST_LANG_CXX11=1 /DGTEST_HAS_TR1_TUPLE=0)
 set (gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 set_property (TARGET gmock PROPERTY FOLDER CPF/External/gtest-1.8.0)
 set_property (TARGET gmock_main PROPERTY FOLDER CPF/External/gtest-1.8.0)
@@ -196,6 +197,10 @@ set (PATTERNS_INCLUDES
 	Include/CPF/Patterns/Factory.hpp
 )
 
+set (PERFORMANCE_INCLUDES
+	Include/CPF/Performance/VTune.hpp
+)
+
 set (PLUGIN_IDL
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iClassFactory.idl
 	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iRegistry.idl
@@ -345,6 +350,8 @@ set (ALL_SOURCES
 
 	${PATTERNS_INCLUDES}
 
+	${PERFORMANCE_INCLUDES}
+
 	${PLUGIN_IDL}
 	${PLUGIN_INCLUDES}
 	${PLUGIN_GEN_INCLUDES}
@@ -363,6 +370,10 @@ set (ALL_SOURCES
 	${TIME_INCLUDES}
 )
 
+if (WIN32)
+	set (EXTRA_LIBS Pdh.lib)
+endif ()
+
 # ###############################################
 add_library (Core_s STATIC
 	${ALL_SOURCES}
@@ -370,6 +381,7 @@ add_library (Core_s STATIC
 target_link_libraries (Core_s
 	gflags_static
 	glog
+	${EXTRA_LIBS}
 )
 target_include_directories (Core_s
 	PUBLIC
@@ -392,6 +404,7 @@ add_library (Core SHARED
 target_link_libraries (Core
 	gflags_static
 	glog
+	${EXTRA_LIBS}
 )
 target_include_directories (Core
 	PUBLIC
@@ -438,6 +451,8 @@ source_group (Include\\SIMD\\Detail\\SSE3 FILES ${SIMD_DETAIL_SSE3_INCLUDES})
 source_group (Include\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES})
 
 source_group (Include\\Patterns FILES ${PATTERNS_INCLUDES})
+
+source_group (Include\\Performance FILES ${PERFORMANCE_INCLUDES})
 
 source_group (IDL\\Plugin FILES ${PLUGIN_IDL})
 source_group (Include\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})

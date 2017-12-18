@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Threading.hpp"
-#include "Platform/Threading/CPU.hpp"
+#include "CPF/Threading.hpp"
+#include "CPF/Threading/CPU.hpp"
 #include <Pdh.h>
 
 namespace CPF

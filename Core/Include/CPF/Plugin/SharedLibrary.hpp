@@ -21,11 +21,13 @@ namespace CPF
 			Handle Load(const char* const name)
 			{
 				Handle handle = ::LoadLibraryA(name);
+				/*
 				if (handle == Platform::Library::kInvalid)
 				{
 					DWORD result = ::GetLastError();
 					CPF_LOG(Core, Info) << "Windows error code: " << result;
 				}
+				*/
 				return handle;
 			}
 
