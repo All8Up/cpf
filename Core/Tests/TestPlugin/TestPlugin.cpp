@@ -102,7 +102,7 @@ static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry)
 	return GOM::kInvalidParameter;
 }
 
-CPF_PLUGIN_REGISTER(TestPlugin)
+CPF_REGISTER_PLUGIN(TestPlugin)
 	&Install,
 	&Remove
 };

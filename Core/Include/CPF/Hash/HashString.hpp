@@ -159,7 +159,7 @@ constexpr CPF::Hash::HashString<CPF::Hash::BaseHashString_Tag> operator "" _hash
 	return CPF::Hash::HashString<CPF::Hash::BaseHashString_Tag>(val, idx);
 }
 
-namespace CPF_STL_NAMESPACE
+namespace std
 {
 	template <typename TAG>
 	struct hash<CPF::Hash::HashString<TAG>>
