@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/iApplication.hpp"
+#include "CPF/Plugin.hpp"
 #include "CPF/Plugin/tClassFactory.hpp"
 
 #define CPF_APPLICATION(name) \
