@@ -151,7 +151,7 @@ String CPF_EXPORT File::GetExecutableFilePath()
 	HMODULE module = GetModuleHandle(nullptr);
 	CHAR path[MAX_PATH];
 	DWORD length = 0;
-	if ((length = GetModuleFileName(module, path, MAX_PATH)) > 0)
+	if ((length = GetModuleFileNameA(module, path, MAX_PATH)) > 0)
 	{
 		auto dir = Path::GetDirectory(path);
 		return dir;

@@ -4,13 +4,15 @@
 #include "CPF/Plugin/Registry.hpp"
 #include "CPF/Logging.hpp"
 #include "CPF/IntrusivePtr.hpp"
+#include <gflags/gflags.h>
 
 using namespace CPF;
 
 int main(int argc, char** argv)
 {
 	IntrusivePtr<Plugin::iRegistry> registry;
-	CPF_INIT_LOGGING(0, "");
+	gflags::ParseCommandLineFlags(&argc, &argv, true);
+	CPF_INIT_LOGGING(argc, argv[0]);
 	if (GOM::Succeeded(PluginHost::CreateRegistry(registry.AsTypePP())))
 	{
 		CPF_INSTALL_STATIC_PLUGIN(registry, Application);

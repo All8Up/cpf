@@ -1,5 +1,8 @@
 # ###############################################
 # External libraries.
+if (CPF_ENABLE_CSHARP)
+	set (CPF_CSHARP 1)
+endif ()
 set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/External/Modules")
 
 # gflags
@@ -320,58 +323,49 @@ set (TIME_INCLUDES
 	Include/CPF/Time/Value.inl
 )
 
-
+set (IDL_SOURCES
+	${GOM_IDL}
+	${IO_IDL}
+	${PLUGIN_IDL}
+)
+set (IDL_GEN
+	${GOM_GEN_INCLUDES}
+	${IO_GEN_INCLUDES}
+	${PLUGIN_GEN_INCLUDES}
+)
 set (ALL_SOURCES
 	${CPF_INCLUDES}
 	${CPF_SOURCES}
 
 	${CONFIGURATION_INCLUDES}
-
 	${EVENT_INCLUDES}
-
-	${GOM_IDL}
 	${GOM_INCLUDES}
-	${GOM_GEN_INCLUDES}
-
 	${HASH_INCLUDES}
 	${HASH_DETAIL_INCLUDES}
-
-	${IO_IDL}
 	${IO_INCLUDES}
-	${IO_GEN_INCLUDES}
 	${IO_SOURCES}
-
 	${MATH_INCLUDES}
 	${MATH_BOUNDS_INCLUDES}
 	${MATH_DISTANCE_INCLUDES}
 	${MATH_GEOMETRY_INCLUDES}
 	${MATH_INTERSECTION_INCLUDES}
 	${MATH_DETAIL_INCLUDES}
-
 	${PATTERNS_INCLUDES}
-
 	${PERFORMANCE_INCLUDES}
-
-	${PLUGIN_IDL}
 	${PLUGIN_INCLUDES}
-	${PLUGIN_GEN_INCLUDES}
 	${PLUGIN_SOURCES}
-
 	${SIMD_INCLUDES}
 	${SIMD_DETAIL_INCLUDES}
 	${SIMD_DETAIL_FPU_INCLUDES}
 	${SIMD_DETAIL_REFERENCE_INCLUDES}
 	${SIMD_DETAIL_SSE4_1_INCLUDES}
-
 	${STD_INCLUDES}
-
 	${THREADING_INCLUDES}
-
 	${TIME_INCLUDES}
 )
 
 if (WIN32)
-	set (EXTRA_LIBS Pdh.lib)
+	set (CPF_EXTRA_LIBS "${CPF_EXTRA_LIBS};Pdh.lib")
 endif ()
 
 # ###############################################
@@ -381,7 +375,8 @@ add_library (Core_s STATIC
 target_link_libraries (Core_s
 	gflags_static
 	glog
-	${EXTRA_LIBS}
+	${CPF_EXTRA_LIBS}
+	${CPF_CS_LIBS}
 )
 target_include_directories (Core_s
 	PUBLIC
@@ -405,6 +400,7 @@ target_link_libraries (Core
 	gflags_static
 	glog
 	${EXTRA_LIBS}
+	${CPF_CS_LIBS}
 )
 target_include_directories (Core
 	PUBLIC
@@ -417,6 +413,22 @@ target_compile_definitions (Core
 )
 set_property (TARGET Core PROPERTY FOLDER CPF)
 
+# ###############################################
+add_library (i_Core INTERFACE)
+target_include_directories (i_Core
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
+)
+add_custom_target (Core_IDL
+	SOURCES
+		${IDL_SOURCES}
+		${IDL_GEN}
+)
+add_dependencies (Core_s Core_IDL)
+add_dependencies (i_Core Core_IDL)
+add_dependencies (Core Core_IDL)
+set_property (TARGET Core_IDL PROPERTY FOLDER CPF)
 
 # ###############################################
 source_group (Include FILES ${CPF_INCLUDES})

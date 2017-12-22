@@ -10,16 +10,16 @@ using namespace IO;
 
 CPF_EXPORT void Directory::SetWorkingDirectory(const String& dir)
 {
-	::SetCurrentDirectory(dir.c_str());
+	::SetCurrentDirectoryA(dir.c_str());
 }
 
 
 CPF_EXPORT String Directory::GetWorkingDirectory()
 {
 	String result;
-	auto required = ::GetCurrentDirectory(0, nullptr);
+	auto required = ::GetCurrentDirectoryA(0, nullptr);
 	result.resize(required, ' ');
-	::GetCurrentDirectory(DWORD(result.size()), &result[0]);
+	::GetCurrentDirectoryA(DWORD(result.size()), &result[0]);
 	result.pop_back();
 	return result;
 }
@@ -38,13 +38,13 @@ CPF_EXPORT bool Directory::OsExists(const String& dir)
 
 CPF_EXPORT bool Directory::OsCreate(const String& dir)
 {
-	return ::CreateDirectory(dir.c_str(), nullptr)!=0;
+	return ::CreateDirectoryA(dir.c_str(), nullptr)!=0;
 }
 
 
 CPF_EXPORT bool Directory::OsDelete(const String& dir)
 {
-	return ::RemoveDirectory(dir.c_str())!=0;
+	return ::RemoveDirectoryA(dir.c_str())!=0;
 }
 
 
@@ -68,7 +68,7 @@ struct Directory::Entries::OsIterator
 		String searchPath = Path::Combine(Path::ToOS(Path::Normalize(path)), "*");
 		mPredicate = Move(pred);
 
-		mFind = ::FindFirstFile(searchPath.c_str(), &mFindData);
+		mFind = ::FindFirstFileA(searchPath.c_str(), &mFindData);
 		if (mFind != INVALID_HANDLE_VALUE)
 		{
 			if (!mPredicate(ToEntry()))
@@ -83,7 +83,7 @@ struct Directory::Entries::OsIterator
 		bool more = true;
 		do
 		{
-			more = ::FindNextFile(mFind, &mFindData) == TRUE ? true : false;
+			more = ::FindNextFileA(mFind, &mFindData) == TRUE ? true : false;
 		} while (more && !mPredicate(ToEntry()));
 		return more;
 	}
@@ -103,7 +103,7 @@ struct Directory::Entries::OsIterator
 	}
 
 	HANDLE mFind;
-	WIN32_FIND_DATA mFindData;
+	WIN32_FIND_DATAA mFindData;
 	Predicate mPredicate;
 };
 

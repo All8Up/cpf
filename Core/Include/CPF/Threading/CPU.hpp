@@ -13,8 +13,8 @@ namespace CPF
 		public:
 			CPUUsage()
 			{
-				PdhOpenQuery(nullptr, NULL, &mQuery);
-				PdhAddCounter(mQuery, "\\Processor(_Total)\\% Processor Time", NULL, &mTotal);
+				PdhOpenQueryA(nullptr, NULL, &mQuery);
+				PdhAddCounterA(mQuery, "\\Processor(_Total)\\% Processor Time", NULL, &mTotal);
 				PdhCollectQueryData(mQuery);
 			}
 			~CPUUsage()

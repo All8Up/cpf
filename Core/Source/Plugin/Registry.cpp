@@ -11,9 +11,15 @@
 #include "CPF/Std/UnorderedMap.hpp"
 #include "CPF/IO/Directory.hpp"
 #include "CPF/Logging.hpp"
+#include "CPF/IO/Path.hpp"
 
 using namespace CPF;
 using namespace PluginHost;
+
+#ifdef CPF_CSHARP
+extern "C"
+bool CPF_IMPORT_ATTR CPF_STDCALL LoadCSharpPlugin(Plugin::iRegistry*, const char*);
+#endif
 
 class Registry : public Plugin::iRegistry
 {
@@ -140,6 +146,15 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 		auto exists = mLibraryMap.find(name);
 		if (exists == mLibraryMap.end())
 		{
+#ifdef CPF_CSHARP
+			if (IO::Path::GetExtension(name) == ".csp")
+			{
+				if (LoadCSharpPlugin(this, name))
+					return GOM::kOK;
+				return GOM::kInvalid;
+			}
+#endif
+
 			Plugin::Library library;
 			if (library.Load(name))
 			{
