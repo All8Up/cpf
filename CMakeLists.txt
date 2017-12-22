@@ -22,9 +22,3 @@ add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Core")
 
 # ###############################################
 add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Application")
-
-# ###############################################
-set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
-if (CPF_BUILD_TOOLS)
-	add_subdirectory( "${CMAKE_CURRENT_LIST_DIR}/Tools" )
-endif ()
