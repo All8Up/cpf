@@ -27,7 +27,7 @@ namespace CPF
 
 		TYPE* Get(Handle handle);
 
-		size_t Size() const { return mData.size(); }
+		size_t Size() const;
 
 	private:
 		IndexedPool(const IndexedPool&) = delete;
@@ -37,23 +37,24 @@ namespace CPF
 		size_t _AllocHandle();
 		void _ReturnHandle(size_t);
 
+		static constexpr uint32_t kInvalidIndex = uint32_t(-1);
 		union HandleStorage
 		{
 			struct
 			{
-				int32_t mVersion;
-				int32_t mIndex;
+				uint32_t mVersion;
+				uint32_t mIndex;
 			};
 			uint64_t mHandle;
 		};
 		struct TypeStorage
 		{
 			TYPE mData;
-			int32_t mHandle;
+			uint32_t mHandle;
 		};
 
-		int32_t mFirstFree;
-		int32_t mVersion;
+		uint32_t mFirstFree;
+		uint32_t mVersion;
 		Vector<HandleStorage> mHandles;
 		Vector<TypeStorage> mData;
 	};
@@ -61,7 +62,7 @@ namespace CPF
 	//////////////////////////////////////////////////////////////////////////
 	template <typename TYPE, size_t BLOCK_SIZE>
 	IndexedPool<TYPE, BLOCK_SIZE>::IndexedPool()
-		: mFirstFree(-1)
+		: mFirstFree(kInvalidIndex)
 		, mVersion(0)
 	{
 		_ReserveHandles(kHandleBlockSize);
@@ -69,7 +70,7 @@ namespace CPF
 
 	template <typename TYPE, size_t BLOCK_SIZE>
 	IndexedPool<TYPE, BLOCK_SIZE>::IndexedPool(size_t size)
-		: mFirstFree(-1)
+		: mFirstFree(kInvalidIndex)
 		, mData(size)
 		, mVersion(0)
 	{
@@ -81,9 +82,9 @@ namespace CPF
 		: mFirstFree(rhs.mFirstFree)
 		, mHandles(Move(rhs.mHandles))
 		, mData(Move(rhs.mData))
-		, mVersion(0)
+		, mVersion(rhs.mVersion)
 	{
-		rhs.mFirstFree = -1;
+		rhs.mFirstFree = kInvalidIndex;
 	}
 
 	template <typename TYPE, size_t BLOCK_SIZE>
@@ -94,7 +95,11 @@ namespace CPF
 	template <typename TYPE, size_t BLOCK_SIZE>
 	IndexedPool<TYPE, BLOCK_SIZE>& IndexedPool<TYPE, BLOCK_SIZE>::operator = (IndexedPool&& rhs)
 	{
+		mFirstFree = rhs.mFirstFree;
+		mHandles = Move(rhs.mHandles);
 		mData = Move(rhs.mData);
+		mVersion = rhs.mVersion;
+		rhs.mFirstFree = kInvalidIndex;
 		return *this;
 	}
 
@@ -111,8 +116,10 @@ namespace CPF
 
 		mFirstFree = handle.mIndex;
 
-		handle.mIndex = int32_t(index);
+		handle.mIndex = uint32_t(index);
 		handle.mVersion = ++mVersion;
+		if (mVersion == kInvalidIndex)
+			mVersion = 0;
 
 		HandleStorage result;
 		result.mIndex = handleIndex;
@@ -127,7 +134,7 @@ namespace CPF
 		handle.mHandle = which;
 		CPF_ASSERT(handle.mVersion == mHandles[handle.mIndex].mVersion);
 
-		if (handle.mIndex != int32_t(mData.size()-1))
+		if (handle.mIndex != uint32_t(mData.size()-1))
 		{
 			mHandles[mData.back().mHandle].mIndex = mHandles[handle.mIndex].mIndex;
 			mData[mHandles[handle.mIndex].mIndex] = mData.back();
@@ -148,6 +155,12 @@ namespace CPF
 	}
 
 	template <typename TYPE, size_t BLOCK_SIZE>
+	size_t IndexedPool<TYPE, BLOCK_SIZE>::Size() const
+	{
+		return mData.size();
+	}
+
+	template <typename TYPE, size_t BLOCK_SIZE>
 	void IndexedPool<TYPE, BLOCK_SIZE>::_ReserveHandles(size_t size)
 	{
 		size_t blockCount = ((size - 1) / kHandleBlockSize) + 1;
@@ -161,10 +174,10 @@ namespace CPF
 			for (auto ibegin = mHandles.begin() + startIndex; ibegin!=iend; ++ibegin)
 			{
 				auto& handle = *ibegin;
-				handle.mVersion = -1;
+				handle.mVersion = kInvalidIndex;
 				handle.mIndex = ++i;
 			}
-			mHandles.back().mIndex = -1;
+			mHandles.back().mIndex = kInvalidIndex;
 			mFirstFree = int32_t(startIndex);
 		}
 	}
@@ -172,10 +185,11 @@ namespace CPF
 	template <typename TYPE, size_t BLOCK_SIZE>
 	size_t IndexedPool<TYPE, BLOCK_SIZE>::_AllocHandle()
 	{
-		if (mFirstFree == -1)
+		if (mFirstFree == kInvalidIndex)
 			_ReserveHandles(mHandles.size() + kHandleBlockSize);
 		size_t result = size_t(mFirstFree);
 		mHandles[result].mVersion = ++mVersion;
+		mVersion = mVersion == kInvalidIndex ? 0 : mVersion;
 		mFirstFree = mHandles[result].mIndex;
 		return result;
 	}
@@ -184,7 +198,7 @@ namespace CPF
 	void IndexedPool<TYPE, BLOCK_SIZE>::_ReturnHandle(size_t idx)
 	{
 		mHandles[idx].mIndex = mFirstFree;
-		mHandles[idx].mVersion = -1;
-		mFirstFree = int32_t(idx);
+		mHandles[idx].mVersion = kInvalidIndex;
+		mFirstFree = uint32_t(idx);
 	}
 }
