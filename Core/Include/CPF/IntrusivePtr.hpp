@@ -56,12 +56,12 @@ namespace CPF
 		TYPE** AsPP() { return reinterpret_cast<TYPE**>(&mpTarget); }
 
 		// Safe variations.
-		void AddRef() { _AddRef(); }
-		void Release() { _Release(); }
+		int32_t AddRef() { return _AddRef(); }
+		int32_t Release() { return _Release(); }
 
 	private:
-		void _AddRef();
-		void _Release();
+		int32_t _AddRef();
+		int32_t _Release();
 
 		TARGET* Cast() const;
 
@@ -219,23 +219,27 @@ namespace CPF
 
 
 	template<typename TARGET>
-	void IntrusivePtr<TARGET>::_AddRef()
+	int32_t IntrusivePtr<TARGET>::_AddRef()
 	{
 		if (mpTarget)
 		{
-			Cast()->AddRef();
+			return Cast()->AddRef();
 		}
+		return 0;
 	}
 
 
 	template<typename TARGET>
-	void IntrusivePtr<TARGET>::_Release()
+	int32_t IntrusivePtr<TARGET>::_Release()
 	{
 		if (mpTarget)
 		{
-			if (Cast()->Release() == 0)
+			int32_t result = 0;
+			if ((result = Cast()->Release()) == 0)
 				mpTarget = nullptr;
+			return result;
 		}
+		return 0;
 	}
 
 	template<typename TARGET>
