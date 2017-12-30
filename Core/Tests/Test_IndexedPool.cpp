@@ -107,3 +107,18 @@ TEST(IndexedPool, HandleExpansion)
 		EXPECT_EQ(testData.Get(h3), nullptr);
 	}
 }
+
+TEST(IndexedPool, Iteration)
+{
+	IndexedPool<TestData> testData;
+	Vector<IndexedPool<TestData>::Handle> handles;
+	for (int i=0; i<30; ++i)
+	{
+		handles.push_back(testData.Alloc({ int8_t(i) }));
+	}
+	int i = 0;
+	for (const auto& c : testData)
+	{
+		EXPECT_EQ(i++, c.mData0);
+	}
+}

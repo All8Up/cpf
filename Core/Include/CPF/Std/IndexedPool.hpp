@@ -29,6 +29,13 @@ namespace CPF
 
 		size_t Size() const;
 
+		class Iterator;
+		class ConstIterator;
+		Iterator begin();
+		Iterator end();
+		ConstIterator begin() const;
+		ConstIterator end() const;
+
 	private:
 		IndexedPool(const IndexedPool&) = delete;
 		IndexedPool& operator = (const IndexedPool&) = delete;
@@ -52,12 +59,70 @@ namespace CPF
 			TYPE mData;
 			uint32_t mHandle;
 		};
+		using DataVector = Vector<TypeStorage>;
 
 		uint32_t mFirstFree;
 		uint32_t mVersion;
 		Vector<HandleStorage> mHandles;
-		Vector<TypeStorage> mData;
+		DataVector mData;
 	};
+
+	template <typename TYPE, size_t BLOCK_SIZE>
+	class IndexedPool<TYPE, BLOCK_SIZE>::Iterator
+	{
+		using Pool = IndexedPool<TYPE, BLOCK_SIZE>;
+
+	public:
+		Iterator(typename Pool::DataVector::iterator it) : mIterator(it) {}
+		~Iterator() {}
+
+		TYPE& operator *() { return (*mIterator).mData; }
+		Iterator operator ++() { ++mIterator;  return *this; }
+		bool operator != (const Iterator& rhs) const { return mIterator != rhs.mIterator; }
+
+	private:
+		typename Pool::DataVector::iterator mIterator;
+	};
+	template <typename TYPE, size_t BLOCK_SIZE>
+	class IndexedPool<TYPE, BLOCK_SIZE>::ConstIterator
+	{
+		using Pool = IndexedPool<TYPE, BLOCK_SIZE>;
+
+	public:
+		ConstIterator(typename Pool::DataVector::const_iterator it) : mIterator(it) {}
+		~ConstIterator() {}
+
+		const TYPE& operator *() const { return (*mIterator).mData; }
+		ConstIterator operator ++() { ++mIterator;  return *this; }
+		bool operator != (const Iterator& rhs) const { return mIterator != rhs.mIterator; }
+
+	private:
+		typename Pool::DataVector::const_iterator mIterator;
+	};
+
+	template <typename TYPE, size_t BLOCK_SIZE>
+	typename IndexedPool<TYPE, BLOCK_SIZE>::Iterator IndexedPool<TYPE, BLOCK_SIZE>::begin()
+	{
+		return Iterator(mData.begin());
+	}
+
+	template <typename TYPE, size_t BLOCK_SIZE>
+	typename IndexedPool<TYPE, BLOCK_SIZE>::Iterator IndexedPool<TYPE, BLOCK_SIZE>::end()
+	{
+		return Iterator(mData.end());
+	}
+
+	template <typename TYPE, size_t BLOCK_SIZE>
+	typename IndexedPool<TYPE, BLOCK_SIZE>::ConstIterator IndexedPool<TYPE, BLOCK_SIZE>::begin() const
+	{
+		return ConstIterator(mData.cbegin());
+	}
+
+	template <typename TYPE, size_t BLOCK_SIZE>
+	typename IndexedPool<TYPE, BLOCK_SIZE>::ConstIterator IndexedPool<TYPE, BLOCK_SIZE>::end() const
+	{
+		return ConstIterator(mData.cend());
+	}
 
 	//////////////////////////////////////////////////////////////////////////
 	template <typename TYPE, size_t BLOCK_SIZE>
