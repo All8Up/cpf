@@ -50,7 +50,6 @@ namespace CPF
 			static Vector3fv sectorHalfSize(kHalfSectorSize);
 			static Vector3fv sectorSize(kSectorSize);
 			static Vector3fv ooSectorSize(1.0f / kSectorSize);
-			static Vector3iv negOne(-1);
 			static Vector3fv zero(0.0f);
 
 			Vector3fv v = GetVector(lv);
