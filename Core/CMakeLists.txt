@@ -304,6 +304,7 @@ set (STD_INCLUDES
 )
 
 set (THREADING_INCLUDES
+	Include/CPF/Threading/Algorithm.hpp
 	Include/CPF/Threading/ConditionVariable.hpp
 	Include/CPF/Threading/CPU.hpp
 	Include/CPF/Threading/Mutex.hpp
