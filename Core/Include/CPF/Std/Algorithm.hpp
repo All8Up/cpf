@@ -33,6 +33,18 @@ namespace CPF
 		return std::for_each(first, last, func);
 	}
 
+	template <typename InputIterator, typename T>
+	InputIterator Find(InputIterator first, InputIterator last, const T& val)
+	{
+		return std::find(first, last, val);
+	}
+
+	template <typename InputIterator, typename T, typename COMP>
+	InputIterator Find(InputIterator first, InputIterator last, const T& val, COMP comp)
+	{
+		return std::find(first, last, val, comp);
+	}
+
 	template <typename InputIterator, typename Predicate>
 	InputIterator FindIf(InputIterator first, InputIterator last, Predicate pred)
 	{
@@ -49,5 +61,41 @@ namespace CPF
 	LHS Max(LHS lhs, RHS rhs)
 	{
 		return std::max(lhs, rhs);
+	}
+
+	template <typename ForwardIterator, typename T>
+	ForwardIterator LowerBound(ForwardIterator first, ForwardIterator last, const T& val)
+	{
+		return std::lower_bound(first, last, val);
+	}
+
+	template <typename ForwardIterator, typename T, typename COMP>
+	ForwardIterator LowerBound(ForwardIterator first, ForwardIterator last, const T& val, COMP comp)
+	{
+		return std::lower_bound(first, last, val, comp);
+	}
+
+	template <typename ForwardIterator, typename T>
+	ForwardIterator UpperBound(ForwardIterator first, ForwardIterator last, const T& val)
+	{
+		return std::upper_bound(first, last, val);
+	}
+
+	template <typename ForwardIterator, typename T, typename COMP>
+	ForwardIterator UpperBound(ForwardIterator first, ForwardIterator last, const T& val, COMP comp)
+	{
+		return std::upper_bound(first, last, val, comp);
+	}
+
+	template <typename ForwardIterator, typename T>
+	bool BinarySearch(ForwardIterator first, ForwardIterator last, const T& val)
+	{
+		return std::binary_search(first, last, val);
+	}
+
+	template <typename ForwardIterator, typename T, typename COMP>
+	bool BinarySearch(ForwardIterator first, ForwardIterator last, const T& val, COMP comp)
+	{
+		return std::binary_search(first, last, val, comp);
 	}
 }
