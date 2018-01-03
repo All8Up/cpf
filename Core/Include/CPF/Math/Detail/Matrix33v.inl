@@ -33,10 +33,11 @@ namespace CPF
 		template <typename TYPE> inline
 			Matrix33<TYPE>::Matrix33(Quaternion<typename TYPE::Lanes_4> value)
 		{
-			Element x2 = value.x + value.x;  Element y2 = value.y + value.y;  Element z2 = value.z + value.z;
-			Element xx = value.x * x2;   Element xy = value.x * y2;   Element xz = value.x * z2;
-			Element yy = value.y * y2;   Element yz = value.y * z2;   Element zz = value.z * z2;
-			Element wx = value.w * x2;   Element wy = value.w * y2;   Element wz = value.w * z2;
+			using T = Element;
+			Element x2 = T(value.x) + T(value.x); Element y2 = T(value.y) + T(value.y);  Element z2 = T(value.z) + T(value.z);
+			Element xx = T(value.x) * x2; Element xy = T(value.x) * y2;   Element xz = T(value.x) * z2;
+			Element yy = T(value.y) * y2; Element yz = T(value.y) * z2;   Element zz = T(value.z) * z2;
+			Element wx = T(value.w) * x2; Element wy = T(value.w) * y2;   Element wz = T(value.w) * z2;
 
 			mRows[0] = Row(Element(1) - (yy + zz), xy + wz, xz - wy);
 			mRows[1] = Row(xy - wz, Element(1) - (xx + zz), yz + wx);
@@ -95,8 +96,8 @@ namespace CPF
 		{
 			CPF_ASSERT(MagnitudeSq(axis) > Element(0.0001));
 			Row a = Normalize(axis);
-			Element ca = Cos(radians);
-			Element sa = Sin(radians);
+			Element ca = std::cos(radians);
+			Element sa = std::sin(radians);
 
 			Element omc = 1 - ca;
 			Element xx = a.x*a.x;

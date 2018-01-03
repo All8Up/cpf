@@ -6,7 +6,7 @@ namespace CPF
 	namespace Math
 	{
 		template <>
-		LargeVector3fv_t& Set(LargeVector3fv_t& largeVector,
+		inline LargeVector3fv_t& Set(LargeVector3fv_t& largeVector,
 			const Vector3fv v,
 			const Vector3iv s)
 		{
@@ -16,14 +16,14 @@ namespace CPF
 		}
 
 		template <>
-		Vector3iv GetSector(const LargeVector3fv_t lg)
+		inline Vector3iv GetSector(const LargeVector3fv_t lg)
 		{
 			SectorCodecI32x3 decode(lg.mData.w);
 			return Vector3iv(decode.mFields.mX, decode.mFields.mY, decode.mFields.mZ);
 		}
 
 		template <>
-		LargeVector3fv_t& SetSector(LargeVector3fv_t& largeVector, const Vector3iv s)
+		inline LargeVector3fv_t& SetSector(LargeVector3fv_t& largeVector, const Vector3iv s)
 		{
 			SectorCodecI32x3 encode(s);
 			largeVector.mData = LargeVector3fv_t::StorageType(largeVector.mData.xyz, encode.mStorage);
@@ -31,19 +31,19 @@ namespace CPF
 		}
 
 		template <>
-		LargeVector3fv_t::VectorType GetVector(const LargeVector3fv_t largeVector)
+		inline LargeVector3fv_t::VectorType GetVector(const LargeVector3fv_t largeVector)
 		{
 			return LargeVector3fv_t::VectorType(largeVector.mData.xyz);
 		}
 		template <>
-		LargeVector3fv_t& SetVector(LargeVector3fv_t& largeVector, const LargeVector3fv_t::VectorType v)
+		inline LargeVector3fv_t& SetVector(LargeVector3fv_t& largeVector, const LargeVector3fv_t::VectorType v)
 		{
 			largeVector.mData = LargeVector3fv_t::StorageType(v.xyz, largeVector.mData.w);
 			return largeVector;
 		}
 
 		template <>
-		LargeVector3fv_t GetSectorized(const LargeVector3fv_t& lv)
+		inline LargeVector3fv_t GetSectorized(const LargeVector3fv_t& lv)
 		{
 			// TODO: Check the disassembly, probably need a way to make static constexpr
 			// versions of simd types.
@@ -71,28 +71,28 @@ namespace CPF
 		}
 
 		template <>
-		LargeVector3fv_t operator +(const LargeVector3fv_t& lhs, const Vector3fv& rhs)
+		inline LargeVector3fv_t operator +(const LargeVector3fv_t& lhs, const Vector3fv& rhs)
 		{
 			LargeVector3fv_t result;
 			return GetSectorized(Set(result, GetVector(lhs) + rhs, GetSector(lhs)));
 		}
 
 		template <>
-		LargeVector3fv_t operator +(const LargeVector3fv_t& lhs, const LargeVector3fv_t& rhs)
+		inline LargeVector3fv_t operator +(const LargeVector3fv_t& lhs, const LargeVector3fv_t& rhs)
 		{
 			LargeVector3fv_t result;
 			return GetSectorized(Set(result, GetVector(lhs) + GetVector(rhs), GetSector(rhs) - GetSector(lhs)));
 		}
 
 		template <>
-		LargeVector3fv_t operator -(const LargeVector3fv_t& lhs, const Vector3fv& rhs)
+		inline LargeVector3fv_t operator -(const LargeVector3fv_t& lhs, const Vector3fv& rhs)
 		{
 			LargeVector3fv_t result;
 			return GetSectorized(Set(result, GetVector(lhs) - rhs, GetSector(lhs)));
 		}
 
 		template <>
-		LargeVector3fv_t operator -(const LargeVector3fv_t& lhs, const LargeVector3fv_t& rhs)
+		inline LargeVector3fv_t operator -(const LargeVector3fv_t& lhs, const LargeVector3fv_t& rhs)
 		{
 			LargeVector3fv_t result;
 			return GetSectorized(Set(result, GetVector(lhs) - GetVector(rhs), GetSector(rhs) - GetSector(lhs)));
