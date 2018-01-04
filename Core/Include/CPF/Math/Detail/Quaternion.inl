@@ -36,6 +36,50 @@ namespace CPF
 		Quaternion<TYPE>::Quaternion(typename TYPE::Lanes_3 v012, Element w)
 			: mVector(v012, w)
 		{}
+		
+		template<typename TYPE>
+		template<typename MATRIX>
+		Quaternion<TYPE>::Quaternion(const MATRIX& rhs)
+		{
+			float trace = rhs[0][0] + rhs[1][1] + rhs[2][2];
+
+			if (trace > 0.001f)
+			{
+				float	s = 0.5f / ::sqrtf(trace + 1.0f);
+				x = (rhs[1][2] - rhs[2][1]) * s;
+				y = (rhs[2][0] - rhs[0][2]) * s;
+				z = (rhs[0][1] - rhs[1][0]) * s;
+				w = 0.25f / s;
+			}
+			else
+			{
+				if (rhs[0][0] > rhs[1][1] &&
+					rhs[0][0] > rhs[2][2])
+				{
+					float	s = 2.0f * ::sqrtf(1.0f + rhs[0][0] - rhs[1][1] - rhs[2][2]);
+					x = 0.25f * s;
+					y = (rhs[1][0] + rhs[0][1]) / s;
+					z = (rhs[2][0] + rhs[0][2]) / s;
+					w = (rhs[1][2] - rhs[2][1]) / s;
+				}
+				else if (rhs[1][1] > rhs[2][2])
+				{
+					float	s = 2.0f * ::sqrtf(1.0f + rhs[1][1] - rhs[0][0] - rhs[2][2]);
+					x = (rhs[1][0] + rhs[0][1]) / s;
+					y = 0.25f * s;
+					z = (rhs[2][1] + rhs[1][2]) / s;
+					w = (rhs[2][0] - rhs[0][2]) / s;
+				}
+				else
+				{
+					float	s = 2.0f * ::sqrtf(1.0f + rhs[2][2] - rhs[0][0] - rhs[1][1]);
+					x = (rhs[2][0] + rhs[0][2]) / s;
+					y = (rhs[2][1] + rhs[1][2]) / s;
+					z = 0.25f * s;
+					w = (rhs[0][1] - rhs[1][0]) / s;
+				}
+			}
+		}
 
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>

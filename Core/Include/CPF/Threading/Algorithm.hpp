@@ -14,7 +14,8 @@ namespace CPF
 			do
 			{
 				start = first.fetch_add(ChunkSize);
-				for (; start < last; ++start)
+				IndexType end = start + ChunkSize > last ? last : start + ChunkSize;
+				for (; start < end; ++start)
 				{
 					callable(data[start]);
 				}

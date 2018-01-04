@@ -29,6 +29,8 @@ namespace CPF
 			template <int I0, int I1, int I2, int I3>
 			constexpr Quaternion(SIMD::LaneRef_4<TYPE, I0, I1, I2, I3>& ref);
 			Quaternion(typename TYPE::Lanes_3, Element);
+			template <typename MATRIX>
+			explicit Quaternion(const MATRIX& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
 			SIMD::LaneIndex<TYPE> CPF_VECTORCALL operator [](int idx);
