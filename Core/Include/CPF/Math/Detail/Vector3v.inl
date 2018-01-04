@@ -180,6 +180,12 @@ namespace CPF
 			return Vector3<TYPE>(lhs.mSIMD / rhs.mSIMD);
 		}
 
+		template <typename TYPE>
+		inline Vector3<TYPE> CPF_VECTORCALL operator / (const Vector3<TYPE> lhs, typename Vector3<TYPE>::LaneType rhs)
+		{
+			return lhs / Vector3<TYPE>(rhs);
+		}
+
 		//////////////////////////////////////////////////////////////////////////
 		template <typename TYPE>
 		Vector3<TYPE>& CPF_VECTORCALL Vector3<TYPE>::operator += (const Vector3<TYPE>& rhs)
