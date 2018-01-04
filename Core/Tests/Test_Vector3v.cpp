@@ -567,19 +567,44 @@ TEST(Vector3fv, Ceil_SSE4_1)
 TEST(Vector3fv, Cross_Reference)
 {
 	using Vector3fv = Vector3fv_Reference;
-	Vector3fv t0 = { 1.0f, 0.0f, 0.0f };
-	Vector3fv t1 = { 0.0f, 1.0f, 0.0f };
-	Vector3fv t2 = Cross(t0, t1);
-
-	EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
+	{
+		Vector3fv t0 = { 1.0f, 0.0f, 0.0f };
+		Vector3fv t1 = { 0.0f, 1.0f, 0.0f };
+		Vector3fv t2 = Cross(t0, t1);
+		EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
+	}
+	{
+		Vector3fv t0 = { 0.0f, 1.0f, 0.0f };
+		Vector3fv t1 = { 0.0f, 0.0f, 1.0f };
+		Vector3fv t2 = Cross(t0, t1);
+		EXPECT_TRUE(Near(t2, { 1.0f, 0.0f, 0.0f }, 0.01f));
+	}
+	{
+		Vector3fv t0 = { 0.0f, 0.0f, 1.0f };
+		Vector3fv t1 = { 1.0f, 0.0f, 0.0f };
+		Vector3fv t2 = Cross(t0, t1);
+		EXPECT_TRUE(Near(t2, { 0.0f, 1.0f, 0.0f }, 0.01f));
+	}
 }
-
 TEST(Vector3fv, Cross_SSE4_1)
 {
 	using Vector3fv = Vector3fv_SSE4_1;
-	Vector3fv t0 = { 1.0f, 0.0f, 0.0f };
-	Vector3fv t1 = { 0.0f, 1.0f, 0.0f };
-	Vector3fv t2 = Cross(t0, t1);
-
-	EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
+	{
+		Vector3fv t0 = { 1.0f, 0.0f, 0.0f };
+		Vector3fv t1 = { 0.0f, 1.0f, 0.0f };
+		Vector3fv t2 = Cross(t0, t1);
+		EXPECT_TRUE(Near(t2, { 0.0f, 0.0f, 1.0f }, 0.01f));
+	}
+	{
+		Vector3fv t0 = { 0.0f, 1.0f, 0.0f };
+		Vector3fv t1 = { 0.0f, 0.0f, 1.0f };
+		Vector3fv t2 = Cross(t0, t1);
+		EXPECT_TRUE(Near(t2, { 1.0f, 0.0f, 0.0f }, 0.01f));
+	}
+	{
+		Vector3fv t0 = { 0.0f, 0.0f, 1.0f };
+		Vector3fv t1 = { 1.0f, 0.0f, 0.0f };
+		Vector3fv t2 = Cross(t0, t1);
+		EXPECT_TRUE(Near(t2, { 0.0f, 1.0f, 0.0f }, 0.01f));
+	}
 }
