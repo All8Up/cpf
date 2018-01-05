@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "CPF/Configuration.hpp"
 
 namespace CPF
 {
 	namespace Math
 	{
 		template <typename TYPE>
-		TYPE Pow(TYPE value)
+		TYPE Pow(TYPE lhs, TYPE rhs)
 		{
-			return std::pow(value);
+			return std::pow(lhs, rhs);
 		}
 
 		template <typename TYPE>
