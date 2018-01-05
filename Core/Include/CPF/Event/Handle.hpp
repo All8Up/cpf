@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/Event/Id.hpp"
+#include "CPF/Std/Move.hpp"
 
 namespace CPF
 {
@@ -167,7 +168,7 @@ namespace CPF
 		/// old owner handle.
 		//////////////////////////////////////////////////////////////////////////
 		inline Handle::Handle(Handle&& rhs) noexcept
-			: HandleBase(std::move(rhs))
+			: HandleBase(Move(rhs))
 		{
 			rhs.m_pEmitter = nullptr;
 		}
@@ -178,7 +179,7 @@ namespace CPF
 		/// handle and invalidates the old handle.
 		//////////////////////////////////////////////////////////////////////////
 		inline Handle::Handle(HandleBase&& rhs) noexcept
-			: HandleBase(std::move(rhs))
+			: HandleBase(Move(rhs))
 		{
 			rhs.Abandon();
 		}

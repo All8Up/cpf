@@ -66,10 +66,10 @@ namespace CPF
 			case Type::eNotSet:
 				break;
 			case Type::eOK:
-				new (&mData.mOK) OK_TYPE(std::move(rhs.mData.mOK));
+				new (&mData.mOK) OK_TYPE(Move(rhs.mData.mOK));
 				break;
 			case Type::eError:
-				new (&mData.mError) ERROR_TYPE(std::move(rhs.mData.mError));
+				new (&mData.mError) ERROR_TYPE(Move(rhs.mData.mError));
 				break;
 			}
 		}
@@ -95,7 +95,7 @@ namespace CPF
 		{
 			Result result;
 			result.mType = Type::eOK;
-			new (&result.mData.mOK) OK_TYPE(std::move(ok));
+			new (&result.mData.mOK) OK_TYPE(Move(ok));
 			return result;
 		}
 
@@ -104,7 +104,7 @@ namespace CPF
 		{
 			Result result;
 			result.mType = Type::eError;
-			new (&result.mData.mError) ERROR_TYPE(std::move(error));
+			new (&result.mData.mError) ERROR_TYPE(Move(error));
 			return result;
 		}
 
@@ -118,10 +118,10 @@ namespace CPF
 			case Type::eNotSet:
 				break;
 			case Type::eOK:
-				new (&mData.mOK) OK_TYPE(std::move(rhs.mData.mOK));
+				new (&mData.mOK) OK_TYPE(Move(rhs.mData.mOK));
 				break;
 			case Type::eError:
-				new (&mData.mError) OK_TYPE(std::move(rhs.mData.mError));
+				new (&mData.mError) OK_TYPE(Move(rhs.mData.mError));
 				break;
 			}
 			return *this;

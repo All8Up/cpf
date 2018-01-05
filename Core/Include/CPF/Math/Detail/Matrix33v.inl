@@ -1,6 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/Math/Quaternion.hpp"
+#include "CPF/Math/Trigonometric.hpp"
 
 namespace CPF
 {
@@ -96,8 +97,8 @@ namespace CPF
 		{
 			CPF_ASSERT(MagnitudeSq(axis) > Element(0.0001));
 			Row a = Normalize(axis);
-			Element ca = std::cos(radians);
-			Element sa = std::sin(radians);
+			Element ca = Cos(radians);
+			Element sa = Sin(radians);
 
 			Element omc = 1 - ca;
 			Element xx = a.x*a.x;
