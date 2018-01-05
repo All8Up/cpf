@@ -51,18 +51,6 @@ namespace CPF
 		return std::find_if(first, last, pred);
 	}
 
-	template <typename LHS, typename RHS>
-	LHS Min(LHS lhs, RHS rhs)
-	{
-		return std::min(lhs, rhs);
-	}
-
-	template <typename LHS, typename RHS>
-	LHS Max(LHS lhs, RHS rhs)
-	{
-		return std::max(lhs, rhs);
-	}
-
 	template <typename ForwardIterator, typename T>
 	ForwardIterator LowerBound(ForwardIterator first, ForwardIterator last, const T& val)
 	{
