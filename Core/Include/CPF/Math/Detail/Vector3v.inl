@@ -339,5 +339,12 @@ namespace CPF
 		{
 			return Vector3<TYPE>(Modulus(lhs.mSIMD, rhs.mSIMD));
 		}
+		
+		//
+		template <typename TYPE>
+		bool CPF_VECTORCALL IsValid(Vector3<TYPE> value)
+		{
+			return Valid(value.mSIMD);
+		}
 	}
 }
