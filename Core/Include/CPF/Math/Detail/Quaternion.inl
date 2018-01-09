@@ -180,10 +180,64 @@ namespace CPF
 			}
 			return Quaternion<TYPE>(Element(0));
 		}
+		
+		template <typename TYPE>
+		Vector3<typename TYPE::Lanes_3> CPF_VECTORCALL GetXBasis(const Quaternion<TYPE> value)
+		{
+			using T = typename Quaternion<TYPE>::Element;
+			using V = Vector3<typename TYPE::Lanes_3>;
+			T y2 = T(value.y) + T(value.y);
+			T z2 = T(value.z) + T(value.z);
+			T xy = T(value.x) * y2;
+			T xz = T(value.x) * z2;
+			T yy = T(value.y) * y2;
+			T zz = T(value.z) * z2;
+			T wy = T(value.w) * y2;
+			T wz = T(value.w) * z2;
 
-		/*
-		Lerp
-		Slerp
-		*/
+			return Vector3<typename TYPE::Lanes_3>(
+				T(1) - (yy + zz), xy - wz, xz + wy
+				);
+		}
+
+		template <typename TYPE>
+		Vector3<typename TYPE::Lanes_3> CPF_VECTORCALL GetYBasis(const Quaternion<TYPE> value)
+		{
+			using T = typename Quaternion<TYPE>::Element;
+			using V = Vector3<typename TYPE::Lanes_3>;
+			T x2 = T(value.x) + T(value.x);
+			T y2 = T(value.y) + T(value.y);
+			T z2 = T(value.z) + T(value.z);
+			T xx = T(value.x) * x2;
+			T xy = T(value.x) * y2;
+			T yz = T(value.y) * z2;
+			T zz = T(value.z) * z2;
+			T wx = T(value.w) * x2;
+			T wz = T(value.w) * z2;
+
+			return Vector3<typename TYPE::Lanes_3>(
+				xy + wz, T(1) - (xx + zz), yz - wx
+				);
+		}
+
+		template <typename TYPE>
+		Vector3<typename TYPE::Lanes_3> CPF_VECTORCALL GetZBasis(const Quaternion<TYPE> value)
+		{
+			using T = typename Quaternion<TYPE>::Element;
+			using V = Vector3<typename TYPE::Lanes_3>;
+			T x2 = T(value.x) + T(value.x);
+			T y2 = T(value.y) + T(value.y);
+			T z2 = T(value.z) + T(value.z);
+			T xx = T(value.x) * x2;
+			T xz = T(value.x) * z2;
+			T yy = T(value.y) * y2;
+			T yz = T(value.y) * z2;
+			T wx = T(value.w) * x2;
+			T wy = T(value.w) * y2;
+
+			return Vector3<typename TYPE::Lanes_3>(
+				xz - wy, yz + wx, T(1) - (xx + yy)
+				);
+		}
 	}
 }
