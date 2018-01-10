@@ -219,9 +219,11 @@ namespace CPF
 
 				auto it = temp.find_last_of(kExtensionSeparator);
 				auto slash = temp.find_last_of(kDirectorySeparator);
-				if (it < slash || it == STRING_TYPE::npos)
+				if ((slash != STRING_TYPE::npos) && (it < slash))
 					return STRING_TYPE();
-				return STRING_TYPE(temp.begin() + it, temp.end());
+				if (it == STRING_TYPE::npos)
+					return STRING_TYPE();
+				return STRING_TYPE(temp.begin() + it + 1, temp.end());
 			}
 			inline String GetExtension(const String& path) { return _GetExtension(path); }
 			inline WString GetExtension(const WString& path) { return _GetExtension(path); }

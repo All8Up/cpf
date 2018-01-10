@@ -147,7 +147,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 		if (exists == mLibraryMap.end())
 		{
 #ifdef CPF_CSHARP
-			if (IO::Path::GetExtension(name) == ".csp")
+			if (IO::Path::GetExtension(name) == "csp")
 			{
 				if (LoadCSharpPlugin(this, name))
 					return GOM::kOK;

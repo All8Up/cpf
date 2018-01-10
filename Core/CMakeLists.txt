@@ -54,6 +54,7 @@ set (CPF_INCLUDES
 	Include/CPF/Simd.hpp
 	Include/CPF/Threading.hpp
 	Include/CPF/Time.hpp
+	Include/CPF/Option.hpp
 )
 set (CPF_SOURCES
 	Source/CPF.cpp
@@ -518,6 +519,7 @@ set (TEST_SOURCES
 	Tests/Test_Matrix44v.cpp
 	Tests/Test_Mutex.cpp
 	Tests/Test_OBB.cpp
+	Tests/Test_Option.cpp
 	Tests/Test_Path.cpp
 	Tests/Test_Plugin.cpp
 	Tests/Test_Quaternion.cpp
