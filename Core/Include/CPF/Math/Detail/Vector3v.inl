@@ -340,6 +340,12 @@ namespace CPF
 			return Vector3<TYPE>(Modulus(lhs.mSIMD, rhs.mSIMD));
 		}
 		
+		template <typename TYPE>
+		inline Vector3<TYPE> CPF_VECTORCALL Project(Vector3<TYPE> lhs, Vector3<TYPE> rhs)
+		{
+			return rhs * (Dot(lhs, rhs) / Dot(rhs, rhs));
+		}
+		
 		//
 		template <typename TYPE>
 		bool CPF_VECTORCALL IsValid(Vector3<TYPE> value)
