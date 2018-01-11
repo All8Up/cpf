@@ -3,122 +3,99 @@
 
 using namespace CPF;
 
-struct alignas(16) TestData
+TEST(HandlePool, BasicConstruction)
 {
-	int8_t mData0;
-};
-
-TEST(IndexedPool, BasicConstruction)
-{
-	IndexedPool<TestData> testData0;
-	IndexedPool<TestData> testData1(10);
-	IndexedPool<TestData> testData2(Move(testData0));
+	HandlePool<> testData0;
+	HandlePool<> testData1(10);
+	HandlePool<> testData2(Move(testData0));
 }
 
-TEST(IndexedPool, AddRemoveAndAlignment)
+TEST(HandlePool, AddRemove)
 {
-	IndexedPool<TestData> testData;
+	HandlePool<4> testData;
 
-	auto h0 = testData.Alloc({ 1 });
+	auto h0 = testData.Alloc(1);
 	auto t0 = testData.Get(h0);
-	EXPECT_EQ(t0->mData0, 1);
-	EXPECT_TRUE(intptr_t(t0) % 16 == 0);
+	EXPECT_EQ(t0, 1);
 
-	auto h1 = testData.Alloc({ 2 });
+	auto h1 = testData.Alloc(2);
 	auto t1 = testData.Get(h1);
-	EXPECT_EQ(t1->mData0, 2);
-	EXPECT_TRUE(intptr_t(t1) % 16 == 0);
+	EXPECT_EQ(t1, 2);
 
 	//
 	testData.Free(h0);
-	EXPECT_EQ(testData.Get(h0), nullptr);
-	EXPECT_TRUE(testData.Get(h1)->mData0 == 2);
+	EXPECT_EQ(testData.Get(h0), uint32_t(-1));
 }
 
-TEST(IndexedPool, HandleReuse)
+TEST(HandlePool, HandleReuse)
 {
-	IndexedPool<TestData, 8> testData;
+	HandlePool<4> testData;
 	{
-		auto h0 = testData.Alloc({ 0 });
-		auto h1 = testData.Alloc({ 1 });
-		auto h2 = testData.Alloc({ 2 });
-		auto h3 = testData.Alloc({ 3 });
+		auto h0 = testData.Alloc(0);
+		auto h1 = testData.Alloc(1);
+		auto h2 = testData.Alloc(2);
+		auto h3 = testData.Alloc(3);
 
-		EXPECT_EQ(testData.Get(h0)->mData0, 0);
-		EXPECT_EQ(testData.Get(h1)->mData0, 1);
-		EXPECT_EQ(testData.Get(h2)->mData0, 2);
-		EXPECT_EQ(testData.Get(h3)->mData0, 3);
+		EXPECT_EQ(testData.Get(h0), 0);
+		EXPECT_EQ(testData.Get(h1), 1);
+		EXPECT_EQ(testData.Get(h2), 2);
+		EXPECT_EQ(testData.Get(h3), 3);
 
 		testData.Free(h0);
 		testData.Free(h1);
 		testData.Free(h2);
 		testData.Free(h3);
 
-		EXPECT_EQ(testData.Get(h0), nullptr);
-		EXPECT_EQ(testData.Get(h1), nullptr);
-		EXPECT_EQ(testData.Get(h2), nullptr);
-		EXPECT_EQ(testData.Get(h3), nullptr);
+		EXPECT_EQ(testData.Get(h0), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h1), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h2), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h3), uint32_t(-1));
 	}
 	{
-		auto h0 = testData.Alloc({ 4 });
-		auto h1 = testData.Alloc({ 5 });
-		auto h2 = testData.Alloc({ 6 });
-		auto h3 = testData.Alloc({ 7 });
+		auto h0 = testData.Alloc(4);
+		auto h1 = testData.Alloc(5);
+		auto h2 = testData.Alloc(6);
+		auto h3 = testData.Alloc(7);
 
-		EXPECT_EQ(testData.Get(h0)->mData0, 4);
-		EXPECT_EQ(testData.Get(h1)->mData0, 5);
-		EXPECT_EQ(testData.Get(h2)->mData0, 6);
-		EXPECT_EQ(testData.Get(h3)->mData0, 7);
+		EXPECT_EQ(testData.Get(h0), 4);
+		EXPECT_EQ(testData.Get(h1), 5);
+		EXPECT_EQ(testData.Get(h2), 6);
+		EXPECT_EQ(testData.Get(h3), 7);
 
 		testData.Free(h0);
 		testData.Free(h1);
 		testData.Free(h2);
 		testData.Free(h3);
 
-		EXPECT_EQ(testData.Get(h0), nullptr);
-		EXPECT_EQ(testData.Get(h1), nullptr);
-		EXPECT_EQ(testData.Get(h2), nullptr);
-		EXPECT_EQ(testData.Get(h3), nullptr);
+		EXPECT_EQ(testData.Get(h0), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h1), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h2), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h3), uint32_t(-1));
 	}
 }
 
-TEST(IndexedPool, HandleExpansion)
+TEST(HandlePool, HandleExpansion)
 {
-	IndexedPool<TestData, 2> testData;
+	HandlePool<2> testData;
 	{
-		auto h0 = testData.Alloc({ 0 });
-		auto h1 = testData.Alloc({ 1 });
-		auto h2 = testData.Alloc({ 2 });
-		auto h3 = testData.Alloc({ 3 });
+		auto h0 = testData.Alloc(0);
+		auto h1 = testData.Alloc(1);
+		auto h2 = testData.Alloc(2);
+		auto h3 = testData.Alloc(3);
 
-		EXPECT_EQ(testData.Get(h0)->mData0, 0);
-		EXPECT_EQ(testData.Get(h1)->mData0, 1);
-		EXPECT_EQ(testData.Get(h2)->mData0, 2);
-		EXPECT_EQ(testData.Get(h3)->mData0, 3);
+		EXPECT_EQ(testData.Get(h0), 0);
+		EXPECT_EQ(testData.Get(h1), 1);
+		EXPECT_EQ(testData.Get(h2), 2);
+		EXPECT_EQ(testData.Get(h3), 3);
 
 		testData.Free(h0);
 		testData.Free(h1);
 		testData.Free(h2);
 		testData.Free(h3);
 
-		EXPECT_EQ(testData.Get(h0), nullptr);
-		EXPECT_EQ(testData.Get(h1), nullptr);
-		EXPECT_EQ(testData.Get(h2), nullptr);
-		EXPECT_EQ(testData.Get(h3), nullptr);
-	}
-}
-
-TEST(IndexedPool, Iteration)
-{
-	IndexedPool<TestData> testData;
-	Vector<IndexedPool<TestData>::Handle> handles;
-	for (int i=0; i<30; ++i)
-	{
-		handles.push_back(testData.Alloc({ int8_t(i) }));
-	}
-	int i = 0;
-	for (const auto& c : testData)
-	{
-		EXPECT_EQ(i++, c.mData0);
+		EXPECT_EQ(testData.Get(h0), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h1), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h2), uint32_t(-1));
+		EXPECT_EQ(testData.Get(h3), uint32_t(-1));
 	}
 }
