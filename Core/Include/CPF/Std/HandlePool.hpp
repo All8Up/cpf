@@ -26,7 +26,12 @@ namespace CPF
 		void Free(Handle);
 
 		uint32_t Get(Handle handle);
-		void Set(Handle handle, uint32_t index);
+		void Set(uint32_t handleIndex, uint32_t index)
+		{
+			mHandles[handleIndex].mIndex = index;
+		}
+
+		uint32_t GetIndex(Handle handle) { HandleStorage storage; storage.mHandle = handle; return storage.mIndex; }
 
 		size_t Size() const;
 
@@ -135,16 +140,6 @@ namespace CPF
 		if (storage.mVersion == mHandles[storage.mIndex].mVersion)
 			return mHandles[storage.mIndex].mIndex;
 		return kInvalidIndex;
-	}
-
-	template <size_t BLOCK_SIZE>
-	void HandlePool<BLOCK_SIZE>::Set(Handle handle, uint32_t index)
-	{
-		HandleStorage storage;
-		storage.mHandle = handle;
-
-		if (storage.mVersion == mHandles[storage.mIndex].mVersion)
-			mHandles[storage.mIndex].mIndex = index;
 	}
 
 	template <size_t BLOCK_SIZE>
