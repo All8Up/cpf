@@ -22,16 +22,32 @@ namespace CPF
 
 		HandlePool& operator = (HandlePool&& rhs);
 
-		Handle Alloc(uint32_t index);
+		Handle Alloc(uint32_t data);
 		void Free(Handle);
 
 		uint32_t Get(Handle handle);
-		void Set(uint32_t handleIndex, uint32_t index)
+		void Set(Handle handle, uint32_t data)
 		{
-			mHandles[handleIndex].mIndex = index;
+			HandleData d;
+			d.mHandle = handle;
+			CPF_ASSERT(d.mVersion == mHandles[d.mData].mVersion);
+			mHandles[d.mData].mData = data;
+		}
+		bool IsValid(Handle handle)
+		{
+			HandleData data;
+			data.mHandle = handle;
+			return mHandles[data.mData].mVersion == data.mVersion;
 		}
 
-		uint32_t GetIndex(Handle handle) { HandleStorage storage; storage.mHandle = handle; return storage.mIndex; }
+		uint32_t GetVersion(Handle handle) const
+		{
+			HandleStorage storage; storage.mHandle = handle; return storage.mVersion;
+		}
+		uint32_t GetIndex(Handle handle) const
+		{
+			HandleStorage storage; storage.mHandle = handle; return storage.mData;
+		}
 
 		size_t Size() const;
 
@@ -44,19 +60,19 @@ namespace CPF
 		void _ReturnHandle(size_t);
 
 		static constexpr uint32_t kInvalidIndex = uint32_t(-1);
-		union HandleStorage
+		union HandleData
 		{
 			struct
 			{
 				uint32_t mVersion;
-				uint32_t mIndex;
+				uint32_t mData;
 			};
 			uint64_t mHandle;
 		};
 
 		uint32_t mFirstFree;
 		uint32_t mVersion;
-		Vector<HandleStorage> mHandles;
+		Vector<HandleData> mHandles;
 	};
 
 	//////////////////////////////////////////////////////////////////////////
@@ -106,39 +122,44 @@ namespace CPF
 		if (mFirstFree==kInvalidIndex)
 			_ReserveHandles(mHandles.size()+1);
 
-		auto handleIndex = mFirstFree;
-		auto& handle = mHandles[handleIndex];
+		// Unlink the first free handle.
+		auto firstFree = mFirstFree;
+		auto& handle = mHandles[mFirstFree];
+		mFirstFree = handle.mData;
 
-		mFirstFree = handle.mIndex;
-
-		handle.mIndex = uint32_t(index);
+		// Set handle data.
 		handle.mVersion = ++mVersion;
+		handle.mData = index;
+
+		// Check for version wrap, skip invalid if needed.
 		if (mVersion == kInvalidIndex)
 			mVersion = 0;
 
-		HandleStorage result;
-		result.mIndex = handleIndex;
+		// Prepare the result handle;
+		HandleData result;
 		result.mVersion = handle.mVersion;
+		result.mData = firstFree;
+
 		return Handle(result.mHandle);
 	}
 
 	template <size_t BLOCK_SIZE>
 	void HandlePool<BLOCK_SIZE>::Free(Handle which)
 	{
-		HandleStorage handle;
+		HandleData handle;
 		handle.mHandle = which;
-		CPF_ASSERT(handle.mVersion == mHandles[handle.mIndex].mVersion);
-		_ReturnHandle(handle.mIndex);
+		CPF_ASSERT(handle.mVersion == mHandles[handle.mData].mVersion);
+		_ReturnHandle(handle.mData);
 	}
 
 	template <size_t BLOCK_SIZE>
 	uint32_t HandlePool<BLOCK_SIZE>::Get(Handle handle)
 	{
-		HandleStorage storage;
-		storage.mHandle = handle;
+		HandleData view;
+		view.mHandle = handle;
 
-		if (storage.mVersion == mHandles[storage.mIndex].mVersion)
-			return mHandles[storage.mIndex].mIndex;
+		if (view.mVersion == mHandles[view.mData].mVersion)
+			return mHandles[view.mData].mData;
 		return kInvalidIndex;
 	}
 
@@ -163,9 +184,9 @@ namespace CPF
 			{
 				auto& handle = *ibegin;
 				handle.mVersion = kInvalidIndex;
-				handle.mIndex = ++i;
+				handle.mData = ++i;
 			}
-			mHandles.back().mIndex = kInvalidIndex;
+			mHandles.back().mData = kInvalidIndex;
 			mFirstFree = uint32_t(startIndex);
 		}
 	}
@@ -175,17 +196,18 @@ namespace CPF
 	{
 		if (mFirstFree == kInvalidIndex)
 			_ReserveHandles(mHandles.size() + 1);
-		size_t result = size_t(mFirstFree);
+
+		const size_t result = size_t(mFirstFree);
 		mHandles[result].mVersion = ++mVersion;
-		mVersion = mVersion == kInvalidIndex ? 0 : mVersion;
-		mFirstFree = mHandles[result].mIndex;
+		mVersion = (mVersion == kInvalidIndex) ? 0 : mVersion;
+		mFirstFree = mHandles[result].mData;
 		return result;
 	}
 
 	template <size_t BLOCK_SIZE>
 	void HandlePool<BLOCK_SIZE>::_ReturnHandle(size_t idx)
 	{
-		mHandles[idx].mIndex = mFirstFree;
+		mHandles[idx].mData = mFirstFree;
 		mHandles[idx].mVersion = kInvalidIndex;
 		mFirstFree = uint32_t(idx);
 	}
