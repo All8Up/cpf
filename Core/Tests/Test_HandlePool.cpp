@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "CPF/Std/IndexedPool.hpp"
+#include "CPF/Std/HandlePool.hpp"
 
 using namespace CPF;
 

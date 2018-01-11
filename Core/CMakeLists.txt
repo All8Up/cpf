@@ -286,7 +286,7 @@ set (STD_INCLUDES
 	Include/CPF/Std/ForwardList.hpp
 	Include/CPF/Std/Functional.hpp
 	Include/CPF/Std/Hash.hpp
-	Include/CPF/Std/IndexedPool.hpp
+	Include/CPF/Std/HandlePool.hpp
 	Include/CPF/Std/List.hpp
 	Include/CPF/Std/Map.hpp
 	Include/CPF/Std/Memory.hpp
@@ -511,7 +511,7 @@ set (TEST_SOURCES
 	Tests/Test_Globbing.cpp
 	Tests/Test_GOM.cpp
 	Tests/Test_HashID.cpp
-	Tests/Test_IndexedPool.cpp
+	Tests/Test_HandlePool.cpp
 	Tests/Test_IO.cpp
 	Tests/Test_LargeVector.cpp
 	Tests/Test_Matrix22v.cpp
