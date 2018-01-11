@@ -2,7 +2,7 @@ import Result from CPF::GOM;
 module CPF::GOM;
 
 success OK ("Core", "OK");
-success None ("Core", "OK");
+success None ("Core", "None");
 failure Error ("Core", "Error");
 failure UnknownInterface ("Core", "Unknown interface");
 failure InvalidParameter ("Core", "Invalid parameter");
