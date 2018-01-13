@@ -5,7 +5,7 @@
 #include "CPF/Hash/Detail/Crc16Table.hpp"
 #include "CPF/Hash/Detail/Crc32Table.hpp"
 #include "CPF/Hash/Detail/Crc64Table.hpp"
-
+#include "CPF/Std/String.hpp"
 
 namespace CPF
 {
@@ -121,8 +121,10 @@ namespace CPF
 		/**
 		 * @brief Compute a 32 bit crc from the given data.
 		 */
-		constexpr uint32_t Crc32(const char* const data, size_t length)
+		constexpr uint32_t Crc32(const char* const data, size_t length = 0)
 		{
+			if (length == 0)
+				length = Std::StrLen(data);
 			return ComputeCrc32(data, length, uint32_t(-1));
 		}
 
