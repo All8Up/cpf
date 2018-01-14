@@ -19,7 +19,6 @@ namespace CPF
 		{
 		public:
 			using WorkFunction = Function<void()>;
-			class WorkQueue;
 
 			Reactor();
 			~Reactor();
@@ -29,6 +28,8 @@ namespace CPF
 			void Quit();
 
 		private:
+			friend class ReactorQueue;
+			
 			Reactor(Reactor&&) = delete;
 			Reactor(const Reactor&) = delete;
 			Reactor& operator =(Reactor&&) = delete;
@@ -44,11 +45,13 @@ namespace CPF
 
 
 		/** @brief The queue feeder.  Push work in here, it comes out in the reactor. */
-		class Reactor::WorkQueue
+		class ReactorQueue
 		{
 		public:
-			WorkQueue();
-			WorkQueue(Reactor*);
+			ReactorQueue();
+			ReactorQueue(Reactor*);
+			
+			using WorkFunction = Reactor::WorkFunction;
 
 			void Initialize(Reactor*);
 
@@ -56,10 +59,10 @@ namespace CPF
 			void operator ()(WorkFunction&&) const;
 
 		private:
-			WorkQueue(const WorkQueue&) = delete;
-			WorkQueue(WorkQueue&&) = delete;
-			WorkQueue& operator = (const WorkQueue&) = delete;
-			WorkQueue& operator = (WorkQueue&&) = delete;
+			ReactorQueue(const ReactorQueue&) = delete;
+			ReactorQueue(ReactorQueue&&) = delete;
+			ReactorQueue& operator = (const ReactorQueue&) = delete;
+			ReactorQueue& operator = (ReactorQueue&&) = delete;
 
 			Reactor* mpReactor;
 		};
@@ -151,7 +154,7 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		/** @brief Default constructor. */
-		inline Reactor::WorkQueue::WorkQueue()
+		inline ReactorQueue::ReactorQueue()
 			: mpReactor(nullptr)
 		{}
 
@@ -160,7 +163,7 @@ namespace CPF
 		* @brief Constructor.
 		* @param [in,out] reactor If non-null, the reactor.
 		*/
-		inline Reactor::WorkQueue::WorkQueue(Reactor* reactor)
+		inline ReactorQueue::ReactorQueue(Reactor* reactor)
 			: mpReactor(reactor)
 		{}
 
@@ -169,7 +172,7 @@ namespace CPF
 		* @brief Initializes this object.
 		* @param [in,out] reactor If non-null, the reactor.
 		*/
-		inline void Reactor::WorkQueue::Initialize(Reactor* reactor)
+		inline void ReactorQueue::Initialize(Reactor* reactor)
 		{
 			mpReactor = reactor;
 		}
@@ -179,7 +182,7 @@ namespace CPF
 		* @brief Push a work function onto the work queue.
 		* @param [in,out] func The function.
 		*/
-		inline void Reactor::WorkQueue::operator ()(WorkFunction& func) const
+		inline void ReactorQueue::operator ()(WorkFunction& func) const
 		{
 			mpReactor->mLock.Acquire();
 			mpReactor->mQueue.push(Move(func));
@@ -192,7 +195,7 @@ namespace CPF
 		* @brief Push a work function onto the work queue.
 		* @param [in,out] func The function.
 		*/
-		inline void Reactor::WorkQueue::operator ()(WorkFunction&& func) const
+		inline void ReactorQueue::operator ()(WorkFunction&& func) const
 		{
 			mpReactor->mLock.Acquire();
 			mpReactor->mQueue.push(func);

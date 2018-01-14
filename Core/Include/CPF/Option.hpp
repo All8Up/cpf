@@ -26,6 +26,7 @@ namespace CPF
 		OK_TYPE& GetOK();
 		const OK_TYPE& GetOK() const;
 		bool CheckOK(OK_TYPE& ok);
+		bool CheckOK(OK_TYPE* ok);
 
 		ERROR_TYPE& GetError();
 		const ERROR_TYPE& GetError() const;
@@ -174,6 +175,17 @@ namespace CPF
 		if (mType == Type::eOK)
 		{
 			ok = Move(mData.mOK);
+			return true;
+		}
+		return false;
+	}
+
+	template <typename OK_TYPE, typename ERROR_TYPE>
+	bool Option<OK_TYPE, ERROR_TYPE>::CheckOK(OK_TYPE* ok)
+	{
+		if (mType == Type::eOK)
+		{
+			*ok = Move(mData.mOK);
 			return true;
 		}
 		return false;

@@ -8,11 +8,11 @@
 class TestThreadingReactor : public ::testing::Test
 {
 public:
-	virtual void SetUp() override
+	void SetUp() override
 	{
 		mQueue.Initialize(&mReactor);
 	}
-	virtual void TearDown() override
+	void TearDown() override
 	{}
 
 	using FunctionVector = CPF::Vector<CPF::Function<void(void)>>;
@@ -34,7 +34,7 @@ public:
 	}
 
 	CPF::Threading::Reactor mReactor;
-	CPF::Threading::Reactor::WorkQueue mQueue;
+	CPF::Threading::ReactorQueue mQueue;
 	CPF::Threading::Thread::Group mGroup;
 	bool* mpData;
 };

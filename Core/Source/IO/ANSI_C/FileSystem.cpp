@@ -35,7 +35,7 @@ namespace CPF
 
 		private:
 			Threading::Reactor mReactor;
-			Threading::Reactor::WorkQueue mQueue;
+			Threading::ReactorQueue mQueue;
 			Threading::Thread mWorker;
 		};
 	}

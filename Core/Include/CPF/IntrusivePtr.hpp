@@ -40,6 +40,9 @@ namespace CPF
 
 		operator TARGET*() const;
 
+		//
+		void Assign(TARGET* rhs);
+		
 		// Manipulate internal pointer without modification of ref count.
 		void Adopt(TARGET* rhs);
 		void Abandon();
@@ -201,6 +204,16 @@ namespace CPF
 		return Cast();
 	}
 
+	template<typename TARGET>
+	void IntrusivePtr<TARGET>::Assign(TARGET* rhs)
+	{
+		if (rhs == mpTarget)
+			return;
+		_Release();
+		mpTarget = rhs;
+		_AddRef();
+	}
+	
 	template<typename TARGET>
 	void IntrusivePtr<TARGET>::Adopt(TARGET* rhs)
 	{
