@@ -33,6 +33,12 @@ namespace CPF
 		Option(const Option&) = delete;
 		Option& operator = (const Option&) = delete;
 
+		enum class Type : int32_t
+		{
+			eNotSet,
+			eOK,
+			eError
+		};
 		union Data
 		{
 			Data() {}
@@ -41,15 +47,9 @@ namespace CPF
 			OK_TYPE mOK;
 			ERROR_TYPE mError;
 		};
-		enum class Type : int32_t
-		{
-			eNotSet,
-			eOK,
-			eError
-		};
 
-		Data mData;
 		Type mType;
+		Data mData;
 	};
 
 	//////////////////////////////////////////////////////////////////////////

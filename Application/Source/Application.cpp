@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	if (GOM::Succeeded(PluginHost::CreateRegistry(registry.AsTypePP())))
 	{
 		CPF_INSTALL_STATIC_PLUGIN(registry, Application);
-		CPF::IntrusivePtr<iApplication> application;
+		IntrusivePtr<iApplication> application;
 		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID.GetID(), iApplication::kIID.GetID(), application.AsVoidPP())))
 		{
 			registry->InstanceInstall(iApplication::kIID.GetID(), application);
