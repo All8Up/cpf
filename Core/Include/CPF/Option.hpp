@@ -13,7 +13,9 @@ namespace CPF
 		Option(Option&&);
 		~Option();
 
+		static Option OK(const OK_TYPE&);
 		static Option OK(OK_TYPE&&);
+		static Option Error(const ERROR_TYPE&);
 		static Option Error(ERROR_TYPE&&);
 
 		Option& operator = (Option&&);
@@ -93,11 +95,29 @@ namespace CPF
 	}
 
 	template <typename OK_TYPE, typename ERROR_TYPE>
+	Option<OK_TYPE, ERROR_TYPE> Option<OK_TYPE, ERROR_TYPE>::OK(const OK_TYPE& ok)
+	{
+		Option result;
+		result.mType = Type::eOK;
+		new (&result.mData.mOK) OK_TYPE(ok);
+		return result;
+	}
+
+	template <typename OK_TYPE, typename ERROR_TYPE>
 	Option<OK_TYPE, ERROR_TYPE> Option<OK_TYPE, ERROR_TYPE>::OK(OK_TYPE&& ok)
 	{
 		Option result;
 		result.mType = Type::eOK;
 		new (&result.mData.mOK) OK_TYPE(Move(ok));
+		return result;
+	}
+
+	template <typename OK_TYPE, typename ERROR_TYPE>
+	Option<OK_TYPE, ERROR_TYPE> Option<OK_TYPE, ERROR_TYPE>::Error(const ERROR_TYPE& error)
+	{
+		Option result;
+		result.mType = Type::eError;
+		new (&result.mData.mError) ERROR_TYPE(error);
 		return result;
 	}
 

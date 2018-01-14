@@ -18,7 +18,7 @@
 #define CPF_LOG_GLOG(l) LOG(l)
 #define CPF_LOG_IF_GLOG(l, cond) LOG_IF(l, cond)
 
-#define CPF_INIT_LOGGING(ARGC, ARGV) {FLAGS_alsologtostderr = 1; google::InitGoogleLogging(ARGV);}
+#define CPF_INIT_LOGGING(ARGC, ARGV) {FLAGS_minloglevel = 0; FLAGS_alsologtostderr = 1; google::InitGoogleLogging(ARGV);}
 #define CPF_INIT_LOG(name) {}
 #define CPF_DROP_LOG(name) {}
 #define CPF_LOG(name, level) CPF_LOG_GLOG( CPF_LOG_LEVEL_ACCESSOR(level) ) << "[" << #name << "] "
