@@ -25,12 +25,12 @@ namespace CPF
 
 		OK_TYPE& GetOK();
 		const OK_TYPE& GetOK() const;
-		bool CheckOK(OK_TYPE& ok);
-		bool CheckOK(OK_TYPE* ok);
+		bool CheckOK(OK_TYPE& ok) const;
+		bool CheckOK(OK_TYPE* ok) const;
 
 		ERROR_TYPE& GetError();
 		const ERROR_TYPE& GetError() const;
-		bool CheckError(ERROR_TYPE& error);
+		bool CheckError(ERROR_TYPE& error) const;
 
 	private:
 		Option(const Option&) = delete;
@@ -170,7 +170,7 @@ namespace CPF
 	}
 
 	template <typename OK_TYPE, typename ERROR_TYPE>
-	bool Option<OK_TYPE, ERROR_TYPE>::CheckOK(OK_TYPE& ok)
+	bool Option<OK_TYPE, ERROR_TYPE>::CheckOK(OK_TYPE& ok) const
 	{
 		if (mType == Type::eOK)
 		{
@@ -181,7 +181,7 @@ namespace CPF
 	}
 
 	template <typename OK_TYPE, typename ERROR_TYPE>
-	bool Option<OK_TYPE, ERROR_TYPE>::CheckOK(OK_TYPE* ok)
+	bool Option<OK_TYPE, ERROR_TYPE>::CheckOK(OK_TYPE* ok) const
 	{
 		if (mType == Type::eOK)
 		{
@@ -206,7 +206,7 @@ namespace CPF
 	}
 
 	template <typename OK_TYPE, typename ERROR_TYPE>
-	bool Option<OK_TYPE, ERROR_TYPE>::CheckError(ERROR_TYPE& error)
+	bool Option<OK_TYPE, ERROR_TYPE>::CheckError(ERROR_TYPE& error) const
 	{
 		if (mType == Type::mError)
 		{
