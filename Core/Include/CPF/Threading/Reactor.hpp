@@ -85,11 +85,11 @@ namespace CPF
 		*/
 		inline bool Reactor::Run()
 		{
+			// Initialize the loop with the lock taken.
+			mLock.Acquire();
+
 			for (;;)
 			{
-				// Check for work.
-				mLock.Acquire();
-
 				// Do as much work as possible.
 				while (!mQueue.empty())
 				{
