@@ -85,10 +85,10 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			inline typename F32x3_<COUNT> Cross(const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs);
+			F32x3_<COUNT> Cross(F32x3_<COUNT> lhs, F32x3_<COUNT> rhs);
 
 			template <>
-			inline typename F32x3_<3> Cross(const F32x3_<3> lhs, const F32x3_<3> rhs)
+			inline F32x3_<3> Cross(F32x3_<3> lhs, F32x3_<3> rhs)
 			{
 				return F32x3_<3>(
 					lhs.mVector.mData[1] * rhs.mVector.mData[2] - rhs.mVector.mData[1] * lhs.mVector.mData[2],
@@ -100,7 +100,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			template <int COUNT>
-			inline Bool4_<COUNT> operator == (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
+			Bool4_<COUNT> operator == (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
@@ -109,7 +109,7 @@ namespace CPF
 				return Bool4_<COUNT>(result);
 			}
 			template <int COUNT>
-			inline Bool4_<COUNT> operator != (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
+			Bool4_<COUNT> operator != (const F32x3_<COUNT> lhs, const F32x3_<COUNT> rhs)
 			{
 				int result = 0;
 				for (int i = 0; i < COUNT; ++i)
