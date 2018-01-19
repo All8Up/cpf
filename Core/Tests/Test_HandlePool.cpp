@@ -12,7 +12,7 @@ TEST(HandlePool, BasicConstruction)
 
 TEST(HandlePool, AddRemove)
 {
-	HandlePool<4> testData;
+	HandlePool<uint64_t, 4> testData;
 
 	auto h0 = testData.Alloc(1);
 	auto t0 = testData.Get(h0);
@@ -29,7 +29,7 @@ TEST(HandlePool, AddRemove)
 
 TEST(HandlePool, HandleReuse)
 {
-	HandlePool<4> testData;
+	HandlePool<uint64_t, 4> testData;
 	{
 		auto h0 = testData.Alloc(0);
 		auto h1 = testData.Alloc(1);
@@ -76,7 +76,7 @@ TEST(HandlePool, HandleReuse)
 
 TEST(HandlePool, HandleExpansion)
 {
-	HandlePool<2> testData;
+	HandlePool<uint64_t, 2> testData;
 	{
 		auto h0 = testData.Alloc(0);
 		auto h1 = testData.Alloc(1);
