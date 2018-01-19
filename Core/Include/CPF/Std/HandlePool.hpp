@@ -51,6 +51,8 @@ namespace CPF
 
 		size_t Size() const;
 
+		Handle PredictHandle(size_t futureCount);
+
 	private:
 		HandlePool(const HandlePool&) = delete;
 		HandlePool& operator = (const HandlePool&) = delete;
@@ -72,6 +74,7 @@ namespace CPF
 
 		uint32_t mFirstFree;
 		uint32_t mVersion;
+		uint32_t mUsed;
 		Vector<HandleData> mHandles;
 	};
 
@@ -80,6 +83,7 @@ namespace CPF
 	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::HandlePool()
 		: mFirstFree(kInvalidIndex)
 		, mVersion(0)
+		, mUsed(0)
 	{
 		_ReserveHandles(kHandleBlockSize);
 	}
@@ -88,6 +92,7 @@ namespace CPF
 	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::HandlePool(size_t size)
 		: mFirstFree(kInvalidIndex)
 		, mVersion(0)
+		, mUsed(0)
 	{
 		_ReserveHandles(size);
 	}
@@ -96,6 +101,7 @@ namespace CPF
 	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::HandlePool(HandlePool&& rhs)
 		: mFirstFree(rhs.mFirstFree)
 		, mVersion(rhs.mVersion)
+		, mUsed(rhs.mUsed)
 		, mHandles(Move(rhs.mHandles))
 	{
 		rhs.mFirstFree = kInvalidIndex;
@@ -112,6 +118,7 @@ namespace CPF
 		mFirstFree = rhs.mFirstFree;
 		mHandles = Move(rhs.mHandles);
 		mVersion = rhs.mVersion;
+		mUsed = rhs.mUsed;
 		rhs.mFirstFree = kInvalidIndex;
 		return *this;
 	}
@@ -140,6 +147,7 @@ namespace CPF
 		result.mVersion = handle.mVersion;
 		result.mData = firstFree;
 
+		++mUsed;
 		return Handle(result.mHandle);
 	}
 
@@ -149,6 +157,7 @@ namespace CPF
 		HandleData handle;
 		handle.mHandle = which;
 		CPF_ASSERT(handle.mVersion == mHandles[handle.mData].mVersion);
+		--mUsed;
 		_ReturnHandle(handle.mData);
 	}
 
@@ -167,6 +176,40 @@ namespace CPF
 	size_t HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Size() const
 	{
 		return mHandles.size();
+	}
+
+	/*
+	 * Predict the value of a handle allocated in the future.
+	 * The prediction will only be valid if there are no free's
+	 * called between the prediction and the given number of alloc
+	 * calls are made.
+	 */
+	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
+	typename HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Handle HandlePool<HANDLE_TYPE, BLOCK_SIZE>::PredictHandle(size_t futureCount)
+	{
+		const size_t available = mHandles.size() - size_t(mUsed);
+		// Check if the request would end up allocating new handles.
+		if (futureCount >= available)
+		{
+			const size_t delta = futureCount - available;
+			HandleData view;
+			view.mVersion = mVersion + uint32_t(available + delta) + 1;
+			view.mData = uint32_t(mHandles.size() + delta);
+			return Handle(view.mHandle);
+		}
+
+		size_t count = futureCount;
+		uint32_t current = mFirstFree;
+		while (count>0 && current!=kInvalidIndex)
+		{
+			current = mHandles[current].mData;
+			--count;
+		}
+		size_t delta = futureCount - count;
+		HandleData view;
+		view.mVersion = uint32_t(mVersion + delta) + 1;
+		view.mData = current;
+		return Handle(view.mHandle);
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>

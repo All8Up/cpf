@@ -99,3 +99,22 @@ TEST(HandlePool, HandleExpansion)
 		EXPECT_EQ(testData.Get(h3), uint32_t(-1));
 	}
 }
+
+TEST(HandlePool, Prediction)
+{
+	HandlePool<uint64_t, 2> testData;
+	auto p0 = testData.PredictHandle(0);
+	auto p1 = testData.PredictHandle(1);
+	auto p2 = testData.PredictHandle(2);
+	auto p3 = testData.PredictHandle(3);
+
+	auto a0 = testData.Alloc(0);
+	auto a1 = testData.Alloc(0);
+	auto a2 = testData.Alloc(0);
+	auto a3 = testData.Alloc(0);
+
+	EXPECT_EQ(p0, a0);
+	EXPECT_EQ(p1, a1);
+	EXPECT_EQ(p2, a2);
+	EXPECT_EQ(p3, a3);
+}
