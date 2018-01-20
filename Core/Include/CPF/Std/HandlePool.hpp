@@ -25,7 +25,7 @@ namespace CPF
 		Handle Alloc(uint32_t data);
 		void Free(Handle);
 
-		uint32_t Get(Handle handle);
+		uint32_t Get(Handle handle) const;
 		void Set(Handle handle, uint32_t data)
 		{
 			HandleData d;
@@ -162,7 +162,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	uint32_t HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Get(Handle handle)
+	uint32_t HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Get(Handle handle) const
 	{
 		HandleData view;
 		view.mHandle = uint64_t(handle);
