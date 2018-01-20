@@ -8,11 +8,14 @@ namespace CPF
 	namespace Hash
 	{
 		/**
-		 @brief A hash identifier.
+		 @brief A hash identifier.  Using this makes a strongly typed integral
+			identifier.
 		 @tparam TYPE   Type of the underlying hash value.
-		 @tparam UNIQUE_TAG Since this is often used to wrap up the same type,
+		 @tparam TAG Since this is often used to wrap up the same type,
 			providing a unique tag type makes sure they are not interchangeable
 			when not desired.
+		 @note TYPE and TAG should be the same size and explicitly castable
+			back and forth.
 		 */
 		template <typename TYPE, typename TAG>
 		struct HashID
