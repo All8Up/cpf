@@ -9,7 +9,7 @@ static GOM::Result CPF_STDCALL Install(Plugin::iRegistry* registry) \
 { \
 	if (registry) \
 	{ \
-		return registry->Install(iApplication::kCID.GetID(), new Plugin::tClassFactory<name>()); \
+		return registry->Install(iApplication::kCID, new Plugin::tClassFactory<name>()); \
 	} \
 	return GOM::kInvalidParameter; \
 } \
@@ -18,7 +18,7 @@ static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry) \
 { \
 	if (registry) \
 	{ \
-		return registry->Remove(iApplication::kCID.GetID()); \
+		return registry->Remove(iApplication::kCID); \
 	} \
 	return GOM::kInvalidParameter; \
 } \

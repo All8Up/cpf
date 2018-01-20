@@ -5,7 +5,7 @@ module CPF::Plugin;
 struct IID_CID
 {
 	u64 mIID;
-	u64 mCID;
+	GOM::CID mCID;
 }
 
 interface iRegistry;

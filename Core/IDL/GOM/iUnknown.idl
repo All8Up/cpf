@@ -2,12 +2,9 @@ import Types from CPF::GOM;
 import Result from CPF::GOM;
 module CPF::GOM;
 
-enum IID : u64 { eInvalid = 0 }
-enum CID : u64 { eInvalid = 0 }
-
 interface iUnknown
 {
 	s32 AddRef();
 	s32 Release();
-	result QueryInterface(IID id, void** outIface);
+	result QueryInterface(GOM::IID id, void** outIface);
 }

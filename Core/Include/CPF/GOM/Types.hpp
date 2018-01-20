@@ -7,7 +7,10 @@ namespace CPF
 {
 	namespace GOM
 	{
-		using ClassID = Hash::HashID<uint64_t, enum class CID : uint64_t>;
-		using InterfaceID = Hash::HashID<uint64_t, enum class IID : uint64_t>;
+		enum class IID : uint64_t { eInvalid = 0 };
+		enum class CID : uint64_t { eInvalid = 0 };
+
+		using ClassID = Hash::HashID<uint64_t, GOM::CID>;
+		using InterfaceID = Hash::HashID<uint64_t, GOM::IID>;
 	}
 }

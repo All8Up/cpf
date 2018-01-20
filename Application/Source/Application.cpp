@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 	{
 		CPF_INSTALL_STATIC_PLUGIN(registry, Application);
 		IntrusivePtr<iApplication> application;
-		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID.GetID(), iApplication::kIID.GetID(), application.AsVoidPP())))
+		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID, iApplication::kIID.GetID(), application.AsVoidPP())))
 		{
 			registry->InstanceInstall(iApplication::kIID.GetID(), application);
 			int32_t result = application->Run();
@@ -39,7 +39,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR, int)
 	{
 		CPF_INSTALL_STATIC_PLUGIN(registry, Application);
 		IntrusivePtr<iApplication> application;
-		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID.GetID(), iApplication::kIID.GetID(), application.AsVoidPP())))
+		if (GOM::Succeeded(registry->Create(nullptr, iApplication::kCID, iApplication::kIID.GetID(), application.AsVoidPP())))
 		{
 			registry->InstanceInstall(iApplication::kIID.GetID(), application);
 			int32_t result = application->Run();

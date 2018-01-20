@@ -88,7 +88,7 @@ static GOM::Result CPF_STDCALL Install(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return registry->Install(kTestPluginCID.GetID(), new Plugin::tClassFactory<TestPlugin>());
+		return registry->Install(kTestPluginCID, new Plugin::tClassFactory<TestPlugin>());
 	}
 	return GOM::kInvalidParameter;
 }
@@ -97,7 +97,7 @@ static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry)
 {
 	if (registry)
 	{
-		return registry->Remove(kTestPluginCID.GetID());
+		return registry->Remove(kTestPluginCID);
 	}
 	return GOM::kInvalidParameter;
 }

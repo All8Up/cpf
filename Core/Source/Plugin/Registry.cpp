@@ -37,16 +37,16 @@ public:
 	GOM::Result CPF_STDCALL Load(const char*) override;
 	GOM::Result CPF_STDCALL Unload(const char* library) override;
 
-	GOM::Result CPF_STDCALL Create(iUnknown*, uint64_t, uint64_t, void**) override;
+	GOM::Result CPF_STDCALL Create(iUnknown*, GOM::CID, uint64_t, void**) override;
 
-	GOM::Result CPF_STDCALL Install(uint64_t, Plugin::iClassFactory*) override;
-	GOM::Result CPF_STDCALL Remove(uint64_t) override;
-	GOM::Result CPF_STDCALL GetClassInstance(uint64_t cid, Plugin::iClassFactory** clsInst) override;
-	GOM::Result CPF_STDCALL Exists(uint64_t id) override;
+	GOM::Result CPF_STDCALL Install(GOM::CID, Plugin::iClassFactory*) override;
+	GOM::Result CPF_STDCALL Remove(GOM::CID) override;
+	GOM::Result CPF_STDCALL GetClassInstance(GOM::CID cid, Plugin::iClassFactory** clsInst) override;
+	GOM::Result CPF_STDCALL Exists(GOM::CID cid) override;
 
 	GOM::Result CPF_STDCALL ClassInstall(int32_t count, const Plugin::IID_CID* pairs) override;
 	GOM::Result CPF_STDCALL ClassRemove(int32_t count, const Plugin::IID_CID* pairs) override;
-	GOM::Result CPF_STDCALL GetClasses(uint64_t id, int32_t* count, uint64_t*) override;
+	GOM::Result CPF_STDCALL GetClasses(uint64_t id, int32_t* count, GOM::CID*) override;
 
 	GOM::Result CPF_STDCALL InstanceInstall(uint64_t id, iUnknown*) override;
 	GOM::Result CPF_STDCALL InstanceRemove(uint64_t id) override;
@@ -62,12 +62,12 @@ private:
 	};
 
 	using LibraryMap = UnorderedMap<String, LibraryDesc>;
-	using CreationMap = UnorderedMap<uint64_t, IntrusivePtr<Plugin::iClassFactory>>;
+	using CreationMap = UnorderedMap<GOM::CID, IntrusivePtr<Plugin::iClassFactory>>;
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
 
-	using ClassList = Vector<uint64_t>;
+	using ClassList = Vector<GOM::CID>;
 	using ClassMap = UnorderedMap<uint64_t, ClassList>;
 	ClassMap mClasses;
 
@@ -205,7 +205,7 @@ GOM::Result CPF_STDCALL Registry::Unload(const char* name)
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::Install(uint64_t id, Plugin::iClassFactory* clsInst)
+GOM::Result CPF_STDCALL Registry::Install(GOM::CID id, Plugin::iClassFactory* clsInst)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists == mCreationMap.end() && clsInst)
@@ -216,7 +216,7 @@ GOM::Result CPF_STDCALL Registry::Install(uint64_t id, Plugin::iClassFactory* cl
 	return GOM::kUnknownClass;
 }
 
-GOM::Result CPF_STDCALL Registry::Remove(uint64_t id)
+GOM::Result CPF_STDCALL Registry::Remove(GOM::CID id)
 {
 	auto exists = mCreationMap.find(id);
 	if (exists != mCreationMap.end())
@@ -227,7 +227,7 @@ GOM::Result CPF_STDCALL Registry::Remove(uint64_t id)
 	return GOM::kUnknownClass;
 }
 
-GOM::Result CPF_STDCALL Registry::GetClassInstance(uint64_t cid, Plugin::iClassFactory** clsInst)
+GOM::Result CPF_STDCALL Registry::GetClassInstance(GOM::CID cid, Plugin::iClassFactory** clsInst)
 {
 	if (clsInst)
 	{
@@ -243,13 +243,13 @@ GOM::Result CPF_STDCALL Registry::GetClassInstance(uint64_t cid, Plugin::iClassF
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::Exists(uint64_t id)
+GOM::Result CPF_STDCALL Registry::Exists(GOM::CID id)
 {
 	auto exists = mCreationMap.find(id);
 	return exists != mCreationMap.end() ? GOM::kOK : GOM::kUnknownClass;
 }
 
-GOM::Result CPF_STDCALL Registry::Create(iUnknown* outer, uint64_t cid, uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Registry::Create(iUnknown* outer, GOM::CID cid, uint64_t id, void** outIface)
 {
 	if (outIface)
 	{
@@ -274,7 +274,7 @@ GOM::Result CPF_STDCALL Registry::Create(iUnknown* outer, uint64_t cid, uint64_t
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::GetClasses(uint64_t id, int32_t* count, uint64_t* outClasses)
+GOM::Result CPF_STDCALL Registry::GetClasses(uint64_t id, int32_t* count, GOM::CID* outClasses)
 {
 	if (count)
 	{

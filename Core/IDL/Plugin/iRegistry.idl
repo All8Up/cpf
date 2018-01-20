@@ -33,14 +33,14 @@ interface iRegistry : GOM::iUnknown
 	* @param [in,out] clsInst The class instance object.
 	* @return A result code.
 	*/
-	result Install(u64 cid, iClassFactory* clsInst);
+	result Install(GOM::CID cid, iClassFactory* clsInst);
 
 	/**
 	* @brief Removes a class instance.
 	* @param cid The instance id.
 	* @return A result code.
 	*/
-	result Remove(u64 cid);
+	result Remove(GOM::CID cid);
 
 	/**
 	@brief Gets the class instance associated with the cid.
@@ -48,14 +48,14 @@ interface iRegistry : GOM::iUnknown
 	@param clsInst Pointer to the resulting interface pointer.
 	@return A result code.
 	*/
-	result GetClassInstance(u64 cid, iClassFactory** clsInst);
+	result GetClassInstance(GOM::CID cid, iClassFactory** clsInst);
 
 	/**
 	* @brief Check if a class id has a class instance installed.
 	* @param cid The class instance id.
 	* @return A result code.
 	*/
-	result Exists(u64 cid);
+	result Exists(GOM::CID cid);
 
 	/**
 	* @brief Creates an instance.
@@ -65,7 +65,7 @@ interface iRegistry : GOM::iUnknown
 	* @param [out] result Various error codes or GOM::kOK.
 	* @return A result code.
 	*/
-	result Create(iUnknown* outer, u64 cid, u64 iid, void** outIface);
+	result Create(iUnknown* outer, GOM::CID cid, u64 iid, void** outIface);
 
 	/**
 	* @brief Install a set of class id's and instance id's.
@@ -90,7 +90,7 @@ interface iRegistry : GOM::iUnknown
 	* @param [in,out] cid The output array of class id's.
 	* @return A result code.
 	*/
-	result GetClasses(u64 id, s32* count, u64* cid);
+	result GetClasses(u64 id, s32* count, GOM::CID* cid);
 
 	/**
 	* @brief Install an instance for the given interface id.

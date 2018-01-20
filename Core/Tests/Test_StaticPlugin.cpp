@@ -9,5 +9,5 @@ TEST(StaticPlugin, Exists)
 	CPF::IntrusivePtr<CPF::Plugin::iRegistry> registry;
 	CPF::PluginHost::CreateRegistry(registry.AsTypePP());
 	CPF_INSTALL_STATIC_PLUGIN(registry, TestPlugin);
-	EXPECT_TRUE(CPF::GOM::Succeeded(registry->Exists(CPF::kTestPluginCID.GetID())));
+	EXPECT_TRUE(CPF::GOM::Succeeded(registry->Exists(CPF::kTestPluginCID)));
 }
