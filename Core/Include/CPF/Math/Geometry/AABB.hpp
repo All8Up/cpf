@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "CPF/Math/Vector3v.hpp"
 
 namespace CPF
 {
@@ -8,8 +9,18 @@ namespace CPF
 		template <typename VTYPE>
 		struct AABB
 		{
-			VTYPE Min;
-			VTYPE Max;
+			VTYPE mMin;
+			VTYPE mMax;
 		};
+
+		using AABBfv = AABB<Vector3fv>;
+
+		template<typename AABB_TYPE, typename VECTOR_TYPE>
+		void Add(AABB<AABB_TYPE>* outBounds, const Vector3<VECTOR_TYPE>& v)
+		{
+			CPF_ASSERT(outBounds != nullptr);
+			outBounds->mMin = Min(outBounds->mMin, v);
+			outBounds->mMax = Max(outBounds->mMax, v);
+		}
 	}
 }
