@@ -65,7 +65,7 @@ interface iRegistry : GOM::iUnknown
 	* @param [out] result Various error codes or GOM::kOK.
 	* @return A result code.
 	*/
-	result Create(iUnknown* outer, GOM::CID cid, u64 iid, void** outIface);
+	result Create(iUnknown* outer, GOM::CID cid, GOM::IID iid, void** outIface);
 
 	/**
 	* @brief Install a set of class id's and instance id's.
@@ -90,7 +90,7 @@ interface iRegistry : GOM::iUnknown
 	* @param [in,out] cid The output array of class id's.
 	* @return A result code.
 	*/
-	result GetClasses(u64 id, s32* count, GOM::CID* cid);
+	result GetClasses(GOM::IID id, s32* count, GOM::CID* cid);
 
 	/**
 	* @brief Install an instance for the given interface id.
@@ -98,14 +98,14 @@ interface iRegistry : GOM::iUnknown
 	* @param [in,out] instance If non-null, the instance pointer to install.
 	* @return A GOM::Result, kOK if all is ok.
 	*/
-	result InstanceInstall(u64 id, iUnknown* instance);
+	result InstanceInstall(GOM::IID id, iUnknown* instance);
 
 	/**
 	* @brief Remove an instance from the instances.
 	* @param id The interface id for the singleton.
 	* @return A GOM::Result, kOK if the instance was removed.
 	*/
-	result InstanceRemove(u64 id);
+	result InstanceRemove(GOM::IID id);
 
 	/**
 	* @brief Get the instance for the given interface.
@@ -113,5 +113,5 @@ interface iRegistry : GOM::iUnknown
 	* @param [in,out] outIface If non-null, the output.
 	* @return The GOM::Result, kOK if the instance was found and put in the output.
 	*/
-	result GetInstance(u64 id, iUnknown** outIface);
+	result GetInstance(GOM::IID id, iUnknown** outIface);
 }

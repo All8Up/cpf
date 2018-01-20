@@ -4,7 +4,7 @@ module CPF::Plugin;
 
 struct IID_CID
 {
-	u64 mIID;
+	GOM::IID mIID;
 	GOM::CID mCID;
 }
 
