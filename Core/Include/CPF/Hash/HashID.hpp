@@ -24,6 +24,7 @@ namespace CPF
 			explicit constexpr HashID(TYPE rhs);
 
 			constexpr TYPE GetID() const;
+			constexpr operator TAG() const;
 
 			HashID& operator =(const HashID& rhs);
 
@@ -57,6 +58,12 @@ namespace CPF
 		constexpr TYPE HashID<TYPE, TAG>::GetID() const
 		{
 			return mID;
+		}
+
+		template <typename TYPE, typename TAG>
+		constexpr HashID<TYPE, TAG>::operator TAG() const
+		{
+			return TAG(mID);
 		}
 
 		template <typename TYPE, typename TAG>

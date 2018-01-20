@@ -31,7 +31,7 @@ public:
 	// iBase overrides.
 	int32_t CPF_STDCALL AddRef() override;
 	int32_t CPF_STDCALL Release() override;
-	GOM::Result CPF_STDCALL QueryInterface(uint64_t id, void**) override;
+	GOM::Result CPF_STDCALL QueryInterface(GOM::IID id, void**) override;
 
 	// iRegistry overrides.
 	GOM::Result CPF_STDCALL Load(const char*) override;
@@ -115,17 +115,17 @@ int32_t CPF_STDCALL Registry::Release()
 	return mRefCount;
 }
 
-GOM::Result CPF_STDCALL Registry::QueryInterface(uint64_t id, void** outIface)
+GOM::Result CPF_STDCALL Registry::QueryInterface(GOM::IID id, void** outIface)
 {
 	if (outIface)
 	{
-		switch (id)
+		switch (uint64_t(id))
 		{
-		case GOM::iUnknown::kIID.GetID():
-			*outIface = static_cast<GOM::iUnknown*>(this);
+		case iUnknown::kIID.GetID():
+			*outIface = static_cast<iUnknown*>(this);
 			break;
 
-		case iRegistry::kIID.GetID():
+		case kIID.GetID():
 			*outIface = static_cast<iRegistry*>(this);
 			break;
 
@@ -261,7 +261,7 @@ GOM::Result CPF_STDCALL Registry::Create(iUnknown* outer, uint64_t cid, uint64_t
 			{
 				if (instance)
 				{
-					GOM::Result result = instance->QueryInterface(id, outIface);
+					GOM::Result result = instance->QueryInterface(GOM::IID(id), outIface);
 					if (instance)
 						instance->Release();
 					return result;

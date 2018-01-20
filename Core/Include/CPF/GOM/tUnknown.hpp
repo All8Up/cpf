@@ -21,7 +21,7 @@ namespace CPF
 
 			virtual int32_t CPF_STDCALL AddRef() override;
 			virtual int32_t CPF_STDCALL Release() override;
-			virtual Result CPF_STDCALL QueryInterface(uint64_t id, void** outIface) override;
+			virtual Result CPF_STDCALL QueryInterface(GOM::IID id, void** outIface) override;
 
 		private:
 			int32_t mRefCount;
@@ -53,11 +53,11 @@ namespace CPF
 		}
 
 		template<typename IFACE>
-		Result CPF_STDCALL tUnknown<IFACE>::QueryInterface(uint64_t id, void** outIface)
+		Result CPF_STDCALL tUnknown<IFACE>::QueryInterface(GOM::IID id, void** outIface)
 		{
 			if (outIface)
 			{
-				switch (id)
+				switch (uint64_t(id))
 				{
 				case iUnknown::kIID.GetID():
 					*outIface = static_cast<iUnknown*>(this);

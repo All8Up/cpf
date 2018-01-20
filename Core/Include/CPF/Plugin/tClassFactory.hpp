@@ -35,7 +35,7 @@ namespace CPF
 			tClassFactory() : mRefCount(1) {}
 			virtual ~tClassFactory() {}
 
-			GOM::Result CPF_STDCALL QueryInterface(uint64_t, void**) override
+			GOM::Result CPF_STDCALL QueryInterface(GOM::IID, void**) override
 			{
 				return GOM::kNotImplemented;
 			}

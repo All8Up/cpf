@@ -19,7 +19,7 @@ public:
 	int32_t Release() override;
 
 	// iBase overrides.
-	GOM::Result QueryInterface(uint64_t id, void**) override;
+	GOM::Result QueryInterface(GOM::IID id, void**) override;
 
 	// iTestPlugin overrides.
 	uint32_t Test() override;
@@ -53,12 +53,12 @@ int32_t TestPlugin::Release()
 	return mRefCount;
 }
 
-GOM::Result TestPlugin::QueryInterface(uint64_t id, void** outIface)
+GOM::Result TestPlugin::QueryInterface(GOM::IID id, void** outIface)
 {
 	if (outIface)
 	{
 		*outIface = nullptr;
-		switch (id)
+		switch (uint64_t(id))
 		{
 		case iUnknown::kIID.GetID():
 			*outIface = static_cast<iUnknown*>(this);
