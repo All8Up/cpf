@@ -18,6 +18,7 @@ add_library (Application_s STATIC
 )
 target_link_libraries (Application_s
 	Core_s
+	gflags_static
 )
 target_include_directories (Application_s
 	PUBLIC
