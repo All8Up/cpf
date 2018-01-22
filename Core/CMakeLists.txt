@@ -138,6 +138,14 @@ set (IO_SOURCES
 	Source/IO/Windows/OsDirectory.cpp
 	Source/IO/Windows/OsFile.cpp
 )
+set (IO_SERIALIZE_INCLUDES
+	Include/CPF/IO/Serialize.hpp
+	Include/CPF/IO/Serialize/Archive.hpp
+)
+set (IO_SERIALIZE_SOURCES
+	Source/IO/Serialize.cpp
+	Source/IO/Serialize/Archive.cpp
+)
 
 set (MATH_INCLUDES
 	Include/CPF/Math/Algorithm.hpp
@@ -347,6 +355,8 @@ set (ALL_SOURCES
 	${HASH_DETAIL_INCLUDES}
 	${IO_INCLUDES}
 	${IO_SOURCES}
+	${IO_SERIALIZE_INCLUDES}
+	${IO_SERIALIZE_SOURCES}
 	${MATH_INCLUDES}
 	${MATH_BOUNDS_INCLUDES}
 	${MATH_DISTANCE_INCLUDES}
@@ -450,6 +460,9 @@ source_group (Include\\Hash\\Detail FILES ${HASH_DETAIL_INCLUDES})
 source_group (IDL\\IO FILES ${IO_IDL})
 source_group (Include\\IO FILES ${IO_GEN_INCLUDES} ${IO_INCLUDES})
 source_group (Source\\IO FILES ${IO_SOURCES})
+source_group (Include\\IO\\Serialize FILES ${IO_SERIALIZE_INCLUDES})
+source_group (Source\\IO\\Serialize FILES ${IO_SERIALIZE_SOURCES})
+
 
 source_group (Include\\Math FILES ${MATH_INCLUDES})
 source_group (Include\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDES})
