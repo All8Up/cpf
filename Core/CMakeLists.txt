@@ -152,6 +152,8 @@ set (MATH_INCLUDES
 	Include/CPF/Math/Algorithm.hpp
 	Include/CPF/Math/Ballistics.hpp
 	Include/CPF/Math/BitManipulation.hpp
+	Include/CPF/Math/Color3.hpp
+	Include/CPF/Math/Color4.hpp
 	Include/CPF/Math/Constants.hpp
 	Include/CPF/Math/Exponential.hpp
 	Include/CPF/Math/FixedPoint.hpp

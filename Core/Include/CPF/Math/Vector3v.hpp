@@ -20,7 +20,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			Vector3();
-			explicit Vector3(typename TYPE::LaneType value);
+			explicit Vector3(LaneType value);
 			Vector3(const Vector3& rhs);
 			Vector3(TYPE value);
 			Vector3(StorageType value);
@@ -61,8 +61,8 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			TYPE mSIMD;
-			LANEREF_1_SWIZZLE(TYPE);
-			LANEREF_2_SWIZZLE(TYPE);
+			REFx1_TYPEx3(TYPE, x, y, z);
+			REFx2_TYPEx3(TYPE, x, y, z);
 			LANEREF_3_SWIZZLE(TYPE);
 		};
 	}

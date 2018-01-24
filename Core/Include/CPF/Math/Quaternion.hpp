@@ -55,7 +55,7 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			TYPE mVector;
-			LANEREF_1_SWIZZLE(TYPE);
+			REFx1_TYPEx4(TYPE, x, y, z, w);
 			LANEREF_2_SWIZZLE(TYPE);
 			LANEREF_3_SWIZZLE(TYPE);
 			LANEREF_4_SWIZZLE(TYPE);

@@ -40,8 +40,8 @@ namespace CPF
 
 			//////////////////////////////////////////////////////////////////////////
 			TYPE mSIMD;
-			LANEREF_1_SWIZZLE(TYPE);
-			LANEREF_2_SWIZZLE(TYPE);
+			REFx1_TYPEx2(TYPE, x, y);
+			REFx2_TYPEx2(TYPE, x, y);
 		};
 	}
 }

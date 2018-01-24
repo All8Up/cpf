@@ -1,12 +1,40 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 
+// Single lane result types on dual lane data.
+#define REFx1_TYPEx2(t, a, b)					\
+	CPF::SIMD::LaneRef_1<t, 0> a;				\
+	CPF::SIMD::LaneRef_1<t, 1> b;
 
-#define LANEREF_1_SWIZZLE(t)		\
-	CPF::SIMD::LaneRef_1<t, 0> x;	\
-	CPF::SIMD::LaneRef_1<t, 1> y;	\
-	CPF::SIMD::LaneRef_1<t, 2> z;	\
-	CPF::SIMD::LaneRef_1<t, 3> w;
+// Single lane result types on tri lane data.
+#define REFx1_TYPEx3(t, a, b, c)				\
+	REFx1_TYPEx2(t, a, b)						\
+	CPF::SIMD::LaneRef_1<t, 2> c;
+
+// Single lane result types on quad lane data.
+#define REFx1_TYPEx4(t, a, b, c, d)				\
+	REFx1_TYPEx3(t, a, b, c)					\
+	CPF::SIMD::LaneRef_1<t, 3> d;
+
+// Dual lane result types on dual lane data.
+#define REFx2_TYPEx2_(t, l, ln, a, b)			\
+	CPF::SIMD::LaneRef_2<t, l, 0> ln##a;		\
+	CPF::SIMD::LaneRef_2<t, l, 1> ln##b;
+
+#define REFx2_TYPEx2(t, a, b)					\
+	REFx2_TYPEx2_(t, 0, a, a, b)				\
+	REFx2_TYPEx2_(t, 1, b, a, b)
+
+
+// Dual lane result types on tri lane data.
+#define REFx2_TYPEx3_(t, l, ln, a, b, c)		\
+	REFx2_TYPEx2_(t, l, ln, a, b)				\
+	CPF::SIMD::LaneRef_2<t, l, 2> ln##c;
+
+#define REFx2_TYPEx3(t, a, b, c)				\
+	REFx2_TYPEx3_(t, 0, a, a, b, c)				\
+	REFx2_TYPEx3_(t, 1, b, a, b, c)				\
+	REFx2_TYPEx3_(t, 2, c, a, b, c)
 
 //
 #define LANEREF_2_SWIZZLE_(t, s, v)		\
