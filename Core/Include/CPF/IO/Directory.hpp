@@ -2,6 +2,7 @@
 #pragma once
 #include "CPF/IO.hpp"
 #include "CPF/Std/String.hpp"
+#include "CPF/Std/Utf8String.hpp"
 #include "CPF/Std/Functional.hpp"
 #include "CPF/IO/Attributes.hpp"
 
@@ -11,16 +12,16 @@ namespace CPF
 	{
 		namespace Directory
 		{
-			CPF_EXPORT void SetWorkingDirectory(const String&);
-			CPF_EXPORT String GetWorkingDirectory();
+			CPF_EXPORT void SetWorkingDirectory(const Std::Utf8String&);
+			CPF_EXPORT Std::Utf8String GetWorkingDirectory();
 
-			CPF_EXPORT bool OsExists(const String& dir);
-			CPF_EXPORT bool OsCreate(const String& dir);
-			CPF_EXPORT bool OsDelete(const String& dir);
+			CPF_EXPORT bool OsExists(const Std::Utf8String& dir);
+			CPF_EXPORT bool OsCreate(const Std::Utf8String& dir);
+			CPF_EXPORT bool OsDelete(const Std::Utf8String& dir);
 
-			CPF_EXPORT bool Exists(const String& dir);
-			CPF_EXPORT bool Create(const String& dir, bool recursive = false);
-			CPF_EXPORT bool Delete(const String& dir, bool recursive = false);
+			CPF_EXPORT bool Exists(const Std::Utf8String& dir);
+			CPF_EXPORT bool Create(const Std::Utf8String& dir, bool recursive = false);
+			CPF_EXPORT bool Delete(const Std::Utf8String& dir, bool recursive = false);
 
 			//
 			struct DirEntry
@@ -44,7 +45,7 @@ namespace CPF
 				{
 				public:
 					Iterator();
-					Iterator(const String& path, Predicate&& pred);
+					Iterator(const Std::Utf8String& path, Predicate&& pred);
 					Iterator(Iterator&& rhs) noexcept;
 					~Iterator();
 
@@ -60,8 +61,8 @@ namespace CPF
 				};
 
 				//
-				Entries(const String& path);
-				Entries(const String& path, Predicate&& pred);
+				Entries(const Std::Utf8String& path);
+				Entries(const Std::Utf8String& path, Predicate&& pred);
 
 				Iterator begin();
 				Iterator end();
@@ -77,16 +78,16 @@ namespace CPF
 			class CPF_EXPORT Files : public Entries
 			{
 			public:
-				Files(const String& path);
-				Files(const String& path, Predicate&& pred);
+				Files(const Std::Utf8String& path);
+				Files(const Std::Utf8String& path, Predicate&& pred);
 			};
 
 			/** @brief Iterates all subdirectories found in a given directory. */
 			class CPF_EXPORT Directories : public Entries
 			{
 			public:
-				Directories(const String& path);
-				Directories(const String& path, Predicate&& pred);
+				Directories(const Std::Utf8String& path);
+				Directories(const Std::Utf8String& path, Predicate&& pred);
 			};
 		}
 	}

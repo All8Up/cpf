@@ -1,7 +1,7 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/IO.hpp"
-#include "CPF/Std/String.hpp"
+#include "CPF/Std/Utf8String.hpp"
 
 namespace CPF
 {
@@ -14,7 +14,7 @@ namespace CPF
 		public:
 			virtual ~iFileSystem() = 0;
 
-			virtual FileHandle Open(const String& name, Access access, Error* = nullptr) = 0;
+			virtual FileHandle Open(const Std::Utf8String& name, Access access, Error* = nullptr) = 0;
 			virtual void Close(FileHandle, Error* = nullptr) = 0;
 			virtual void Flush(FileHandle, Error* = nullptr) = 0;
 			virtual int64_t GetPosition(FileHandle, Error* = nullptr) = 0;

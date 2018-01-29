@@ -36,7 +36,7 @@ namespace
 		operator bool() const override;
 
 		//////////////////////////////////////////////////////////////////////////
-		bool Open(const String& name, Access access, Error* error);
+		bool Open(const Std::Utf8String& name, Access access, Error* error);
 
 	private:
 		FileHandle mpFile;
@@ -53,7 +53,7 @@ namespace
 		GetFileSystem()->Close(mpFile);
 	}
 
-	bool RawFileStream::Open(const String& name, Access access, Error* error)
+	bool RawFileStream::Open(const Std::Utf8String& name, Access access, Error* error)
 	{
 		mpFile = GetFileSystem()->Open(name, access, error);
 		return mpFile != nullptr;
@@ -126,7 +126,7 @@ namespace
 * @brief Creates a new file stream.
 * @return A StreamPtr.
 */
-CPF_EXPORT Stream* File::Create(const String& name, Access access, Error* error)
+CPF_EXPORT Stream* File::Create(const Std::Utf8String& name, Access access, Error* error)
 {
 	RawFileStream* filestream = new RawFileStream;
 	if (!filestream)
@@ -146,12 +146,12 @@ CPF_EXPORT Stream* File::Create(const String& name, Access access, Error* error)
 
 
 #if CPF_TARGET_WINDOWS
-String CPF_EXPORT File::GetExecutableFilePath()
+Std::Utf8String CPF_EXPORT File::GetExecutableFilePath()
 {
 	HMODULE module = GetModuleHandle(nullptr);
-	CHAR path[MAX_PATH];
+	WCHAR path[MAX_PATH];
 	DWORD length = 0;
-	if ((length = GetModuleFileNameA(module, path, MAX_PATH)) > 0)
+	if ((length = GetModuleFileNameW(module, path, MAX_PATH)) > 0)
 	{
 		auto dir = Path::GetDirectory(path);
 		return dir;

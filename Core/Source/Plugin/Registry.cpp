@@ -170,7 +170,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 					}
 				}
 			}
-			CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory();
+			CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory().data();
 			return GOM::kNotFound;
 		}
 		return GOM::kAlreadyLoaded;

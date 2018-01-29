@@ -5,6 +5,7 @@
 #include "CPF/IO.hpp"
 #include "CPF/Std/String.hpp"
 #include "CPF/IO/Stream.hpp"
+#include "CPF/Std/Utf8String.hpp"
 
 namespace CPF
 {
@@ -12,10 +13,8 @@ namespace CPF
 	{
 		namespace File
 		{
-			CPF_EXPORT bool Exists(const String& name);
-			CPF_EXPORT bool Exists(const WString& name);
-			CPF_EXPORT bool Delete(const String& name);
-			CPF_EXPORT bool Delete(const WString& name);
+			CPF_EXPORT bool Exists(const Std::Utf8String& name);
+			CPF_EXPORT bool Delete(const Std::Utf8String& name);
 			/*
 			CPF_EXPORT bool Move(const String& src, const String& dst);
 			CPF_EXPORT bool Move(const WString& src, const WString& dst);
@@ -27,9 +26,9 @@ namespace CPF
 			CPF_EXPORT uint32_t GetAttributes(const WString& name);
 			 */
 
-			CPF_EXPORT Stream* Create(const String& name, Access access, Error* error = nullptr);
+			CPF_EXPORT Stream* Create(const Std::Utf8String& name, Access access, Error* error = nullptr);
 
-			String CPF_EXPORT GetExecutableFilePath();
+			Std::Utf8String CPF_EXPORT GetExecutableFilePath();
 		}
 	}
 }

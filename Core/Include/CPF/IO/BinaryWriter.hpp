@@ -1,5 +1,6 @@
 #pragma once
 #include "CPF/IO/Stream.hpp"
+#include "CPF/Std/Utf8String.hpp"
 
 namespace CPF
 {
@@ -14,6 +15,7 @@ namespace CPF
 			int64_t Write(bool&);
 			int64_t Write(String&);
 			int64_t Write(WString&);
+			int64_t Write(Std::Utf8String&);
 
 			int64_t Write(char&);
 			int64_t Write(wchar_t&);

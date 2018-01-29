@@ -35,6 +35,17 @@ set_property (TARGET gmock_main PROPERTY FOLDER CPF/External/gtest-1.8.0)
 set_property (TARGET gtest PROPERTY FOLDER CPF/External/gtest-1.8.0)
 set_property (TARGET gtest_main PROPERTY FOLDER CPF/External/gtest-1.8.0)
 
+# utfcpp
+add_library (utfcpp INTERFACE)
+target_include_directories (utfcpp INTERFACE External/utfcpp-2.3.5)
+add_custom_target (utfcpp_IDL SOURCES
+	External/utfcpp-2.3.5/utf8.h
+	External/utfcpp-2.3.5/utf8/checked.h
+	External/utfcpp-2.3.5/utf8/core.h
+	External/utfcpp-2.3.5/utf8/unchecked.h
+)
+set_property (TARGET utfcpp_IDL PROPERTY FOLDER CPF/External)
+
 # ###############################################
 configure_file (Include/CPF/Configuration/Setup.hpp.in
 	${CPF_GENERATED}/CPP/CPF/Configuration/Setup.hpp )
@@ -308,6 +319,7 @@ set (STD_INCLUDES
 	Include/CPF/Std/Stack.hpp
 	Include/CPF/Std/String.hpp
 	Include/CPF/Std/StringUtils.hpp
+	Include/CPF/Std/Utf8String.hpp
 	Include/CPF/Std/Time.hpp
 	Include/CPF/Std/Tuple.hpp
 	Include/CPF/Std/UnorderedMap.hpp
@@ -391,6 +403,7 @@ add_library (Core_s STATIC
 target_link_libraries (Core_s
 	gflags_static
 	glog
+	utfcpp
 	${CPF_EXTRA_LIBS}
 	${CPF_CS_LIBS}
 )
@@ -415,6 +428,7 @@ add_library (Core SHARED
 target_link_libraries (Core
 	gflags_static
 	glog
+	utfcpp
 	${EXTRA_LIBS}
 	${CPF_CS_LIBS}
 )
@@ -549,6 +563,7 @@ set (TEST_SOURCES
 	Tests/Test_Thread.cpp
 	Tests/Test_ThreadLocal.cpp
 	Tests/Test_Unit_Us.cpp
+	Tests/Test_Utf8String.cpp
 	Tests/Test_Value.cpp
 	Tests/Test_Vector2v.cpp
 	Tests/Test_Vector3.cpp

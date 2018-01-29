@@ -53,6 +53,26 @@ int64_t BinaryReader::Read(WString& s)
 	return size + 4;
 }
 
+int64_t BinaryReader::Read(Std::Utf8String& source)
+{
+	// Serialize the size.
+	uint32_t size;
+	Read(size);
+
+	// Resize the string.
+	source.data().resize(size);
+
+	// Read the string content.
+	for (uint32_t i = 0; i < size; ++i)
+	{
+		uint8_t c;
+		Read(c);
+		source.data().push_back(c);
+	}
+
+	return size + 4;
+}
+
 int64_t BinaryReader::Read(char& c)
 {
 	return mpStream->Read(&c, sizeof(c));

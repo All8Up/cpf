@@ -46,6 +46,17 @@ int64_t BinaryWriter::Write(WString& s)
 	return size + 4;
 }
 
+int64_t BinaryWriter::Write(Std::Utf8String& s)
+{
+	uint32_t size = uint32_t(s.data().size());
+	Write(size);
+	
+	for (uint8_t c : s.data())
+		Write(c);
+	
+	return size + 4;
+}
+
 int64_t BinaryWriter::Write(char& c)
 {
 	return mpStream->Write(&c, sizeof(c));

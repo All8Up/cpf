@@ -7,18 +7,19 @@ using namespace CPF;
 using namespace IO;
 
 
-CPF_EXPORT bool Directory::Exists(const String& dir)
+CPF_EXPORT bool Directory::Exists(const Std::Utf8String& dir)
 {
 	return OsExists(dir);
 }
 
-CPF_EXPORT bool Directory::Create(const String& dir, bool recursive)
+CPF_EXPORT bool Directory::Create(const Std::Utf8String& dir, bool recursive)
 {
 	if (!recursive)
 		return OsCreate(dir);
 	else
 	{
-		auto components = Path::Components(dir);
+		// TODO: Temporary direct utf8 to string conversion.
+		auto components = Path::Components(dir.data());
 		String current;
 		for (const auto& component : components)
 		{
@@ -34,13 +35,14 @@ CPF_EXPORT bool Directory::Create(const String& dir, bool recursive)
 	return true;
 }
 
-CPF_EXPORT bool Directory::Delete(const String& dir, bool recursive)
+CPF_EXPORT bool Directory::Delete(const Std::Utf8String& dir, bool recursive)
 {
 	if (!recursive)
 		return OsDelete(dir);
 	else
 	{
-		String current = dir;
+		// TODO: Temporary direct utf8 to string conversion.
+		String current = dir.data();
 		for (const auto& it : Directories(dir))
 		{
 			// Ignore the links . and ..

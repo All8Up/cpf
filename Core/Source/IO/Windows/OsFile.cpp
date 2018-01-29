@@ -2,35 +2,29 @@
 #include "CPF/IO/File.hpp"
 
 using namespace CPF;
+using namespace Std;
 using namespace IO;
 
-CPF_EXPORT bool File::Exists(const String& name)
+CPF_EXPORT bool File::Exists(const Utf8String& name)
 {
-	DWORD ftype = GetFileAttributesA(name.c_str());
-	if (ftype == INVALID_FILE_ATTRIBUTES)
-		return false;
-	if ((ftype & FILE_ATTRIBUTE_DIRECTORY)==0)
-		return true;
+	WString utf16;
+	const auto validUtf8 = ConvertUtf8To16(name, utf16);
+	if (validUtf8)
+	{
+		DWORD ftype = GetFileAttributesW(utf16.data());
+		if (ftype == INVALID_FILE_ATTRIBUTES)
+			return false;
+		if ((ftype & FILE_ATTRIBUTE_DIRECTORY) == 0)
+			return true;
+	}
 	return false;
 }
 
-CPF_EXPORT bool File::Exists(const WString& name)
+CPF_EXPORT bool File::Delete(const Utf8String& name)
 {
-	DWORD ftype = GetFileAttributesW(name.c_str());
-	if (ftype == INVALID_FILE_ATTRIBUTES)
-		return false;
-	if ((ftype & FILE_ATTRIBUTE_DIRECTORY) == 0)
-		return true;
+	WString utf16;
+	const auto validUtf8 = ConvertUtf8To16(name, utf16);
+	if (validUtf8)
+		return ::DeleteFileW(utf16.c_str()) != 0;
 	return false;
-}
-
-CPF_EXPORT bool File::Delete(const String& name)
-{
-	DWORD error = ::DeleteFileA(name.c_str());
-	return error != 0;
-}
-
-CPF_EXPORT bool File::Delete(const WString& name)
-{
-	return ::DeleteFileW(name.c_str()) != 0;
 }
