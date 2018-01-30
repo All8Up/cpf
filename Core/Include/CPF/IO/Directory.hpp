@@ -26,7 +26,7 @@ namespace CPF
 			//
 			struct DirEntry
 			{
-				String mName;
+				Std::Utf8String mName;
 				Attributes mAttributes;
 			};
 

@@ -42,15 +42,15 @@ CPF_EXPORT bool Directory::Delete(const Std::Utf8String& dir, bool recursive)
 	else
 	{
 		// TODO: Temporary direct utf8 to string conversion.
-		String current = dir.data();
+		Std::Utf8String current = dir.data();
 		for (const auto& it : Directories(dir))
 		{
 			// Ignore the links . and ..
-			if (it.mName == "." || it.mName == "..")
+			if (it.mName == Std::Utf8String(".") || it.mName == Std::Utf8String(".."))
 				continue;
 
 			// Delete child paths.
-			if (!Delete(Path::Combine(current, it.mName), true))
+			if (!Delete(Path::Combine(current.data(), it.mName.data()), true))
 				return false;
 		}
 
@@ -59,7 +59,7 @@ CPF_EXPORT bool Directory::Delete(const Std::Utf8String& dir, bool recursive)
 		{
 			if (IsSet(it.mAttributes, Attributes::eFile))
 			{
-				if (!File::Delete(Path::ToOS(Path::Combine(current, it.mName))))
+				if (!File::Delete(Path::ToOS(Path::Combine(current.data(), it.mName.data()))))
 					return false;
 			}
 		}

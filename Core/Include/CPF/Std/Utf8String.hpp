@@ -15,11 +15,18 @@ namespace CPF
 			class const_iterator;
 			using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
+			Utf8String() : mString() {}
 			Utf8String(const String::value_type* str) : mString(str) {}
 			Utf8String(const String& rhs) : mString(rhs) {}
+			Utf8String(const WString& rhs) { utf8::utf16to8(rhs.begin(), rhs.end(), std::back_inserter(mString)); }
 			Utf8String(String&& rhs) : mString(Move(rhs)) {}
 			Utf8String(WString&& rhs) { utf8::utf16to8(rhs.begin(), rhs.end(), std::back_inserter(mString)); }
-			
+
+			bool operator ==(const Utf8String& rhs) const { return mString == rhs.mString; }
+			bool operator !=(const Utf8String& rhs) const { return mString != rhs.mString; }
+
+			Utf8String& operator = (const Utf8String& rhs) { mString = rhs.mString; return *this; }
+
 			Utf8String& operator +=(const Utf8String& rhs);
 			
 			const_iterator begin() const;
