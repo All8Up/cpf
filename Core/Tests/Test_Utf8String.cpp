@@ -73,3 +73,26 @@ TEST(Utf8String, ToUtf16)
 		EXPECT_TRUE(utf8StringL[i++] == c);
 	}
 }
+
+TEST(Utf8String, At)
+{
+	const char* utf8String = "Hello World!";
+	Utf8String t0(utf8String);
+	
+	for (int i=0; i<t0.length(); ++i)
+	{
+		EXPECT_EQ(utf8String[i], t0.at(i));
+	}
+}
+
+TEST(Utf8String, Erase)
+{
+	const char* utf8String = "Hello World!";
+	Utf8String t0(utf8String);
+	Utf8String t1 = t0;
+	t1.erase(t1.begin() + 5, t1.end());
+	EXPECT_STREQ("Hello", t1.data().c_str());
+	Utf8String t2 = t0;
+	t2.erase(t2.begin(), t2.begin() + 6);
+	EXPECT_STREQ("World!", t2.data().c_str());
+}

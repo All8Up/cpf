@@ -108,10 +108,10 @@ TEST(Path, Components)
 	using namespace IO;
 
 	const String testPath(Path::Normalize("c:/this/is/a/test/"));
-	Vector<String> results;
-	for (const auto& part : Path::Components(Path::GetDirectory(testPath)))
+	Vector<Std::Utf8String> results;
+	for (const auto& part : Path::x_Components(Path::GetDirectory(testPath)))
 		results.push_back(part);
-	Vector<String> expected{ "this", "is", "a", "test" };
+	Vector<Std::Utf8String> expected{ "this", "is", "a", "test" };
 	EXPECT_EQ(expected, results);
 }
 
@@ -124,14 +124,14 @@ TEST(Path, Deconstruct_Reconstruct)
 		// NOTE: the final item is a file since this does not terminate with a '/'.
 		const String testPath(Path::Normalize("c:/this/is/a/test/blargo"));
 		const String root = Path::GetRoot(testPath);
-		const String path = Path::GetDirectory(testPath);
-		const String filename = Path::GetFilename(testPath);
+		const Std::Utf8String path = Path::GetDirectory(testPath);
+		const Std::Utf8String filename = Path::GetFilenameAndExtension(testPath);
 
 		EXPECT_STREQ("c:", root.c_str());
-		EXPECT_STREQ("/this/is/a/test/", path.c_str());
-		EXPECT_STREQ("blargo", filename.c_str());
+		EXPECT_STREQ("/this/is/a/test/", path.data().c_str());
+		EXPECT_STREQ("blargo", filename.data().c_str());
 
-		String reconPath = Path::Combine(path, filename);
+		String reconPath = Path::Combine(path.data(), filename.data());
 		reconPath = Path::Combine(root, reconPath);
 
 		EXPECT_STREQ(testPath.c_str(), reconPath.c_str());

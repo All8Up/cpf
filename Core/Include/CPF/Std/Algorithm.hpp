@@ -44,6 +44,19 @@ namespace CPF
 	{
 		return std::find(first, last, val, comp);
 	}
+	
+	template <typename InputIterator, typename T>
+	InputIterator FindLast(InputIterator first, InputIterator last, const T& val)
+	{
+		auto f = std::reverse_iterator<InputIterator>(last);
+		auto l = std::reverse_iterator<InputIterator>(first);
+		while (l!=f)
+		{
+			if ((*f) == val)
+				return f.base();
+			++f;
+		}
+	}
 
 	template <typename InputIterator, typename Predicate>
 	InputIterator FindIf(InputIterator first, InputIterator last, Predicate pred)

@@ -5,6 +5,7 @@
 #include "CPF/Std/Vector.hpp"
 #include "CPF/Std/Algorithm.hpp"
 #include "CPF/Std/CCType.hpp"
+#include "CPF/Std/Utf8String.hpp"
 
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
@@ -34,9 +35,7 @@ namespace CPF
 
 				for (auto ibegin = result.begin(), iend = result.end(); ibegin != iend; ++ibegin)
 				{
-					if (Std::IsSpace(*ibegin))
-						continue;
-					else
+					if (!Std::IsSpace(*ibegin))
 					{
 						if (ibegin != result.begin())
 							result.erase(result.begin(), ibegin);
@@ -45,9 +44,7 @@ namespace CPF
 				}
 				for (auto ibegin = result.rbegin(), iend = result.rend(); ibegin != iend; ++ibegin)
 				{
-					if (Std::IsSpace(*ibegin))
-						continue;
-					else
+					if (!Std::IsSpace(*ibegin))
 					{
 						if (ibegin != result.rbegin())
 							result.erase(ibegin.base(), result.end());
@@ -81,7 +78,7 @@ namespace CPF
 					return true;
 
 				// Is it unix style rooted.
-				if (temp.size() >= 1 && temp.at(0) == kDirectorySeparator)
+				if (!temp.empty() && temp.at(0) == kDirectorySeparator)
 					return true;
 
 				return false;
@@ -155,15 +152,12 @@ namespace CPF
 				{
 					if (tl.back() == kDirectorySeparator)
 						return STRING_TYPE(tl + rl);
-					else
+					if (!rl.empty())
 					{
-						if (!rl.empty())
-						{
-							if (rl.front() == kDirectorySeparator)
-								return STRING_TYPE(tl + rl);
-						}
-						return tl + STRING_TYPE::value_type(kDirectorySeparator) + rl;
+						if (rl.front() == kDirectorySeparator)
+							return STRING_TYPE(tl + rl);
 					}
+					return tl + STRING_TYPE::value_type(kDirectorySeparator) + rl;
 				}
 				return rhs;
 			}
@@ -256,57 +250,67 @@ namespace CPF
 			inline String RemoveFilename(const String& path) { return _RemoveFilename(path); }
 			inline WString RemoveFilename(const WString& path) { return _RemoveFilename(path); }
 
-			template<typename STRING_TYPE>
-			STRING_TYPE _GetFilename(const STRING_TYPE& src, bool withExtension)
+			inline Std::Utf8String GetFilenameAndExtension(const Std::Utf8String& path)
 			{
-				// TODO: Add extension handling.
-				CPF_ASSERT(withExtension == false); // Not implemented.
-				(void)withExtension;
-
-				STRING_TYPE norm = Path::Normalize(src);
-
-				if (norm.empty())
-					return STRING_TYPE();
-
-				auto it = norm.find_last_of(kDirectorySeparator);
-				if (it != STRING_TYPE::npos)
-					return STRING_TYPE(norm.begin() + it + 1, norm.end());
-
-				return STRING_TYPE();
+				Std::Utf8String normalized = Normalize(path.data());
+				if (normalized.empty())
+					return Std::Utf8String();
+				auto it = FindLast(normalized.begin(), normalized.end(), kDirectorySeparator);
+				if (it != normalized.end())
+					return Std::Utf8String(it, normalized.end());
+				return Std::Utf8String();
 			}
-			inline String GetFilename(const String& path, bool we = false) { return _GetFilename(path, we); }
-			inline WString GetFilename(const WString& path, bool we = false) { return _GetFilename(path, we); }
 
-			template<typename STRING_TYPE>
-			STRING_TYPE _RemoveRoot(const STRING_TYPE& path)
+			inline Std::Utf8String RemoveRoot(const Std::Utf8String& path)
 			{
-				STRING_TYPE result = Normalize(path);
-
-				// Is Windows style rooted.
-				if (result.size() >= 2 && result.at(1) == ':')
+				Std::Utf8String result = Normalize(path.data());
+				
+				// Is Windows style root.
+				if (result.length() >= 2 && result.at(1) == ':')
+				{
 					result.erase(result.begin(), result.begin() + 2);
-
+				}
 				// Is it unix style rooted.
-				else if (result.size() >= 1 && result.at(0) == kDirectorySeparator)
+				else if (!result.empty() && result.at(0) == kDirectorySeparator)
 					result.erase(result.begin(), result.begin() + 1);
-
+				
 				return result;
 			}
-			inline String RemoveRoot(const String& path) { return _RemoveRoot(path); }
-			inline WString RemoveRoot(const WString& path) { return _RemoveRoot(path); }
 
-			template<typename STRING_TYPE>
-			STRING_TYPE _GetDirectory(const STRING_TYPE& path)
+			inline Std::Utf8String GetDirectory(const Std::Utf8String& path)
 			{
-				STRING_TYPE result = path;
-				if (IsRooted(path))
-					result = RemoveRoot(result);
-				return RemoveFilename(result);
+				Std::Utf8String result = path;
+				if (IsRooted(path.data()))
+				{
+					result = RemoveRoot(result.data());
+				}
+				return RemoveFilename(result.data());
 			}
-			inline String GetDirectory(const String& path) { return _GetDirectory(path); }
-			inline WString GetDirectory(const WString& path) { return _GetDirectory(path); }
 
 			//////////////////////////////////////////////////////////////////////////
+			inline Vector<Std::Utf8String> x_Components(const Std::Utf8String& path)
+			{
+				Vector<Std::Utf8String> result;
+				// TODO: Normalize needs to be Utf8...
+				Std::Utf8String normalized = Normalize(path.data());
+				Std::Utf8String current;
+				
+				for (const auto c : normalized)
+				{
+					if (c == kDirectorySeparator)
+					{
+						if (!current.empty())
+							result.push_back(current);
+						current.clear();
+					}
+					else
+						current += c;
+				}
+				if (!current.empty())
+					result.push_back(current);
+				return result;
+			}
+			
 			template<typename STRING_TYPE>
 			Vector<STRING_TYPE> _Components(const STRING_TYPE& path)
 			{

@@ -179,7 +179,7 @@ Std::Utf8String CPF_EXPORT File::GetExecutableFilePath()
 	DWORD length = 0;
 	if ((length = GetModuleFileNameW(module, path, MAX_PATH)) > 0)
 	{
-		auto dir = Path::GetDirectory(path);
+		auto dir = Path::GetDirectory(WString(path));
 		return dir;
 	}
 	return String();
