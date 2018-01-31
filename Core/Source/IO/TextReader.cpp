@@ -30,7 +30,7 @@ int64_t TextReader::ReadLine(String& out)
 	int64_t result = 0;
 	uint8_t current;
 	out.clear();
-	while (mpStream->Read(&current, sizeof(current)))
+	while (mpStream->Read(&current, sizeof(current)).IsOK())
 	{
 		switch (current)
 		{
@@ -53,7 +53,7 @@ int64_t TextReader::ReadAll(String& out)
 	int64_t result = 0;
 	out.clear();
 	uint8_t current;
-	while (mpStream->Read(&current, sizeof(current)))
+	while (mpStream->Read(&current, sizeof(current)).IsOK())
 	{
 		++result;
 		out += current;

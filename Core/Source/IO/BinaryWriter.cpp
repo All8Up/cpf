@@ -17,7 +17,7 @@ int64_t BinaryWriter::Write(bool& b)
 {
 	uint32_t temp = uint32_t(b);
 	auto result = mpStream->Write(&temp, sizeof(uint32_t));
-	return result;
+	return result.GetOK();
 }
 
 int64_t BinaryWriter::Write(String& s)
@@ -59,69 +59,69 @@ int64_t BinaryWriter::Write(Std::Utf8String& s)
 
 int64_t BinaryWriter::Write(char& c)
 {
-	return mpStream->Write(&c, sizeof(c));
+	return mpStream->Write(&c, sizeof(c)).GetOK();
 }
 
 int64_t BinaryWriter::Write(wchar_t& c)
 {
-	return mpStream->Write(&c, sizeof(c));
+	return mpStream->Write(&c, sizeof(c)).GetOK();
 }
 
 int64_t BinaryWriter::Write(int8_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(int16_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(int32_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(int64_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(uint8_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(uint16_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(uint32_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(uint64_t& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(float& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Write(double& v)
 {
-	return mpStream->Write(&v, sizeof(v));
+	return mpStream->Write(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryWriter::Align(int a)
 {
 	CPF_ASSERT((a & (a - 1)) == 0);
 	auto current = mpStream->GetPosition();
-	auto offset = (current + (a - 1)) & (a - 1);
+	auto offset = (current.GetOK() + (a - 1)) & (a - 1);
 
 	uint8_t v = 0;
 	for (auto i = 0; i < offset; ++i)

@@ -18,7 +18,7 @@ int64_t BinaryReader::Read(bool& b)
 	uint32_t temp;
 	auto result = mpStream->Read(&temp, sizeof(uint32_t));
 	b = temp ? 1 : 0;
-	return result;
+	return result.GetOK();
 }
 
 int64_t BinaryReader::Read(String& s)
@@ -75,69 +75,69 @@ int64_t BinaryReader::Read(Std::Utf8String& source)
 
 int64_t BinaryReader::Read(char& c)
 {
-	return mpStream->Read(&c, sizeof(c));
+	return mpStream->Read(&c, sizeof(c)).GetOK();
 }
 
 int64_t BinaryReader::Read(wchar_t& c)
 {
-	return mpStream->Read(&c, sizeof(c));
+	return mpStream->Read(&c, sizeof(c)).GetOK();
 }
 
 int64_t BinaryReader::Read(int8_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(int16_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(int32_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(int64_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(uint8_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(uint16_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(uint32_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(uint64_t& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(float& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Read(double& v)
 {
-	return mpStream->Read(&v, sizeof(v));
+	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
 int64_t BinaryReader::Align(int a)
 {
 	CPF_ASSERT((a & (a - 1)) == 0);
 	auto current = mpStream->GetPosition();
-	auto offset = (current + (a - 1)) & (a - 1);
+	auto offset = (current.GetOK() + (a - 1)) & (a - 1);
 
 	uint8_t v = 0;
 	for (auto i = 0; i < offset; ++i)

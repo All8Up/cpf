@@ -3,7 +3,6 @@
 */
 #pragma once
 #include "CPF/IO.hpp"
-#include "CPF/Std/String.hpp"
 #include "CPF/IO/Stream.hpp"
 #include "CPF/Std/Utf8String.hpp"
 
@@ -26,7 +25,7 @@ namespace CPF
 			CPF_EXPORT uint32_t GetAttributes(const WString& name);
 			 */
 
-			CPF_EXPORT Stream* Create(const Std::Utf8String& name, Access access, Error* error = nullptr);
+			CPF_EXPORT Outcome<Stream*, Error> Create(const Std::Utf8String& name, Access access);
 
 			Std::Utf8String CPF_EXPORT GetExecutableFilePath();
 		}

@@ -2,6 +2,7 @@
 #include "CPF/IO/File.hpp"
 #include "CPF/IO/Path.hpp"
 #include "CPF/IO/FileSystem.hpp"
+#include "CPF/Option.hpp"
 
 using namespace CPF;
 using namespace IO;
@@ -22,21 +23,21 @@ namespace
 		bool CanWrite() override;
 
 		//
-		void Close(Error* error = nullptr) override;
-		void Flush(Error* error = nullptr) override;
-		int64_t GetPosition(Error* error = nullptr) override;
-		int64_t GetLength(Error* error = nullptr) override;
-		void Seek(int64_t offset, Origin origin, Error* error = nullptr) override;
+		Option<Error> Close() override;
+		Option<Error> Flush() override;
+		Outcome<int64_t, Error> GetPosition() override;
+		Outcome<int64_t, Error> GetLength() override;
+		Option<Error> Seek(int64_t offset, Origin origin) override;
 
 		//
-		int64_t Read(void* outBuffer, int64_t length, Error* error = nullptr) override;
-		int64_t Write(const void* inBuffer, int64_t length, Error* error = nullptr) override;
+		Outcome<int64_t, Error> Read(void* outBuffer, int64_t length) override;
+		Outcome<int64_t, Error> Write(const void* inBuffer, int64_t length) override;
 
 		//
 		operator bool() const override;
 
 		//////////////////////////////////////////////////////////////////////////
-		bool Open(const Std::Utf8String& name, Access access, Error* error);
+		Option<Error> Open(const Std::Utf8String& name, Access access);
 
 	private:
 		FileHandle mpFile;
@@ -53,10 +54,12 @@ namespace
 		GetFileSystem()->Close(mpFile);
 	}
 
-	bool RawFileStream::Open(const Std::Utf8String& name, Access access, Error* error)
+	Option<Error> RawFileStream::Open(const Std::Utf8String& name, Access access)
 	{
-		mpFile = GetFileSystem()->Open(name, access, error);
-		return mpFile != nullptr;
+		auto file = GetFileSystem()->Open(name, access);
+		if (file.CheckOK(mpFile))
+			return Option<Error>::None();
+		return Option<Error>::Some(Error::eInvalidFile);
 	}
 
 	Stream::Access RawFileStream::GetAccess()
@@ -79,39 +82,67 @@ namespace
 		return true;
 	}
 
-	void RawFileStream::Close(Error* error)
+	Option<Error> RawFileStream::Close()
 	{
-		GetFileSystem()->Close(mpFile, error);
+		Error error;
+		GetFileSystem()->Close(mpFile, &error);
+		if (error!=Error::eNone)
+			return Option<Error>::None();
+		return Option<Error>::Some(error);
 	}
 
-	void RawFileStream::Flush(Error* error)
+	Option<Error> RawFileStream::Flush()
 	{
-		GetFileSystem()->Flush(mpFile, error);
+		Error error;
+		GetFileSystem()->Flush(mpFile, &error);
+		if (error != Error::eNone)
+			return Option<Error>::None();
+		return Option<Error>::Some(error);
 	}
 
-	int64_t RawFileStream::GetPosition(Error* error)
+	Outcome<int64_t, Error> RawFileStream::GetPosition()
 	{
-		return GetFileSystem()->GetPosition(mpFile, error);
+		Error error;
+		auto pos = GetFileSystem()->GetPosition(mpFile, &error);
+		if (error != Error::eNone)
+			return Outcome<int64_t, Error>::Error(error);
+		return Outcome<int64_t, Error>::OK(pos);
 	}
 
-	int64_t RawFileStream::GetLength(Error* error)
+	Outcome<int64_t, Error> RawFileStream::GetLength()
 	{
-		return GetFileSystem()->GetLength(mpFile, error);
+		Error error;
+		auto len = GetFileSystem()->GetLength(mpFile, &error);
+		if (error != Error::eNone)
+			return Outcome<int64_t, Error>::Error(error);
+		return Outcome<int64_t, Error>::OK(len);
 	}
 
-	void RawFileStream::Seek(int64_t offset, Origin origin, Error* error)
+	Option<Error> RawFileStream::Seek(int64_t offset, Origin origin)
 	{
-		GetFileSystem()->Seek(mpFile, offset, origin, error);
+		Error error;
+		GetFileSystem()->Seek(mpFile, offset, origin, &error);
+		if (error != Error::eNone)
+			return Option<Error>::Some(error);
+		return Option<Error>::None();
 	}
 
-	int64_t RawFileStream::Read(void* outBuffer, int64_t length, Error* error)
+	Outcome<int64_t, Error> RawFileStream::Read(void* outBuffer, int64_t length)
 	{
-		return GetFileSystem()->Read(mpFile, outBuffer, length, error);
+		Error error;
+		auto size = GetFileSystem()->Read(mpFile, outBuffer, length, &error);
+		if (error != Error::eNone)
+			return Outcome<int64_t, Error>::Error(error);
+		return Outcome<int64_t, Error>::OK(size);
 	}
 
-	int64_t RawFileStream::Write(const void* inBuffer, int64_t length, Error* error)
+	Outcome<int64_t, Error> RawFileStream::Write(const void* inBuffer, int64_t length)
 	{
-		return GetFileSystem()->Write(mpFile, inBuffer, length, error);
+		Error error;
+		auto size = GetFileSystem()->Write(mpFile, inBuffer, length, &error);
+		if (error != Error::eNone)
+			return Outcome<int64_t, Error>::Error(error);
+		return Outcome<int64_t, Error>::OK(size);
 	}
 
 
@@ -126,22 +157,17 @@ namespace
 * @brief Creates a new file stream.
 * @return A StreamPtr.
 */
-CPF_EXPORT Stream* File::Create(const Std::Utf8String& name, Access access, Error* error)
+CPF_EXPORT Outcome<Stream*, Error> File::Create(const Std::Utf8String& name, Access access)
 {
 	RawFileStream* filestream = new RawFileStream;
 	if (!filestream)
 	{
-		if (error)
-			*error = Error::eOutOfMemory;
-		return nullptr;
+		return Outcome<Stream*, Error>::Error(Error::eOutOfMemory);
 	}
-	if (filestream->Open(name, access, error))
-	{
-		if (error)
-			*error = Error::eNone;
-		return static_cast<Stream*>(filestream);
-	}
-	return nullptr;
+	Error result;
+	if (filestream->Open(name, access).CheckSome(result))
+		return Outcome<Stream*, Error>::Error(result);
+	return Outcome<Stream*, Error>::OK(static_cast<Stream*>(filestream));
 }
 
 

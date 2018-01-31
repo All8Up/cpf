@@ -129,7 +129,6 @@ set (IO_INCLUDES
 	Include/CPF/IO/FileSystem.hpp
 	Include/CPF/IO/Globbing.hpp
 	Include/CPF/IO/Path.hpp
-	Include/CPF/IO/Result.hpp
 	Include/CPF/IO/Stream.hpp
 	Include/CPF/IO/TextReader.hpp
 	Include/CPF/IO/TextWriter.hpp

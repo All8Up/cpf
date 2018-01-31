@@ -23,7 +23,7 @@ namespace CPF
 			ANSI_C_FileSystem();
 			~ANSI_C_FileSystem() override;
 
-			FileHandle Open(const Std::Utf8String&, Access, Error*) override;
+			Outcome<FileHandle, Error> Open(const Std::Utf8String&, Access) override;
 			void Close(FileHandle, Error*) override;
 			void Flush(FileHandle, Error*) override;
 			int64_t GetPosition(FileHandle, Error*) override;
@@ -104,7 +104,7 @@ ANSI_C_FileSystem::~ANSI_C_FileSystem()
 	mWorker.Join();
 }
 
-FileHandle ANSI_C_FileSystem::Open(const Std::Utf8String& name, Access access, Error* error)
+Outcome<FileHandle, Error> ANSI_C_FileSystem::Open(const Std::Utf8String& name, Access access)
 {
 	char mode[4];
 	switch (access)
@@ -123,12 +123,9 @@ FileHandle ANSI_C_FileSystem::Open(const Std::Utf8String& name, Access access, E
 	// TODO: This is not utf8 safe!!
 	FileHandle handle = Std::FOpen(Path::ToOS(name.data()).c_str(), mode);
 
-	if (error && handle == nullptr)
-	{
-		// TODO: Flesh out errors.
-		*error = Error::eUnknownError;
-	}
-	return handle;
+	if (handle)
+		return Outcome<FileHandle, Error>::OK(handle);
+	return Outcome<FileHandle, Error>::Error(Error::eUnknownError);
 }
 
 void ANSI_C_FileSystem::Close(FileHandle handle, Error* error)

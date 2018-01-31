@@ -7,6 +7,7 @@
 #include "CPF/IntrusivePtr.hpp"
 #include "CPF/Std/Vector.hpp"
 #include "CPF/Std/String.hpp"
+#include "CPF/Option.hpp"
 
 namespace CPF
 {
@@ -32,15 +33,15 @@ namespace CPF
 			virtual bool CanWrite() = 0;
 
 			//
-			virtual void Close(Error* error = nullptr) = 0;
-			virtual void Flush(Error* error = nullptr) = 0;
-			virtual int64_t GetPosition(Error* error = nullptr) = 0;
-			virtual int64_t GetLength(Error* error = nullptr) = 0;
-			virtual void Seek(int64_t offset, Origin origin, Error* error = nullptr) = 0;
+			virtual Option<Error> Close() = 0;
+			virtual Option<Error> Flush() = 0;
+			virtual Outcome<int64_t, Error> GetPosition() = 0;
+			virtual Outcome<int64_t, Error> GetLength() = 0;
+			virtual Option<Error> Seek(int64_t offset, Origin origin) = 0;
 
 			//
-			virtual int64_t Read(void* outBuffer, int64_t length, Error* error = nullptr) = 0;
-			virtual int64_t Write(const void* inBuffer, int64_t length, Error* error = nullptr) = 0;
+			virtual Outcome<int64_t, Error> Read(void* outBuffer, int64_t length) = 0;
+			virtual Outcome<int64_t, Error> Write(const void* inBuffer, int64_t length) = 0;
 
 			//
 			virtual operator bool() const = 0;
@@ -51,7 +52,10 @@ namespace CPF
 		};
 
 		/** @brief Utility to read the contents of a stream as a text file. */
-		String CPF_EXPORT ReadText(Stream*);
-		Vector<uint8_t> CPF_EXPORT ReadBinary(Stream*);
+		using ReadTextOutcome = Outcome<String, Error>;
+		ReadTextOutcome CPF_EXPORT ReadText(Stream*);
+
+		using ReadBinaryOutcome = Outcome<Vector<uint8_t>, IO::Error>;
+		ReadBinaryOutcome CPF_EXPORT ReadBinary(Stream*);
 	}
 }

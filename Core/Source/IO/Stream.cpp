@@ -5,24 +5,41 @@
 
 using namespace CPF;
 
-String CPF_EXPORT IO::ReadText(Stream* stream)
+IO::ReadTextOutcome CPF_EXPORT IO::ReadText(Stream* stream)
 {
 	String result;
-	const int64_t streamLen = stream->GetLength();
-	result.resize(streamLen);
-	stream->Read(&result[0], streamLen);
-	result.push_back(0);
-	return result;
+
+	auto length = stream->GetLength();
+	int64_t streamLen;
+	if (length.CheckOK(streamLen))
+	{
+		result.resize(streamLen);
+
+		int64_t readLen;
+		auto readResult = stream->Read(&result[0], streamLen);
+		if (readResult.CheckOK(readLen))
+		{
+			result.push_back(0);
+			return ReadTextOutcome::OK(result);
+		}
+	}
+	return ReadTextOutcome::Error(length.GetError());
 }
 
-Vector<uint8_t> CPF_EXPORT IO::ReadBinary(Stream* stream)
+IO::ReadBinaryOutcome CPF_EXPORT IO::ReadBinary(Stream* stream)
 {
 	Vector<uint8_t> result;
 	if (stream)
 	{
-		const int64_t streamLen = stream->GetLength();
-		result.resize(streamLen);
-		stream->Read(result.data(), streamLen);
+		int64_t streamLen;
+		auto lengthResult = stream->GetLength();
+		if (lengthResult.CheckOK(streamLen))
+		{
+			result.resize(streamLen);
+
+			stream->Read(result.data(), streamLen);
+			return ReadBinaryOutcome::OK(result);
+		}
 	}
-	return result;
+	return ReadBinaryOutcome::Error(Error::eInvalidFile);
 }

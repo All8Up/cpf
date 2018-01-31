@@ -1,7 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "CPF/IO.hpp"
-#include "CPF/Std/String.hpp"
 #include "CPF/Std/Utf8String.hpp"
 #include "CPF/Std/Functional.hpp"
 #include "CPF/IO/Attributes.hpp"
@@ -69,7 +68,7 @@ namespace CPF
 
 			private:
 				CPF_DLL_SAFE_BEGIN;
-				String mPath;
+				Std::Utf8String mPath;
 				Predicate mPredicate;
 				CPF_DLL_SAFE_END;
 			};

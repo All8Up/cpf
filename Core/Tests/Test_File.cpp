@@ -10,16 +10,15 @@ TEST_F(IOTestFixture, File_CreateForRead_Fail)
 {
 	using namespace CPF::IO;
 	EXPECT_FALSE(File::Exists("TestFile.test"));
-	auto file = File::Create("TestFile.test", Access::eRead);
-	EXPECT_FALSE(file);
+	EXPECT_TRUE(File::Create("TestFile.test", Access::eRead).IsError());
 }
 
 TEST_F(IOTestFixture, File_CreateForWrite_TestData)
 {
 	using namespace CPF::IO;
 	EXPECT_FALSE(File::Exists("TestFile.test"));
-	auto file = File::Create("TestFile.test", Access::eWrite);
-	EXPECT_TRUE(file!=nullptr);
+	Stream* file;
+	EXPECT_TRUE(File::Create("TestFile.test", Access::eWrite).CheckOK(file));
 
 	TestRawBinary testData =
 	{
@@ -35,11 +34,11 @@ TEST_F(IOTestFixture, File_CreateForRead_TestData)
 {
 	using namespace CPF::IO;
 	EXPECT_TRUE(File::Exists("TestFile.test"));
-	auto file = File::Create("TestFile.test", Access::eRead);
-	EXPECT_TRUE(file!=nullptr);
+	Stream* file;
+	EXPECT_TRUE(File::Create("TestFile.test", Access::eRead).CheckOK(file));
 
 	TestRawBinary testData;
-	EXPECT_EQ(sizeof(TestRawBinary), file->Read(&testData, sizeof(testData)));
+	EXPECT_EQ(sizeof(TestRawBinary), file->Read(&testData, sizeof(testData)).GetOK());
 	EXPECT_EQ(1, testData.one);
 	EXPECT_EQ(2, testData.two);
 	EXPECT_EQ(3, testData.three);

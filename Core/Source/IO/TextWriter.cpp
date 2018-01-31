@@ -19,9 +19,9 @@ TextWriter::operator bool() const
 	return bool(mpStream);
 }
 
-int64_t TextWriter::Write(const void* inBuffer, int64_t length, Error* error)
+Outcome<int64_t, Error> TextWriter::Write(const void* inBuffer, int64_t length)
 {
-	return mpStream->Write(inBuffer, length, error);
+	return mpStream->Write(inBuffer, length);
 }
 
 Stream* TextWriter::GetStream() const

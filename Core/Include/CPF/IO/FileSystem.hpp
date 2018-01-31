@@ -14,7 +14,7 @@ namespace CPF
 		public:
 			virtual ~iFileSystem() = 0;
 
-			virtual FileHandle Open(const Std::Utf8String& name, Access access, Error* = nullptr) = 0;
+			virtual Outcome<FileHandle, Error> Open(const Std::Utf8String& name, Access access) = 0;
 			virtual void Close(FileHandle, Error* = nullptr) = 0;
 			virtual void Flush(FileHandle, Error* = nullptr) = 0;
 			virtual int64_t GetPosition(FileHandle, Error* = nullptr) = 0;
