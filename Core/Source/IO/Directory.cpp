@@ -20,7 +20,7 @@ CPF_EXPORT bool Directory::Create(const Std::Utf8String& dir, bool recursive)
 	{
 		// TODO: Temporary direct utf8 to string conversion.
 		auto components = Path::Components(dir.data());
-		String current;
+		Std::Utf8String current;
 		for (const auto& component : components)
 		{
 			current = Path::Combine(current, component);
@@ -39,32 +39,30 @@ CPF_EXPORT bool Directory::Delete(const Std::Utf8String& dir, bool recursive)
 {
 	if (!recursive)
 		return OsDelete(dir);
-	else
-	{
-		// TODO: Temporary direct utf8 to string conversion.
-		Std::Utf8String current = dir.data();
-		for (const auto& it : Directories(dir))
-		{
-			// Ignore the links . and ..
-			if (it.mName == Std::Utf8String(".") || it.mName == Std::Utf8String(".."))
-				continue;
 
-			// Delete child paths.
-			if (!Delete(Path::Combine(current.data(), it.mName.data()), true))
+	// TODO: Temporary direct utf8 to string conversion.
+	Std::Utf8String current = dir.data();
+	for (const auto& it : Directories(dir))
+	{
+		// Ignore the links . and ..
+		if (it.mName == Std::Utf8String(".") || it.mName == Std::Utf8String(".."))
+			continue;
+
+		// Delete child paths.
+		if (!Delete(Path::Combine(current.data(), it.mName.data()), true))
+			return false;
+	}
+
+	// Now delete the contents which are not directories.
+	for (const auto& it : Entries(dir))
+	{
+		if (IsSet(it.mAttributes, Attributes::eFile))
+		{
+			if (!File::Delete(Path::ToOS(Path::Combine(current.data(), it.mName.data()))))
 				return false;
 		}
-
-		// Now delete the contents which are not directories.
-		for (const auto& it : Entries(dir))
-		{
-			if (IsSet(it.mAttributes, Attributes::eFile))
-			{
-				if (!File::Delete(Path::ToOS(Path::Combine(current.data(), it.mName.data()))))
-					return false;
-			}
-		}
-
-		// Now delete ourselves.
-		return OsDelete(current);
 	}
+
+	// Now delete ourselves.
+	return OsDelete(current);
 }

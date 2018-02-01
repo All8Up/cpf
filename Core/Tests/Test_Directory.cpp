@@ -19,8 +19,8 @@ TEST(IO, DirectoryRecursive)
 {
 	using namespace CPF;
 	using namespace IO;
-	String testBase = "TestDir";
-	String testDir = Path::Combine(testBase, "This/Is/A/Test/");
+	Std::Utf8String testBase = "TestDir";
+	Std::Utf8String testDir = Path::Combine(testBase, "This/Is/A/Test/");
 
 	EXPECT_FALSE(Directory::Exists(testBase));
 	EXPECT_FALSE(Directory::Exists(testDir));

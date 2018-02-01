@@ -67,10 +67,13 @@ struct Directory::Entries::OsIterator
 
 	bool Init(const String& path, Predicate&& pred)
 	{
-		String searchPath = Path::Combine(Path::ToOS(Path::Normalize(path)), "*");
+		Std::Utf8String searchPath = Path::Combine(Path::ToOS(Path::Normalize(path)), "*");
 		mPredicate = Move(pred);
+		
+		WString searchString;
+		ConvertUtf8To16(searchPath, searchString);
 
-		mFind = ::FindFirstFileA(searchPath.c_str(), &mFindData);
+		mFind = ::FindFirstFileW(searchString.c_str(), &mFindData);
 		if (mFind != INVALID_HANDLE_VALUE)
 		{
 			if (!mPredicate(ToEntry()))
@@ -85,7 +88,7 @@ struct Directory::Entries::OsIterator
 		bool more = true;
 		do
 		{
-			more = ::FindNextFileA(mFind, &mFindData) == TRUE ? true : false;
+			more = ::FindNextFileW(mFind, &mFindData) == TRUE ? true : false;
 		} while (more && !mPredicate(ToEntry()));
 		return more;
 	}
@@ -94,7 +97,7 @@ struct Directory::Entries::OsIterator
 	{
 		DirEntry result;
 
-		result.mName = mFindData.cFileName;
+		result.mName = Std::Utf8String(mFindData.cFileName);
 		result.mAttributes = Attributes::eNone;
 		if (mFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			result.mAttributes |= Attributes::eDirectory;
@@ -105,7 +108,7 @@ struct Directory::Entries::OsIterator
 	}
 
 	HANDLE mFind;
-	WIN32_FIND_DATAA mFindData;
+	WIN32_FIND_DATAW mFindData;
 	Predicate mPredicate;
 };
 

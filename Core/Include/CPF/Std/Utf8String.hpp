@@ -42,6 +42,12 @@ namespace CPF
 				utf8::utf8to32(end, mString.data() + mString.length(), result);
 				return result[0];
 			}
+			uint32_t front() const
+			{
+				uint32_t result[1];
+				utf8::utf8to32(mString.data(), mString.data() + 1, result);
+				return result[0];
+			}
 
 			const_iterator end() const;
 			const_reverse_iterator rend() const;
@@ -237,7 +243,7 @@ namespace CPF
 
 		inline Utf8String& Utf8String::operator +=(uint32_t c)
 		{
-			uint8_t composeBuffer[5];
+			uint8_t composeBuffer[1];
 			const auto endBuffer = utf8::append(c, composeBuffer);
 			mString.append(composeBuffer, endBuffer);
 			return *this;
@@ -247,6 +253,22 @@ namespace CPF
 		{
 			mString = mString + rhs.mString;
 			return *this;
+		}
+		
+		inline Utf8String operator +(const Utf8String& lhs, uint32_t c)
+		{
+			uint8_t composeBuffer[1];
+			const auto endBuffer = utf8::append(c, composeBuffer);
+			Utf8String result = lhs;
+			result.data().append(composeBuffer, endBuffer);
+			return result;
+		}
+		
+		inline Utf8String operator +(const Utf8String& lhs, const Utf8String& rhs)
+		{
+			Utf8String result = lhs;
+			result.data() += rhs.data();
+			return result;
 		}
 		
 		inline Utf8String operator + (char c, const Utf8String& rhs)
@@ -265,6 +287,11 @@ namespace CPF
 		}
 
 		inline size_t Utf8String::length() const
+		{
+			return utf8::distance(begin(), end());
+		}
+
+		inline size_t Utf8String::size() const
 		{
 			return utf8::distance(begin(), end());
 		}

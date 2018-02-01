@@ -121,7 +121,7 @@ Outcome<FileHandle, Error> ANSI_C_FileSystem::Open(const Std::Utf8String& name, 
 	}
 
 	// TODO: This is not utf8 safe!!
-	FileHandle handle = Std::FOpen(Path::ToOS(name.data()).c_str(), mode);
+	FileHandle handle = Std::FOpen(Path::ToOS(name.data()).data().c_str(), mode);
 
 	if (handle)
 		return Outcome<FileHandle, Error>::OK(handle);
