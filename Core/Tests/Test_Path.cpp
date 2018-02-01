@@ -19,7 +19,7 @@ TEST_F(IOTestFixture, Normalize)
 	int index = 0;
 	for (const auto& path : mTestPaths)
 	{
-		const String test = Path::Normalize(path);
+		const Std::Utf8String test = Path::x_Normalize(path);
 		EXPECT_TRUE(test == mNormPaths[index]);
 		++index;
 	}

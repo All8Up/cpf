@@ -34,6 +34,15 @@ namespace CPF
 			const_iterator begin() const;
 			const_reverse_iterator rbegin() const;
 
+			uint32_t back() const
+			{
+				const char* end = mString.data() + mString.length();
+				utf8::previous(end, mString.data() - 1);
+				uint32_t result[1];
+				utf8::utf8to32(end, mString.data() + mString.length(), result);
+				return result[0];
+			}
+
 			const_iterator end() const;
 			const_reverse_iterator rend() const;
 
@@ -86,7 +95,8 @@ namespace CPF
 			bool operator !=(const const_iterator& rhs) const { return mpCurrent != rhs.mpCurrent; }
 
 			bool operator <(const const_iterator& rhs) const { return mpCurrent < rhs.mpCurrent; }
-			
+			bool operator >(const const_iterator& rhs) const { return mpCurrent > rhs.mpCurrent; }
+
 			uint32_t operator *() const
 			{
 				uint32_t result[1];
@@ -99,6 +109,16 @@ namespace CPF
 			const_iterator& operator --() { utf8::previous(mpCurrent, mpBegin - 1); return *this; }
 			const_iterator operator --(int) { const_iterator result(*this); utf8::previous(mpCurrent, mpBegin - 1); return result; }
 			
+			const_iterator operator -(size_t delta) const
+			{
+				const_iterator result = *this;
+				while (delta != 0)
+				{
+					utf8::previous(result.mpCurrent, result.mpBegin - 1);
+					--delta;
+				}
+				return result;
+			}
 			const_iterator operator +(size_t delta) const
 			{
 				const_iterator result = *this;
@@ -144,10 +164,8 @@ namespace CPF
 			bool operator ==(const const_reverse_iterator& rhs) const { return mpCurrent == rhs.mpCurrent; }
 			bool operator !=(const const_reverse_iterator& rhs) const { return mpCurrent != rhs.mpCurrent; }
 
-			bool operator <(const const_reverse_iterator& rhs) const
-			{
-				return mpCurrent > rhs.mpCurrent;
-			}
+			bool operator <(const const_reverse_iterator& rhs) const { return mpCurrent > rhs.mpCurrent; }
+			bool operator >(const const_reverse_iterator& rhs) const { return mpCurrent < rhs.mpCurrent; }
 
 			uint32_t operator *() const
 			{

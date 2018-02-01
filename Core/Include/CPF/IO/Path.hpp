@@ -22,6 +22,27 @@ namespace CPF
 			static constexpr char kExtensionSeparator = '.';
 #endif
 
+			inline Std::Utf8String x_Normalize(const Std::Utf8String& path)
+			{
+				Std::Utf8String result;
+				auto ibegin = path.begin();
+				auto iend = path.end();
+
+				while (Std::IsSpace(*ibegin))
+					++ibegin;
+				while (Std::IsSpace(*(iend - 1)))
+					--iend;
+				for (; ibegin != iend; ++ibegin)
+				{
+					if (*ibegin == kReversedSeparator)
+						result += kDirectorySeparator;
+					else
+						result += *ibegin;
+				}
+
+				return result;
+			}
+
 			/**
 				* @brief Normalizes the given path.
 				* @tparam STRING_TYPE The string type.
@@ -62,6 +83,14 @@ namespace CPF
 			inline String Normalize(const String& path) { return _Normalize(path); }
 			inline WString Normalize(const WString& path) { return _Normalize(path); }
 
+			inline bool xIsRooted(const Std::Utf8String& path)
+			{
+				if (path.length() >= 2 && path.at(1) == ':')
+					return true;
+				if (!path.empty() && path.at(0) == kDirectorySeparator)
+					return true;
+				return false;
+			}
 			/**
 				* @brief Determines if the given path is rooted.
 				* @tparam STRING_TYPE The string type.
@@ -86,7 +115,15 @@ namespace CPF
 			inline bool IsRooted(const String& path) { return _IsRooted(path); }
 			inline bool IsRooted(const WString& path) { return _IsRooted(path); }
 
-
+			inline Std::Utf8String xGetRoot(const Std::Utf8String& path)
+			{
+				if (xIsRooted(path))
+				{
+					if (path.length() >= 2 && path.at(1) == ':')
+						return Std::Utf8String(path.begin(), path.begin() + 2);
+				}
+				return Std::Utf8String();
+			}
 			template<typename STRING_TYPE>
 			STRING_TYPE _GetRoot(const STRING_TYPE& path)
 			{
@@ -103,6 +140,12 @@ namespace CPF
 			inline String GetRoot(const String& path) { return _GetRoot(path); }
 			inline WString GetRoot(const WString& path) { return _GetRoot(path); }
 
+			inline bool xHasExtension(const Std::Utf8String& path)
+			{
+				auto it = Find(path.rbegin(), path.rend(), uint32_t(kExtensionSeparator));
+				auto slash = Find(path.rbegin(), path.rend(), uint32_t(kDirectorySeparator));
+				return it!=path.rend() && it > slash;
+			}
 			/**
 				* @brief Determine if the path has an extension.
 				* @tparam STRING_TYPE The string type.
@@ -123,6 +166,16 @@ namespace CPF
 			inline bool HasExtension(const String& path) { return _HasExtension(path); }
 			inline bool HasExtension(const WString& path) { return _HasExtension(path); }
 
+			inline Std::Utf8String xEnsureTrailingSeparator(const Std::Utf8String& path)
+			{
+				if (path.empty())
+					return Std::Utf8String("/");
+				if (path.back() == kDirectorySeparator)
+					return path;
+				Std::Utf8String result = path;
+				result += kDirectorySeparator;
+				return result;
+			}
 			template<typename STRING_TYPE>
 			STRING_TYPE _EnsureTrailingSeparator(const STRING_TYPE& path)
 			{
