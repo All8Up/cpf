@@ -72,7 +72,7 @@ namespace CPF
 			using pointer = uint32_t*;
 			using reference = uint32_t&;
 
-			const_iterator() : mpBegin(nullptr), mpEnd(nullptr), mpCurrent(nullptr) {}
+			const_iterator() : mpCurrent(nullptr), mpBegin(nullptr), mpEnd(nullptr) {}
 			const_iterator(const const_iterator& rhs) = default;
 			const_iterator(const_iterator&& rhs) = default;
 			~const_iterator() = default;
@@ -136,7 +136,7 @@ namespace CPF
 			const_reverse_iterator(const_reverse_iterator&& rhs) = default;
 			~const_reverse_iterator() = default;
 
-			const String::value_type* base() const { return mpCurrent; }
+			const_iterator base() const { return { mpCurrent, mpEnd, mpBegin }; }
 
 			const_reverse_iterator& operator = (const const_reverse_iterator& rhs) = default;
 			const_reverse_iterator& operator = (const_reverse_iterator&& rhs) noexcept { mpCurrent = rhs.mpCurrent; mpBegin = rhs.mpBegin; mpEnd = rhs.mpEnd; return *this; }
@@ -144,7 +144,10 @@ namespace CPF
 			bool operator ==(const const_reverse_iterator& rhs) const { return mpCurrent == rhs.mpCurrent; }
 			bool operator !=(const const_reverse_iterator& rhs) const { return mpCurrent != rhs.mpCurrent; }
 
-			bool operator <(const const_reverse_iterator& rhs) const { return mpCurrent < rhs.mpCurrent; }
+			bool operator <(const const_reverse_iterator& rhs) const
+			{
+				return mpCurrent > rhs.mpCurrent;
+			}
 
 			uint32_t operator *() const
 			{
@@ -153,15 +156,16 @@ namespace CPF
 				return result[0];
 			}
 
-			const_reverse_iterator& operator ++() { utf8::next(mpCurrent, mpEnd); return *this; }
-			const_reverse_iterator operator++(int) { const_reverse_iterator result(*this); utf8::next(mpCurrent, mpEnd); return result; }
-			const_reverse_iterator& operator --() { utf8::previous(mpCurrent, mpBegin - 1); return *this; }
-			const_reverse_iterator operator --(int) { const_reverse_iterator result(*this); utf8::previous(mpCurrent, mpBegin - 1); return result; }
+			const_reverse_iterator& operator ++() { utf8::previous(mpCurrent, mpEnd); return *this; }
+			const_reverse_iterator operator++(int) { const_reverse_iterator result(*this); utf8::previous(mpCurrent, mpEnd); return result; }
+			const_reverse_iterator& operator --() { utf8::next(mpCurrent, mpBegin - 1); return *this; }
+			const_reverse_iterator operator --(int) { const_reverse_iterator result(*this); utf8::next(mpCurrent, mpBegin - 1); return result; }
 
 			const_reverse_iterator operator +(size_t delta) const
 			{
 				const_reverse_iterator result = *this;
-				utf8::advance(result.mpCurrent, delta, result.mpEnd);
+				while(delta--)
+					utf8::previous(result.mpCurrent, result.mpBegin - 1);
 				return result;
 			}
 
@@ -197,12 +201,20 @@ namespace CPF
 
 		inline Utf8String::const_reverse_iterator Utf8String::rbegin() const
 		{
-			return const_reverse_iterator{ mString.data() + mString.length(), mString.data(), mString.data() + mString.length() };
+			return const_reverse_iterator{
+				mString.data() + mString.length() - 1,
+				mString.data() + mString.length() - 1,
+				mString.data() - 1
+			};
 		}
 
 		inline Utf8String::const_reverse_iterator Utf8String::rend() const
 		{
-			return const_reverse_iterator{ mString.data(), mString.data(), mString.data() + mString.length() };
+			return const_reverse_iterator{
+				mString.data() - 1,
+				mString.data() + mString.length() - 1,
+				mString.data() - 1
+			};
 		}
 
 		inline Utf8String& Utf8String::operator +=(uint32_t c)
