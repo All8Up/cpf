@@ -255,7 +255,7 @@ namespace CPF
 				Std::Utf8String normalized = Normalize(path.data());
 				if (normalized.empty())
 					return Std::Utf8String();
-				auto it = FindLast(normalized.begin(), normalized.end(), kDirectorySeparator);
+				auto it = FindLast(normalized.begin(), normalized.end(), uint32_t(kDirectorySeparator));
 				if (it != normalized.end())
 					return Std::Utf8String(it, normalized.end());
 				return Std::Utf8String();
