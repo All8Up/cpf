@@ -9,7 +9,7 @@ DataBlockBuilder::DataBlockBuilder()
 DataBlockBuilder::~DataBlockBuilder()
 {}
 
-bool DataBlockBuilder::AddSection(SectionID id, size_t alignment, void* data, size_t size)
+bool DataBlockBuilder::AddSection(SectionID id, size_t alignment, const Vector<uint8_t>& data)
 {
 	const auto it = mSectionMap.find(id);
 	if (it != mSectionMap.end())
@@ -18,27 +18,49 @@ bool DataBlockBuilder::AddSection(SectionID id, size_t alignment, void* data, si
 	SectionData section
 	{
 		alignment,
-		size,
-		nullptr
+		data
 	};
 	mSectionMap.insert({ id, section });
 	return true;
 }
 
-void* DataBlockBuilder::GetSection(SectionID id) const
+Option<const Vector<uint8_t>*> DataBlockBuilder::GetSection(SectionID id) const
 {
 	const auto it = mSectionMap.find(id);
 	if (it == mSectionMap.end())
-		return nullptr;
-	return it->second.mpData;
+		return Option<const Vector<uint8_t>*>::None();
+	return Option<const Vector<uint8_t>*>::Some(&it->second.mData);
 }
 
 size_t DataBlockBuilder::GetTotalSize() const
 {
-	return 0;
+	return _HeaderSize();
 }
 
-DataBlock* DataBlockBuilder::GetDataBlock() const
+DataBlock* DataBlockBuilder::CreateDataBlock() const
 {
+	size_t totalSize = GetTotalSize();
+	uint8_t* buffer = new uint8_t[totalSize];
+	if (buffer)
+	{
+		DataBlock* result = new(buffer) DataBlock(totalSize, mSectionMap.size());
+
+
+
+		return result;
+	}
 	return nullptr;
+}
+
+size_t DataBlockBuilder::_HeaderSize() const
+{
+	if (!mSectionMap.empty())
+	{
+		size_t result = sizeof(DataBlock::SectionEntry) * mSectionMap.size();
+		size_t firstAlignment = mSectionMap.begin()->second.mAlignment;
+		size_t remain = result % firstAlignment;
+		result = remain == 0 ? 0 : firstAlignment - remain;
+		return result;
+	}
+	return 0;
 }

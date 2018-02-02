@@ -2,6 +2,8 @@
 #pragma once
 #include "CPF/DataBlock.hpp"
 #include "Std/Map.hpp"
+#include "Std/Vector.hpp"
+#include "Option.hpp"
 
 namespace CPF
 {
@@ -13,18 +15,19 @@ namespace CPF
 		DataBlockBuilder();
 		~DataBlockBuilder();
 
-		bool AddSection(SectionID id, size_t alignment, void* data, size_t size);
-		void* GetSection(SectionID id) const;
+		bool AddSection(SectionID id, size_t alignment, const Vector<uint8_t>& data);
+		Option<const Vector<uint8_t>*> GetSection(SectionID id) const;
 
 		size_t GetTotalSize() const;
-		DataBlock* GetDataBlock() const;
+		DataBlock* CreateDataBlock() const;
 
 	private:
+		size_t _HeaderSize() const;
+
 		struct SectionData
 		{
 			size_t mAlignment;
-			size_t mSize;
-			void* mpData;
+			Vector<uint8_t> mData;
 		};
 		using SectionMap = Map<SectionID, SectionData>;
 		SectionMap mSectionMap;

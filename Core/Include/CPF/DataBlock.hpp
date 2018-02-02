@@ -16,11 +16,19 @@ namespace CPF
 		void* GetSection(SectionID id) const;
 
 	private:
-		DataBlock();
+		friend class DataBlockBuilder;
+
+		DataBlock(size_t totalSize, size_t sectionCount);
 		~DataBlock();
 
-		size_t mBlockSize;
+		struct SectionEntry
+		{
+			SectionID mID;
+			size_t mOffset;
+		};
+
+		size_t mTotalSize;
 		size_t mSectionCount;
-		uint8_t mData[1];
+		SectionEntry mData[1];
 	};
 }
