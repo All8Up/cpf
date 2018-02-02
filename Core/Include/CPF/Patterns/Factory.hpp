@@ -4,15 +4,26 @@
 #include "CPF/Std/Move.hpp"
 #include "CPF/Std/Functional.hpp"
 #include "CPF/Std/UnorderedMap.hpp"
+#include "CPF/Outcome.hpp"
 
 namespace CPF
 {
 	namespace Patterns
 	{
+		enum class FactoryError : int
+		{
+			eNone = 0,
+			eNotFound,
+			eCreationFailure,
+			eInitFailure
+		};
+
 		template <typename KEYTYPE, typename OBJTYPE>
 		class Factory
 		{
 		public:
+			using Error = FactoryError;
+
 			struct Entry
 			{
 				using CreateType = Function<OBJTYPE* ()>;
@@ -28,11 +39,11 @@ namespace CPF
 			Factory();
 			~Factory();
 
-			bool Create(const KEYTYPE& key, OBJTYPE** outObj) const;
+			Outcome<OBJTYPE*, Error> Create(const KEYTYPE& key) const;
 
 			bool Exists(const KEYTYPE& key) const;
 
-			bool Install(const KEYTYPE& key, const Entry& entry);
+			Error Install(const KEYTYPE& key, const Entry& entry);
 			bool Remove(const KEYTYPE& key);
 
 		private:
@@ -54,33 +65,29 @@ namespace CPF
 		{}
 
 		template <typename KEYTYPE, typename OBJTYPE>
-		bool Factory<KEYTYPE, OBJTYPE>::Create(const KEYTYPE& key, OBJTYPE** outObj) const
+		Outcome<OBJTYPE*, FactoryError> Factory<KEYTYPE, OBJTYPE>::Create(const KEYTYPE& key) const
 		{
-			if (outObj)
+			auto it = mEntries.find(key);
+			if (it != mEntries.end())
 			{
-				*outObj = nullptr;
-				auto it = mEntries.find(key);
-				if (it != mEntries.end())
+				OBJTYPE* result = nullptr;
+				if (it->second.mCreate)
+					result = it->second.mCreate();
+				if (result != nullptr)
 				{
-					if (it->second.mCreate)
-						*outObj = it->second.mCreate();
-					if (*outObj != nullptr)
+					if (it->second.mInit)
 					{
-						if (it->second.mInit)
+						if (!it->second.mInit(*result))
 						{
-							if (!it->second.mInit(**outObj))
-							{
-								delete *outObj;
-								*outObj = nullptr;
-								return false;
-							}
+							delete result;
+							return Outcome<OBJTYPE*, FactoryError>::Error(Error::eInitFailure);
 						}
-
-						return true;
 					}
+					return Outcome<OBJTYPE*, FactoryError>::OK(result);
 				}
+				return Outcome<OBJTYPE*, FactoryError>::Error(Error::eCreationFailure);
 			}
-			return false;
+			return Outcome<OBJTYPE*, FactoryError>::Error(Error::eNotFound);
 		}
 
 		template <typename KEYTYPE, typename OBJTYPE>
@@ -92,13 +99,13 @@ namespace CPF
 		}
 
 		template <typename KEYTYPE, typename OBJTYPE>
-		bool Factory<KEYTYPE, OBJTYPE>::Install(const KEYTYPE& key, const Entry& entry)
+		FactoryError Factory<KEYTYPE, OBJTYPE>::Install(const KEYTYPE& key, const Entry& entry)
 		{
 			auto it = mEntries.find(key);
 			if (it != mEntries.end())
-				return false;
+				return FactoryError::eNotFound;
 			mEntries.emplace(key, entry);
-			return true;
+			return FactoryError::eNone;
 		}
 
 		template <typename KEYTYPE, typename OBJTYPE>

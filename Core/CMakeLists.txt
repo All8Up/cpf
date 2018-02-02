@@ -53,6 +53,8 @@ configure_file (Include/CPF/Configuration/Setup.hpp.in
 # ###############################################
 set (CPF_INCLUDES
 	Include/CPF/Configuration.hpp
+	Include/CPF/DataBlock.hpp
+	Include/CPF/DataBlockBuilder.hpp
 	Include/CPF/EnumFlagType.hpp
 	Include/CPF/Event.hpp
 	Include/CPF/GOM.hpp
@@ -70,6 +72,8 @@ set (CPF_INCLUDES
 )
 set (CPF_SOURCES
 	Source/CPF.cpp
+	Source/DataBlock.cpp
+	Source/DataBlockBuilder.cpp
 )
 
 set (CONFIGURATION_INCLUDES

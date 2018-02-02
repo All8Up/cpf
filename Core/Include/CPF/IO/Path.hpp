@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/IO.hpp"
 #include "CPF/Std/String.hpp"
 #include "CPF/Std/Vector.hpp"
 #include "CPF/Std/Algorithm.hpp"
@@ -12,7 +11,6 @@ namespace CPF
 {
 	namespace IO
 	{
-		// TODO: Strip this down and use only utf8.
 		namespace Path
 		{
 #if CPF_TARGET_WINDOWS
