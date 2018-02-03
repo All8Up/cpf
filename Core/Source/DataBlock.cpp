@@ -46,6 +46,16 @@ const void* DataBlock::GetSection(SectionID id, size_t* size) const
 	return reinterpret_cast<const uint8_t*>(this) + mData[m].mOffset;
 }
 
+size_t DataBlock::GetSize() const
+{
+	return mTotalSize;
+}
+
+const void* DataBlock::GetData() const
+{
+	return this;
+}
+
 DataBlock* DataBlock::Create(size_t totalSize, size_t sectionCount)
 {
 	auto* buffer = new uint8_t[totalSize];

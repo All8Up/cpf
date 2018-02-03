@@ -24,6 +24,9 @@ namespace CPF
 		size_t GetSectionCount() const;
 		const void* GetSection(SectionID id, size_t* size) const;
 
+		size_t GetSize() const;
+		const void* GetData() const;
+
 		static DataBlock* Create(size_t totalSize, size_t sectionCount);
 		static void Destroy(DataBlock* dataBlock);
 
@@ -40,7 +43,6 @@ namespace CPF
 			SectionID mID;
 			size_t mOffset;
 			size_t mSize;
-			size_t mPad;
 		};
 
 		size_t mTotalSize;
