@@ -527,6 +527,7 @@ set (TEST_SOURCES
 	Tests/Test_CodeGen.cpp
 	Tests/Test_ConditionVariable.cpp
 	Tests/Test_Crc.cpp
+	Tests/Test_DataBlock.cpp
 	Tests/Test_DeferredEmitter.cpp
 	Tests/Test_Different_Unit_Comparison.cpp
 	Tests/Test_Directory.cpp

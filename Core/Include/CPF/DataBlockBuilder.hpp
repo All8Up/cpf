@@ -9,27 +9,25 @@ namespace CPF
 {
 	class DataBlock;
 
-	class DataBlockBuilder
+	class CPF_EXPORT DataBlockBuilder
 	{
 	public:
 		DataBlockBuilder();
 		~DataBlockBuilder();
 
-		bool AddSection(SectionID id, size_t alignment, const Vector<uint8_t>& data);
+		bool AddSection(SectionID id, const void* data, size_t size);
 		Option<const Vector<uint8_t>*> GetSection(SectionID id) const;
 
 		size_t GetTotalSize() const;
-		DataBlock* CreateDataBlock() const;
+		DataBlock* Create() const;
+		DataBlock* Store(void* buffer, size_t size) const;
 
 	private:
 		size_t _HeaderSize() const;
 
-		struct SectionData
-		{
-			size_t mAlignment;
-			Vector<uint8_t> mData;
-		};
-		using SectionMap = Map<SectionID, SectionData>;
+		using SectionMap = Map<SectionID, Vector<uint8_t>>;
+		CPF_DLL_SAFE_BEGIN;
 		SectionMap mSectionMap;
+		CPF_DLL_SAFE_END;
 	};
 }
