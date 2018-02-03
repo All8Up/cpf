@@ -43,5 +43,19 @@ const void* DataBlock::GetSection(SectionID id, size_t* size) const
 		return nullptr;
 	if (size)
 		*size = mData[m].mSize;
-	return reinterpret_cast<const uint8_t*>(mData) + mData[m].mOffset;
+	return reinterpret_cast<const uint8_t*>(this) + mData[m].mOffset;
+}
+
+DataBlock* DataBlock::Create(size_t totalSize, size_t sectionCount)
+{
+	auto* buffer = new uint8_t[totalSize];
+	auto* result = new(buffer) DataBlock(totalSize, sectionCount);
+	CPF_ASSERT(buffer == reinterpret_cast<uint8_t*>(result));
+	return result;
+}
+
+void DataBlock::Destroy(DataBlock* dataBlock)
+{
+	auto* buffer = reinterpret_cast<uint8_t*>(dataBlock);
+	delete[] buffer;
 }

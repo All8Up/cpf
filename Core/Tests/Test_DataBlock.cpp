@@ -9,8 +9,25 @@ using namespace CPF;
 TEST(DataBlock, Basics)
 {
 	DataBlockBuilder builder;
-	auto d0 = Vector<int64_t>{ 1, 2, 3, 4, 5 };
-	builder.AddSection(SectionID(1), d0.data(), d0.size());
-	
-	std::shared_ptr<CPF::DataBlock> t0(builder.Create());
+	auto d0 = Vector<uint8_t>{ 1, 2, 3, 4, 5 };
+	builder.AddSection(SectionID(1), d0.data(), d0.size()*sizeof(uint8_t));
+	std::reverse(d0.begin(), d0.end());
+	builder.AddSection(SectionID(2), d0.data(), d0.size() * sizeof(uint8_t));
+
+	DataBlock* t0(builder.Create());
+	const uint8_t* td0 = reinterpret_cast<const uint8_t*>(t0->GetSection(SectionID(1), nullptr));
+	EXPECT_EQ(td0[0], 1);
+	EXPECT_EQ(td0[1], 2);
+	EXPECT_EQ(td0[2], 3);
+	EXPECT_EQ(td0[3], 4);
+	EXPECT_EQ(td0[4], 5);
+
+	const uint8_t* td1 = reinterpret_cast<const uint8_t*>(t0->GetSection(SectionID(2), nullptr));
+	EXPECT_EQ(td1[0], 5);
+	EXPECT_EQ(td1[1], 4);
+	EXPECT_EQ(td1[2], 3);
+	EXPECT_EQ(td1[3], 2);
+	EXPECT_EQ(td1[4], 1);
+
+	DataBlock::Destroy(t0);
 }

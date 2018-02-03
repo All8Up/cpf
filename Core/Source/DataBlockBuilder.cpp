@@ -30,11 +30,13 @@ Option<const Vector<uint8_t>*> DataBlockBuilder::GetSection(SectionID id) const
 size_t DataBlockBuilder::GetTotalSize() const
 {
 	size_t sectionOffset = _HeaderSize();
+	CPF_ASSERT((sectionOffset % kDataBlockAlign) == 0);
 	for (const auto& section : mSectionMap)
 	{
 		sectionOffset += section.second.size();
 		const size_t remain = sectionOffset % kDataBlockAlign;
 		sectionOffset += (remain == 0) ? 0 : kDataBlockAlign - remain;
+		CPF_ASSERT((sectionOffset % kDataBlockAlign) == 0);
 	}
 	
 	return sectionOffset;
@@ -43,9 +45,9 @@ size_t DataBlockBuilder::GetTotalSize() const
 DataBlock* DataBlockBuilder::Create() const
 {
 	const size_t totalSize = GetTotalSize();
-	auto* buffer = new uint8_t[totalSize];
-	if (buffer)
-		return Store(buffer, totalSize);
+	auto* dataBlock = DataBlock::Create(totalSize, mSectionMap.size());
+	if (dataBlock)
+		return Store(dataBlock, totalSize);
 	return nullptr;
 }
 
@@ -55,11 +57,11 @@ DataBlock* DataBlockBuilder::Store(void* buffer, size_t size) const
 	if (size >= totalSize && buffer)
 	{
 		// Builds the header.
-		auto* result = new(buffer) DataBlock(totalSize, mSectionMap.size());
+		auto* result = reinterpret_cast<DataBlock*>(buffer);
 
 		// Get a pointer to the raw data section.
 		auto* header = result->mData;
-		auto* sectionPtr = reinterpret_cast<uint8_t*>(&header[mSectionMap.size()]);
+		auto* sectionPtr = reinterpret_cast<uint8_t*>(buffer) + _HeaderSize();
 
 		size_t i = 0;
 		for (const auto& section : mSectionMap)
@@ -70,6 +72,11 @@ DataBlock* DataBlockBuilder::Store(void* buffer, size_t size) const
 
 			// Store the section data.
 			Std::MemCpy(sectionPtr, section.second.data(), section.second.size());
+
+			// Move to the next section.
+			sectionPtr += section.second.size();
+
+			CPF_ASSERT(sectionPtr <= reinterpret_cast<uint8_t*>(buffer) + size);
 
 			// Align the sectionPtr if needed.
 			const size_t remain = intptr_t(sectionPtr) % kDataBlockAlign;
@@ -85,7 +92,7 @@ size_t DataBlockBuilder::_HeaderSize() const
 {
 	if (!mSectionMap.empty())
 	{
-		size_t result = sizeof(DataBlock::SectionEntry) * mSectionMap.size();
+		size_t result = sizeof(DataBlock) + (sizeof(DataBlock::SectionEntry) * (mSectionMap.size() - 1));
 		const size_t remain = result % kDataBlockAlign;
 		result += (remain == 0) ? 0 : kDataBlockAlign - remain;
 		return result;

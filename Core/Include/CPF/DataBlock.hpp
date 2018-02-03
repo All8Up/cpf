@@ -18,21 +18,29 @@ namespace CPF
 	class CPF_EXPORT CPF_ALIGN(kDataBlockAlign) DataBlock
 	{
 	public:
+		DataBlock(size_t totalSize, size_t sectionCount);
 		~DataBlock();
 		
 		size_t GetSectionCount() const;
 		const void* GetSection(SectionID id, size_t* size) const;
 
+		static DataBlock* Create(size_t totalSize, size_t sectionCount);
+		static void Destroy(DataBlock* dataBlock);
+
 	private:
 		friend class DataBlockBuilder;
 
-		DataBlock(size_t totalSize, size_t sectionCount);
+		void operator delete(void*) { }
+		void* operator new (size_t) { return nullptr; }
+		void* operator new (size_t, void* block) { return block; }
+		void operator delete(void*, void*) {}
 
 		struct CPF_ALIGN(kDataBlockAlign) SectionEntry
 		{
 			SectionID mID;
 			size_t mOffset;
 			size_t mSize;
+			size_t mPad;
 		};
 
 		size_t mTotalSize;
