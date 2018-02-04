@@ -1,95 +1,53 @@
 #include "CPF/IO/Globbing.hpp"
+#include "CPF/Std/Utf8String.hpp"
 
 using namespace CPF;
 using namespace IO;
 
-/**
- * @brief Provides a globbing algorithm to search for patterns in strings.
- * @param pattern  Specifies the pattern.
- * @param inString The string to match against.
- * @return true if the string contains the pattern, false otherwise.
- */
-CPF_EXPORT bool IO::Glob(const char *pattern, const char *inString)
+CPF_EXPORT bool IO::Glob(const Std::Utf8String& pattern, const Std::Utf8String& value)
 {
-	const char *current = nullptr;
-	const char *mp = nullptr;
+	if (pattern.empty() || value.empty())
+		return false;
 
-	while ((*inString) && (*pattern != '*'))
+	Std::Utf8String::const_iterator inString = value.begin();
+	Std::Utf8String::const_iterator inPattern = pattern.begin();
+	Std::Utf8String::const_iterator current = value.end();
+
+	while ((inString!=value.end()) && (inPattern == pattern.end() || *inPattern != uint32_t('*')))
 	{
-		if ((*pattern != *inString) && (*pattern != '?'))
+		if ((*inPattern != *inString) && (*inPattern != uint32_t('?')))
 			return false;
-		pattern++;
-		inString++;
+		++inPattern;
+		++inString;
 	}
 
-	while (*inString)
+	Std::Utf8String::const_iterator mp;
+	while (inString != value.end())
 	{
-		if (*pattern == '*')
+		if (inPattern != pattern.end() && *inPattern == uint32_t('*'))
 		{
-			if (!*++pattern)
+			if (++inPattern == pattern.end())
 				return true;
-			mp = pattern;
+			mp = inPattern;
 			current = inString + 1;
 		}
-		else if ((*pattern == *inString) || (*pattern == '?'))
+		else if (
+			(inPattern != pattern.end()) &&
+			((*inPattern == *inString) || (*inPattern == uint32_t('?'))))
 		{
-			pattern++;
-			inString++;
+			++inPattern;
+			++inString;
 		}
 		else
 		{
-			pattern = mp;
+			inPattern = mp;
+			if (current == value.end())
+				return false;
 			inString = current++;
 		}
 	}
 
-	while (*pattern == '*')
-		pattern++;
-	return (!*pattern) != 0;
-}
-
-
-/**
-* @brief Provides a globbing algorithm to search for patterns in strings.
-* @param pattern  Specifies the pattern.
-* @param inString The string to match against.
-* @return true if the string contains the pattern, false otherwise.
-*/
-CPF_EXPORT bool IO::Glob(const wchar_t *pattern, const wchar_t *inString)
-{
-	const wchar_t *current = nullptr;
-	const wchar_t *mp = nullptr;
-
-	while ((*inString) && (*pattern != L'*'))
-	{
-		if ((*pattern != *inString) && (*pattern != L'?'))
-			return false;
-		pattern++;
-		inString++;
-	}
-
-	while (*inString)
-	{
-		if (*pattern == L'*')
-		{
-			if (!*++pattern)
-				return true;
-			mp = pattern;
-			current = inString + 1;
-		}
-		else if ((*pattern == *inString) || (*pattern == L'?'))
-		{
-			pattern++;
-			inString++;
-		}
-		else
-		{
-			pattern = mp;
-			inString = current++;
-		}
-	}
-
-	while (*pattern == L'*')
-		pattern++;
-	return (!*pattern) != 0;
+	while (inPattern != pattern.end() && *inPattern == uint32_t('*'))
+		++inPattern;
+	return inPattern == pattern.end();
 }

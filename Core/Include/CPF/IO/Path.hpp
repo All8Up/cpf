@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/Std/String.hpp"
 #include "CPF/Std/Vector.hpp"
 #include "CPF/Std/Algorithm.hpp"
 #include "CPF/Std/CCType.hpp"

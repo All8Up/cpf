@@ -12,28 +12,28 @@ namespace CPF
 			BinaryWriter(Stream*);
 			~BinaryWriter();
 
-			int64_t Write(bool&);
-			int64_t Write(String&);
-			int64_t Write(WString&);
-			int64_t Write(Std::Utf8String&);
+			int64_t Write(bool&) const;
+			int64_t Write(String&) const;
+			int64_t Write(WString&) const;
+			int64_t Write(Std::Utf8String&) const;
 
-			int64_t Write(char&);
-			int64_t Write(wchar_t&);
+			int64_t Write(char&) const;
+			int64_t Write(wchar_t&) const;
 
-			int64_t Write(int8_t&);
-			int64_t Write(int16_t&);
-			int64_t Write(int32_t&);
-			int64_t Write(int64_t&);
-			int64_t Write(uint8_t&);
-			int64_t Write(uint16_t&);
-			int64_t Write(uint32_t&);
-			int64_t Write(uint64_t&);
+			int64_t Write(int8_t&) const;
+			int64_t Write(int16_t&) const;
+			int64_t Write(int32_t&) const;
+			int64_t Write(int64_t&) const;
+			int64_t Write(uint8_t&) const;
+			int64_t Write(uint16_t&) const;
+			int64_t Write(uint32_t&) const;
+			int64_t Write(uint64_t&) const;
 
-			int64_t Write(float&);
-			int64_t Write(double&);
+			int64_t Write(float&) const;
+			int64_t Write(double&) const;
 
-			int64_t Align(int);
-			int64_t Pad(int);
+			int64_t Align(int) const;
+			int64_t Pad(int) const;
 
 			operator bool() const;
 

@@ -13,7 +13,7 @@ BinaryReader::BinaryReader(Stream* strp)
 BinaryReader::~BinaryReader()
 {}
 
-int64_t BinaryReader::Read(bool& b)
+int64_t BinaryReader::Read(bool& b) const
 {
 	uint32_t temp;
 	auto result = mpStream->Read(&temp, sizeof(uint32_t));
@@ -21,7 +21,7 @@ int64_t BinaryReader::Read(bool& b)
 	return result.GetOK();
 }
 
-int64_t BinaryReader::Read(String& s)
+int64_t BinaryReader::Read(String& s) const
 {
 	// Serialize the size.
 	uint32_t size;
@@ -37,7 +37,7 @@ int64_t BinaryReader::Read(String& s)
 	return size + 4;
 }
 
-int64_t BinaryReader::Read(WString& s)
+int64_t BinaryReader::Read(WString& s) const
 {
 	// Serialize the size.
 	uint32_t size;
@@ -53,7 +53,7 @@ int64_t BinaryReader::Read(WString& s)
 	return size + 4;
 }
 
-int64_t BinaryReader::Read(Std::Utf8String& source)
+int64_t BinaryReader::Read(Std::Utf8String& source) const
 {
 	// Serialize the size.
 	uint32_t size;
@@ -73,67 +73,67 @@ int64_t BinaryReader::Read(Std::Utf8String& source)
 	return size + 4;
 }
 
-int64_t BinaryReader::Read(char& c)
+int64_t BinaryReader::Read(char& c) const
 {
 	return mpStream->Read(&c, sizeof(c)).GetOK();
 }
 
-int64_t BinaryReader::Read(wchar_t& c)
+int64_t BinaryReader::Read(wchar_t& c) const
 {
 	return mpStream->Read(&c, sizeof(c)).GetOK();
 }
 
-int64_t BinaryReader::Read(int8_t& v)
+int64_t BinaryReader::Read(int8_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(int16_t& v)
+int64_t BinaryReader::Read(int16_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(int32_t& v)
+int64_t BinaryReader::Read(int32_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(int64_t& v)
+int64_t BinaryReader::Read(int64_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(uint8_t& v)
+int64_t BinaryReader::Read(uint8_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(uint16_t& v)
+int64_t BinaryReader::Read(uint16_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(uint32_t& v)
+int64_t BinaryReader::Read(uint32_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(uint64_t& v)
+int64_t BinaryReader::Read(uint64_t& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(float& v)
+int64_t BinaryReader::Read(float& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Read(double& v)
+int64_t BinaryReader::Read(double& v) const
 {
 	return mpStream->Read(&v, sizeof(v)).GetOK();
 }
 
-int64_t BinaryReader::Align(int a)
+int64_t BinaryReader::Align(int a) const
 {
 	CPF_ASSERT((a & (a - 1)) == 0);
 	auto current = mpStream->GetPosition();
@@ -146,7 +146,7 @@ int64_t BinaryReader::Align(int a)
 	return *this;
 }
 
-int64_t BinaryReader::Pad(int v)
+int64_t BinaryReader::Pad(int v) const
 {
 	for (auto i = 0; i < v; ++i)
 		mpStream->Read(&v, 1);
