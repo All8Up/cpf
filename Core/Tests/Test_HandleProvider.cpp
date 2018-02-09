@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
-#include "CPF/Std/HandlePool.hpp"
+#include "CPF/Std/HandleProvider.hpp"
 
 using namespace CPF;
 
-TEST(HandlePool, BasicConstruction)
+TEST(HandleProvider, BasicConstruction)
 {
-	HandlePool<> testData0;
-	HandlePool<> testData1(10);
-	HandlePool<> testData2(Move(testData0));
+	HandleProvider<> testData0;
+	HandleProvider<> testData1(10);
+	HandleProvider<> testData2(Move(testData0));
 }
 
-TEST(HandlePool, AddRemove)
+TEST(HandleProvider, AddRemove)
 {
-	HandlePool<uint64_t, 4> testData;
+	HandleProvider<uint64_t, 4> testData;
 
 	auto h0 = testData.Alloc(1);
 	auto t0 = testData.Get(h0);
@@ -27,9 +27,9 @@ TEST(HandlePool, AddRemove)
 	EXPECT_EQ(testData.Get(h0), uint32_t(-1));
 }
 
-TEST(HandlePool, HandleReuse)
+TEST(HandleProvider, HandleReuse)
 {
-	HandlePool<uint64_t, 4> testData;
+	HandleProvider<uint64_t, 4> testData;
 	{
 		auto h0 = testData.Alloc(0);
 		auto h1 = testData.Alloc(1);
@@ -74,9 +74,9 @@ TEST(HandlePool, HandleReuse)
 	}
 }
 
-TEST(HandlePool, HandleExpansion)
+TEST(HandleProvider, HandleExpansion)
 {
-	HandlePool<uint64_t, 2> testData;
+	HandleProvider<uint64_t, 2> testData;
 	{
 		auto h0 = testData.Alloc(0);
 		auto h1 = testData.Alloc(1);
@@ -100,9 +100,9 @@ TEST(HandlePool, HandleExpansion)
 	}
 }
 
-TEST(HandlePool, Prediction)
+TEST(HandleProvider, Prediction)
 {
-	HandlePool<uint64_t, 2> testData;
+	HandleProvider<uint64_t, 2> testData;
 	auto p0 = testData.PredictHandle(0);
 	auto p1 = testData.PredictHandle(1);
 	auto p2 = testData.PredictHandle(2);

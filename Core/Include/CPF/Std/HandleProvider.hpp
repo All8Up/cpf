@@ -6,49 +6,29 @@
 
 namespace CPF
 {
-	// TODO: Needs considerable cleanup.
-
 	template <typename HANDLE_TYPE = uint64_t, size_t BLOCK_SIZE = 1024>
-	class HandlePool
+	class HandleProvider
 	{
 	public:
 		using Handle = HANDLE_TYPE;
 		static constexpr Handle kInvalid = HANDLE_TYPE(0);
 		static constexpr size_t kHandleBlockSize = BLOCK_SIZE;
 
-		HandlePool();
-		HandlePool(size_t size);
-		HandlePool(HandlePool&& rhs);
-		~HandlePool();
+		HandleProvider();
+		HandleProvider(size_t size);
+		HandleProvider(HandleProvider&& rhs) noexcept;
+		~HandleProvider();
 
-		HandlePool& operator = (HandlePool&& rhs);
+		HandleProvider& operator = (HandleProvider&& rhs) noexcept;
 
 		Handle Alloc(uint32_t data);
 		void Free(Handle);
 
 		uint32_t Get(Handle handle) const;
-		void Set(Handle handle, uint32_t data)
-		{
-			HandleData d;
-			d.mHandle = uint64_t(handle);
-			CPF_ASSERT(d.mVersion == mHandles[d.mData].mVersion);
-			mHandles[d.mData].mData = data;
-		}
-		bool IsValid(Handle handle)
-		{
-			HandleData data;
-			data.mHandle = handle;
-			return mHandles[data.mData].mVersion == data.mVersion;
-		}
-
-		uint32_t GetVersion(Handle handle) const
-		{
-			HandleStorage storage; storage.mHandle = handle; return storage.mVersion;
-		}
-		uint32_t GetIndex(Handle handle) const
-		{
-			HandleStorage storage; storage.mHandle = handle; return storage.mData;
-		}
+		void Set(Handle handle, uint32_t data);
+		bool IsValid(Handle handle);
+		uint32_t GetVersion(Handle handle) const;
+		uint32_t GetIndex(Handle handle) const;
 
 		size_t Size() const;
 
@@ -58,8 +38,8 @@ namespace CPF
 		template <typename, typename, size_t>
 		friend class SparseHandleVector;
 
-		HandlePool(const HandlePool&) = delete;
-		HandlePool& operator = (const HandlePool&) = delete;
+		HandleProvider(const HandleProvider&) = delete;
+		HandleProvider& operator = (const HandleProvider&) = delete;
 
 		void _ReserveHandles(size_t size);
 		size_t _AllocHandle();
@@ -84,7 +64,7 @@ namespace CPF
 
 	//////////////////////////////////////////////////////////////////////////
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::HandlePool()
+	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::HandleProvider()
 		: mFirstFree(kInvalidIndex)
 		, mVersion(0)
 		, mUsed(0)
@@ -93,7 +73,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::HandlePool(size_t size)
+	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::HandleProvider(size_t size)
 		: mFirstFree(kInvalidIndex)
 		, mVersion(0)
 		, mUsed(0)
@@ -102,7 +82,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::HandlePool(HandlePool&& rhs)
+	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::HandleProvider(HandleProvider&& rhs) noexcept
 		: mFirstFree(rhs.mFirstFree)
 		, mVersion(rhs.mVersion)
 		, mUsed(rhs.mUsed)
@@ -112,12 +92,12 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	HandlePool<HANDLE_TYPE, BLOCK_SIZE>::~HandlePool()
+	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::~HandleProvider()
 	{
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	HandlePool<HANDLE_TYPE, BLOCK_SIZE>& HandlePool<HANDLE_TYPE, BLOCK_SIZE>::operator = (HandlePool&& rhs)
+	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>& HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::operator = (HandleProvider&& rhs) noexcept
 	{
 		mFirstFree = rhs.mFirstFree;
 		mHandles = Move(rhs.mHandles);
@@ -128,7 +108,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	typename HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Handle HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Alloc(uint32_t index)
+	typename HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Handle HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Alloc(uint32_t index)
 	{
 		if (mFirstFree==kInvalidIndex)
 			_ReserveHandles(mHandles.size()+1);
@@ -156,7 +136,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	void HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Free(Handle which)
+	void HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Free(Handle which)
 	{
 		HandleData handle;
 		handle.mHandle = which;
@@ -166,7 +146,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	uint32_t HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Get(Handle handle) const
+	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Get(Handle handle) const
 	{
 		HandleData view;
 		view.mHandle = uint64_t(handle);
@@ -177,7 +157,40 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	size_t HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Size() const
+	void HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Set(Handle handle, uint32_t data)
+	{
+		HandleData d;
+		d.mHandle = uint64_t(handle);
+		CPF_ASSERT(d.mVersion == mHandles[d.mData].mVersion);
+		mHandles[d.mData].mData = data;
+	}
+
+	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
+	bool HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::IsValid(Handle handle)
+	{
+		HandleData data;
+		data.mHandle = handle;
+		return mHandles[data.mData].mVersion == data.mVersion;
+	}
+
+	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
+	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetVersion(Handle handle) const
+	{
+		HandleStorage storage;
+		storage.mHandle = handle;
+		return storage.mVersion;
+	}
+
+	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
+	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetIndex(Handle handle) const
+	{
+		HandleStorage storage;
+		storage.mHandle = handle;
+		return storage.mData;
+	}
+
+	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
+	size_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Size() const
 	{
 		return mHandles.size();
 	}
@@ -189,7 +202,7 @@ namespace CPF
 	 * calls are made.
 	 */
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	typename HandlePool<HANDLE_TYPE, BLOCK_SIZE>::Handle HandlePool<HANDLE_TYPE, BLOCK_SIZE>::PredictHandle(size_t futureCount)
+	typename HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Handle HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::PredictHandle(size_t futureCount)
 	{
 		const size_t available = mHandles.size() - size_t(mUsed);
 		// Check if the request would end up allocating new handles.
@@ -217,7 +230,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	void HandlePool<HANDLE_TYPE, BLOCK_SIZE>::_ReserveHandles(size_t size)
+	void HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::_ReserveHandles(size_t size)
 	{
 		size_t blockCount = ((size - 1) / kHandleBlockSize) + 1;
 		if (blockCount > (mHandles.size() / kHandleBlockSize))
@@ -239,7 +252,7 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	size_t HandlePool<HANDLE_TYPE, BLOCK_SIZE>::_AllocHandle()
+	size_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::_AllocHandle()
 	{
 		if (mFirstFree == kInvalidIndex)
 			_ReserveHandles(mHandles.size() + 1);
@@ -252,41 +265,10 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	void HandlePool<HANDLE_TYPE, BLOCK_SIZE>::_ReturnHandle(size_t idx)
+	void HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::_ReturnHandle(size_t idx)
 	{
 		mHandles[idx].mData = mFirstFree;
 		mHandles[idx].mVersion = kInvalidIndex;
 		mFirstFree = uint32_t(idx);
 	}
-
-	//////////////////////////////////////////////////////////////////////////
-	template <typename DATA_TYPE, typename HANDLE_TYPE = uint64_t, size_t BLOCK_SIZE = 1024>
-	class SparseHandleVector
-	{
-	public:
-		HANDLE_TYPE Insert(DATA_TYPE&& data)
-		{
-			auto result = mHandles.Alloc(uint32_t(mData.size()));
-			mData.push_back({uint32_t(mData.size()), Move(data)});
-			return result;
-		}
-		void Erase(HANDLE_TYPE handle)
-		{
-			auto index = mHandles.Get(handle);
-			auto& data = mData[index];
-
-			if (index < mData.size() - 1)
-			{
-				data = mData.back();
-				mHandles.mHandles[mData.back().first].mData = index;
-			}
-			mData.pop_back();
-		}
-
-	private:
-		HandlePool<HANDLE_TYPE, BLOCK_SIZE> mHandles;
-		using DataPair = Pair<uint32_t, DATA_TYPE>;
-		using DataVector = Vector<DataPair>;
-		DataVector mData;
-	};
 }

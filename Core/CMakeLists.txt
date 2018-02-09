@@ -311,7 +311,7 @@ set (STD_INCLUDES
 	Include/CPF/Std/ForwardList.hpp
 	Include/CPF/Std/Functional.hpp
 	Include/CPF/Std/Hash.hpp
-	Include/CPF/Std/HandlePool.hpp
+	Include/CPF/Std/HandleProvider.hpp
 	Include/CPF/Std/List.hpp
 	Include/CPF/Std/Map.hpp
 	Include/CPF/Std/Memory.hpp
@@ -319,6 +319,7 @@ set (STD_INCLUDES
 	Include/CPF/Std/Pair.hpp
 	Include/CPF/Std/Queue.hpp
 	Include/CPF/Std/Set.hpp
+	Include/CPF/Std/SparseVector.hpp
 	Include/CPF/Std/Stack.hpp
 	Include/CPF/Std/String.hpp
 	Include/CPF/Std/StringUtils.hpp
@@ -545,7 +546,7 @@ set (TEST_SOURCES
 	Tests/Test_Globbing.cpp
 	Tests/Test_GOM.cpp
 	Tests/Test_HashID.cpp
-	Tests/Test_HandlePool.cpp
+	Tests/Test_HandleProvider.cpp
 	Tests/Test_IO.cpp
 	Tests/Test_LargeVector.cpp
 	Tests/Test_Matrix22v.cpp
@@ -562,6 +563,7 @@ set (TEST_SOURCES
 	Tests/Test_Scoped.cpp
 	Tests/Test_Semaphore.cpp
 	Tests/Test_SSE4_1_Utilities.cpp
+	Tests/Test_SparseVector.cpp
 	Tests/Test_TextReader.cpp
 	Tests/Test_TextWriter.cpp
 	Tests/Test_Thread.cpp
