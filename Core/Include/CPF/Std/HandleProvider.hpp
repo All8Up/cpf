@@ -12,6 +12,7 @@ namespace CPF
 	public:
 		using Handle = HANDLE_TYPE;
 		static constexpr Handle kInvalid = HANDLE_TYPE(0);
+		static constexpr uint32_t kInvalidIndex = uint32_t(-1);
 		static constexpr size_t kHandleBlockSize = BLOCK_SIZE;
 
 		HandleProvider();
@@ -35,9 +36,6 @@ namespace CPF
 		Handle PredictHandle(size_t futureCount);
 
 	private:
-		template <typename, typename, size_t>
-		friend class SparseHandleVector;
-
 		HandleProvider(const HandleProvider&) = delete;
 		HandleProvider& operator = (const HandleProvider&) = delete;
 
@@ -45,7 +43,6 @@ namespace CPF
 		size_t _AllocHandle();
 		void _ReturnHandle(size_t);
 
-		static constexpr uint32_t kInvalidIndex = uint32_t(-1);
 		union HandleData
 		{
 			struct
