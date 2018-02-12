@@ -42,3 +42,5 @@ using PluginAPIGetDesc = const PluginDesc* (CPF_STDCALL*)();
  @param name The name of the plugin desired.
  */
 #define CPF_INSTALL_STATIC_PLUGIN(registry, name) { extern ::PluginDesc PluginRegistration_##name; (*PluginRegistration_##name.Install)(registry); }
+
+#define CPF_REMOVE_STATIC_PLUGIN(registry, name) { extern ::PluginDesc PluginRegistration_##name; (*PluginRegistration_##name.Remove)(registry); }
