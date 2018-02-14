@@ -166,24 +166,24 @@ namespace CPF
 	bool HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::IsValid(Handle handle)
 	{
 		HandleData data;
-		data.mHandle = handle;
+		data.mHandle = uint64_t(handle);
 		return mHandles[data.mData].mVersion == data.mVersion;
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
 	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetVersion(Handle handle) const
 	{
-		HandleStorage storage;
-		storage.mHandle = handle;
-		return storage.mVersion;
+		HandleData data;
+		data.mHandle = handle;
+		return data.mVersion;
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
 	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetIndex(Handle handle) const
 	{
-		HandleStorage storage;
-		storage.mHandle = handle;
-		return storage.mData;
+		HandleData data;
+		data.mHandle = handle;
+		return data.mData;
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>

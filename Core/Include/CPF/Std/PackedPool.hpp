@@ -145,7 +145,7 @@ namespace CPF
 			// Create a default data entry and set the output data pointer appropriately.
 			mData.push_back({ DATA_TYPE(), indexSlot });
 			if (data)
-				data = &mData.back();
+				*data = &mData.back().mData;
 
 			// Return the handle.
 			return result;
