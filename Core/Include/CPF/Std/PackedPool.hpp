@@ -13,6 +13,9 @@ namespace CPF
 			static_assert(sizeof(HANDLE_TYPE) == sizeof(uint64_t), "Handle type must be size of uint64_t.");
 			static constexpr HANDLE_TYPE kInvalidHandle = HANDLE_TYPE(0);
 
+			class iterator;
+			class const_iterator;
+
 			PackedPool();
 			PackedPool(const PackedPool&) = default;
 			PackedPool(PackedPool&&) = default;
@@ -32,6 +35,11 @@ namespace CPF
 			const DATA_TYPE* Get(HANDLE_TYPE handle) const;
 
 			size_t GetSize() const { return mData.size(); }
+
+			iterator begin();
+			const_iterator begin() const;
+			iterator end();
+			const_iterator end() const;
 
 		private:
 			static constexpr uint32_t kInvalidIndex = uint32_t(-1);
@@ -55,6 +63,62 @@ namespace CPF
 			size_t mNextIndex;
 		};
 
+		//////////////////////////////////////////////////////////////////////////
+		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
+		class PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::iterator
+		{
+		public:
+			iterator() {}
+
+			iterator operator ++(int) { iterator result = *this; ++mIt; return result; }
+			iterator& operator ++() { ++mIt; return *this; }
+			iterator operator --(int) { iterator result = *this; --mIt; return result; }
+			iterator& operator --() { --mIt; return *this; }
+
+			bool operator ==(const iterator& rhs) const { return mIt == rhs.mIt; }
+			bool operator !=(const iterator& rhs) const { return mIt != rhs.mIt; }
+
+			DATA_TYPE& operator*() const { return (*mIt).mData; }
+
+		protected:
+			iterator(typename DataVector::iterator it)
+				: mIt(it)
+			{}
+
+		private:
+			friend class PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>;
+
+			typename DataVector::iterator mIt;
+		};
+
+		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
+		class PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::const_iterator
+		{
+		public:
+			const_iterator() {}
+
+			const_iterator operator ++(int) { const_iterator result = *this; ++mIt; return result; }
+			const_iterator& operator ++() { ++mIt; return *this; }
+			const_iterator operator --(int) { const_iterator result = *this; --mIt; return result; }
+			const_iterator& operator --() { --mIt; return *this; }
+
+			bool operator ==(const const_iterator& rhs) const { return mIt == rhs.mIt; }
+			bool operator !=(const const_iterator& rhs) const { return mIt != rhs.mIt; }
+
+			const DATA_TYPE& operator*() const { return (*mIt).mData; }
+
+		protected:
+			friend class PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>;
+
+			const_iterator(typename DataVector::const_iterator it)
+				: mIt(it)
+			{}
+
+		private:
+			typename DataVector::const_iterator mIt;
+		};
+
+		//////////////////////////////////////////////////////////////////////////
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::PackedPool()
 			: mNextIndex(kInvalidIndex)
@@ -191,6 +255,30 @@ namespace CPF
 				mIndices.back() = kInvalidIndex;
 				mNextIndex = uint32_t(startIndex);
 			}
+		}
+
+		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
+		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::begin()
+		{
+			return iterator(mData.begin());
+		}
+
+		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
+		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::const_iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::begin() const
+		{
+			return const_iterator(mData.begin());
+		}
+
+		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
+		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::end()
+		{
+			return iterator(mData.end());
+		}
+
+		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
+		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::const_iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::end() const
+		{
+			return const_iterator(mData.end());
 		}
 	}
 }

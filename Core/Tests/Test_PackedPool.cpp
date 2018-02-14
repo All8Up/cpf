@@ -26,3 +26,31 @@ TEST(PackedPool, Basics)
 	EXPECT_EQ(nullptr, t0.Get(h1));
 	EXPECT_EQ(3, *t0.Get(h2));
 }
+
+TEST(PackedPool, Iterator)
+{
+	PackedPool<uint64_t, int32_t> t0;
+	for (int i = 0; i < 64; ++i)
+		t0.Insert(i);
+
+	int i = 0;
+	for (auto& v : t0)
+	{
+		EXPECT_EQ(v, i++);
+	}
+}
+
+TEST(PackedPool, ConstIterator)
+{
+	PackedPool<uint64_t, int32_t> t0;
+	for (int i = 0; i < 64; ++i)
+		t0.Insert(i);
+
+	const PackedPool<uint64_t, int32_t>& t1 = t0;
+
+	int i = 0;
+	for (auto& v : t1)
+	{
+		EXPECT_EQ(v, i++);
+	}
+}
