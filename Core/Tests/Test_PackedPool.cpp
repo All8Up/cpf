@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest/gtest.h>
-#include "CPF/Std/SparseVector.hpp"
+#include "CPF/Std/PackedPool.hpp"
 
 using namespace CPF;
 using namespace STD;
