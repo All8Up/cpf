@@ -23,10 +23,10 @@ namespace CPF
 			class iterator;
 			class const_iterator;
 
-			PackedPool();
+			PackedPool() = default;
 			PackedPool(const PackedPool&) = default;
 			PackedPool(PackedPool&&) = default;
-			~PackedPool();
+			~PackedPool() = default;
 
 			PackedPool& operator =(const PackedPool&) = default;
 			PackedPool& operator =(PackedPool&&) = default;
@@ -112,15 +112,6 @@ namespace CPF
 		};
 
 		//////////////////////////////////////////////////////////////////////////
-		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
-		PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::PackedPool()
-		{
-		}
-
-		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
-		PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::~PackedPool()
-		{}
-
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		HANDLE_TYPE PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Alloc(DATA_TYPE** data)
 		{
