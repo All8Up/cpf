@@ -36,7 +36,7 @@ TEST(PackedPool, Iterator)
 	int i = 0;
 	for (auto& v : t0)
 	{
-		EXPECT_EQ(v, i++);
+		EXPECT_EQ(v.second, i++);
 	}
 }
 
@@ -51,6 +51,6 @@ TEST(PackedPool, ConstIterator)
 	int i = 0;
 	for (auto& v : t1)
 	{
-		EXPECT_EQ(v, i++);
+		EXPECT_EQ(v.second, i++);
 	}
 }

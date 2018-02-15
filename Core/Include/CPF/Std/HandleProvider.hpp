@@ -16,13 +16,15 @@ namespace CPF
 		static constexpr size_t kHandleBlockSize = BLOCK_SIZE;
 
 		HandleProvider();
-		HandleProvider(size_t size);
+		explicit HandleProvider(size_t size);
 		HandleProvider(HandleProvider&& rhs) noexcept;
-		~HandleProvider();
+		HandleProvider(const HandleProvider&) = delete;
+		~HandleProvider() = default;
 
 		HandleProvider& operator = (HandleProvider&& rhs) noexcept;
+		HandleProvider& operator = (const HandleProvider&) = delete;
 
-		Handle Alloc(uint32_t data);
+		Handle Alloc(uint32_t index);
 		void Free(Handle);
 
 		uint32_t Get(Handle handle) const;
@@ -36,9 +38,6 @@ namespace CPF
 		Handle PredictHandle(size_t futureCount);
 
 	private:
-		HandleProvider(const HandleProvider&) = delete;
-		HandleProvider& operator = (const HandleProvider&) = delete;
-
 		void _ReserveHandles(size_t size);
 		size_t _AllocHandle();
 		void _ReturnHandle(size_t);
@@ -89,11 +88,6 @@ namespace CPF
 	}
 
 	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::~HandleProvider()
-	{
-	}
-
-	template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
 	HandleProvider<HANDLE_TYPE, BLOCK_SIZE>& HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::operator = (HandleProvider&& rhs) noexcept
 	{
 		mFirstFree = rhs.mFirstFree;
@@ -136,7 +130,7 @@ namespace CPF
 	void HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Free(Handle which)
 	{
 		HandleData handle;
-		handle.mHandle = which;
+		handle.mHandle = uint64_t(which);
 		CPF_ASSERT(handle.mVersion == mHandles[handle.mData].mVersion);
 		--mUsed;
 		_ReturnHandle(handle.mData);
@@ -174,7 +168,7 @@ namespace CPF
 	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetVersion(Handle handle) const
 	{
 		HandleData data;
-		data.mHandle = handle;
+		data.mHandle = uint64_t(handle);
 		return data.mVersion;
 	}
 
@@ -182,7 +176,7 @@ namespace CPF
 	uint32_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetIndex(Handle handle) const
 	{
 		HandleData data;
-		data.mHandle = handle;
+		data.mHandle = uint64_t(handle);
 		return data.mData;
 	}
 
@@ -205,7 +199,7 @@ namespace CPF
 		// Check if the request would end up allocating new handles.
 		if (futureCount >= available)
 		{
-			const size_t delta = futureCount - available;
+			const auto delta = futureCount - available;
 			HandleData view;
 			view.mVersion = mVersion + uint32_t(available + delta) + 1;
 			view.mData = uint32_t(mHandles.size() + delta);
