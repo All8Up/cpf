@@ -168,7 +168,11 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 						mLibraryMap.insert(LibraryMap::value_type{ CPF::String(name), LibraryDesc{ Move(library), *desc } });
 						return GOM::kOK;
 					}
+					CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory().data();
+					return Plugin::kInstallMissing;
 				}
+				CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory().data();
+				return Plugin::kDescriptorMissing;
 			}
 			CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory().data();
 			return GOM::kNotFound;
@@ -200,7 +204,7 @@ GOM::Result CPF_STDCALL Registry::Unload(const char* name)
 			}
 			return result;
 		}
-		return Plugin::kExportMissing;
+		return Plugin::kRemoveMissing;
 	}
 	return GOM::kInvalidParameter;
 }

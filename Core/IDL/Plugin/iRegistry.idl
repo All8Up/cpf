@@ -6,7 +6,9 @@ failure InstanceExists ("Plugin", "Instance already exists");
 failure NotInstalled ("Plugin", "Instance not installed");
 failure NotLoaded ("Plugin", "Plugin not loaded");
 failure CantUnload ("Plugin", "Plugin can not be unloaded");
-failure ExportMissing ("Plugin", "Plugin does not expose correct function");
+failure InstallMissing ("Plugin", "Plugin descriptor does not have an install function");
+failure RemoveMissing ("Plugin", "Plugin descriptor does not have a remove function");
+failure DescriptorMissing ("Plugin", "Plugin does not expose a descriptor access function");
 
 struct IID_CID;
 interface iClassFactory;
