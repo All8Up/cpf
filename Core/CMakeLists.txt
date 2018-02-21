@@ -227,7 +227,11 @@ set (PATTERNS_INCLUDES
 )
 
 set (PERFORMANCE_INCLUDES
+	Include/CPF/Performance/Tracker.hpp
 	Include/CPF/Performance/VTune.hpp
+)
+set (PERFORMANCE_SOURCES
+	Source/Performance/Tracker.cpp
 )
 
 set (PLUGIN_IDL
@@ -384,6 +388,7 @@ set (ALL_SOURCES
 	${MATH_DETAIL_INCLUDES}
 	${PATTERNS_INCLUDES}
 	${PERFORMANCE_INCLUDES}
+	${PERFORMANCE_SOURCES}
 	${PLUGIN_INCLUDES}
 	${PLUGIN_SOURCES}
 	${SIMD_INCLUDES}
@@ -502,6 +507,7 @@ source_group (Include\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES}
 source_group (Include\\Patterns FILES ${PATTERNS_INCLUDES})
 
 source_group (Include\\Performance FILES ${PERFORMANCE_INCLUDES})
+source_group (Source\\Performance FILES ${PERFORMANCE_SOURCES})
 
 source_group (IDL\\Plugin FILES ${PLUGIN_IDL})
 source_group (Include\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
@@ -556,14 +562,15 @@ set (TEST_SOURCES
 	Tests/Test_OBB.cpp
 	Tests/Test_Option.cpp
 	Tests/Test_Outcome.cpp
+	Tests/Test_PackedPool.cpp
 	Tests/Test_Path.cpp
+	Tests/Test_PerformanceTracker.cpp
 	Tests/Test_Plugin.cpp
 	Tests/Test_Quaternion.cpp
 	Tests/Test_Reactor.cpp
 	Tests/Test_Scoped.cpp
 	Tests/Test_Semaphore.cpp
 	Tests/Test_SSE4_1_Utilities.cpp
-	Tests/Test_PackedPool.cpp
 	Tests/Test_TextReader.cpp
 	Tests/Test_TextWriter.cpp
 	Tests/Test_Thread.cpp
