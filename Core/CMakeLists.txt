@@ -230,6 +230,10 @@ set (PERFORMANCE_INCLUDES
 	Include/CPF/Performance/Tracker.hpp
 	Include/CPF/Performance/VTune.hpp
 )
+set (PERFORMANCE_INTERNAL_INCLUDES
+	Include/CPF/Performance/Internal/concurrentqueue.h
+	Include/CPF/Performance/Internal/blockingconcurrentqueue.h
+)
 set (PERFORMANCE_SOURCES
 	Source/Performance/Tracker.cpp
 )
@@ -388,6 +392,7 @@ set (ALL_SOURCES
 	${MATH_DETAIL_INCLUDES}
 	${PATTERNS_INCLUDES}
 	${PERFORMANCE_INCLUDES}
+	${PERFORMANCE_INTERNAL_INCLUDES}
 	${PERFORMANCE_SOURCES}
 	${PLUGIN_INCLUDES}
 	${PLUGIN_SOURCES}
@@ -507,6 +512,7 @@ source_group (Include\\SIMD\\Detail\\SSE4_1 FILES ${SIMD_DETAIL_SSE4_1_INCLUDES}
 source_group (Include\\Patterns FILES ${PATTERNS_INCLUDES})
 
 source_group (Include\\Performance FILES ${PERFORMANCE_INCLUDES})
+source_group (Include\\Performance\\Internal FILES ${PERFORMANCE_INTERNAL_INCLUDES})
 source_group (Source\\Performance FILES ${PERFORMANCE_SOURCES})
 
 source_group (IDL\\Plugin FILES ${PLUGIN_IDL})

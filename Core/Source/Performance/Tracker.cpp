@@ -1,19 +1,42 @@
 //////////////////////////////////////////////////////////////////////////
 #include "CPF/Performance/Tracker.hpp"
+#include "CPF/Performance/Internal/blockingconcurrentqueue.h"
 #include "CPF/Logging.hpp"
 #include <thread>
+
+using namespace moodycamel;
 
 namespace CPF
 {
 	namespace Performance
 	{
 		//////////////////////////////////////////////////////////////////////////
-		Vector<TrackerListener*> mListeners;
+		using EventFunction = std::function<void(TrackerListener*)>;
+		Vector<TrackerListener*> sListeners;
+		BlockingConcurrentQueue<EventFunction> sEventQueue;
+		std::thread sEventThread;
 
+		void EventWorker()
+		{
+			for (;;)
+			{
+				EventFunction func;
+				sEventQueue.wait_dequeue(func);
+				if (func)
+				{
+					for (const auto& listener : sListeners)
+					{
+						func(listener);
+					}
+				}
+				else
+					break;
+			}
+		}
 
 		void InstallListener(TrackerListener* listener)
 		{
-			mListeners.push_back(listener);
+			sListeners.push_back(listener);
 		}
 
 		void Initialize()
@@ -22,20 +45,32 @@ namespace CPF
 			// irrelevant for something running on the local machine but important
 			// if the data is logged to file, sent over the network to another
 			// machine etc.
-			for (const auto& listener : mListeners)
+			sEventThread = std::thread(&EventWorker);
+			sEventQueue.enqueue([](TrackerListener* listener)
 			{
 				listener->SetInfo(
 					PerformanceClock::now().time_since_epoch().count(),
 					PerformanceClock::period::num,
 					PerformanceClock::period::den
 				);
-			}
+			});
+		}
+
+		void Shutdown()
+		{
+			sEventQueue.enqueue(EventFunction());
+			sEventThread.join();
+			for (const auto& listener : sListeners)
+				delete listener;
+			sListeners.clear();
 		}
 
 		void MapID(int32_t id, const char* name)
 		{
-			for (const auto& listener : mListeners)
+			sEventQueue.enqueue([=](TrackerListener* listener)
+			{
 				listener->IDMapped(id, name);
+			});
 		}
 
 		void BeginBlock(int32_t group, int32_t section)
@@ -43,10 +78,10 @@ namespace CPF
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			const std::hash<std::thread::id> hasher;
 			const size_t threadID = hasher(std::this_thread::get_id());
-			for (const auto& listener : mListeners)
+			sEventQueue.enqueue([=](TrackerListener* listener)
 			{
 				listener->BeginBlock(threadID, group, section, ticks);
-			}
+			});
 		}
 
 		void EndBlock(int32_t group, int32_t section)
@@ -54,10 +89,10 @@ namespace CPF
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			const std::hash<std::thread::id> hasher;
 			const size_t threadID = hasher(std::this_thread::get_id());
-			for (const auto& listener : mListeners)
+			sEventQueue.enqueue([=](TrackerListener* listener)
 			{
 				listener->EndBlock(threadID, group, section, ticks);
-			}
+			});
 		}
 	}
 }

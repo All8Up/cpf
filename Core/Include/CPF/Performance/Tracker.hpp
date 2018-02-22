@@ -32,12 +32,14 @@ namespace CPF
 		void CPF_EXPORT InstallListener(TrackerListener* listener);
 
 		void CPF_EXPORT Initialize();
+		void CPF_EXPORT Shutdown();
+
 		void CPF_EXPORT MapID(int32_t id, const char* name);
 		void CPF_EXPORT BeginBlock(int32_t group, int32_t section);
 		void CPF_EXPORT EndBlock(int32_t group, int32_t section);
 
 		//////////////////////////////////////////////////////////////////////////
-		class DefaultListener : TrackerListener
+		class CPF_EXPORT DefaultListener : public TrackerListener
 		{
 		public:
 			virtual ~DefaultListener() = default;
@@ -49,8 +51,10 @@ namespace CPF
 			void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
 
 		private:
+			CPF_DLL_SAFE_BEGIN;
 			std::mutex mMapLock;
 			std::map<std::string, int32_t> mIDMap;
+			CPF_DLL_SAFE_END;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
