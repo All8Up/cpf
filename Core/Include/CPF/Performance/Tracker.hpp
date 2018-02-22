@@ -25,8 +25,7 @@ namespace CPF
 			virtual void IDMapped(int32_t id, const char* name) = 0;
 
 			virtual void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
-			// NOTE: Code can migrate threads between begin and end, so we send both threads at point of call.
-			virtual void EndBlock(size_t startThreadID, size_t endThreadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
+			virtual void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -34,8 +33,8 @@ namespace CPF
 
 		void CPF_EXPORT Initialize();
 		void CPF_EXPORT MapID(int32_t id, const char* name);
-		size_t CPF_EXPORT BeginBlock(int32_t group, int32_t section);
-		void CPF_EXPORT EndBlock(size_t startThreadID, int32_t group, int32_t section);
+		void CPF_EXPORT BeginBlock(int32_t group, int32_t section);
+		void CPF_EXPORT EndBlock(int32_t group, int32_t section);
 
 		//////////////////////////////////////////////////////////////////////////
 		class DefaultListener : TrackerListener
@@ -47,7 +46,7 @@ namespace CPF
 
 			void IDMapped(int32_t id, const char* name) override;
 			void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
-			void EndBlock(size_t startThreadID, size_t endThreadID, int32_t groupID, int32_t sectionID, Tick tick) override;
+			void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
 
 		private:
 			std::mutex mMapLock;
@@ -56,7 +55,7 @@ namespace CPF
 
 		//////////////////////////////////////////////////////////////////////////
 		template <int32_t Group, int32_t Section>
-		size_t BeginBlock(const char* groupName, const char* sectionName)
+		void BeginBlock(const char* groupName, const char* sectionName)
 		{
 			static bool initialized = false;
 			if (!initialized)
@@ -64,14 +63,14 @@ namespace CPF
 				MapID(Group, groupName);
 				MapID(Section, sectionName);
 			}
-			return BeginBlock(Group, Section);
+			BeginBlock(Group, Section);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 		template <int32_t Group, int32_t Section>
-		void EndBlock(size_t startThreadID)
+		void EndBlock()
 		{
-			EndBlock(startThreadID, Group, Section);
+			EndBlock(Group, Section);
 		}
 
 		//////////////////////////////////////////////////////////////////////////
@@ -81,15 +80,12 @@ namespace CPF
 		public:
 			ScopedBlock(const char* groupName, const char* sectionName)
 			{
-				mStartThreadID = BeginBlock<Group, Section>(groupName, sectionName);
+				BeginBlock<Group, Section>(groupName, sectionName);
 			}
 			~ScopedBlock()
 			{
-				EndBlock<Group, Section>(mStartThreadID);
+				EndBlock<Group, Section>();
 			}
-
-		private:
-			size_t mStartThreadID;
 		};
 	}
 }
@@ -101,7 +97,7 @@ namespace CPF
 #	define CPF_PERF_THREAD_NAME(name)
 
 #	define CPF_PERF_BEGIN(group, section) CPF::Performance::BeginBlock<group##_crc32, section##_crc32>(group, section)
-#	define CPF_PERF_END(startThreadId, group, section) CPF::Performance::EndBlock<group##_crc32, section##_crc32>(startThreadId)
+#	define CPF_PERF_END(group, section) CPF::Performance::EndBlock<group##_crc32, section##_crc32>()
 
 #	define CPF_PERF_BLOCK(group, section) CPF::Performance::ScopedBlock<group##_crc32, section##_crc32> sPerformanceBlock##__line__(group, section)
 

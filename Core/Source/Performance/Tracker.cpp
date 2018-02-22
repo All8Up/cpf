@@ -38,7 +38,7 @@ namespace CPF
 				listener->IDMapped(id, name);
 		}
 
-		size_t BeginBlock(int32_t group, int32_t section)
+		void BeginBlock(int32_t group, int32_t section)
 		{
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			const std::hash<std::thread::id> hasher;
@@ -47,17 +47,16 @@ namespace CPF
 			{
 				listener->BeginBlock(threadID, group, section, ticks);
 			}
-			return threadID;
 		}
 
-		void EndBlock(size_t startThreadID, int32_t group, int32_t section)
+		void EndBlock(int32_t group, int32_t section)
 		{
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			const std::hash<std::thread::id> hasher;
 			const size_t threadID = hasher(std::this_thread::get_id());
 			for (const auto& listener : mListeners)
 			{
-				listener->EndBlock(startThreadID, threadID, group, section, ticks);
+				listener->EndBlock(threadID, group, section, ticks);
 			}
 		}
 	}
@@ -86,6 +85,6 @@ void DefaultListener::BeginBlock(size_t threadID, int32_t groupID, int32_t secti
 {
 }
 
-void DefaultListener::EndBlock(size_t startThreadID, size_t endThreadID, int32_t groupID, int32_t sectionID, Tick ticks)
+void DefaultListener::EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick ticks)
 {
 }

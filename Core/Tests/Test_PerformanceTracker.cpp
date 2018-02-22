@@ -4,8 +4,8 @@
 
 TEST(PerformanceTracker, ManualScoped)
 {
-	auto startID = CPF_PERF_BEGIN("TestGroup", "TestSection");
-	CPF_PERF_END(startID, "TestGroup", "TestSection");
+	CPF_PERF_BEGIN("TestGroup", "TestSection");
+	CPF_PERF_END("TestGroup", "TestSection");
 }
 
 TEST(PerformanceTracker, ScopedBlock)
