@@ -22,10 +22,16 @@ namespace CPF
 
 			virtual void SetInfo(Tick sinceEpoch, intmax_t numerator, intmax_t denominator) = 0;
 
+			virtual void ThreadNamed(size_t threadID, const char* name) = 0;
 			virtual void IDMapped(int32_t id, const char* name) = 0;
 
 			virtual void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
 			virtual void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
+
+			virtual void BeginFrame(int32_t id, Tick tick) = 0;
+			virtual void EndFrame(int32_t id, Tick tick) = 0;
+
+			virtual void Flush() = 0;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -35,8 +41,16 @@ namespace CPF
 		void CPF_EXPORT Shutdown();
 
 		void CPF_EXPORT MapID(int32_t id, const char* name);
+
+		void CPF_EXPORT SetThreadName(size_t id, const char* name);
+
 		void CPF_EXPORT BeginBlock(int32_t group, int32_t section);
 		void CPF_EXPORT EndBlock(int32_t group, int32_t section);
+
+		void CPF_EXPORT BeginFrame(int32_t name);
+		void CPF_EXPORT EndFrame(int32_t name);
+
+		void CPF_EXPORT Flush();
 
 		//////////////////////////////////////////////////////////////////////////
 		class CPF_EXPORT DefaultListener : public TrackerListener
@@ -46,9 +60,15 @@ namespace CPF
 
 			void SetInfo(Tick sinceEpoch, intmax_t numerator, intmax_t denominator) override;
 
+			void ThreadNamed(size_t threadID, const char* name) override {}
 			void IDMapped(int32_t id, const char* name) override;
 			void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
 			void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
+
+			void BeginFrame(int32_t, Tick) override {}
+			void EndFrame(int32_t, Tick) override {}
+
+			void Flush() override;
 
 		private:
 			CPF_DLL_SAFE_BEGIN;
@@ -66,6 +86,7 @@ namespace CPF
 			{
 				MapID(Group, groupName);
 				MapID(Section, sectionName);
+				initialized = true;
 			}
 			BeginBlock(Group, Section);
 		}
@@ -91,6 +112,37 @@ namespace CPF
 				EndBlock<Group, Section>();
 			}
 		};
+
+		//////////////////////////////////////////////////////////////////////////
+		template <int32_t Name>
+		void FrameBegin(const char* name)
+		{
+			static bool initialized = false;
+			if (!initialized)
+			{
+				MapID(Name, name);
+				initialized = true;
+			}
+			BeginFrame(Name);
+		}
+		template <int32_t Name>
+		void FrameEnd()
+		{
+			EndFrame(Name);
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		inline void SetThreadName(const char* name)
+		{
+			static bool initialized = false;
+			if (!initialized)
+			{
+				const std::hash<std::thread::id> hasher;
+				const size_t threadID = hasher(std::this_thread::get_id());
+				SetThreadName(threadID, name);
+				initialized = true;
+			}
+		}
 	}
 }
 
@@ -98,18 +150,22 @@ namespace CPF
 #ifdef CPF_ENABLE_PERFORMANCE_TRACKING
 
 //////////////////////////////////////////////////////////////////////////
-#	define CPF_PERF_THREAD_NAME(name)
+#	define CPF_PERF_THREAD_NAME(name) CPF::Performance::SetThreadName(name)
 
 #	define CPF_PERF_BEGIN(group, section) CPF::Performance::BeginBlock<group##_crc32, section##_crc32>(group, section)
 #	define CPF_PERF_END(group, section) CPF::Performance::EndBlock<group##_crc32, section##_crc32>()
 
 #	define CPF_PERF_BLOCK(group, section) CPF::Performance::ScopedBlock<group##_crc32, section##_crc32> sPerformanceBlock##__line__(group, section)
 
-#	define CPF_PERF_COUNTER_INC(name)
-#	define CPF_PERF_COUNTER_DEC(name)
+#	define CPF_PERF_COUNTER_INIT(name) CPF::Performance::CounterInit<name##_crc32>()
+#	define CPF_PERF_COUNTER_INC(name) CPF::Performance::CounterInc<name##_crc32>()
+#	define CPF_PERF_COUNTER_DEC(name) CPF::Performance::CounterDec<name##_crc32>()
+#	define CPF_PERF_COUNTER_ZERO(name) CPF::Performance::CounterZero<name##_crc32>();
 
-#	define CPF_PERF_FRAME_BEGIN
-#	define CPF_PERF_FRAME_END
+#	define CPF_PERF_FRAME_BEGIN(name) CPF::Performance::FrameBegin<name##_crc32>(name)
+#	define CPF_PERF_FRAME_END(name) CPF::Performance::FrameEnd<name##_crc32>()
+
+#	define CPF_PERF_FLUSH CPF::Performance::Flush()
 
 #else
 
@@ -120,7 +176,7 @@ namespace CPF
 #	define CPF_PERF_BLOCK(group, section) {}
 #	define CPF_PERF_COUNTER_INC(name) {}
 #	define CPF_PERF_COUNTER_DEC(name) {}
-#	define CPF_PERF_FRAME_BEGIN {}
-#	define CPF_PERF_FRAME_END {}
+#	define CPF_PERF_FRAME_BEGIN(name) {}
+#	define CPF_PERF_FRAME_END(name) {}
 
 #endif

@@ -11,22 +11,35 @@ namespace CPF
 	namespace Performance
 	{
 		//////////////////////////////////////////////////////////////////////////
-		using EventFunction = std::function<void(TrackerListener*)>;
+		using ListenerFunc = std::function<void(TrackerListener*)>;
+		using EventFunc = std::function<void()>;
+
+		using ListenerEventFunc = std::pair<ListenerFunc, EventFunc>;
+		BlockingConcurrentQueue<ListenerEventFunc> sEventQueue;
+
 		Vector<TrackerListener*> sListeners;
-		BlockingConcurrentQueue<EventFunction> sEventQueue;
+
 		std::thread sEventThread;
+
+		std::mutex sFlushLock;
+		std::condition_variable sFlushCondition;
+		int32_t sFlushPoint = 0;
 
 		void EventWorker()
 		{
 			for (;;)
 			{
-				EventFunction func;
-				sEventQueue.wait_dequeue(func);
-				if (func)
+				ListenerEventFunc funcs;
+				sEventQueue.wait_dequeue(funcs);
+				if (funcs.second)
+				{
+					funcs.second();
+				}
+				if (funcs.first)
 				{
 					for (const auto& listener : sListeners)
 					{
-						func(listener);
+						funcs.first(listener);
 					}
 				}
 				else
@@ -46,19 +59,19 @@ namespace CPF
 			// if the data is logged to file, sent over the network to another
 			// machine etc.
 			sEventThread = std::thread(&EventWorker);
-			sEventQueue.enqueue([](TrackerListener* listener)
+			sEventQueue.enqueue({ [](TrackerListener* listener)
 			{
 				listener->SetInfo(
 					PerformanceClock::now().time_since_epoch().count(),
 					PerformanceClock::period::num,
 					PerformanceClock::period::den
 				);
-			});
+			}, EventFunc ()});
 		}
 
 		void Shutdown()
 		{
-			sEventQueue.enqueue(EventFunction());
+			sEventQueue.enqueue({ ListenerFunc(), EventFunc() });
 			sEventThread.join();
 			for (const auto& listener : sListeners)
 				delete listener;
@@ -67,10 +80,18 @@ namespace CPF
 
 		void MapID(int32_t id, const char* name)
 		{
-			sEventQueue.enqueue([=](TrackerListener* listener)
+			sEventQueue.enqueue({ [=](TrackerListener* listener)
 			{
 				listener->IDMapped(id, name);
-			});
+			}, EventFunc() });
+		}
+
+		void SetThreadName(size_t id, const char* name)
+		{
+			sEventQueue.enqueue({ [=](TrackerListener* listener)
+			{
+				listener->ThreadNamed(id, name);
+			}, EventFunc() });
 		}
 
 		void BeginBlock(int32_t group, int32_t section)
@@ -78,10 +99,10 @@ namespace CPF
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			const std::hash<std::thread::id> hasher;
 			const size_t threadID = hasher(std::this_thread::get_id());
-			sEventQueue.enqueue([=](TrackerListener* listener)
+			sEventQueue.enqueue({ [=](TrackerListener* listener)
 			{
 				listener->BeginBlock(threadID, group, section, ticks);
-			});
+			}, EventFunc() });
 		}
 
 		void EndBlock(int32_t group, int32_t section)
@@ -89,9 +110,50 @@ namespace CPF
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			const std::hash<std::thread::id> hasher;
 			const size_t threadID = hasher(std::this_thread::get_id());
-			sEventQueue.enqueue([=](TrackerListener* listener)
+			sEventQueue.enqueue({ [=](TrackerListener* listener)
 			{
 				listener->EndBlock(threadID, group, section, ticks);
+			}, EventFunc() });
+		}
+
+		void CPF_EXPORT BeginFrame(int32_t name)
+		{
+			const auto ticks = PerformanceClock::now().time_since_epoch().count();
+			sEventQueue.enqueue({ [=](TrackerListener* listener)
+			{
+				listener->BeginFrame(name, ticks);
+			}, EventFunc() });
+		}
+
+		void CPF_EXPORT EndFrame(int32_t name)
+		{
+			const auto ticks = PerformanceClock::now().time_since_epoch().count();
+			sEventQueue.enqueue({ [=](TrackerListener* listener)
+			{
+				listener->EndFrame(name, ticks);
+			}, EventFunc() });
+		}
+
+		void Flush()
+		{
+			std::unique_lock<std::mutex> lock(sFlushLock);
+			int32_t targetPoint = sFlushPoint + 1;
+			sEventQueue.enqueue({
+				[=](TrackerListener* listener)
+				{
+					listener->Flush();
+				},
+				[]()
+				{
+					std::unique_lock<std::mutex> lock(sFlushLock);
+					++sFlushPoint;
+					sFlushCondition.notify_all();
+				}
+			});
+			sFlushCondition.wait(lock, [&] {
+				if (sFlushPoint >= targetPoint)
+					return true;
+				return false;
 			});
 		}
 	}
@@ -121,5 +183,9 @@ void DefaultListener::BeginBlock(size_t threadID, int32_t groupID, int32_t secti
 }
 
 void DefaultListener::EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick ticks)
+{
+}
+
+void DefaultListener::Flush()
 {
 }
