@@ -3,6 +3,7 @@
 #include "CPF/Hash/Crc.hpp"
 #include "CPF/Std/Vector.hpp"
 #include <chrono>
+#include <atomic>
 #include <mutex>
 #include <map>
 
@@ -50,6 +51,10 @@ namespace CPF
 		void CPF_EXPORT BeginFrame(int32_t name);
 		void CPF_EXPORT EndFrame(int32_t name);
 
+		struct CounterData;
+		void CPF_EXPORT AddCounter(CounterData* data);
+		CounterData CPF_EXPORT * GetFirstCounter();
+
 		void CPF_EXPORT Flush();
 
 		//////////////////////////////////////////////////////////////////////////
@@ -60,7 +65,7 @@ namespace CPF
 
 			void SetInfo(Tick sinceEpoch, intmax_t numerator, intmax_t denominator) override;
 
-			void ThreadNamed(size_t threadID, const char* name) override {}
+			void ThreadNamed(size_t, const char*) override {}
 			void IDMapped(int32_t id, const char* name) override;
 			void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
 			void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
@@ -71,7 +76,7 @@ namespace CPF
 			void Flush() override;
 
 			//////////////////////////////////////////////////////////////////////////
-			// Data access.
+			// Gathered information access.
 			using TickRange = std::pair<Tick, Tick>;
 			TickRange GetSampleRange() const { return TickRange{0, 0}; }
 
@@ -148,6 +153,43 @@ namespace CPF
 				initialized = true;
 			}
 		}
+
+		//////////////////////////////////////////////////////////////////////////
+		enum class CounterType : int32_t
+		{
+			eFrameZeroed,
+			eAverage10,
+			eAverage100
+		};
+
+		struct CounterData
+		{
+			CounterType mType = CounterType::eFrameZeroed;
+			std::atomic<int64_t> mValue;
+			const char* mpName = nullptr;
+			Vector<int64_t> mHistory;
+			size_t mHistoryIndex = 0;
+			int64_t mAccumulator = 0;
+			int64_t mAverage = 0;
+
+			CounterData* mpNext = nullptr;
+		};
+
+		template <int32_t ID>
+		struct CounterValue
+		{
+			static CounterData mData;
+		};
+		template <int32_t ID> CounterData CounterValue<ID>::mData;
+
+		template <int32_t ID>
+		void CounterCreate(CounterType type, const char* name)
+		{
+			CounterValue<ID>::mData.mType = type;
+			CounterValue<ID>::mData.mValue.store(0);
+			CounterValue<ID>::mData.mpName = name;
+			AddCounter(&CounterValue<ID>::mData);
+		}
 	}
 }
 
@@ -160,16 +202,17 @@ namespace CPF
 #	define CPF_PERF_BEGIN(group, section) CPF::Performance::BeginBlock<group##_crc32, section##_crc32>(group, section)
 #	define CPF_PERF_END(group, section) CPF::Performance::EndBlock<group##_crc32, section##_crc32>()
 
-#	define CPF_PERF_BLOCK(group, section) CPF::Performance::ScopedBlock<group##_crc32, section##_crc32> sPerformanceBlock##__line__(group, section)
+#	define CPF_PERF_BLOCK(group, section) CPF::Performance::ScopedBlock<group##_crc32, section##_crc32> sPerformanceBlock##__COUNTER__(group, section)
 
-#	define CPF_PERF_COUNTER_INIT(name, type) CPF::Performance::CounterInit<name##_crc32>(type)
-#	define CPF_PERF_COUNTER_SET(name, val) CPF::Performance::CounterSet<name##_crc32>(val);
-#	define CPF_PERF_COUNTER_INC(name) CPF::Performance::CounterInc<name##_crc32>()
-#	define CPF_PERF_COUNTER_ADD(name, val) CPF::Performance::CounterAdd<name##_crc32>()
-#	define CPF_PERF_COUNTER_DEC(name) CPF::Performance::CounterDec<name##_crc32>()
-#	define CPF_PERF_COUNTER_SUB(name, val) CPF::Performance::CounterSub<name##_crc32>()
-#	define CPF_PERF_COUNTER_MIN(name, val) CPF::Performance::CounterMin<name##_crc32>()
-#	define CPF_PERF_COUNTER_MAX(name, val) CPF::Performance::CounterMax<name##_crc32>()
+#	define CPF_PERF_COUNTER(name) CPF::Performance::CounterValue<name##_crc32>
+#	define CPF_PERF_COUNTER_GET(name) CPF_PERF_COUNTER(name)::mData.mValue
+#	define CPF_PERF_COUNTER_GET_AVG(name) CPF_PERF_COUNTER(name)::mData.mAverage
+#	define CPF_PERF_COUNTER_CREATE(name, type) CPF::Performance::CounterCreate<name##_crc32>(type, name)
+#	define CPF_PERF_COUNTER_SET(name, val) CPF_PERF_COUNTER(name)::mData.mValue.store(val)
+#	define CPF_PERF_COUNTER_INC(name) CPF_PERF_COUNTER(name)::mData.mValue.fetch_add(1)
+#	define CPF_PERF_COUNTER_ADD(name, val) CPF_PERF_COUNTER(name)::mData.mValue.fetch_add(val)
+#	define CPF_PERF_COUNTER_DEC(name) CPF_PERF_COUNTER(name)::mData.mValue.fetch_sub(1)
+#	define CPF_PERF_COUNTER_SUB(name, val) CPF_PERF_COUNTER(name)::mData.mValue.fetch_sub(val)
 
 #	define CPF_PERF_FRAME_BEGIN(name) CPF::Performance::FrameBegin<name##_crc32>(name)
 #	define CPF_PERF_FRAME_END(name) CPF::Performance::FrameEnd<name##_crc32>()

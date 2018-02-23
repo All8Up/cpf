@@ -7,36 +7,36 @@ using namespace Performance;
 
 struct TestListener : TrackerListener
 {
-	void SetInfo(Tick sinceEpoch, intmax_t numerator, intmax_t denominator) override
+	void SetInfo(Tick, intmax_t, intmax_t) override
 	{
 		InfoSet = true;;
 	}
 
-	void ThreadNamed(size_t threadID, const char* name) override
+	void ThreadNamed(size_t, const char*) override
 	{
 		++ThreadNames;
 	}
 
-	void IDMapped(int32_t id, const char* name) override
+	void IDMapped(int32_t, const char*) override
 	{
 		++IDMappings;
 	}
 
-	void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override
+	void BeginBlock(size_t, int32_t, int32_t, Tick) override
 	{
 		++BeginBlockCount;
 	}
 
-	void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override
+	void EndBlock(size_t, int32_t, int32_t, Tick) override
 	{
 		++EndBlockCount;
 	}
 
-	void BeginFrame(int32_t id, Tick tick) override
+	void BeginFrame(int32_t, Tick) override
 	{
 		++BeginFrameCount;
 	}
-	void EndFrame(int32_t id, Tick tick) override
+	void EndFrame(int32_t, Tick) override
 	{
 		++EndFrameCount;
 	}
@@ -124,5 +124,22 @@ TEST(PerformanceTracker, BeginEndFrame)
 	EXPECT_EQ(listener->EndBlockCount, 1);
 	EXPECT_EQ(listener->FlushCount, 1);
 
+	Shutdown();
+}
+
+TEST(PerformanceTracker, CounterCreate)
+{
+	Initialize();
+	{
+		CPF_PERF_COUNTER_CREATE("TestCounter", CounterType::eFrameZeroed);
+		EXPECT_EQ(CPF_PERF_COUNTER_GET("TestCounter"), 0);
+
+		CPF_PERF_COUNTER_SET("TestCounter", 5);
+		EXPECT_EQ(CPF_PERF_COUNTER_GET("TestCounter"), 5);
+
+		CPF_PERF_COUNTER_INC("TestCounter");
+
+		EXPECT_STREQ(GetFirstCounter()->mpName, "TestCounter");
+	}
 	Shutdown();
 }

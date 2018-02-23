@@ -15,15 +15,16 @@ namespace CPF
 		using EventFunc = std::function<void()>;
 
 		using ListenerEventFunc = std::pair<ListenerFunc, EventFunc>;
-		BlockingConcurrentQueue<ListenerEventFunc> sEventQueue;
+		static BlockingConcurrentQueue<ListenerEventFunc> sEventQueue;
 
-		Vector<TrackerListener*> sListeners;
+		static Vector<TrackerListener*> sListeners;
+		static CounterData* mpFirstCounter = nullptr;
 
-		std::thread sEventThread;
+		static std::thread sEventThread;
 
-		std::mutex sFlushLock;
-		std::condition_variable sFlushCondition;
-		int32_t sFlushPoint = 0;
+		static std::mutex sFlushLock;
+		static std::condition_variable sFlushCondition;
+		static int32_t sFlushPoint = 0;
 
 		void EventWorker()
 		{
@@ -76,6 +77,7 @@ namespace CPF
 			for (const auto& listener : sListeners)
 				delete listener;
 			sListeners.clear();
+			mpFirstCounter = nullptr;
 		}
 
 		void MapID(int32_t id, const char* name)
@@ -132,6 +134,65 @@ namespace CPF
 			{
 				listener->EndFrame(name, ticks);
 			}, EventFunc() });
+
+			// Deal with counters.  TODO: Break out and clean up.
+			auto current = GetFirstCounter();
+			while (current)
+			{
+				switch(current->mType)
+				{
+				case CounterType::eFrameZeroed:
+					current->mValue.store(0);
+					break;
+				case CounterType::eAverage10:
+					if (current->mHistory.size() != 10)
+					{
+						current->mHistory.push_back(current->mValue.load());
+						current->mAccumulator += current->mValue.load();
+						current->mValue.store(0);
+						current->mAverage = current->mAccumulator / current->mHistory.size();
+					}
+					else
+					{
+						current->mAccumulator -= current->mHistory[current->mHistoryIndex];
+						current->mAccumulator += current->mValue.load();
+						current->mHistory[current->mHistoryIndex] = current->mValue.load();
+						current->mHistoryIndex = (current->mHistoryIndex + 1) % 10;
+						current->mAverage = current->mAccumulator / 10;
+					}
+					break;
+				case CounterType::eAverage100:
+					if (current->mHistory.size() != 100)
+					{
+						current->mHistory.push_back(current->mValue.load());
+						current->mAccumulator += current->mValue.load();
+						current->mValue.store(0);
+						current->mAverage = current->mAccumulator / current->mHistory.size();
+					}
+					else
+					{
+						current->mAccumulator -= current->mHistory[current->mHistoryIndex];
+						current->mAccumulator += current->mValue.load();
+						current->mHistory[current->mHistoryIndex] = current->mValue.load();
+						current->mHistoryIndex = (current->mHistoryIndex + 1) % 100;
+						current->mAverage = current->mAccumulator / 100;
+					}
+					break;
+				}
+				current = current->mpNext;
+			}
+		}
+
+		void CPF_EXPORT AddCounter(CounterData* data)
+		{
+			// Link into the active counter list.
+			data->mpNext = mpFirstCounter;
+			mpFirstCounter = data;
+		}
+
+		CounterData CPF_EXPORT * GetFirstCounter()
+		{
+			return mpFirstCounter;
 		}
 
 		void Flush()
@@ -178,11 +239,11 @@ void DefaultListener::IDMapped(int32_t id, const char* name)
 	mIDMap[std::string(name)] = id;
 }
 
-void DefaultListener::BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick ticks)
+void DefaultListener::BeginBlock(size_t, int32_t, int32_t, Tick)
 {
 }
 
-void DefaultListener::EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick ticks)
+void DefaultListener::EndBlock(size_t, int32_t, int32_t, Tick)
 {
 }
 
