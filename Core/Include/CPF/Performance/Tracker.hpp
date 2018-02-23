@@ -70,6 +70,11 @@ namespace CPF
 
 			void Flush() override;
 
+			//////////////////////////////////////////////////////////////////////////
+			// Data access.
+			using TickRange = std::pair<Tick, Tick>;
+			TickRange GetSampleRange() const { return TickRange{0, 0}; }
+
 		private:
 			CPF_DLL_SAFE_BEGIN;
 			std::mutex mMapLock;
@@ -157,10 +162,14 @@ namespace CPF
 
 #	define CPF_PERF_BLOCK(group, section) CPF::Performance::ScopedBlock<group##_crc32, section##_crc32> sPerformanceBlock##__line__(group, section)
 
-#	define CPF_PERF_COUNTER_INIT(name) CPF::Performance::CounterInit<name##_crc32>()
+#	define CPF_PERF_COUNTER_INIT(name, type) CPF::Performance::CounterInit<name##_crc32>(type)
+#	define CPF_PERF_COUNTER_SET(name, val) CPF::Performance::CounterSet<name##_crc32>(val);
 #	define CPF_PERF_COUNTER_INC(name) CPF::Performance::CounterInc<name##_crc32>()
+#	define CPF_PERF_COUNTER_ADD(name, val) CPF::Performance::CounterAdd<name##_crc32>()
 #	define CPF_PERF_COUNTER_DEC(name) CPF::Performance::CounterDec<name##_crc32>()
-#	define CPF_PERF_COUNTER_ZERO(name) CPF::Performance::CounterZero<name##_crc32>();
+#	define CPF_PERF_COUNTER_SUB(name, val) CPF::Performance::CounterSub<name##_crc32>()
+#	define CPF_PERF_COUNTER_MIN(name, val) CPF::Performance::CounterMin<name##_crc32>()
+#	define CPF_PERF_COUNTER_MAX(name, val) CPF::Performance::CounterMax<name##_crc32>()
 
 #	define CPF_PERF_FRAME_BEGIN(name) CPF::Performance::FrameBegin<name##_crc32>(name)
 #	define CPF_PERF_FRAME_END(name) CPF::Performance::FrameEnd<name##_crc32>()
