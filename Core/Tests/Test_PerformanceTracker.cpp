@@ -32,11 +32,11 @@ struct TestListener : TrackerListener
 		++EndBlockCount;
 	}
 
-	void BeginFrame(int32_t, Tick) override
+	void BeginFrame(Tick) override
 	{
 		++BeginFrameCount;
 	}
-	void EndFrame(int32_t, Tick) override
+	void EndFrame(Tick) override
 	{
 		++EndFrameCount;
 	}
@@ -105,13 +105,14 @@ TEST(PerformanceTracker, BeginEndFrame)
 {
 	auto* listener = new TestListener();
 	InstallListener(listener); // NOTE: Takes ownership and will destroy at shutdown.
+	InstallListener(new DefaultListener);
 	Initialize();
 	CPF_PERF_THREAD_NAME("Main");
 	{
-		CPF_PERF_FRAME_BEGIN("");
+		CPF_PERF_FRAME_BEGIN();
 		CPF_PERF_BEGIN("TestGroup", "TestSection");
 		CPF_PERF_END("TestGroup", "TestSection");
-		CPF_PERF_FRAME_END("");
+		CPF_PERF_FRAME_END();
 	}
 	CPF_PERF_FLUSH;
 

@@ -118,21 +118,21 @@ namespace CPF
 			}, EventFunc() });
 		}
 
-		void CPF_EXPORT BeginFrame(int32_t name)
+		void CPF_EXPORT BeginFrame()
 		{
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			sEventQueue.enqueue({ [=](TrackerListener* listener)
 			{
-				listener->BeginFrame(name, ticks);
+				listener->BeginFrame(ticks);
 			}, EventFunc() });
 		}
 
-		void CPF_EXPORT EndFrame(int32_t name)
+		void CPF_EXPORT EndFrame()
 		{
 			const auto ticks = PerformanceClock::now().time_since_epoch().count();
 			sEventQueue.enqueue({ [=](TrackerListener* listener)
 			{
-				listener->EndFrame(name, ticks);
+				listener->EndFrame(ticks);
 			}, EventFunc() });
 
 			// Deal with counters.  TODO: Break out and clean up.

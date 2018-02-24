@@ -29,8 +29,8 @@ namespace CPF
 			virtual void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
 			virtual void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) = 0;
 
-			virtual void BeginFrame(int32_t id, Tick tick) = 0;
-			virtual void EndFrame(int32_t id, Tick tick) = 0;
+			virtual void BeginFrame(Tick tick) = 0;
+			virtual void EndFrame(Tick tick) = 0;
 
 			virtual void Flush() = 0;
 		};
@@ -48,8 +48,8 @@ namespace CPF
 		void CPF_EXPORT BeginBlock(int32_t group, int32_t section);
 		void CPF_EXPORT EndBlock(int32_t group, int32_t section);
 
-		void CPF_EXPORT BeginFrame(int32_t name);
-		void CPF_EXPORT EndFrame(int32_t name);
+		void CPF_EXPORT BeginFrame();
+		void CPF_EXPORT EndFrame();
 
 		struct CounterData;
 		void CPF_EXPORT AddCounter(CounterData* data);
@@ -70,21 +70,23 @@ namespace CPF
 			void BeginBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
 			void EndBlock(size_t threadID, int32_t groupID, int32_t sectionID, Tick tick) override;
 
-			void BeginFrame(int32_t, Tick) override {}
-			void EndFrame(int32_t, Tick) override {}
+			void BeginFrame(Tick tick) override { mFrameBegin = tick; }
+			void EndFrame(Tick tick) override { mFrameBegin = tick; }
 
 			void Flush() override;
 
 			//////////////////////////////////////////////////////////////////////////
 			// Gathered information access.
 			using TickRange = std::pair<Tick, Tick>;
-			TickRange GetSampleRange() const { return TickRange{0, 0}; }
+			TickRange GetSampleRange() const { return TickRange{mFrameBegin, mFrameEnd}; }
 
 		private:
 			CPF_DLL_SAFE_BEGIN;
 			std::mutex mMapLock;
 			std::map<std::string, int32_t> mIDMap;
 			CPF_DLL_SAFE_END;
+			Tick mFrameBegin = 0;
+			Tick mFrameEnd = 0;
 		};
 
 		//////////////////////////////////////////////////////////////////////////
@@ -122,24 +124,6 @@ namespace CPF
 				EndBlock<Group, Section>();
 			}
 		};
-
-		//////////////////////////////////////////////////////////////////////////
-		template <int32_t Name>
-		void FrameBegin(const char* name)
-		{
-			static bool initialized = false;
-			if (!initialized)
-			{
-				MapID(Name, name);
-				initialized = true;
-			}
-			BeginFrame(Name);
-		}
-		template <int32_t Name>
-		void FrameEnd()
-		{
-			EndFrame(Name);
-		}
 
 		//////////////////////////////////////////////////////////////////////////
 		inline void SetThreadName(const char* name)
@@ -214,8 +198,8 @@ namespace CPF
 #	define CPF_PERF_COUNTER_DEC(name) CPF_PERF_COUNTER(name)::mData.mValue.fetch_sub(1)
 #	define CPF_PERF_COUNTER_SUB(name, val) CPF_PERF_COUNTER(name)::mData.mValue.fetch_sub(val)
 
-#	define CPF_PERF_FRAME_BEGIN(name) CPF::Performance::FrameBegin<name##_crc32>(name)
-#	define CPF_PERF_FRAME_END(name) CPF::Performance::FrameEnd<name##_crc32>()
+#	define CPF_PERF_FRAME_BEGIN() CPF::Performance::BeginFrame()
+#	define CPF_PERF_FRAME_END() CPF::Performance::EndFrame()
 
 #	define CPF_PERF_FLUSH CPF::Performance::Flush()
 
