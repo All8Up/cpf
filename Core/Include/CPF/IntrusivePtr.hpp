@@ -41,11 +41,11 @@ namespace CPF
 		operator TARGET*() const;
 
 		//
-		void Assign(TARGET* rhs);
+		IntrusivePtr<TARGET>& Assign(TARGET* rhs);
 		
 		// Manipulate internal pointer without modification of ref count.
-		void Adopt(TARGET* rhs);
-		void Abandon();
+		IntrusivePtr<TARGET>& Adopt(TARGET* rhs);
+		IntrusivePtr<TARGET>& Abandon();
 
 		// Internal access.
 		TARGET* Ptr() const { return mpTarget; }
@@ -205,29 +205,32 @@ namespace CPF
 	}
 
 	template<typename TARGET>
-	void IntrusivePtr<TARGET>::Assign(TARGET* rhs)
+	IntrusivePtr<TARGET>& IntrusivePtr<TARGET>::Assign(TARGET* rhs)
 	{
 		if (rhs == mpTarget)
-			return;
+			return *this;
 		_Release();
 		mpTarget = rhs;
 		_AddRef();
+		return *this;
 	}
 	
 	template<typename TARGET>
-	void IntrusivePtr<TARGET>::Adopt(TARGET* rhs)
+	IntrusivePtr<TARGET>& IntrusivePtr<TARGET>::Adopt(TARGET* rhs)
 	{
 		if (rhs == mpTarget)
-			return;
+			return *this;
 		_Release();
 		mpTarget = rhs;
+		return *this;
 	}
 
 
 	template<typename TARGET>
-	void IntrusivePtr<TARGET>::Abandon()
+	IntrusivePtr<TARGET>& IntrusivePtr<TARGET>::Abandon()
 	{
 		mpTarget = nullptr;
+		return *this;
 	}
 
 
