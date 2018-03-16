@@ -4,9 +4,6 @@ cmake_minimum_required (VERSION 3.5.1)
 cmake_policy (SET CMP0054 NEW)
 
 # ###############################################
-project (CPF C CXX CSharp)
-
-# ###############################################
 include ("${CMAKE_CURRENT_LIST_DIR}/CMake/Setup.cmake")
 
 # ###############################################
@@ -19,6 +16,7 @@ if (CPF_ENABLE_CSHARP)
 endif ()
 
 # ###############################################
+add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/ICore")
 add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Core")
 
 # ###############################################

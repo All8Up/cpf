@@ -1,0 +1,34 @@
+# Provide the root dependency for all IDL generation.
+add_custom_target (ICPF)
+set_property (TARGET ICPF PROPERTY FOLDER CPF)
+
+# Add the ICore target.
+CPF_IDL_GENERATOR(
+	REQUIRED
+	TARGET
+		ICore
+	BASE
+		ICPF
+	OUTPUT_ROOT
+		${CPF_GENERATED}
+	OUTPUT_BASE
+		CPF
+	IDL_ROOT
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL
+	FILES
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iUnknown.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iEventEmitter.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/ResultCodes.idl
+
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Access.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Attributes.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iDirectory.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iExecutor.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFile.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFileStream.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iStream.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Origin.idl
+
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iClassFactory.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iRegistry.idl
+)

@@ -90,18 +90,6 @@ set (EVENT_INCLUDES
 	Include/CPF/Event/Integrators.hpp
 )
 
-set (GOM_IDL
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iUnknown.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iEventEmitter.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/ResultCodes.idl
-)
-CPF_GEN_GOM(GOM_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/GOM ${GOM_IDL})
-set (GOM_INCLUDES
-	Include/CPF/GOM/tUnknown.hpp
-	Include/CPF/GOM/Result.hpp
-	Include/CPF/GOM/Types.hpp
-)
-
 set (HASH_INCLUDES
 	Include/CPF/Hash/Crc.hpp
 	Include/CPF/Hash/HashID.hpp
@@ -114,17 +102,6 @@ set (HASH_DETAIL_INCLUDES
 	Include/CPF/Hash/Detail/Crc64Table.hpp
 )
 
-set (IO_IDL
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Access.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Attributes.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iDirectory.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iExecutor.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFile.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFileStream.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iStream.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Origin.idl
-)
-CPF_GEN_GOM(IO_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/IO ${IO_IDL})
 set (IO_INCLUDES
 	Include/CPF/IO/BinaryReader.hpp
 	Include/CPF/IO/BinaryWriter.hpp
@@ -238,11 +215,6 @@ set (PERFORMANCE_SOURCES
 	Source/Performance/Tracker.cpp
 )
 
-set (PLUGIN_IDL
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iClassFactory.idl
-	${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iRegistry.idl
-)
-CPF_GEN_GOM(PLUGIN_GEN_INCLUDES cpp hpp ${CPF_GENERATED}/CPP/CPF/Plugin ${PLUGIN_IDL})
 set (PLUGIN_INCLUDES
 	Include/CPF/Plugin/Library.hpp
 	Include/CPF/Plugin/Registry.hpp
@@ -361,16 +333,6 @@ set (TIME_INCLUDES
 	Include/CPF/Time/Value.inl
 )
 
-set (IDL_SOURCES
-	${GOM_IDL}
-	${IO_IDL}
-	${PLUGIN_IDL}
-)
-set (IDL_GEN
-	${GOM_GEN_INCLUDES}
-	${IO_GEN_INCLUDES}
-	${PLUGIN_GEN_INCLUDES}
-)
 set (ALL_SOURCES
 	${CPF_INCLUDES}
 	${CPF_SOURCES}
@@ -432,6 +394,7 @@ target_compile_definitions (Core_s
 	PRIVATE
 		CPF_BUILD
 )
+add_dependencies (Core_s ICPF)
 set_property (TARGET Core_s PROPERTY FOLDER CPF)
 
 
@@ -455,24 +418,8 @@ target_compile_definitions (Core
 	PRIVATE
 		CPF_BUILD
 )
+add_dependencies (Core ICPF)
 set_property (TARGET Core PROPERTY FOLDER CPF)
-
-# ###############################################
-add_library (i_Core INTERFACE)
-target_include_directories (i_Core
-	INTERFACE
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
-)
-add_custom_target (Core_IDL
-	SOURCES
-		${IDL_SOURCES}
-		${IDL_GEN}
-)
-add_dependencies (Core_s Core_IDL)
-add_dependencies (i_Core Core_IDL)
-add_dependencies (Core Core_IDL)
-set_property (TARGET Core_IDL PROPERTY FOLDER CPF)
 
 # ###############################################
 source_group (Include FILES ${CPF_INCLUDES})
@@ -482,13 +429,11 @@ source_group (Include\\Configuration FILES ${CONFIGURATION_INCLUDES})
 
 source_group (Include\\Event FILES ${EVENT_INCLUDES})
 
-source_group (IDL\\GOM FILES ${GOM_IDL})
 source_group (Include\\GOM FILES ${GOM_GEN_INCLUDES} ${GOM_INCLUDES})
 
 source_group (Include\\Hash FILES ${HASH_INCLUDES})
 source_group (Include\\Hash\\Detail FILES ${HASH_DETAIL_INCLUDES})
 
-source_group (IDL\\IO FILES ${IO_IDL})
 source_group (Include\\IO FILES ${IO_GEN_INCLUDES} ${IO_INCLUDES})
 source_group (Source\\IO FILES ${IO_SOURCES})
 source_group (Include\\IO\\Serialize FILES ${IO_SERIALIZE_INCLUDES})
@@ -515,7 +460,6 @@ source_group (Include\\Performance FILES ${PERFORMANCE_INCLUDES})
 source_group (Include\\Performance\\Internal FILES ${PERFORMANCE_INTERNAL_INCLUDES})
 source_group (Source\\Performance FILES ${PERFORMANCE_SOURCES})
 
-source_group (IDL\\Plugin FILES ${PLUGIN_IDL})
 source_group (Include\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
 source_group (Source\\Plugin FILES ${PLUGIN_SOURCES})
 

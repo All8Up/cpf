@@ -23,7 +23,7 @@ add_library (CSBinding SHARED
 	${SOURCE_FILES}
 	${INTERFACE_FILES}
 )
-target_link_libraries (CSBinding i_CSBinding i_Core)
+target_link_libraries (CSBinding i_CSBinding)
 target_compile_definitions (CSBinding PUBLIC _WINDLL _UNICODE UNICODE)
 target_include_directories (CSBinding
 	PUBLIC

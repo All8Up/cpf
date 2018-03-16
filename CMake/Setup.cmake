@@ -14,6 +14,7 @@ include (${CMAKE_CURRENT_LIST_DIR}/Utilities/TypedLibrary.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/Utilities/CheckValue.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/Utilities/PreferredInclude.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/Utilities/GenGOM.cmake)
+include (${CMAKE_CURRENT_LIST_DIR}/Utilities/cpf_idl_generator.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/UnitTesting/UnitTesting.cmake)
 include (${CMAKE_CURRENT_LIST_DIR}/Utilities/PropertyUtils.cmake)
 
