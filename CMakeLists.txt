@@ -9,6 +9,7 @@ include ("${CMAKE_CURRENT_LIST_DIR}/CMake/Setup.cmake")
 # ###############################################
 option (CPF_ENABLE_CSHARP "Enable C# integration." OFF)
 option (CPF_ENABLE_DEVBUILD "Enable the development build." ON)
+option (CPF_BUILD_EXAMPLES "Enable example projects." ON)
 if (CPF_ENABLE_CSHARP)
 	add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/CSBinding")
 	set (CPF_EXTRA_LIBS "${CPF_EXTRA_LIBS};CSBinding")
@@ -21,3 +22,8 @@ add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Core")
 
 # ###############################################
 add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Application")
+
+# ###############################################
+if (CPF_BUILD_EXAMPLES)
+	add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Examples")
+endif ()

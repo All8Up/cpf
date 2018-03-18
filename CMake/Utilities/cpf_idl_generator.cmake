@@ -1,5 +1,8 @@
 function (cpf_idl_generator)
-	set (options REQUIRED)
+	set (options
+		REQUIRED
+		MAKE_RELEASE
+	)
 	set (single_value
 		TARGET
 		BASE
@@ -41,4 +44,22 @@ function (cpf_idl_generator)
 	add_custom_target (${IDL_TARGET} SOURCES ${generated_files} ${IDL_FILES})
 	set_property (TARGET ${IDL_TARGET} PROPERTY FOLDER ${IDL_OUTPUT_BASE})
 	add_dependencies (${IDL_BASE} ${IDL_TARGET})
+
+	if (IDL_MAKE_RELEASE)
+		set (archive_files "")
+		foreach (filename ${generated_files})
+			file (RELATIVE_PATH relative "${CMAKE_BINARY_DIR}/Generated" ${filename})
+			list (APPEND archive_files "${relative}")
+		endforeach ()
+
+		add_custom_target(MakeRelease_${IDL_TARGET}
+			WORKING_DIRECTORY
+				"${CMAKE_BINARY_DIR}/Generated"
+			COMMAND
+				${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/Releases"
+			COMMAND
+			    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/Releases/${lang_dir}_${IDL_TARGET}.zip" --format=zip ${archive_files}
+		)
+		set_property (TARGET MakeRelease_${IDL_TARGET} PROPERTY FOLDER Releases)
+	endif ()
 endfunction (cpf_idl_generator)
