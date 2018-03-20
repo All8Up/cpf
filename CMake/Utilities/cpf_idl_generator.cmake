@@ -72,21 +72,23 @@ function (cpf_idl_generator)
 	endif ()
 
 	# Create packaging utilities.
-	if (IDL_PACKAGE_INTERFACES)
-		set (archive_files "")
-		foreach (filename ${generated_files})
-			file (RELATIVE_PATH relative "${CMAKE_BINARY_DIR}/Generated" ${filename})
-			list (APPEND archive_files "${relative}")
-		endforeach ()
+	if (CPF_ENABLE_PACKAGING)
+		if (IDL_PACKAGE_INTERFACES)
+			set (archive_files "")
+			foreach (filename ${generated_files})
+				file (RELATIVE_PATH relative "${CMAKE_BINARY_DIR}/Generated" ${filename})
+				list (APPEND archive_files "${relative}")
+			endforeach ()
 
-		add_custom_target(PackageInterfaces_${IDL_TARGET}
-			WORKING_DIRECTORY
-				"${CMAKE_BINARY_DIR}/Generated"
-			COMMAND
-				${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/Packages"
-			COMMAND
-			    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/Packages/${lang_dir}_${IDL_TARGET}.zip" --format=zip ${archive_files}
-		)
-		set_property (TARGET PackageInterfaces_${IDL_TARGET} PROPERTY FOLDER Packages)
+			add_custom_target(PackageInterfaces_${IDL_TARGET}
+				WORKING_DIRECTORY
+					"${CMAKE_BINARY_DIR}/Generated"
+				COMMAND
+					${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/Packages"
+				COMMAND
+				    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/Packages/${lang_dir}_${IDL_TARGET}.zip" --format=zip ${archive_files}
+			)
+			set_property (TARGET PackageInterfaces_${IDL_TARGET} PROPERTY FOLDER Packages)
+		endif ()
 	endif ()
 endfunction (cpf_idl_generator)
