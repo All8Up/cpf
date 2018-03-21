@@ -76,6 +76,11 @@ function (cpf_idl_generator)
 	# Create packaging utilities.
 	if (CPF_ENABLE_PACKAGING)
 		if (IDL_PACKAGE_INTERFACES)
+			# Create the cmake list file.
+			file (READ ${CPF_TEMPLATES}/interface_template.txt iface)
+			string (REPLACE ^IFACE^ ${IDL_TARGET} iface_target ${iface})
+			file (WRITE "${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}/CMakeLists.txt" ${iface_target})
+
 			set (archive_files "")
 			foreach (filename ${generated_files})
 				file (RELATIVE_PATH relative "${CMAKE_BINARY_DIR}/Generated" ${filename})
@@ -86,15 +91,26 @@ function (cpf_idl_generator)
 				list (APPEND archive_files "${relative}")
 			endforeach ()
 
-			add_custom_target(PackageInterfaces_${IDL_TARGET}
-				WORKING_DIRECTORY
-					"${CMAKE_BINARY_DIR}/Generated"
-				COMMAND
-					${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/Packages"
-				COMMAND
-				    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/Packages/${lang_dir}_${IDL_TARGET}.zip" --format=zip ${archive_files}
-			)
+			add_custom_target(PackageInterfaces_${IDL_TARGET})
 			set_property (TARGET PackageInterfaces_${IDL_TARGET} PROPERTY FOLDER Packages)
+
+			foreach (filename ${archive_files})
+				set (target_file "${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}/${filename}")
+
+				add_custom_command (
+					TARGET PackageInterfaces_${IDL_TARGET} PRE_BUILD
+					COMMAND ${CMAKE_COMMAND} -E copy
+						${CMAKE_BINARY_DIR}/Generated/${filename} ${target_file}
+				)
+			endforeach ()
+
+			add_custom_command (
+				TARGET PackageInterfaces_${IDL_TARGET} POST_BUILD
+				WORKING_DIRECTORY
+					${CMAKE_BINARY_DIR}/Packages
+				COMMAND
+				    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/Packages/${lang_dir}_${IDL_TARGET}.zip" --format=zip ${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}
+			)
 		endif ()
 	endif ()
 endfunction (cpf_idl_generator)

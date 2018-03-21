@@ -32,6 +32,8 @@ include (${CMAKE_CURRENT_LIST_DIR}/Modules/FindVTune.cmake)
 # Setup options.
 include (${CMAKE_CURRENT_LIST_DIR}/Options/VTune.cmake)
 
+# ###############################################
+set (CPF_TEMPLATES ${CMAKE_CURRENT_LIST_DIR}/Templates)
 
 # ###############################################
 set_property (GLOBAL PROPERTY USE_FOLDERS ON)
