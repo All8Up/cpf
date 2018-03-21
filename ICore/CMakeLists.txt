@@ -1,6 +1,6 @@
 # Provide the root dependency for all IDL generation.
 add_custom_target (ICPF)
-set_property (TARGET ICPF PROPERTY FOLDER CPF)
+set_property (TARGET ICPF PROPERTY FOLDER Components)
 
 # Add the ICore target.
 CPF_IDL_GENERATOR(
@@ -15,7 +15,7 @@ CPF_IDL_GENERATOR(
 	OUTPUT_BASE
 		CPF
 	IDE_FOLDER
-		CPF
+		Components
 	IDL_ROOT
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL
 	FILES
