@@ -2,6 +2,12 @@
 add_custom_target (ICPF)
 set_property (TARGET ICPF PROPERTY FOLDER Components)
 
+# Provide a package target for all packaging commands.
+if (CPF_ENABLE_PACKAGING)
+	add_custom_target (PackageInterfaces ALL)
+	set_property (TARGET PackageInterfaces PROPERTY FOLDER Packages)
+endif ()
+
 # Add the ICore target.
 CPF_IDL_GENERATOR(
 	REQUIRED
