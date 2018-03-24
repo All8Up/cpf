@@ -91,7 +91,7 @@ function (cpf_idl_generator)
 				list (APPEND archive_files "${relative}")
 			endforeach ()
 
-			add_custom_target(PackageInterfaces_${IDL_TARGET})
+			add_custom_target(PackageInterfaces_${IDL_TARGET} ALL)
 			set_property (TARGET PackageInterfaces_${IDL_TARGET} PROPERTY FOLDER Packages)
 
 			foreach (filename ${archive_files})
