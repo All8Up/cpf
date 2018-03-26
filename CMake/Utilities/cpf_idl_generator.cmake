@@ -91,19 +91,26 @@ function (cpf_idl_generator)
 				list (APPEND archive_files "${relative}")
 			endforeach ()
 
-			add_custom_target(PackageInterfaces_${IDL_TARGET})
+			add_custom_target(PackageInterfaces_${IDL_TARGET} ALL)
 			set_property (TARGET PackageInterfaces_${IDL_TARGET} PROPERTY FOLDER Packages)
-			add_dependencies (PackageInterfaces PackageInterfaces_${IDL_TARGET})
 
 			foreach (filename ${archive_files})
 				set (target_file "${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}/${filename}")
 
 				add_custom_command (
-					TARGET PackageInterfaces_${IDL_TARGET} POST_BUILD
+					TARGET PackageInterfaces_${IDL_TARGET} PRE_BUILD
 					COMMAND ${CMAKE_COMMAND} -E copy
 						${CMAKE_BINARY_DIR}/Generated/${filename} ${target_file}
 				)
 			endforeach ()
+
+			add_custom_command (
+				TARGET PackageInterfaces_${IDL_TARGET} POST_BUILD
+				WORKING_DIRECTORY
+					${CMAKE_BINARY_DIR}/Packages
+				COMMAND
+				    ${CMAKE_COMMAND} -E tar "cfv" "${CMAKE_BINARY_DIR}/Packages/${lang_dir}_${IDL_TARGET}.zip" --format=zip ${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}
+			)
 		endif ()
 	endif ()
 endfunction (cpf_idl_generator)

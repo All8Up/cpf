@@ -1,7 +1,13 @@
 # ###############################################
 # Setup the project.
-cmake_minimum_required (VERSION 3.5.1)
-cmake_policy (SET CMP0054 NEW)
+# This is only done if this is the root project,
+# otherwise this is intended to be included by
+# another project.
+if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_LIST_DIR})
+	cmake_minimum_required (VERSION 3.5.1)
+	cmake_policy (SET CMP0054 NEW)
+	project (Blargo C CXX CSharp)
+endif ()
 
 # ###############################################
 include ("${CMAKE_CURRENT_LIST_DIR}/CMake/Setup.cmake")
