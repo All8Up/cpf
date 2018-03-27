@@ -8,6 +8,10 @@ if (CPF_ENABLE_PACKAGING)
 	set_property (TARGET PackageInterfaces PROPERTY FOLDER Packages)
 endif ()
 
+# Provide a plugin deploy target for binary plugins.
+add_custom_target (DeployBinaryPlugins)
+set_property (TARGET DeployBinaryPlugins PROPERTY FOLDER CPF)
+
 # Add the ICore target.
 CPF_IDL_GENERATOR(
 	REQUIRED
