@@ -1,0 +1,10 @@
+	# ###################################################################
+	add_custom_target (
+		Deploy%name%
+	)
+	set_property (TARGET Deploy%name% PROPERTY FOLDER Plugins)
+	add_dependencies (DeployBinaryPlugins Deploy%name%)
+	add_custom_command (
+		TARGET Deploy%name% POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/Bin/%name%.cfp" "${CPF_COMMON_PLUGINS}/%name%.cfp"
+	)

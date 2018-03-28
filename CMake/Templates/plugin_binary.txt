@@ -1,0 +1,7 @@
+option (CPF_PLUGIN_BINARY_%name% ON)
+
+if (CPF_PLUGIN_BINARY_%name%)
+%shared%
+
+	%static%
+endif ()

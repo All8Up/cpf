@@ -77,7 +77,7 @@ function (cpf_idl_generator)
 	if (CPF_ENABLE_PACKAGING)
 		if (IDL_PACKAGE_INTERFACES)
 			# Create the cmake list file.
-			file (READ ${CPF_TEMPLATES}/interface_template.txt iface)
+			file (READ "${CPF_TEMPLATES}/interface_template.txt" iface)
 			string (REPLACE ^IFACE^ ${IDL_TARGET} iface_target ${iface})
 			file (WRITE "${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}/CMakeLists.txt" ${iface_target})
 
