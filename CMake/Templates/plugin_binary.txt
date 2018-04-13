@@ -1,4 +1,4 @@
-option (CPF_PLUGIN_BINARY_%name% ON)
+option (CPF_PLUGIN_BINARY_%name% "Use binary package for %name%." OFF)
 
 if (CPF_PLUGIN_BINARY_%name%)
 %shared%

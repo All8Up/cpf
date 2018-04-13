@@ -6,6 +6,11 @@ set_property (TARGET ICPF PROPERTY FOLDER Components)
 if (CPF_ENABLE_PACKAGING)
 	add_custom_target (PackageInterfaces ALL)
 	set_property (TARGET PackageInterfaces PROPERTY FOLDER Packages)
+	add_custom_target (PackageBinaryPlugins ALL)
+	set_property (TARGET PackageBinaryPlugins PROPERTY FOLDER Packages)
+	set (CPF_BINARY_PLUGIN_PACKAGE OFF CACHE BOOL "Package the plugins for distribution when built.")
+	set (CPF_INTERFACE_DIR "${CMAKE_BINARY_DIR}/Packages/Interfaces" CACHE PATH "Location of the prebuilt interfaces.")
+	set (CPF_BINARY_PLUGIN_DIR "${CMAKE_BINARY_DIR}/Packages/Plugins" CACHE PATH "Location of binary plugin packaging.")
 endif ()
 
 # Provide a plugin deploy target for binary plugins.

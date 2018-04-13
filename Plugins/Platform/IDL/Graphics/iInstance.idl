@@ -1,0 +1,18 @@
+import iRegistry from CPF::Plugin;
+module CPF::Graphics;
+
+struct iDevice;
+struct iAdapter;
+
+struct InstanceDesc
+{
+	bool mEnableDebugLayer;
+}
+
+interface iInstance : GOM::iUnknown
+{
+	result Initialize(const InstanceDesc* desc);
+
+	result EnumerateAdapters(int* count, iAdapter** adapters);
+	result CreateDevice(iAdapter* adapter, iDevice** device);
+}

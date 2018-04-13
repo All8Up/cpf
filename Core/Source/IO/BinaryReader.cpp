@@ -21,7 +21,7 @@ int64_t BinaryReader::Read(bool& b) const
 	return result.GetOK();
 }
 
-int64_t BinaryReader::Read(String& s) const
+int64_t BinaryReader::Read(STD::String& s) const
 {
 	// Serialize the size.
 	uint32_t size;
@@ -37,7 +37,7 @@ int64_t BinaryReader::Read(String& s) const
 	return size + 4;
 }
 
-int64_t BinaryReader::Read(WString& s) const
+int64_t BinaryReader::Read(STD::WString& s) const
 {
 	// Serialize the size.
 	uint32_t size;
@@ -53,7 +53,7 @@ int64_t BinaryReader::Read(WString& s) const
 	return size + 4;
 }
 
-int64_t BinaryReader::Read(Std::Utf8String& source) const
+int64_t BinaryReader::Read(STD::Utf8String& source) const
 {
 	// Serialize the size.
 	uint32_t size;

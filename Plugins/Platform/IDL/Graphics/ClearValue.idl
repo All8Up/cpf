@@ -1,0 +1,33 @@
+module CPF::Graphics;
+
+enum Format : s32;
+
+struct ClearColorValue
+{
+	f32 mColor[4];
+}
+
+struct DepthStencilValue
+{
+	f32 mDepth;
+	u32 mStencil;
+}
+
+union ClearValueData
+{
+	ClearColorValue mColor;
+	DepthStencilValue mDepthStencil;
+}
+
+enum ClearValueType : s32
+{
+	eColor,
+	eDepthStencil
+}
+
+struct ClearValue
+{
+	Format mFormat;
+	ClearValueType mDataType;
+	ClearValueData mData;
+}

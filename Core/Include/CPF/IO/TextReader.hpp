@@ -16,8 +16,8 @@ namespace CPF
 			Stream* GetStream() const;
 
 			// Text reader unique functions.
-			int64_t ReadLine(String& out);
-			int64_t ReadAll(String& out);
+			int64_t ReadLine(STD::String& out);
+			int64_t ReadAll(STD::String& out);
 
 		private:
 			StreamPtr mpStream;

@@ -6,53 +6,59 @@ namespace CPF
 	namespace Math
 	{
 		inline Transform::Transform(Quaternionfv orientation, Vector3fv scale, Vector3fv translation)
-			: mOrientation(orientation)
-			, mScale(scale)
+			: mOrientScale(orientation)
+			, mTranslation(translation)
+		{
+			mOrientScale = mOrientScale * Matrix33fv::Scale(scale.x, scale.y, scale.z);
+		}
+
+		inline Transform::Transform(const Matrix33fv& orientScale, const Vector3fv& translation)
+			: mOrientScale(orientScale)
 			, mTranslation(translation)
 		{}
 
 		inline Transform::Transform(const Transform& rhs)
-			: mOrientation(rhs.mOrientation)
-			, mScale(rhs.mScale)
+			: mOrientScale(rhs.mOrientScale)
 			, mTranslation(rhs.mTranslation)
 		{}
 
 		inline Transform& Transform::operator = (const Transform& rhs)
 		{
-			mOrientation = rhs.mOrientation;
-			mScale = rhs.mScale;
+			mOrientScale = rhs.mOrientScale;
 			mTranslation = rhs.mTranslation;
 			return *this;
 		}
 
 		inline Transform Transform::operator * (const Transform& rhs) const
 		{
-			Quaternionfv q = mOrientation * rhs.mOrientation;
-			Vector3fv s = mScale * rhs.mScale;
-			Vector3fv t = mTranslation + mOrientation * rhs.mTranslation;
-
-			return Transform(q, s, t);
+			return Transform(
+				mOrientScale * rhs.mOrientScale,
+				mTranslation + (rhs.mTranslation * mOrientScale)
+			);
 		}
 
 		// Interface.
 		inline Quaternionfv Transform::GetOrientation() const
 		{
-			return mOrientation;
+			return Quaternionfv(mOrientScale);
 		}
 
 		inline void Transform::SetOrientation(Quaternionfv q)
 		{
-			mOrientation = q;
+			auto scale = GetScale3(mOrientScale);
+			mOrientScale = Matrix33fv(q) * Matrix33fv::Scale(scale.x, scale.y, scale.z);
 		}
 
 		inline Vector3fv Transform::GetScale() const
 		{
-			return mScale;
+			return GetScale3(mOrientScale);
 		}
 
 		inline void Transform::SetScale(Vector3fv v)
 		{
-			mScale = v;
+			auto recipScale = Vector3fv(1.0f) / GetScale3(mOrientScale);
+			mOrientScale = mOrientScale * Matrix33fv::Scale(recipScale);
+			mOrientScale = mOrientScale * Matrix33fv::Scale(v);
 		}
 
 		inline Vector3fv Transform::GetTranslation() const

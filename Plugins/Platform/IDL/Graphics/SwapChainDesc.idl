@@ -1,0 +1,15 @@
+import Format from CPF::Platform::Graphics;
+import SwapEffect from CPF::Platform::Graphics;
+import SampleDesc from CPF::Platform::Graphics;
+
+module CPF::Graphics;
+
+struct SwapChainDesc
+{
+	Format mFormat;
+	SwapEffect mSwapEffect;
+	SampleDesc mMultiSample;
+	s32 mBackBufferCount;
+	bool mAllowFullscreen;
+	bool mVSync;
+};

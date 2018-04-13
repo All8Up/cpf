@@ -4,7 +4,7 @@
 
 namespace CPF
 {
-	namespace Std
+	namespace STD
 	{
 		template <typename TYPE>
 		using Hash = std::hash<TYPE>;

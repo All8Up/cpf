@@ -7,7 +7,7 @@ using namespace CPF;
 
 IO::ReadTextOutcome CPF_EXPORT IO::ReadText(Stream* stream)
 {
-	String result;
+	STD::String result;
 
 	auto length = stream->GetLength();
 	int64_t streamLen;
@@ -28,7 +28,7 @@ IO::ReadTextOutcome CPF_EXPORT IO::ReadText(Stream* stream)
 
 IO::ReadBinaryOutcome CPF_EXPORT IO::ReadBinary(Stream* stream)
 {
-	Vector<uint8_t> result;
+	STD::Vector<uint8_t> result;
 	if (stream)
 	{
 		int64_t streamLen;

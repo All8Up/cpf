@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/Event.hpp"
 #include "CPF/Event/Id.hpp"
 #include "CPF/Event/Event.hpp"
 #include "CPF/Std/Vector.hpp"
@@ -33,15 +32,15 @@ namespace CPF
 
 		protected:
 			//
-			using EventMap_t = UnorderedMap<size_t, EventBase*>;
-			using IdPairVector_t = Vector<Pair<Id_t, Id_t>>;
-			using VoidFunction_t = Function<void()>;
-			using AddVector_t = Vector<VoidFunction_t>;
+			using EventMap_t = STD::UnorderedMap<size_t, EventBase*>;
+			using IdPairVector_t = STD::Vector<STD::Pair<Id_t, Id_t>>;
+			using VoidFunction_t = STD::Function<void()>;
+			using AddVector_t = STD::Vector<VoidFunction_t>;
 
 			//
 			void _Remove(Id_t, Id_t);
 			void _DoRemoves();
-			void _Add(Function<void()>);
+			void _Add(STD::Function<void()>);
 			void _DoAdds();
 			Id_t _GetNextId();
 
@@ -153,7 +152,7 @@ namespace CPF
 		inline void EmitterBase::Remove(HandleBase& evh)
 		{
 			if (mEmitting)
-				mRemoves.push_back(Pair<Id_t, Id_t>(evh.EventId(), evh.BindingId()));
+				mRemoves.push_back(STD::Pair<Id_t, Id_t>(evh.EventId(), evh.BindingId()));
 			else
 				_Remove(evh.EventId(), evh.BindingId());
 		}
@@ -185,7 +184,7 @@ namespace CPF
 		 * @brief Adds a function to be called in the adds step.  Generally this would add a new handler.
 		 * @param f The function that does the actual work.
 		 */
-		inline void EmitterBase::_Add(Function<void()> f)
+		inline void EmitterBase::_Add(STD::Function<void()> f)
 		{
 			mAdds.push_back(f);
 		}

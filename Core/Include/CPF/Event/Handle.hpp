@@ -168,7 +168,7 @@ namespace CPF
 		/// old owner handle.
 		//////////////////////////////////////////////////////////////////////////
 		inline Handle::Handle(Handle&& rhs) noexcept
-			: HandleBase(Move(rhs))
+			: HandleBase(STD::Move(rhs))
 		{
 			rhs.m_pEmitter = nullptr;
 		}
@@ -179,7 +179,7 @@ namespace CPF
 		/// handle and invalidates the old handle.
 		//////////////////////////////////////////////////////////////////////////
 		inline Handle::Handle(HandleBase&& rhs) noexcept
-			: HandleBase(Move(rhs))
+			: HandleBase(STD::Move(rhs))
 		{
 			rhs.Abandon();
 		}

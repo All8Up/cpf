@@ -13,9 +13,9 @@ namespace CPF
 			~BinaryWriter();
 
 			int64_t Write(bool&) const;
-			int64_t Write(String&) const;
-			int64_t Write(WString&) const;
-			int64_t Write(Std::Utf8String&) const;
+			int64_t Write(STD::String&) const;
+			int64_t Write(STD::WString&) const;
+			int64_t Write(STD::Utf8String&) const;
 
 			int64_t Write(char&) const;
 			int64_t Write(wchar_t&) const;

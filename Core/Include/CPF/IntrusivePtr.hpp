@@ -54,7 +54,7 @@ namespace CPF
 		void** AsVoidPP() { return reinterpret_cast<void**>(&mpTarget); }
 		TARGET** AsTypePP() { return &mpTarget; }
 		template <typename TYPE>
-		TYPE* As() { return static_cast<TYPE*>(Cast()); }
+		TYPE* As() const { return static_cast<TYPE*>(Cast()); }
 		template <typename TYPE>
 		TYPE** AsPP() { return reinterpret_cast<TYPE**>(&mpTarget); }
 

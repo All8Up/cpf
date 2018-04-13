@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	using List = std::list<T>;
+	namespace STD
+	{
+		template<typename T>
+		using List = std::list<T>;
+	}
 }

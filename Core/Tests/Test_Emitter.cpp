@@ -8,11 +8,11 @@ namespace EventsBasic
 	class Test : public CPF::Events::Emitter
 	{
 	public:
-		typedef CPF::Events::Event< 0, CPF::Function< void(void) > > Event0;
-		typedef CPF::Events::Event< 1, CPF::Function< void(int32_t) > > Event1;
-		typedef CPF::Events::Event< 2, CPF::Function< void(int32_t, int32_t) > > Event2;
-		typedef CPF::Events::Event< 3, CPF::Function< void(void) > > Event3;
-		typedef CPF::Events::Event< 4, CPF::Function< void(void) > > Event4;
+		typedef CPF::Events::Event< 0, CPF::STD::Function< void(void) > > Event0;
+		typedef CPF::Events::Event< 1, CPF::STD::Function< void(int32_t) > > Event1;
+		typedef CPF::Events::Event< 2, CPF::STD::Function< void(int32_t, int32_t) > > Event2;
+		typedef CPF::Events::Event< 3, CPF::STD::Function< void(void) > > Event3;
+		typedef CPF::Events::Event< 4, CPF::STD::Function< void(void) > > Event4;
 	};
 }
 

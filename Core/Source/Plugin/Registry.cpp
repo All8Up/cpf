@@ -61,17 +61,17 @@ private:
 		PluginDesc Desc;
 	};
 
-	using LibraryMap = UnorderedMap<String, LibraryDesc>;
-	using CreationMap = UnorderedMap<GOM::CID, IntrusivePtr<Plugin::iClassFactory>>;
+	using LibraryMap = STD::UnorderedMap<STD::String, LibraryDesc>;
+	using CreationMap = STD::UnorderedMap<GOM::CID, IntrusivePtr<Plugin::iClassFactory>>;
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
 
-	using ClassList = Vector<GOM::CID>;
-	using ClassMap = UnorderedMap<GOM::IID, ClassList>;
+	using ClassList = STD::Vector<GOM::CID>;
+	using ClassMap = STD::UnorderedMap<GOM::IID, ClassList>;
 	ClassMap mClasses;
 
-	using InstanceMap = UnorderedMap<GOM::IID, iUnknown*>;
+	using InstanceMap = STD::UnorderedMap<GOM::IID, iUnknown*>;
 	InstanceMap mInstances;
 };
 
@@ -165,7 +165,7 @@ GOM::Result CPF_STDCALL Registry::Load(const char* name)
 					if (desc && desc->Install && (*desc->Install)(this) == GOM::kOK)
 					{
 						// TODO: Need to copy the desc Name if this intends to remain valid after unload.
-						mLibraryMap.insert(LibraryMap::value_type{ CPF::String(name), LibraryDesc{ Move(library), *desc } });
+						mLibraryMap.insert(LibraryMap::value_type{ STD::String(name), LibraryDesc{ STD::Move(library), *desc } });
 						return GOM::kOK;
 					}
 					CPF_LOG(PluginHost, Error) << "Failed to load: " << name << " Working dir:" << IO::Directory::GetWorkingDirectory().data();

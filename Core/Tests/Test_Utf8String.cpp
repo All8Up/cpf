@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////////
 #include <gtest/gtest.h>
 #include "CPF/Std/Utf8String.hpp"
+#include "CPF/CSTD/String.hpp"
 
 using namespace CPF;
-using namespace Std;
+using namespace STD;
 
 TEST(Utf8String, Construction)
 {
@@ -49,7 +50,7 @@ TEST(Utf8String, ReverseIteration)
 	const char* utf8String = "Hello World!";
 	Utf8String t0(utf8String);
 
-	auto i = StrLen(utf8String);
+	auto i = CSTD::StrLen(utf8String);
 	for (auto it = t0.rbegin(); it!=t0.rend(); ++it)
 	{
 		char c = char(*it);

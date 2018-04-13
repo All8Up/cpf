@@ -17,9 +17,9 @@ size_t DataBlock::GetSectionCount() const
 	return mSectionCount;
 }
 
-Vector<SectionID> DataBlock::GetSections() const
+STD::Vector<SectionID> DataBlock::GetSections() const
 {
-	Vector<SectionID> result(mSectionCount);
+	STD::Vector<SectionID> result(mSectionCount);
 	int i = 0;
 	for (const auto& section : *this)
 	{
@@ -66,6 +66,14 @@ const void* DataBlock::GetSection(SectionID id, size_t* size) const
 		*size = mData[m].mSize;
 	return reinterpret_cast<const uint8_t*>(this) + mData[m].mOffset;
 }
+
+size_t DataBlock::GetSectionSize(SectionID id) const
+{
+	size_t result = 0;
+	(void)GetSection(id, &result);
+	return result;
+}
+
 
 size_t DataBlock::GetSize() const
 {

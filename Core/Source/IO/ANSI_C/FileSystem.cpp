@@ -3,8 +3,8 @@
 #include "CPF/Logging.hpp"
 #include "CPF/IO/Path.hpp"
 #include "CPF/IO/Stream.hpp"
-#include "CPF/Std/String.hpp"
-#include "CPF/Std/IO.hpp"
+#include "CPF/CSTD/String.hpp"
+#include "CPF/CSTD/IO.hpp"
 #include "CPF/Threading/Thread.hpp"
 #include "CPF/Threading/Reactor.hpp"
 
@@ -23,7 +23,7 @@ namespace CPF
 			ANSI_C_FileSystem();
 			~ANSI_C_FileSystem() override;
 
-			Outcome<FileHandle, Error> Open(const Std::Utf8String&, Access) override;
+			Outcome<FileHandle, Error> Open(const STD::Utf8String&, Access) override;
 			void Close(FileHandle, Error*) override;
 			void Flush(FileHandle, Error*) override;
 			int64_t GetPosition(FileHandle, Error*) override;
@@ -104,24 +104,24 @@ ANSI_C_FileSystem::~ANSI_C_FileSystem()
 	mWorker.Join();
 }
 
-Outcome<FileHandle, Error> ANSI_C_FileSystem::Open(const Std::Utf8String& name, Access access)
+Outcome<FileHandle, Error> ANSI_C_FileSystem::Open(const STD::Utf8String& name, Access access)
 {
 	char mode[4];
 	switch (access)
 	{
 	case Access::eRead:
-		Std::StrCpy(mode, "rb");
+		CSTD::StrCpy(mode, "rb");
 		break;
 	case Access::eWrite:
-		Std::StrCpy(mode, "wb");
+		CSTD::StrCpy(mode, "wb");
 		break;
 	case Access::eBoth:
-		Std::StrCpy(mode, "rb+");
+		CSTD::StrCpy(mode, "rb+");
 		break;
 	}
 
 	// TODO: This is not utf8 safe!!
-	FileHandle handle = Std::FOpen(Path::ToOS(name.data()).data().c_str(), mode);
+	FileHandle handle = CSTD::FOpen(Path::ToOS(name.data()).data().c_str(), mode);
 
 	if (handle)
 		return Outcome<FileHandle, Error>::OK(handle);
@@ -131,7 +131,7 @@ Outcome<FileHandle, Error> ANSI_C_FileSystem::Open(const Std::Utf8String& name, 
 void ANSI_C_FileSystem::Close(FileHandle handle, Error* error)
 {
 	if (handle)
-		Std::FClose((FILE*)handle);
+		CSTD::FClose((FILE*)handle);
 	else
 	{
 		if (error)
@@ -143,7 +143,7 @@ void ANSI_C_FileSystem::Flush(FileHandle handle, Error* error)
 {
 	if (handle)
 	{
-		Std::FFlush((FILE*)handle);
+		CSTD::FFlush((FILE*)handle);
 	}
 	else
 	{
@@ -155,7 +155,7 @@ void ANSI_C_FileSystem::Flush(FileHandle handle, Error* error)
 int64_t ANSI_C_FileSystem::GetPosition(FileHandle handle, Error* error)
 {
 	fpos_t pos;
-	auto res = Std::FGetPos((FILE*)handle, &pos);
+	auto res = CSTD::FGetPos((FILE*)handle, &pos);
 	if (error)
 		*error = res == 0 ? Error::eNone : Error::eUnknownError;
 	return pos;
@@ -166,11 +166,11 @@ int64_t ANSI_C_FileSystem::GetLength(FileHandle handle, Error* error)
 	int64_t len = 0;
 	if (handle)
 	{
-		auto origin = Std::FTell((FILE*)handle);
-		Std::FSeek((FILE*)handle, 0, SEEK_END);
+		auto origin = CSTD::FTell((FILE*)handle);
+		CSTD::FSeek((FILE*)handle, 0, SEEK_END);
 
-		len = Std::FTell((FILE*)handle);
-		Std::FSeek((FILE*)handle, origin, SEEK_SET);
+		len = CSTD::FTell((FILE*)handle);
+		CSTD::FSeek((FILE*)handle, origin, SEEK_SET);
 
 		if (error)
 			*error = Error::eNone;
@@ -184,7 +184,7 @@ int64_t ANSI_C_FileSystem::GetLength(FileHandle handle, Error* error)
 
 void ANSI_C_FileSystem::Seek(FileHandle handle, int64_t offset, Origin origin, Error* error)
 {
-	auto err = Std::FSeek(
+	auto err = CSTD::FSeek(
 		(FILE*)handle,
 		long(offset),
 		(origin == Origin::eBegin) ? SEEK_SET : ((origin == Origin::eCurrent) ? SEEK_CUR : SEEK_END));
@@ -194,23 +194,23 @@ void ANSI_C_FileSystem::Seek(FileHandle handle, int64_t offset, Origin origin, E
 
 int64_t ANSI_C_FileSystem::Read(FileHandle handle, void* buffer, int64_t length, Error* error)
 {
-	int64_t len = Std::FRead((FILE*)handle, buffer, 1, length);
+	int64_t len = CSTD::FRead((FILE*)handle, buffer, 1, length);
 	if (error)
-		*error = len < 0 ? Error::eNone : Std::FError((FILE*)handle) == 0 ? Error::eNone : Error::eUnknownError;
+		*error = len < 0 ? Error::eNone : CSTD::FError((FILE*)handle) == 0 ? Error::eNone : Error::eUnknownError;
 	return len;
 }
 
 int64_t ANSI_C_FileSystem::Write(FileHandle handle, const void* buffer, int64_t length, Error* error)
 {
-	int64_t len = Std::FWrite((FILE*)handle, buffer, 1, length);
+	int64_t len = CSTD::FWrite((FILE*)handle, buffer, 1, length);
 	if (error)
-		*error = len < length ? Error::eNone : Std::FError((FILE*)handle) == 0 ? Error::eNone : Error::eUnknownError;
+		*error = len < length ? Error::eNone : CSTD::FError((FILE*)handle) == 0 ? Error::eNone : Error::eUnknownError;
 	return len;
 }
 
 IO::Error ANSI_C_FileSystem::GetError(FileHandle handle)
 {
-	auto error = Std::FError((FILE*)handle);
+	auto error = CSTD::FError((FILE*)handle);
 	Error result = Error::eNone;
 	switch (error)
 	{

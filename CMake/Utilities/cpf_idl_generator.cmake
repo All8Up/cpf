@@ -79,7 +79,7 @@ function (cpf_idl_generator)
 			# Create the cmake list file.
 			file (READ "${CPF_TEMPLATES}/interface_template.txt" iface)
 			string (REPLACE ^IFACE^ ${IDL_TARGET} iface_target ${iface})
-			file (WRITE "${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}/CMakeLists.txt" ${iface_target})
+			file (WRITE "${CPF_INTERFACE_DIR}/${IDL_TARGET}/CMakeLists.txt" ${iface_target})
 
 			set (archive_files "")
 			foreach (filename ${generated_files})
@@ -96,7 +96,7 @@ function (cpf_idl_generator)
 			set_property (TARGET PackageInterfaces_${IDL_TARGET} PROPERTY FOLDER Packages)
 
 			foreach (filename ${archive_files})
-				set (target_file "${CMAKE_BINARY_DIR}/Packages/${IDL_TARGET}/${filename}")
+				set (target_file "${CPF_INTERFACE_DIR}/${IDL_TARGET}/${filename}")
 
 				add_custom_command (
 					TARGET PackageInterfaces_${IDL_TARGET} POST_BUILD

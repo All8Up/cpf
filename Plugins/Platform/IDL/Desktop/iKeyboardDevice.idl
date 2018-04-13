@@ -1,0 +1,16 @@
+import iInputDevice from CPF::Platform::Desktop;
+import KeyModifier from CPF::Platform::Desktop;
+
+module CPF::Platform::Desktop;
+
+interface iKeyboardDevice : iInputDevice
+{
+	const class_id kCID("Cpf::Platform::Desktop::iKeyboardDevice::Default");
+
+	/**
+	* @brief Gets the modifier keys currently set.
+	* @param [in,out] modifiers The output to the modifier value.
+	* @return The result code.
+	*/
+	result GetModifiers(KeyModifier* modifiers);
+};

@@ -18,14 +18,14 @@ namespace CPF
 		void SetResult(TYPE&& value)
 		{
 			Threading::ScopedLock<Threading::Mutex> lock(mLock);
-			mValue = Move(value);
+			mValue = STD::Move(value);
 			mState = State::eValue;
 			mCondition.ReleaseAll();
 		}
 		void SetException(std::exception_ptr&& value)
 		{
 			Threading::ScopedLock<Threading::Mutex> lock(mLock);
-			mException = Move(value);
+			mException = STD::Move(value);
 			mState = State::eException;
 			mCondition.ReleaseAll();
 		}
@@ -50,7 +50,7 @@ namespace CPF
 				std::rethrow_exception(mException);
 			mState = State::eTaken;
 
-			return Move(mValue);
+			return STD::Move(mValue);
 		}
 
 	private:
@@ -85,7 +85,7 @@ namespace CPF
 		Future() {}
 		Future(const Future&) = delete;
 		Future& operator =(const Future&) = delete;
-		Future(Future&& rhs) noexcept : mpState(Move(rhs.mpState)) {}
+		Future(Future&& rhs) noexcept : mpState(STD::Move(rhs.mpState)) {}
 		Future& operator =(Future&& rhs) noexcept { mpState = rhs.mpState; rhs.mpState = nullptr; return *this; }
 		~Future()
 		{}
@@ -148,13 +148,13 @@ namespace CPF
 		Promise(const Promise&) = delete;
 		Promise& operator =(const Promise&) = delete;
 		Promise(Promise&& rhs) noexcept
-			: mpFutureState(Move(rhs.mpFutureState))
-			, mFuture(Move(rhs.mFuture))
+			: mpFutureState(STD::Move(rhs.mpFutureState))
+			, mFuture(STD::Move(rhs.mFuture))
 		{}
 		Promise& operator =(Promise&& rhs) noexcept
 		{
-			mpFutureState = Move(rhs.mpFutureState);
-			mFuture = Move(rhs.mFuture);
+			mpFutureState = STD::Move(rhs.mpFutureState);
+			mFuture = STD::Move(rhs.mFuture);
 			return *this;
 		}
 		~Promise()
@@ -163,10 +163,10 @@ namespace CPF
 				mpFutureState->SetException(std::make_exception_ptr<std::exception>(std::exception()));
 		}
 
-		Future<TYPE> GetFuture() { return Move(mFuture); }
+		Future<TYPE> GetFuture() { return STD::Move(mFuture); }
 
-		void SetResult(TYPE&& value) { if (mpFutureState) mpFutureState->SetResult(Move(value)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
-		void SetException(std::exception_ptr&& ptr) { if (mpFutureState) mpFutureState->SetException(Move(ptr)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
+		void SetResult(TYPE&& value) { if (mpFutureState) mpFutureState->SetResult(STD::Move(value)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
+		void SetException(std::exception_ptr&& ptr) { if (mpFutureState) mpFutureState->SetException(STD::Move(ptr)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
 
 	private:
 		IntrusivePtr<FutureState<TYPE>> mpFutureState;
@@ -189,7 +189,7 @@ namespace CPF
 		Promise(Promise&&) noexcept {}
 		Promise& operator =(Promise&&) noexcept { return *this; }
 
-		Future<void> GetFuture() { return Move(mFuture); }
+		Future<void> GetFuture() { return STD::Move(mFuture); }
 
 	private:
 		Future<void> mFuture;

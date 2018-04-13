@@ -52,10 +52,10 @@ namespace CPF
 		};
 
 		/** @brief Utility to read the contents of a stream as a text file. */
-		using ReadTextOutcome = Outcome<String, Error>;
+		using ReadTextOutcome = Outcome<STD::String, Error>;
 		ReadTextOutcome CPF_EXPORT ReadText(Stream*);
 
-		using ReadBinaryOutcome = Outcome<Vector<uint8_t>, IO::Error>;
+		using ReadBinaryOutcome = Outcome<STD::Vector<uint8_t>, IO::Error>;
 		ReadBinaryOutcome CPF_EXPORT ReadBinary(Stream*);
 	}
 }

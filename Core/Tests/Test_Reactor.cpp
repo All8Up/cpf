@@ -15,7 +15,7 @@ public:
 	void TearDown() override
 	{}
 
-	using FunctionVector = CPF::Vector<CPF::Function<void(void)>>;
+	using FunctionVector = CPF::STD::Vector<CPF::STD::Function<void(void)>>;
 	void DoWorker(int count, FunctionVector& funcs)
 	{
 		mpData = new bool[count];
@@ -24,7 +24,7 @@ public:
 
 		mGroup.Initialize(count);
 		for (int i = 0; i < count; ++i)
-			mGroup(i, CPF::Move(funcs[i]));
+			mGroup(i, CPF::STD::Move(funcs[i]));
 		mGroup.Join();
 
 		for (int i = 0; i < count; ++i)

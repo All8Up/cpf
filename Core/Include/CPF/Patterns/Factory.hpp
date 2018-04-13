@@ -26,11 +26,11 @@ namespace CPF
 
 			struct Entry
 			{
-				using CreateType = Function<OBJTYPE* ()>;
-				using InitType = Function<bool(OBJTYPE&)>;
+				using CreateType = STD::Function<OBJTYPE* ()>;
+				using InitType = STD::Function<bool(OBJTYPE&)>;
 
-				Entry(CreateType&& create) : mCreate(Move(create)) {}
-				Entry(CreateType&& create, InitType&& init) : mCreate(Move(create)), mInit(Move(init)) {}
+				Entry(CreateType&& create) : mCreate(STD::Move(create)) {}
+				Entry(CreateType&& create, InitType&& init) : mCreate(STD::Move(create)), mInit(STD::Move(init)) {}
 
 				CreateType mCreate;
 				InitType mInit;
@@ -52,7 +52,7 @@ namespace CPF
 			Factory& operator = (Factory&&) = delete;
 			Factory& operator = (const Factory&&) = delete;
 
-			using EntryMap = UnorderedMap<KEYTYPE, Entry>;
+			using EntryMap = STD::UnorderedMap<KEYTYPE, Entry>;
 			EntryMap mEntries;
 		};
 

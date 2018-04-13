@@ -56,7 +56,6 @@ set (CPF_INCLUDES
 	Include/CPF/DataBlock.hpp
 	Include/CPF/DataBlockBuilder.hpp
 	Include/CPF/EnumFlagType.hpp
-	Include/CPF/Event.hpp
 	Include/CPF/GOM.hpp
 	Include/CPF/IntrusivePtr.hpp
 	Include/CPF/IO.hpp
@@ -199,6 +198,10 @@ set (MATH_DETAIL_INCLUDES
 	Include/CPF/Math/Detail/Vector4v.inl
 )
 
+set (MEMORY_INCLUDES
+	Include/CPF/Memory/ScratchAllocator.hpp
+)
+
 set (PATTERNS_INCLUDES
 	Include/CPF/Patterns/Factory.hpp
 )
@@ -220,6 +223,7 @@ set (PLUGIN_INCLUDES
 	Include/CPF/Plugin/Registry.hpp
 	Include/CPF/Plugin/SharedLibrary.hpp
 	Include/CPF/Plugin/tClassFactory.hpp
+	Include/CPF/Plugin/ImmediateEventEmitter.hpp
 )
 set (PLUGIN_SOURCES
 	Source/Plugin/Registry.cpp
@@ -282,11 +286,19 @@ set (SIMD_DETAIL_SSE4_1_INCLUDES
 	Include/CPF/SIMD/Detail/SSE4_1/Utilities.hpp
 )
 
+set (CSTD_INCLUDES
+	Include/CPF/CSTD/CCType.hpp
+	Include/CPF/CSTD/CWCType.hpp
+	Include/CPF/CSTD/IO.hpp
+	Include/CPF/CSTD/Memory.hpp
+	Include/CPF/CSTD/String.hpp
+	Include/CPF/CSTD/Time.hpp
+)
+
 set (STD_INCLUDES
 	Include/CPF/Std/Algorithm.hpp
 	Include/CPF/Std/Array.hpp
 	Include/CPF/Std/BitSet.hpp
-	Include/CPF/Std/CCType.hpp
 	Include/CPF/Std/Deque.hpp
 	Include/CPF/Std/ForwardList.hpp
 	Include/CPF/Std/Functional.hpp
@@ -304,7 +316,6 @@ set (STD_INCLUDES
 	Include/CPF/Std/String.hpp
 	Include/CPF/Std/StringUtils.hpp
 	Include/CPF/Std/Utf8String.hpp
-	Include/CPF/Std/Time.hpp
 	Include/CPF/Std/Tuple.hpp
 	Include/CPF/Std/UnorderedMap.hpp
 	Include/CPF/Std/UnorderedSet.hpp
@@ -346,6 +357,7 @@ set (ALL_SOURCES
 	${IO_SOURCES}
 	${IO_SERIALIZE_INCLUDES}
 	${IO_SERIALIZE_SOURCES}
+	${MEMORY_INCLUDES}
 	${MATH_INCLUDES}
 	${MATH_BOUNDS_INCLUDES}
 	${MATH_DISTANCE_INCLUDES}
@@ -363,6 +375,7 @@ set (ALL_SOURCES
 	${SIMD_DETAIL_FPU_INCLUDES}
 	${SIMD_DETAIL_REFERENCE_INCLUDES}
 	${SIMD_DETAIL_SSE4_1_INCLUDES}
+	${CSTD_INCLUDES}
 	${STD_INCLUDES}
 	${THREADING_INCLUDES}
 	${TIME_INCLUDES}
@@ -439,6 +452,7 @@ source_group (Source\\IO FILES ${IO_SOURCES})
 source_group (Include\\IO\\Serialize FILES ${IO_SERIALIZE_INCLUDES})
 source_group (Source\\IO\\Serialize FILES ${IO_SERIALIZE_SOURCES})
 
+source_group (Include\\Memory FILES ${MEMORY_INCLUDES})
 
 source_group (Include\\Math FILES ${MATH_INCLUDES})
 source_group (Include\\Math\\Bounds FILES ${MATH_BOUNDS_INCLUDES})
@@ -463,7 +477,8 @@ source_group (Source\\Performance FILES ${PERFORMANCE_SOURCES})
 source_group (Include\\Plugin FILES ${PLUGIN_GEN_INCLUDES} ${PLUGIN_INCLUDES})
 source_group (Source\\Plugin FILES ${PLUGIN_SOURCES})
 
-source_group (Include\\Std FILES ${STD_INCLUDES})
+source_group (Include\\CSTD FILES ${CSTD_INCLUDES})
+source_group (Include\\STD FILES ${STD_INCLUDES})
 
 source_group (Include\\Threading FILES ${THREADING_INCLUDES})
 
@@ -516,6 +531,7 @@ set (TEST_SOURCES
 	Tests/Test_Path.cpp
 	Tests/Test_PerformanceTracker.cpp
 	Tests/Test_Plugin.cpp
+	Tests/Test_ScratchAllocator.cpp
 	Tests/Test_Quaternion.cpp
 	Tests/Test_Reactor.cpp
 	Tests/Test_Scoped.cpp

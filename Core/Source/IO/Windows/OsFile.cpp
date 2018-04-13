@@ -2,7 +2,7 @@
 #include "CPF/IO/File.hpp"
 
 using namespace CPF;
-using namespace Std;
+using namespace STD;
 using namespace IO;
 
 CPF_EXPORT bool File::Exists(const Utf8String& name)

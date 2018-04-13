@@ -18,7 +18,7 @@ namespace CPF
 		class Reactor
 		{
 		public:
-			using WorkFunction = Function<void()>;
+			using WorkFunction = STD::Function<void()>;
 
 			Reactor();
 			~Reactor();
@@ -39,7 +39,7 @@ namespace CPF
 			Mutex mLock;
 			ConditionVariable mCondition;
 			CPF_DLL_SAFE_BEGIN;
-			Queue<WorkFunction> mQueue;
+			STD::Queue<WorkFunction> mQueue;
 			CPF_DLL_SAFE_END;
 		};
 
@@ -94,7 +94,7 @@ namespace CPF
 				while (!mQueue.empty())
 				{
 					// Get something off the queue.
-					WorkFunction func = Move(mQueue.front());
+					WorkFunction func = STD::Move(mQueue.front());
 					mQueue.pop();
 
 					// Execute the work.  Unlock while working so as not to deadlock.
@@ -132,7 +132,7 @@ namespace CPF
 			}
 
 			// Get the work.
-			WorkFunction func = Move(mQueue.front());
+			WorkFunction func = STD::Move(mQueue.front());
 			mQueue.pop();
 			mLock.Release();
 
@@ -185,7 +185,7 @@ namespace CPF
 		inline void ReactorQueue::operator ()(WorkFunction& func) const
 		{
 			mpReactor->mLock.Acquire();
-			mpReactor->mQueue.push(Move(func));
+			mpReactor->mQueue.push(STD::Move(func));
 			mpReactor->mLock.Release();
 			mpReactor->mCondition.ReleaseAll();
 		}

@@ -1,0 +1,16 @@
+import iUnknown from CPF::GOM;
+import Stream from CPF::IO;
+
+module CPF::ResourceSystem;
+
+enum ResourceID : u64;
+enum VariantID : u64;
+struct VolumeDesc {}
+
+interface iVolume : GOM::iUnknown
+{
+	result Mount(const char* name);
+	void Unmount();
+
+	IO::Stream* Open(ResourceID id, VariantID varID);
+}

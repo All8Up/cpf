@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+enum PipelineBindPoint : s32
+{
+	eGraphic,
+	eCompute
+};

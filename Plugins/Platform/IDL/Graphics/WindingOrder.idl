@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+enum WindingOrder : s32
+{
+	eClockwise = 0,
+	eCounterClockwise
+};

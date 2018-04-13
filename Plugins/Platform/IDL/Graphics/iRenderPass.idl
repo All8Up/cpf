@@ -1,0 +1,6 @@
+import iUnknown from CPF::GOM;
+module CPF::Graphics;
+
+interface iRenderPass : GOM::iUnknown
+{
+}

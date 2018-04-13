@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	using Deque = std::deque<T>;
+	namespace STD
+	{
+		template<typename T>
+		using Deque = std::deque<T>;
+	}
 }

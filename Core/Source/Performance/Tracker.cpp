@@ -17,7 +17,7 @@ namespace CPF
 		using ListenerEventFunc = std::pair<ListenerFunc, EventFunc>;
 		static BlockingConcurrentQueue<ListenerEventFunc> sEventQueue;
 
-		static Vector<TrackerListener*> sListeners;
+		static STD::Vector<TrackerListener*> sListeners;
 		static CounterData* mpFirstCounter = nullptr;
 
 		static std::thread sEventThread;

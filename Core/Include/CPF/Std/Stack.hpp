@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	using Stack = std::stack<T>;
+	namespace STD
+	{
+		template<typename T>
+		using Stack = std::stack<T>;
+	}
 }

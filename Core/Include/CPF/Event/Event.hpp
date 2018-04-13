@@ -1,6 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/Event.hpp"
 #include "CPF/Event/Id.hpp"
 #include "CPF/Event/Integrators.hpp"
 #include "CPF/Std/UnorderedMap.hpp"
@@ -17,7 +16,7 @@ namespace CPF
 		template<typename RESULTTYPE>
 		struct HandlerSelect
 		{
-			typedef Function<void(RESULTTYPE)> HandlerType_t;
+			typedef STD::Function<void(RESULTTYPE)> HandlerType_t;
 		};
 
 
@@ -25,7 +24,7 @@ namespace CPF
 		template<>
 		struct HandlerSelect<void>
 		{
-			typedef Function<void()> HandlerType_t;
+			typedef STD::Function<void()> HandlerType_t;
 		};
 
 
@@ -57,7 +56,7 @@ namespace CPF
 			typedef typename HandlerSelect<typename FUNCDECL::result_type>::HandlerType_t HandlerType_t;
 			typedef INTEGRATOR IntegratorType_t;
 			typedef FUNCDECL FunctionDecl_t;
-			typedef UnorderedMap<Id_t, FunctionDecl_t> FunctionMap_t;
+			typedef STD::UnorderedMap<Id_t, FunctionDecl_t> FunctionMap_t;
 			typedef Event<ID, FUNCDECL, INTEGRATOR> EventType_t;
 
 			void Remove(Id_t id) override;

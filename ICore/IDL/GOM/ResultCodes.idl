@@ -20,3 +20,5 @@ failure RegistryError ("Core", "Registry error");
 failure NotRunning ("Core", "Not running");
 failure NotFound ("Core", "Not found");
 failure AlreadyLoaded ("Core", "Already loaded");
+failure NotRegistered ("Core", "CID not registered");
+

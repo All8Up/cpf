@@ -1,0 +1,8 @@
+module CPF::Graphics;
+
+enum IndexStripCut : s32
+{
+	eNone = 0,
+	eFFFF,
+	eFFFFFFFF
+}

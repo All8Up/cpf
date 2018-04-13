@@ -14,38 +14,42 @@ namespace CPF
 		{
 		public:
 			//////////////////////////////////////////////////////////////////////////
-			using Row = Vector3<typename TYPE::Lanes_3>;
-			using Element = typename Vector3<TYPE>::LaneType;
+			using LaneType = typename TYPE::LaneType;
+			using Vector2 = Vector2v<typename TYPE::Lanes_2>;
+			using Vector3 = Vector3<typename TYPE::Lanes_3>;
 
 			//////////////////////////////////////////////////////////////////////////
 			Matrix33();
-			explicit Matrix33(Element v0);
-			Matrix33(Row r0, Row r1, Row r2);
+			explicit Matrix33(LaneType v0);
+			Matrix33(Vector3 r0, Vector3 r1, Vector3 r2);
 			Matrix33(
-				Element _00, Element _01, Element _02,
-				Element _10, Element _11, Element _12,
-				Element _20, Element _21, Element _22
+				LaneType _00, LaneType _01, LaneType _02,
+				LaneType _10, LaneType _11, LaneType _12,
+				LaneType _20, LaneType _21, LaneType _22
 				);
 			explicit Matrix33(Quaternion<typename TYPE::Lanes_4> value);
 
 			//////////////////////////////////////////////////////////////////////////
-			Matrix33<TYPE>& CPF_VECTORCALL operator = (const Matrix33<TYPE>& rhs);
+			Matrix33<TYPE>& operator = (const Matrix33<TYPE>& rhs);
 
 			//////////////////////////////////////////////////////////////////////////
-			Row& CPF_VECTORCALL operator [](int idx);
-			const Row& CPF_VECTORCALL operator [](int idx) const;
+			Vector3& operator [](int idx);
+			const Vector3& operator [](int idx) const;
 
 			//////////////////////////////////////////////////////////////////////////
-			static Matrix33<TYPE> CPF_VECTORCALL Identity();
-			static Matrix33<TYPE> CPF_VECTORCALL AxisAngle(Row axis, Element radians);
-			static Matrix33<TYPE> CPF_VECTORCALL RotationX(Element radians);
-			static Matrix33<TYPE> CPF_VECTORCALL RotationY(Element radians);
-			static Matrix33<TYPE> CPF_VECTORCALL RotationZ(Element radians);
-			static Matrix33<TYPE> CPF_VECTORCALL Scale(Element x, Element y);
-			static Matrix33<TYPE> CPF_VECTORCALL Translation(Element x, Element y);
+			static Matrix33<TYPE> Identity();
+			static Matrix33<TYPE> AxisAngle(Vector3 axis, LaneType radians);
+			static Matrix33<TYPE> RotationX(LaneType radians);
+			static Matrix33<TYPE> RotationY(LaneType radians);
+			static Matrix33<TYPE> RotationZ(LaneType radians);
+			static Matrix33<TYPE> Scale(const Vector2& scale) { return Scale(scale.x, scale.y); }
+			static Matrix33<TYPE> Scale(LaneType x, LaneType y);
+			static Matrix33<TYPE> Scale(Vector3& scale) { return Scale(scale.x, scale.y, scale.z); }
+			static Matrix33<TYPE> Scale(LaneType x, LaneType y, LaneType z);
+			static Matrix33<TYPE> Translation(LaneType x, LaneType y);
 
 			//////////////////////////////////////////////////////////////////////////
-			Row mRows[3];
+			Vector3 mRows[3];
 		};
 	}
 }

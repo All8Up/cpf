@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T, typename C = std::less<T>>
-	using Set = std::set<T, C>;
+	namespace STD
+	{
+		template<typename T, typename C = std::less<T>>
+		using Set = std::set<T, C>;
+	}
 }

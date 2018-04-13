@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	using Vector = std::vector<T>;
+	namespace STD
+	{
+		template<typename T>
+		using Vector = std::vector<T>;
+	}
 }

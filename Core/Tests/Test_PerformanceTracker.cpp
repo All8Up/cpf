@@ -5,6 +5,7 @@
 using namespace CPF;
 using namespace Performance;
 
+#if 0
 struct TestListener : TrackerListener
 {
 	void SetInfo(Tick, intmax_t, intmax_t) override
@@ -144,3 +145,4 @@ TEST(PerformanceTracker, CounterCreate)
 	}
 	Shutdown();
 }
+#endif

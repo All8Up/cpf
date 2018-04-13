@@ -5,6 +5,9 @@
 
 namespace CPF
 {
-	template <typename TYPE>
-	using BitSet = std::bitset<TYPE>;
+	namespace STD
+	{
+		template <typename TYPE>
+		using BitSet = std::bitset<TYPE>;
+	}
 }

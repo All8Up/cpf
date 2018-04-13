@@ -4,12 +4,12 @@
 
 namespace CPF
 {
-	namespace Std
+	namespace STD
 	{
 		class Utf8String;
 	}
 	namespace IO
 	{
-		CPF_EXPORT bool Glob(const Std::Utf8String& pattern, const Std::Utf8String& value);
+		CPF_EXPORT bool Glob(const STD::Utf8String& pattern, const STD::Utf8String& value);
 	}
 }

@@ -1,8 +1,9 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Math/Vector3v.hpp"
-#include "Math/Matrix44v.hpp"
-#include "Math/Quaternion.hpp"
+#include "CPF/Math/Vector3v.hpp"
+#include "CPF/Math/Matrix33v.hpp"
+#include "CPF/Math/Matrix44v.hpp"
+#include "CPF/Math/Quaternion.hpp"
 
 namespace CPF
 {
@@ -17,6 +18,10 @@ namespace CPF
 				Quaternionfv = Quaternionfv::Identity(),
 				Vector3fv = Vector3fv(1.0),
 				Vector3fv = Vector3fv(0.0)
+			);
+			Transform(
+				const Matrix33fv& orientScale,
+				const Vector3fv& translation
 			);
 			Transform(const Transform& rhs);
 
@@ -35,11 +40,10 @@ namespace CPF
 
 		private:
 			// Implementation data.
-			Quaternionfv mOrientation;
-			Vector3fv mScale;
+			Matrix33fv mOrientScale;
 			Vector3fv mTranslation;
 		};
 	}
 }
 
-#include "Math/Detail/Transform.inl"
+#include "CPF/Math/Detail/Transform.inl"

@@ -9,14 +9,14 @@
 class IOTestFixture : public testing::Test
 {
 public:
-	CPF::Vector<CPF::String> mTestPaths;
-	CPF::Vector<CPF::String> mNormPaths;
-	CPF::Vector<CPF::WString> mWTestPaths;
-	CPF::Vector<CPF::WString> mWNormPaths;
+	CPF::STD::Vector<CPF::STD::String> mTestPaths;
+	CPF::STD::Vector<CPF::STD::String> mNormPaths;
+	CPF::STD::Vector<CPF::STD::WString> mWTestPaths;
+	CPF::STD::Vector<CPF::STD::WString> mWNormPaths;
 
 	virtual void SetUp() override
 	{
-		CPF::String paths[] =
+		CPF::STD::String paths[] =
 		{
 			"test/path/",						// A standard non-rooted path.
 			"c:\\test\\path\\",					// Window's style rooted path.
@@ -44,16 +44,16 @@ public:
 		};
 		for (const auto& path : mNormPaths)
 		{
-			CPF::WString wpath;
-			CPF::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
+			CPF::STD::WString wpath;
+			CPF::STD::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
 			mWNormPaths.push_back(wpath);
 		}
 
 		for (const auto& path : paths)
 		{
 			mTestPaths.push_back(path);
-			CPF::WString wpath;
-			CPF::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
+			CPF::STD::WString wpath;
+			CPF::STD::ForEach(path.begin(), path.end(), [&](const char c) { wpath.push_back(wchar_t(c)); });
 			mWTestPaths.push_back(wpath);
 		}
 	}

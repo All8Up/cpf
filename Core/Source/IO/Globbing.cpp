@@ -4,14 +4,14 @@
 using namespace CPF;
 using namespace IO;
 
-CPF_EXPORT bool IO::Glob(const Std::Utf8String& pattern, const Std::Utf8String& value)
+CPF_EXPORT bool IO::Glob(const STD::Utf8String& pattern, const STD::Utf8String& value)
 {
 	if (pattern.empty() || value.empty())
 		return false;
 
-	Std::Utf8String::const_iterator inString = value.begin();
-	Std::Utf8String::const_iterator inPattern = pattern.begin();
-	Std::Utf8String::const_iterator current = value.end();
+	STD::Utf8String::const_iterator inString = value.begin();
+	STD::Utf8String::const_iterator inPattern = pattern.begin();
+	STD::Utf8String::const_iterator current = value.end();
 
 	while ((inString!=value.end()) && (inPattern == pattern.end() || *inPattern != uint32_t('*')))
 	{
@@ -21,7 +21,7 @@ CPF_EXPORT bool IO::Glob(const Std::Utf8String& pattern, const Std::Utf8String& 
 		++inString;
 	}
 
-	Std::Utf8String::const_iterator mp;
+	STD::Utf8String::const_iterator mp;
 	while (inString != value.end())
 	{
 		if (inPattern != pattern.end() && *inPattern == uint32_t('*'))

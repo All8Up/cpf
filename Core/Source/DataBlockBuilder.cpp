@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #include "CPF/DataBlockBuilder.hpp"
-#include "CPF/Std/Memory.hpp"
+#include "CPF/CSTD/Memory.hpp"
 
 using namespace CPF;
 
@@ -15,16 +15,16 @@ bool DataBlockBuilder::AddSection(SectionID id, const void* data, size_t size)
 	const auto it = mSectionMap.find(id);
 	if (it != mSectionMap.end())
 		return false;
-	mSectionMap.insert({ id, Vector<uint8_t>(reinterpret_cast<const uint8_t*>(data), reinterpret_cast<const uint8_t*>(data) + size) });
+	mSectionMap.insert({ id, STD::Vector<uint8_t>(reinterpret_cast<const uint8_t*>(data), reinterpret_cast<const uint8_t*>(data) + size) });
 	return true;
 }
 
-Option<const Vector<uint8_t>*> DataBlockBuilder::GetSection(SectionID id) const
+Option<const STD::Vector<uint8_t>*> DataBlockBuilder::GetSection(SectionID id) const
 {
 	const auto it = mSectionMap.find(id);
 	if (it == mSectionMap.end())
-		return Option<const Vector<uint8_t>*>::None();
-	return Option<const Vector<uint8_t>*>::Some(&it->second);
+		return Option<const STD::Vector<uint8_t>*>::None();
+	return Option<const STD::Vector<uint8_t>*>::Some(&it->second);
 }
 
 size_t DataBlockBuilder::GetTotalSize() const
@@ -71,7 +71,7 @@ DataBlock* DataBlockBuilder::Store(void* buffer, size_t size) const
 			header[i++] = { section.first, offset, section.second.size() };
 
 			// Store the section data.
-			Std::MemCpy(sectionPtr, section.second.data(), section.second.size());
+			CSTD::MemCpy(sectionPtr, section.second.data(), section.second.size());
 
 			// Move to the next section.
 			sectionPtr += section.second.size();

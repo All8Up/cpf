@@ -13,9 +13,9 @@ namespace CPF
 			~BinaryReader();
 
 			int64_t Read(bool&) const;
-			int64_t Read(String&) const;
-			int64_t Read(WString&) const;
-			int64_t Read(Std::Utf8String&) const;
+			int64_t Read(STD::String&) const;
+			int64_t Read(STD::WString&) const;
+			int64_t Read(STD::Utf8String&) const;
 
 			int64_t Read(char&) const;
 			int64_t Read(wchar_t&) const;

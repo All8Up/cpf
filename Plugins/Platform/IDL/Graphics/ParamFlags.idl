@@ -1,0 +1,10 @@
+import EnumFlagType from CPF;
+
+module CPF::Graphics;
+
+flags ParamFlags : s32
+{
+	eVolatile = 0x02,
+	eStaticWhileSet = 0x04,
+	eStatic = 0x08
+};

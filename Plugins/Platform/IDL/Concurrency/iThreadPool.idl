@@ -1,0 +1,20 @@
+import iScheduler from CPF::Platform::Concurrency;
+import iRegistry from CPF::Plugin;
+
+module CPF::Concurrency;
+
+interface iThreadPool : GOM::iUnknown
+{
+	const class_id kCID("CPF::Concurrency::iThreadPool");
+
+	result Initialize(Plugin::iRegistry* registry, s32 threadCount);
+	void Shutdown();
+
+	void Enqueue(WorkFunction func, void* context);
+
+	s32 GetAvailableThreads();
+	void SetActiveThreads(s32 count);
+	s32 GetActiveThreads();
+
+	iScheduler* GetScheduler();
+}

@@ -38,8 +38,8 @@ namespace CPF
 			Group(const Group&) = delete;
 			const Group& operator =(const Group&) = delete;
 
-			void _Start(size_t index, Function<void()>);
-			void _Start(Function<void()>);
+			void _Start(size_t index, STD::Function<void()>);
+			void _Start(STD::Function<void()>);
 
 			size_t mCount;
 			Thread* mpThreads;
@@ -49,14 +49,14 @@ namespace CPF
 		template<typename tFunction>
 		void Thread::Group::operator ()(tFunction&& func)
 		{
-			_Start(Move(func));
+			_Start(STD::Move(func));
 		};
 
 
 		template<typename tFunction>
 		void Thread::Group::operator ()(size_t index, tFunction&& func)
 		{
-			_Start(index, Move(func));
+			_Start(index, STD::Move(func));
 		};
 
 		inline Thread::Group::Group()
@@ -139,19 +139,19 @@ namespace CPF
 		}
 
 
-		inline void Thread::Group::_Start(size_t index, Function<void(void)> func)
+		inline void Thread::Group::_Start(size_t index, STD::Function<void(void)> func)
 		{
 			CPF_ASSERT(mpThreads != nullptr && mCount > index);
-			mpThreads[index] = Move(Thread(func));
+			mpThreads[index] = STD::Move(Thread(func));
 		}
 
 
-		inline void Thread::Group::_Start(Function<void()> start)
+		inline void Thread::Group::_Start(STD::Function<void()> start)
 		{
 			for (auto i = 0; i < mCount; ++i)
 			{
-				Function<void()>  startCopy = start;
-				mpThreads[i] = Move(Thread(startCopy));
+				STD::Function<void()>  startCopy = start;
+				mpThreads[i] = STD::Move(Thread(startCopy));
 			}
 		}
 	}

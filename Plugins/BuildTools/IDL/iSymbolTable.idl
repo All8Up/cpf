@@ -1,0 +1,31 @@
+import iUnknown from CPF::GOM;
+
+module CPF;
+
+enum CID : u64 { eInvalid = 0 }
+enum IID : u64 { eInvalid = 0 }
+
+enum SymbolType : u64 { eInvalid }
+enum ScopeType : u64 { eInvalid }
+
+struct SymbolDesc
+{
+	SymbolType mType;
+	const char* mName;
+}
+
+enum SymbolID : u64 { eInvalid }
+
+interface iSymbolTable : GOM::iUnknown
+{
+	const class_id kCID("CPF::iSymbolTable");
+
+	result EnterScope(ScopeType scopeType, const char* name);
+	result LeaveScope();
+
+	const char* GetScope() const;
+	SymbolID AddSymbol(const SymbolDesc* desc);
+
+	SymbolID FindSymbol(const char* name);
+	result GetSymbolDesc(SymbolID id, SymbolDesc* outDesc) const;
+}

@@ -1,0 +1,20 @@
+import iUnknown from CPF::GOM;
+
+module CPF;
+
+failure ParseFailure("IDL Parser", "Parser failure.");
+
+enum OutputLanguage : s32;
+
+interface iIDLParser : GOM::iUnknown
+{
+	const class_id kCID("CPF::iIDLParser");
+
+	@brief "Output the result of the idl
+	in the given language."
+	@param language "The output language. @see OutputLanguage"
+	@param name "The input IDL file."
+	@param outName "The resulting output file."
+	@result "GOM::Result for success or failure."
+	result Generate(OutputLanguage language, const char* name, const char* outName);
+}

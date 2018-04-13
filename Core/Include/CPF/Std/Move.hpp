@@ -7,9 +7,12 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	typename std::remove_reference<T>::type&& Move(T&& v)
+	namespace STD
 	{
-		return std::move(v);
+		template<typename T>
+		typename std::remove_reference<T>::type&& Move(T&& v)
+		{
+			return std::move(v);
+		}
 	}
 }

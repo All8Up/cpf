@@ -13,13 +13,3 @@ TEST(Outcome, BasicNonVoidError)
 	EXPECT_EQ(1, t0.GetOK());
 	EXPECT_EQ(2, t1.GetError());
 }
-
-TEST(Outcome, BasicVoidError)
-{
-	using OptionInt = Outcome<int>;
-	auto t0 = OptionInt::OK(1);
-	auto t1 = OptionInt::Error();
-	
-	EXPECT_EQ(1, t0.GetOK());
-	EXPECT_TRUE(t1.IsError());
-}

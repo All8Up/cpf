@@ -1,0 +1,12 @@
+import WindowFlags from CPF::Platform::Desktop;
+module CPF::Platform::Desktop;
+
+struct WindowDesc
+{
+	const char* mpTitle;
+	s32 mX;
+	s32 mY;
+	s32 mWidth;
+	s32 mHeight;
+	WindowFlags mFlags;
+};

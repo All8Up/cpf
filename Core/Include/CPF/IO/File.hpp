@@ -12,8 +12,8 @@ namespace CPF
 	{
 		namespace File
 		{
-			CPF_EXPORT bool Exists(const Std::Utf8String& name);
-			CPF_EXPORT bool Delete(const Std::Utf8String& name);
+			CPF_EXPORT bool Exists(const STD::Utf8String& name);
+			CPF_EXPORT bool Delete(const STD::Utf8String& name);
 			/*
 			CPF_EXPORT bool Move(const String& src, const String& dst);
 			CPF_EXPORT bool Move(const WString& src, const WString& dst);
@@ -25,9 +25,9 @@ namespace CPF
 			CPF_EXPORT uint32_t GetAttributes(const WString& name);
 			 */
 
-			CPF_EXPORT Outcome<Stream*, Error> Create(const Std::Utf8String& name, Access access);
+			CPF_EXPORT Outcome<Stream*, Error> Create(const STD::Utf8String& name, Access access);
 
-			Std::Utf8String CPF_EXPORT GetExecutableFilePath();
+			STD::Utf8String CPF_EXPORT GetExecutableFilePath();
 		}
 	}
 }

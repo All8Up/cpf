@@ -2,6 +2,7 @@
 #include "CPF/Std/HandleProvider.hpp"
 
 using namespace CPF;
+using namespace STD;
 
 TEST(HandleProvider, BasicConstruction)
 {

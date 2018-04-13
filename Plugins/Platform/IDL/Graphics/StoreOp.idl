@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+enum StoreOp : s32
+{
+	eStore,
+	eDontCare
+};

@@ -1,0 +1,46 @@
+import iEventEmitter from CPF::GOM;
+import WindowDesc from CPF::Platform::Desktop;
+
+module CPF::Platform::Desktop;
+
+enum MouseButton : s32;
+enum ScanCode : s32;
+struct OSWindowData;
+
+const s32 DesktopCentered = 0x8FFF0000;
+
+interface iWindow : GOM::iEventEmitter
+{
+	const class_id kCID("CPF::Platform::iWindow");
+
+	void SetTitle(const char* title);
+	void SetPosition(s32 x, s32 y);
+	void GetPosition(s32* x, s32* y);
+	void SetSize(s32 x, s32 y);
+	void GetSize(s32* x, s32* y);
+	void Minimize();
+	void Maximize();
+	void Restore();
+	void GetClientArea(s32* x, s32* y);
+	result GetOSData(OSWindowData* data);
+
+	event MouseMove(s32 x, s32 y);
+	event MouseButtonDown(s32 x, s32 y, MouseButton button);
+	event MouseButtonUp(s32 x, s32 y, MouseButton button);
+	event MouseWheel(s32 x, s32 y);
+	event KeyDown(ScanCode scanCode);
+	event KeyUp(ScanCode scanCode);
+	event Close();
+	event Shown();
+	event Hidden();
+	event Exposed();
+	event Moved(s32 x, s32 y);
+	event Resized(s32 x, s32 y);
+	event Minimized();
+	event Maximized();
+	event Restored();
+	event Enter();
+	event Leave();
+	event Focused();
+	event Unfocused();
+}

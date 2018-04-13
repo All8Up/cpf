@@ -1,0 +1,10 @@
+module CPF::Graphics;
+
+enum BlendOp : s32
+{
+	eAdd = 1,
+	eSubtract,
+	eReverseSubtract,
+	eMin,
+	eMax
+}

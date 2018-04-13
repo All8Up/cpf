@@ -1,0 +1,17 @@
+{
+  "Mounts": [
+    {
+      "VolumeType": "FileSystem",
+      "MountPoint": "test_data",
+      "Descriptor": {
+        "Directory": "./examples_resourcesapp/test_data"
+      }
+    }
+  ],
+  "Caches": [
+    {
+      "CacheType": "Default",
+      "Name": "default"
+    }
+  ]
+}

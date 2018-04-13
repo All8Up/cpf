@@ -7,8 +7,6 @@
 
 namespace CPF
 {
-	class DataBlock;
-
 	class CPF_EXPORT DataBlockBuilder
 	{
 	public:
@@ -16,7 +14,7 @@ namespace CPF
 		~DataBlockBuilder();
 
 		bool AddSection(SectionID id, const void* data, size_t size);
-		Option<const Vector<uint8_t>*> GetSection(SectionID id) const;
+		Option<const STD::Vector<uint8_t>*> GetSection(SectionID id) const;
 
 		size_t GetTotalSize() const;
 		DataBlock* Create() const;
@@ -25,7 +23,7 @@ namespace CPF
 	private:
 		size_t _HeaderSize() const;
 
-		using SectionMap = Map<SectionID, Vector<uint8_t>>;
+		using SectionMap = STD::Map<SectionID, STD::Vector<uint8_t>>;
 		CPF_DLL_SAFE_BEGIN;
 		SectionMap mSectionMap;
 		CPF_DLL_SAFE_END;

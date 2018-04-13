@@ -1,0 +1,21 @@
+import Format from CPF::Platform::Graphics;
+import LoadOp from CPF::Platform::Graphics;
+import StoreOp from CPF::Platform::Graphics;
+import SampleDesc from CPF::Platform::Graphics;
+import ResourceState from CPF::Platform::Graphics;
+import AttachmentRef from CPF::Platform::Graphics;
+
+module CPF::Graphics;
+
+struct AttachmentDesc
+{
+	s32 mFlags; // TODO:
+	Format mFormat;
+	SampleDesc mSamples;
+	LoadOp mLoadOp;
+	StoreOp mStoreOp;
+	LoadOp mStencilLoadOp;
+	StoreOp mStencilStoreOp;
+	ResourceState mStartState;
+	ResourceState mFinalState;
+}

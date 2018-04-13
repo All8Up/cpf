@@ -1,0 +1,14 @@
+import iUnknown from CPF::GOM;
+import Outcome from CPF;
+
+module CPF::ResourceSystem;
+
+interface iLocator;
+
+interface iConfiguration : GOM::iUnknown
+{
+	const class_id kCID("CPF::ResourceSystem::iConfiguration");
+
+	result Load(const char* configFile);
+	outcome<iLocator*, result> GetLocator();
+}

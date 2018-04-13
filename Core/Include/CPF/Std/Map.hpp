@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename K, typename V>
-	using Map = std::map<K, V>;
+	namespace STD
+	{
+		template<typename K, typename V>
+		using Map = std::map<K, V>;
+	}
 }

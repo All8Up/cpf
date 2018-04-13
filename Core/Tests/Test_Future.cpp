@@ -37,7 +37,7 @@ TEST(Future, BasicThreading)
 			Threading::Thread::Sleep(Time::Seconds(1.0f));
 			p.SetResult(5);
 		},
-		Move(promise)
+		STD::Move(promise)
 	);
 
 	auto testValue = future.Get();
@@ -64,7 +64,7 @@ Future<int64_t, IOError> Write(const void* inBuffer, int64_t length);
 // Read an entire file into a buffer.
 {
 	IntrusivePtr<Stream> stream;
-	Vector<uint8_t> buffer;
+	STD::Vector<uint8_t> buffer;
 	auto test = File::Create(filename, Stream::Access::eRead)
 		.Then([&](Future<IntrusivePtr<Stream>, IOError>&& result) {
 			if (result.IsOK())

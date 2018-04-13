@@ -1,0 +1,8 @@
+module CPF::Graphics;
+
+enum CullMode : s32
+{
+	eNone = 1,
+	eFront = 2,
+	eBack = 3
+};

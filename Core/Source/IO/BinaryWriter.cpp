@@ -20,7 +20,7 @@ int64_t BinaryWriter::Write(bool& b) const
 	return result.GetOK();
 }
 
-int64_t BinaryWriter::Write(String& s) const
+int64_t BinaryWriter::Write(STD::String& s) const
 {
 	// Serialize the size.
 	uint32_t size = uint32_t(s.size());
@@ -33,7 +33,7 @@ int64_t BinaryWriter::Write(String& s) const
 	return size + 4;
 }
 
-int64_t BinaryWriter::Write(WString& s) const
+int64_t BinaryWriter::Write(STD::WString& s) const
 {
 	// Serialize the size.
 	uint32_t size = uint32_t(s.size());
@@ -46,7 +46,7 @@ int64_t BinaryWriter::Write(WString& s) const
 	return size + 4;
 }
 
-int64_t BinaryWriter::Write(Std::Utf8String& s) const
+int64_t BinaryWriter::Write(STD::Utf8String& s) const
 {
 	uint32_t size = uint32_t(s.data().size());
 	Write(size);

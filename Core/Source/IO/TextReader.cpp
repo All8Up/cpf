@@ -25,7 +25,7 @@ Stream* TextReader::GetStream() const
 	return mpStream;
 }
 
-int64_t TextReader::ReadLine(String& out)
+int64_t TextReader::ReadLine(STD::String& out)
 {
 	int64_t result = 0;
 	uint8_t current;
@@ -48,7 +48,7 @@ int64_t TextReader::ReadLine(String& out)
 	return result;
 }
 
-int64_t TextReader::ReadAll(String& out)
+int64_t TextReader::ReadAll(STD::String& out)
 {
 	int64_t result = 0;
 	out.clear();

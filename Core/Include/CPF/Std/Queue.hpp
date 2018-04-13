@@ -7,6 +7,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	using Queue = std::queue<T>;
+	namespace STD
+	{
+		template<typename T>
+		using Queue = std::queue<T>;
+	}
 }

@@ -36,3 +36,7 @@ add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Application")
 if (CPF_BUILD_EXAMPLES)
 	add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Examples")
 endif ()
+
+if (CPF_BUILD_KPI)
+	add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/KPI")
+endif ()

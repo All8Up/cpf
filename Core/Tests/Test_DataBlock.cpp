@@ -9,10 +9,10 @@ using namespace CPF;
 TEST(DataBlock, Basics)
 {
 	DataBlockBuilder builder;
-	auto d0 = Vector<uint8_t>{ 1, 2, 3, 4, 5 };
+	auto d0 = STD::Vector<uint8_t>{ 1, 2, 3, 4, 5 };
 	builder.AddSection(SectionID(1), d0.data(), d0.size()*sizeof(uint8_t));
 
-	auto d1 = Vector<uint64_t>{ 5, 4, 3, 2, 1 };
+	auto d1 = STD::Vector<uint64_t>{ 5, 4, 3, 2, 1 };
 	builder.AddSection(SectionID(2), d1.data(), d1.size() * sizeof(uint64_t));
 
 	DataBlock* t0(builder.Create());

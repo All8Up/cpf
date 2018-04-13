@@ -2,23 +2,23 @@
 #include "CPF/IO/Directory.hpp"
 #include "CPF/IO/Path.hpp"
 #include "CPF/Std/Move.hpp"
-#include "CPF/Std/Memory.hpp"
+#include "CPF/CSTD/Memory.hpp"
 
 
 using namespace CPF;
 using namespace IO;
 
-CPF_EXPORT void Directory::SetWorkingDirectory(const Std::Utf8String& dir)
+CPF_EXPORT void Directory::SetWorkingDirectory(const STD::Utf8String& dir)
 {
-	WString wstr;
+	STD::WString wstr;
 	ConvertUtf8To16(dir, wstr);
 	::SetCurrentDirectoryW(wstr.c_str());
 }
 
 
-CPF_EXPORT Std::Utf8String Directory::GetWorkingDirectory()
+CPF_EXPORT STD::Utf8String Directory::GetWorkingDirectory()
 {
-	String result;
+	STD::String result;
 	auto required = ::GetCurrentDirectoryA(0, nullptr);
 	result.resize(required, ' ');
 	::GetCurrentDirectoryA(DWORD(result.size()), &result[0]);
@@ -27,7 +27,7 @@ CPF_EXPORT Std::Utf8String Directory::GetWorkingDirectory()
 }
 
 
-CPF_EXPORT bool Directory::OsExists(const Std::Utf8String& dir)
+CPF_EXPORT bool Directory::OsExists(const STD::Utf8String& dir)
 {
 	DWORD ftype = GetFileAttributesA(dir.data().c_str());
 	if (ftype == INVALID_FILE_ATTRIBUTES)
@@ -38,17 +38,43 @@ CPF_EXPORT bool Directory::OsExists(const Std::Utf8String& dir)
 }
 
 
-CPF_EXPORT bool Directory::OsCreate(const Std::Utf8String& dir)
+CPF_EXPORT bool Directory::OsCreate(const STD::Utf8String& dir)
 {
 	return ::CreateDirectoryA(dir.data().c_str(), nullptr)!=0;
 }
 
 
-CPF_EXPORT bool Directory::OsDelete(const Std::Utf8String& dir)
+CPF_EXPORT bool Directory::OsDelete(const STD::Utf8String& dir)
 {
 	return ::RemoveDirectoryA(dir.data().c_str())!=0;
 }
 
+CPF_EXPORT Option<char*> Directory::OsGetError()
+{
+	const DWORD errorValue = GetLastError();
+	if (errorValue!=0)
+	{
+		LPSTR buffer = nullptr;
+		FormatMessageA(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER |
+			FORMAT_MESSAGE_FROM_SYSTEM |
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			nullptr,
+			errorValue,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			reinterpret_cast<LPTSTR>(&buffer),
+			0,
+			nullptr
+		);
+		return Option<char*>::Some(buffer);
+	}
+	return Option<char*>::None();
+}
+
+CPF_EXPORT void Directory::OsFreeError(char* errorString)
+{
+	LocalFree(errorString);
+}
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,7 +83,7 @@ struct Directory::Entries::OsIterator
 	OsIterator()
 		: mFind(INVALID_HANDLE_VALUE)
 	{
-		Std::MemSet(&mFindData, 0, sizeof(mFindData));
+		CSTD::MemSet(&mFindData, 0, sizeof(mFindData));
 	}
 	~OsIterator()
 	{
@@ -65,12 +91,12 @@ struct Directory::Entries::OsIterator
 			::FindClose(mFind);
 	}
 
-	bool Init(const String& path, Predicate&& pred)
+	bool Init(const STD::String& path, Predicate&& pred)
 	{
-		Std::Utf8String searchPath = Path::Combine(Path::ToOS(Path::Normalize(path)), "*");
-		mPredicate = Move(pred);
+		STD::Utf8String searchPath = Path::Combine(Path::ToOS(Path::Normalize(path)), "*");
+		mPredicate = STD::Move(pred);
 		
-		WString searchString;
+		STD::WString searchString;
 		ConvertUtf8To16(searchPath, searchString);
 
 		mFind = ::FindFirstFileW(searchString.c_str(), &mFindData);
@@ -97,7 +123,7 @@ struct Directory::Entries::OsIterator
 	{
 		DirEntry result;
 
-		result.mName = Std::Utf8String(mFindData.cFileName);
+		result.mName = STD::Utf8String(mFindData.cFileName);
 		result.mAttributes = Attributes::eNone;
 		if (mFindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			result.mAttributes |= Attributes::eDirectory;
@@ -120,12 +146,12 @@ Directory::Entries::Iterator::Iterator()
 {
 }
 
-Directory::Entries::Iterator::Iterator(const Std::Utf8String& path, Predicate&& pred)
+Directory::Entries::Iterator::Iterator(const STD::Utf8String& path, Predicate&& pred)
 	: mpIterator(new OsIterator)
 {
 	if (mpIterator)
 	{
-		if (!mpIterator->Init(path.data(), Move(pred)))
+		if (!mpIterator->Init(path.data(), STD::Move(pred)))
 		{
 			delete mpIterator;
 			mpIterator = nullptr;
@@ -175,19 +201,19 @@ Directory::DirEntry Directory::Entries::Iterator::operator *() const
 
 
 //////////////////////////////////////////////////////////////////////////
-Directory::Entries::Entries(const Std::Utf8String& path)
+Directory::Entries::Entries(const STD::Utf8String& path)
 	: mPath(path.data())
 	, mPredicate([](const DirEntry&) { return true; })
 {}
 
-Directory::Entries::Entries(const Std::Utf8String& path, Predicate&& pred)
+Directory::Entries::Entries(const STD::Utf8String& path, Predicate&& pred)
 	: mPath(path.data())
-	, mPredicate(Move(pred))
+	, mPredicate(STD::Move(pred))
 {}
 
 Directory::Entries::Iterator Directory::Entries::begin()
 {
-	return Iterator(mPath, Move(mPredicate));
+	return Iterator(mPath, STD::Move(mPredicate));
 }
 
 Directory::Entries::Iterator Directory::Entries::end()
@@ -197,12 +223,12 @@ Directory::Entries::Iterator Directory::Entries::end()
 
 
 //////////////////////////////////////////////////////////////////////////
-Directory::Files::Files(const Std::Utf8String& path)
+Directory::Files::Files(const STD::Utf8String& path)
 	: Entries(path, [](const DirEntry& entry) { return IsSet(entry.mAttributes, Attributes::eFile); })
 {}
 
 
-Directory::Files::Files(const Std::Utf8String& path, Predicate&& pred)
+Directory::Files::Files(const STD::Utf8String& path, Predicate&& pred)
 	: Entries(path, [=](const DirEntry& entry)
 	{
 		if (IsSet(entry.mAttributes, Attributes::eFile))
@@ -215,10 +241,10 @@ Directory::Files::Files(const Std::Utf8String& path, Predicate&& pred)
 }
 
 //////////////////////////////////////////////////////////////////////////
-Directory::Directories::Directories(const Std::Utf8String& path)
+Directory::Directories::Directories(const STD::Utf8String& path)
 	: Entries(path, [](const DirEntry& entry) {return IsSet(entry.mAttributes, Attributes::eDirectory); })
 {}
 
-Directory::Directories::Directories(const Std::Utf8String& path, Predicate&& pred)
+Directory::Directories::Directories(const STD::Utf8String& path, Predicate&& pred)
 	: Entries(path, [=](const DirEntry& entry) {if (IsSet(entry.mAttributes, Attributes::eDirectory)) { return pred(entry); } return false; })
 {}

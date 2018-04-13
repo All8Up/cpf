@@ -1,0 +1,10 @@
+import EnumFlagType from CPF;
+
+module CPF;
+
+flags OutputLanguage : s32
+{
+	eCPP,
+	eRust,
+	eCSharp
+}

@@ -1,0 +1,11 @@
+module CPF::Graphics;
+
+enum ShaderType : s32
+{
+	eVertex,
+	ePixel,
+	eCompute,
+	eDomain,
+	eGeometry,
+	eHull
+};

@@ -1,0 +1,10 @@
+module CPF::Concurrency;
+
+struct iScheduler;
+
+struct WorkContext
+{
+	iScheduler* mpScheduler;
+	s32 mThreadID;
+	void* mpUserData;
+}

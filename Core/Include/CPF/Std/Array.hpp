@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T, size_t SIZE>
-	using Array = std::array<T, SIZE>;
+	namespace STD
+	{
+		template<typename T, size_t SIZE>
+		using Array = std::array<T, SIZE>;
+	}
 }

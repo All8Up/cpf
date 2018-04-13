@@ -57,7 +57,7 @@ namespace CPF
 		case Type::eNotSet:
 			break;
 		case Type::eSome:
-			mSome = Move(rhs.mSome);
+			mSome = STD::Move(rhs.mSome);
 			break;
 		case Type::eNone:
 			break;
@@ -74,7 +74,7 @@ namespace CPF
 	{
 		Option result;
 		result.mType = Type::eSome;
-		result.mSome = Move(some);
+		result.mSome = STD::Move(some);
 		return result;
 	}
 
@@ -128,7 +128,7 @@ namespace CPF
 	{
 		if (mType == Type::eSome)
 		{
-			some = Move(mSome);
+			some = STD::Move(mSome);
 			return true;
 		}
 		return false;
@@ -139,7 +139,7 @@ namespace CPF
 	{
 		if (mType == Type::eSome)
 		{
-			*some = Move(mSome);
+			*some = STD::Move(mSome);
 			return true;
 		}
 		return false;
@@ -208,7 +208,7 @@ namespace CPF
 		case Type::eNotSet:
 			break;
 		case Type::eSome:
-			mSome = Move(rhs.mSome);
+			mSome = STD::Move(rhs.mSome);
 			break;
 		case Type::eNone:
 			break;
@@ -225,7 +225,7 @@ namespace CPF
 	{
 		Option result;
 		result.mType = Type::eSome;
-		result.mSome = Move(some);
+		result.mSome = STD::Move(some);
 		return result;
 	}
 
@@ -241,7 +241,7 @@ namespace CPF
 	Option<SOME_TYPE*>& Option<SOME_TYPE*>::operator = (Option&& rhs) noexcept
 	{
 		mType = rhs.mType;
-		mType = Move(rhs.mSome);
+		mType = STD::Move(rhs.mSome);
 		rhs.mType = Type::eNotSet;
 		return *this;
 	}
@@ -270,7 +270,7 @@ namespace CPF
 	{
 		if (mType == Type::eSome)
 		{
-			*some = Move(mSome);
+			*some = STD::Move(mSome);
 			return true;
 		}
 		return false;

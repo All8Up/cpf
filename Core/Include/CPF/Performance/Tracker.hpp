@@ -151,7 +151,7 @@ namespace CPF
 			CounterType mType = CounterType::eFrameZeroed;
 			std::atomic<int64_t> mValue;
 			const char* mpName = nullptr;
-			Vector<int64_t> mHistory;
+			STD::Vector<int64_t> mHistory;
 			size_t mHistoryIndex = 0;
 			int64_t mAccumulator = 0;
 			int64_t mAverage = 0;

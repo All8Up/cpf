@@ -1,5 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
+#include "CPF/Std/Pair.hpp"
 #include "CPF/Std/HandleProvider.hpp"
 
 namespace CPF

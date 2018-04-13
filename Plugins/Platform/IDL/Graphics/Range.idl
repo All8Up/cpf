@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+struct Range
+{
+	size_t mStart;
+	size_t mEnd;
+}

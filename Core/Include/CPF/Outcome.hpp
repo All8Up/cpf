@@ -28,6 +28,8 @@ namespace CPF
 		bool CheckOK(OK_TYPE& ok) const;
 		bool CheckOK(OK_TYPE* ok) const;
 
+		OK_TYPE TryOK() const { if (mType == Type::eOK) return mData.mOK; return nullptr; }
+
 		ERROR_TYPE& GetError();
 		const ERROR_TYPE& GetError() const;
 		bool CheckError(ERROR_TYPE& error) const;
@@ -71,10 +73,10 @@ namespace CPF
 		case Type::eNotSet:
 			break;
 		case Type::eOK:
-			new (&mData.mOK) OK_TYPE(Move(rhs.mData.mOK));
+			new (&mData.mOK) OK_TYPE(STD::Move(rhs.mData.mOK));
 			break;
 		case Type::eError:
-			new (&mData.mError) ERROR_TYPE(Move(rhs.mData.mError));
+			new (&mData.mError) ERROR_TYPE(STD::Move(rhs.mData.mError));
 			break;
 		}
 	}
@@ -109,7 +111,7 @@ namespace CPF
 	{
 		Outcome result;
 		result.mType = Type::eOK;
-		new (&result.mData.mOK) OK_TYPE(Move(ok));
+		new (&result.mData.mOK) OK_TYPE(STD::Move(ok));
 		return result;
 	}
 
@@ -127,7 +129,7 @@ namespace CPF
 	{
 		Outcome result;
 		result.mType = Type::eError;
-		new (&result.mData.mError) ERROR_TYPE(Move(error));
+		new (&result.mData.mError) ERROR_TYPE(STD::Move(error));
 		return result;
 	}
 
@@ -141,10 +143,10 @@ namespace CPF
 		case Type::eNotSet:
 			break;
 		case Type::eOK:
-			new (&mData.mOK) OK_TYPE(Move(rhs.mData.mOK));
+			new (&mData.mOK) OK_TYPE(STD::Move(rhs.mData.mOK));
 			break;
 		case Type::eError:
-			new (&mData.mError) OK_TYPE(Move(rhs.mData.mError));
+			new (&mData.mError) OK_TYPE(STD::Move(rhs.mData.mError));
 			break;
 		}
 		return *this;
@@ -174,7 +176,7 @@ namespace CPF
 	{
 		if (mType == Type::eOK)
 		{
-			ok = Move(mData.mOK);
+			ok = STD::Move(mData.mOK);
 			return true;
 		}
 		return false;
@@ -185,7 +187,7 @@ namespace CPF
 	{
 		if (mType == Type::eOK)
 		{
-			*ok = Move(mData.mOK);
+			*ok = STD::Move(mData.mOK);
 			return true;
 		}
 		return false;
@@ -210,7 +212,7 @@ namespace CPF
 	{
 		if (mType == Type::mError)
 		{
-			error = Move(mData.mError);
+			error = STD::Move(mData.mError);
 			return true;
 		}
 		return false;
@@ -221,152 +223,5 @@ namespace CPF
 	{
 		CPF_ASSERT(mType == Type::eError);
 		return mData.mError;
-	}
-
-	//////////////////////////////////////////////////////////////////////////
-	template <typename OK_TYPE>
-	class Outcome<OK_TYPE, void>
-	{
-	public:
-		Outcome();
-		Outcome(Outcome&&);
-		~Outcome();
-
-		static Outcome OK(OK_TYPE&&);
-		static Outcome Error();
-
-		Outcome& operator = (Outcome&&);
-
-		bool IsOK() const;
-		bool IsError() const;
-
-		OK_TYPE& GetOK();
-		const OK_TYPE& GetOK() const;
-		bool CheckOK(OK_TYPE& ok);
-
-	private:
-		Outcome(const Outcome&) = delete;
-		Outcome& operator = (const Outcome&) = delete;
-
-		union Data
-		{
-			Data() {}
-			~Data() {}
-
-			OK_TYPE mOK;
-		};
-		enum class Type : int32_t
-		{
-			eNotSet,
-			eOK,
-			eError
-		};
-
-		Data mData;
-		Type mType;
-	};
-	
-	//////////////////////////////////////////////////////////////////////////
-
-	template <typename OK_TYPE>
-	Outcome<OK_TYPE, void>::Outcome()
-		: mType(Type::eNotSet)
-	{}
-
-	template <typename OK_TYPE>
-	Outcome<OK_TYPE, void>::Outcome(Outcome&& rhs)
-		: mType(rhs.mType)
-	{
-		switch (mType)
-		{
-		case Type::eNotSet:
-			break;
-		case Type::eOK:
-			new (&mData.mOK) OK_TYPE(Move(rhs.mData.mOK));
-			break;
-		}
-	}
-
-	template <typename OK_TYPE>
-	Outcome<OK_TYPE, void>::~Outcome()
-	{
-		switch (mType)
-		{
-		case Type::eNotSet:
-			break;
-		case Type::eOK:
-			mData.mOK.~OK_TYPE();
-			break;
-		}
-	}
-
-	template <typename OK_TYPE>
-	Outcome<OK_TYPE, void> Outcome<OK_TYPE, void>::OK(OK_TYPE&& ok)
-	{
-		Outcome result;
-		result.mType = Type::eOK;
-		new (&result.mData.mOK) OK_TYPE(Move(ok));
-		return result;
-	}
-
-	template <typename OK_TYPE>
-	Outcome<OK_TYPE, void> Outcome<OK_TYPE, void>::Error()
-	{
-		Outcome result;
-		result.mType = Type::eError;
-		return result;
-	}
-
-	template <typename OK_TYPE>
-	Outcome<OK_TYPE, void>& Outcome<OK_TYPE, void>::operator = (Outcome&& rhs)
-	{
-		CPF_ASSERT(mType == Type::eNotSet);
-		mType = rhs.mType;
-		switch (mType)
-		{
-		case Type::eNotSet:
-			break;
-		case Type::eOK:
-			new (&mData.mOK) OK_TYPE(Move(rhs.mData.mOK));
-			break;
-		}
-		return *this;
-	}
-
-	template <typename OK_TYPE>
-	bool Outcome<OK_TYPE, void>::IsOK() const
-	{
-		return mType == Type::eOK;
-	}
-
-	template <typename OK_TYPE>
-	bool Outcome<OK_TYPE, void>::IsError() const
-	{
-		return mType == Type::eError;
-	}
-
-	template <typename OK_TYPE>
-	OK_TYPE& Outcome<OK_TYPE, void>::GetOK()
-	{
-		CPF_ASSERT(mType == Type::eOK);
-		return mData.mOK;
-	}
-
-	template <typename OK_TYPE>
-	bool Outcome<OK_TYPE, void>::CheckOK(OK_TYPE& ok)
-	{
-		if (mType == Type::eOK)
-		{
-			ok = Move(mData.mOK);
-			return true;
-		}
-		return false;
-	}
-
-	template <typename OK_TYPE>
-	const OK_TYPE& Outcome<OK_TYPE, void>::GetOK() const
-	{
-		CPF_ASSERT(mType == Type::eOK);
-		return mData.mOK;
 	}
 }

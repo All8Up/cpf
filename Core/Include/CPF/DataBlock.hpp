@@ -17,7 +17,7 @@ namespace CPF
 	 * array of variants stored as flat data representations in
 	 * memory.  This does not directly support arrays of data
 	 * but does retain size information such that the user can
-	 * store arrays of data in each section if desired.
+	 * create a fixed sized element array with simple pointer math.
 	 */
 	class CPF_EXPORT CPF_ALIGN(kDataBlockAlign) DataBlock
 	{
@@ -30,9 +30,12 @@ namespace CPF
 		DataBlock& operator = (DataBlock&&) = delete;
 
 		size_t GetSectionCount() const;
-		Vector<SectionID> GetSections() const;
+		STD::Vector<SectionID> GetSections() const;
 		const void* GetByIndex(size_t index, size_t* size) const;
 		const void* GetSection(SectionID id, size_t* size) const;
+		size_t GetSectionSize(SectionID id) const;
+		template <typename TYPE>
+		const TYPE* GetSection(SectionID id, size_t* size) const { return reinterpret_cast<const TYPE*>(GetSection(id, size)); }
 
 		size_t GetSize() const;
 		const void* GetData() const;
@@ -40,8 +43,8 @@ namespace CPF
 		static DataBlock* Create(size_t totalSize, size_t sectionCount);
 		static void Destroy(DataBlock* dataBlock);
 
-		using SectionData = Pair<const void*, size_t>;
-		using SectionInfo = Pair<SectionID, SectionData>;
+		using SectionData = STD::Pair<const void*, size_t>;
+		using SectionInfo = STD::Pair<SectionID, SectionData>;
 		class const_iterator;
 		const_iterator begin() const;
 		const_iterator end() const;
@@ -84,7 +87,7 @@ namespace CPF
 		~const_iterator() = default;
 
 		const_iterator& operator = (const const_iterator& rhs) = default;
-		const_iterator& operator = (const_iterator&& rhs) noexcept { mpBlock = Move(rhs.mpBlock); mIndex = Move(rhs.mIndex); return *this; }
+		const_iterator& operator = (const_iterator&& rhs) noexcept { mpBlock = STD::Move(rhs.mpBlock); mIndex = STD::Move(rhs.mIndex); return *this; }
 
 		bool operator ==(const const_iterator& rhs) const { return mpBlock == rhs.mpBlock && mIndex == rhs.mIndex; }
 		bool operator !=(const const_iterator& rhs) const { return !(*this == rhs); }

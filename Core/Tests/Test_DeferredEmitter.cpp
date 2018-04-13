@@ -6,7 +6,7 @@ namespace TestDeferred
 {
 	struct Test : CPF::Events::DeferredEmitter
 	{
-		typedef CPF::Events::Event< 0, CPF::Function< void() > > Test0;
+		typedef CPF::Events::Event< 0, CPF::STD::Function< void() > > Test0;
 	};
 }
 

@@ -19,9 +19,10 @@ TEST(IO, DirectoryRecursive)
 {
 	using namespace CPF;
 	using namespace IO;
-	Std::Utf8String testBase = "TestDir";
-	Std::Utf8String testDir = Path::Combine(testBase, "This/Is/A/Test/");
+	STD::Utf8String testBase = "TestDir";
+	STD::Utf8String testDir = Path::Combine(testBase, "This/Is/A/Test/");
 
+	auto workingDir = Directory::GetWorkingDirectory();
 	EXPECT_FALSE(Directory::Exists(testBase));
 	EXPECT_FALSE(Directory::Exists(testDir));
 
@@ -71,7 +72,7 @@ TEST(IO, Directory_File_Iterator)
 	using namespace CPF;
 	using namespace IO;
 
-	Vector<String> contents;
+	STD::Vector<String> contents;
 	Directory::Entries entries(".");
 	for (const auto& entry : entries)
 	{

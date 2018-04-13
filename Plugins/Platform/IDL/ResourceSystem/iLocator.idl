@@ -1,0 +1,54 @@
+import iUnknown from CPF::GOM;
+import Stream from CPF::IO;
+
+module CPF::ResourceSystem;
+
+interface iVolume;
+interface iCache;
+interface iMonitor;
+interface iLoader;
+interface iResource;
+
+enum PathID : u32 {eInvalid = 0}
+enum NameID : u32 {eInvalid = 0}
+
+enum ResourceID : u64 {eInvalid = 0}
+enum VariantID : u64 {eInvalid = 0}
+
+struct LoaderInfo
+{
+	iLoader* mpLoader;
+	iCache* mpCache;
+}
+
+interface iLocator : GOM::iUnknown
+{
+	const class_id kCID("CPF::ResourceSystem::iLocator");
+
+	// TODO: Add verbatim copy of language chunks to the IDL processor such that
+	// for CPP we pass through some macro's for this.  I.e. #<CPP># ... verbatim ... #<CPP>#
+	ResourceID CreateID(const char* path, const char* name);
+	VariantID CreateVariantID(const char* variantInfo);
+	PathID GetPathID(ResourceID id);
+	NameID GetNameID(ResourceID id);
+
+	result Mount(const char* name, iVolume* volume);
+	result Unmount(iVolume* volume);
+
+	result Attach(const char* name, iCache* cache);
+	result Detach(const char* name);
+	iCache* GetCache(const char* name) const;
+
+	result Attach(iMonitor* monitor);
+	result Detach(iMonitor* monitor);
+
+	result Install(iLoader* loader, iCache* cache);
+	result Remove(iLoader* loader);
+	const LoaderInfo* GetLoader(u32 id) const;
+
+	IO::Stream* Open(ResourceID id, VariantID varID) const;
+	iResource* GetResource(ResourceID id, VariantID varID) const;
+
+	result Touch(ResourceID id, VariantID varID);
+	void TouchAll();
+}

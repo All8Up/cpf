@@ -18,6 +18,8 @@
 #	endif
 #	include <WinSock2.h>
 #	include <Windows.h>
+// Windows.h needs a fricken "don't use shitty macro's" flag....
+#	undef CreateWindow
 
 #	define CPF_DLL_SAFE_BEGIN __pragma(warning(push)) __pragma(warning(disable:4251))
 #	define CPF_DLL_SAFE_END __pragma(warning(pop))

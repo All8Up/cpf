@@ -1,0 +1,11 @@
+module CPF::Graphics;
+
+enum TopologyType : s32
+{
+	eUndefined = 0,
+	ePoint,
+	eLine,
+	eTriangle,
+	ePatch,
+	eCount
+};

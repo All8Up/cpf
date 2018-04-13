@@ -2,7 +2,7 @@
 #pragma once
 #include "CPF/Std/Vector.hpp"
 #include "CPF/Std/Algorithm.hpp"
-#include "CPF/Std/CCType.hpp"
+#include "CPF/CSTD/CCType.hpp"
 #include "CPF/Std/Utf8String.hpp"
 
 //////////////////////////////////////////////////////////////////////////
@@ -19,15 +19,15 @@ namespace CPF
 			static constexpr char kExtensionSeparator = '.';
 #endif
 
-			inline Std::Utf8String Normalize(const Std::Utf8String& path)
+			inline STD::Utf8String Normalize(const STD::Utf8String& path)
 			{
-				Std::Utf8String result;
+				STD::Utf8String result;
 				auto ibegin = path.begin();
 				auto iend = path.end();
 
-				while (Std::IsSpace(*ibegin))
+				while (CSTD::IsSpace(*ibegin))
 					++ibegin;
-				while (Std::IsSpace(*(iend - 1)))
+				while (CSTD::IsSpace(*(iend - 1)))
 					--iend;
 				for (; ibegin != iend; ++ibegin)
 				{
@@ -40,7 +40,7 @@ namespace CPF
 				return result;
 			}
 
-			inline bool IsRooted(const Std::Utf8String& path)
+			inline bool IsRooted(const STD::Utf8String& path)
 			{
 				if (path.length() >= 2 && path.at(1) == ':')
 					return true;
@@ -49,56 +49,56 @@ namespace CPF
 				return false;
 			}
 
-			inline Std::Utf8String GetRoot(const Std::Utf8String& path)
+			inline STD::Utf8String GetRoot(const STD::Utf8String& path)
 			{
 				if (IsRooted(path))
 				{
 					if (path.length() >= 2 && path.at(1) == ':')
-						return Std::Utf8String(path.begin(), path.begin() + 2);
+						return STD::Utf8String(path.begin(), path.begin() + 2);
 				}
-				return Std::Utf8String();
+				return STD::Utf8String();
 			}
 
-			inline bool HasExtension(const Std::Utf8String& path)
+			inline bool HasExtension(const STD::Utf8String& path)
 			{
-				auto it = Find(path.rbegin(), path.rend(), uint32_t(kExtensionSeparator));
-				auto slash = Find(path.rbegin(), path.rend(), uint32_t(kDirectorySeparator));
+				auto it = STD::Find(path.rbegin(), path.rend(), uint32_t(kExtensionSeparator));
+				auto slash = STD::Find(path.rbegin(), path.rend(), uint32_t(kDirectorySeparator));
 				return it!=path.rend() && it < slash;
 			}
 
-			inline Std::Utf8String EnsureTrailingSeparator(const Std::Utf8String& path)
+			inline STD::Utf8String EnsureTrailingSeparator(const STD::Utf8String& path)
 			{
 				if (path.empty())
-					return Std::Utf8String("/");
+					return STD::Utf8String("/");
 				if (path.back() == kDirectorySeparator)
 					return path;
-				Std::Utf8String result = path;
+				STD::Utf8String result = path;
 				result += kDirectorySeparator;
 				return result;
 			}
 
-			inline Std::Utf8String Combine(const Std::Utf8String& lhs, const Std::Utf8String& rhs)
+			inline STD::Utf8String Combine(const STD::Utf8String& lhs, const STD::Utf8String& rhs)
 			{
-				const Std::Utf8String tl = Normalize(lhs);
-				const Std::Utf8String rl = Normalize(rhs);
+				const STD::Utf8String tl = Normalize(lhs);
+				const STD::Utf8String rl = Normalize(rhs);
 				
 				if (!tl.empty())
 				{
 					if (tl.back() == uint32_t(kDirectorySeparator))
-						return Std::Utf8String(tl + rl);
+						return STD::Utf8String(tl + rl);
 					if (!rl.empty())
 					{
 						if (rl.front() == kDirectorySeparator)
-							return Std::Utf8String(tl + rl);
+							return STD::Utf8String(tl + rl);
 					}
 					return tl + kDirectorySeparator + rl;
 				}
 				return rhs;
 			}
 			
-			inline Std::Utf8String Combine(const Vector<Std::Utf8String>& dirs)
+			inline STD::Utf8String Combine(const STD::Vector<STD::Utf8String>& dirs)
 			{
-				Std::Utf8String result;
+				STD::Utf8String result;
 				for (const auto& d : dirs)
 				{
 					result += d;
@@ -107,9 +107,9 @@ namespace CPF
 				return result;
 			}
 
-			inline Std::Utf8String ToOS(const Std::Utf8String& path)
+			inline STD::Utf8String ToOS(const STD::Utf8String& path)
 			{
-				Std::Utf8String result;
+				STD::Utf8String result;
 				for (auto c : path)
 				{
 					if (c == kDirectorySeparator)
@@ -120,31 +120,31 @@ namespace CPF
 				return result;
 			}
 
-			inline Std::Utf8String GetExtension(const Std::Utf8String& path)
+			inline STD::Utf8String GetExtension(const STD::Utf8String& path)
 			{
-				const Std::Utf8String normalized = Normalize(path);
-				auto it = Find(normalized.rbegin(), normalized.rend(), uint32_t(kExtensionSeparator));
-				auto slash = Find(normalized.rbegin(), normalized.rend(), uint32_t(kDirectorySeparator));
+				const STD::Utf8String normalized = Normalize(path);
+				auto it = STD::Find(normalized.rbegin(), normalized.rend(), uint32_t(kExtensionSeparator));
+				auto slash = STD::Find(normalized.rbegin(), normalized.rend(), uint32_t(kDirectorySeparator));
 				if ((slash != normalized.rend()) && (it < slash))
-					return Std::Utf8String();
+					return STD::Utf8String();
 				if (it == normalized.rend())
-					return Std::Utf8String();
-				return Std::Utf8String(it.base() + 1, normalized.end());
+					return STD::Utf8String();
+				return STD::Utf8String(it.base() + 1, normalized.end());
 			}
 
-			inline bool HasFilename(const Std::Utf8String& path)
+			inline bool HasFilename(const STD::Utf8String& path)
 			{
 				if (path.size() == 0 || path.back() == kDirectorySeparator)
 					return false;
 				return true;
 			}
 
-			inline Std::Utf8String RemoveFilename(const Std::Utf8String& path)
+			inline STD::Utf8String RemoveFilename(const STD::Utf8String& path)
 			{
-				Std::Utf8String normalized = Normalize(path);
+				STD::Utf8String normalized = Normalize(path);
 				if (HasFilename(normalized))
 				{
-					auto lastSep = Find(normalized.rbegin(), normalized.rend(), uint32_t(kDirectorySeparator));
+					auto lastSep = STD::Find(normalized.rbegin(), normalized.rend(), uint32_t(kDirectorySeparator));
 					if (lastSep != normalized.rend())
 						normalized.erase(lastSep.base() + 1, normalized.end());
 					else
@@ -153,20 +153,20 @@ namespace CPF
 				return normalized;
 			}
 
-			inline Std::Utf8String GetFilenameAndExtension(const Std::Utf8String& path)
+			inline STD::Utf8String GetFilenameAndExtension(const STD::Utf8String& path)
 			{
-				Std::Utf8String normalized = Normalize(path);
+				STD::Utf8String normalized = Normalize(path);
 				if (normalized.empty())
-					return Std::Utf8String();
-				auto it = Find(normalized.rbegin(), normalized.rend(), uint32_t(kDirectorySeparator));
+					return STD::Utf8String();
+				auto it = STD::Find(normalized.rbegin(), normalized.rend(), uint32_t(kDirectorySeparator));
 				if (it != normalized.rend())
-					return Std::Utf8String(it.base() + 1, normalized.end());
-				return Std::Utf8String();
+					return STD::Utf8String(it.base() + 1, normalized.end());
+				return STD::Utf8String();
 			}
 
-			inline Std::Utf8String RemoveRoot(const Std::Utf8String& path)
+			inline STD::Utf8String RemoveRoot(const STD::Utf8String& path)
 			{
-				Std::Utf8String result = Normalize(path);
+				STD::Utf8String result = Normalize(path);
 				
 				// Is Windows style root.
 				if (result.length() >= 2 && result.at(1) == ':')
@@ -180,9 +180,9 @@ namespace CPF
 				return result;
 			}
 
-			inline Std::Utf8String GetDirectory(const Std::Utf8String& path)
+			inline STD::Utf8String GetDirectory(const STD::Utf8String& path)
 			{
-				Std::Utf8String result = path;
+				STD::Utf8String result = path;
 				if (IsRooted(path.data()))
 				{
 					result = RemoveRoot(result.data());
@@ -191,11 +191,11 @@ namespace CPF
 			}
 
 			//////////////////////////////////////////////////////////////////////////
-			inline Vector<Std::Utf8String> Components(const Std::Utf8String& path)
+			inline STD::Vector<STD::Utf8String> Components(const STD::Utf8String& path)
 			{
-				Vector<Std::Utf8String> result;
-				Std::Utf8String normalized = Normalize(path);
-				Std::Utf8String current;
+				STD::Vector<STD::Utf8String> result;
+				STD::Utf8String normalized = Normalize(path);
+				STD::Utf8String current;
 				
 				for (const auto c : normalized)
 				{

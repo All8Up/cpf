@@ -6,6 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 namespace CPF
 {
-	template<typename T>
-	using ForwardList = std::forward_list<T>;
+	namespace STD
+	{
+		template<typename T>
+		using ForwardList = std::forward_list<T>;
+	}
 }
