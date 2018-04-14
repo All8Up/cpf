@@ -28,9 +28,15 @@ endif ()
 # ###############################################
 add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/ICore")
 add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Core")
+add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Plugins")
 
 # ###############################################
 add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/Application")
+
+set (CPF_BUILD_TOOLS ON CACHE BOOL "Build tools.")
+if (CPF_BUILD_TOOLS)
+	add_subdirectory( "${CMAKE_CURRENT_LIST_DIR}/BuildTools" )
+endif ()
 
 # ###############################################
 if (CPF_BUILD_EXAMPLES)

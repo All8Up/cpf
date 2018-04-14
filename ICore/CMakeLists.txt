@@ -1,6 +1,6 @@
 # Provide the root dependency for all IDL generation.
 add_custom_target (ICPF)
-set_property (TARGET ICPF PROPERTY FOLDER Components)
+set_property (TARGET ICPF PROPERTY FOLDER Plugins/Interface)
 
 # Provide a package target for all packaging commands.
 if (CPF_ENABLE_PACKAGING)
@@ -30,7 +30,7 @@ CPF_IDL_GENERATOR(
 	OUTPUT_BASE
 		CPF
 	IDE_FOLDER
-		Components
+		Plugins/Interface
 	IDL_ROOT
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL
 	FILES
