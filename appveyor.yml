@@ -12,11 +12,6 @@ platform: x64
 configuration: Release
 clone_folder: c:\cpf
 before_build:
-  - echo Downloading dependencies.
-  - set CPF_DEPS_URL="https://github.com/All8Up/cpf/releases/download/deps-v1.0.5/cpf_deps.7z"
-  - appveyor DownloadFile %CPF_DEPS_URL% -FileName cpf_deps.7z
-  - echo Decompressing dependencies.
-  - 7z x cpf_deps.7z -oc:\cpf\External\Source
   - echo Running cmake...
   - cd c:\cpf
   - mkdir build
