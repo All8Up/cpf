@@ -1,8 +1,0 @@
-//////////////////////////////////////////////////////////////////////////
-#pragma once
-#include "CPF/Logging.hpp"
-
-TEST(ANSI_C_FileSystem, Init)
-{
-	CPF_LOG_LEVELS(Info);
-}

@@ -1,9 +1,0 @@
-module CPF::Graphics;
-
-enum HeapType : s32
-{
-	eDefault = 1,
-	eUpload = 2,
-	eReadback = 3,
-	eCustom = 4
-}

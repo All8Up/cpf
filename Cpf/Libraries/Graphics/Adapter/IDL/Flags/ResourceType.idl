@@ -1,9 +1,0 @@
-module CPF::Graphics;
-
-enum ResourceType : s32
-{
-	eBuffer = 1,
-	eTexture1D = 2,
-	eTexture2D = 3,
-	eTexture3D = 4
-};

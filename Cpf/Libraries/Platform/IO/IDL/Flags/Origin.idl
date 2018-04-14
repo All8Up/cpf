@@ -1,9 +1,0 @@
-import Configuration;
-module CPF::IO;
-
-enum Origin : s32
-{
-	eBegin,
-	eEnd,
-	eCurrent
-};

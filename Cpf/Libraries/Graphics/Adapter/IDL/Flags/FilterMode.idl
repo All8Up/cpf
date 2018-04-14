@@ -1,7 +1,0 @@
-module CPF::Graphics;
-
-enum FilterMode : s32
-{
-	ePoint = 0,
-	eLinear = 1
-}

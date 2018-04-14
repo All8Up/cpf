@@ -1,7 +1,0 @@
-# ###############################################
-set( CPF_COMPILER_NAME "GNU" )
-
-string( REGEX MATCH "([0-9]+)\.([0-9]+)\.([0-9]+)" CPF_COMPILER_VERSION "${CMAKE_C_COMPILER_VERSION}" )
-set( CPF_COMPILER_VERSION_MAJOR ${CMAKE_MATCH_1} )
-set( CPF_COMPILER_VERSION_MINOR ${CMAKE_MATCH_2} )
-set( CPF_COMPILER_VERSION_PATCH ${CMAKE_MATCH_3} )

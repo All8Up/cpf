@@ -1,6 +1,0 @@
-module CPF::Graphics;
-
-enum SubResource : s32
-{
-	eAll
-};

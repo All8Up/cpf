@@ -1,9 +1,0 @@
-module CPF::Graphics;
-
-enum SwapEffect : s32
-{
-	eDiscard,
-	eSequential,
-	eFlipSequential,
-	eFlipDiscard
-};

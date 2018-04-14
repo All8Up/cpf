@@ -1,7 +1,0 @@
-import iResource from CPF::Graphics;
-module CPF::Graphics;
-
-interface iConstantBuffer : iResource
-{
-	void Update(size_t offset, size_t size, const void* data);
-}

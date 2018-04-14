@@ -1,4 +1,0 @@
-//////////////////////////////////////////////////////////////////////////
-#pragma once
-#define CPF_IMPORT __declspec( dllimport )
-#define CPF_EXPORT __declspec( dllexport )
