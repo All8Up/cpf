@@ -1,0 +1,13 @@
+module CPF::Graphics;
+
+enum StencilOp : s32
+{
+	eKeep = 1,
+	eZero,
+	eReplace,
+	eIncSat,
+	eDecSat,
+	eInvert,
+	eInc,
+	eDec
+};

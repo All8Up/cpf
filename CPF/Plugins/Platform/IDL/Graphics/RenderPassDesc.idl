@@ -1,0 +1,15 @@
+module CPF::Graphics;
+
+struct AttachmentDesc;
+struct SubPassDesc;
+struct DependencyDesc;
+
+struct RenderPassDesc
+{
+	int32_t mAttachmentCount;
+	AttachmentDesc* mpAttachments;
+	int32_t mSubPassCount;
+	SubPassDesc* mpSubPasses;
+	int32_t mDependencyCount;
+	DependencyDesc* mpDependencies;
+};

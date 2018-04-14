@@ -1,0 +1,18 @@
+//////////////////////////////////////////////////////////////////////////
+#pragma once
+#include "CPF/Configuration.hpp"
+#include <algorithm>
+
+
+//////////////////////////////////////////////////////////////////////////
+namespace CPF
+{
+	namespace STD
+	{
+		template<typename T>
+		typename std::remove_reference<T>::type&& Move(T&& v)
+		{
+			return std::move(v);
+		}
+	}
+}

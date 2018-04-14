@@ -1,0 +1,6 @@
+if (CPF_BUILD_EXAMPLES)
+	add_subdirectory (Example_ResourceSystem)
+	add_subdirectory (Example_Window)
+	add_subdirectory (Example_MouseEvents)
+	add_subdirectory (Example_SwapChain)
+endif ()

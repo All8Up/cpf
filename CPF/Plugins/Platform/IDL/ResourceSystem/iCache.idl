@@ -1,0 +1,19 @@
+import iUnknown from CPF::GOM;
+
+module CPF::ResourceSystem;
+
+interface iResource;
+enum ResourceID : u64;
+enum VariantID : u64;
+
+CacheEnumFunc = void(iResource* resource, void* context);
+
+struct CacheDesc {}
+
+interface iCache : GOM::iUnknown
+{
+	iResource* Get(ResourceID id, VariantID varID) const;
+	void Store(ResourceID id, VariantID varID, iResource* resource);
+	void LastReference(ResourceID id, VariantID varID);
+	void Enumerate(CacheEnumFunc func, void* context) const;
+}

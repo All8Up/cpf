@@ -1,0 +1,14 @@
+import BindingType from CPF::Platform::Graphics;
+import ParamFlags from CPF::Platform::Graphics;
+import ParamVisibility from CPF::Platform::Graphics;
+
+module CPF::Graphics;
+
+struct ParamBindingDesc
+{
+	BindingType mType;
+	s32 mIndex;
+	s32 mCount;
+	ParamFlags mFlags;
+	ParamVisibility mVisibility;
+};

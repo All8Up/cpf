@@ -1,0 +1,17 @@
+import FilterMode from CPF::Platform::Graphics;
+import WrapMode from CPF::Platform::Graphics;
+
+module CPF::Graphics;
+
+struct SamplerDesc
+{
+	FilterMode mMinFilter;
+	FilterMode mMagFilter;
+	FilterMode mMipFilter;
+	WrapMode mUWrap;
+	WrapMode mVWrap;
+	WrapMode mWWrap;
+	f32 mLodMin;
+	f32 mLodMax;
+	f32 mLodBias;
+};

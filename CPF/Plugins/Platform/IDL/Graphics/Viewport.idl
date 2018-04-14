@@ -1,0 +1,11 @@
+module CPF::Graphics;
+
+struct Viewport
+{
+	f32 mX;
+	f32 mY;
+	f32 mWidth;
+	f32 mHeight;
+	f32 mMinDepth;
+	f32 mMaxDepth;
+}

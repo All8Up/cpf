@@ -1,0 +1,14 @@
+import iUnknown from CPF::GOM;
+
+module CPF::Platform::Desktop;
+
+failure Quit("Platform", "Application Quit");
+
+interface iEventLoop : GOM::iUnknown
+{
+	const class_id kCID("CPF::Platform::Desktop::iEventLoop");
+
+	result Run();
+	result Poll();
+	result PollTillEmpty();
+}

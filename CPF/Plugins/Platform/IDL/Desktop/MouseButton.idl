@@ -1,0 +1,12 @@
+import EnumFlagType from CPF;
+module CPF::Platform::Desktop;
+
+flags MouseButton : s32
+{
+	eNone = 0,
+	eLeft = 1 << 0,
+	eMiddle = 1 << 1,
+	eRight = 1 << 2,
+	eX1 = 1 << 3,
+	eX2 = 1 << 4
+};

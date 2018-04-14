@@ -1,0 +1,15 @@
+import Configuration from CPF;
+module CPF::Platform::Desktop;
+
+struct OSWindowData
+{
+	WINDOWS
+	{
+		HWND mHwnd;
+		HDC mHDC;
+	}
+	DARWIN
+	{
+		void* mpView;
+	}
+}

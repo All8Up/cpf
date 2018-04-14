@@ -1,0 +1,17 @@
+import iUnknown from CPF::GOM;
+module CPF::Graphics;
+
+struct iImage;
+struct iImageView;
+struct SwapChainDesc;
+
+enum SwapEffect : s32;
+
+interface iSwapChain : GOM::iUnknown
+{
+	void Present();
+	void Resize(s32 x, s32 y);
+	s32 GetCurrentIndex();
+	iImage* GetImage(s32 index);
+	iImageView* GetImageView(s32 index);
+}

@@ -1,0 +1,33 @@
+import iUnknown from CPF::GOM;
+import Access from CPF::IO;
+import Origin from CPF::IO;
+
+module CPF::IO;
+
+interface iStream : GOM::iUnknown
+{
+	Access GetAccess();
+	bool CanSeek();
+	bool CanRead();
+	bool CanWrite();
+
+	OnComplete = void (result value);
+	void Close(OnComplete cb);
+	void Flush(OnComplete cb);
+
+	OnPosition = void(result value, s64 position);
+	void GetPosition(OnPosition cb);
+
+	OnLength = void(result value, s64 length);
+	void GetLength(OnLength cb);
+
+	OnSeek = void(result value);
+	void Seek(s32 offset, Origin origin, OnSeek cb);
+
+	//
+	OnRead = void(result value, s64 count);
+	void Read(void* outBuffer, s64 length, OnRead cb);
+
+	OnWrite = void(result value, s64 count);
+	void Write(const void* inBuffer, s64 length, OnWrite cb);
+}

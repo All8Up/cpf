@@ -1,0 +1,12 @@
+import iFence from CPF::Platform::Concurrency;
+
+module CPF::Concurrency;
+
+struct ThreadTimeInfo;
+
+interface iThreadTimes : iFence
+{
+	const class_id kCID("CPF::Concurrency::iThreadTimes");
+
+	void GetTimes(ThreadTimeInfo* times);
+}

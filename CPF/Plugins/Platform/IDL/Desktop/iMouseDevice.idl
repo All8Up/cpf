@@ -1,0 +1,11 @@
+import iInputDevice from CPF::Platform::Desktop;
+import MouseButton from CPF::Platform::Desktop;
+module CPF::Platform::Desktop;
+
+interface iMouseDevice : iInputDevice
+{
+	const class_id kCID("Cpf::iMouseDevice::Desktop::kDefault");
+
+	result GetButtonState(MouseButton* mouseButtons);
+	result GetPosition(s32* x, s32* y);
+};

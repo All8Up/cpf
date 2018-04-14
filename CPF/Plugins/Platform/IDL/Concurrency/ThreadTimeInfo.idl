@@ -1,0 +1,13 @@
+import Value from CPF::Time;
+
+module CPF::Concurrency;
+
+const s32 MaxThreads = 64;
+
+struct ThreadTimeInfo
+{
+	s32 mThreadCount;
+	Time::Value mDuration;
+	Time::Value mUserTime[MaxThreads];
+	Time::Value mKernelTime[MaxThreads];
+}

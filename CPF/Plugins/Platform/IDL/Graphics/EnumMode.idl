@@ -1,0 +1,12 @@
+import EnumFlagType from CPF;
+
+module CPF::Graphics;
+
+flags EnumMode : s32
+{
+	eNone = 0,
+	eInterlaced = 1 << 0,
+	eScaling = 1 << 1,
+	eStereo = 1 << 2,
+	eDisabledStereo = 1 << 3
+}

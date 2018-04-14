@@ -1,0 +1,54 @@
+# Provide the root dependency for all IDL generation.
+add_custom_target (ICPF)
+set_property (TARGET ICPF PROPERTY FOLDER Plugins/Interface)
+
+# Provide a package target for all packaging commands.
+if (CPF_ENABLE_PACKAGING)
+	add_custom_target (PackageInterfaces ALL)
+	set_property (TARGET PackageInterfaces PROPERTY FOLDER Packages)
+	add_custom_target (PackageBinaryPlugins ALL)
+	set_property (TARGET PackageBinaryPlugins PROPERTY FOLDER Packages)
+	set (CPF_BINARY_PLUGIN_PACKAGE OFF CACHE BOOL "Package the plugins for distribution when built.")
+	set (CPF_INTERFACE_DIR "${CMAKE_BINARY_DIR}/Packages/Interfaces" CACHE PATH "Location of the prebuilt interfaces.")
+	set (CPF_BINARY_PLUGIN_DIR "${CMAKE_BINARY_DIR}/Packages/Plugins" CACHE PATH "Location of binary plugin packaging.")
+endif ()
+
+# Provide a plugin deploy target for binary plugins.
+add_custom_target (DeployBinaryPlugins)
+set_property (TARGET DeployBinaryPlugins PROPERTY FOLDER CPF)
+
+# Add the ICore target.
+CPF_IDL_GENERATOR(
+	REQUIRED
+	PACKAGE_INTERFACES
+	TARGET
+		ICore
+	BASE
+		ICPF
+	OUTPUT_ROOT
+		${CPF_GENERATED}
+	OUTPUT_BASE
+		CPF
+	IDE_FOLDER
+		Plugins/Interface
+	IDL_ROOT
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL
+	FILES
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/iApplication.idl
+
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iUnknown.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/iEventEmitter.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/GOM/ResultCodes.idl
+
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Access.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Attributes.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iDirectory.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iExecutor.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFile.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iFileStream.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/iStream.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/IO/Origin.idl
+
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iClassFactory.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Plugin/iRegistry.idl
+)

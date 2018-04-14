@@ -1,0 +1,10 @@
+import iUnknown from CPF::GOM;
+module CPF::Platform::Desktop;
+
+interface iClipboard : GOM::iUnknown
+{
+	const class_id kCID("CPF::Platform::Desktop::iClipboard");
+
+	result GetClipboardText(s32* count, char* text);
+	result SetClipboardText(const char* text);
+};

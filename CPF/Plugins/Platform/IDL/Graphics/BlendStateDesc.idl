@@ -1,0 +1,22 @@
+import Utilities from CPF::Platform::Graphics;
+import RenderTargetBlendStateDesc from CPF::Platform::Graphics;
+
+module CPF::Graphics;
+
+const s32 MaxRenderTargets = 8;
+
+struct BlendStateDesc
+{
+	bool mAlphaToCoverage = false;
+	bool mIndependentBlend = false;
+	RenderTargetBlendStateDesc mRenderTarget[MaxRenderTargets] = {
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc,
+		default RenderTargetBlendStateDesc
+	};
+}

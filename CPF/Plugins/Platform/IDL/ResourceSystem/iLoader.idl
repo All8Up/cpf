@@ -1,0 +1,14 @@
+import iUnknown from CPF::GOM;
+import Outcome from CPF;
+
+module CPF::ResourceSystem;
+
+interface iResource;
+enum ResourceID : u64;
+enum VariantID : u64;
+
+interface iLoader : GOM::iUnknown
+{
+	u32 GetID();
+	outcome<iResource*, result> GetResource(ResourceID id, VariantID varID);
+}

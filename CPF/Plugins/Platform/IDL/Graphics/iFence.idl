@@ -1,0 +1,16 @@
+import iUnknown from CPF::GOM;
+module CPF::Graphics;
+
+enum FenceStatus : u32
+{
+	eInvalid,
+	eReady,
+	eNotReady
+}
+
+interface iFence : GOM::iUnknown
+{
+	FenceStatus GetStatus() const;
+	void Reset();
+	FenceStatus Wait() const;
+}

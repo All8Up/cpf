@@ -1,0 +1,124 @@
+{
+	"Version":
+	{
+		"Major" : 1,
+		"Minor" : 0
+	},
+	"Scene":
+	{
+		"Output":
+		{
+			"Name"			:	"Refraction.tga",
+			"Width"			:	512,
+			"Height"		:	512,
+			"SuperSampling"	:	1
+		},
+		"Camera":
+		{
+			"Projection"	:	"Perspective",
+			"FieldOfView"	:	60.0,
+			"AspectRatio"	:	1.0,
+			"Position"		:	[-5.0, 3.0, 10.0],
+			"Target"		:	[0.0, 0.0, 0.0],
+			"Up"			:	[0.0, 1.0, 0.0],
+			"Recursion"		:	8
+		},
+		"Environment":
+		{
+			"Type"			:	"Solid",
+			"Color"			:	[0.1, 0.1, 0.1, 0]
+		},
+		"Materials":
+		[
+			{
+				"Name"			:	"Blue",
+				"Ambient"		:	[0.1, 0.1, 0.1, 0.0],
+				"Diffuse"		:	[0.2, 0.2, 0.9, 0],
+				"SpecularPower"	:	20.0
+			},
+			{
+				"Name"			:	"Red",
+				"Ambient"		:	[0.1, 0.1, 0.1, 0.0],
+				"Diffuse"		:	[0.9, 0.2, 0.2, 0],
+				"SpecularPower"	:	30.0
+			},
+			{
+				"Name"			:	"White",
+				"Ambient"		:	[0.1, 0.1, 0.1, 0.0],
+				"Diffuse"		:	[0.9, 0.9, 0.9, 0],
+				"SpecularPower"	:	45.0
+			},
+			{
+				"Name"			:	"Glass",
+				"Ambient"		:	[0.01, 0.01, 0.01, 0.0],
+				"Diffuse"		:	[0.1, 0.1, 0.15, 0],
+				"Specular"		:	[0.85, 0.85, 0.85, 0],
+				"Reflection"	:	[0.6, 0.6, 0.6, 0],
+				"Translucency"	:	[0.4, 0.4, 0.6, 0],
+				"SpecularPower"	:	75.0,
+				"IOR"			:	1.52
+			}
+		],
+		"Models":
+		[
+			{
+				"Type"			:	"Plane",
+				"Name"			:	"Floor",
+				"Material"		:	"Blue",
+				"Position"		:	[0, -10, 0],
+				"Normal"		:	[0, 1, 0]
+			},
+			{
+				"Type"			:	"Plane",
+				"Name"			:	"Back",
+				"Material"		:	"White",
+				"Position"		:	[0, 0, -10],
+				"Normal"		:	[0, 0, 1]
+			},
+			{
+				"Type"			:	"Plane",
+				"Name"			:	"Roof",
+				"Material"		:	"Red",
+				"Position"		:	[0, 10, 0],
+				"Normal"		:	[0, -1, 0]
+			},
+			{
+				"Type"			:	"Plane",
+				"Name"			:	"LeftWall",
+				"Material"		:	"Red",
+				"Position"		:	[-10, 0, 0],
+				"Normal"		:	[1, 0, 0]
+			},
+			{
+				"Type"			:	"Plane",
+				"Name"			:	"RightWall",
+				"Material"		:	"Blue",
+				"Position"		:	[10, 0, 0],
+				"Normal"		:	[-1, 0, 0]
+			},
+			{
+				"Type"			:	"Sphere",
+				"Name"			:	"Sphere1",
+				"Material"		:	"Glass",
+				"Position"		:	[0, 0, 0],
+				"Orientation"	:	[0, 0, 0],
+				"Radius"		:	4.0
+			}
+		],
+		"Lights":
+		[
+			{
+				"Name"			:	"Primary",
+				"Position"		:	[3, 9, 2],
+				"Color"			:	[0.95, 0.95, 0.95, 0.0],
+				"Power"			:	25
+			},
+			{
+				"Name"			:	"Fill",
+				"Position"		:	[-2, 3, -3],
+				"Color"			:	[0.5, 0.35, 0.75, 0.0],
+				"Power"			:	10
+			}
+		]
+	}
+}

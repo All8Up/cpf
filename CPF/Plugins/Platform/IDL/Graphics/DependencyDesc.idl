@@ -1,0 +1,7 @@
+module CPF::Graphics;
+
+struct DependencyDesc
+{
+	s32 mSubPassSource;
+	s32 mSubPassDependant;
+};

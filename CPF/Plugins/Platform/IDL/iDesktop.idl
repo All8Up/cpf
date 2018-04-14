@@ -1,0 +1,18 @@
+import Outcome from CPF;
+import iEventEmitter from CPF::GOM;
+import iWindow from CPF::Platform::Desktop;
+import WindowDesc from CPF::Platform::Desktop;
+
+module CPF::Platform;
+
+interface iDesktop : GOM::iEventEmitter
+{
+	const class_id kCID("CPF::Platform::iDesktop");
+
+	outcome<Platform::Desktop::iWindow*, result> CreateWindow(const Platform::Desktop::WindowDesc* desc);
+
+	// TODO: Eventually this should contain monitor enumeration, desktop modes, screen saver events etc.
+
+	event WindowCreated(Platform::Desktop::iWindow* window, const Platform::Desktop::WindowDesc* desc);
+	event WindowDestroyed(Platform::Desktop::iWindow* window);
+}

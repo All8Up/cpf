@@ -1,0 +1,35 @@
+import iScheduler from CPF::Platform::Concurrency;
+
+module CPF::Concurrency;
+
+enum Opcode : u32
+{
+	eFirstOne,
+	eFirstOneBarrier,
+	eLastOne,
+	eLastOneBarrier,
+	eAll,
+	eAllBarrier,
+	eLastOneSleep
+};
+
+interface iWorkBuffer : GOM::iUnknown
+{
+	const class_id kCID("CPF::Concurrency::iWorkBuffer");
+
+	result Reserve(s32 size);
+	void Copy(iWorkBuffer* rhs);
+
+	void Reset();
+	void FirstOne(WorkFunction func, void* context);
+	void FirstOneBarrier(WorkFunction func, void* context);
+	void LastOne(WorkFunction func, void* context);
+	void LastOneBarrier(WorkFunction func, void* context);
+	void All(WorkFunction func, void* context);
+	void AllBarrier(WorkFunction func, void* context);
+
+	void LastOneSleep(WorkFunction func, void* context);
+
+	void Barrier();
+	void Fence(WorkFunction func, void* context);
+}

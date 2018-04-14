@@ -1,0 +1,23 @@
+import iUnknown from CPF::GOM;
+import Attributes from CPF::IO;
+
+module CPF::IO;
+
+struct DirHandle;
+struct DirEntry
+{
+	const char* mpName;
+	Attributes mAttributes;
+};
+
+interface iDirectory : GOM::iUnknown
+{
+	OnComplete = void(result value);
+	void Exists(const char* name, OnComplete cb);
+	void Create(const char* dir, bool recursive, OnComplete cb);
+	void Delete(const char* dir, bool recursive, OnComplete cb);
+
+	OnDirOpen = void(result value, const DirHandle* dirHandle);
+	void Scan(const char* dir, OnDirOpen cb);
+	result Next(const DirHandle* handle, DirEntry* const* entry);
+}

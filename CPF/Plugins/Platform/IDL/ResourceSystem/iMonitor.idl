@@ -1,0 +1,19 @@
+import iUnknown from CPF::GOM;
+
+module CPF::ResourceSystem;
+
+const class_id kMonitorManualCID("CPF::ResourceSystem::Monitors::Manual");
+const class_id kMonitorFileSystemCID("CPF::ResourceSystem::Monitors::FileSystem");
+
+interface iLocator;
+enum ResourceID : u64;
+enum VariantID : u64;
+
+interface iMonitor : GOM::iUnknown
+{
+	result Touch(ResourceID id, VariantID varID);
+	result TouchAll();
+
+	void SetLocator(iLocator* locator);
+	iLocator* GetLocator() const;
+}

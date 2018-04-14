@@ -1,0 +1,16 @@
+import iUnknown from CPF::GOM;
+
+module CPF::Plugin;
+
+struct IID_CID
+{
+	GOM::IID mIID;
+	GOM::CID mCID;
+}
+
+interface iRegistry;
+
+interface iClassFactory : GOM::iUnknown
+{
+	result CreateInstance (iRegistry* registry, GOM::iUnknown* outer, [out] GOM::iUnknown** outInstance);
+}

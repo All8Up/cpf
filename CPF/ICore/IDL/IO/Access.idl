@@ -1,0 +1,12 @@
+import Configuration from CPF;
+import EnumFlagType from CPF;
+
+module CPF::IO;
+
+flags Access : s32
+{
+	eNone = 0,
+	eRead = 1<<0,
+	eWrite = 1<<1,
+	eBoth = 1 | 2
+}

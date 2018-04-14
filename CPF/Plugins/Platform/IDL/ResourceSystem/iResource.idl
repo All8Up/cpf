@@ -1,0 +1,9 @@
+import iUnknown from CPF::GOM;
+
+module CPF::ResourceSystem;
+
+interface iCache;
+
+interface iResource : GOM::iUnknown
+{
+}
