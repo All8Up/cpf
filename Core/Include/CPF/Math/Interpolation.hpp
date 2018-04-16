@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Configuration.hpp"
+#include "CPF/Configuration.hpp"
 
 namespace CPF
 {
@@ -54,7 +54,7 @@ namespace CPF
 			}
 
 			T cx = Clamp<T>(x, 0, 1);
-			size_t span = (size_t)cx;
+			size_t span = size_t(cx);
 
 			if (span >= count - 3)
 				span = count - 3;
