@@ -134,6 +134,14 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 			constItem.mValue.c_str()
 		);
 	}
+	for (const auto& sectionItem : decl.mSectionIDs)
+	{
+		mpWriter->OutputLine("static constexpr SectionID %s = SectionID(0x%" PRIx64 " /* %s */);",
+			sectionItem.mName.c_str(),
+			CPF::Hash::Crc64(sectionItem.mValue.c_str(), sectionItem.mValue.length()),
+			sectionItem.mValue.c_str()
+		);
+	}
 
 	if (!decl.mSignatures.empty())
 	{
@@ -321,6 +329,14 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 			constItem.mName.c_str(),
 			CPF::Hash::Crc64(constItem.mValue.c_str(), constItem.mValue.length()),
 			constItem.mValue.c_str()
+		);
+	}
+	for (const auto& sectionItem : decl.mSectionIDs)
+	{
+		mpWriter->OutputLine("static constexpr SectionID %s = SectionID(0x%" PRIx64 " /* %s */);",
+			sectionItem.mName.c_str(),
+			CPF::Hash::Crc64(sectionItem.mValue.c_str(), sectionItem.mValue.length()),
+			sectionItem.mValue.c_str()
 		);
 	}
 	for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eNone)])

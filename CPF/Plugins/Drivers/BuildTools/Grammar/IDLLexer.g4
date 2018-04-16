@@ -69,6 +69,7 @@ CLASS_ID                    : 'class_id';
 STRING                      : 'string';
 OPTION                      : 'option';
 OUTCOME						: 'outcome';
+SECTION_ID					: 'section_id';
 
 U8                          : 'u8';
 S8                          : 's8';

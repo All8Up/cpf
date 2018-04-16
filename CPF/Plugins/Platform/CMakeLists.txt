@@ -13,7 +13,7 @@ CPF_IDL_GENERATOR(
 	OUTPUT_BASE
 		CPF/Platform
 	IDE_FOLDER
-		Plugins/Interface
+		Plugins/Interface/Core
 	IDL_ROOT
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL
 	FILES

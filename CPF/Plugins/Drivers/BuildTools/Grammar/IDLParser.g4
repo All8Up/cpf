@@ -122,13 +122,15 @@ function_signature      : IDENT EQUALS type_decl LPAREN function_param_list? RPA
 const_def               : const_integral_def
                         | const_float_def
                         | const_string_def
-                        | const_class_id_def;
+                        | const_class_id_def
+						| const_section_id_def;
 
 const_integral_def      : Const integral_type IDENT EQUALS integer_lit const_integral_as? SEMICOLON;
 const_integral_as       : AS integral_type;
 const_float_def         : Const float_type IDENT EQUALS float_lit SEMICOLON;
 const_string_def        : Const STRING IDENT EQUALS string_lit SEMICOLON;
 const_class_id_def      : Const CLASS_ID IDENT LPAREN string_lit RPAREN SEMICOLON;
+const_section_id_def	: Const SECTION_ID IDENT LPAREN string_lit RPAREN SEMICOLON;
 
 // Enumerations.
 enum_fwd                : ENUM IDENT enum_type? SEMICOLON;

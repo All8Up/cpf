@@ -158,6 +158,14 @@ antlrcpp::Any Visitor::visitInterface_decl(IDLParser::Interface_declContext *ctx
 				classID.mValue = TrimStringLit(constIDDef->string_lit()->STRING_LIT()->toString());
 				decl.mClassIDs.push_back(classID);
 			}
+			if (constDef->const_section_id_def())
+			{
+				auto sectionIDDef = constDef->const_section_id_def();
+				SectionID sectionID;
+				sectionID.mName = sectionIDDef->IDENT()->toString();
+				sectionID.mValue = TrimStringLit(sectionIDDef->string_lit()->STRING_LIT()->toString());
+				decl.mSectionIDs.push_back(sectionID);
+			}
 		}
 		else if (item->enum_def())
 		{
@@ -322,6 +330,14 @@ antlrcpp::Any Visitor::visitStruct_decl(IDLParser::Struct_declContext *ctx)
 					classID.mName = constIDDef->IDENT()->toString();
 					classID.mValue = TrimStringLit(constIDDef->string_lit()->STRING_LIT()->toString());
 					structDecl.mClassIDs.push_back(classID);
+				}
+				if (constDef->const_section_id_def())
+				{
+					auto sectionIDDef = constDef->const_section_id_def();
+					SectionID sectionID;
+					sectionID.mName = sectionIDDef->IDENT()->toString();
+					sectionID.mValue = TrimStringLit(sectionIDDef->string_lit()->STRING_LIT()->toString());
+					structDecl.mSectionIDs.push_back(sectionID);
 				}
 			}
 			else if (item->enum_def())

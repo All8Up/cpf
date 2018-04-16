@@ -102,6 +102,11 @@ namespace IDL
 			String mName;
 			String mValue;
 		};
+		struct SectionID
+		{
+			String mName;
+			String mValue;
+		};
 		struct FunctionSignatureDecl
 		{
 			String mName;
@@ -122,6 +127,8 @@ namespace IDL
 			Functions mFunctions;
 			using ClassIDs = CPF::STD::Vector<ClassID>;
 			ClassIDs mClassIDs;
+			using SectionIDs = CPF::STD::Vector<SectionID>;
+			SectionIDs mSectionIDs;
 			using Signatures = CPF::STD::Vector<FunctionSignatureDecl>;
 			Signatures mSignatures;
 			using Events = CPF::STD::Vector<EventDecl>;
@@ -167,6 +174,8 @@ namespace IDL
 			MemberVector mDataMembers[int(OsType::eCount)];
 			using ClassIDs = CPF::STD::Vector<ClassID>;
 			ClassIDs mClassIDs;
+			using SectionIDs = CPF::STD::Vector<SectionID>;
+			SectionIDs mSectionIDs;
 		};
 		struct EnumEntry
 		{
