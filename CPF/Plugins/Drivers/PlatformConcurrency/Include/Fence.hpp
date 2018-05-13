@@ -11,7 +11,7 @@ namespace CPF
 		struct iRegistry;
 	}
 
-	namespace Concurrency
+	namespace Platform
 	{
 		class Fence : public tRefCounted<iFence>
 		{

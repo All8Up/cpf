@@ -116,6 +116,8 @@ namespace CPF
 				int32_t mColorViewCount;
 				Graphics::iImageView* mpColorViews[32];
 				Graphics::iImageView* mpDepthBufferView;
+
+				IntrusivePtr<Graphics::iFence> mpFence;
 			};
 		}
 	}

@@ -179,10 +179,10 @@ namespace CPF
 				return result[0];
 			}
 
-			const_reverse_iterator& operator ++() { utf8::previous(mpCurrent, mpEnd); return *this; }
-			const_reverse_iterator operator++(int) { const_reverse_iterator result(*this); utf8::previous(mpCurrent, mpEnd); return result; }
-			const_reverse_iterator& operator --() { utf8::next(mpCurrent, mpBegin - 1); return *this; }
-			const_reverse_iterator operator --(int) { const_reverse_iterator result(*this); utf8::next(mpCurrent, mpBegin - 1); return result; }
+			const_reverse_iterator& operator ++() { if (mpCurrent - 1 != mpEnd) utf8::previous(mpCurrent, mpEnd); else mpCurrent = mpEnd; return *this; }
+			const_reverse_iterator operator++(int) { const_reverse_iterator result(*this); ++(*this); return result; }
+			const_reverse_iterator& operator --() { if (mpCurrent != mpEnd) utf8::next(mpCurrent, mpBegin - 1); else mpCurrent = mpCurrent + 1; return *this; }
+			const_reverse_iterator operator --(int) { const_reverse_iterator result(*this); --(*this); return result; }
 
 			const_reverse_iterator operator +(size_t delta) const
 			{

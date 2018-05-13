@@ -41,5 +41,6 @@ namespace CPF
 	namespace Math
 	{
 		using Rectanglei = Rectangle<SIMD::I32x4>;
+		using Rectanglef = Rectangle<SIMD::F32x4>;
 	}
 }

@@ -59,30 +59,33 @@ if (NOT CPF_PLUGIN_BINARY_PlatformGraphicsVulkan)
 		)
 
 		# ###############################################
-		add_library (PlatformGraphicsVulkan_s STATIC
-			${INCLUDE_FILES}
-			${SOURCE_FILES}
-			${INCLUDE_VULKAN_FILES}
-			${SOURCE_VULKAN_FILES}
-		)
-		target_include_directories (PlatformGraphicsVulkan_s
-			PUBLIC
-				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-				$<INSTALL_INTERFACE:Include>
-			PRIVATE
-				${Vulkan_INCLUDE_DIR}
-		)
-		target_link_libraries (PlatformGraphicsVulkan_s
-			PUBLIC
-				Core_s ${Vulkan_LIBRARY}
-		)
-		target_compile_definitions (PlatformGraphicsVulkan_s
-			PUBLIC
-				CPF_PLUGIN_STATIC
-		)
-		set_property (TARGET PlatformGraphicsVulkan_s
-			PROPERTY FOLDER Plugins/Drivers/Platform
-		)
+		if (CPF_BUILD_STATIC_VARIANTS)
+			add_library (PlatformGraphicsVulkan_s STATIC
+				${INCLUDE_FILES}
+				${SOURCE_FILES}
+				${INCLUDE_VULKAN_FILES}
+				${SOURCE_VULKAN_FILES}
+			)
+			target_include_directories (PlatformGraphicsVulkan_s
+				PUBLIC
+					$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+					$<INSTALL_INTERFACE:Include>
+				PRIVATE
+					${Vulkan_INCLUDE_DIR}
+			)
+			target_link_libraries (PlatformGraphicsVulkan_s
+				PUBLIC
+					Core_s ${Vulkan_LIBRARY}
+			)
+			target_compile_definitions (PlatformGraphicsVulkan_s
+				PUBLIC
+					PlatformVulkan_STATIC=1
+					CPF_PLUGIN_STATIC
+			)
+			set_property (TARGET PlatformGraphicsVulkan_s
+				PROPERTY FOLDER Plugins/Drivers/Platform
+			)
+		endif ()
 
 		# ###############################################
 		source_group (Headers FILES ${INCLUDE_FILES})
@@ -97,14 +100,13 @@ if (NOT CPF_PLUGIN_BINARY_PlatformGraphicsVulkan)
 			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:PlatformGraphicsVulkan> ${CPF_COMMON_PLUGINS}/PlatformGraphicsVulkan.cfp
 		)
 
+		cpf_binary_plugin(
+			SHARED
+			STATIC
+			NAME
+				PlatformGraphicsVulkan
+			WIN32_LIBS
+				${Vulkan_LIBRARY}
+		)
 	endif ()
-
-	cpf_binary_plugin(
-		SHARED
-		STATIC
-		NAME
-			PlatformGraphicsVulkan
-		WIN32_LIBS
-			${Vulkan_LIBRARY}
-	)
 endif ()

@@ -14,9 +14,9 @@ namespace CPF
 		public:
 			EventLoop(Plugin::iRegistry*, iUnknown*) {}
 
-			GOM::Result Run() override;
-			GOM::Result Poll() override;
-			GOM::Result CPF_STDCALL PollTillEmpty() override;
+			GOM::Result CPF_STDCALL Run() override;
+			GOM::Result CPF_STDCALL RunOne() override;
+			GOM::Result CPF_STDCALL RunAvailable() override;
 
 		private:
 			void EventLoop::_HandleEvent(SDL_Event& event);

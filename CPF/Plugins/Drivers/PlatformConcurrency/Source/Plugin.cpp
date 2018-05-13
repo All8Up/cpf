@@ -1,48 +1,61 @@
-#include "CPF/Plugin/iRegistry.hpp"
-#include "WorkBuffer.hpp"
-#include "Scheduler.hpp"
-#include "ThreadTimes.hpp"
-#include "Fence.hpp"
-#include "ThreadPool.hpp"
-#include "LoadBalancer.hpp"
-#include "CPF/Plugin/tClassFactory.hpp"
+#include "CPF/Plugin.hpp"
 #include "CPF/Logging.hpp"
 #include "CPF/GOM/ResultCodes.hpp"
-#include "CPF/Plugin.hpp"
+#include "CPF/Plugin/iRegistry.hpp"
+#include "CPF/Plugin/tClassFactory.hpp"
+#include "Fence.hpp"
+#include "Scheduler.hpp"
+#include "WorkBuffer.hpp"
+#include "ThreadPool.hpp"
+#include "LoadBalancer.hpp"
+#include "TimerService.hpp"
 
 using namespace CPF;
+
+namespace
+{
+    GOM::IID sPluginIID(GOM::IID("CPF::Concurrency"_crc64));
+}
 
 //////////////////////////////////////////////////////////////////////////
 static GOM::Result CPF_STDCALL Install(Plugin::iRegistry* registry)
 {
-	if (registry)
+    int32_t references;
+	if (registry && GOM::Succeeded(registry->Register(sPluginIID, &references)))
 	{
-		CPF_INIT_LOG(Concurrency);
-		CPF_LOG_LEVEL(Concurrency, Warn);
+        if (references == 1)
+        {
+            CPF_INIT_LOG(Concurrency);
+            CPF_LOG_LEVEL(Concurrency, Warn);
 
-		registry->Install(Concurrency::iThreadTimes::kCID, new Plugin::tClassFactory<Concurrency::ThreadTimes>());
-		registry->Install(Concurrency::iFence::kCID, new Plugin::tClassFactory<Concurrency::Fence>());
-		registry->Install(Concurrency::iScheduler::kCID, new Plugin::tClassFactory<Concurrency::Scheduler>());
-		registry->Install(Concurrency::iWorkBuffer::kCID, new Plugin::tClassFactory<Concurrency::WorkBuffer>());
-		registry->Install(Concurrency::iThreadPool::kCID, new Plugin::tClassFactory<Concurrency::ThreadPool>());
-		registry->Install(Concurrency::iLoadBalancer::kCID, new Plugin::tClassFactory<Concurrency::LoadBalancer>());
-		return GOM::kOK;
-	}
+		    registry->Install(Platform::iFence::kCID, new Plugin::tClassFactory<Platform::Fence>());
+		    registry->Install(Platform::iScheduler::kCID, new Plugin::tClassFactory<Platform::Scheduler>());
+		    registry->Install(Platform::iWorkBuffer::kCID, new Plugin::tClassFactory<Platform::WorkBuffer>());
+		    registry->Install(Platform::iThreadPool::kCID, new Plugin::tClassFactory<Platform::ThreadPool>());
+		    registry->Install(Platform::iLoadBalancer::kCIDLoadBalanceMinimize, new Plugin::tClassFactory<Platform::LoadBalanceMinimize>());
+			registry->Install(Platform::iTimerService::kCID, new Plugin::tClassFactory<Platform::TimerService>());
+		}
+        return GOM::kOK;
+    }
 	return GOM::kInvalidParameter;
 }
 
 static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry)
 {
-	if (registry)
+    int32_t references;
+	if (registry && GOM::Succeeded(registry->Unregister(sPluginIID, &references)))
 	{
-		registry->Remove(Concurrency::iLoadBalancer::kCID);
-		registry->Remove(Concurrency::iThreadPool::kCID);
-		registry->Remove(Concurrency::iWorkBuffer::kCID);
-		registry->Remove(Concurrency::iScheduler::kCID);
-		registry->Remove(Concurrency::iFence::kCID);
-		registry->Remove(Concurrency::iThreadTimes::kCID);
+        if (references == 0)
+        {
+			registry->Remove(Platform::iTimerService::kCID);
+			registry->Remove(Platform::iLoadBalancer::kCIDLoadBalanceMinimize);
+			registry->Remove(Platform::iThreadPool::kCID);
+            registry->Remove(Platform::iWorkBuffer::kCID);
+            registry->Remove(Platform::iScheduler::kCID);
+            registry->Remove(Platform::iFence::kCID);
 
-		CPF_DROP_LOG(Concurrency);
+            CPF_DROP_LOG(Concurrency);
+        }
 		return GOM::kOK;
 	}
 	return GOM::kInvalidParameter;

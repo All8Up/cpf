@@ -12,7 +12,7 @@
 #include "CPF/Platform/Desktop/OSWindowData.hpp"
 
 #include "CPF/Platform/Graphics.hpp"
-#include "CPF/Time/Value.hpp"
+#include "CPF/Time.hpp"
 
 using namespace CPF;
 
@@ -21,6 +21,9 @@ using namespace CPF;
 // based on configuration if desired.
 #define GRAPHICS_DRIVER CPF_CONCAT(PlatformGraphics, CPF_GRAPHICS_DRIVER)
 
+CPF_BEGIN_PLUGINS(SwapChainApp)
+CPF_INSTALL_PLUGIN(SwapChainApp, PlatformDesktopSDL2);
+CPF_INSTALL_PLUGIN(SwapChainApp, GRAPHICS_DRIVER);
 
 /** @brief This is a basic 'renderer' layer on top of the driver layer.
  *  For the purposes here, it simply sets up a swap chain and
@@ -121,8 +124,7 @@ public:
 			400, 400,
 			Platform::Desktop::WindowFlags::eNone
 		};
-		CPF_INSTALL_STATIC_PLUGIN(mpRegistry, PlatformDesktopSDL2);
-		CPF_INSTALL_STATIC_PLUGIN(mpRegistry, GRAPHICS_DRIVER);
+		CPF_INSTALL_PLUGINS(mpRegistry, SwapChainApp);
 		if (GOM::Succeeded(mpRegistry->Create(nullptr, Platform::iDesktop::kCID, Platform::iDesktop::kIID, desktop.AsVoidPP())) &&
 			GOM::Succeeded(mpRegistry->Create(nullptr, Platform::Desktop::iEventLoop::kCID, Platform::Desktop::iEventLoop::kIID, events.AsVoidPP())) &&
 			(mpWindow = IntrusivePtr<Platform::Desktop::iWindow>(desktop->CreateWindow(&windowDesc).TryOK()))
@@ -133,7 +135,7 @@ public:
 			if (mpRenderer != nullptr && mpRenderer->Initialize(mpRegistry, mpWindow))
 			{
 				// Run the application event loop until quit is received.
-				while (events->PollTillEmpty() != Platform::Desktop::kQuit)
+				while (events->RunAvailable() != Platform::Desktop::kQuit)
 				{
 					(*mpRenderer)();
 				}
@@ -144,8 +146,7 @@ public:
 		else
 			result = -1;
 
-		CPF_REMOVE_STATIC_PLUGIN(mpRegistry, GRAPHICS_DRIVER);
-		CPF_REMOVE_STATIC_PLUGIN(mpRegistry, PlatformDesktopSDL2);
+		CPF_REMOVE_PLUGINS(mpRegistry, SwapChainApp);
 		return result;
 	}
 

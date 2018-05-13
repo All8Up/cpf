@@ -59,6 +59,8 @@ GOM::Result CPF_STDCALL CommandBuffer::Initialize(Graphics::iDevice* device, Gra
 		mpAllocator = static_cast<CommandPool*>(pool)->GetCommandAllocator();
 		mType = type;
 
+		device->CreateFence(false, mpFence.AsTypePP());
+
 		GOM::Result result = _AddCommandList();
 		if (GOM::Succeeded(result))
 		{
@@ -370,10 +372,23 @@ GOM::Result CPF_STDCALL CommandBuffer::EndRenderPass()
 
 void CommandBuffer::Submit(ID3D12CommandQueue* queue)
 {
+	/*
 	for (int32_t i = 0; i <= mCurrent; ++i)
 	{
 		const CommandListVector& clv = mCommandLists[i];
 		queue->ExecuteCommandLists(UINT(clv.size()), reinterpret_cast<ID3D12CommandList* const*>(clv.data()));
+	}
+	*/
+	// HACK: Temporary hack fix for issue with improper barriers.
+	// NOTE: The likely issue that this fixes is that the command lists should be
+	// submitted when the render passes are changed.  The command lists should be
+	// in between the barriers with which they are associated.
+	for (int32_t i=0; i<=mCurrent; ++i)
+	{
+		queue->ExecuteCommandLists(UINT(mCommandLists[i].size()), reinterpret_cast<ID3D12CommandList* const*>(mCommandLists[i].data()));
+		mpDevice->Signal(mpFence);
+		mpFence->Wait();
+		mpFence->Reset();
 	}
 }
 
@@ -387,7 +402,7 @@ GOM::Result CommandBuffer::_AddCommandList()
 	++mCurrent;
 
 	// Make space if needed.
-	if (mCurrent >= mCommandLists.size())
+	if (size_t(mCurrent) >= mCommandLists.size())
 	{
 		mCommandLists.push_back(CommandListVector());
 		mCommandLists[mCurrent].push_back(CommandListPtr());

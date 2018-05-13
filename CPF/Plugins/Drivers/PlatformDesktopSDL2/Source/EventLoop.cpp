@@ -23,7 +23,7 @@ GOM::Result EventLoop::Run()
 	}
 }
 
-GOM::Result EventLoop::Poll()
+GOM::Result EventLoop::RunOne()
 {
 	SDL_Event event;
 	const auto result = SDL_PollEvent(&event);
@@ -37,10 +37,10 @@ GOM::Result EventLoop::Poll()
 	return GOM::kNone;
 }
 
-GOM::Result CPF_STDCALL EventLoop::PollTillEmpty()
+GOM::Result CPF_STDCALL EventLoop::RunAvailable()
 {
 	GOM::Result loopResult;
-	while ((loopResult = Poll()) == GOM::kOK)
+	while ((loopResult = RunOne()) == GOM::kOK)
 		;
 	return loopResult;
 }

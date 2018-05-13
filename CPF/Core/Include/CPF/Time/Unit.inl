@@ -1,8 +1,5 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/Time/Value.hpp"
-#include "CPF/Time/Ratio.hpp"
-
 
 namespace CPF
 {

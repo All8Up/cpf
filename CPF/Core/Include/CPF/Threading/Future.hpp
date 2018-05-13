@@ -69,7 +69,6 @@ namespace CPF
 		std::exception_ptr mException;
 	};
 
-
 	//////////////////////////////////////////////////////////////////////////
 	template <typename TYPE>
 	class Future;
@@ -115,19 +114,6 @@ namespace CPF
 		
 	};
 
-	template <>
-	class Future<void>
-	{
-	public:
-		Future() {}
-		Future(const Future&) = delete;
-		Future& operator =(const Future&) = delete;
-		Future(Future&&) noexcept {}
-		Future& operator =(Future&&) noexcept { return *this; }
-
-		void Get() {}
-	};
-
 	//////////////////////////////////////////////////////////////////////////
 	template <typename TYPE>
 	class Promise;
@@ -163,7 +149,7 @@ namespace CPF
 				mpFutureState->SetException(std::make_exception_ptr<std::exception>(std::exception()));
 		}
 
-		Future<TYPE> GetFuture() { return STD::Move(mFuture); }
+		Future<TYPE>&& GetFuture() { return STD::Move(mFuture); }
 
 		void SetResult(TYPE&& value) { if (mpFutureState) mpFutureState->SetResult(STD::Move(value)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
 		void SetException(std::exception_ptr&& ptr) { if (mpFutureState) mpFutureState->SetException(STD::Move(ptr)); else throw std::exception(); mpFutureState.Adopt(nullptr); }
@@ -177,21 +163,5 @@ namespace CPF
 	class Promise<TYPE&>
 	{
 
-	};
-
-	template <>
-	class Promise<void>
-	{
-	public:
-		Promise() {}
-		Promise(const Promise&) = delete;
-		Promise& operator =(const Promise&) = delete;
-		Promise(Promise&&) noexcept {}
-		Promise& operator =(Promise&&) noexcept { return *this; }
-
-		Future<void> GetFuture() { return STD::Move(mFuture); }
-
-	private:
-		Future<void> mFuture;
 	};
 }

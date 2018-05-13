@@ -1,4 +1,4 @@
-#include "CPF/Time/Value.hpp"
+#include "CPF/Time.hpp"
 #include "TimeTestFixture.hpp"
 
 TEST_F(TimeTestFixture, InitializationValue)

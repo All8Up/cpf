@@ -1,0 +1,28 @@
+import iUnknown from CPF::GOM;
+import ThreadTimeInfo from CPF::Platform::Concurrency;
+
+module CPF::Platform;
+
+interface iThreadTimes;
+
+enum SchedulingPriority : s32
+{
+    eLowest = 0,
+    eLow,
+    eNormal,
+    eHigh,
+    eHighest
+}
+
+interface iThreadController : GOM::iUnknown
+{
+	s32 GetMaxThreads();
+    result SetMaxThreads(s32 count);
+	s32 GetActiveThreads();
+	void SetActiveThreads(s32 count);
+	void SetPriority(SchedulingPriority level);
+	SchedulingPriority GetPriority();
+    f32 GetUtilization();
+    void GetThreadTimeInfo(ThreadTimeInfo* timeInfo);
+    s32 GetDesiredThreadCount();
+}

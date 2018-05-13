@@ -21,20 +21,21 @@ namespace CPF
 			using WorkFunction = STD::Function<void()>;
 
 			Reactor();
-			~Reactor();
+			Reactor(Reactor&&) = delete;
+			Reactor(const Reactor&) = delete;
+			~Reactor() = default;
+
+			Reactor& operator =(Reactor&&) = delete;
+			Reactor& operator =(const Reactor&) = delete;
 
 			bool Run();
 			bool RunOne();
 			void Quit();
 
-		private:
-			friend class ReactorQueue;
-			
-			Reactor(Reactor&&) = delete;
-			Reactor(const Reactor&) = delete;
-			Reactor& operator =(Reactor&&) = delete;
-			Reactor& operator =(const Reactor&) = delete;
+			class Queue;
+			Queue GetQueue();
 
+		private:
 			bool mExit;
 			Mutex mLock;
 			ConditionVariable mCondition;
@@ -45,24 +46,26 @@ namespace CPF
 
 
 		/** @brief The queue feeder.  Push work in here, it comes out in the reactor. */
-		class ReactorQueue
+		class Reactor::Queue
 		{
-		public:
-			ReactorQueue();
-			ReactorQueue(Reactor*);
-			
-			using WorkFunction = Reactor::WorkFunction;
+		public:			
+			using WorkFunction = WorkFunction;
 
-			void Initialize(Reactor*);
+			Queue() = default;
+			Queue(const Queue&) = delete;
+			Queue(Queue&&) = default;
+			~Queue() = default;
+
+			Queue& operator = (const Queue&) = delete;
+			Queue& operator = (Queue&&) = default;
 
 			void operator ()(WorkFunction&) const;
 			void operator ()(WorkFunction&&) const;
 
 		private:
-			ReactorQueue(const ReactorQueue&) = delete;
-			ReactorQueue(ReactorQueue&&) = delete;
-			ReactorQueue& operator = (const ReactorQueue&) = delete;
-			ReactorQueue& operator = (ReactorQueue&&) = delete;
+			friend class Reactor;
+
+			explicit Queue(Reactor*);
 
 			Reactor* mpReactor;
 		};
@@ -72,12 +75,6 @@ namespace CPF
 		inline Reactor::Reactor()
 			: mExit(false)
 		{}
-
-
-		/** @brief Destructor. */
-		inline Reactor::~Reactor()
-		{}
-
 
 		/**
 		* @brief Runs the work queue until told to exit.
@@ -94,7 +91,7 @@ namespace CPF
 				while (!mQueue.empty())
 				{
 					// Get something off the queue.
-					WorkFunction func = STD::Move(mQueue.front());
+					const auto func = STD::Move(mQueue.front());
 					mQueue.pop();
 
 					// Execute the work.  Unlock while working so as not to deadlock.
@@ -106,7 +103,7 @@ namespace CPF
 				// Check for exit.
 				if (mExit)
 				{
-					bool result = mQueue.empty();
+					const auto result = mQueue.empty();
 					mLock.Release();
 					return result;
 				}
@@ -119,7 +116,7 @@ namespace CPF
 
 		/**
 		* @brief Runs one item in the work queue.
-		* @return true if it succeeds, false if it fails.
+		* @return true if it succeeds in running work, false if there is nothing to do.
 		*/
 		inline bool Reactor::RunOne()
 		{
@@ -132,7 +129,7 @@ namespace CPF
 			}
 
 			// Get the work.
-			WorkFunction func = STD::Move(mQueue.front());
+			const auto func = STD::Move(mQueue.front());
 			mQueue.pop();
 			mLock.Release();
 
@@ -151,38 +148,25 @@ namespace CPF
 			mCondition.ReleaseAll();
 		}
 
+		inline Reactor::Queue Reactor::GetQueue()
+		{
+			return Queue(this);
+		}
 
 		//////////////////////////////////////////////////////////////////////////
-		/** @brief Default constructor. */
-		inline ReactorQueue::ReactorQueue()
-			: mpReactor(nullptr)
-		{}
-
-
 		/**
 		* @brief Constructor.
 		* @param [in,out] reactor If non-null, the reactor.
 		*/
-		inline ReactorQueue::ReactorQueue(Reactor* reactor)
+		inline Reactor::Queue::Queue(Reactor* reactor)
 			: mpReactor(reactor)
 		{}
-
-
-		/**
-		* @brief Initializes this object.
-		* @param [in,out] reactor If non-null, the reactor.
-		*/
-		inline void ReactorQueue::Initialize(Reactor* reactor)
-		{
-			mpReactor = reactor;
-		}
-
 
 		/**
 		* @brief Push a work function onto the work queue.
 		* @param [in,out] func The function.
 		*/
-		inline void ReactorQueue::operator ()(WorkFunction& func) const
+		inline void Reactor::Queue::operator ()(WorkFunction& func) const
 		{
 			mpReactor->mLock.Acquire();
 			mpReactor->mQueue.push(STD::Move(func));
@@ -190,12 +174,11 @@ namespace CPF
 			mpReactor->mCondition.ReleaseAll();
 		}
 
-
 		/**
 		* @brief Push a work function onto the work queue.
 		* @param [in,out] func The function.
 		*/
-		inline void ReactorQueue::operator ()(WorkFunction&& func) const
+		inline void Reactor::Queue::operator ()(WorkFunction&& func) const
 		{
 			mpReactor->mLock.Acquire();
 			mpReactor->mQueue.push(func);

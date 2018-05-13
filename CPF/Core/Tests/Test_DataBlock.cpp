@@ -30,5 +30,5 @@ TEST(DataBlock, Basics)
 	EXPECT_EQ(td1[3], 2);
 	EXPECT_EQ(td1[4], 1);
 
-	DataBlock::Destroy(t0);
+	t0->Destroy();
 }

@@ -1,11 +1,14 @@
 import iRegistry from CPF::Plugin;
+import iThreadController from CPF::Platform::Concurrency;
 
-module CPF::Concurrency;
+module CPF::Platform;
 
-interface iLoadBalancer : GOM::iUnknown
+interface iLoadBalancer : iThreadController
 {
-	const class_id kCID("CPF::Concurrency::iLoadBalancer");
+    const class_id kCIDLoadBalance("CPF::Platform::LoadBalance");
+    const class_id kCIDLoadBalanceMinimize("CPF::Platform::LoadBalanceMinimize");
 
-	result Initialize(Plugin::iRegistry* registry, s32 count, iScheduler** schedulers);
-	void Balance();
+    result SetControllers(s32 count, iThreadController** controllers);
+    result GetControllers(s32* count, iThreadController** controllers);
+    result RebalanceThreads();
 }

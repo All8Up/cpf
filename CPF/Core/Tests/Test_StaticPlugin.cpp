@@ -10,4 +10,7 @@ TEST(StaticPlugin, Exists)
 	CPF::PluginHost::CreateRegistry(registry.AsTypePP());
 	CPF_INSTALL_STATIC_PLUGIN(registry, TestPlugin);
 	EXPECT_TRUE(CPF::GOM::Succeeded(registry->Exists(CPF::kTestPluginCID)));
+	CPF_REMOVE_STATIC_PLUGIN(registry, TestPlugin);
 }
+
+template <> PluginRegistry<void>::PluginInstance* PluginRegistry<void>::mpInstances = nullptr;

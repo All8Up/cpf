@@ -323,6 +323,7 @@ GOM::Result CPF_STDCALL Device::CreateDepthStencilView(
 	Graphics::iImageView** oiv
 )
 {
+	(void)dsvd;
 	if (img && oiv)
 	{
 		ImageView* imageView = new ImageView();

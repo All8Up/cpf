@@ -23,11 +23,12 @@ CPF_IDL_GENERATOR(
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iFence.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iLoadBalancer.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iScheduler.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iThreadController.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iThreadPool.idl
-		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iThreadTimes.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iWorkBuffer.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/ThreadTimeInfo.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/WorkContext.idl
+		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Concurrency/iTimerService.idl
 
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Desktop/iClipboard.idl
 		${CMAKE_CURRENT_SOURCE_DIR}/IDL/Desktop/iEventLoop.idl

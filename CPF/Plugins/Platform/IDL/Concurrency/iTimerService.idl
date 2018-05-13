@@ -1,0 +1,24 @@
+import iUnknown from CPF::GOM;
+
+module CPF::Platform;
+
+enum TimerHandle : u64 { eInvalid = 0 }
+
+success Complete("Concurrency", "First found timers fired");
+failure NoTimers("Concurrency", "Service has no active timers")
+failure Interrupted("Concurrency", "Operation interrupted");
+failure Canceled("Concurrency", "Timer canceled");
+TimerFunction = void(TimerHandle handle, result timerResult, void* context);
+
+interface iTimerService : GOM::iUnknown
+{
+	const class_id kCID("CPF::Platform::iTimerService");
+
+	result WaitForFirst();
+	result Tick(s64 deltaTimeMs, s64* outTriggered);
+	void Shutdown();
+
+	TimerHandle Delay(s64 lengthMs, TimerFunction callback, void* context);
+	TimerHandle Interval(s64 lengthMs, TimerFunction callback, void* context);
+    result Cancel(TimerHandle handle);
+}

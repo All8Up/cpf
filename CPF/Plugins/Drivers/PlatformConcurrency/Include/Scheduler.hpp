@@ -1,7 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "Collections/RingBuffer.hpp"
 #include "Backoff.hpp"
+#include "Collections/RingBuffer.hpp"
+#include "CPF/GOM/tUnknown.hpp"
 #include "CPF/Std/Deque.hpp"
 #include "CPF/Threading/Thread.hpp"
 #include "CPF/Threading/Mutex.hpp"
@@ -9,19 +10,17 @@
 #include "CPF/Threading/ConditionVariable.hpp"
 #include "CPF/Platform/Concurrency/iScheduler.hpp"
 #include "CPF/Platform/Concurrency/ThreadTimeInfo.hpp"
-#include "CPF/GOM/tUnknown.hpp"
 #include <atomic>
 
 namespace CPF
 {
-	namespace Concurrency
+	namespace Platform
 	{
 		namespace Detail
 		{
 			struct Opcodes;
 		}
 
-		struct iThreadTimes;
 		struct iWorkBuffer;
 		struct iThreadTimes;
 
@@ -34,9 +33,8 @@ namespace CPF
 			~Scheduler();
 
 			//
+            static constexpr float kUtilizationSampleRate = 0.25f;
 			static constexpr int kQueueSize = 4096;
-			static constexpr int kMaxLocalSlots = 4096;
-			static constexpr int kMaxSharedSlots = 4096;
 			using InitOrShutdownFunc_t = WorkFunction;
 			using OpcodeFunc_t = void(*)(Scheduler &vm, const WorkContext* context, int64_t index);
 			struct Instruction
@@ -46,15 +44,20 @@ namespace CPF
 				void* mpContext;
 			};
 
+            // iThreadController overrides.
+            int CPF_STDCALL GetMaxThreads() override { return GetAvailableThreads(); }
+            GOM::Result CPF_STDCALL SetMaxThreads(int32_t count) override { (void)count; return GOM::kOK; }
+            int CPF_STDCALL GetActiveThreads() override { return GetCurrentThreads(); }
+            void CPF_STDCALL SetActiveThreads(int count) override;
+            void CPF_STDCALL SetPriority(SchedulingPriority level) override;
+            SchedulingPriority CPF_STDCALL GetPriority() override;
+            float CPF_STDCALL GetUtilization() override;
+            void CPF_STDCALL GetThreadTimeInfo(ThreadTimeInfo* timeInfo) override;
+            int32_t CPF_STDCALL GetDesiredThreadCount() override;
+
 			// iScheduler overrides.
 			GOM::Result CPF_STDCALL Initialize(int threadCount, WorkFunction init, WorkFunction shutdown, void* context) override;
 			void CPF_STDCALL Shutdown() override;
-
-			int CPF_STDCALL GetMaxThreads() override { return GetAvailableThreads(); }
-			int CPF_STDCALL GetActiveThreads() override { return GetCurrentThreads(); }
-			void CPF_STDCALL SetActiveThreads(int count) override;
-			void CPF_STDCALL SetPriority(SchedulingPriority level) override;
-			SchedulingPriority GetPriority() override;
 
 			void CPF_STDCALL Execute(iWorkBuffer*) override;
 			void CPF_STDCALL Submit(iFence*) override;
@@ -65,9 +68,6 @@ namespace CPF
 			int GetAvailableThreads() const;
 			int GetCurrentThreads() const;
 			void* GetContext() const;
-
-			//
-			void Submit(iThreadTimes*);
 
 		private:
 			//////////////////////////////////////////////////////////////////////////
@@ -83,6 +83,7 @@ namespace CPF
 			bool _StartMaster();
 			void _EndMaster();
 			bool _FetchWork();
+            void _UpdateThreadTimes();
 
 			// Spin lock variable for the thread fetching instructions.
 			std::atomic<int32_t> mControlLock;
@@ -125,13 +126,18 @@ namespace CPF
 
 			// Backoff primitive for the primary loop spin.
 			Backoff mLoopBackoff[kMaxThreads];
-			// Backoff primitive for the opcode wait.
-			Backoff mWorkBackoff[kMaxThreads];
 
 			// Semaphore for the sleep opcodes.
 			Threading::Semaphore mSleepOp;
 
-			ThreadTimeInfo mTimeInfo;
+            Threading::Mutex mTimeLock;
+            std::atomic<int64_t> mLastUpdate;
+            Time::Value mUpdateRate;
+
+            ThreadTimeInfo mCurrentUtilization;
+			ThreadTimeInfo mUpdatedUtilization;
+			ThreadTimeInfo mLastTimeInfo;
+
 			CPF_DLL_SAFE_END;
 		};
 	}

@@ -1,6 +1,6 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
-#include "CPF/Time/Unit.hpp"
+#include "CPF/Time.hpp"
 #include <gtest/gtest.h>
 
 class TimeTestFixture : public ::testing::Test

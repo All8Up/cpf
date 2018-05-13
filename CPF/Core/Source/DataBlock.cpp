@@ -80,6 +80,11 @@ size_t DataBlock::GetSize() const
 	return mTotalSize;
 }
 
+void* DataBlock::GetData()
+{
+	return this;
+}
+
 const void* DataBlock::GetData() const
 {
 	return this;
@@ -93,9 +98,15 @@ DataBlock* DataBlock::Create(size_t totalSize, size_t sectionCount)
 	return result;
 }
 
-void DataBlock::Destroy(DataBlock* dataBlock)
+DataBlock* DataBlock::Create(size_t totalSize)
 {
-	auto* buffer = reinterpret_cast<uint8_t*>(dataBlock);
+	auto* buffer = new uint8_t[totalSize];
+	return reinterpret_cast<DataBlock*>(buffer);
+}
+
+void DataBlock::Destroy()
+{
+	auto* buffer = reinterpret_cast<uint8_t*>(this);
 	delete[] buffer;
 }
 

@@ -275,4 +275,36 @@ namespace CPF
 		}
 		return false;
 	}
+
+    //////////////////////////////////////////////////////////////////////////
+    template <>
+    class Option<void>
+    {
+    public:
+        Option() : mType(Type::eNotSet) {}
+        Option(Option&& rhs) noexcept : mType(rhs.mType) {}
+        ~Option() {}
+
+        static Option Some() { return Option<void>{ Type::eSome }; }
+        static Option None() { return Option<void>{ Type::eNone }; }
+
+        Option& operator = (Option&& rhs) noexcept { mType = rhs.mType; return *this; }
+
+        bool IsSome() const { return mType == Type::eSome; }
+        bool IsNone() const { return mType == Type::eNone; }
+
+    private:
+        enum class Type : int32_t
+        {
+            eNotSet,
+            eSome,
+            eNone
+        };
+        Option(const Type type) : mType(type) {}
+
+        Option(const Option&) = delete;
+        Option& operator = (const Option&) = delete;
+
+        Type mType;
+    };
 }

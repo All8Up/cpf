@@ -1,10 +1,10 @@
 import iUnknown from CPF::GOM;
 
-module CPF::Concurrency;
+module CPF::Platform;
 
 interface iFence : GOM::iUnknown
 {
-	const class_id kCID("CPF::Concurrency::iFence");
+	const class_id kCID("CPF::Platform::iFence");
 
 	void Wait();
 	void Signal();

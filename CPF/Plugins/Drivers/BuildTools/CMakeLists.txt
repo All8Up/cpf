@@ -3,7 +3,7 @@ if (NOT CPF_PLUGIN_BINARY_IDLParser)
 	set (WITH_DEMO OFF CACHE BOOL "" FORCE)
 	cmake_policy (SET CMP0054 NEW)
 	add_subdirectory ("${CMAKE_CURRENT_LIST_DIR}/External/Antlr4/Cpp")
-	set_property (TARGET antlr4_static PROPERTY FOLDER Plugins/Drivers/Engine/External)
+	set_property (TARGET antlr4_static PROPERTY FOLDER CPF/External)
 
 	find_package (Java COMPONENTS Runtime)
 
@@ -149,49 +149,48 @@ if (NOT CPF_PLUGIN_BINARY_IDLParser)
 			)
 		endif ()
 
-	set_property (TARGET IDLParser PROPERTY FOLDER Plugins/Drivers/BuildTools)
-	set_property (TARGET IDLParser_s PROPERTY FOLDER Plugins/Drivers/BuildTools)
-	set_property (TARGET IDLParser_Gen PROPERTY FOLDER Plugins/Drivers/BuildTools)
+		set_property (TARGET IDLParser PROPERTY FOLDER Plugins/Drivers/BuildTools)
+		set_property (TARGET IDLParser_s PROPERTY FOLDER Plugins/Drivers/BuildTools)
+		set_property (TARGET IDLParser_Gen PROPERTY FOLDER Plugins/Drivers/BuildTools)
 
-	if (MSVC)
-		target_compile_options (IDLParser_Gen PRIVATE /wd4100)
-	endif ()
+		if (MSVC)
+			target_compile_options (IDLParser_Gen PRIVATE /wd4100)
+		endif ()
 
-	# ###############################################
-	source_group (IDL FILES ${IDL_FILES})
-	source_group (Include FILES ${INCLUDE_FILES} ${CPP_IDL_FILES})
-	source_group (Include\\IDL FILES ${IDLIncludes})
-	source_group (Include\\IDL\\CodeGen FILES ${IDLCodeGenIncludes})
-	source_group (Source FILES ${SOURCE_FILES})
-	source_group (Source\\IDL FILES ${IDLSources})
-	source_group (Source\\IDL\\CodeGen FILES ${IDLCodeGenSources})
-	source_group (Grammar FILES ${CMAKE_CURRENT_LIST_DIR}/Grammar/IDLLexer.g4 ${CMAKE_CURRENT_LIST_DIR}/Grammar/IDLParser.g4)
-	source_group (Generated FILES ${ParserFiles})
+		# ###############################################
+		source_group (IDL FILES ${IDL_FILES})
+		source_group (Include FILES ${INCLUDE_FILES} ${CPP_IDL_FILES})
+		source_group (Include\\IDL FILES ${IDLIncludes})
+		source_group (Include\\IDL\\CodeGen FILES ${IDLCodeGenIncludes})
+		source_group (Source FILES ${SOURCE_FILES})
+		source_group (Source\\IDL FILES ${IDLSources})
+		source_group (Source\\IDL\\CodeGen FILES ${IDLCodeGenSources})
+		source_group (Grammar FILES ${CMAKE_CURRENT_LIST_DIR}/Grammar/IDLLexer.g4 ${CMAKE_CURRENT_LIST_DIR}/Grammar/IDLParser.g4)
+		source_group (Generated FILES ${ParserFiles})
 
-	add_library (i_IDLParser INTERFACE)
-	target_include_directories (i_IDLParser
-		INTERFACE
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
-			$<INSTALL_INTERFACE:Interface>
-	)
+		add_library (i_IDLParser INTERFACE)
+		target_include_directories (i_IDLParser
+			INTERFACE
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Interface>
+				$<INSTALL_INTERFACE:Interface>
+		)
 
-	add_custom_command (
-		TARGET IDLParser POST_BUILD
-		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:IDLParser> ${CPF_COMMON_PLUGINS}/IDLParser.cfp
-	)
+		add_custom_command (
+			TARGET IDLParser POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:IDLParser> ${CPF_COMMON_PLUGINS}/IDLParser.cfp
+		)
 
+		# ###############################################
+		cpf_binary_plugin(
+			SHARED
+			STATIC
+			NAME
+				IDLParser
+			DEPENDENCIES
+				antlr4_static
+				IDLParser_Gen
+		)
 	else ()
 		message (WARNING "Must have the Java runtime in order to build the IDL tool.")
 	endif ()
-
-	# ###############################################
-	cpf_binary_plugin(
-		SHARED
-		STATIC
-		NAME
-			IDLParser
-		DEPENDENCIES
-			antlr4_static
-			IDLParser_Gen
-	)
 endif ()

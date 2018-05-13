@@ -8,9 +8,11 @@ namespace CPF
 	namespace STD
 	{
 		/**
-		 * PackedPool
-		 * An pool container which uses handles such that the content can
-		 * be maintained in contiguous memory with no empty spaces.
+		 @brief A packed pod pool.  Handles are used such that the internal data can migrate
+		 and maintain a continguous block of memory.
+		 @tparam HANDLE_TYPE Type of the handle.  Must be 64 bits, generally you use an enum class to maintain type safety though.
+		 @tparam DATA_TYPE Type of the data type.
+		 @tparam BLOCK_SIZE Number of handles added on each grow, the internal data buffer uses std standard growth.
 		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE = 1024>
 		class PackedPool
@@ -57,7 +59,9 @@ namespace CPF
 			DataVector mData;
 		};
 
-		//////////////////////////////////////////////////////////////////////////
+		/**
+		 @brief An iterator.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		class PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::iterator
 		{
@@ -85,6 +89,9 @@ namespace CPF
 			typename DataVector::iterator mIt;
 		};
 
+		/**
+		 @brief A constant iterator.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		class PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::const_iterator
 		{
@@ -112,7 +119,12 @@ namespace CPF
 			typename DataVector::const_iterator mIt;
 		};
 
-		//////////////////////////////////////////////////////////////////////////
+
+		/**
+		 @brief Allocates a slot in the pool.
+		 @param [in,out] data Output pointer to the new data area.
+		 @return A HANDLE_TYPE.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		HANDLE_TYPE PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Alloc(DATA_TYPE** data)
 		{
@@ -131,6 +143,11 @@ namespace CPF
 			return result;
 		}
 
+		/**
+		 @brief Inserts a new record.
+		 @param data The data.
+		 @return A HANDLE_TYPE.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		HANDLE_TYPE PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Insert(const DATA_TYPE& data)
 		{
@@ -140,6 +157,11 @@ namespace CPF
 			return result;
 		}
 
+		/**
+		 @brief Inserts a new record via move.
+		 @param [in,out] data The data.
+		 @return A HANDLE_TYPE.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		HANDLE_TYPE PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Insert(DATA_TYPE&& data)
 		{
@@ -149,6 +171,11 @@ namespace CPF
 			return result;
 		}
 
+		/**
+		 @brief Erases the given handle and it's associated data.
+		 @param handle The handle.
+		 @return True if it succeeds, false if it fails.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		bool PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Erase(HANDLE_TYPE handle)
 		{
@@ -169,6 +196,11 @@ namespace CPF
 			return false;
 		}
 
+		/**
+		 @brief Gets a pointer to the data referred to by the handle.
+		 @param handle The handle.
+		 @return Null if it fails, else a pointer to a DATA_TYPE.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		DATA_TYPE* PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Get(HANDLE_TYPE handle)
 		{
@@ -180,6 +212,11 @@ namespace CPF
 			return nullptr;
 		}
 
+		/**
+		 @brief Gets a pointer to the data referred to by the handle.
+		 @param handle The handle.
+		 @return Null if it fails, else a pointer to a const DATA_TYPE.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		const DATA_TYPE* PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::Get(HANDLE_TYPE handle) const
 		{
@@ -191,24 +228,40 @@ namespace CPF
 			return nullptr;
 		}
 
+		/**
+		 @brief Gets the begin iterator.
+		 @return A PackedPool<HANDLE_TYPE,DATA_TYPE,BLOCK_SIZE>::iterator.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::begin()
 		{
 			return iterator(mData.begin());
 		}
 
+		/**
+		 @brief Gets the const begin iterator.
+		 @return A PackedPool<HANDLE_TYPE,DATA_TYPE,BLOCK_SIZE>::const_iterator.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::const_iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::begin() const
 		{
 			return const_iterator(mData.begin());
 		}
 
+		/**
+		 @brief Gets the end iterator.
+		 @return A PackedPool<HANDLE_TYPE,DATA_TYPE,BLOCK_SIZE>::iterator.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::end()
 		{
 			return iterator(mData.end());
 		}
 
+		/**
+		 @brief Gets the const end iterator.
+		 @return A PackedPool<HANDLE_TYPE,DATA_TYPE,BLOCK_SIZE>::const_iterator.
+		 */
 		template <typename HANDLE_TYPE, typename DATA_TYPE, size_t BLOCK_SIZE>
 		typename PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::const_iterator PackedPool<HANDLE_TYPE, DATA_TYPE, BLOCK_SIZE>::end() const
 		{

@@ -115,3 +115,8 @@ GOM::Result CPF_STDCALL Window::EmitEvent(int64_t id, size_t eventSize, const vo
 {
 	return mEmitter.EmitEvent(id, eventSize, eventData);
 }
+
+GOM::Result CPF_STDCALL Window::SetEventSink(GOM::iEventSink* sink)
+{
+    return mEmitter.SetEventSink(sink);
+}

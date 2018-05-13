@@ -10,7 +10,7 @@ class TestThreadingReactor : public ::testing::Test
 public:
 	void SetUp() override
 	{
-		mQueue.Initialize(&mReactor);
+		mQueue = mReactor.GetQueue();
 	}
 	void TearDown() override
 	{}
@@ -34,7 +34,7 @@ public:
 	}
 
 	CPF::Threading::Reactor mReactor;
-	CPF::Threading::ReactorQueue mQueue;
+	CPF::Threading::Reactor::Queue mQueue;
 	CPF::Threading::Thread::Group mGroup;
 	bool* mpData;
 };

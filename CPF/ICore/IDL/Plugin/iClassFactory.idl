@@ -1,4 +1,5 @@
 import iUnknown from CPF::GOM;
+import SemVer from CPF;
 
 module CPF::Plugin;
 
@@ -13,4 +14,7 @@ interface iRegistry;
 interface iClassFactory : GOM::iUnknown
 {
 	result CreateInstance (iRegistry* registry, GOM::iUnknown* outer, [out] GOM::iUnknown** outInstance);
+	result GetName(int32_t* charCount, char* outName);
+	result GetDescription(int32_t* charCount, char* outDesc);
+	result GetVersion(SemVer* outVersion);
 }

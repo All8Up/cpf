@@ -5,7 +5,7 @@
 
 namespace CPF
 {
-	namespace Concurrency
+	namespace Platform
 	{
 		/**
 		 * @brief Helper template implements an exponential backoff using pause and eventually OS sleep calls.

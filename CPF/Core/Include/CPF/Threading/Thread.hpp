@@ -1,10 +1,8 @@
 //////////////////////////////////////////////////////////////////////////
 #pragma once
 #include "Export.hpp"
-#include "CPF/Threading/Types.hpp"
-#include "CPF/Time/Value.hpp"
-#include "CPF/Std/Functional.hpp"
-#include "CPF/Std/Move.hpp"
+#include "CPF/Time.hpp"
+#include "CPF/STD/Functional.hpp"
 #include <thread>
 
 namespace CPF

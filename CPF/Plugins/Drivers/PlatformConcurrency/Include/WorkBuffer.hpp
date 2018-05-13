@@ -9,7 +9,7 @@
 
 namespace CPF
 {
-	namespace Concurrency
+	namespace Platform
 	{
 		/** @brief Execution queue for the scheduler. */
 		class WorkBuffer : public GOM::tUnknown<iWorkBuffer>

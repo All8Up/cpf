@@ -3,6 +3,7 @@
 */
 #pragma once
 #include <CPF/iRefCounted.hpp>
+#include <CPF/STD/Move.hpp>
 
 namespace CPF
 {
@@ -71,6 +72,20 @@ namespace CPF
 		TARGET* mpTarget;
 	};
 
+    template<typename TARGET>
+    IntrusivePtr<TARGET>&& AdoptIntrusivePtr(TARGET* target)
+    {
+        IntrusivePtr<TARGET> result;
+        result.Adopt(target);
+        return STD::Move(result);
+    }
+
+    template <typename TARGET>
+    IntrusivePtr<TARGET>&& TakeIntrusivePtr(TARGET* target)
+    {
+        IntrusivePtr<TARGET> result(target);
+        return STD::Move(result);
+    }
 
 	template<typename TARGET>
 	IntrusivePtr<TARGET>::IntrusivePtr()

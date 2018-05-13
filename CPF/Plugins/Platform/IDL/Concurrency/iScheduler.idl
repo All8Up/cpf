@@ -1,38 +1,21 @@
-import iUnknown from CPF::GOM;
+import iThreadController from CPF::Platform::Concurrency;
 
-module CPF::Concurrency;
+module CPF::Platform;
 
 struct WorkContext;
 
 interface iFence;
 interface iWorkBuffer;
-interface iThreadTimes;
 
 WorkFunction = void(const WorkContext* context, void* data);
 
-enum SchedulingPriority : s32
+interface iScheduler : iThreadController
 {
-	eLowest = 0,
-	eLow,
-	eNormal,
-	eHigh,
-	eHighest
-}
-
-interface iScheduler : GOM::iUnknown
-{
-	const class_id kCID ("CPF::Concurrency::iScheduler");
+	const class_id kCID ("CPF::Platform::iScheduler");
 
 	result Initialize(s32 threadCount, WorkFunction init, WorkFunction shutdown, void* context);
 	void Shutdown();
 
-	s32 GetMaxThreads();
-	s32 GetActiveThreads();
-	void SetActiveThreads(s32 count);
-	void SetPriority(SchedulingPriority level);
-	SchedulingPriority GetPriority();
-
 	void Execute(iWorkBuffer* buffer);
 	void Submit(iFence* fence);
-	void Submit(iThreadTimes* times);
 }
