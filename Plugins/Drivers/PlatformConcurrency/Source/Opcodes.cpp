@@ -4,18 +4,19 @@
 #include "CPF/Platform/Concurrency/WorkContext.hpp"
 
 using namespace CPF;
-using namespace Concurrency;
+using namespace Platform;
 
 /**
 * @brief Wait for the opcode execution to complete.
 * @param [in,out] vm The virtual machine.
 * @param index Index into the predicate ring (wrapped).
 */
-void Detail::Opcodes::Wait(Scheduler &vm, const WorkContext* context, int64_t index)
+void Detail::Opcodes::Wait(Scheduler &vm, const WorkContext*, int64_t index)
 {
-	vm.mWorkBackoff[context->mThreadID].Reset();
-	for (; vm.mPredicateRing[index].load() >= 0;)
-		vm.mWorkBackoff[context->mThreadID]();
+    for (; vm.mPredicateRing[index].load() >= 0;)
+//        Threading::Thread::Sleep(Time::Ms(1));
+        for (int i = 0; i < 16; ++i)
+			Threading::Thread::Pause();
 }
 
 /**
@@ -34,7 +35,7 @@ void Detail::Opcodes::FirstOne(Scheduler &vm, const WorkContext* tc, int64_t ind
 	{
 		auto context = vm.mInstructionRing[index].mpContext;
 		(*vm.mInstructionRing[index].mpFunction)(tc, context);
-	}
+    }
 }
 
 /**
@@ -51,10 +52,10 @@ void Detail::Opcodes::FirstOneBarrier(Scheduler& vm, const WorkContext* tc, int6
 	// If this is the first thread into the instruction, execute.
 	if (count == vm.mActiveCount.load() - 1)
 	{
-		auto context = vm.mInstructionRing[index].mpContext;
+        auto context = vm.mInstructionRing[index].mpContext;
 		(*vm.mInstructionRing[index].mpFunction)(tc, context);
 		vm.mPredicateRing[index].store(-1);
-	}
+    }
 	else
 		Wait(vm, tc, index);
 }
@@ -73,8 +74,8 @@ void Detail::Opcodes::LastOne(Scheduler& vm, const WorkContext* tc, int64_t inde
 	// If this is the last thread to arrive, execute.
 	if (count == 0)
 	{
-		(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
-	}
+        (*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
+    }
 }
 
 /**
@@ -91,7 +92,7 @@ void Detail::Opcodes::LastOneBarrier(Scheduler& vm, const WorkContext* tc, int64
 	// If this is the last thread to arrive, execute.
 	if (count == 0)
 	{
-		(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
+        (*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 		vm.mPredicateRing[index].store(-1);
 	}
 	else
@@ -107,7 +108,7 @@ void Detail::Opcodes::LastOneBarrier(Scheduler& vm, const WorkContext* tc, int64
 void Detail::Opcodes::All(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
 	// First/Last, who cares, execute!
-	CPF_ASSERT(vm.mPredicateRing[index].load() == vm.mActiveCount.load());
+    CPF_ASSERT(vm.mPredicateRing[index].load() == vm.mActiveCount.load());
 	(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 }
 
@@ -120,7 +121,7 @@ void Detail::Opcodes::All(Scheduler& vm, const WorkContext* tc, int64_t index)
 void Detail::Opcodes::AllBarrier(Scheduler& vm, const WorkContext* tc, int64_t index)
 {
 	// All threads execute.
-	(*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
+    (*vm.mInstructionRing[index].mpFunction)(tc, vm.mInstructionRing[index].mpContext);
 
 	// Last thread consumes, others wait.
 	auto count = vm.mPredicateRing[index].fetch_sub(1)-1;
@@ -176,6 +177,7 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 			// This guarantee's no thread is sporadically woken and misses the changed active count.
 			vm.mActiveLock.Acquire();
 			vm.mActiveCount.store(target);
+			vm.mCurrentUtilization.mThreadCount = target;
 
 			// Modify each threads head index in the ring buffer so they come out
 			// of here with the intended state.
@@ -204,18 +206,24 @@ void Detail::Opcodes::ActiveThreads(Scheduler& vm, const WorkContext* tc, int64_
 		vm.mActiveLock.Acquire();
 		if (tc->mThreadID >= vm.mActiveCount.load())
 		{
-			vm.mActiveCondition.Acquire(vm.mActiveLock);
-			vm.mActiveLock.Release();
+            vm.mCurrentUtilization.mUserTime[tc->mThreadID] = Time::Value();
+            vm.mCurrentUtilization.mKernelTime[tc->mThreadID] = Time::Value();
+
+            vm.mActiveCondition.Acquire(vm.mActiveLock);
 
 			// Reset thread time so it is accurate for load balancing.
 			Threading::Thread::GetThreadTimes(
-				vm.mTimeInfo.mUserTime[tc->mThreadID],
-				vm.mTimeInfo.mKernelTime[tc->mThreadID]
+				vm.mLastTimeInfo.mUserTime[tc->mThreadID],
+				vm.mLastTimeInfo.mKernelTime[tc->mThreadID]
 			);
-		}
+			vm.mCurrentUtilization.mUserTime[tc->mThreadID] = vm.mLastTimeInfo.mUserTime[tc->mThreadID];
+			vm.mCurrentUtilization.mKernelTime[tc->mThreadID] = vm.mLastTimeInfo.mKernelTime[tc->mThreadID];
+
+            vm.mActiveLock.Release();
+        }
 		else
 		{
-			vm.mActiveLock.Release();
+            vm.mActiveLock.Release();
 			return;
 		}
 	}

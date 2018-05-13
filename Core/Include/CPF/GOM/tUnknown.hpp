@@ -4,6 +4,7 @@
 #include "CPF/GOM/ResultCodes.hpp"
 #include "CPF/GOM/iUnknown.hpp"
 #include "CPF/IntrusivePtr.hpp"
+#include <atomic>
 
 namespace CPF
 {
@@ -24,7 +25,7 @@ namespace CPF
 			virtual Result CPF_STDCALL QueryInterface(GOM::IID id, void** outIface) override;
 
 		private:
-			int32_t mRefCount;
+			std::atomic<int32_t> mRefCount;
 		};
 
 		//////////////////////////////////////////////////////////////////////////

@@ -5,7 +5,7 @@
 
 namespace CPF
 {
-	namespace Concurrency
+	namespace Platform
 	{
 		class Team;
 

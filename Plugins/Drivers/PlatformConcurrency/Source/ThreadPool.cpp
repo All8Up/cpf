@@ -4,9 +4,10 @@
 #include "CPF/GOM/ResultCodes.hpp"
 
 using namespace CPF;
-using namespace Concurrency;
+using namespace Platform;
 
-ThreadPool::ThreadPool(Plugin::iRegistry*, iUnknown*)
+ThreadPool::ThreadPool(Plugin::iRegistry* regy)
+    : mpRegistry(regy)
 {
 }
 
@@ -37,10 +38,10 @@ GOM::Result CPF_STDCALL ThreadPool::QueryInterface(GOM::IID id, void** outIface)
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result ThreadPool::Initialize(Plugin::iRegistry* regy, int threadCount)
+GOM::Result ThreadPool::Initialize(int threadCount)
 {
-	if (GOM::Succeeded(regy->Create(nullptr, iScheduler::kCID, iScheduler::kIID, mpScheduler.AsVoidPP())) &&
-		GOM::Succeeded(regy->Create(nullptr, iWorkBuffer::kCID, iWorkBuffer::kIID, mpQueue.AsVoidPP())))
+	if (GOM::Succeeded(mpRegistry->Create(nullptr, iScheduler::kCID, iScheduler::kIID, mpScheduler.AsVoidPP())) &&
+		GOM::Succeeded(mpRegistry->Create(nullptr, iWorkBuffer::kCID, iWorkBuffer::kIID, mpQueue.AsVoidPP())))
 		return mpScheduler->Initialize(threadCount, nullptr, nullptr, nullptr);
 	return GOM::kError;
 }
@@ -54,19 +55,4 @@ void ThreadPool::Enqueue(WorkFunction task, void* context)
 {
 	mpQueue->FirstOne(task, context);
 	mpScheduler->Execute(mpQueue);
-}
-
-int ThreadPool::GetAvailableThreads()
-{
-	return mpScheduler->GetMaxThreads();
-}
-
-void ThreadPool::SetActiveThreads(int count)
-{
-	mpScheduler->SetActiveThreads(count);
-}
-
-int ThreadPool::GetActiveThreads()
-{
-	return mpScheduler->GetActiveThreads();
 }

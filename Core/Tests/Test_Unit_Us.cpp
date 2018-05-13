@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "CPF/Time/Unit.hpp"
+#include "CPF/Time.hpp"
 
 #if 0
 TEST_F(TimeLibrary, InitializationUs)

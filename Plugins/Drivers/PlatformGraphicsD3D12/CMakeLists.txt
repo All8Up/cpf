@@ -1,4 +1,4 @@
-if (NOT CPF_PLUGIN_BINARY_PlatformGraphicsD3D12)
+if (HAVE_D3D12 AND NOT CPF_PLUGIN_BINARY_PlatformGraphicsD3D12)
 	if (WIN32)
 
 	# ###############################################
@@ -87,32 +87,34 @@ if (NOT CPF_PLUGIN_BINARY_PlatformGraphicsD3D12)
 	)
 
 	# ###############################################
-	add_library (PlatformGraphicsD3D12_s STATIC
-		${INCLUDE_ADAPTER_FILES}
-		${SOURCE_ADAPTER_FILES}
-		${INCLUDE_ADAPTER_D3D12_FILES}
-		${SOURCE_ADAPTER_D3D12_FILES}
-	)
+	if (CPF_BUILD_STATIC_VARIANTS)
+		add_library (PlatformGraphicsD3D12_s STATIC
+			${INCLUDE_ADAPTER_FILES}
+			${SOURCE_ADAPTER_FILES}
+			${INCLUDE_ADAPTER_D3D12_FILES}
+			${SOURCE_ADAPTER_D3D12_FILES}
+		)
 
-	# ###############################################
-	target_include_directories (PlatformGraphicsD3D12_s
-		PUBLIC
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-			$<INSTALL_INTERFACE:Include>
-	)
-	target_link_libraries (PlatformGraphicsD3D12_s
-		PUBLIC
-			Core_s DXGI.lib d3d12.lib D3DCompiler.lib
-	)
-	target_compile_definitions (PlatformGraphicsD3D12_s
-		PUBLIC
-			CPF_PLUGIN_STATIC
-	)
+		target_include_directories (PlatformGraphicsD3D12_s
+			PUBLIC
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+				$<INSTALL_INTERFACE:Include>
+		)
+		target_link_libraries (PlatformGraphicsD3D12_s
+			PUBLIC
+				Core_s DXGI.lib d3d12.lib D3DCompiler.lib
+		)
+		target_compile_definitions (PlatformGraphicsD3D12_s
+			PUBLIC
+				PlatformGraphicsD3D12_STATIC=1
+				CPF_PLUGIN_STATIC
+		)
 
-	# ###############################################
-	set_property (TARGET PlatformGraphicsD3D12_s
-		PROPERTY FOLDER Plugins/Drivers/Platform
-	)
+		# ###############################################
+		set_property (TARGET PlatformGraphicsD3D12_s
+			PROPERTY FOLDER Plugins/Drivers/Platform
+		)
+	endif ()
 
 	# ###############################################
 	source_group (Headers FILES ${INCLUDE_ADAPTER_FILES})

@@ -68,6 +68,7 @@ set (CPF_INCLUDES
 	Include/CPF/Time.hpp
 	Include/CPF/Option.hpp
 	Include/CPF/Outcome.hpp
+	Include/CPF/SemVer.hpp
 )
 set (CPF_SOURCES
 	Source/CPF.cpp
@@ -79,6 +80,16 @@ set (CONFIGURATION_INCLUDES
 	Include/CPF/Configuration/Macros.hpp
 	Include/CPF/Configuration/Setup.hpp.in
 	${CPF_GENERATED}/CPP/CPF/Configuration/Setup.hpp
+)
+
+set (CPFS_INCLUDES
+	Include/CPF/CPFS/Chunk.hpp
+	Include/CPF/CPFS/ECC.hpp
+	Include/CPF/CPFS/Header.hpp
+	Include/CPF/CPFS/Reader.hpp
+	Include/CPF/CPFS/TimeStamp.hpp
+	Include/CPF/CPFS/Version.hpp
+	Include/CPF/CPFS/Writer.hpp
 )
 
 set (EVENT_INCLUDES
@@ -108,6 +119,7 @@ set (IO_INCLUDES
 	Include/CPF/IO/File.hpp
 	Include/CPF/IO/FileSystem.hpp
 	Include/CPF/IO/Globbing.hpp
+	Include/CPF/IO/MemoryStream.hpp
 	Include/CPF/IO/Path.hpp
 	Include/CPF/IO/Stream.hpp
 	Include/CPF/IO/TextReader.hpp
@@ -120,6 +132,7 @@ set (IO_SOURCES
 	Source/IO/File.cpp
 	Source/IO/FileSystem.cpp
 	Source/IO/Globbing.cpp
+	Source/IO/MemoryStream.cpp
 	Source/IO/IO.cpp
 	Source/IO/Path.cpp
 	Source/IO/Stream.cpp
@@ -308,6 +321,7 @@ set (STD_INCLUDES
 	Include/CPF/Std/Map.hpp
 	Include/CPF/Std/Memory.hpp
 	Include/CPF/Std/Move.hpp
+	Include/CPF/Std/PoolVector.hpp
 	Include/CPF/Std/Pair.hpp
 	Include/CPF/Std/Queue.hpp
 	Include/CPF/Std/Set.hpp
@@ -349,6 +363,7 @@ set (ALL_SOURCES
 	${CPF_SOURCES}
 
 	${CONFIGURATION_INCLUDES}
+	${CPFS_INCLUDES}
 	${EVENT_INCLUDES}
 	${GOM_INCLUDES}
 	${HASH_INCLUDES}
@@ -412,6 +427,36 @@ set_property (TARGET Core_s PROPERTY FOLDER CPF)
 
 
 # ###############################################
+if (WIN32)
+	add_library (CoreMT_s STATIC
+		${ALL_SOURCES}
+	)
+	target_link_libraries (CoreMT_s
+		gflags_static
+		glog
+		utfcpp
+		${CPF_EXTRA_LIBS}
+		${CPF_CS_LIBS}
+	)
+	target_include_directories (CoreMT_s
+		PUBLIC
+			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+			$<BUILD_INTERFACE:${CPF_GENERATED}/CPP>
+	)
+	target_compile_definitions (CoreMT_s
+		PUBLIC
+			CPF_STATIC
+		PRIVATE
+			CPF_BUILD
+	)
+	add_dependencies (CoreMT_s ICPF)
+	set_property (TARGET CoreMT_s PROPERTY FOLDER CPF)
+
+	target_compile_options(CoreMT_s PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+endif ()
+
+
+# ###############################################
 add_library (Core SHARED
 	${ALL_SOURCES}
 )
@@ -439,6 +484,8 @@ source_group (Include FILES ${CPF_INCLUDES})
 source_group (Source FILES ${CPF_SOURCES})
 
 source_group (Include\\Configuration FILES ${CONFIGURATION_INCLUDES})
+
+source_group (Include\\CPFS FILES ${CPFS_INCLUDES})
 
 source_group (Include\\Event FILES ${EVENT_INCLUDES})
 
@@ -520,6 +567,7 @@ set (TEST_SOURCES
 	Tests/Test_HandleProvider.cpp
 	Tests/Test_IO.cpp
 	Tests/Test_LargeVector.cpp
+	Tests/Test_Math.cpp
 	Tests/Test_Matrix22v.cpp
 	Tests/Test_Matrix33v.cpp
 	Tests/Test_Matrix44v.cpp
@@ -531,6 +579,7 @@ set (TEST_SOURCES
 	Tests/Test_Path.cpp
 	Tests/Test_PerformanceTracker.cpp
 	Tests/Test_Plugin.cpp
+	Tests/Test_PoolVector.cpp
 	Tests/Test_ScratchAllocator.cpp
 	Tests/Test_Quaternion.cpp
 	Tests/Test_Reactor.cpp
@@ -559,14 +608,16 @@ if (CPF_ENABLE_UNITTESTS)
 	)
 	set_property (TARGET Test_Core PROPERTY FOLDER Tests)
 
-	add_executable (Test_Core_s
-		${TEST_INCLUDES}
-		${TEST_SOURCES}
-	)
-	target_link_libraries(Test_Core_s
-		Core_s gtest gtest_main
-	)
-	set_property (TARGET Test_Core_s PROPERTY FOLDER Tests)
+	if (CPF_BUILD_STATIC_VARIANTS)
+		add_executable (Test_Core_s
+			${TEST_INCLUDES}
+			${TEST_SOURCES}
+		)
+		target_link_libraries(Test_Core_s
+			Core_s gtest gtest_main
+		)
+		set_property (TARGET Test_Core_s PROPERTY FOLDER Tests)
+	endif ()
 
 	# ###############################################
 	# NOTE: Plugins always use the static library so they are isolated, including memory.

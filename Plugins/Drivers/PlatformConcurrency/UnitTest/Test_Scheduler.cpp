@@ -11,7 +11,7 @@ bool ConcurrencyTest::mLoggingInitialized = false;
 TEST_F(ConcurrencyTest, Basics)
 {
 	using namespace CPF;
-	using namespace Concurrency;
+	using namespace Platform;
 
 	for (auto iterations = 0; iterations < 20; ++iterations)
 	{

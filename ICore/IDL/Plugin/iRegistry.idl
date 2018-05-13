@@ -37,6 +37,23 @@ interface iRegistry : GOM::iUnknown
 	*/
 	result Install(GOM::CID cid, iClassFactory* clsInst);
 
+    /**
+    * @brief Register an arbitrary IID with the registry.  Primarily used
+    * to prevent double installation since a plugin can not use static locals
+    * given that it can be installed into several registries at a time.
+    */
+    result Register(GOM::IID iid, s32* count);
+
+    /**
+    * @brief Check if the given IID is installed in the registry.
+    */
+    result IsRegistered(GOM::IID iid);
+
+    /**
+    * @brief Unregister an IID with the given registry.
+    */
+    result Unregister(GOM::IID iid, s32* count);
+
 	/**
 	* @brief Removes a class instance.
 	* @param cid The instance id.
@@ -50,7 +67,7 @@ interface iRegistry : GOM::iUnknown
 	@param clsInst Pointer to the resulting interface pointer.
 	@return A result code.
 	*/
-	result GetClassInstance(GOM::CID cid, iClassFactory** clsInst);
+	result GetClassFactory(GOM::CID cid, iClassFactory** clsInst);
 
 	/**
 	* @brief Check if a class id has a class instance installed.

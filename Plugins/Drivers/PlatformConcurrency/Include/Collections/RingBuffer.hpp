@@ -7,7 +7,7 @@
 
 namespace CPF
 {
-	namespace Concurrency
+	namespace Platform
 	{
 		namespace Collections
 		{

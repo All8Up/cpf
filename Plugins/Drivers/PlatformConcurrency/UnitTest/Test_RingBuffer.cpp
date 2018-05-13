@@ -6,7 +6,7 @@
 
 TEST(Concurrency, RingBuffer_Basics)
 {
-	using namespace CPF::Concurrency;
+	using namespace CPF::Platform;
 	Collections::RingBuffer<int32_t> ringBuffer(4);
 	EXPECT_TRUE(ringBuffer.Initialize(1));
 

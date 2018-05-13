@@ -7,38 +7,39 @@
 
 namespace CPF
 {
-	namespace Concurrency
+	namespace Platform
 	{
 		/** @brief A very simple placeholder load balancer. */
-		class LoadBalancer : public GOM::tUnknown<iLoadBalancer>
+		class LoadBalanceMinimize : public GOM::tUnknown<iLoadBalancer>
 		{
 		public:
 			static const int kUpdateRate = 1;
 
-			LoadBalancer(Plugin::iRegistry*, iUnknown*);
-			~LoadBalancer();
+            LoadBalanceMinimize(Plugin::iRegistry*, iUnknown*);
+			~LoadBalanceMinimize() = default;
 
-			GOM::Result CPF_STDCALL Initialize(Plugin::iRegistry* regy, int count, iScheduler**) override;
+            // Overrides from iThreadController.
+            int32_t CPF_STDCALL GetMaxThreads() override;
+            GOM::Result CPF_STDCALL SetMaxThreads(int32_t count) override;
+            int32_t CPF_STDCALL GetActiveThreads() override;
+            void CPF_STDCALL SetActiveThreads(int32_t count) override;
+            void CPF_STDCALL SetPriority(SchedulingPriority level) override;
+            SchedulingPriority CPF_STDCALL GetPriority() override;
+            float CPF_STDCALL GetUtilization() override;
+            void CPF_STDCALL GetThreadTimeInfo(ThreadTimeInfo* timeInfo) override;
+            int32_t CPF_STDCALL GetDesiredThreadCount() override;
 
-			// TODO: Add policy information to each scheduler.
-			// Policies should describe how the scheduler is being used.
-			// So a primary loop scheduler will be balanced so that it
-			// tries to accomplish all it's work in the minimum number
-			// of threads but with say 15% overhead remaining for any
-			// spikes in processing.  A scheduler used as a thread pool
-			// on the other hand increases it's thread count based on the
-			// number of waiting tasks and doesn't really pay too much
-			// attention to it's actual utilization.
-			void CPF_STDCALL Balance() override;
+            // Overrides from iLoadBalancer.
+            GOM::Result CPF_STDCALL SetControllers(int32_t count, iThreadController** controllers) override;
+            GOM::Result CPF_STDCALL GetControllers(int32_t* count, iThreadController** controllers) override;
+            GOM::Result CPF_STDCALL RebalanceThreads() override;
 
 		private:
-			using Schedulers = STD::Vector<iScheduler*>;
+			using Controllers = STD::Vector<IntrusivePtr<iThreadController>>;
 
-			Schedulers mSchedulers;
-			IntrusivePtr<iThreadTimes> mpDistTimeQuery;
-			bool mQueryOutstanding = false;
-			Time::Value mLastUpdate;
-			Threading::CPUUsage mCPUUsage;
+            Plugin::iRegistry* mpRegistry;
+            Controllers mControllers;
+            int32_t mMaxUsableThreads;
 		};
 	}
 }

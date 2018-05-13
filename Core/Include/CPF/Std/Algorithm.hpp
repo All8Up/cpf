@@ -101,5 +101,15 @@ namespace CPF
 		{
 			return std::binary_search(first, last, val, comp);
 		}
+
+		template <class RandomAccessIterator>		void Sort(RandomAccessIterator first, RandomAccessIterator last)
+		{
+			return std::sort(first, last);
+		}
+
+		template <class RandomAccessIterator, class Compare>		void Sort(RandomAccessIterator first, RandomAccessIterator last, Compare comp)
+		{
+			return std::sort(first, last, comp);
+		}
 	}
 }

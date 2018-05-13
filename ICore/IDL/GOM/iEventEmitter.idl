@@ -4,14 +4,17 @@ module CPF::GOM;
 
 EventHandler = void(void* context, const void* eventData);
 
+interface iEventSink : GOM::iUnknown
+{
+    result Post(EventHandler handler, size_t dataSize, const void* eventData, void* context);
+}
+
 interface iEventEmitter : GOM::iUnknown
 {
 	result OnEvent(s64 id, EventHandler handler, void* context);
 	result RemoveEvent(s64 id, EventHandler handler, void* context);
 	result EmitEvent(s64 id, size_t dataSize, const void* eventData) const;
+    result SetEventSink(iEventSink* sink);
 }
 
-interface iDeferredEventEmitter : iEventEmitter
-{
-	result Dispatch();
-}
+failure NoEventSink("Core", "No event sink set for deferred event emitter.");

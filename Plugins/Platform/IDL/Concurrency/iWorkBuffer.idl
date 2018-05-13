@@ -1,6 +1,6 @@
 import iScheduler from CPF::Platform::Concurrency;
 
-module CPF::Concurrency;
+module CPF::Platform;
 
 enum Opcode : u32
 {
@@ -15,7 +15,7 @@ enum Opcode : u32
 
 interface iWorkBuffer : GOM::iUnknown
 {
-	const class_id kCID("CPF::Concurrency::iWorkBuffer");
+	const class_id kCID("CPF::Platform::iWorkBuffer");
 
 	result Reserve(s32 size);
 	void Copy(iWorkBuffer* rhs);

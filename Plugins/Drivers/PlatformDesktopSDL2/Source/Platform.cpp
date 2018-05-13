@@ -49,3 +49,8 @@ GOM::Result CPF_STDCALL DesktopSDL2::EmitEvent(int64_t id, size_t eventSize, con
 {
 	return mEventEmitter.EmitEvent(id, eventSize, eventData);
 }
+
+GOM::Result CPF_STDCALL DesktopSDL2::SetEventSink(GOM::iEventSink* sink)
+{
+    return mEventEmitter.SetEventSink(sink);
+}

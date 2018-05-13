@@ -1,8 +1,8 @@
-import Value from CPF::Time;
+import Time from CPF;
 
-module CPF::Concurrency;
+module CPF::Platform;
 
-const s32 MaxThreads = 64;
+const s32 MaxThreads = 128;
 
 struct ThreadTimeInfo
 {

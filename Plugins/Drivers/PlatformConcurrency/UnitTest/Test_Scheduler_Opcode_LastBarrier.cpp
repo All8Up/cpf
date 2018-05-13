@@ -9,7 +9,7 @@
 TEST_F(ConcurrencyTest, LastFenced_Opcode)
 {
 	using namespace CPF;
-	using namespace Concurrency;
+	using namespace Platform;
 
 	for (auto i = 0; i < 100; ++i)
 	{

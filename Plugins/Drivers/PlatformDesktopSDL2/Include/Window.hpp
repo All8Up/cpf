@@ -36,6 +36,7 @@ namespace CPF
 			GOM::Result CPF_STDCALL OnEvent(int64_t id, GOM::EventHandler cb, void* context) override;
 			GOM::Result CPF_STDCALL RemoveEvent(int64_t id, GOM::EventHandler cb, void* context) override;
 			GOM::Result CPF_STDCALL EmitEvent(int64_t id, size_t eventSize, const void* eventData) const override;
+            GOM::Result CPF_STDCALL SetEventSink(GOM::iEventSink* sink) override;
 
 		private:
 			SDL_Window * mpWindow;

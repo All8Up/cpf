@@ -25,14 +25,15 @@ namespace CPF
 			HandleProvider& operator = (HandleProvider&& rhs) noexcept;
 			HandleProvider& operator = (const HandleProvider&) = delete;
 
-			Handle Alloc(uint32_t index);
+			Handle Alloc(uint32_t index = 0);
 			void Free(Handle);
 
 			uint32_t Get(Handle handle) const;
 			void Set(Handle handle, uint32_t data);
-			bool IsValid(Handle handle);
+			bool IsValid(Handle handle) const;
 			uint32_t GetVersion(Handle handle) const;
 			uint32_t GetIndex(Handle handle) const;
+			Handle GetHandle(uint32_t index) const;
 
 			size_t Size() const;
 
@@ -158,7 +159,7 @@ namespace CPF
 		}
 
 		template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
-		bool HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::IsValid(Handle handle)
+		bool HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::IsValid(Handle handle) const
 		{
 			HandleData data;
 			data.mHandle = uint64_t(handle);
@@ -180,6 +181,16 @@ namespace CPF
 			data.mHandle = uint64_t(handle);
 			return data.mData;
 		}
+
+		template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
+		typename HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Handle HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::GetHandle(uint32_t index) const
+		{
+			HandleData data;
+			data.mVersion = mHandles[index].mVersion;
+			data.mData = index;
+			return data.mHandle;
+		}
+
 
 		template <typename HANDLE_TYPE, size_t BLOCK_SIZE>
 		size_t HandleProvider<HANDLE_TYPE, BLOCK_SIZE>::Size() const

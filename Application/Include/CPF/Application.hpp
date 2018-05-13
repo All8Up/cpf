@@ -25,4 +25,5 @@ static GOM::Result CPF_STDCALL Remove(Plugin::iRegistry* registry) \
 CPF_REGISTER_PLUGIN(Application) \
 	&Install, \
 	&Remove \
-};
+}; \
+template <> PluginRegistry<void>::PluginInstance* PluginRegistry<void>::mpInstances = nullptr;

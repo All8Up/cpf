@@ -6,6 +6,7 @@
 #include "CPF/GOM/Result.hpp"
 #include "CPF/IO/Path.hpp"
 #include "CPF/GOM/Types.hpp"
+#include "CPF/CPFS/ECC.hpp"
 
 using namespace IDL;
 using namespace CodeGen;
@@ -136,11 +137,22 @@ void CppGenerator::OnInterfaceDeclStmt(const Visitor::InterfaceDecl& decl)
 	}
 	for (const auto& sectionItem : decl.mSectionIDs)
 	{
-		mpWriter->OutputLine("static constexpr SectionID %s = SectionID(0x%" PRIx64 " /* %s */);",
-			sectionItem.mName.c_str(),
-			CPF::Hash::Crc64(sectionItem.mValue.c_str(), sectionItem.mValue.length()),
-			sectionItem.mValue.c_str()
-		);
+		CPF::CPFS::ECC ecc = CPF::CPFS::MakeECC('I', 'n', 'v', 'a', 'l', 'i', 'd', '_');
+		if (sectionItem.mValue.size() == 8)
+		{
+			const auto c = sectionItem.mValue.c_str();
+			ecc = CPF::CPFS::MakeECC(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]);
+
+			mpWriter->OutputLine("static constexpr SectionID %s = SectionID(0x%" PRIx64 " /* %s */);",
+				sectionItem.mName.c_str(),
+				uint64_t(ecc),
+				sectionItem.mValue.c_str()
+			);
+		}
+		else
+		{
+			mpWriter->OutputLine("<Invalid ECC>;");
+		}
 	}
 
 	if (!decl.mSignatures.empty())
@@ -333,11 +345,22 @@ void CppGenerator::OnStructStmt(const Visitor::UnionOrStructDecl& decl)
 	}
 	for (const auto& sectionItem : decl.mSectionIDs)
 	{
-		mpWriter->OutputLine("static constexpr SectionID %s = SectionID(0x%" PRIx64 " /* %s */);",
-			sectionItem.mName.c_str(),
-			CPF::Hash::Crc64(sectionItem.mValue.c_str(), sectionItem.mValue.length()),
-			sectionItem.mValue.c_str()
-		);
+		CPF::CPFS::ECC ecc = CPF::CPFS::MakeECC('I', 'n', 'v', 'a', 'l', 'i', 'd', '_');
+		if (sectionItem.mValue.size() == 8)
+		{
+			const auto c = sectionItem.mValue.c_str();
+			ecc = CPF::CPFS::MakeECC(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7]);
+
+			mpWriter->OutputLine("static constexpr SectionID %s = SectionID(0x%" PRIx64 " /* %s */);",
+				sectionItem.mName.c_str(),
+				uint64_t(ecc),
+				sectionItem.mValue.c_str()
+			);
+		}
+		else
+		{
+			mpWriter->OutputLine("<Invalid ECC>;");
+		}
 	}
 	for (const auto& member : decl.mDataMembers[int(Visitor::OsType::eNone)])
 	{

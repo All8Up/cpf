@@ -5,7 +5,7 @@
 #include "CPF/GOM/ResultCodes.hpp"
 
 using namespace CPF;
-using namespace Concurrency;
+using namespace Platform;
 
 /**
  * @brief Constructor.

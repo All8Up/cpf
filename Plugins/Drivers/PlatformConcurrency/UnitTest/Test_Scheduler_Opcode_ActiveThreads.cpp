@@ -21,7 +21,7 @@ namespace ConcurrencyTestData
 TEST_F(ConcurrencyTest, ActiveChange)
 {
 	using namespace CPF;
-	using namespace Concurrency;
+	using namespace Platform;
 	using namespace ConcurrencyTestData;
 
 	srand(int(Time::Value::Now().GetTicks()));

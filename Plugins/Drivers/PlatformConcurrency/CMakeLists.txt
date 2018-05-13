@@ -8,7 +8,7 @@ if (NOT CPF_PLUGIN_BINARY_PlatformConcurrency)
 		Include/ThreadPool.hpp
 		Include/LoadBalancer.hpp
 		Include/Fence.hpp
-		Include/ThreadTimes.hpp
+		Include/TimerService.hpp
 	)
 	set (SOURCE_FILES
 		Source/Plugin.cpp
@@ -18,7 +18,7 @@ if (NOT CPF_PLUGIN_BINARY_PlatformConcurrency)
 		Source/ThreadPool.cpp
 		Source/LoadBalancer.cpp
 		Source/Fence.cpp
-		Source/ThreadTimes.cpp
+		Source/TimerService.cpp
 	)
 
 	set (COLLECTIONS_INCLUDE
@@ -45,21 +45,23 @@ if (NOT CPF_PLUGIN_BINARY_PlatformConcurrency)
 	)
 	set_property (TARGET PlatformConcurrency PROPERTY FOLDER Plugins/Drivers/Platform)
 
-	add_library (PlatformConcurrency_s STATIC
-		${INCLUDE_FILES}
-		${DISPATCH_INCLUDE}
-		${COLLECTIONS_INCLUDE}
-		${SOURCE_FILES}
-		${IDL_FILES}
-		${CPP_IDL_FILES}
-	)
-	target_link_libraries (PlatformConcurrency_s Core_s)
-	target_include_directories (PlatformConcurrency_s PRIVATE
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-		$<INSTALL_INTERFACE:Include>
-	)
-	target_compile_definitions (PlatformConcurrency_s PRIVATE CPF_PLUGIN_STATIC)
-	set_property (TARGET PlatformConcurrency_s PROPERTY FOLDER Plugins/Drivers/Platform)
+	if (CPF_BUILD_STATIC_VARIANTS)
+		add_library (PlatformConcurrency_s STATIC
+			${INCLUDE_FILES}
+			${DISPATCH_INCLUDE}
+			${COLLECTIONS_INCLUDE}
+			${SOURCE_FILES}
+			${IDL_FILES}
+			${CPP_IDL_FILES}
+		)
+		target_link_libraries (PlatformConcurrency_s Core_s)
+		target_include_directories (PlatformConcurrency_s PRIVATE
+			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+			$<INSTALL_INTERFACE:Include>
+		)
+		target_compile_definitions (PlatformConcurrency_s PUBLIC PlatformConcurrency_STATIC=1 PRIVATE CPF_PLUGIN_STATIC)
+		set_property (TARGET PlatformConcurrency_s PROPERTY FOLDER Plugins/Drivers/Platform)
+	endif ()
 
 
 	source_group (Headers FILES ${INCLUDE_FILES})
@@ -95,6 +97,7 @@ if (NOT CPF_PLUGIN_BINARY_PlatformConcurrency)
 			UnitTest/Test_Scheduler_Opcode_ThreadLocalAddressRegister.cpp
 			UnitTest/Test_Scheduler_Opcode_SharedDataRegister.cpp
 			UnitTest/Test_Scheduler_Opcode_SharedAddressRegister.cpp
+			UnitTest/Test_PlatformConcurrency_TimerService.cpp
 		)
 		target_link_libraries(Test_PlatformConcurrency
 			Core_s gtest gtest_main PlatformConcurrency

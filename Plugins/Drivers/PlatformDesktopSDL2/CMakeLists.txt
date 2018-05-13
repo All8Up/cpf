@@ -42,23 +42,6 @@ if (NOT CPF_PLUGIN_BINARY_PlatformDesktopSDL2)
 			$<INSTALL_INTERFACE:Include>
 			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/External/SDL2-2.0.7/include>
 	)
-
-	add_library (PlatformDesktopSDL2_s STATIC
-		${INCLUDE_FILES}
-		${SOURCE_FILES}
-	)
-
-	target_include_directories (PlatformDesktopSDL2_s
-		PRIVATE
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-			$<INSTALL_INTERFACE:Include>
-			$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/External/SDL2-2.0.7/include>
-	)
-	target_compile_definitions (PlatformDesktopSDL2_s
-		PUBLIC
-			CPF_PLUGIN_STATIC
-	)
-
 	if (WIN32)
 		set (WIN32_LIBS
 			debug vcruntimed.lib ucrtd.lib
@@ -70,20 +53,41 @@ if (NOT CPF_PLUGIN_BINARY_PlatformDesktopSDL2)
 		PRIVATE
 			Core_s SDL2-static ${WIN32_LIBS}
 	)
+
 	set_property (TARGET PlatformDesktopSDL2
 		PROPERTY FOLDER Plugins/Drivers/Platform
 	)
+
+	if (CPF_BUILD_STATIC_VARIANTS)
+		add_library (PlatformDesktopSDL2_s STATIC
+			${INCLUDE_FILES}
+			${SOURCE_FILES}
+		)
+
+		target_include_directories (PlatformDesktopSDL2_s
+			PRIVATE
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+				$<INSTALL_INTERFACE:Include>
+				$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/External/SDL2-2.0.7/include>
+		)
+		target_compile_definitions (PlatformDesktopSDL2_s
+			PUBLIC
+				PlatformDesktopSDL2_STATIC=1
+				CPF_PLUGIN_STATIC
+		)
+
+		target_link_libraries (PlatformDesktopSDL2_s
+			PRIVATE
+				Core_s SDL2-static ${WIN32_LIBS}
+		)
+		set_property (TARGET PlatformDesktopSDL2_s
+			PROPERTY FOLDER Plugins/Drivers/Platform
+		)
+	endif ()
+
 	add_custom_command (
 		TARGET PlatformDesktopSDL2 POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:PlatformDesktopSDL2> ${CPF_COMMON_PLUGINS}/PlatformDesktopSDL2.cfp
-	)
-
-	target_link_libraries (PlatformDesktopSDL2_s
-		PRIVATE
-			Core_s SDL2-static ${WIN32_LIBS}
-	)
-	set_property (TARGET PlatformDesktopSDL2_s
-		PROPERTY FOLDER Plugins/Drivers/Platform
 	)
 
 	cpf_binary_plugin(

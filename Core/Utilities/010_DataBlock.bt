@@ -1,0 +1,26 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: CPF DataBlock format.
+//   Authors: All8Up
+//   Version: 0.1.0
+//   Purpose: View CPF DataBlock sections.
+//  Category: Binary file viewing.
+// File Mask: cbm
+//   History: 
+//------------------------------------------------
+struct FILE
+{
+    struct HEADER
+    {
+        uint64 mTotalSize;
+        uint64 mSectionCount;
+    } header <bgcolor=cLtGray>;
+    struct SECTION
+    {
+        uint64 mID;
+        uint64 mOffset;
+        uint64 mSize;
+        uint64 mPad0;
+    } sectionDesc[ file.header.mSectionCount ];
+} file;

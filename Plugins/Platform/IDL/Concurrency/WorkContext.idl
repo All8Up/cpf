@@ -1,4 +1,4 @@
-module CPF::Concurrency;
+module CPF::Platform;
 
 struct iScheduler;
 

@@ -23,7 +23,13 @@ namespace CPF
 	private:
 		size_t _HeaderSize() const;
 
-		using SectionMap = STD::Map<SectionID, STD::Vector<uint8_t>>;
+		struct SectionData
+		{
+			int32_t mIndex;
+			STD::Vector<uint8_t> mData;
+		};
+		using SectionMap = STD::Map<SectionID, SectionData>;
+		int32_t mSectionCount;
 		CPF_DLL_SAFE_BEGIN;
 		SectionMap mSectionMap;
 		CPF_DLL_SAFE_END;

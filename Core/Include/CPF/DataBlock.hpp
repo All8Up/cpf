@@ -29,6 +29,7 @@ namespace CPF
 		DataBlock(DataBlock&&) = delete;
 		DataBlock& operator = (DataBlock&&) = delete;
 
+		// Section interface.
 		size_t GetSectionCount() const;
 		STD::Vector<SectionID> GetSections() const;
 		const void* GetByIndex(size_t index, size_t* size) const;
@@ -37,12 +38,17 @@ namespace CPF
 		template <typename TYPE>
 		const TYPE* GetSection(SectionID id, size_t* size) const { return reinterpret_cast<const TYPE*>(GetSection(id, size)); }
 
+		// Raw data block access.
 		size_t GetSize() const;
+		void* GetData();
 		const void* GetData() const;
 
+		// Create/Destroy.
 		static DataBlock* Create(size_t totalSize, size_t sectionCount);
-		static void Destroy(DataBlock* dataBlock);
+		static DataBlock* Create(size_t totalSize);
+		void Destroy();
 
+		// Iteration interface.
 		using SectionData = STD::Pair<const void*, size_t>;
 		using SectionInfo = STD::Pair<SectionID, SectionData>;
 		class const_iterator;
@@ -52,9 +58,11 @@ namespace CPF
 	private:
 		friend class DataBlockBuilder;
 
+		// Construction/Destruction.
 		DataBlock(size_t totalSize, size_t sectionCount);
 		~DataBlock();
 
+		// This can *not* allocate itself, it must be done with placement new.
 		void operator delete(void*) { }
 		void* operator new (size_t) { return nullptr; }
 		void* operator new (size_t, void* block) { return block; }
@@ -65,6 +73,7 @@ namespace CPF
 			SectionID mID;
 			size_t mOffset;
 			size_t mSize;
+			size_t mPad0;
 		};
 
 		size_t mTotalSize;
@@ -72,6 +81,7 @@ namespace CPF
 		SectionEntry mData[1];
 	};
 
+	/** @brief A constant iterator to visit the sections. */
 	class DataBlock::const_iterator
 	{
 	public:

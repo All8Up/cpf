@@ -78,10 +78,13 @@ GOM::Result Device::Initialize(Plugin::iRegistry* regy, Graphics::iAdapter* adap
 	if (highestLevel != D3D_FEATURE_LEVEL(0))
 	{
 		ID3D12Device* d3dDevice = nullptr;
-		if (SUCCEEDED(D3D12CreateDevice(d3dAdapter->GetD3DAdapter(), highestLevel, IID_PPV_ARGS(&d3dDevice))))
-		{
-			mpDevice.Adopt(d3dDevice);
-		}
+        HRESULT result = D3D12CreateDevice(d3dAdapter->GetD3DAdapter(), highestLevel, IID_PPV_ARGS(&d3dDevice));
+        if (SUCCEEDED(result))
+        {
+            mpDevice.Adopt(d3dDevice);
+        }
+        else
+            return GOM::kError;
 	}
 
 	//////////////////////////////////////////////////////////////////////////

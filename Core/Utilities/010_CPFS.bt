@@ -1,0 +1,50 @@
+//------------------------------------------------
+//--- 010 Editor v8.0.1 Binary Template
+//
+//      File: 010_CPFS.bt
+//   Authors: All8Up
+//   Version: 0.1.0
+//   Purpose: General purpose container format.
+//  Category: Container.
+// File Mask: *.cpfs, *.cbm
+//   History: 
+//------------------------------------------------
+typedef struct
+{
+    uint16 mMajor;
+    uint16 mMinor;
+    uint32 mPatch;
+} VERSION;
+
+
+struct FILE
+{
+    struct HEADER
+    {
+        char mMagic[8];
+        VERSION mVersion;
+        uint64 mTimeStamp;
+        uint64 mFlags;
+    } header <bgcolor=cLtGray>;
+    struct CHUNK
+    {
+        char mID[8];
+        VERSION mVersion;
+        uint64 mFlags;
+        uint64 mLength;
+
+        struct DATA_BLOCK
+        {
+            uint64 mTotalSize;
+            uint64 mSectionCount;
+        } data_block;
+        struct SECTION
+        {
+            char mID[8];
+            uint64 mOffset;
+            uint64 mSize;
+            uint64 mPad0;
+        } sectionDesc[ file.chunk.data_block.mSectionCount ];
+    } chunk;
+} file;
+

@@ -60,7 +60,7 @@ Image::Image(Device* device, Graphics::HeapType heap, const Graphics::ClearValue
 			else
 			{
 				clearValue.DepthStencil.Depth = cv->mData.mDepthStencil.mDepth;
-				clearValue.DepthStencil.Stencil = cv->mData.mDepthStencil.mStencil;
+				clearValue.DepthStencil.Stencil = UINT8(cv->mData.mDepthStencil.mStencil);
 			}
 		}
 		device->GetD3DDevice()->CreateCommittedResource(

@@ -1,17 +1,16 @@
 //////////////////////////////////////////////////////////////////////////
+#include "CPF/Logging.hpp"
 #include "CPF/IntrusivePtr.hpp"
 #include "CPF/GOM/ResultCodes.hpp"
 #include "CPF/Plugin.hpp"
-#include "CPF/Plugin/Registry.hpp"
 #include "CPF/Plugin/Library.hpp"
-#include "CPF/Plugin.hpp"
+#include "CPF/Plugin/Registry.hpp"
 #include "CPF/Plugin/iClassFactory.hpp"
 #include "CPF/Std/Move.hpp"
 #include "CPF/Std/Vector.hpp"
 #include "CPF/Std/UnorderedMap.hpp"
-#include "CPF/IO/Directory.hpp"
-#include "CPF/Logging.hpp"
 #include "CPF/IO/Path.hpp"
+#include "CPF/IO/Directory.hpp"
 
 using namespace CPF;
 using namespace PluginHost;
@@ -41,8 +40,12 @@ public:
 
 	GOM::Result CPF_STDCALL Install(GOM::CID, Plugin::iClassFactory*) override;
 	GOM::Result CPF_STDCALL Remove(GOM::CID) override;
-	GOM::Result CPF_STDCALL GetClassInstance(GOM::CID cid, Plugin::iClassFactory** clsInst) override;
+	GOM::Result CPF_STDCALL GetClassFactory(GOM::CID cid, Plugin::iClassFactory** clsInst) override;
 	GOM::Result CPF_STDCALL Exists(GOM::CID cid) override;
+
+    GOM::Result CPF_STDCALL Register(GOM::IID iid, int32_t* count) override;
+    GOM::Result CPF_STDCALL IsRegistered(GOM::IID iid) override;
+    GOM::Result CPF_STDCALL Unregister(GOM::IID iid, int32_t* count) override;
 
 	GOM::Result CPF_STDCALL ClassInstall(int32_t count, const Plugin::IID_CID* pairs) override;
 	GOM::Result CPF_STDCALL ClassRemove(int32_t count, const Plugin::IID_CID* pairs) override;
@@ -63,6 +66,7 @@ private:
 
 	using LibraryMap = STD::UnorderedMap<STD::String, LibraryDesc>;
 	using CreationMap = STD::UnorderedMap<GOM::CID, IntrusivePtr<Plugin::iClassFactory>>;
+    using IIDRegistry = STD::UnorderedMap<GOM::IID, int32_t>;
 
 	LibraryMap mLibraryMap;
 	CreationMap mCreationMap;
@@ -73,6 +77,8 @@ private:
 
 	using InstanceMap = STD::UnorderedMap<GOM::IID, iUnknown*>;
 	InstanceMap mInstances;
+
+    IIDRegistry mIIDRegistry;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -231,7 +237,7 @@ GOM::Result CPF_STDCALL Registry::Remove(GOM::CID id)
 	return GOM::kUnknownClass;
 }
 
-GOM::Result CPF_STDCALL Registry::GetClassInstance(GOM::CID cid, Plugin::iClassFactory** clsInst)
+GOM::Result CPF_STDCALL Registry::GetClassFactory(GOM::CID cid, Plugin::iClassFactory** clsInst)
 {
 	if (clsInst)
 	{
@@ -247,10 +253,46 @@ GOM::Result CPF_STDCALL Registry::GetClassInstance(GOM::CID cid, Plugin::iClassF
 	return GOM::kInvalidParameter;
 }
 
-GOM::Result CPF_STDCALL Registry::Exists(GOM::CID id)
+GOM::Result CPF_STDCALL Registry::Exists(GOM::CID iid)
 {
-	auto exists = mCreationMap.find(id);
+	auto exists = mCreationMap.find(iid);
 	return exists != mCreationMap.end() ? GOM::kOK : GOM::kUnknownClass;
+}
+
+GOM::Result CPF_STDCALL Registry::Register(GOM::IID iid, int32_t* count)
+{
+    auto const it = mIIDRegistry.find(iid);
+    if (it != mIIDRegistry.end())
+    {
+        ++it->second;
+        if (count)
+            *count = it->second;
+        return GOM::kOK;
+    }
+    mIIDRegistry.insert({iid, 1});
+    if (count)
+        *count = 1;
+    return GOM::kOK;
+}
+
+GOM::Result CPF_STDCALL Registry::IsRegistered(GOM::IID iid)
+{
+    if (mIIDRegistry.find(iid) == mIIDRegistry.end())
+        return GOM::kError;
+    return GOM::kOK;
+}
+
+GOM::Result CPF_STDCALL Registry::Unregister(GOM::IID iid, int32_t* count)
+{
+    const auto it = mIIDRegistry.find(iid);
+    if (it == mIIDRegistry.end())
+        return GOM::kNotFound;
+    --it->second;
+    if (count)
+        *count = it->second;
+    if (it->second == 0)
+        mIIDRegistry.erase(iid);
+    return GOM::kOK;
 }
 
 GOM::Result CPF_STDCALL Registry::Create(iUnknown* outer, GOM::CID cid, GOM::IID id, void** outIface)

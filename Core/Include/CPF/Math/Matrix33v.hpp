@@ -42,9 +42,9 @@ namespace CPF
 			static Matrix33<TYPE> RotationX(LaneType radians);
 			static Matrix33<TYPE> RotationY(LaneType radians);
 			static Matrix33<TYPE> RotationZ(LaneType radians);
-			static Matrix33<TYPE> Scale(const Vector2& scale) { return Scale(scale.x, scale.y); }
+			static Matrix33<TYPE> Scale(Vector2 scale) { return Scale(scale.x, scale.y); }
 			static Matrix33<TYPE> Scale(LaneType x, LaneType y);
-			static Matrix33<TYPE> Scale(Vector3& scale) { return Scale(scale.x, scale.y, scale.z); }
+			static Matrix33<TYPE> Scale(Vector3 scale) { return Scale(scale.x, scale.y, scale.z); }
 			static Matrix33<TYPE> Scale(LaneType x, LaneType y, LaneType z);
 			static Matrix33<TYPE> Translation(LaneType x, LaneType y);
 

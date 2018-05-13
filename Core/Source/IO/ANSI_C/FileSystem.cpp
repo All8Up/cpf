@@ -35,7 +35,7 @@ namespace CPF
 
 		private:
 			Threading::Reactor mReactor;
-			Threading::ReactorQueue mQueue;
+			Threading::Reactor::Queue mQueue;
 			Threading::Thread mWorker;
 		};
 	}
@@ -91,7 +91,7 @@ struct FSCmd
 //////////////////////////////////////////////////////////////////////////
 ANSI_C_FileSystem::ANSI_C_FileSystem()
 	: mReactor()
-	, mQueue(&mReactor)
+	, mQueue(mReactor.GetQueue())
 	, mWorker([&]() {
 		mReactor.Run();
 	})

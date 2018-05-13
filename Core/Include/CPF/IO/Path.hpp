@@ -24,6 +24,8 @@ namespace CPF
 				STD::Utf8String result;
 				auto ibegin = path.begin();
 				auto iend = path.end();
+				if (ibegin == iend)
+					return result;
 
 				while (CSTD::IsSpace(*ibegin))
 					++ibegin;

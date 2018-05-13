@@ -1,92 +1,139 @@
 //////////////////////////////////////////////////////////////////////////
 #include "LoadBalancer.hpp"
-#include "ThreadTimes.hpp"
 #include "CPF/Plugin/iRegistry.hpp"
 #include "CPF/Logging.hpp"
 #include "CPF/GOM/ResultCodes.hpp"
 
 using namespace CPF;
-using namespace Concurrency;
+using namespace Platform;
 using namespace Threading;
 
-LoadBalancer::LoadBalancer(Plugin::iRegistry*, iUnknown*)
-	: mLastUpdate(Time::Now())
+//////////////////////////////////////////////////////////////////////////
+// Construction/Destruction.
+LoadBalanceMinimize::LoadBalanceMinimize(Plugin::iRegistry* registry, iUnknown*)
+	: mpRegistry(registry)
+    , mMaxUsableThreads(Thread::GetHardwareThreadCount())
 {
 }
 
-LoadBalancer::~LoadBalancer()
-{}
+//////////////////////////////////////////////////////////////////////////
+// iThreadController implementations.
 
-GOM::Result CPF_STDCALL LoadBalancer::Initialize(Plugin::iRegistry* regy, int count, iScheduler** schedulers)
+int32_t CPF_STDCALL LoadBalanceMinimize::GetMaxThreads()
 {
-	if(regy)
-	{
-		mSchedulers.clear();
-		for (int i = 0; i < count; ++i)
-			mSchedulers.push_back(schedulers[i]);
-		return regy->Create(nullptr, iThreadTimes::kCID, iThreadTimes::kIID, mpDistTimeQuery.AsVoidPP());
-	}
-	return GOM::kInvalidParameter;
+    return mMaxUsableThreads;
 }
 
-void CPF_STDCALL LoadBalancer::Balance()
+GOM::Result CPF_STDCALL LoadBalanceMinimize::SetMaxThreads(int32_t count)
 {
-	if (mSchedulers.empty())
-		return;
+    mMaxUsableThreads = count;
+    return GOM::kOK;
+}
 
-	if (mQueryOutstanding)
-	{
-		CPF_LOG(Concurrency, Info) << " Processor usage: " << mCPUUsage.GetValue();
+int32_t CPF_STDCALL LoadBalanceMinimize::GetActiveThreads()
+{
+    int32_t result = 0;
+    for (auto& controller : mControllers)
+        result += controller->GetActiveThreads();
+    return result;
+}
 
-		mQueryOutstanding = false;
-		ThreadTimeInfo info;
-		mpDistTimeQuery->GetTimes(&info);
-		int threadCount;
+void CPF_STDCALL LoadBalanceMinimize::SetActiveThreads(int32_t count)
+{ (void)count; }
 
-		// TODO: Currently expects scheduler 0 to be a distributor and 1 to be a thread pool.
-		if (info.mDuration.GetTicks() > 0)
-		{
-			float duration = float(Time::Seconds(info.mDuration));
-			float utilization = 0.0f;
-			for (int i = 0; i < info.mThreadCount; ++i)
-				utilization += float(Time::Seconds(info.mUserTime[i]));
+void CPF_STDCALL LoadBalanceMinimize::SetPriority(SchedulingPriority level)
+{
+    for (auto& controller : mControllers)
+        controller->SetPriority(level);
+}
 
-			utilization = utilization / (float(info.mThreadCount) * duration);
-			if (utilization < 0.9f)
-			{
-				threadCount = info.mThreadCount;
-				if (threadCount>1)
-				{
-					threadCount -= 1;
-					mSchedulers[0]->SetActiveThreads(threadCount);
-				}
-			}
-			else
-			{
-				threadCount = info.mThreadCount;
-				if (threadCount < mSchedulers[0]->GetMaxThreads() - 1)
-				{
-					threadCount += 1;
-					mSchedulers[0]->SetActiveThreads(threadCount);
-				}
-			}
+SchedulingPriority CPF_STDCALL LoadBalanceMinimize::GetPriority()
+{
+    if (!mControllers.empty())
+        return mControllers[0]->GetPriority();
+    return SchedulingPriority::eNormal;
+}
 
-			// Simply set the number of pool threads to the inverse of those used in distribution.
-			int targetThreads = mSchedulers[1]->GetMaxThreads() - threadCount;
-			targetThreads = targetThreads > 0 ? targetThreads : 1;
-			mSchedulers[1]->SetActiveThreads(targetThreads);
-		}
-	}
-	else
-	{
-		auto now = Time::Now();
-		if (Time::Seconds(now - mLastUpdate) < float(kUpdateRate))
-			return;
-		mLastUpdate = now;
+float CPF_STDCALL LoadBalanceMinimize::GetUtilization()
+{
+    float result = 0.0f;
+    for (const auto& controller : mControllers)
+        result += controller->GetUtilization();
+    return result;
+}
 
-		// Submits queries to pick up on the next loop.
-		// Picking the result up on the next loop prevents blocking.
-		mSchedulers[0]->Submit(mpDistTimeQuery);
-		mQueryOutstanding = true;
-	}
+void CPF_STDCALL LoadBalanceMinimize::GetThreadTimeInfo(ThreadTimeInfo* timeInfo) { (void)timeInfo; }
+
+int32_t CPF_STDCALL LoadBalanceMinimize::GetDesiredThreadCount()
+{
+    int32_t result = 0;
+    for (const auto& controller : mControllers)
+        result += controller->GetDesiredThreadCount();
+    return result;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// iLoadBalancer implementations.
+
+GOM::Result CPF_STDCALL LoadBalanceMinimize::SetControllers(int32_t count, iThreadController** controllers)
+{
+    if (controllers)
+    {
+        // Move the pointers to a temporary just in case we are the only one maintaining references
+        // and it would be destroyed while the new list is built.
+        auto oldControllers = STD::Move(mControllers);
+        for (int i = 0; i < count; ++i)
+        {
+            mControllers.push_back(IntrusivePtr<iThreadController>(controllers[i]));
+        }
+
+        return GOM::kOK;
+    }
+
+    return GOM::kInvalidParameter;
+}
+
+GOM::Result CPF_STDCALL LoadBalanceMinimize::GetControllers(int32_t* count, iThreadController** controllers)
+{
+    if (count)
+    {
+        if (controllers)
+        {
+            int32_t i = 0;
+            for (const auto& controller : mControllers)
+                controllers[i++] = controller;
+        }
+        else
+            *count = int32_t(mControllers.size());
+        return GOM::kOK;
+    }
+
+    return GOM::kInvalidParameter;
+}
+
+GOM::Result CPF_STDCALL LoadBalanceMinimize::RebalanceThreads()
+{
+    STD::Vector<int32_t> targets(mControllers.size());
+    int32_t i = 0;
+    int32_t total = 0;
+    for (auto& controller : mControllers)
+    {
+        targets[i] = controller->GetDesiredThreadCount();
+        total += targets[i++];
+    }
+    // Proportionally reduce threads to fit into max.
+    if (total > mMaxUsableThreads)
+    {
+        // TODO: Decide how best to approach this.
+    }
+
+    // Apply the new balance.
+    i = 0;
+    for (auto& controller : mControllers)
+    {
+        controller->SetActiveThreads(targets[i++]);
+    }
+
+    return GOM::kOK;
 }
